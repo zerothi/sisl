@@ -23,7 +23,7 @@ class SimpleDispatch(ReferenceDispatch):
         graphene = si.geom.graphene(a, C, orthogonal=orthogonal)
         # Define the Hamiltonian
         H = si.Hamiltonian(graphene)
-        H.construct([(0.1, a+da), (0, t)])
+        H.construct([(da, a+da), (0, t)])
         return H
 
 GrapheneHamiltonian.ref.register("simple", SimpleDispatch)
@@ -38,38 +38,36 @@ class Hancock2010Dispatch(ReferenceDispatch):
         da = 0.0005
         H_orthogonal = True
         U = 2.0
-        if set == 'A':
+
+        R = tuple(distance(i, a)+da for i in range(4))
+        if set == 'A': 
             # same as simple
-            R = (0.1, a+da)
             t = (0, -2.7)
             U = 0.
         elif set == 'B':
             # same as simple
-            R = (0.1, a+da)
             t = (0, -2.7)
         elif set == 'C':
-            R = (0.1, a+da, distance(2, a)+da)
             t = (0, -2.7, -0.2)
         elif set == 'D':
-            R = (0.1, a+da, distance(2, a)+da, distance(3, a)+da)
             t = (0, -2.7, -0.2, -0.18)
         elif set == 'E':
             # same as D, but specific for GNR
-            R = (0.1, a+da, distance(2, a)+da, distance(3, a)+da)
             t = (0, -2.7, -0.2, -0.18)
         elif set == 'F':
             # same as D, but specific for GNR
-            R = (0.1, a+da, distance(2, a)+da, distance(3, a)+da)
             t = [(0, 1), (-2.7, 0.11), (-0.09, 0.045), (-0.27, 0.065)]
             H_orthogonal = False
         elif set == 'G':
             # same as D, but specific for GNR
-            R = (0.1, a+da, distance(2, a)+da, distance(3, a)+da)
             t = [(0, 1), (-2.97, 0.073), (-0.073, 0.018), (-0.33, 0.026)]
             U = 0.
             H_orthogonal = False
         else:
             raise ValueError(f"Set specification for {self.doi} does not exist, should be one of [A-G]")
+
+        # Reduce size of R
+        R = R[:len(t)]
 
         # Currently we do not carry over U, since it is not specified for the
         # sisl objects....
@@ -99,7 +97,7 @@ class Ishii2010Dispatch(ReferenceDispatch):
         distance = self._obj.distance
         da = 0.0005
 
-        R = (0.1, distance(1, a)+da)
+        R = (distance(0, a)+da, distance(1, a)+da)
         def construct(H, ia, atoms, atoms_xyz=None):
             idx_t01, rij_t01 = H.geometry.close(ia, R=R,
                                                 atoms=atoms, atoms_xyz=atoms_xyz, ret_rij=True)
@@ -126,7 +124,7 @@ class Cummings2019Dispatch(ReferenceDispatch):
         distance = self._obj.distance
         da = 0.0005
 
-        R = (0.1, distance(1, a)+da, distance(2, a)+da)
+        R = (distance(0, a)+da, distance(1, a)+da, distance(2, a)+da)
         def construct(H, ia, atoms, atoms_xyz=None):
             idx_t012, rij_t012 = H.geometry.close(ia, R=R,
                                                   atoms=atoms, atoms_xyz=atoms_xyz, ret_rij=True)
