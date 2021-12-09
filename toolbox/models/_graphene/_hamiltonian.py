@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+import numpy as np
+
 import sisl as si
 from ._base import GrapheneModel
 from sisl_toolbox.models._base import ReferenceDispatch
@@ -129,8 +131,8 @@ class Cummings2019Dispatch(ReferenceDispatch):
             idx_t012, rij_t012 = H.geometry.close(ia, R=R,
                                                   atoms=atoms, atoms_xyz=atoms_xyz, ret_rij=True)
             H[ia, idx_t012[0]] = 0.
-            H[ia, idx_t012[1]] = t[0] * np.exp(beta[0] * (rij_t01[1] - R[1]))
-            H[ia, idx_t012[2]] = t[1] * np.exp(beta[1] * (rij_t01[2] - R[2]))
+            H[ia, idx_t012[1]] = t[0] * np.exp(beta[0] * (rij_t012[1] - R[1]))
+            H[ia, idx_t012[2]] = t[1] * np.exp(beta[1] * (rij_t012[2] - R[2]))
 
         # Define the graphene lattice
         C = si.Atom(6, si.AtomicOrbital(n=2, l=1, m=0, R=R[-1]))
