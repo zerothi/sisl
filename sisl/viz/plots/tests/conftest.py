@@ -54,7 +54,7 @@ class _TestPlot:
         try:
             yield init_func(backend=backend, _debug=True)
         except Exception as e:
-            pytest.skip(f"Plot was not initialized. Error: {e}. \n\n{msg}")
+            pytest.xfail(f"Plot was not initialized. Error: {e}. \n\n{msg}")
 
         # If we are testing with the matplotlib backend, close all the figures that
         # might have been created.

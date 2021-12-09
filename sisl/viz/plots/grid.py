@@ -1463,7 +1463,7 @@ class WavefunctionPlot(GridPlot):
 
         self.eigenstate = eigenstate
 
-    @entry_point('Siesta WFSX file', 1)
+    @entry_point('wfsx file', 1)
     def _read_from_WFSX_file(self, wfsx_file, k, spin, root_fdf):
         """Reads the wavefunction coefficients from a SIESTA WFSX file"""
         # Try to read the geometry
@@ -1477,8 +1477,13 @@ class WavefunctionPlot(GridPlot):
         if not wfsx.file.exists():
             raise ValueError(f"File '{wfsx.file}' does not exist.")
 
+        sizes = wfsx.read_sizes()
+        H = sisl.Hamiltonian(geometry, dim=sizes.nspin)
+
+        wfsx = sisl.get_sile(wfsx.file, parent=H)
+
         # Try to find the eigenstate that we need
-        self.eigenstate = wfsx.read_eigenstate(k=k, spin=spin[0], parent=geometry)
+        self.eigenstate = wfsx.read_eigenstate(k=k, spin=spin[0])
         if self.eigenstate is None:
             # We have not found it.
             raise ValueError(f"A state with k={k} was not found in file {wfsx.file}.")
@@ -1525,16 +1530,21 @@ class WavefunctionPlot(GridPlot):
         if self.geometry is None:
             raise ValueError('No geometry was provided and we need it the basis orbitals to build the wavefunctions from the coefficients!')
 
+        # Get the spin class for which the eigenstate was calculated.
+        spin = sisl.Spin()
+        if self.eigenstate.parent is not None:
+            spin = getattr(self.eigenstate.parent, "spin", None)
+
+        # Check that number of orbitals match
+        no = self.eigenstate.shape[1] * (1 if spin.is_diagonal else 2)
+        if self.geometry.no != no:
+            raise ValueError(f"Number of orbitals in the state ({no}) and the geometry ({self.geometry.no}) don't match."
+                " This is most likely because the geometry doesn't contain the appropiate basis.")
+
         # Move all atoms inside the unit cell, otherwise the wavefunction is not
         # properly displayed.
         self.geometry = self.geometry.copy()
         self.geometry.xyz = (self.geometry.fxyz % 1).dot(self.geometry.cell)
-
-        # Note that this might be dangerous, as we are modifying the eigenstate, which
-        # could be shared if this is a children of a MultiplePlot. However, we have no
-        # other option because EigenstateElectron.wavefunction doesn't allow providing a
-        # geometry.
-        self.eigenstate.parent = self.geometry
 
         # If we are calculating the wavefunction for any point other than gamma,
         # the periodicity of the WF will be bigger than the cell. Therefore, if
@@ -1552,14 +1562,24 @@ class WavefunctionPlot(GridPlot):
         if grid is None:
             dtype = np.float64 if is_gamma else np.complex128
             self.grid = sisl.Grid(grid_prec, geometry=tiled_geometry, dtype=dtype)
+            grid = self.grid
 
         # GridPlot's after_read basically sets the x_range, y_range and z_range options
         # which need to know what the grid is, that's why we are calling it here
         super()._after_read()
 
-        state = self._get_eigenstate(i)
-        state.wavefunction(self.grid)
+        # Get the particular WF that we want from the eigenstate object
+        wf_state = self._get_eigenstate(i)
 
-        return super()._set_data(nsc=nsc, trace_name=f"WF {i} ({state.eig[0]:.2f} eV)")
+        # Ensure we are dealing with the R gauge
+        wf_state.change_gauge('R')
+
+        # Finally, insert the wavefunction values into the grid.
+        sisl.physics.electron.wavefunction(
+            wf_state.state, grid, geometry=tiled_geometry,
+            k=k, spinor=0, spin=spin
+        )
+
+        return super()._set_data(nsc=nsc, trace_name=f"WF {i} ({wf_state.eig[0]:.2f} eV)")
 
 GridPlot.backends.register_child(WavefunctionPlot.backends)

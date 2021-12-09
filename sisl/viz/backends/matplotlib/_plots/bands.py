@@ -35,8 +35,12 @@ class MatplotlibBandsBackend(MatplotlibBackend, BandsBackend):
             self.figure.colorbar(self._colorbar)
 
         # Add the ticks
-        self.axes.set_xticks(getattr(filtered_bands, "ticks", None))
-        self.axes.set_xticklabels(getattr(filtered_bands, "ticklabels", None))
+        tick_vals = getattr(filtered_bands, "ticks", None)
+        if tick_vals is not None:
+            self.axes.set_xticks(tick_vals)
+        tick_labels = getattr(filtered_bands, "ticklabels", None)
+        if tick_labels is not None:
+            self.axes.set_xticklabels(tick_labels)
         # Set the limits
         self.axes.set_xlim(*filtered_bands.k.values[[0, -1]])
         self.axes.set_ylim(filtered_bands.min(), filtered_bands.max())
