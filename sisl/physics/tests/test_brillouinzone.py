@@ -610,11 +610,11 @@ class TestBrillouinZone:
         d = np.empty([nk, 5])
         d_jump = bs.insert_jump(d)
         assert d_jump.shape == (nk+2, 5)
-        assert np.isnan(d_jump).sum() == 5
+        assert np.isnan(d_jump).sum() == 10
 
         d_jump = bs.insert_jump(d.T, value=np.inf)
         assert d_jump.shape == (5, nk+2)
-        assert np.isinf(d_jump).sum() == 5
+        assert np.isinf(d_jump).sum() == 10
 
     def test_bs_insert_jump_fail(self):
         g = geom.graphene()
