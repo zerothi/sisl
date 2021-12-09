@@ -226,13 +226,16 @@ def linspace_bz(bz, stop=None, jumps=None, jump_dk=0.05):
     dcart = np.diff(cart, axis=0, prepend=[[0, 0, 0]])
     # calculate distances
     dist = (dcart ** 2).sum(1) ** 0.5
-    # Zero out the jumps
-    dist[jumps] = 0.
 
     # calculate the total distance
     total_dist = dist.sum()
-    # correct jumps
-    dist[jumps] = total_dist * np.asarray(jump_dk)
+
+    if jumps is not None:
+        # Zero out the jumps
+        dist[jumps] = 0.
+        total_dist = dist.sum()
+        # correct jumps
+        dist[jumps] = total_dist * np.asarray(jump_dk)
 
     # convert to linear scale
     if stop is None:
