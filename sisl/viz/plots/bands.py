@@ -6,7 +6,6 @@ from functools import partial
 import itertools
 
 import numpy as np
-from numpy.core.defchararray import array
 import xarray as xr
 
 import sisl
@@ -347,7 +346,7 @@ class BandsPlot(Plot):
             attrs={**tick_info}
         )
 
-    def _get_eigenstate_wrapper(self, k_vals, extra_vars=()):
+    def _get_eigenstate_wrapper(self, k_vals, extra_vars=(), spin_moments=True):
         """Helper function to build the function to call on each eigenstate.
 
         Parameters
@@ -373,6 +372,8 @@ class BandsPlot(Plot):
                 pass the values for that coordinate here. If the coordinates were already defined
                 by another variable, they will already have values. If you are unsure that the
                 coordinates are new, just pass the values for them, they will get overwritten.
+        spin_moments: bool, optional
+            Whether to add, if the spin is not diagonal, spin moments.
 
         Returns
         --------
@@ -386,7 +387,7 @@ class BandsPlot(Plot):
             Dictionary containing the values for each coordinate involved in the dataset.
         """
         # In case it is a non_colinear or spin-orbit calculation we will get the spin moments
-        if not self.spin.is_diagonal:
+        if spin_moments and not self.spin.is_diagonal:
             def _spin_moment_getter(eigenstate, plot, spin):
                 return eigenstate.spin_moment().real
 
@@ -433,41 +434,52 @@ class BandsPlot(Plot):
         self.geometry = fdf.read_geometry(output=True)
 
         # Get the wfsx file
-        wfsx_sile = self.get_sile(wfsx_file or "wfsx_file")
+        wfsx_sile = self.get_sile(wfsx_file or "wfsx_file", parent=self.geometry)
 
         # Now read all the information of the k points from the WFSX file
-        wfsx_info = wfsx_sile.read_info(parent=self.geometry)
+        k, weights, nwfs = wfsx_sile.read_info()
         # Get the number of wavefunctions in the file while performing a quick check
-        nwf = np.unique(wfsx_info['nwf'])
+        nwf = np.unique(nwfs)
         if len(nwf) > 1:
             raise ValueError(f"File {wfsx_sile.file} contains different number of wavefunctions in some k points")
         nwf = nwf[0]
         # From the k values read in the file, build a brillouin zone object.
         # We will use it just to get the linear k values for plotting.
-        bz = BrillouinZone(self.geometry, k=wfsx_info['k'], weight=wfsx_info['kw'])
+        bz = BrillouinZone(self.geometry, k=k, weight=weights)
 
         # Read the sizes of the file, which contain the number of spin channels
         # and the number of orbitals and the number of k points.
-        wfsx_sizes = wfsx_sile.read_sizes()
+        nspin, nou, nk, _ = wfsx_sile.read_sizes()
 
         # Find out the spin class of the calculation.
         self.spin = Spin({
             1: Spin.UNPOLARIZED, 2: Spin.POLARIZED,
             4: Spin.NONCOLINEAR, 8: Spin.SPINORBIT
-        }[wfsx_sizes['nspin']])
+        }[nspin])
         # Now find out how many spin channels we need. Note that if there is only
         # one spin channel there will be no "spin" dimension on the final dataset.
         nspin = 2 if self.spin.is_polarized else 1
 
+        # Determine whether spin moments will be calculated.
+        spin_moments = False
+        if not self.spin.is_diagonal:
+            # We need to set the parent
+            self.setup_hamiltonian()
+            if self.H is not None:
+                # We could read a hamiltonian, set it as the parent of the wfsx sile
+                wfsx_sile = sisl.get_sile(wfsx_sile.file, parent=self.H)
+                spin_moments = True
+
         # Get the wrapper function that we should call on each eigenstate.
         # This also returns the coordinates and names to build the final dataset.
         bands_wrapper, all_vars, coords_values = self._get_eigenstate_wrapper(
-            sisl.physics.linspace_bz(bz), extra_vars=extra_vars
+            sisl.physics.linspace_bz(bz), extra_vars=extra_vars,
+            spin_moments=spin_moments
         )
         # Make sure all coordinates have values so that we can assume the shape
         # of arrays below.
         coords_values['band'] = np.arange(0, nwf)
-        coords_values['orb'] = np.arange(0, wfsx_sizes['nou'])
+        coords_values['orb'] = np.arange(0, nou)
 
         self.ticks = None
 
@@ -486,7 +498,7 @@ class BandsPlot(Plot):
 
         # Loop through eigenstates in the WFSX file and add their contribution to the bands
         ik = -1
-        for eigenstate in wfsx_sile.yield_eigenstate(self.geometry):
+        for eigenstate in wfsx_sile.yield_eigenstate():
             spin = eigenstate.info.get("spin", 0)
             # Every time we encounter spin 0, we are in a new k point.
             if spin == 0:
@@ -535,7 +547,7 @@ class BandsPlot(Plot):
 
         # Get the wrapper function that we should call on each eigenstate.
         # This also returns the coordinates and names to build the final dataset.
-        bands_wrapper, all_vars, coords_values= self._get_eigenstate_wrapper(
+        bands_wrapper, all_vars, coords_values = self._get_eigenstate_wrapper(
             band_structure.lineark(), extra_vars=extra_vars
         )
 
@@ -580,8 +592,6 @@ class BandsPlot(Plot):
         self.get_param("spin").update_options(self.spin)
         self.get_param("custom_gaps").get_param("spin").update_options(self.spin)
 
-        self._calculate_gaps()
-
         # Make sure that the bands_range control knows which bands are available
         i_bands = self.bands.band.values
 
@@ -598,6 +608,8 @@ class BandsPlot(Plot):
 
     def _set_data(self, Erange, E0, bands_range, spin, spin_texture_colorscale, bands_width, bands_color, spindown_color,
         gap, gap_tol, gap_color, direct_gaps_only, custom_gaps):
+        # Calculate all the gaps of this band structure
+        self._calculate_gaps(E0)
 
         # Shift all the bands to the reference
         filtered_bands = self.bands - E0
@@ -656,15 +668,16 @@ class BandsPlot(Plot):
         self._for_backend["draw_bands"]["add_band_data"] = add_band_data
         return super().get_figure(backend, **kwargs)
 
-    def _calculate_gaps(self):
+    def _calculate_gaps(self, E0):
         """
         Calculates the gap (or gaps) assuming 0 is the fermi level.
 
         It creates the attributes `gap` and `gap_info`
         """
         # Calculate the band gap to store it
-        above_fermi = self.bands.where(self.bands > 0)
-        below_fermi = self.bands.where(self.bands < 0)
+        shifted_bands = self.bands - E0
+        above_fermi = self.bands.where(shifted_bands > 0)
+        below_fermi = self.bands.where(shifted_bands < 0)
         CBbot = above_fermi.min()
         VBtop = below_fermi.max()
 

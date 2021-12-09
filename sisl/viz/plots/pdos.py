@@ -2,7 +2,6 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
-import os
 
 import sisl
 from sisl.messages import warn
@@ -341,29 +340,32 @@ class PdosPlot(Plot):
         if not hasattr(self, "H"):
             self.setup_hamiltonian()
 
+        if self.H is None:
+            raise ValueError("No hamiltonian found, and we need the overlap matrix to calculate the PDOS.")
+
         # Get the wfsx file
-        wfsx_sile = self.get_sile(wfsx_file or "wfsx_file")
+        wfsx_sile = self.get_sile(wfsx_file or "wfsx_file", parent=self.H)
 
         # Read the sizes of the file, which contain the number of spin channels
         # and the number of orbitals and the number of k points.
         sizes = wfsx_sile.read_sizes()
         # Check that spin sizes of hamiltonian and wfsx file match
-        assert self.H.spin.size == sizes['nspin'], \
-            f"Hamiltonian has spin size {self.H.spin.size} while file has spin size {sizes['nspin']}"
+        assert self.H.spin.size == sizes.nspin, \
+            f"Hamiltonian has spin size {self.H.spin.size} while file has spin size {sizes.nspin}"
         # Get the size of the spin channel. The size returned might be 8 if it is a spin-orbit
         # calculation, but we need only 4 spin channels (total, x, y and z), same as with non-colinear
-        nspin = min(4, sizes['nspin'])
+        nspin = min(4, sizes.nspin)
 
         # Get the energies for which we need to calculate the PDOS.
         self.E = np.linspace(Erange[0], Erange[-1], nE) + E0
 
         # Initialize the PDOS array
-        self.PDOS = np.zeros((nspin, sizes["nou"], self.E.shape[0]), dtype=np.float64)
+        self.PDOS = np.zeros((nspin, sizes.no_u, self.E.shape[0]), dtype=np.float64)
 
         # Loop through eigenstates in the WFSX file and add their contribution to the PDOS.
         # Note that we pass the hamiltonian as the parent here so that the overlap matrix
         # for each point can be calculated by eigenstate.PDOS()
-        for eigenstate in wfsx_sile.yield_eigenstate(self.H):
+        for eigenstate in wfsx_sile.yield_eigenstate():
             spin = eigenstate.info.get("spin", 0)
             if nspin == 4:
                 spin = slice(None)
@@ -377,6 +379,9 @@ class PdosPlot(Plot):
         """
         if not hasattr(self, "H"):
             self.setup_hamiltonian()
+
+        if self.H is None:
+            raise ValueError("No hamiltonian found.")
 
         # Get the kgrid or generate a default grid by checking the interaction between cells
         # This should probably take into account how big the cell is.

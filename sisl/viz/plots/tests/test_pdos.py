@@ -33,8 +33,13 @@ class TestPdosPlot(_TestPlot):
     ]
 
     @pytest.fixture(scope="class", params=[
+        # From a siesta PDOS file
         "siesta_PDOS_file_unpolarized", "siesta_PDOS_file_polarized", "siesta_PDOS_file_noncollinear",
-        "sisl_H_unpolarized", "sisl_H_polarized", "sisl_H_noncolinear", "sisl_H_spinorbit"
+        # From a sisl hamiltonian
+        "sisl_H_unpolarized", "sisl_H_polarized", "sisl_H_noncolinear", "sisl_H_spinorbit",
+        # From a WFSX file and the overlap matrix
+        "wfsx_file"
+
     ])
     def init_func_and_attrs(self, request, siesta_test_files):
         name = request.param
@@ -76,6 +81,27 @@ class TestPdosPlot(_TestPlot):
                 "no": 2,
                 "n_spin": n_spin,
                 "species": ('C',)
+            }
+        elif name == "wfsx_file":
+            # From a siesta .WFSX file
+            # Since there is no hamiltonian for bi2se3_3ql.fdf, we create a dummy one
+            wfsx = sisl.get_sile(siesta_test_files("bi2se3_3ql.bands.WFSX"))
+
+            geometry = sisl.get_sile(siesta_test_files("bi2se3_3ql.fdf")).read_geometry()
+            geometry = sisl.Geometry(geometry.xyz, atoms=wfsx.read_basis())
+
+            H = sisl.Hamiltonian(geometry, dim=4)
+
+            init_func = partial(
+                H.plot.pdos, wfsx_file=wfsx,
+                entry_points_order=["wfsx file"]
+            )
+
+            attrs = {
+                "na": 15,
+                "no": 195,
+                "n_spin": 4,
+                "species": ('Bi', 'Se')
             }
 
         return init_func, attrs
@@ -171,7 +197,8 @@ class TestPdosPlot(_TestPlot):
 
         # Try to split this request in multiple ones
         plot.split_requests(0, on="orbitals")
-        species_no = len(plot.geometry.atoms[sel_species].orbitals)
+        # Get the number of orbitals with unique names
+        species_no = len(set(orb.name() for orb in plot.geometry.atoms[sel_species].orbitals))
         assert len(plot._for_backend["PDOS_values"]) == species_no
 
         # Then try to merge

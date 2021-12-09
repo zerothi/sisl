@@ -8,12 +8,8 @@ Tests specific functionality of the grid plot.
 Different inputs are tested (siesta .RHO and sisl Hamiltonian).
 
 """
-from functools import reduce
-from types import GetSetDescriptorType
 from typing import ChainMap
 
-from numpy.core.arrayprint import DatetimeFormat
-from sisl.messages import SislDeprecation
 import pytest
 import numpy as np
 
