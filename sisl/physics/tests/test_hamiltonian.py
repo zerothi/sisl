@@ -783,7 +783,7 @@ class TestHamiltonian:
         bz2 = BandStructure.param_circle(H, 20, 0.01, [0, 0, 1], [1/3] * 3, loop=True)
         assert np.allclose(berry_phase(bz1), berry_phase(bz2))
 
-    def test_berry_phase_zak(self):
+    def test_berry_phase_zak_x(self):
         # SSH model, topological cell
         g = Geometry([[-.6, 0, 0], [0.6, 0, 0]], Atom(1, 1.001), sc=[2, 10, 10])
         g.set_nsc([3, 1, 1])
@@ -797,6 +797,37 @@ class TestHamiltonian:
         assert np.allclose(np.abs(berry_phase(bz, sub=0, method='zak')), np.pi)
         # Just to do the other branch
         berry_phase(bz, method='zak')
+
+    def test_berry_phase_zak_y(self):
+        # SSH model, topological cell
+        g = Geometry([[0, -.6, 0], [0, 0.6, 0]], Atom(1, 1.001), sc=[10, 2, 10])
+        g.set_nsc([1, 3, 1])
+        H = Hamiltonian(g)
+        H.construct([(0.1, 1.0, 1.5), (0, 1., 0.5)])
+        # Contour
+        k = np.linspace(0.0, 1.0, 101)
+        K = np.zeros([k.size, 3])
+        K[:, 1] = k
+        bz = BrillouinZone(H, K)
+        assert np.allclose(np.abs(berry_phase(bz, sub=0, method='zak')), np.pi)
+        # Just to do the other branch
+        berry_phase(bz, method='zak')
+
+    def test_berry_phase_zak_offset(self):
+        # SSH model, topological cell
+        g = Geometry([[0., 0, 0], [1.2, 0, 0]], Atom(1, 1.001), sc=[2, 10, 10])
+        g.set_nsc([3, 1, 1])
+        H = Hamiltonian(g)
+        H.construct([(0.1, 1.0, 1.5), (0, 1., 0.5)])
+        # Contour
+        k = np.linspace(0.0, 1.0, 101)
+        K = np.zeros([k.size, 3])
+        K[:, 0] = k
+        bz = BrillouinZone(H, K)
+        zak = berry_phase(bz, sub=0, method='zak')
+        assert np.allclose(np.abs(zak), np.pi)
+        zak_origin = berry_phase(bz, sub=0, method='zak:origin')
+        assert not np.allclose(np.abs(zak), np.abs(zak_origin))
 
     def test_berry_phase_method_fail(self):
         # wrong method keyword

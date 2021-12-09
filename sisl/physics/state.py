@@ -858,7 +858,7 @@ class State(ParentContainer):
             idx = np.unravel_index(_argmax(_abs(s)), s.shape)
             s *= phi * _conj(s[idx] / _abs(s[idx]))
 
-    def change_gauge(self, gauge):
+    def change_gauge(self, gauge, offset=(0, 0, 0)):
         r""" In-place change of the gauge of the state coefficients
 
         The two gauges are related through:
@@ -873,6 +873,8 @@ class State(ParentContainer):
         ----------
         gauge : {'R', 'r'}
             specify the new gauge for the mode coefficients
+        offset : array_like, optional
+            whether the coordinates should be offset by another phase-factor
         """
         # These calls will fail if the gauge is not specified.
         # In that case it will not do anything
@@ -889,7 +891,8 @@ class State(ParentContainer):
             return
 
         g = self.parent.geometry
-        phase = g.xyz[g.o2a(_a.arangei(g.no)), :] @ (k @ g.rcell)
+        xyz = g.xyz + offset
+        phase = xyz[g.o2a(_a.arangei(g.no)), :] @ (k @ g.rcell)
 
         try:
             if not self.parent.spin.is_diagonal:

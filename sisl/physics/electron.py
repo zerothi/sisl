@@ -1125,11 +1125,15 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
        return the eigenvalues of the product of the overlap matrices
     closed : bool, optional
        whether or not to include the connection of the last and first points in the loop
-    method : {'berry', 'zak'}
+    method : {'berry', 'zak', 'zak:origin'}
        'berry' will return the usual integral of the Berry connection over the specified contour
-       'zak' will compute the Zak phase for 1D systems by performing a closed loop integration but
-       taking into account the Bloch factor :math:`e^{i2\pi/a x}` accumulated over a Brillouin zone,
-       see [1]_.
+       'zak' will compute the Zak phase (intercell and origin independent) for 1D systems by performing
+       a closed loop integration but taking into account the Bloch factor :math:`e^{i2\pi/a x}`
+       accumulated over a Brillouin zone, see [1]_. The origin independent method moves the atoms
+       according to the average atomic positions.
+       For 'zak:origin' uses the atomic coordinates *as is* and thus an origin dependent phase may be
+       seen. If the mirror symmetric point is not the average coordinates, one should use this
+       method and align the atomic coordinates to the mirror symmetric point.
 
     Notes
     -----
@@ -1182,13 +1186,16 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
         # When the user has the contour points closed, we don't need to do this in the below loop
         closed = False
 
-    method = method.lower()
+    offset = - contour.parent.geometry.center(what='xyz')
+    method, *opts = method.lower().split(':')
     if method == "berry":
         pass
     elif method == "zak":
         closed = True
+        if "origin" in opts:
+            offset = np.zeros(3)
     else:
-        raise ValueError("berry_phase: requires the method to be [berry, zak]")
+        raise ValueError("berry_phase: requires the method to be [berry, zak, zak:origin]")
 
     # Whether we should calculate the eigenvalues of the overlap matrix
     if eigvals:
@@ -1204,7 +1211,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
         def _berry(eigenstates):
             # Grab the first one to be able to form a loop
             first = next(eigenstates)
-            first.change_gauge('r')
+            first.change_gauge('r', offset=offset)
             # Create a variable to keep track of the previous state
             prev = first
 
@@ -1214,7 +1221,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
 
             # Loop remaining eigenstates
             for second in eigenstates:
-                second.change_gauge('r')
+                second.change_gauge('r', offset=offset)
                 prd = _process(prd, prev.inner(second, diag=False))
                 prev = second
 
@@ -1223,9 +1230,10 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
                 # Insert Bloch phase for 1D integral?
                 if method == "zak":
                     g = contour.parent.geometry
+                    xyz = g.xyz + offset
                     axis = contour.k[1] - contour.k[0]
                     axis /= axis.dot(axis) ** 0.5
-                    phase = dot(g.xyz[g.o2a(_a.arangei(g.no)), :], dot(axis, g.rcell)).reshape(1, -1)
+                    phase = xyz[g.o2a(_a.arangei(g.no)), :] @ (axis @ g.rcell)
                     if spin.is_diagonal:
                         prev.state *= exp(1j * phase)
                     else:
@@ -1239,20 +1247,21 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
     else:
         def _berry(eigenstates):
             first = next(eigenstates).sub(sub)
-            first.change_gauge('r')
+            first.change_gauge('r', offset=offset)
             prev = first
             prd = 1
             for second in eigenstates:
                 second = second.sub(sub)
-                second.change_gauge('r')
+                second.change_gauge('r', offset=offset)
                 prd = _process(prd, prev.inner(second, diag=False))
                 prev = second
             if closed:
                 if method == "zak":
                     g = contour.parent.geometry
+                    xyz = g.xyz + offset
                     axis = contour.k[1] - contour.k[0]
                     axis /= axis.dot(axis) ** 0.5
-                    phase = dot(g.xyz[g.o2a(_a.arangei(g.no)), :], dot(axis, g.rcell)).reshape(1, -1)
+                    phase = xyz[g.o2a(_a.arangei(g.no)), :] @ (axis @ g.rcell)
                     if spin.is_diagonal:
                         prev.state *= exp(1j * phase)
                     else:
