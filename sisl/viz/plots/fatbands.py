@@ -184,14 +184,14 @@ class FatbandsPlot(BandsPlot):
         Uses the `.wfsx` file to retrieve the eigenstates. From them, it computes
         all the needed quantities (eigenvalues, orbital contribution, ...). 
         """
-        self._entry_point_with_extra_vars(super()._read_from_wfsx)
+        self._entry_point_with_extra_vars(super()._read_from_wfsx, need_H=True)
 
     @entry_point("hamiltonian", 1)
     def _read_from_H(self):
         """Calculates the fatbands from a sisl hamiltonian."""
         self._entry_point_with_extra_vars(super()._read_from_H)
 
-    def _entry_point_with_extra_vars(self, entry_point):
+    def _entry_point_with_extra_vars(self, entry_point, **kwargs):
         # Define the function that will "catch" each eigenstate and
         # build the weights array. See BandsPlot._read_from_H to understand where
         # this will go exactly
@@ -211,7 +211,7 @@ class FatbandsPlot(BandsPlot):
         # thanks to the above step
         bands_read = False; err = None
         try:
-            entry_point(extra_vars=[{"coords": ("band", "orb"), "name": "weight", "getter": _weights_from_eigenstate}])
+            entry_point(extra_vars=[{"coords": ("band", "orb"), "name": "weight", "getter": _weights_from_eigenstate}], **kwargs)
             bands_read = True
         except Exception as e:
             # Let's keep this error, we are going to at least set the group options so that the

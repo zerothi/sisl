@@ -423,18 +423,26 @@ class BandsPlot(Plot):
         return bands_wrapper, all_vars, coords_values
 
     @entry_point('wfsx file', 2)
-    def _read_from_wfsx(self, root_fdf, wfsx_file, extra_vars=()):
+    def _read_from_wfsx(self, root_fdf, wfsx_file, extra_vars=(), need_H=False):
         """Plots bands from the eigenvalues contained in a WFSX file.
 
         It also needs to get a geometry.
         """
-        # Get the fdf sile
-        fdf = self.get_sile(root_fdf or "root_fdf")
-        # Read the geometry from the fdf sile
-        self.geometry = fdf.read_geometry(output=True)
+        if need_H:
+            self.setup_hamiltonian()
+            if self.H is None:
+                raise ValueError("Hamiltonian was not setup, and it is needed for the calculations")
+            parent = self.H
+            self.geometry = parent.geometry
+        else:
+            # Get the fdf sile
+            fdf = self.get_sile(root_fdf or "root_fdf")
+            # Read the geometry from the fdf sile
+            self.geometry = fdf.read_geometry(output=True)
+            parent = self.geometry
 
         # Get the wfsx file
-        wfsx_sile = self.get_sile(wfsx_file or "wfsx_file", parent=self.geometry)
+        wfsx_sile = self.get_sile(wfsx_file or "wfsx_file", parent=parent)
 
         # Now read all the information of the k points from the WFSX file
         k, weights, nwfs = wfsx_sile.read_info()

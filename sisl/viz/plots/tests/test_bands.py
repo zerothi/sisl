@@ -70,7 +70,7 @@ class TestBandsPlot(_TestPlot):
                 "tickvals": None,
                 "gap": 0.0575,
                 "spin_texture": False,
-                "spin": sisl.Spin("")
+                "spin": sisl.Spin("nc")
             }
 
         elif name.startswith("sisl_H"):
