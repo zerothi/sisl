@@ -13,6 +13,12 @@ select="E101,E20,E211,E231,E301,E302,E303,E304,E309,W291,W293,W391"
 select="$select,E711,E712"
 # Imports on single lines
 select="$select,E401"
+# trailing whitespace
+select="$select,C0303"
+# imports at top
+select="$select,C0413"
+# import order
+select="$select,C0411"
 
 # pretty print command select running
 echo "autopep8 --select \"$select\""

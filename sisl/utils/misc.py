@@ -311,8 +311,7 @@ def allow_kwargs(*args):
         arg_names = []
         kwargs_name = None
         for name, p in sig.parameters.items():
-            if p.kind == p.POSITIONAL_ONLY or p.kind == p.POSITIONAL_OR_KEYWORD \
-               or p.kind == p.KEYWORD_ONLY:
+            if p.kind in (p.POSITIONAL_ONLY, p.POSITIONAL_OR_KEYWORD, p.KEYWORD_ONLY):
                 arg_names.append(name)
             elif p.kind == p.VAR_KEYWORD:
                 kwargs_name = name

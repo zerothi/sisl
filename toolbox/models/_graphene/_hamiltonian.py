@@ -42,7 +42,7 @@ class Hancock2010Dispatch(ReferenceDispatch):
         U = 2.0
 
         R = tuple(distance(i, a)+da for i in range(4))
-        if set == 'A': 
+        if set == 'A':
             # same as simple
             t = (0, -2.7)
             U = 0.

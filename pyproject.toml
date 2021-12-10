@@ -166,6 +166,12 @@ markers = [
 
 addopts = "-rXs --durations=20"
 
+
+
+[tool.pylint]
+[tool.pylint.format]
+# Currently no formatting rules
+
 [tool.pylint.messages_control]
 max-line-length = 110
 
@@ -183,10 +189,7 @@ disable = [
   "too-few-public-methods",
 ]
 
-[tool.pylint]
 
-[tool.pylint.format]
-# Currently no formatting rules
 
 [tool.tox]
 
