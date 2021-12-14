@@ -56,6 +56,7 @@ class BandsBackend(Backend):
 
         if "spin" not in filtered_bands.coords:
             filtered_bands = filtered_bands.expand_dims("spin")
+
         # Now loop through all bands to draw them
         for ispin, spin_bands in enumerate(filtered_bands.transpose('spin', 'band', 'k')):
             line_style = line

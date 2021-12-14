@@ -1,7 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from abc import abstractmethod
+import numpy as np
+
 from .bands import BandsBackend
 
 from ....plots import FatbandsPlot
@@ -15,7 +16,7 @@ class FatbandsBackend(BandsBackend):
             for weight_request in weight_requests:
                 Call `self.draw_group_weights`, which loops through all the bands to be drawn:
                 for band in bands:
-                    `self._draw_band_weights`, MUST BE IMPLEMENTED!
+                    `self._draw_band_weights`
         Then it just calls the `draw` method of `BandsBackend`, which takes care of the rest. See
         the documentation of `BandsBackend` to understand the rest of the workflow.
 
@@ -62,8 +63,14 @@ class FatbandsBackend(BandsBackend):
         if "spin" not in bands.coords:
             bands = bands.expand_dims("spin")
 
+        # Find where the discontinuities are
+        self._discontinuities = np.where(np.isnan(x))[0]
+
+        # Loop over spin
         for ispin, spin_weights in enumerate(weights.transpose("spin", "band", "k")):
+            # Loop over bands
             for i, band_weights in enumerate(spin_weights):
+                # For each band, draw the fatband
                 band_values = bands.sel(band=band_weights.band, spin=ispin)
 
                 self._draw_band_weights(
@@ -72,11 +79,11 @@ class FatbandsBackend(BandsBackend):
                     is_group_first=i==0 and ispin == 0
                 )
 
-    @abstractmethod
     def _draw_band_weights(self, x, y, weights, color, name, is_group_first):
-        """Implement this method to draw a fatband.
+        """Default implementation to draw a fatband.
 
-        This method should not draw the band itself, just the weight.
+        It uses a scatter plot, where the size of each scatter point is proportional
+        to the weight.
 
         Parameters
         -----------
@@ -94,5 +101,34 @@ class FatbandsBackend(BandsBackend):
             Whether this is the first fatband plotted for a given request. This might
             be useful for grouping items drawn, for example.
         """
+        size = weights
+        size[np.isnan(size)] = 0
+        self.draw_scatter(x, y, name=name, marker={"color": color, "size": weights})
+
+    def _yield_band_chunks(self, *arrays):
+        """For backends that can not handle fatbands discontinuities
+        out of the box, this method can be used to yield continuous chunks
+        to be drawn.
+
+        Parameters
+        -----------
+        *arrays:
+            All the arrays that must be divided into chunks.
+            They must all have the same datatype.
+
+        Yields
+        -----------
+        np.ndarray of shape (chunk_nk, n_arrays)
+            A continous chunk of data of the potentially discontinuous band.
+        """
+        # If there are discontinuities, we need to split
+        chunks = np.split(np.array([*arrays]).T, self._discontinuities)
+
+        for i_chunk, chunk in enumerate(chunks):
+            # Chunks other than the first one begin with np.nan (which was the signal for a discontinuity)
+            if i_chunk > 0:
+                chunk = chunk[1:]
+
+            yield chunk.T
 
 FatbandsPlot.backends.register_template(FatbandsBackend)

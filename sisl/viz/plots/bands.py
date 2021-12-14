@@ -555,7 +555,7 @@ class BandsPlot(Plot):
 
         # Get the wrapper function that we should call on each eigenstate.
         # This also returns the coordinates and names to build the final dataset.
-        bands_wrapper, all_vars, coords_values = self._get_eigenstate_wrapper(
+        bands_wrapper, all_vars, coords_values= self._get_eigenstate_wrapper(
             band_structure.lineark(), extra_vars=extra_vars
         )
 
@@ -581,6 +581,28 @@ class BandsPlot(Plot):
 
         # Merge everything into a single dataset with a spin dimension
         self.bands_data = xr.concat(spin_datasets, "spin").assign_coords(coords_values)
+
+        # If the band structure contains discontinuities, we will copy the dataset
+        # adding the discontinuities.
+        if len(band_structure._jump_idx) > 0:
+
+            old_coords = self.bands_data.coords
+            coords = {
+                name: band_structure.insert_jump(old_coords[name]) if name == "k" else old_coords[name].values
+                for name in old_coords
+            }
+
+            def _add_jump(array):
+                if "k" in array.coords:
+                    array = array.transpose("k", ...)
+                    return (array.dims, band_structure.insert_jump(array))
+                else:
+                    return array
+
+            self.bands_data = xr.Dataset(
+                {name: _add_jump(self.bands_data[name]) for name in self.bands_data},
+                coords=coords
+            )
 
         # Inform of where to place the ticks
         self.bands_data.attrs = {"ticks": self.ticks[0], "ticklabels": self.ticks[1], **spin_datasets[0].attrs}
@@ -621,25 +643,28 @@ class BandsPlot(Plot):
 
         # Shift all the bands to the reference
         filtered_bands = self.bands - E0
+        continous_bands = filtered_bands.dropna("k", how="all")
 
         # Get the bands that matter for the plot
         if Erange is None:
 
             if bands_range is None:
             # If neither E range or bands_range was provided, we will just plot the 15 bands below and above the fermi level
-                CB = int(filtered_bands.where(filtered_bands <= 0).argmax('band').max())
-                bands_range = [int(max(filtered_bands["band"].min(), CB - 15)), int(min(filtered_bands["band"].max() + 1, CB + 16))]
+                CB = int(continous_bands.where(continous_bands <= 0).argmax('band').max())
+                bands_range = [int(max(continous_bands["band"].min(), CB - 15)), int(min(continous_bands["band"].max() + 1, CB + 16))]
 
             i_bands = np.arange(*bands_range)
             filtered_bands = filtered_bands.where(filtered_bands.band.isin(i_bands), drop=True)
+            continous_bands = filtered_bands.dropna("k", how="all")
             self.update_settings(
                 run_updates=False,
-                Erange=np.array([float(f'{val:.3f}') for val in [float(filtered_bands.min() - 0.01), float(filtered_bands.max() + 0.01)]]),
+                Erange=np.array([float(f'{val:.3f}') for val in [float(continous_bands.min() - 0.01), float(continous_bands.max() + 0.01)]]),
                 bands_range=bands_range, no_log=True)
         else:
             Erange = np.array(Erange)
             filtered_bands = filtered_bands.where((filtered_bands <= Erange[1]) & (filtered_bands >= Erange[0])).dropna("band", "all")
-            self.update_settings(run_updates=False, bands_range=[int(filtered_bands['band'].min()), int(filtered_bands['band'].max())], no_log=True)
+            continous_bands = filtered_bands.dropna("k", how="all")
+            self.update_settings(run_updates=False, bands_range=[int(continous_bands['band'].min()), int(continous_bands['band'].max())], no_log=True)
 
         # Give the filtered bands the same attributes as the full bands
         filtered_bands.attrs = self.bands_data.attrs
@@ -825,7 +850,7 @@ class BandsPlot(Plot):
 
         VB, CB = self.gap_info["bands"]
         spin_bands = self.bands.sel(spin=gap_spin) if "spin" in self.bands.coords else self.bands
-        Es = [spin_bands.sel(k=k, band=band, method="nearest") for k, band in zip(ks, (VB, CB))]
+        Es = [spin_bands.dropna("k", "all").sel(k=k, band=band, method="nearest") for k, band in zip(ks, (VB, CB))]
         # Get the real values of ks that have been obtained
         # because we might not have exactly the ks requested
         ks = [np.ravel(E.k)[0] for E in Es]

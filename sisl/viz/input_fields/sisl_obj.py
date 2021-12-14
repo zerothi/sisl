@@ -9,7 +9,7 @@ from sisl import BaseSile
 from sisl.physics import distribution
 
 from .._input_field import InputField
-from .basic import FloatInput, IntegerInput, OptionsInput, TextInput, DictInput
+from .basic import FloatInput, IntegerInput, OptionsInput, TextInput, DictInput, BoolInput
 
 from .file import FilePathInput
 from .queries import QueriesInput
@@ -125,7 +125,15 @@ class BandStructureInput(QueriesInput, SislObjectInput):
                     "placeholder": "Name..."
                 },
                 help = "Tick that should be displayed at this corner of the path."
-            )
+            ),
+
+            BoolInput(
+                key="jump", name="Jump",
+                default=False,
+                help="""If True, this point just signals a discontinuity and the rest
+                of inputs for this point will be ignored.
+                """
+            ),
         ]
 
         super().__init__(*args, **kwargs)
@@ -136,14 +144,28 @@ class BandStructureInput(QueriesInput, SislObjectInput):
             # Use only those points that are active.
             val = [point for point in val if point.get("active", True)]
 
-            val = sisl.BandStructure(
-                None,
-                points=[[
-                    point.get("x", None) or 0, point.get("y", None) or 0, point.get("z", None) or 0
-                ] for point in val],
-                divisions=[int(point["divisions"]) for point in val[1:]],
-                names=[point.get("name", '') for point in val]
-            )
+            points = []
+            divisions = []
+            names = []
+            # Loop over all points and construct the inputs for BandStructure
+            for i_point, point in enumerate(val):
+                if point.get("jump") is True:
+                    # This is a discontinuity
+                    points.append(None)
+                    if i_point > 0:
+                        divisions.append(1)
+                else:
+                    # This is an actual point in the band structure.
+                    points.append(
+                        [point.get("x", None) or 0, point.get("y", None) or 0, point.get("z", None) or 0]
+                    )
+                    names.append(point.get("name", ""))
+                    if i_point > 0:
+                        divisions.append(int(point["divisions"]))
+
+            print(points, divisions, names)
+
+            val = sisl.BandStructure(None, points=points, divisions=divisions, names=names)
 
         return val
 
