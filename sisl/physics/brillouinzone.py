@@ -223,7 +223,7 @@ def linspace_bz(bz, stop=None, jumps=None, jump_dk=0.05):
     else:
         cart = bz
     # calculate vectors between each neighbouring points
-    dcart = np.diff(cart, axis=0, prepend=[[0, 0, 0]])
+    dcart = np.diff(cart, axis=0, prepend=cart[0].reshape(1, -1))
     # calculate distances
     dist = (dcart ** 2).sum(1) ** 0.5
 
