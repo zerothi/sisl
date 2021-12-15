@@ -62,6 +62,7 @@ def setup():
     return t()
 
 
+@pytest.mark.physics
 @pytest.mark.density_matrix
 @pytest.mark.energydensity_matrix
 class TestEnergyDensityMatrix:

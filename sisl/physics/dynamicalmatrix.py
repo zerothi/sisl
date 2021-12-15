@@ -5,7 +5,7 @@ import numpy as np
 from scipy.sparse import lil_matrix
 
 from sisl._internal import set_module
-from ..messages import deprecate_method
+from sisl.messages import deprecate_method
 from .sparse import SparseOrbitalBZ
 from .phonon import EigenvaluePhonon, EigenmodePhonon
 
@@ -346,15 +346,15 @@ class DynamicalMatrix(SparseOrbitalBZ):
                 fh.write_dynamical_matrix(self, *args, **kwargs)
 
     @deprecate_method("use DynamicalMatrix.eigenstate(...).velocity() instead", "0.13.0")
-    def velocity(self, k=(0, 0, 0), project=False, **kwargs):
+    def velocity(self, k=(0, 0, 0), matrix=False, **kwargs):
         r""" Calculate the velocity for the eigenmodes for a given `k` point
 
         Parameters
         ----------
         k : array_like, optional
             k-point at which the velocities are calculated
-        project : {}
-            see `sisl.physics.phonon.velocity` for details and possible arguments
+        matrix : bool, optional
+            see `EigenmodePhonon.velocity` for details
         **kwargs : optional
             additional parameters passed to the `eigenmode` routine
 
@@ -364,7 +364,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
         displacement : Calculate mode displacements
         EigenmodePhonon.velocity : Underlying method used to calculate the velocity
         """
-        return self.eigenmode(k, **kwargs).velocity(project=project)
+        return self.eigenmode(k, **kwargs).velocity(matrix=matrix)
 
     @deprecate_method("use DynamicalMatrix.eigenstate(...).displacement() instead", "0.13.0")
     def displacement(self, k=(0, 0, 0), **kwargs):

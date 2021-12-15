@@ -3,12 +3,13 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import pytest
 
-pytestmark = pytest.mark.spin
-
 import math as m
 import numpy as np
 
 from sisl import Spin
+
+
+pytestmark = [pytest.mark.physics, pytest.mark.spin]
 
 
 def test_spin1():

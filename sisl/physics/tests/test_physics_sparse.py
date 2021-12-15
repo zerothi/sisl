@@ -9,7 +9,7 @@ import numpy as np
 from sisl import geom, Atom, Geometry, Spin, SislWarning
 from sisl.physics.sparse import SparseOrbitalBZ, SparseOrbitalBZSpin
 
-pytestmark = pytest.mark.sparse
+pytestmark = [pytest.mark.physics, pytest.mark.sparse]
 
 
 def _get():

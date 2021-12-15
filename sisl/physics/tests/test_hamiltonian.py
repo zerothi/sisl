@@ -16,7 +16,8 @@ from sisl import Grid, SphericalOrbital, SislError
 from sisl.physics.electron import berry_phase, spin_squared, conductivity
 
 
-pytestmark = [pytest.mark.hamiltonian, pytest.mark.filterwarnings("ignore", category=SparseEfficiencyWarning)]
+pytestmark = [pytest.mark.physics, pytest.mark.hamiltonian,
+              pytest.mark.filterwarnings("ignore", category=SparseEfficiencyWarning)]
 
 
 @pytest.fixture
@@ -51,7 +52,6 @@ def _to_voight(m):
     return m[:, idx1, idx2]
 
 
-@pytest.mark.hamiltonian
 class TestHamiltonian:
 
     def test_objects(self, setup):
@@ -734,6 +734,12 @@ class TestHamiltonian:
         H.construct((R, param))
 
         k = [0.1] * 3
+        # This is a degenerate eigenstate:
+        #  2, 2, 4, 4, 2, 2
+        # and hence a decoupling is necessary
+        # This test is the reason why a default degenerate=1e-5 is used
+        # since the gauge='R' yields the correct *decoupled* states
+        # where as gauge='r' mixes them in a bad way.
         es1 = H.eigenstate(k, gauge='R')
         es2 = H.eigenstate(k, gauge='r')
         assert np.allclose(es1.velocity(), es2.velocity())
@@ -749,15 +755,34 @@ class TestHamiltonian:
         assert np.allclose(v1, v2)
 
         # Projected velocity
-        pv1 = es1.velocity(project=True)
-        pv2 = es2.velocity(project=True)
-        assert np.allclose(pv1.sum(1), v2)
-        assert np.allclose(pv2.sum(1), v1)
-        # since degenerate states *could* swap states
-        # we can't for sure compare states
-        # This test is one of those cases
-        # hence the below is disabled
-        #assert np.allclose(pv1, pv2)
+        vv1 = es1.velocity(matrix=True)
+        vv2 = es2.velocity(matrix=True)
+        assert np.allclose(np.diagonal(vv1).T, v2)
+        assert np.allclose(np.diagonal(vv2).T, v1)
+
+    def test_derivative_orthogonal(self, setup):
+        R, param = [0.1, 1.5], [1., 0.1]
+        g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
+        H = Hamiltonian(g)
+        H.construct((R, param))
+
+        k = [0.1] * 3
+        es = H.eigenstate()
+        v1, vv1 = es.derivative(2)
+        v = es.derivative(1)
+        assert np.allclose(v1, v)
+
+    def test_derivative_non_orthogonal(self, setup):
+        R, param = [0.1, 1.5], [(1., 1.), (0.1, 0.1)]
+        g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
+        H = Hamiltonian(g, orthogonal=False)
+        H.construct((R, param))
+
+        k = [0.1] * 3
+        es = H.eigenstate()
+        v1, vv1 = es.derivative(2)
+        v = es.derivative(1)
+        assert np.allclose(v1, v)
 
     def test_berry_phase(self, setup):
         R, param = [0.1, 1.5], [1., 0.1]
@@ -964,8 +989,8 @@ class TestHamiltonian:
         E = np.linspace(-4, 4, 1000)
         for k in ([0] *3, [0.2] * 3):
             es = H.eigenstate(k)
-            v = es.velocity_matrix()
-            vsub = es.sub([0, 1]).velocity_matrix()
+            v = es.velocity(matrix=True)
+            vsub = es.sub([0, 1]).velocity(matrix=True)
             assert np.allclose(v[:2, :2, :], vsub)
 
     @pytest.mark.filterwarnings('ignore', category=np.ComplexWarning)
@@ -975,8 +1000,8 @@ class TestHamiltonian:
         E = np.linspace(-4, 4, 1000)
         for k in ([0] *3, [0.2] * 3):
             es = HS.eigenstate(k)
-            v = es.velocity_matrix()
-            vsub = es.sub([0, 1]).velocity_matrix()
+            v = es.velocity(matrix=True)
+            vsub = es.sub([0, 1]).velocity(matrix=True)
             assert np.allclose(v[:2, :2, :], vsub)
 
     def test_inv_eff_mass_tensor_orthogonal(self, setup):
@@ -1344,14 +1369,14 @@ class TestHamiltonian:
             PDOS = es.PDOS(np.linspace(-1, 1, 100))
             DOS = es.DOS(np.linspace(-1, 1, 100))
             assert np.allclose(PDOS.sum(1)[0, :], DOS)
-            es.velocity_matrix()
+            es.velocity(matrix=True)
             es.inv_eff_mass_tensor()
 
         # Check the velocities
         # But only compare for np.float64, we need the precision
         v = es.velocity()
-        pv = es.velocity(project=True)
-        assert np.allclose(pv.sum(1), v)
+        vv = es.velocity(matrix=True)
+        assert np.allclose(np.diagonal(vv).T, v)
 
         # Ensure we can change gauge for NC stuff
         es.change_gauge('R')
@@ -1408,14 +1433,14 @@ class TestHamiltonian:
             PDOS = es.PDOS(np.linspace(-1, 1, 100))
             DOS = es.DOS(np.linspace(-1, 1, 100))
             assert np.allclose(PDOS.sum(1)[0, :], DOS)
-            es.velocity_matrix()
+            es.velocity(matrix=True)
             es.inv_eff_mass_tensor()
 
         # Check the velocities
         # But only compare for np.float64, we need the precision
         v = es.velocity()
-        pv = es.velocity(project=True)
-        assert np.allclose(pv.sum(1), v)
+        vv = es.velocity(matrix=True)
+        assert np.allclose(np.diagonal(vv).T, v)
 
         # Ensure we can change gauge for NC stuff
         es.change_gauge('R')
@@ -1485,14 +1510,14 @@ class TestHamiltonian:
             PDOS = es.PDOS(np.linspace(-1, 1, 100))
             DOS = es.DOS(np.linspace(-1, 1, 100))
             assert np.allclose(PDOS.sum(1)[0, :], DOS)
-            es.velocity_matrix()
+            es.velocity(matrix=True)
             es.inv_eff_mass_tensor()
 
         # Check the velocities
         # But only compare for np.float64, we need the precision
         v = es.velocity()
-        pv = es.velocity(project=True)
-        assert np.allclose(pv.sum(1), v)
+        vv = es.velocity(matrix=True)
+        assert np.allclose(np.diagonal(vv).T, v)
 
         # Ensure we can change gauge for SO stuff
         es.change_gauge('R')

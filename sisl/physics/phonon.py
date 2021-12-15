@@ -37,6 +37,7 @@ from numpy import conj, dot, fabs, exp, einsum
 from numpy import delete
 
 from sisl._internal import set_module
+from sisl.messages import deprecate_method
 import sisl._array as _a
 from sisl import units, constant
 from sisl._help import dtype_complex_to_real
@@ -130,6 +131,7 @@ def PDOS(E, mode, hw, distribution='gaussian'):
 
 
 @set_module("sisl.physics.phonon")
+@deprecate_method("use DynamicalMatrix.eigenstate(...).velocity() instead", "0.13.0")
 def velocity(mode, hw, dDk, degenerate=None, degenerate_dir=(1, 1, 1), project=False):
     r""" Calculate the velocity of a set of modes
 
@@ -303,39 +305,32 @@ class ModeCPhonon(_phonon_Mode, StateC):
     """ A mode describing a physical quantity related to phonons, with associated coefficients of the mode """
     __slots__ = []
 
-    def velocity(self, eps=1e-7, degenerate_dir=(1, 1, 1), project=False):
-        r""" Calculate velocity for the modes
+    def velocity(self, *args, **kwargs):
+        r""" Calculate velocity of the modes
 
-        This routine calls `~sisl.physics.phonon.velocity` with appropriate arguments
+        This routine calls `derivative` with appropriate arguments (1st order derivative)
         and returns the velocity for the modes.
 
         Note that the coefficients associated with the `ModeCPhonon` *must* correspond
         to the energies of the modes.
 
-        See `~sisl.physics.phonon.velocity` for details.
+        See `derivative` for details and possible arguments. One cannot pass the ``order`` argument
+        as that is fixed to ``1`` in this call.
 
         Notes
         -----
-        The eigenvectors for the modes *may* have changed after calling this routine.
+        The states and energies for the modes *may* have changed after calling this routine.
         This is because of the velocity un-folding for degenerate modes. I.e. calling
         `displacement` and/or `PDOS` after this method *may* change the result.
 
-        Parameters
-        ----------
-        eps : float, optional
-           precision used to find degenerate modes.
-        degenerate_dir: (3,), optional
-           which direction is used to decouple the degenerate states.
-        project: bool, optional
-           whether to return projected velocities (per direction), see `velocity` for details
+        See Also
+        --------
+        derivative : for details of the implementation
         """
-        opt = {'k': self.info.get('k', (0, 0, 0))}
-        gauge = self.info.get('gauge', None)
-        if not gauge is None:
-            opt['gauge'] = gauge
-
-        deg = self.degenerate(eps)
-        return velocity(self.mode, self.hw, self.parent.dDk(**opt), degenerate=deg, degenerate_dir=degenerate_dir, project=project)
+        d = self.derivative(1, *args, **kwargs).real
+        axes = tuple(i for i in range(1, d.ndim))
+        c = np.expand_dims(self.c, axis=axes) * 2 / _velocity_const
+        return np.divide(d, c, where=(c != 0))
 
 
 @set_module("sisl.physics.phonon")

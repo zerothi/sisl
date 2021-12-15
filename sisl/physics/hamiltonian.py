@@ -407,24 +407,24 @@ class Hamiltonian(SparseOrbitalBZSpin):
         return spin_squared(es_alpha.state, es_beta.state, es_alpha.Sk())
 
     @deprecate_method("use Hamiltonian.eigenstate(...).velocity() instead", "0.13.0")
-    def velocity(self, k=(0, 0, 0), project=False, **kwargs):
+    def velocity(self, k=(0, 0, 0), matrix=False, **kwargs):
         r""" Calculate the velocity for the eigenstates for a given `k` point
 
         Parameters
         ----------
         k : array_like, optional
             k-point at which the velocities are calculated
-        project : {}
-            see `sisl.physics.electron.velocity` for details and possible arguments
+        matrix : bool, optional
+            see `EigenstateElectron.velocity` for details and possible arguments
         **kwargs : optional
             additional parameters passed to the `eigenstate` routine
 
         See Also
         --------
         eigenstate : method used to calculate the eigenstates
-        EigenvalueElectron.velocity : Underlying method used to calculate the velocity
+        EigenstateElectron.velocity : Underlying method used to calculate the velocity
         """
-        return self.eigenstate(k, **kwargs).velocity(project=project)
+        return self.eigenstate(k, **kwargs).velocity(matrix=matrix)
 
     @deprecate_method("use Hamiltonian.eigenstate(...).spin_moment() instead", "0.13.0")
     def spin_moment(self, k=(0, 0, 0), project=False, **kwargs):

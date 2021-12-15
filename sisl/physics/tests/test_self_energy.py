@@ -14,7 +14,8 @@ from sisl import SelfEnergy, WideBandSE, SemiInfinite, RecursiveSI
 from sisl import RealSpaceSE, RealSpaceSI
 
 
-pytestmark = [pytest.mark.self_energy, pytest.mark.filterwarnings("ignore", category=SparseEfficiencyWarning)]
+pytestmark = [pytest.mark.physics, pytest.mark.self_energy,
+              pytest.mark.filterwarnings("ignore", category=SparseEfficiencyWarning)]
 
 
 @pytest.fixture

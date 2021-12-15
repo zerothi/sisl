@@ -7,7 +7,7 @@ import numpy as np
 
 from sisl import Atom, geom, Hamiltonian, Bloch
 
-pytestmark = pytest.mark.bloch
+pytestmark = [pytest.mark.physics, pytest.mark.bloch]
 
 
 def get_H():

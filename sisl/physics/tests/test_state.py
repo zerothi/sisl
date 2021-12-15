@@ -6,7 +6,7 @@ import numpy as np
 
 from sisl import geom, Coefficient, State, StateC
 
-pytestmark = pytest.mark.state
+pytestmark = [pytest.mark.physics, pytest.mark.state]
 
 
 def ar(*args):

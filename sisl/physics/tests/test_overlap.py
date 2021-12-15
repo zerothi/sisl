@@ -10,7 +10,7 @@ from sisl import Grid, Spin
 from sisl.physics.overlap import Overlap
 
 
-pytestmark = pytest.mark.overlap
+pytestmark = [pytest.mark.physics, pytest.mark.overlap]
 
 
 @pytest.fixture

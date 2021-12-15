@@ -66,7 +66,7 @@ from sisl._math_small import xyz_to_spherical_cos_phi
 import sisl._array as _a
 from sisl.linalg import svd_destroy, eigvals_destroy
 from sisl.linalg import eigh, det_destroy
-from sisl.messages import info, warn, SislError, progressbar
+from sisl.messages import info, warn, SislError, progressbar, deprecate_method
 from sisl._help import dtype_complex_to_real, dtype_real_to_complex
 from .distribution import get_distribution
 from .spin import Spin
@@ -1792,100 +1792,29 @@ class StateCElectron(_electron_State, StateC):
     r""" A state describing a physical quantity related to electrons, with associated coefficients of the state """
     __slots__ = []
 
-    def derivative(self, *args, **kwargs):
-        """ Calculate the derivative of the state vectors.
-
-        This is formally the same as the velocity calculation without the prefactor 1/hbar
-
-        See `velocity` for arguments and details.
-        """
-        return self.velocity(*args, **kwargs) / _velocity_const
-
-    def velocity(self, eps=1e-4, degenerate_dir=(1, 1, 1), project=False):
+    def velocity(self, *args, **kwargs):
         r""" Calculate velocity for the states
 
-        This routine calls `~sisl.physics.electron.velocity` with appropriate arguments
-        and returns the velocity for the states. I.e. for non-orthogonal basis the overlap
-        matrix and energy values are also passed.
+        This routine calls `derivative` with appropriate arguments (1st order derivative)
+        and returns the velocity for the states.
 
         Note that the coefficients associated with the `StateCElectron` *must* correspond
         to the energies of the states.
 
-        See `~sisl.physics.electron.velocity` for details.
+        See `derivative` for details and possible arguments. One cannot pass the ``order`` argument
+        as that is fixed to ``1`` in this call.
 
-        Parameters
-        ----------
-        eps : float, optional
-           precision used to find degenerate states.
-        degenerate_dir: (3,), optional
-           which direction is used to decouple the degenerate states.
-        project : bool, optional
-           whether to return projected velocities (per orbital), see `velocity` for details
+        Notes
+        -----
+        The states and energies for the states *may* have changed after calling this routine.
+        This is because of the velocity un-folding for degenerate modes. I.e. calling
+        `displacement` and/or `PDOS` after this method *may* change the result.
 
         See Also
         --------
-        velocity : for an explanation of the projections in case of `project` being True
+        derivative : for details of the implementation
         """
-        try:
-            opt = {'k': self.info.get('k', (0, 0, 0)), "dtype": self.dtype}
-            for key in ("gauge", "format"):
-                val = self.info.get(key, None)
-                if not val is None:
-                    opt[key] = val
-
-            # Get dSk before spin
-            if self.parent.orthogonal:
-                dSk = None
-            else:
-                dSk = self.parent.dSk(**opt)
-
-            if "spin" in self.info:
-                opt["spin"] = self.info["spin"]
-            deg = self.degenerate(eps)
-        except:
-            raise SislError(f"{self.__class__.__name__}.velocity requires the parent to have a spin associated.")
-        return velocity(self.state, self.parent.dHk(**opt), self.c, dSk,
-                        degenerate=deg, degenerate_dir=degenerate_dir, project=project)
-
-    def velocity_matrix(self, eps=1e-4, degenerate_dir=(1, 1, 1)):
-        r""" Calculate velocity matrix for the states
-
-        This routine calls `~sisl.physics.electron.velocity_matrix` with appropriate arguments
-        and returns the velocity for the states. I.e. for non-orthogonal basis the overlap
-        matrix and energy values are also passed.
-
-        Note that the coefficients associated with the `StateCElectron` *must* correspond
-        to the energies of the states.
-
-        See `~sisl.physics.electron.velocity_matrix` for details.
-
-        Parameters
-        ----------
-        eps : float, optional
-           precision used to find degenerate states.
-        degenerate_dir: (3,), optional
-           which direction is used to decouple the degenerate states.
-        """
-        try:
-            opt = {'k': self.info.get('k', (0, 0, 0)), "dtype": self.dtype}
-            for key in ("gauge", "format"):
-                val = self.info.get(key, None)
-                if not val is None:
-                    opt[key] = val
-
-            # Get dSk before spin
-            if self.parent.orthogonal:
-                dSk = None
-            else:
-                dSk = self.parent.dSk(**opt)
-
-            if "spin" in self.info:
-                opt["spin"] = self.info["spin"]
-            deg = self.degenerate(eps)
-        except:
-            raise SislError(f"{self.__class__.__name__}.velocity_matrix requires the parent to have a spin associated.")
-        return velocity_matrix(self.state, self.parent.dHk(**opt), self.c, dSk,
-                               degenerate=deg, degenerate_dir=degenerate_dir)
+        return self.derivative(1, *args, **kwargs).real * _velocity_const
 
     def berry_curvature(self, complex=False, eps=1e-4, degenerate_dir=(1, 1, 1)):
         r""" Calculate Berry curvature for the states

@@ -202,7 +202,7 @@ def pytest_configure(config):
                  'state', 'electron', 'phonon', 'utils', 'unit', 'distribution',
                  'spin', 'self_energy', 'help', 'messages', 'namedindex', 'sparse',
                  'supercell', 'sc', 'quaternion', 'sparse_geometry', 'sparse_orbital',
-                 'ranges',
+                 'ranges', 'physics',
                  'orbital', 'oplist', 'grid', 'atoms', 'atom', 'sgrid', 'sdata', 'sgeom',
                  'version', 'bz', 'brillouinzone', 'inv', 'eig', 'linalg',
                  'density_matrix', 'dynamicalmatrix', 'energydensity_matrix',

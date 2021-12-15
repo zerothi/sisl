@@ -22,6 +22,7 @@ def setup():
     return t()
 
 
+@pytest.mark.physics
 @pytest.mark.brillouinzone
 @pytest.mark.bz
 class TestBrillouinZone:

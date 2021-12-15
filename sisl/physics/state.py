@@ -1,10 +1,12 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from numbers import Real
 import numpy as np
 from numpy import einsum, exp
 from numpy import ndarray, bool_
 
+from sisl._help import dtype_real_to_complex
 from sisl._internal import set_module, singledispatchmethod
 from sisl.linalg import eigh_destroy
 import sisl._array as _a
@@ -1054,6 +1056,297 @@ class StateC(State):
         else:
             idx = np.argsort(-self.c)
         return self.sub(idx)
+
+    def derivative(self, order=1, degenerate=1e-5, degenerate_dir=(1, 1, 1), matrix=False):
+        r""" Calculate the derivative with respect to :math:`\mathbf k` for a set of states up to a given order
+
+        These are calculated using the analytic expression (:math:`\alpha` corresponding to the Cartesian directions),
+        here only shown for the 1st order derivative:
+
+        .. math::
+
+           \mathbf{d}_{i\alpha} = \langle \psi_i |
+                    \frac{\partial}{\partial\mathbf k}_\alpha \mathbf H(\mathbf k) | \psi_i \rangle
+
+        In case of non-orthogonal basis the equations substitutes :math:`\mathbf H(\mathbf k)` by
+        :math:`\mathbf H(\mathbf k) - \epsilon_i\mathbf S(\mathbf k)`.
+
+        The derivatives calculated are without the Berry curvature contributions.
+
+        Parameters
+        ----------
+        order : {1, 2}
+           an integer specifying which order of the derivative is being calculated.
+        degenerate : list of array_like or float, optional
+           a list containing the indices of degenerate states. In that case a prior diagonalization
+           is required to decouple them. See `degenerate_dir` for the sum of directions.
+           If a float is passed it is regarded as the degeneracy tolerance used to calculate the degeneracy
+           levels. Defaults to 1e-5 eV.
+        degenerate_dir : (3,), optional
+           a direction used for degenerate decoupling. The decoupling based on the velocity along this direction
+        project : bool, optional
+           whether the derivatives will be returned projected per orbital
+
+        See Also
+        --------
+        Hamiltonian.dHk : function for generating the Hamiltonian derivatives (`dHk` argument)
+        Hamiltonian.dSk : function for generating the Hamiltonian derivatives (`dSk` argument)
+        velocity : equivalent to this, with a factor of :math:`1/\hbar` to unify units
+
+        Returns
+        -------
+        numpy.ndarray
+            if `project` is false, derivatives per state with final dimension ``(state.shape[0], 3)``, the unit is Ang*eV
+        numpy.ndarray
+            if `project` is true, derivatives per state with final dimension ``(state.shape[0], state.shape[1], 3)``, the unit is Ang*eV
+        """
+        """to be filled """
+
+        # Figure out arguments
+        opt = {
+            "k": self.info.get("k", (0, 0, 0)),
+            "dtype": dtype_real_to_complex(self.dtype),
+        }
+
+        if degenerate is None:
+            pass
+        elif isinstance(degenerate, Real):
+            degenerate = self.degenerate(degenerate)
+
+        if order not in (1, 2):
+            raise NotImplementedError(f"{self.__class__.__name__}.derivative required order to be in this list: [1, 2], higher order derivatives are not implemented")
+
+        def add_keys(opt, *keys):
+            for key in keys:
+                # Store gauge, if present
+                val = self.info.get(key)
+                if val is not None:
+                    # this must mean the methods accepts this as an argument
+                    opt[key] = val
+
+        add_keys(opt, "gauge", "format")
+
+        # Initialize variables
+        ddPk = dSk = ddSk = None
+
+        # Figure out if we are dealing with a non-orthogonal basis set
+        is_orthogonal = True
+        try:
+            if not self.parent.orthogonal:
+                is_orthogonal = False
+                dSk = self.parent.dSk(**opt)
+                if order > 1:
+                    ddSk = self.parent.ddSk(**opt)
+        except: pass
+
+        # Now figure out if spin is a thing
+        add_keys(opt, "spin")
+        dPk = self.parent.dPk(**opt)
+        if order > 1:
+            ddPk = self.parent.ddPk(**opt)
+
+        # short-hand, everything will now be done *in-place* of this object
+        state = self.state
+        # in case the state is not an Eigenstate*
+        energy = self.c
+
+        # Now parse the degeneracy handling
+        if degenerate is not None:
+            # normalize direction
+            degenerate_dir = _a.asarrayd(degenerate_dir)
+            degenerate_dir /= (degenerate_dir ** 2).sum() ** 0.5
+
+            # de-coupling is only done for the 1st derivative
+
+            # create the degeneracy decoupling projector
+            deg_dPk = sum(d*dh for d, dh in zip(degenerate_dir, dPk))
+
+            if is_orthogonal:
+                for deg in degenerate:
+                    # Set the average energy
+                    energy[deg] = np.average(energy[deg])
+                    # Now diagonalize to find the contributions from individual states
+                    # then re-construct the seperated degenerate states
+                    # Since we do this for all directions we should decouple them all
+                    state[deg] = degenerate_decouple(state[deg], deg_dPk)
+            else:
+                for deg in degenerate:
+                    e = np.average(energy[deg])
+                    energy[deg] = e
+                    deg_dSk = sum((d*e)*ds for d, ds in zip(degenerate_dir, dSk))
+                    state[deg] = degenerate_decouple(state[deg], deg_dPk - deg_dSk)
+
+        # States have been decoupled and we can calculate things now
+        # number of states
+        nstate, lstate = state.shape
+        # we calculate the first derivative matrix
+        cstate = _conj(state)
+
+        # We split everything up into orthogonal and non-orthogonal
+        # This reduces if-checks
+        if is_orthogonal:
+
+            if matrix or order > 1:
+                # calculate the full matrix
+                v = np.empty((nstate, nstate, 3), dtype=opt["dtype"])
+                v[:, :, 0] = (cstate @ dPk[0].dot(state.T)).T
+                v[:, :, 1] = (cstate @ dPk[1].dot(state.T)).T
+                v[:, :, 2] = (cstate @ dPk[2].dot(state.T)).T
+
+                if matrix:
+                    ret = (v,)
+                else:
+                    # diagonal of nd removes axis0 and axis1 and appends a new
+                    # axis to the end, this is not what we want
+                    ret = (np.diagonal(v).T,)
+
+            else:
+                # calculate projections on states
+                v = np.empty((nstate, 3), dtype=opt["dtype"])
+                v[:, 0] = (cstate * dPk[0].dot(state.T).T).sum(1)
+                v[:, 1] = (cstate * dPk[1].dot(state.T).T).sum(1)
+                v[:, 2] = (cstate * dPk[2].dot(state.T).T).sum(1)
+
+                ret = (v,)
+
+            if order > 1:
+                # Now calculate the 2nd order corrections
+                # loop energies
+
+                if matrix:
+                    vv = np.empty((nstate, nstate, 6), dtype=opt["dtype"])
+                    for s, e in enumerate(energy):
+                        de = energy - e
+                        # add factor 2 here
+                        np.divide(2, de, where=(de != 0), out=de)
+
+                        # we will use this multiple times
+                        absv = np.absolute(v[s]).T
+
+                        # calculate 2nd derivative
+                        # xx
+                        vv[s, :, 0] = cstate @ ddPk[0].dot(state[s]) - de * absv[0] ** 2
+                        # yy
+                        vv[s, :, 1] = cstate @ ddPk[1].dot(state[s]) - de * absv[1] ** 2
+                        # zz
+                        vv[s, :, 2] = cstate @ ddPk[2].dot(state[s]) - de * absv[2] ** 2
+                        # yz
+                        vv[s, :, 3] = cstate @ ddPk[3].dot(state[s]) - de * absv[1] * absv[2]
+                        # xz
+                        vv[s, :, 4] = cstate @ ddPk[4].dot(state[s]) - de * absv[0] * absv[2]
+                        # xy
+                        vv[s, :, 5] = cstate @ ddPk[5].dot(state[s]) - de * absv[0] * absv[1]
+
+                else:
+                    vv = np.empty((nstate, 6), dtype=opt["dtype"])
+                    for s, e in enumerate(energy):
+                        de = energy - e
+                        # add factor 2 here
+                        np.divide(2, de, where=(de != 0), out=de)
+
+                        # we will use this multiple times, .T just for easier access
+                        absv = np.absolute(v[s]).T
+
+                        # calculate 2nd derivative
+                        # xx
+                        vv[s, 0] = cstate[s] @ ddPk[0].dot(state[s]) - de @ absv[0] ** 2
+                        # yy
+                        vv[s, 1] = cstate[s] @ ddPk[1].dot(state[s]) - de @ absv[1] ** 2
+                        # zz
+                        vv[s, 2] = cstate[s] @ ddPk[2].dot(state[s]) - de @ absv[2] ** 2
+                        # yz
+                        vv[s, 3] = cstate[s] @ ddPk[3].dot(state[s]) - de @ (absv[1] * absv[2])
+                        # xz
+                        vv[s, 4] = cstate[s] @ ddPk[4].dot(state[s]) - de @ (absv[0] * absv[2])
+                        # xy
+                        vv[s, 5] = cstate[s] @ ddPk[5].dot(state[s]) - de @ (absv[0] * absv[1])
+
+                ret += (vv,)
+        else:
+            # non-orthogonal basis set
+
+            if matrix or order > 1:
+                # calculate the full matrix
+                v = np.empty((nstate, nstate, 3), dtype=opt["dtype"])
+                for s, e in enumerate(energy):
+                    v[s, :, 0] = cstate @ (dPk[0] - e * dSk[0]).dot(state[s])
+                    v[s, :, 1] = cstate @ (dPk[1] - e * dSk[1]).dot(state[s])
+                    v[s, :, 2] = cstate @ (dPk[2] - e * dSk[2]).dot(state[s])
+
+                if matrix:
+                    ret = (v,)
+                else:
+                    # diagonal of nd removes axis0 and axis1 and appends a new
+                    # axis to the end, this is not what we want
+                    ret = (np.diagonal(v).T,)
+
+            else:
+                # calculate diagonal components on states
+                v = np.empty((nstate, 3), dtype=opt["dtype"])
+                for s, e in enumerate(energy):
+                    v[s, 0] = cstate[s] @ (dPk[0] - e * dSk[0]).dot(state[s])
+                    v[s, 1] = cstate[s] @ (dPk[1] - e * dSk[1]).dot(state[s])
+                    v[s, 2] = cstate[s] @ (dPk[2] - e * dSk[2]).dot(state[s])
+
+                ret = (v,)
+
+            if order > 1:
+                # Now calculate the 2nd order corrections
+                # loop energies
+
+                if matrix:
+                    vv = np.empty((nstate, nstate, 6), dtype=opt["dtype"])
+                    for s, e in enumerate(energy):
+                        de = energy - e
+                        # add factor 2 here
+                        np.divide(2, de, where=(de != 0), out=de)
+
+                        # we will use this multiple times:
+                        absv = np.absolute(v[s]).T
+
+                        # calculate 2nd derivative
+                        # xx
+                        vv[s, :, 0] = cstate @ (ddPk[0] - e * ddSk[0]).dot(state[s]) - de * absv[0] ** 2
+                        # yy
+                        vv[s, :, 1] = cstate @ (ddPk[1] - e * ddSk[1]).dot(state[s]) - de * absv[1] ** 2
+                        # zz
+                        vv[s, :, 2] = cstate @ (ddPk[2] - e * ddSk[2]).dot(state[s]) - de * absv[2] ** 2
+                        # yz
+                        vv[s, :, 3] = cstate @ (ddPk[3] - e * ddSk[3]).dot(state[s]) - de * absv[1] * absv[2]
+                        # xz
+                        vv[s, :, 4] = cstate @ (ddPk[4] - e * ddSk[4]).dot(state[s]) - de * absv[0] * absv[2]
+                        # xy
+                        vv[s, :, 5] = cstate @ (ddPk[5] - e * ddSk[5]).dot(state[s]) - de * absv[0] * absv[1]
+
+                else:
+                    vv = np.empty((nstate, 6), dtype=opt["dtype"])
+                    for s, e in enumerate(energy):
+                        de = energy - e
+                        # add factor 2 here
+                        np.divide(2, de, where=(de != 0), out=de)
+
+                        # we will use this multiple times:
+                        absv = np.absolute(v[s]).T
+
+                        # calculate 2nd derivative
+                        # xx
+                        vv[s, 0] = cstate[s] @ (ddPk[0] - e * ddSk[0]).dot(state[s]) - de @ absv[0] ** 2
+                        # yy
+                        vv[s, 1] = cstate[s] @ (ddPk[1] - e * ddSk[1]).dot(state[s]) - de @ absv[1] ** 2
+                        # zz
+                        vv[s, 2] = cstate[s] @ (ddPk[2] - e * ddSk[2]).dot(state[s]) - de @ absv[2] ** 2
+                        # yz
+                        vv[s, 3] = cstate[s] @ (ddPk[3] - e * ddSk[3]).dot(state[s]) - de @ (absv[1] * absv[2])
+                        # xz
+                        vv[s, 4] = cstate[s] @ (ddPk[4] - e * ddSk[4]).dot(state[s]) - de @ (absv[0] * absv[2])
+                        # xy
+                        vv[s, 5] = cstate[s] @ (ddPk[5] - e * ddSk[5]).dot(state[s]) - de @ (absv[0] * absv[1])
+
+                ret += (vv,)
+
+        if len(ret) == 1:
+            return ret[0]
+        return ret
 
     def degenerate(self, eps):
         """ Find degenerate coefficients with a specified precision

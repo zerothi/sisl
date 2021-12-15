@@ -8,7 +8,7 @@ import numpy as np
 
 from sisl.physics.distribution import *
 
-pytestmark = pytest.mark.distribution
+pytestmark = [pytest.mark.physics, pytest.mark.distribution]
 
 
 def test_distribution1():
