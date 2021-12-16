@@ -7,6 +7,8 @@ we hit release version 1.0.0.
 
 ## [Unreleased] - YYYY-MM-DD
 ### Added
+- State.derivative can now correctly calculate 1st and 2nd order derivatives #406
+- Default Zak-phase calculation uses average shifted geometry #410, #411
 - Enabled discontinuity jumps in band-structures (pass points as None)
 - COOP and COHP calculations for eigenstates
 - inverse participation ration calculations (with arbitrary q)
@@ -31,6 +33,7 @@ we hit release version 1.0.0.
 - atom indexing by shapes #337
 
 ### Fixed
+- BandStructure.lineark now always starts from 0
 - reading coordinates from siesta.out when bands are calculated #362
 - complex warning for spin_moment #360 and #363
 - partially fixed #102 (`wavefunction` for `fxyz` outside box, related to #365 and how origin is interpreted in the code
