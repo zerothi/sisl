@@ -187,7 +187,7 @@ class ListApply(IteratorApply):
     def dispatch(self, method):
         """ Dispatch the method by returning list of values """
         iter_func = super().dispatch(method, eta_key="list")
-        if self._attrs.get("unzip", False):
+        if self._attrs.get("zip", self._attrs.get("unzip", False)):
             @wraps(method)
             def func(*args, **kwargs):
                 return zip(*(v for v in iter_func(*args, **kwargs)))
@@ -206,7 +206,7 @@ class OpListApply(IteratorApply):
     def dispatch(self, method):
         """ Dispatch the method by returning oplist of values """
         iter_func = super().dispatch(method, eta_key="oplist")
-        if self._attrs.get("unzip", False):
+        if self._attrs.get("zip", self._attrs.get("unzip", False)):
             @wraps(method)
             def func(*args, **kwargs):
                 return oplist(zip(*(v for v in iter_func(*args, **kwargs))))
@@ -225,7 +225,7 @@ class NDArrayApply(BrillouinZoneParentApply):
     def dispatch(self, method, eta_key="ndarray"):
         """ Dispatch the method by one array """
         pool = _pool_procs(self._attrs.get("pool", None))
-        unzip = self._attrs.get("unzip", False)
+        unzip = self._attrs.get("zip", self._attrs.get("unzip", False))
 
         def _create_v(nk, v):
             out = np.empty((nk, *v.shape), dtype=v.dtype)
@@ -377,7 +377,7 @@ class XArrayApply(NDArrayApply):
             return coords, dims
 
         # Get data as array
-        if self._attrs.get("unzip", False):
+        if self._attrs.get("zip", self._attrs.get("unzip", False)):
             array_func = super().dispatch(method, eta_key="dataset")
 
             @wraps(method)
