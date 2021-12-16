@@ -299,7 +299,7 @@ class TestBrillouinZone:
         asdarray = bz_da.eigh(coords=['orb'])
         assert asdarray.dims == ('k', 'orb')
 
-    def test_as_dataarray_unzip(self):
+    def test_as_dataarray_zip(self):
         pytest.importorskip("xarray", reason="xarray not available")
 
         from sisl import geom, Hamiltonian
@@ -312,7 +312,7 @@ class TestBrillouinZone:
         def wrap(es):
             return es.eig, es.DOS(E), es.PDOS(E)
 
-        with bz.apply.renew(unzip=True) as unzip:
+        with bz.apply.renew(zip=True) as unzip:
             eig, DOS, PDOS = unzip.ndarray.eigenstate(wrap=wrap)
             ds0 = unzip.dataarray.eigenstate(wrap=wrap, name=["eig", "DOS", "PDOS"])
             # explicitly create dimensions
@@ -467,7 +467,7 @@ class TestBrillouinZone:
             return es.eig, es.DOS(E)
 
         eig0, DOS0 = zip(*bz.apply.list.eigenstate(wrap=wrap))
-        with bz.apply.renew(unzip=True) as k_unzip:
+        with bz.apply.renew(zip=True) as k_unzip:
             eig1, DOS1 = k_unzip.list.eigenstate(wrap=wrap)
             eig2, DOS2 = k_unzip.array.eigenstate(wrap=wrap)
 

@@ -570,7 +570,7 @@ class BandsPlot(Plot):
             if not self.spin.is_diagonal:
                 spin_kwarg = {}
 
-            with band_structure.apply(pool=_do_parallel_calc, unzip=True) as parallel:
+            with band_structure.apply(pool=_do_parallel_calc, zip=True) as parallel:
                 spin_bands = parallel.dataarray.eigenstate(
                     wrap=partial(bands_wrapper, spin_index=spin_index),
                     **spin_kwarg,
