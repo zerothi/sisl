@@ -46,12 +46,6 @@ def setup():
     return t()
 
 
-def _to_voight(m):
-    idx1 = [0, 1, 2, 1, 0, 0]
-    idx2 = [0, 1, 2, 2, 2, 1]
-    return m[:, idx1, idx2]
-
-
 class TestHamiltonian:
 
     def test_objects(self, setup):
@@ -890,21 +884,16 @@ class TestHamiltonian:
         cond = conductivity(mp)
 
     @pytest.mark.xfail(reason="Gauges make different decouplings")
-    def test_gauge_inv_eff(self, setup):
-        # This test fails because the de-coupling is currently 2021-05-21
-        # based on the sum of ddHk.
-        # Probably we should decouple based on dHk instead.
-        # Or preferably let the user decide decoupling.
+    def test_gauge_eff(self, setup):
+        # it is not fully clear to me why they are different
         R, param = [0.1, 1.5], [1., 0.1]
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
         H = Hamiltonian(g)
         H.construct((R, param))
 
         k = [0.1] * 3
-        ie1 = H.eigenstate(k, gauge='R').inv_eff_mass_tensor()
-        ie2 = H.eigenstate(k, gauge='r').inv_eff_mass_tensor()
-        str(ie1)
-        str(ie2)
+        ie1 = H.eigenstate(k, gauge='R').effective_mass()
+        ie2 = H.eigenstate(k, gauge='r').effective_mass()
         assert np.allclose(abs(ie1), abs(ie2))
 
     def test_eigenstate_polarized_orthogonal_sk(self, setup):
@@ -1003,30 +992,6 @@ class TestHamiltonian:
             v = es.velocity(matrix=True)
             vsub = es.sub([0, 1]).velocity(matrix=True)
             assert np.allclose(v[:2, :2, :], vsub)
-
-    def test_inv_eff_mass_tensor_orthogonal(self, setup):
-        H = setup.H.copy()
-        H.construct([(0.1, 1.5), ((1., 1.))])
-        E = np.linspace(-4, 4, 1000)
-        for k in ([0] *3, [0.2] * 3):
-            es = H.eigenstate(k)
-            v = es.inv_eff_mass_tensor()
-            vsub = es.sub([0]).inv_eff_mass_tensor()
-            assert np.allclose(v[0, :], vsub)
-            vsub = es.sub([0]).inv_eff_mass_tensor(True)
-            assert np.allclose(v[0, :], _to_voight(vsub))
-
-    def test_inv_eff_mass_tensor_nonorthogonal(self, setup):
-        HS = setup.HS.copy()
-        HS.construct([(0.1, 1.5), ((1., 1.), (0.1, 0.1))])
-        E = np.linspace(-4, 4, 1000)
-        for k in ([0] *3, [0.2] * 3):
-            es = HS.eigenstate(k)
-            v = es.inv_eff_mass_tensor()
-            vsub = es.sub([0]).inv_eff_mass_tensor()
-            assert np.allclose(v[0, :], vsub)
-            vsub = es.sub([0]).inv_eff_mass_tensor(True)
-            assert np.allclose(v[0, :], _to_voight(vsub))
 
     def test_dos1(self, setup):
         HS = setup.HS.copy()
@@ -1370,7 +1335,6 @@ class TestHamiltonian:
             DOS = es.DOS(np.linspace(-1, 1, 100))
             assert np.allclose(PDOS.sum(1)[0, :], DOS)
             es.velocity(matrix=True)
-            es.inv_eff_mass_tensor()
 
         # Check the velocities
         # But only compare for np.float64, we need the precision
@@ -1434,7 +1398,6 @@ class TestHamiltonian:
             DOS = es.DOS(np.linspace(-1, 1, 100))
             assert np.allclose(PDOS.sum(1)[0, :], DOS)
             es.velocity(matrix=True)
-            es.inv_eff_mass_tensor()
 
         # Check the velocities
         # But only compare for np.float64, we need the precision
@@ -1511,7 +1474,6 @@ class TestHamiltonian:
             DOS = es.DOS(np.linspace(-1, 1, 100))
             assert np.allclose(PDOS.sum(1)[0, :], DOS)
             es.velocity(matrix=True)
-            es.inv_eff_mass_tensor()
 
         # Check the velocities
         # But only compare for np.float64, we need the precision

@@ -77,7 +77,6 @@ from .state import degenerate_decouple, Coefficient, State, StateC, _FakeMatrix
 __all__ = ['DOS', 'PDOS', 'COP']
 __all__ += ['velocity', 'velocity_matrix']
 __all__ += ['spin_moment', 'spin_squared']
-__all__ += ['inv_eff_mass_tensor']
 __all__ += ['berry_phase', 'berry_curvature']
 __all__ += ['conductivity']
 __all__ += ['wavefunction']
@@ -944,162 +943,11 @@ def conductivity(bz, distribution='fermi-dirac', method='ahc', degenerate_dir=(1
             bc = es.berry_curvature(degenerate_dir=degenerate_dir, complex=complex)
             return einsum('i,ijl->jl', occ, bc)
 
-        cond = - bz.apply.average.eigenstate(wrap=_ahc) / constant.hbar('eV ps')
+        cond = - bz.apply.average.eigenstate(wrap=_ahc) * _velocity_const
     else:
         raise SislError("conductivity: requires the method to be [ahc]")
 
     return cond
-
-
-@set_module("sisl.physics.electron")
-def inv_eff_mass_tensor(state, ddHk, energy=None, ddSk=None, degenerate=None, as_matrix=False):
-    r""" Calculate the effective mass tensor for a set of states (missing off-diagonal terms)
-
-    These are calculated using the analytic expression (:math:`\alpha,\beta` corresponds to Cartesian directions):
-
-    .. math::
-
-        \mathbf M^{-1}_{i\alpha\beta} = \frac1{\hbar^2} \langle \psi_i |
-             \frac{\partial}{\partial\mathbf k}_\alpha\frac{\partial}{\partial\mathbf k}_\beta \mathbf H(\mathbf k)
-             | \psi_i \rangle
-
-    In case of non-orthogonal basis the equations substitutes :math:`\mathbf H(\mathbf k)` by
-    :math:`\mathbf H(\mathbf k) - \epsilon_i\mathbf S(\mathbf k)`.
-
-    The matrix :math:`\mathbf M` is known as the effective mass tensor, remark that this function returns the inverse
-    of :math:`\mathbf M`.
-
-    Currently this routine only returns the above quations, however, the inverse effective mass tensor
-    also has contributions from some off-diagonal elements, see [1]_.
-
-    Notes
-    -----
-    The reason for not inverting the mass-tensor is that for systems with limited
-    periodicities some of the diagonal elements of the inverse mass tensor matrix
-    will be 0, in which case the matrix is singular and non-invertible. Therefore
-    it is the users responsibility to remove any of the non-periodic elements from
-    the matrix before inverting.
-
-    Parameters
-    ----------
-    state : array_like
-       vectors describing the electronic states, 2nd dimension contains the states. In case of degenerate
-       states the vectors *may* be rotated upon return.
-    ddHk : (6,) of array_like
-       Hamiltonian double derivative with respect to :math:`\mathbf k`. The input must be in Voigt order.
-    energy : array_like, optional
-       energies of the states. Required for non-orthogonal basis together with `ddSk`. In case of degenerate
-       states the eigenvalues of the states will be averaged in the degenerate sub-space.
-    ddSk : (6,) of array_like, optional
-       overlap matrix required for non-orthogonal basis. This and `energy` *must* both be
-       provided when the states are defined in a non-orthogonal basis (otherwise the results will be wrong).
-       Same order as `ddHk`.
-    degenerate : list of array_like, optional
-       a list containing the indices of degenerate states. In that case a subsequent diagonalization
-       is required to decouple them. This is done 3 times along the diagonal Cartesian directions.
-    as_matrix : bool, optional
-       if true the returned tensor will be a symmetric matrix, otherwise the Voigt tensor is returned.
-
-    See Also
-    --------
-    velocity : band velocity
-    Hamiltonian.ddHk : function for generating the Hamiltonian derivatives (`ddHk` argument)
-    Hamiltonian.ddSk : function for generating the Hamiltonian derivatives (`ddSk` argument)
-
-    References
-    ----------
-    .. [1] J. R. Yates, X. Wang, D. Vanderbilt, I. Souza, "Spectral and Fermi surface properties from Wannier interpolation", PRB, *75*, 195121 (2007)
-
-    Returns
-    -------
-    numpy.ndarray
-        inverse effective mass tensor of each state in units of inverse electron mass
-    """
-    if state.ndim == 1:
-        return inv_eff_mass_tensor(state.reshape(1, -1), ddHk, energy, ddSk, degenerate, as_matrix)[0]
-
-    if ddSk is None:
-        return _inv_eff_mass_tensor_ortho(state, ddHk, degenerate, as_matrix)
-    return _inv_eff_mass_tensor_non_ortho(state, ddHk, energy, ddSk, degenerate, as_matrix)
-
-
-# inverse electron mass units in 1/m_e (atomic units)!
-# ddHk is in [Ang ^ 2 eV]
-_inv_eff_mass_const = units('Ang', 'Bohr') ** 2 * units('eV', 'Ha')
-
-
-def _inv_eff_mass_tensor_non_ortho(state, ddHk, energy, ddSk, degenerate, as_matrix):
-    r""" For states in a non-orthogonal basis """
-    if as_matrix:
-        M = np.empty([state.shape[0], 9], dtype=dtype_complex_to_real(state.dtype))
-    else:
-        M = np.empty([state.shape[0], 6], dtype=dtype_complex_to_real(state.dtype))
-
-    # Now decouple the degenerate states
-    if not degenerate is None:
-        for deg in degenerate:
-            e = np.average(energy[deg])
-            energy[deg] = e
-
-            # Now diagonalize to find the contributions from individual states
-            # then re-construct the seperated degenerate states
-            # We only do this along the double derivative directions
-            state[deg] = degenerate_decouple(state[deg], sum(ddh - e * dds for ddh, dds in zip(ddHk, ddSk)))
-
-    # Since they depend on the state energies and ddSk we have to loop them individually.
-    for s, e in enumerate(energy):
-
-        # Since ddHk *may* be a csr_matrix or sparse, we have to do it like
-        # this. A sparse matrix cannot be re-shaped with an extra dimension.
-        for i in range(6):
-            M[s, i] = conj(state[s]).dot((ddHk[i] - e * ddSk[i]).dot(state[s])).real
-
-    if as_matrix:
-        M[:, 8] = M[:, 2] # zz
-        M[:, 7] = M[:, 3] # zy
-        M[:, 6] = M[:, 4] # zx
-        M[:, 3] = M[:, 5] # xy
-        M[:, 5] = M[:, 7] # yz
-        M[:, 4] = M[:, 1] # yy
-        M[:, 1] = M[:, 3] # xy
-        M[:, 2] = M[:, 6] # zx
-        M.shape = (-1, 3, 3)
-
-    return M * _inv_eff_mass_const
-
-
-def _inv_eff_mass_tensor_ortho(state, ddHk, degenerate, as_matrix):
-    r""" For states in an orthogonal basis """
-
-    # Along all directions
-    if as_matrix:
-        M = np.empty([state.shape[0], 9], dtype=dtype_complex_to_real(state.dtype))
-    else:
-        M = np.empty([state.shape[0], 6], dtype=dtype_complex_to_real(state.dtype))
-
-    # Now decouple the degenerate states
-    if not degenerate is None:
-        for deg in degenerate:
-            # Now diagonalize to find the contributions from individual states
-            # then re-construct the seperated degenerate states
-            # We only do this along the double derivative directions
-            state[deg] = degenerate_decouple(state[deg], sum(ddHk))
-
-    for i in range(6):
-        M[:, i] = einsum('ij,ji->i', conj(state), ddHk[i].dot(state.T)).real
-
-    if as_matrix:
-        M[:, 8] = M[:, 2] # zz
-        M[:, 7] = M[:, 3] # zy
-        M[:, 6] = M[:, 4] # zx
-        M[:, 3] = M[:, 5] # xy
-        M[:, 5] = M[:, 7] # yz
-        M[:, 4] = M[:, 1] # yy
-        M[:, 1] = M[:, 3] # xy
-        M[:, 2] = M[:, 6] # zx
-        M.shape = (-1, 3, 3)
-
-    return M * _inv_eff_mass_const
 
 
 @set_module("sisl.physics.electron")
@@ -1856,55 +1704,34 @@ class StateCElectron(_electron_State, StateC):
             raise SislError(f"{self.__class__.__name__}.berry_curvature requires the parent to have a spin associated.")
         return berry_curvature(self.state, self.c, self.parent.dHk(**opt), dSk, degenerate=deg, degenerate_dir=degenerate_dir, complex=complex)
 
-    def inv_eff_mass_tensor(self, as_matrix=False, eps=1e-3):
-        r""" Calculate inverse effective mass tensor for the states
+    def effective_mass(self, *args, **kwargs):
+        r""" Calculate effective mass tensor for the states
 
-        This routine calls `~sisl.physics.electron.inv_eff_mass` with appropriate arguments
-        and returns the state inverse effective mass tensor. I.e. for non-orthogonal basis the overlap
-        matrix and energy values are also passed.
+        This routine calls `derivative` with appropriate arguments (2nd order derivative)
+        and returns the effective mass tensor for each state.
 
         Note that the coefficients associated with the `StateCElectron` *must* correspond
         to the energies of the states.
 
-        See `~sisl.physics.electron.inv_eff_mass_tensor` for details.
+        See `derivative` for argument details, but disregard the ``order`` argument as that
+        is fixed to ``2`` in this call.
 
         Notes
         -----
-        The reason for not inverting the mass-tensor is that for systems with limited
-        periodicities some of the diagonal elements of the inverse mass tensor matrix
-        will be 0, in which case the matrix is singular and non-invertible. Therefore
-        it is the users responsibility to remove any of the non-periodic elements from
-        the matrix.
+        Since some directions may not be periodic there will be zeros. This routine will
+        invert elements where the values are different from 0.
 
-        Parameters
-        ----------
-        as_matrix : bool, optional
-           if true the returned tensor will be a symmetric matrix, otherwise the Voigt tensor is returned.
-        eps : float, optional
-           precision used to find degenerate states.
+        It is not advisable to use a `sub` before calculating the effective mass
+        since the 1st order perturbation uses the energy differences and the 1st derivative
+        matrix for correcting the curvature.
+
+        See Also
+        --------
+        derivative: for details of the implementation
         """
-        try:
-            # Ensure we are dealing with the r gauge
-            self.change_gauge('r')
-
-            opt = {'k': self.info.get('k', (0, 0, 0)), "dtype": self.dtype}
-            for key in ("gauge", "format"):
-                val = self.info.get(key, None)
-                if not val is None:
-                    opt[key] = val
-
-            # Get dSk before spin
-            if self.parent.orthogonal:
-                ddSk = None
-            else:
-                ddSk = self.parent.ddSk(**opt)
-
-            if "spin" in self.info:
-                opt["spin"] = self.info["spin"]
-            degenerate = self.degenerate(eps)
-        except:
-            raise SislError(f"{self.__class__.__name__}.inv_eff_mass_tensor requires the parent to have a spin associated.")
-        return inv_eff_mass_tensor(self.state, self.parent.ddHk(**opt), self.c, ddSk, degenerate, as_matrix)
+        ieff = self.derivative(2, *args, **kwargs)[1].real
+        np.divide(_velocity_const ** 2, ieff, where=(ieff != 0), out=ieff)
+        return ieff
 
 
 @set_module("sisl.physics.electron")

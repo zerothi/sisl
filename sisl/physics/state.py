@@ -1073,6 +1073,13 @@ class StateC(State):
 
         The derivatives calculated are without the Berry curvature contributions.
 
+        Notes
+        -----
+
+        When requesting 2nd derivatives it will not be advisable to use a `sub` before
+        calculating the derivatives since the 1st order perturbation uses the energy
+        differences and the 1st derivative matrix for correcting the curvature.
+
         Parameters
         ----------
         order : {1, 2}
@@ -1084,23 +1091,23 @@ class StateC(State):
            levels. Defaults to 1e-5 eV.
         degenerate_dir : (3,), optional
            a direction used for degenerate decoupling. The decoupling based on the velocity along this direction
-        project : bool, optional
-           whether the derivatives will be returned projected per orbital
+        matrix : bool, optional
+           whether the full matrix or only the diagonal components are returned
 
         See Also
         --------
-        Hamiltonian.dHk : function for generating the Hamiltonian derivatives (`dHk` argument)
-        Hamiltonian.dSk : function for generating the Hamiltonian derivatives (`dSk` argument)
-        velocity : equivalent to this, with a factor of :math:`1/\hbar` to unify units
+        SparseOrbitalBZ.dPk : function for generating the matrix derivatives
+        SparseOrbitalBZ.dSk : function for generating the matrix derivatives in non-orthogonal basis
 
         Returns
         -------
-        numpy.ndarray
-            if `project` is false, derivatives per state with final dimension ``(state.shape[0], 3)``, the unit is Ang*eV
-        numpy.ndarray
-            if `project` is true, derivatives per state with final dimension ``(state.shape[0], state.shape[1], 3)``, the unit is Ang*eV
+        dv, ddv
+            if `matrix` is false, they are per state with shape ``(state.shape[0], *)``, ddv is only
+            returned if ``order>=2``
+        dv, ddv
+            if `matrix` is true, they are per state with shape ``(state.shape[0], state.shape[0], *)``, ddv is only
+            returned if ``order>=2``
         """
-        """to be filled """
 
         # Figure out arguments
         opt = {
