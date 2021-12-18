@@ -27,7 +27,6 @@ import os.path as osp
 
 import numpy as np
 from numpy import conjugate as conj
-#from scipy.linalg import sqrtm
 import scipy.sparse as ssp
 from scipy.sparse import csr_matrix
 from scipy.sparse.linalg import svds
@@ -48,28 +47,6 @@ __all__ = ['PivotSelfEnergy', 'DownfoldSelfEnergy', 'DeviceGreen']
 
 def dagger(M):
     return conj(M.T)
-
-
-def signsqrt(A):
-    """ Calculate the sqrt of the elements `A` by retaining the sign.
-
-    This only influences negative values in `A` by returning ``-abs(A)**0.5``
-    """
-    return np.sign(A) * np.sqrt(np.fabs(A))
-
-
-def sqrtm(H):
-    """ Calculate the sqrt of the Hermitian matrix `H`
-
-    We do this by using eigh and taking the sqrt of the eigenvalues.
-
-    This yields a slightly better value compared to scipy.linalg.sqrtm
-    when comparing H12 @ H12 vs. H12 @ H12.T.conj(). The latter is what
-    we need.
-    """
-    e, ev = eigh(H)
-    sqe = signsqrt(e)
-    return (ev * sqe) @ ev.conj().T
 
 
 def _scat_state_svd(A, **kwargs):
@@ -1659,7 +1636,7 @@ class DeviceGreen:
 
         return DOS[idx], U[:, idx]
 
-    def scattering_state(self, elec, E, k=(0, 0, 0), cutoff=0., method='svd-gamma', *args, **kwargs):
+    def scattering_state(self, elec, E, k=(0, 0, 0), cutoff=0., method='svd:gamma', *args, **kwargs):
         r""" Calculate the scattering states for a given `E` and `k` point from a given electrode
 
         The scattering states are the eigen states of the spectral function:
@@ -1680,17 +1657,17 @@ class DeviceGreen:
            k-point to calculate the spectral function at
         cutoff : float, optional
            cutoff the returned scattering states at some DOS value.
-        method : {'svd-gamma', 'svd-A', 'full'}
+        method : {'svd:gamma', 'svd:A', 'full'}
            which method to use for calculating the scattering states.
            Use only the 'full' method for testing purposes as it is extremely slow
            and requires a substantial amount of memory.
-           The 'svd-gamma' is the fastests while retaining complete precision.
-           The 'svd-A' may be even faster for very large systems with
+           The 'svd:gamma' is the fastests while retaining complete precision.
+           The 'svd:A' may be even faster for very large systems with
            very little loss of precision, depends on `cutoff`.
         """
         elec = self._elec(elec)
         self._prepare(E, k)
-        method = method.lower().replace('-', '_')
+        method = method.lower().replace(':', '_')
         func = getattr(self, f"_scattering_state_{method}", None)
         if func is None:
             raise ValueError(f"{self.__class__.__name__}.scattering_state method is not [full,svd,propagate]")
@@ -1726,9 +1703,9 @@ class DeviceGreen:
     def _scattering_state_svd_gamma(self, elec, cutoff=0., **kwargs):
         A = self._green_column(self.elecs_pvt_dev[elec].ravel())
 
-        # This calculation uses the sqrt(Gamma) calculation combined with svd
-        Gamma_sqrt = sqrtm(self._data.gamma[elec])
-        A = A @ Gamma_sqrt
+        # This calculation uses the cholesky decomposition of Gamma
+        # combined with SVD of the A column
+        A = A @ cholesky(self._data.gamma[elec], lower=True)
 
         # Perform svd
         DOS, A = _scat_state_svd(A, **kwargs)

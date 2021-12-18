@@ -24,3 +24,4 @@ like `numpy` and `scipy`.
 
 """
 from .base import *
+from .special import *

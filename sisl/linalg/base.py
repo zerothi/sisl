@@ -256,6 +256,10 @@ eigvalsh_dc_destroy = eigvalsh_destroy
 eigvalsh_qr_destroy = _partial(sl.eigvalsh, check_finite=False, overwrite_a=True, overwrite_b=True, turbo=False)
 __all__ += _append('eigvalsh_', ['destroy', 'dc_destroy', 'qr_destroy'])
 
+cholesky = _partial(sl.cholesky, check_finite=False)
+cholesky_destroy = _partial(sl.cholesky, check_finite=False, overwrite_a=True)
+__all__ += _append('cholesky', ['', '_destroy'])
+
 # SVD problem
 svd = _partial(sl.svd, check_finite=False, overwrite_a=False)
 svd_destroy = _partial(sl.svd, check_finite=False, overwrite_a=True)
