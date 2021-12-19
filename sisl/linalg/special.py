@@ -68,5 +68,5 @@ def lowdin(a, b, overwrite_a=False):
     b : array_like
        matrix to convert
     """
-    a2 = invsqrth(a, overwrite_a=overwrite_a)
+    a12 = invsqrth(a, overwrite_a=overwrite_a)
     return a12 @ b @ a12
