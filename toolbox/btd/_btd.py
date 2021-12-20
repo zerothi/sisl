@@ -98,8 +98,7 @@ def _scat_state_svd(A, **kwargs):
 
     else:
         # it must be a lapack driver:
-        A, DOS, _ = svd_destroy(A, full_matrices=False, check_finite=False,
-                                lapack_driver=driver)
+        A, DOS, _ = svd_destroy(A, full_matrices=False, lapack_driver=driver)
     del _
     if scale:
         DOS /= scale
