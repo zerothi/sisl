@@ -1630,7 +1630,10 @@ class DeviceGreen:
             # also retain values with large negative DOS.
             # These should correspond to states with large weight, but in some
             # way unphysical. The DOS *should* be positive.
-            idx1 = (np.fabs(DOS[idx]) >= cutoff).nonzero()[0]
+            # Here we do the normalization depending on the number of orbitals
+            # that is touched. This is important to make a uniformly defined
+            # cutoff that does not depend on the device size.
+            idx1 = (np.fabs(DOS[idx]) >= cutoff * U.shape[0]).nonzero()[0]
             idx = idx[idx1]
 
         return DOS[idx], U[:, idx]
@@ -1655,14 +1658,26 @@ class DeviceGreen:
         k : array_like, optional
            k-point to calculate the spectral function at
         cutoff : float, optional
-           cutoff the returned scattering states at some DOS value.
+           cutoff the returned scattering states at some DOS value. Any scattering states
+           with normalized eigenvalues lower than `cutoff` are discarded.
+           The normalization is done by dividing the eigenvalue with the number of orbitals
+           in the device region. This normalization ensures the same cutoff value has roughly
+           the same meaning for different size devices.
+           Values above or close to 1e-5 should be used with care.
         method : {'svd:gamma', 'svd:A', 'full'}
            which method to use for calculating the scattering states.
            Use only the 'full' method for testing purposes as it is extremely slow
            and requires a substantial amount of memory.
            The 'svd:gamma' is the fastests while retaining complete precision.
            The 'svd:A' may be even faster for very large systems with
-           very little loss of precision, depends on `cutoff`.
+           very little loss of precision, since it diagonalizes :math:`\mathbf A` in
+           the subspace of the electrode `elec` and reduces the propagated part of the spectral
+           matrix.
+        cutoff_elec : float, optional
+           Only used for ``method=svd:A``. The initial block of the spectral function is
+           diagonalized and only eigenvectors with eigenvalues ``>=cutoff_elec`` are retained,
+           thus reducing the initial propagated modes. The normalization explained for `cutoff`
+           also applies here.
         """
         elec = self._elec(elec)
         self._prepare(E, k)
@@ -1712,7 +1727,7 @@ class DeviceGreen:
 
         data = self._data
         info = dict(
-            method='svd(Gamma)',
+            method='svd:Gamma',
             elec=self._elec_name(elec),
             E=data.E,
             k=data.k,
@@ -1731,7 +1746,7 @@ class DeviceGreen:
             cutoff0 = cutoff1 = cutoff[0]
         else:
             cutoff0, cutoff1 = cutoff[0], cutoff[1]
-        cutoff1 = kwargs.get("cutoff_A", cutoff1)
+        cutoff0 = kwargs.get("cutoff_elec", cutoff0)
 
         # First we need to calculate diagonal blocks of the spectral matrix
         # This is basically the same thing as calculating the Gf column
@@ -1795,16 +1810,17 @@ class DeviceGreen:
         # Perform svd
         # TODO check with overlap convert with correct magnitude (Tr[A] / 2pi)
         DOS, A = _scat_state_svd(A, **kwargs)
+
         DOS, A = self._scattering_state_reduce(elec, DOS, A, cutoff1)
 
         # Now we have the full u, create it and transpose to get it in C indexing
         data = self._data
         info = dict(
-            method='svd(A)',
+            method='svd:A',
             elec=self._elec_name(elec),
             E=data.E,
             k=data.k,
-            cutoff_space=cutoff0,
+            cutoff_elec=cutoff0,
             cutoff=cutoff1
         )
         return si.physics.StateCElectron(A.T, DOS, self, **info)
@@ -1888,8 +1904,9 @@ class DeviceGreen:
         tt, Ut = eigh_destroy(Ut)
         tt *= 2 * np.pi
 
-        info = {**state.info}
-        info["elec_to"] = [self._elec_name(e) for e in elec_to]
+        info = {**state.info,
+            "elec_to": tuple(self._elec_name(e) for e in elec_to)
+        }
 
         # Backtransform U to form the eigenchannels
         teig = si.physics.StateCElectron(Ut[:, ::-1].T @ A,
