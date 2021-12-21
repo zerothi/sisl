@@ -1065,30 +1065,37 @@ class StateC(State):
 
         .. math::
 
-           \mathbf{d}_{i\alpha} = \langle \psi_i |
-                    \frac{\partial}{\partial\mathbf k}_\alpha \mathbf H(\mathbf k) | \psi_i \rangle
+           \mathbf{d}_{ij\alpha} = \langle \psi_j |
+                    \frac{\partial}{\partial\mathbf k_\alpha} \mathbf H(\mathbf k) | \psi_i \rangle
 
         In case of non-orthogonal basis the equations substitutes :math:`\mathbf H(\mathbf k)` by
         :math:`\mathbf H(\mathbf k) - \epsilon_i\mathbf S(\mathbf k)`.
 
-        The derivatives calculated are without the Berry curvature contributions.
+        The 2nd order derivatives are calculated with the Berry curvature correction:
+
+        .. math::
+
+           \mathbf d^2_{ij\alpha\beta} = \langle\psi_j|
+               \frac{\partial^2}{\partial\mathbf k_\alpha\partial\mathbf k_\beta} \mathbf H(\mathbf k) | \psi_i\rangle
+               - \frac12\frac{\mathbf{d}_{ij\alpha}\mathbf{d}_{ij\beta}}
+                     {\epsilon_j - \epsilon_i}
 
         Notes
         -----
 
         When requesting 2nd derivatives it will not be advisable to use a `sub` before
         calculating the derivatives since the 1st order perturbation uses the energy
-        differences and the 1st derivative matrix for correcting the curvature.
+        differences (Berry contribution) and the 1st derivative matrix for correcting the curvature.
 
         Parameters
         ----------
         order : {1, 2}
            an integer specifying which order of the derivative is being calculated.
-        degenerate : list of array_like or float, optional
-           a list containing the indices of degenerate states. In that case a prior diagonalization
-           is required to decouple them. See `degenerate_dir` for the sum of directions.
+        degenerate : float or list of array_like, optional
            If a float is passed it is regarded as the degeneracy tolerance used to calculate the degeneracy
            levels. Defaults to 1e-5 eV.
+           If a list, it contains the indices of degenerate states. In that case a prior diagonalization
+           is required to decouple them. See `degenerate_dir` for the sum of directions.
         degenerate_dir : (3,), optional
            a direction used for degenerate decoupling. The decoupling based on the velocity along this direction
         matrix : bool, optional

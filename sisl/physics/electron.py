@@ -787,7 +787,7 @@ def _velocity_matrix_ortho(state, dHk, degenerate, degenerate_dir, dtype):
 
 
 @set_module("sisl.physics.electron")
-def berry_curvature(state, energy, dHk, dSk=None, degenerate=None, degenerate_dir=(1, 1, 1), complex=False):
+def berry_curvature(state, energy, dHk, dSk=None, degenerate=None, degenerate_dir=(1, 1, 1)):
     r""" Calculate the Berry curvature matrix for a set of states (using Kubo)
 
     The Berry curvature is calculated using the following expression
@@ -824,8 +824,6 @@ def berry_curvature(state, energy, dHk, dSk=None, degenerate=None, degenerate_di
        is required to decouple them.
     degenerate_dir : (3,), optional
        along which direction degenerate states are decoupled.
-    complex : logical, optional
-       whether the returned quantity is complex valued (i.e. not *only* the imaginary part is returned)
 
     See Also
     --------
@@ -842,14 +840,10 @@ def berry_curvature(state, energy, dHk, dSk=None, degenerate=None, degenerate_di
     Returns
     -------
     numpy.ndarray
-        Berry flux with final dimension ``(state.shape[0], 3, 3)`` (complex if `complex` is True).
+        Berry flux with final dimension ``(state.shape[0], 3, 3)``
     """
     if state.ndim == 1:
-        return berry_curvature(state.reshape(1, -1), energy, dHk, dSk, degenerate, degenerate_dir, complex)[0]
-
-    if degenerate is None:
-        # Fix following routine
-        degenerate = []
+        return berry_curvature(state.reshape(1, -1), energy, dHk, dSk, degenerate, degenerate_dir)[0]
 
     dtype = find_common_type([state.dtype, dHk[0].dtype, dtype_real_to_complex(state.dtype)], [])
     if dSk is None:
@@ -857,16 +851,14 @@ def berry_curvature(state, energy, dHk, dSk=None, degenerate=None, degenerate_di
     else:
         v_matrix = _velocity_matrix_non_ortho(state, dHk, energy, dSk, degenerate, degenerate_dir, dtype)
         warn("berry_curvature calculation for non-orthogonal basis sets are not tested! Do not expect this to be correct!")
-    if complex:
-        return _berry_curvature(v_matrix, energy, degenerate)
-    return _berry_curvature(v_matrix, energy, degenerate).imag
+    return _berry_curvature(v_matrix, energy)
 
 
 # This reverses the velocity unit (squared since Berry curvature is v.v)
 _berry_curvature_const = 1 / _velocity_const ** 2
 
 
-def _berry_curvature(v_M, energy, degenerate):
+def _berry_curvature(v_M, energy):
     r""" Calculate Berry curvature for a given velocity matrix """
 
     # All matrix elements along the 3 directions
@@ -875,31 +867,23 @@ def _berry_curvature(v_M, energy, degenerate):
     # to calculate anything. Hence we need to initialize as zero
     # This is a vector of matrices
     #   \Omega_{n, \alpha \beta}
-    sigma = np.zeros([N, 3, 3], dtype=dtype_real_to_complex(v_M.dtype))
+    sigma = np.zeros([N, 3, 3], dtype=dtype_complex_to_real(v_M.dtype))
 
-    # Fast index deletion
-    index = _a.arangei(N)
+    for s, e in enumerate(energy):
+        de = (energy - e) ** 2
+        # add factor 2 here, but omit the minus sign until later
+        # where we are forced to use the constant upon return anyways
+        np.divide(2, de, where=(de != 0), out=de)
 
-    for n in range(N):
+        # Calculate the berry-curvature
+        sigma[s] = ((de.reshape(-1, 1) * v_M[s]).T @ v_M[:, s]).imag
 
-        # Calculate the Berry-curvature from the velocity matrix
-        idx = index
-        for deg in degenerate:
-            if n in deg:
-                # We skip degenerate states as that would lead to overflow
-                idx = np.delete(index, deg)
-        if len(idx) == N:
-            idx = np.delete(index, n)
-
-        # Note we do not use an epsilon for accuracy
-        fac = - 2 / (energy[idx] - energy[n]) ** 2
-        sigma[n, :, :] = einsum("i,ij,il->jl", fac, v_M[idx, n], v_M[n, idx])
-
-    return sigma * _berry_curvature_const
+    # negative here
+    return sigma * (- _berry_curvature_const)
 
 
 @set_module("sisl.physics.electron")
-def conductivity(bz, distribution='fermi-dirac', method='ahc', degenerate_dir=(1, 1, 1), complex=False):
+def conductivity(bz, distribution='fermi-dirac', method='ahc', degenerate=1.e-5, degenerate_dir=(1, 1, 1)):
     r""" Electronic conductivity for a given `BrillouinZone` integral
 
     Currently the *only* implemented method is the anomalous Hall conductivity (AHC)
@@ -919,10 +903,10 @@ def conductivity(bz, distribution='fermi-dirac', method='ahc', degenerate_dir=(1
         distribution used to find occupations
     method : {'ahc'}
        'ahc' calculates the anomalous Hall conductivity
+    degenerate : float, optional
+       de-couple degenerate states within the given tolerance (in eV)
     degenerate_dir : (3,), optional
        along which direction degenerate states are decoupled.
-    complex : logical, optional
-       whether the returned quantity is complex valued
 
     See Also
     --------
@@ -940,8 +924,8 @@ def conductivity(bz, distribution='fermi-dirac', method='ahc', degenerate_dir=(1
     if method == 'ahc':
         def _ahc(es):
             occ = distribution(es.eig)
-            bc = es.berry_curvature(degenerate_dir=degenerate_dir, complex=complex)
-            return einsum('i,ijl->jl', occ, bc)
+            bc = es.berry_curvature(degenerate=degenerate, degenerate_dir=degenerate_dir)
+            return (bc.T @ distribution(es.eig)).T
 
         cond = - bz.apply.average.eigenstate(wrap=_ahc) * _velocity_const
     else:
@@ -1664,45 +1648,24 @@ class StateCElectron(_electron_State, StateC):
         """
         return self.derivative(1, *args, **kwargs).real * _velocity_const
 
-    def berry_curvature(self, complex=False, eps=1e-4, degenerate_dir=(1, 1, 1)):
+    def berry_curvature(self, *args, **kwargs):
         r""" Calculate Berry curvature for the states
 
-        This routine calls `~sisl.physics.electron.berry_curvature` with appropriate arguments
-        and returns the Berry curvature for the states.
+        This routine calls `derivative` with appropriate arguments ``order=1, matrix=True`` and then
+        post-processes the values and calculates the Berry curvature. Do not pass these arguments.
 
         Note that the coefficients associated with the `StateCElectron` *must* correspond
         to the energies of the states.
 
         See `~sisl.physics.electron.berry_curvature` for details.
 
-        Parameters
-        ----------
-        complex : logical, optional
-           whether the returned quantity is complex valued
-        eps : float, optional
-           precision used to find degenerate states.
-        degenerate_dir: (3,), optional
-           which direction is used to decouple the degenerate states.
+        See Also
+        --------
+        derivative : for details of the implementation
+        sisl.physics.electron.berry_curvature : for details of the implementation
         """
-        try:
-            opt = {'k': self.info.get('k', (0, 0, 0)), "dtype": self.dtype}
-            for key in ("gauge", "format"):
-                val = self.info.get(key, None)
-                if not val is None:
-                    opt[key] = val
-
-            # Get dSk before spin
-            if self.parent.orthogonal:
-                dSk = None
-            else:
-                dSk = self.parent.dSk(**opt)
-
-            if "spin" in self.info:
-                opt["spin"] = self.info["spin"]
-            deg = self.degenerate(eps)
-        except:
-            raise SislError(f"{self.__class__.__name__}.berry_curvature requires the parent to have a spin associated.")
-        return berry_curvature(self.state, self.c, self.parent.dHk(**opt), dSk, degenerate=deg, degenerate_dir=degenerate_dir, complex=complex)
+        v = self.derivative(1, *args, **kwargs, matrix=True)
+        return _berry_curvature(v, self.c)
 
     def effective_mass(self, *args, **kwargs):
         r""" Calculate effective mass tensor for the states

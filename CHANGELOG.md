@@ -33,6 +33,7 @@ we hit release version 1.0.0.
 - atom indexing by shapes #337
 
 ### Fixed
+- `degenerate` argument for `conductivity` to enable decoupling of states
 - BandStructure.lineark now always starts from 0
 - reading coordinates from siesta.out when bands are calculated #362
 - complex warning for spin_moment #360 and #363
