@@ -802,6 +802,15 @@ class TestHamiltonian:
         bz2 = BandStructure.param_circle(H, 20, 0.01, [0, 0, 1], [1/3] * 3, loop=True)
         assert np.allclose(berry_phase(bz1), berry_phase(bz2))
 
+    def test_berry_phase_non_orthogonal(self, setup):
+        R, param = [0.1, 1.5], [(1., 1.), (0.1, 0.1)]
+        g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
+        H = Hamiltonian(g, orthogonal=False)
+        H.construct((R, param))
+
+        bz = BandStructure.param_circle(H, 20, 0.01, [0, 0, 1], [1/3] * 3)
+        berry_phase(bz)
+
     def test_berry_phase_zak_x(self):
         # SSH model, topological cell
         g = Geometry([[-.6, 0, 0], [0.6, 0, 0]], Atom(1, 1.001), sc=[2, 10, 10])

@@ -65,7 +65,7 @@ from sisl.oplist import oplist
 from sisl._math_small import xyz_to_spherical_cos_phi
 import sisl._array as _a
 from sisl.linalg import svd_destroy, eigvals_destroy
-from sisl.linalg import eigh, det_destroy
+from sisl.linalg import eigh, det_destroy, sqrth
 from sisl.messages import info, warn, SislError, progressbar, deprecate_method
 from sisl._help import dtype_complex_to_real, dtype_real_to_complex
 from .distribution import get_distribution
@@ -1011,8 +1011,15 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
         raise SislError("berry_phase: requires the Brillouin zone object to contain a Hamiltonian!")
     spin = contour.parent.spin
 
-    if not contour.parent.orthogonal:
-        raise SislError("berry_phase: requires the Hamiltonian to use an orthogonal basis!")
+    if contour.parent.orthogonal:
+        def _lowdin(state):
+            pass
+    else:
+        def _lowdin(state):
+            """ change state to the lowdin state, assuming everything is in R gauge
+            So needs to be done before changing gauge """
+            S12 = sqrth(state.parent.Sk(format='array'))
+            state.state[:, :] = (S12 @ state.state.T).T
 
     if np.allclose(contour.k[0, :], contour.k[-1, :]):
         # When the user has the contour points closed, we don't need to do this in the below loop
@@ -1034,7 +1041,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
         # We calculate the final eigenvalues
         def _process(prd, ovr):
             U, _, V = svd_destroy(ovr)
-            return dot(prd, dot(U, V))
+            return dot(prd, U @ V)
     else:
         # We calculate the final angle from the determinant
         _process = dot
@@ -1043,6 +1050,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
         def _berry(eigenstates):
             # Grab the first one to be able to form a loop
             first = next(eigenstates)
+            _lowdin(first)
             first.change_gauge('r', offset=offset)
             # Create a variable to keep track of the previous state
             prev = first
@@ -1053,6 +1061,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
 
             # Loop remaining eigenstates
             for second in eigenstates:
+                _lowdin(second)
                 second.change_gauge('r', offset=offset)
                 prd = _process(prd, prev.inner(second, diag=False))
                 prev = second
@@ -1079,11 +1088,13 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
     else:
         def _berry(eigenstates):
             first = next(eigenstates).sub(sub)
+            _lowdin(first)
             first.change_gauge('r', offset=offset)
             prev = first
             prd = 1
             for second in eigenstates:
                 second = second.sub(sub)
+                _lowdin(second)
                 second.change_gauge('r', offset=offset)
                 prd = _process(prd, prev.inner(second, diag=False))
                 prev = second
