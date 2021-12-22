@@ -65,7 +65,7 @@ from sisl.oplist import oplist
 from sisl._math_small import xyz_to_spherical_cos_phi
 import sisl._array as _a
 from sisl.linalg import svd_destroy, eigvals_destroy
-from sisl.linalg import eigh, det_destroy, sqrth
+from sisl.linalg import eigh, det_destroy, invsqrth
 from sisl.messages import info, warn, SislError, progressbar, deprecate_method
 from sisl._help import dtype_complex_to_real, dtype_real_to_complex
 from .distribution import get_distribution
@@ -974,27 +974,25 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
        return the eigenvalues of the product of the overlap matrices
     closed : bool, optional
        whether or not to include the connection of the last and first points in the loop
-    method : {'berry', 'zak', 'zak:origin'}
+    method : {'berry', 'zak'}
        'berry' will return the usual integral of the Berry connection over the specified contour
-       'zak' will compute the Zak phase (intercell and origin independent) for 1D systems by performing
-       a closed loop integration but taking into account the Bloch factor :math:`e^{i2\pi/a x}`
-       accumulated over a Brillouin zone, see [1]_. The origin independent method moves the atoms
-       according to the average atomic positions.
-       For 'zak:origin' uses the atomic coordinates *as is* and thus an origin dependent phase may be
-       seen. If the mirror symmetric point is not the average coordinates, one should use this
-       method and align the atomic coordinates to the mirror symmetric point.
+       'zak' will compute the Zak phase for 1D systems by performing
+       a closed loop integration, see [1]_.
 
     Notes
     -----
     The Brillouin zone object *need* not contain a closed discretized contour by doubling the first point.
 
-    The implementation is very similar to PythTB and refer to the details outlined in PythTB for
-    additional details.
+    The implementation is very similar to PythTB, except we are here using the :math:`\mathbf R` gauge
+    (convention II according to PythTB).
 
     Note that for systems with band-crossings or degenerate states there is an arbitrariness to the definition
     of the Berry phase for *individual* bands. However, the total phase (i.e., sum over filled bands) is
     invariant and unaffected by this arbitrariness as long as the filled and empty bands do not intersect,
     see [2]_.
+
+    For non-orthogonal basis sets it is not fully known how important the dk spacing is since
+    it relies on the Lowdin transformation of the states.
 
     Examples
     --------
@@ -1035,23 +1033,21 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
         def _lowdin(state):
             """ change state to the lowdin state, assuming everything is in R gauge
             So needs to be done before changing gauge """
-            S12 = sqrth(state.parent.Sk(state.info["k"], format='array'))
+            S12 = invsqrth(state.parent.Sk(state.info["k"], format='array'),
+                           overwrite_a=True)
             state.state[:, :] = (S12 @ state.state.T).T
 
-    if np.allclose(contour.k[0, :], contour.k[-1, :]):
-        # When the user has the contour points closed, we don't need to do this in the below loop
-        closed = False
-
-    offset = - contour.parent.geometry.center(what='xyz')
     method, *opts = method.lower().split(':')
     if method == "berry":
         pass
     elif method == "zak":
         closed = True
-        if "origin" in opts:
-            offset = np.zeros(3)
     else:
-        raise ValueError("berry_phase: requires the method to be [berry, zak, zak:origin]")
+        raise ValueError("berry_phase: requires the method to be [berry, zak]")
+
+    if np.allclose(contour.k[0, :], contour.k[-1, :]):
+        # When the user has the contour points closed, we don't need to do this in the below loop
+        closed = False
 
     # Whether we should calculate the eigenvalues of the overlap matrix
     if eigvals:
@@ -1068,7 +1064,6 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
             # Grab the first one to be able to form a loop
             first = next(eigenstates)
             _lowdin(first)
-            first.change_gauge('r', offset=offset)
             # Create a variable to keep track of the previous state
             prev = first
 
@@ -1079,25 +1074,11 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
             # Loop remaining eigenstates
             for second in eigenstates:
                 _lowdin(second)
-                second.change_gauge('r', offset=offset)
                 prd = _process(prd, prev.inner(second, diag=False))
                 prev = second
 
             # Complete the loop
             if closed:
-                # Insert Bloch phase for 1D integral?
-                if method == "zak":
-                    g = contour.parent.geometry
-                    xyz = g.xyz + offset
-                    axis = contour.k[1] - contour.k[0]
-                    axis /= axis.dot(axis) ** 0.5
-                    phase = xyz[g.o2a(_a.arangei(g.no)), :] @ (axis @ g.rcell)
-                    if spin.is_diagonal:
-                        prev.state *= exp(1j * phase)
-                    else:
-                        # for NC/SOC we have a 2x2 spin-box per orbital
-                        prev.state *= np.repeat(exp(1j * phase), 2, axis=1)
-
                 # Include last-to-first segment
                 prd = _process(prd, prev.inner(first, diag=False))
             return prd
@@ -1106,27 +1087,14 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
         def _berry(eigenstates):
             first = next(eigenstates).sub(sub)
             _lowdin(first)
-            first.change_gauge('r', offset=offset)
             prev = first
             prd = 1
             for second in eigenstates:
                 second = second.sub(sub)
                 _lowdin(second)
-                second.change_gauge('r', offset=offset)
                 prd = _process(prd, prev.inner(second, diag=False))
                 prev = second
             if closed:
-                if method == "zak":
-                    g = contour.parent.geometry
-                    xyz = g.xyz + offset
-                    axis = contour.k[1] - contour.k[0]
-                    axis /= axis.dot(axis) ** 0.5
-                    phase = xyz[g.o2a(_a.arangei(g.no)), :] @ (axis @ g.rcell)
-                    if spin.is_diagonal:
-                        prev.state *= exp(1j * phase)
-                    else:
-                        # for NC/SOC we have a 2x2 spin-box per orbital
-                        prev.state *= np.repeat(exp(1j * phase), 2, axis=1)
                 prd = _process(prd, prev.inner(first, diag=False))
             return prd
 

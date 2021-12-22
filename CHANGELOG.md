@@ -8,7 +8,6 @@ we hit release version 1.0.0.
 ## [Unreleased] - YYYY-MM-DD
 ### Added
 - State.derivative can now correctly calculate 1st and 2nd order derivatives #406
-- Default Zak-phase calculation uses average shifted geometry #410, #411
 - Enabled discontinuity jumps in band-structures (pass points as None)
 - COOP and COHP calculations for eigenstates
 - inverse participation ration calculations (with arbitrary q)
@@ -33,6 +32,8 @@ we hit release version 1.0.0.
 - atom indexing by shapes #337
 
 ### Fixed
+- `berry_phase` now works for non-orthogonal basis sets (uses Lowdin transformation)
+	This may require sufficiently small dk for accurateness.
 - `degenerate` argument for `conductivity` to enable decoupling of states
 - BandStructure.lineark now always starts from 0
 - reading coordinates from siesta.out when bands are calculated #362
@@ -48,6 +49,8 @@ we hit release version 1.0.0.
 - fixed hpc parameters #403
 
 ### Changed
+- `berry_phase` now uses the gauge=R convention, the code became much simpler
+- `BrillouinZone.parametrize` function changed interface to allow more dimensions
 - `EigenStateElectron.inner` does not use the overlap matrix by default, norm2 is for
 	exactly this behaviour
 - changed license to MPLv2 makes toolboxes easier to contribute under different license
