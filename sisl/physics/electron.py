@@ -1018,7 +1018,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
         def _lowdin(state):
             """ change state to the lowdin state, assuming everything is in R gauge
             So needs to be done before changing gauge """
-            S12 = sqrth(state.parent.Sk(format='array'))
+            S12 = sqrth(state.parent.Sk(state.info["k"], format='array'))
             state.state[:, :] = (S12 @ state.state.T).T
 
     if np.allclose(contour.k[0, :], contour.k[-1, :]):
