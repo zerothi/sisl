@@ -9,6 +9,14 @@ publications below.
 Please help maintaining the list complete via a `pull request <pr_>`_ or
 by writing an email to `nickpapior AT gmail.com <mailto:nickpapior@gmail.com>`_.
 
+#. A. Pezo, *et. al.*,
+   *Manipulation of spin transport in graphene/transition metal dichalcogenide heterobilayers upon twisting*,
+   2D Materials, **9**, `015008 (2021) <https://doi.org/10.1088/2053-1583/ac3378>`_
+
+#. J. Tong, *et. al.*,
+   *Breaking the symmetry of spin-sublattices in antiferromagnet by interfacial tailoring in the L10-MnPt/NaCl/Fe junction*,
+   Applied Physics Letter, **119**, `172401 (2021) <https://doi.org/10.1063/5.0064931>`_
+
 #. I. Alcon, N. Papior, G. Calogero, F. Vines, P. Gamallo, M. Brandbyge,
    *Acetylene-Mediated Electron Transport in Nanostructured Graphene and Hexagonal Boron Nitride*,
    J. Phys. Chem. Lett. **12**, `11220 (2021) <https://doi.org/10.1021/acs.jpclett.1c03166>`_
