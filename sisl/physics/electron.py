@@ -529,17 +529,25 @@ def velocity(state, dHk, energy=None, dSk=None, degenerate=None, degenerate_dir=
 
     .. math::
 
-       \mathbf{v}_{i\alpha} = \frac1\hbar \langle \psi_i |
-                \frac{\partial}{\partial\mathbf k}_\alpha \mathbf H(\mathbf k) | \psi_i \rangle
+       \mathbf{v}^\alpha_{i} = \frac1\hbar \langle \psi_i |
+                \frac{\partial}{\partial\mathbf k_\alpha} \mathbf H(\mathbf k) | \psi_i \rangle
 
     In case of non-orthogonal basis the equations substitutes :math:`\mathbf H(\mathbf k)` by
     :math:`\mathbf H(\mathbf k) - \epsilon_i\mathbf S(\mathbf k)`.
 
-    The velocities calculated are without the Berry curvature contributions.
-
     In case the user requests to project the velocities (`project` is True) the equation follows that
     of `PDOS` with the same changes.
     In case of non-colinear spin the velocities will be returned also for each spin-direction.
+
+    Notes
+    -----
+    The velocities are calculated without the Berry curvature contribution see Eq. (2) in [1]_.
+    The missing contribution may be added in later editions, for completeness sake, it is:
+
+    .. math::
+        \delta \mathbf v = - \mathbf k\times \Omega_i(\mathbf k)
+
+    where :math:`\Omega_i` is the Berry curvature for state :math:`i`.
 
     Parameters
     ----------
@@ -568,6 +576,10 @@ def velocity(state, dHk, energy=None, dSk=None, degenerate=None, degenerate_dir=
     --------
     Hamiltonian.dHk : function for generating the Hamiltonian derivatives (`dHk` argument)
     Hamiltonian.dSk : function for generating the Hamiltonian derivatives (`dSk` argument)
+
+    References
+    ----------
+    .. [1] X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, "Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation", PRB, *74*, 195118 (2006)
 
     Returns
     -------
@@ -669,16 +681,14 @@ def velocity_matrix(state, dHk, energy=None, dSk=None, degenerate=None, degenera
 
     .. math::
 
-       \mathbf{v}_{ij\alpha} = \frac1\hbar \langle \psi_j |
-                \frac{\partial}{\partial\mathbf k}_\alpha \mathbf H(\mathbf k) | \psi_i \rangle
+       \mathbf{v}^\alpha_{ij} = \frac1\hbar \langle \psi_j |
+                \frac{\partial}{\partial\mathbf k_\alpha} \mathbf H(\mathbf k) | \psi_i \rangle
 
     In case of non-orthogonal basis the equations substitutes :math:`\mathbf H(\mathbf k)` by
     :math:`\mathbf H(\mathbf k) - \epsilon_i\mathbf S(\mathbf k)`.
 
-    Although this matrix should be Hermitian it is not checked, and we explicitly calculate
+    Although the matrix :math:`\mathbf v` should be Hermitian it is not checked, and we explicitly calculate
     all elements.
-
-    The velocities calculated are without the Berry curvature contributions.
 
     Parameters
     ----------
@@ -707,6 +717,16 @@ def velocity_matrix(state, dHk, energy=None, dSk=None, degenerate=None, degenera
     velocity : only calculate the diagonal components of this matrix
     Hamiltonian.dHk : function for generating the Hamiltonian derivatives (`dHk` argument)
     Hamiltonian.dSk : function for generating the Hamiltonian derivatives (`dSk` argument)
+
+    Notes
+    -----
+    The velocities are calculated without the Berry curvature contribution see Eq. (2) in [1]_.
+    The missing contribution may be added in later editions, for completeness sake, it is:
+
+    .. math::
+        \delta \mathbf v = - \mathbf k\times \Omega_i(\mathbf k)
+
+    where :math:`\Omega_i` is the Berry curvature for state :math:`i`.
 
     Returns
     -------
@@ -795,12 +815,9 @@ def berry_curvature(state, energy, dHk, dSk=None, degenerate=None, degenerate_di
 
     .. math::
 
-       \boldsymbol\Omega_{n,\alpha\beta} = - \frac2\hbar^2\Im\sum_{m\neq n}
-                \frac{v_{nm,\alpha} v_{mn,\beta}}
-                     {[\epsilon_m - \epsilon_n]^2}
-
-    Note that this method optionally returns the complex valued equivalent of the above.
-    I.e. :math:`\Im` is not applied if `complex` is true.
+       \boldsymbol\Omega_{i,\alpha\beta} = - \frac2{\hbar^2}\Im\sum_{j\neq i}
+                \frac{v^\alpha_{ij} v^\beta_{ji}}
+                     {[\epsilon_j - \epsilon_i]^2}
 
     For details see Eq. (11) in [1]_ or Eq. (2.59) in [2]_.
 
@@ -890,10 +907,10 @@ def conductivity(bz, distribution='fermi-dirac', method='ahc', degenerate=1.e-5,
     which may be calculated as:
 
     .. math::
-       \sigma_{\alpha\beta} = \frac{-e^2}{\hbar}\int\,\mathrm d\mathbf k\sum_nf_n(\mathbf k)\Omega_{n,\alpha\beta}(\mathbf k)
+       \sigma_{\alpha\beta} = \frac{-e^2}{\hbar}\int\,\mathrm d\mathbf k\sum_i f_i\Omega_{i,\alpha\beta}(\mathbf k)
 
-    where :math:`\Omega_{n,\alpha\beta}` is the Berry curvature for state :math:`n` and :math:`f_n` is
-    the occupation for state :math:`n`.
+    where :math:`\Omega_{i,\alpha\beta}` and :math:`f_i` is the Berry curvature and occupation
+    for state :math:`i`.
 
     Parameters
     ----------
@@ -902,7 +919,7 @@ def conductivity(bz, distribution='fermi-dirac', method='ahc', degenerate=1.e-5,
     distribution : str or func, optional
         distribution used to find occupations
     method : {'ahc'}
-       'ahc' calculates the anomalous Hall conductivity
+       'ahc' calculates the dc anomalous Hall conductivity
     degenerate : float, optional
        de-couple degenerate states within the given tolerance (in eV)
     degenerate_dir : (3,), optional
