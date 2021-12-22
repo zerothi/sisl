@@ -1563,40 +1563,12 @@ class _electron_State:
         numpy.ndarray
             the squared norm for each state
         """
-        if sum:
-            return self.inner()
-
         # Retrieve the overlap matrix (FULL S is required for NC)
         S = self.Sk()
+
+        if sum:
+            return self.inner(matrix=S)
         return conj(self.state) * S.dot(self.state.T).T
-
-    def inner(self, ket=None, matrix=None, diag=True):
-        r""" Calculate the inner product by :math:`\mathbf A_{ij} = \langle\psi_i| \mathbf M |\psi'_j\rangle`
-
-        The bra will be `self.state`.
-
-        Parameters
-        ----------
-        ket : State or array_like, optional
-           the ket object to calculate the inner product with, if not passed it will do the inner
-           product with itself.
-        matrix : array_like, optional
-           a vector or matrix that expresses the operator `M`. Defaults to the overlap matrix :math:`\mathbf S`.
-        diag : bool, optional
-           only return the diagonal matrix :math:`\mathbf A_{ii}`.
-
-        Returns
-        -------
-        numpy.ndarray
-            a matrix with the sum of inner state products
-        """
-        if matrix is None:
-            # Retrieve the overlap matrix (FULL S is required for NC)
-            matrix = self.Sk()
-            if ket is not None and not isinstance(matrix, _FakeMatrix):
-                warn(f"{self.__class__.__name__}.inner uses an overlap matrix that may be incompatible with your ket states, please be aware of this!")
-
-        return super().inner(ket, matrix, diag)
 
     def spin_moment(self, project=False):
         r""" Calculate spin moment from the states

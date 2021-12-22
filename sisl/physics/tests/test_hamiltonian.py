@@ -585,7 +585,8 @@ class TestHamiltonian:
             assert np.allclose(e, es.eig)
             assert np.allclose(v, es.state.T)
             assert np.allclose(es.norm2(), 1)
-            assert np.allclose(es.inner(diag=False), np.eye(len(es)))
+            # inner is not norm2
+            assert not np.allclose(es.inner(diag=False), np.eye(len(es)))
 
             assert es.inner(es.sub(0)).shape == (1, )
             assert es.inner(es.sub(0), diag=False).shape == (len(es), 1)

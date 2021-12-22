@@ -48,6 +48,8 @@ we hit release version 1.0.0.
 - fixed hpc parameters #403
 
 ### Changed
+- `EigenStateElectron.inner` does not use the overlap matrix by default, norm2 is for
+	exactly this behaviour
 - changed license to MPLv2 makes toolboxes easier to contribute under different license
 - renamed origo to origin, see #365
 - default parallel calculations are disabled
