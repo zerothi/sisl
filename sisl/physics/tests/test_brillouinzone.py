@@ -121,6 +121,23 @@ class TestBrillouinZone:
         # Average
         assert np.allclose(bz.apply.average.eigh(), np.arange(3))
 
+    def test_bz_parametrize_integer(self, setup):
+        # parametrize for single integers
+        def func(parent, N, i):
+            return [i/N, 0, 0]
+        bz = BrillouinZone.parametrize(setup.s1, func, 10)
+        assert len(bz) == 10
+        assert np.allclose(bz.k[-1], [9/10, 0, 0])
+
+    def test_bz_parametrize_list(self, setup):
+        # parametrize for single integers
+        def func(parent, N, i):
+            return [i[0]/N[0], i[1]/N[1], 0]
+        bz = BrillouinZone.parametrize(setup.s1, func, [10, 2])
+        assert len(bz) == 20
+        assert np.allclose(bz.k[-1], [9/10, 1/2, 0])
+        assert np.allclose(bz.k[-2], [9/10, 0/2, 0])
+
     @pytest.mark.parametrize("N", [2, 3, 4, 5, 7])
     @pytest.mark.parametrize("centered", [True, False])
     def test_mp_asgrid(self, setup, N, centered):

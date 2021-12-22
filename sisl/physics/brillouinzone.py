@@ -139,6 +139,7 @@ and ``imap`` and ``uimap`` methods. See the ``pathos`` documentation for detalis
 import types
 from numbers import Integral, Real
 import warnings
+import itertools
 
 from numpy import pi
 import numpy as np
@@ -341,45 +342,66 @@ class BrillouinZone:
         return self.__class__.__name__ + '{{nk: {},\n {}\n}}'.format(len(self), str(self.parent.sc).replace('\n', '\n '))
 
     @classmethod
-    def parametrize(self, sc, func, N, *args, **kwargs):
+    def parametrize(self, parent, func, N, *args, **kwargs):
         """ Generate a new `BrillouinZone` object with k-points parameterized via the function `func` in `N` separations
 
         Generator of a parameterized Brillouin zone object that contains a parameterized k-point
         list.
 
-        Basically this generates a new BrillouinZone object as:
-
-        >>> def func(sc, frac):
-        ...    return [frac, 0, 0]
-        >>> bz = BrillouinZone.parametrize(1, func, 10)
-        >>> len(bz) == 10
-        True
-        >>> np.allclose(bz.k[-1, :], [9./10, 0, 0])
-        True
-
         Parameters
         ----------
-        sc : SuperCell, or SuperCellChild
-           the supercell used to construct the k-points
+        parent : SuperCell, or SuperCellChild
+           the object that the returned object will contain as parent
         func : callable
-           method that parameterizes the k-points, *must* at least accept two arguments, ``sc``
-           (super-cell object containing the unit-cell and reciprocal cell) and ``frac``
-           (current parametrization fraction, between 0 and ``(N-1)/N``. It must return
-           a k-point in 3 dimensions.
-        N : int
-           number of k-points generated using the parameterization
-        args : list of arguments
-           arguments passed directly to `func`
-        kwargs : dictionary of arguments
-           keyword arguments passed directly to `func`
+           method that parameterizes the k-points, *must* at least accept three arguments,
+           1. ``parent``: object
+           2. ``N``: total number of k-points
+           3. ``i``: current index of the k-point (starting from 0)
+
+           the function must return a k-point in 3 dimensions.
+        N : int or list of int
+           number of k-points generated using the parameterization,
+           or a list of integers that will be looped over.
+           In this case arguments ``N`` and ``i`` in `func` will be
+           lists accordingly.
+        *args :
+           additional arguments passed directly to `func`
+        **kwargs :
+           additional keyword arguments passed directly to `func`
+
+
+        Examples
+        --------
+        Simple linear k-points
+
+        >>> def func(sc, N, i):
+        ...    return [i/N, 0, 0]
+        >>> bz = BrillouinZone.parametrize(1, func, 10)
+        >>> assert len(bz) == 10
+        >>> assert np.allclose(bz.k[-1, :], [9./10, 0, 0])
+
+        For double looping, say to create your own grid
+
+        >>> def func(sc, N, i):
+        ...    return [i[0]/N[0], i[1]/N[1], 0]
+        >>> bz = BrillouinZone.parametrize(1, func, [10, 5])
+        >>> assert len(bz) == 50
+
         """
-        k = np.empty([N, 3], np.float64)
-        for i in range(N):
-            k[i, :] = func(sc, i / N, *args, **kwargs)
-        return BrillouinZone(sc, k)
+        if isinstance(N, Integral):
+            k = np.empty([N, 3], np.float64)
+            for i in range(N):
+                k[i] = func(parent, N, i, *args, **kwargs)
+        else:
+            # N must be some-kind of list like thingy
+            Nk = np.prod(N)
+            k = np.empty([Nk, 3], np.float64)
+            for i, indices in enumerate(itertools.product(*map(range, N))):
+                k[i] = func(parent, N, indices, *args, **kwargs)
+        return BrillouinZone(parent, k)
 
     @staticmethod
-    def param_circle(sc, N_or_dk, kR, normal, origin, loop=False):
+    def param_circle(parent, N_or_dk, kR, normal, origin, loop=False):
         r""" Create a parameterized k-point list where the k-points are generated on a circle around an origin
 
         The generated circle is a perfect circle in the reciprocal space (Cartesian coordinates).
@@ -389,8 +411,8 @@ class BrillouinZone:
 
         Parameters
         ----------
-        sc : SuperCell, or SuperCellChild
-           the supercell used to construct the k-points
+        parent : SuperCell, or SuperCellChild
+           the parent object
         N_or_dk : int
            number of k-points generated using the parameterization (if an integer),
            otherwise it specifies the discretization length on the circle (in 1/Ang),
@@ -433,10 +455,10 @@ class BrillouinZone:
                 info('BrillouinZone.param_circle increased the number of circle points to 4.')
 
         # Conversion object
-        bz = BrillouinZone(sc)
+        bz = BrillouinZone(parent)
 
-        normal = _a.arrayd(normal)
-        origin = _a.arrayd(origin)
+        normal = _a.asarrayd(normal)
+        origin = _a.asarrayd(origin)
         k_n = bz.tocartesian(normal)
         k_o = bz.tocartesian(origin)
 
@@ -468,7 +490,7 @@ class BrillouinZone:
         W = np.pi * kR ** 2
         w = np.repeat([W / N], N)
 
-        return BrillouinZone(sc, k, w)
+        return BrillouinZone(parent, k, w)
 
     def copy(self, parent=None):
         """ Create a copy of this object, optionally changing the parent

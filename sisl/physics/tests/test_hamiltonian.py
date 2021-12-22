@@ -834,10 +834,9 @@ class TestHamiltonian:
         H = Hamiltonian(g)
         H.construct([(0.1, 1.0, 1.5), (0, 1., 0.5)])
         # Contour
-        k = np.linspace(0.0, 1.0, 101)
-        K = np.zeros([k.size, 3])
-        K[:, 1] = k
-        bz = BrillouinZone(H, K)
+        def func(parent, N, i):
+            return [0, i/N, 0]
+        bz = BrillouinZone.parametrize(H, func, 101)
         assert np.allclose(np.abs(berry_phase(bz, sub=0, method='zak')), np.pi)
         # Just to do the other branch
         berry_phase(bz, method='zak')
@@ -849,26 +848,20 @@ class TestHamiltonian:
         H = Hamiltonian(g)
         H.construct([(0.1, 1.0, 1.5), (0, 1., 0.5)])
         # Contour
-        k = np.linspace(0.0, 1.0, 101)
-        K = np.zeros([k.size, 3])
-        K[:, 0] = k
-        bz = BrillouinZone(H, K)
+        def func(parent, N, i):
+            return [0, i/N, 0]
+        bz = BrillouinZone.parametrize(H, func, 101)
         zak = berry_phase(bz, sub=0, method='zak')
         assert np.allclose(np.abs(zak), np.pi)
-        zak_origin = berry_phase(bz, sub=0, method='zak:origin')
-        assert not np.allclose(np.abs(zak), np.abs(zak_origin))
 
     def test_berry_phase_method_fail(self):
         # wrong method keyword
         g = Geometry([[-.6, 0, 0], [0.6, 0, 0]], Atom(1, 1.001), sc=[2, 10, 10])
         g.set_nsc([3, 1, 1])
         H = Hamiltonian(g)
-        H.construct([(0.1, 1.0, 1.5), (0, 1., 0.5)])
-        # Contour
-        k = np.linspace(0.0, 1.0, 101)
-        K = np.zeros([k.size, 3])
-        K[:, 0] = k
-        bz = BrillouinZone(H, K)
+        def func(parent, N, i):
+            return [0, i/N, 0]
+        bz = BrillouinZone.parametrize(H, func, 101)
         with pytest.raises(ValueError):
             berry_phase(bz, method='unknown')
 
