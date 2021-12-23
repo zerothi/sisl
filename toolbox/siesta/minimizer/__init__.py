@@ -95,7 +95,7 @@ not as tested as the other one.
 
 References
 ----------
-.. [1] P. Rivero, V.M. García-Suárez, D. Pereñiguez, K. Utt, Y. Yang, L. Bellaiche, K. Park, J. Ferrer, S. Barraza-Lopez, "Systematic pseudopotentials from reference eigenvalue sets for DFT calculations", Computational Materials Science, *98*, 372-389 (2015)
+.. [1] :doi:`P. Rivero, V.M. García-Suárez, D. Pereñiguez, K. Utt, Y. Yang, L. Bellaiche, K. Park, J. Ferrer, S. Barraza-Lopez, "Systematic pseudopotentials from reference eigenvalue sets for DFT calculations", Computational Materials Science, *98*, 372-389 (2015) <10.1016/j.commatsci.2014.11.026>`
 """
 from ._atom_pseudo import *
 from ._atom_basis import *

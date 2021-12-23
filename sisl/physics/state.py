@@ -586,7 +586,7 @@ class State(ParentContainer):
 
         References
         ----------
-        .. [1] N. C. Murphy *et.al.*, "Generalized inverse participation ratio as a possible measure of localization for interacting systems", PRB, *83*, 184206 (2011)
+        .. [1] :doi:`N. C. Murphy *et.al.*, "Generalized inverse participation ratio as a possible measure of localization for interacting systems", PRB **83**, 184206 (2011) <10.1103/PhysRevB.83.184206>`
         """
         # This *has* to be a real value C * C^* == real
         state_abs2 = self.norm2(sum=False).real

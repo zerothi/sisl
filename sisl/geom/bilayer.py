@@ -48,7 +48,7 @@ def bilayer(bond=1.42, bottom_atoms=None, top_atoms=None, stacking='AB',
 
     References
     ----------
-    .. [1] G. Trambly de Laissardiere, D. Mayou, L. Magaud, "Localization of Dirac Electrons in Rotated Graphene Bilayers", Nano Letts. 10, 804-808 (2010)
+    .. [1] :doi:`G. Trambly de Laissardiere, D. Mayou, L. Magaud, "Localization of Dirac Electrons in Rotated Graphene Bilayers", Nano Letters **10**, 804-808 (2010) <10.1021/nl902948m>`
     """
     if bottom_atoms is None:
         bottom_atoms = top_atoms

@@ -83,6 +83,13 @@ mathjax_path = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?c
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
+# Short-hand for :doi:
+extlinks = {
+    'issue': ('https://github.com/zerothi/sisl/issues/%s', 'issue %s'),
+    'pull': ('https://github.com/zerothi/sisl/pull/%s', 'pull request %s'),
+    'doi': ('https://dx.doi.org/%s', '%s'),
+}
+
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
 # source_suffix = ['.rst', '.md']

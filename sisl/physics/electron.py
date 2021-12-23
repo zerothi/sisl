@@ -579,7 +579,7 @@ def velocity(state, dHk, energy=None, dSk=None, degenerate=None, degenerate_dir=
 
     References
     ----------
-    .. [1] X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, "Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation", PRB, *74*, 195118 (2006)
+    .. [1] :doi:`X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, "Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation", PRB **74**, 195118 (2006) <10.1103/PhysRevB.74.195118>`
 
     Returns
     -------
@@ -728,6 +728,10 @@ def velocity_matrix(state, dHk, energy=None, dSk=None, degenerate=None, degenera
 
     where :math:`\Omega_i` is the Berry curvature for state :math:`i`.
 
+    References
+    ----------
+    .. [1] :doi:`X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, "Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation", PRB **74**, 195118 (2006) <10.1103/PhysRevB.74.195118>`
+
     Returns
     -------
     numpy.ndarray
@@ -851,8 +855,8 @@ def berry_curvature(state, energy, dHk, dSk=None, degenerate=None, degenerate_di
 
     References
     ----------
-    .. [1] X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, "Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation", PRB, *74*, 195118 (2006)
-    .. [2] J. K. Asboth, L. Oroslany, A. Palyi, "A Short Course on Topological Insulators", arXiv *1509.02295* (2015).
+    .. [1] :doi:`X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, "Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation", PRB **74**, 195118 (2006) <10.1103/PhysRevB.74.195118>`
+    .. [2] :doi:`J. K. Asboth, L. Oroslany, A. Palyi, "A Short Course on Topological Insulators", arXiv *1509.02295* (2015) <10.1007/978-3-319-25607-8>`
 
     Returns
     -------
@@ -984,14 +988,14 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
     The Brillouin zone object *need* not contain a closed discretized contour by doubling the first point.
 
     The implementation is very similar to PythTB, except we are here using the :math:`\mathbf R` gauge
-    (convention II according to PythTB).
+    (convention II according to PythTB), see discussion in :pull:`131`.
 
-    Note that for systems with band-crossings or degenerate states there is an arbitrariness to the definition
+    For systems with band-crossings or degenerate states there is an arbitrariness to the definition
     of the Berry phase for *individual* bands. However, the total phase (i.e., sum over filled bands) is
     invariant and unaffected by this arbitrariness as long as the filled and empty bands do not intersect,
     see [2]_.
 
-    For non-orthogonal basis sets it is not fully known how important the dk spacing is since
+    For non-orthogonal basis sets it is not fully known how important the :math:`\delta\mathbf k` spacing is since
     it relies on the Lowdin transformation of the states.
 
     Examples
@@ -1017,8 +1021,8 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
 
     References
     ----------
-    .. [1] J. Zak, "Berry's phase for energy bands in solids", PRL, **62**, 2747 (1989)
-    .. [2] R. Resta, "Manifestations of Berry's phase in molecules and condensed matter", JPCM, **12**, R107 (2000)
+    .. [1] :doi:`J. Zak, "Berry's phase for energy bands in solids", PRL **62**, 2747 (1989) <10.1103/PhysRevLett.62.2747>`
+    .. [2] :doi:`R. Resta, "Manifestations of Berry's phase in molecules and condensed matter", JPCM **12**, R107 (2000) <10.1088/0953-8984/12/9/201>`
     """
     from .hamiltonian import Hamiltonian
     # Currently we require the Berry phase calculation to *only* accept Hamiltonians
