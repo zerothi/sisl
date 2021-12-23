@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>conductivity &mdash; sisl 785f223c65 documentation</title>
+  <title>conductivity &mdash; sisl 0.1.dev1+g127fd00 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                785f223c65
+                0.1.dev1+g127fd00
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -158,22 +158,22 @@
 <h1>conductivity<a class="headerlink" href="#conductivity" title="Permalink to this headline"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="sisl.physics.electron.conductivity">
-<span class="sig-prename descclassname"><span class="pre">sisl.physics.electron.</span></span><span class="sig-name descname"><span class="pre">conductivity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distribution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fermi-dirac'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ahc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degenerate_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">complex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/electron.html#conductivity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.electron.conductivity" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sisl.physics.electron.</span></span><span class="sig-name descname"><span class="pre">conductivity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distribution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fermi-dirac'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ahc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degenerate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degenerate_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/electron.html#conductivity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.electron.conductivity" title="Permalink to this definition"></a></dt>
 <dd><p>Electronic conductivity for a given <em class="xref py py-obj">BrillouinZone</em> integral</p>
 <p>Currently the <em>only</em> implemented method is the anomalous Hall conductivity (AHC)
 which may be calculated as:</p>
 <div class="math notranslate nohighlight">
-\[\sigma_{\alpha\beta} = \frac{-e^2}{\hbar}\int\,\mathrm d\mathbf k\sum_nf_n(\mathbf k)\Omega_{n,\alpha\beta}(\mathbf k)\]</div>
-<p>where <span class="math notranslate nohighlight">\(\Omega_{n,\alpha\beta}\)</span> is the Berry curvature for state <span class="math notranslate nohighlight">\(n\)</span> and <span class="math notranslate nohighlight">\(f_n\)</span> is
-the occupation for state <span class="math notranslate nohighlight">\(n\)</span>.</p>
+\[\sigma_{\alpha\beta} = \frac{-e^2}{\hbar}\int\,\mathrm d\mathbf k\sum_i f_i\Omega_{i,\alpha\beta}(\mathbf k)\]</div>
+<p>where <span class="math notranslate nohighlight">\(\Omega_{i,\alpha\beta}\)</span> and <span class="math notranslate nohighlight">\(f_i\)</span> is the Berry curvature and occupation
+for state <span class="math notranslate nohighlight">\(i\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>bz</strong> (<a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><em>BrillouinZone</em></a>) – containing the integration grid and has the <code class="docutils literal notranslate"><span class="pre">bz.parent</span></code> as an instance of Hamiltonian.</p></li>
 <li><p><strong>distribution</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><em>func</em><em>, </em><em>optional</em>) – distribution used to find occupations</p></li>
-<li><p><strong>method</strong> (<em>{'ahc'}</em>) – ‘ahc’ calculates the anomalous Hall conductivity</p></li>
+<li><p><strong>method</strong> (<em>{'ahc'}</em>) – ‘ahc’ calculates the dc anomalous Hall conductivity</p></li>
+<li><p><strong>degenerate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – de-couple degenerate states within the given tolerance (in eV)</p></li>
 <li><p><strong>degenerate_dir</strong> (<em>(</em><em>3</em><em>,</em><em>)</em><em>, </em><em>optional</em>) – along which direction degenerate states are decoupled.</p></li>
-<li><p><strong>complex</strong> (<em>logical</em><em>, </em><em>optional</em>) – whether the returned quantity is complex valued</p></li>
 </ul>
 </dd>
 </dl>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.Coefficient &mdash; sisl 785f223c65 documentation</title>
+  <title>sisl.physics.Coefficient &mdash; sisl 0.1.dev1+g127fd00 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                785f223c65
+                0.1.dev1+g127fd00
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -202,7 +202,7 @@ This <a class="reference internal" href="#id1" title="sisl.physics.Coefficient.i
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.Coefficient.copy" title="sisl.physics.Coefficient.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>()</p></td>
 <td><p>Return a copy (only the coefficients are copied).</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.Coefficient.degenerate" title="sisl.physics.Coefficient.degenerate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">degenerate</span></code></a>(eps)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.Coefficient.degenerate" title="sisl.physics.Coefficient.degenerate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">degenerate</span></code></a>([eps])</p></td>
 <td><p>Find degenerate coefficients with a specified precision</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.Coefficient.iter" title="sisl.physics.Coefficient.iter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter</span></code></a>([asarray])</p></td>
@@ -252,11 +252,11 @@ This <a class="reference internal" href="#id1" title="sisl.physics.Coefficient.i
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.Coefficient.degenerate">
-<span class="sig-name descname"><span class="pre">degenerate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eps</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/state.html#Coefficient.degenerate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.Coefficient.degenerate" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">degenerate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/state.html#Coefficient.degenerate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.Coefficient.degenerate" title="Permalink to this definition"></a></dt>
 <dd><p>Find degenerate coefficients with a specified precision</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>eps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – the precision above which coefficients are not considered degenerate</p>
+<dd class="field-odd"><p><strong>eps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – the precision above which coefficients are not considered degenerate</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>a list of indices</p>

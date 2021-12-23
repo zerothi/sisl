@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.brillouinzone &mdash; sisl 785f223c65 documentation</title>
+  <title>sisl.physics.brillouinzone &mdash; sisl 0.1.dev1+g127fd00 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                785f223c65
+                0.1.dev1+g127fd00
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -234,6 +234,7 @@
 <span class="kn">import</span> <span class="nn">types</span>
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Integral</span><span class="p">,</span> <span class="n">Real</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
 
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">pi</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -246,7 +247,7 @@
 <span class="kn">from</span> <span class="nn">sisl.utils.mathematics</span> <span class="kn">import</span> <span class="n">cart2spher</span><span class="p">,</span> <span class="n">fnorm</span>
 <span class="kn">from</span> <span class="nn">sisl.utils.misc</span> <span class="kn">import</span> <span class="n">allow_kwargs</span>
 <span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
-<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">info</span><span class="p">,</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">progressbar</span><span class="p">,</span> <span class="n">deprecate_method</span><span class="p">,</span> <span class="n">deprecate</span>
+<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">info</span><span class="p">,</span> <span class="n">warn</span><span class="p">,</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">progressbar</span><span class="p">,</span> <span class="n">deprecate_method</span><span class="p">,</span> <span class="n">deprecate</span>
 <span class="kn">from</span> <span class="nn">sisl.supercell</span> <span class="kn">import</span> <span class="n">SuperCell</span>
 <span class="kn">from</span> <span class="nn">sisl.grid</span> <span class="kn">import</span> <span class="n">Grid</span>
 <span class="kn">from</span> <span class="nn">sisl._dispatcher</span> <span class="kn">import</span> <span class="n">ClassDispatcher</span>
@@ -294,7 +295,7 @@
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">linspace_bz</span><span class="p">(</span><span class="n">bz</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">linspace_bz</span><span class="p">(</span><span class="n">bz</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">jumps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">jump_dk</span><span class="o">=</span><span class="mf">0.05</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Convert points from a BZ object into a linear spacing of maximum value `stop`</span>
 
 <span class="sd">    Parameters</span>
@@ -304,15 +305,34 @@
 <span class="sd">    stop : int or None, optional</span>
 <span class="sd">       maximum value in the linear space, or if None, will return the cumulative</span>
 <span class="sd">       distance of the k-points in the Brillouin zone</span>
+<span class="sd">    jumps: array_like, optional</span>
+<span class="sd">       whether there are any jumps for the k-points that should not be taken into account</span>
+<span class="sd">    jump_dk: float or array_like, optional</span>
+<span class="sd">       how much total distance the jump points will take</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bz</span><span class="p">,</span> <span class="n">BrillouinZone</span><span class="p">):</span>
         <span class="n">cart</span> <span class="o">=</span> <span class="n">bz</span><span class="o">.</span><span class="n">tocartesian</span><span class="p">(</span><span class="n">bz</span><span class="o">.</span><span class="n">k</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">cart</span> <span class="o">=</span> <span class="n">bz</span>
     <span class="c1"># calculate vectors between each neighbouring points</span>
-    <span class="n">dcart</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">cart</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">prepend</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+    <span class="n">dcart</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">cart</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">prepend</span><span class="o">=</span><span class="n">cart</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
     <span class="c1"># calculate distances</span>
     <span class="n">dist</span> <span class="o">=</span> <span class="p">(</span><span class="n">dcart</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
+
+    <span class="c1"># calculate the total distance</span>
+    <span class="n">total_dist</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">jumps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Zero out the jumps</span>
+        <span class="n">dist</span><span class="p">[</span><span class="n">jumps</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">total_dist</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="c1"># correct jumps</span>
+        <span class="n">dist</span><span class="p">[</span><span class="n">jumps</span><span class="p">]</span> <span class="o">=</span> <span class="n">total_dist</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">jump_dk</span><span class="p">)</span>
+
     <span class="c1"># convert to linear scale</span>
     <span class="k">if</span> <span class="n">stop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span>
@@ -372,7 +392,10 @@
             <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">asarray</span><span class="p">()</span></div>
 
-    <span class="n">apply</span> <span class="o">=</span> <span class="n">BrillouinZoneDispatcher</span><span class="p">(</span><span class="s2">&quot;apply&quot;</span><span class="p">,</span> <span class="n">obj_getattr</span><span class="o">=</span><span class="k">lambda</span> <span class="n">obj</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">key</span><span class="p">))</span>
+    <span class="n">apply</span> <span class="o">=</span> <span class="n">BrillouinZoneDispatcher</span><span class="p">(</span><span class="s2">&quot;apply&quot;</span><span class="p">,</span>
+                                    <span class="c1"># Do not allow class dispatching</span>
+                                    <span class="n">type_dispatcher</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                    <span class="n">obj_getattr</span><span class="o">=</span><span class="k">lambda</span> <span class="n">obj</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">key</span><span class="p">))</span>
 
 <div class="viewcode-block" id="BrillouinZone.set_parent"><a class="viewcode-back" href="../../../api/generated/sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone.set_parent">[docs]</a>    <span class="k">def</span> <span class="nf">set_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Update the parent associated to this object</span>
@@ -414,45 +437,66 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;{{nk: </span><span class="si">{}</span><span class="s1">,</span><span class="se">\n</span><span class="s1"> </span><span class="si">{}</span><span class="se">\n</span><span class="s1">}}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">sc</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">))</span>
 
 <div class="viewcode-block" id="BrillouinZone.parametrize"><a class="viewcode-back" href="../../../api/generated/sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone.parametrize">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">parametrize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sc</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">parametrize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Generate a new `BrillouinZone` object with k-points parameterized via the function `func` in `N` separations</span>
 
 <span class="sd">        Generator of a parameterized Brillouin zone object that contains a parameterized k-point</span>
 <span class="sd">        list.</span>
 
-<span class="sd">        Basically this generates a new BrillouinZone object as:</span>
-
-<span class="sd">        &gt;&gt;&gt; def func(sc, frac):</span>
-<span class="sd">        ...    return [frac, 0, 0]</span>
-<span class="sd">        &gt;&gt;&gt; bz = BrillouinZone.parametrize(1, func, 10)</span>
-<span class="sd">        &gt;&gt;&gt; len(bz) == 10</span>
-<span class="sd">        True</span>
-<span class="sd">        &gt;&gt;&gt; np.allclose(bz.k[-1, :], [9./10, 0, 0])</span>
-<span class="sd">        True</span>
-
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        sc : SuperCell, or SuperCellChild</span>
-<span class="sd">           the supercell used to construct the k-points</span>
+<span class="sd">        parent : SuperCell, or SuperCellChild</span>
+<span class="sd">           the object that the returned object will contain as parent</span>
 <span class="sd">        func : callable</span>
-<span class="sd">           method that parameterizes the k-points, *must* at least accept two arguments, ``sc``</span>
-<span class="sd">           (super-cell object containing the unit-cell and reciprocal cell) and ``frac``</span>
-<span class="sd">           (current parametrization fraction, between 0 and ``(N-1)/N``. It must return</span>
-<span class="sd">           a k-point in 3 dimensions.</span>
-<span class="sd">        N : int</span>
-<span class="sd">           number of k-points generated using the parameterization</span>
-<span class="sd">        args : list of arguments</span>
-<span class="sd">           arguments passed directly to `func`</span>
-<span class="sd">        kwargs : dictionary of arguments</span>
-<span class="sd">           keyword arguments passed directly to `func`</span>
+<span class="sd">           method that parameterizes the k-points, *must* at least accept three arguments,</span>
+<span class="sd">           1. ``parent``: object</span>
+<span class="sd">           2. ``N``: total number of k-points</span>
+<span class="sd">           3. ``i``: current index of the k-point (starting from 0)</span>
+
+<span class="sd">           the function must return a k-point in 3 dimensions.</span>
+<span class="sd">        N : int or list of int</span>
+<span class="sd">           number of k-points generated using the parameterization,</span>
+<span class="sd">           or a list of integers that will be looped over.</span>
+<span class="sd">           In this case arguments ``N`` and ``i`` in `func` will be</span>
+<span class="sd">           lists accordingly.</span>
+<span class="sd">        *args :</span>
+<span class="sd">           additional arguments passed directly to `func`</span>
+<span class="sd">        **kwargs :</span>
+<span class="sd">           additional keyword arguments passed directly to `func`</span>
+
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Simple linear k-points</span>
+
+<span class="sd">        &gt;&gt;&gt; def func(sc, N, i):</span>
+<span class="sd">        ...    return [i/N, 0, 0]</span>
+<span class="sd">        &gt;&gt;&gt; bz = BrillouinZone.parametrize(1, func, 10)</span>
+<span class="sd">        &gt;&gt;&gt; assert len(bz) == 10</span>
+<span class="sd">        &gt;&gt;&gt; assert np.allclose(bz.k[-1, :], [9./10, 0, 0])</span>
+
+<span class="sd">        For double looping, say to create your own grid</span>
+
+<span class="sd">        &gt;&gt;&gt; def func(sc, N, i):</span>
+<span class="sd">        ...    return [i[0]/N[0], i[1]/N[1], 0]</span>
+<span class="sd">        &gt;&gt;&gt; bz = BrillouinZone.parametrize(1, func, [10, 5])</span>
+<span class="sd">        &gt;&gt;&gt; assert len(bz) == 50</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="n">N</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-            <span class="n">k</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">i</span> <span class="o">/</span> <span class="n">N</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">BrillouinZone</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">Integral</span><span class="p">):</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="n">N</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+                <span class="n">k</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># N must be some-kind of list like thingy</span>
+            <span class="n">Nk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="n">Nk</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">indices</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="nb">range</span><span class="p">,</span> <span class="n">N</span><span class="p">))):</span>
+                <span class="n">k</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">BrillouinZone</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="BrillouinZone.param_circle"><a class="viewcode-back" href="../../../api/generated/sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone.param_circle">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">param_circle</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">N_or_dk</span><span class="p">,</span> <span class="n">kR</span><span class="p">,</span> <span class="n">normal</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">loop</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">param_circle</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">N_or_dk</span><span class="p">,</span> <span class="n">kR</span><span class="p">,</span> <span class="n">normal</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">loop</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Create a parameterized k-point list where the k-points are generated on a circle around an origin</span>
 
 <span class="sd">        The generated circle is a perfect circle in the reciprocal space (Cartesian coordinates).</span>
@@ -462,8 +506,8 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        sc : SuperCell, or SuperCellChild</span>
-<span class="sd">           the supercell used to construct the k-points</span>
+<span class="sd">        parent : SuperCell, or SuperCellChild</span>
+<span class="sd">           the parent object</span>
 <span class="sd">        N_or_dk : int</span>
 <span class="sd">           number of k-points generated using the parameterization (if an integer),</span>
 <span class="sd">           otherwise it specifies the discretization length on the circle (in 1/Ang),</span>
@@ -506,10 +550,10 @@
                 <span class="n">info</span><span class="p">(</span><span class="s1">&#39;BrillouinZone.param_circle increased the number of circle points to 4.&#39;</span><span class="p">)</span>
 
         <span class="c1"># Conversion object</span>
-        <span class="n">bz</span> <span class="o">=</span> <span class="n">BrillouinZone</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+        <span class="n">bz</span> <span class="o">=</span> <span class="n">BrillouinZone</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
 
-        <span class="n">normal</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">(</span><span class="n">normal</span><span class="p">)</span>
-        <span class="n">origin</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">(</span><span class="n">origin</span><span class="p">)</span>
+        <span class="n">normal</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">normal</span><span class="p">)</span>
+        <span class="n">origin</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">origin</span><span class="p">)</span>
         <span class="n">k_n</span> <span class="o">=</span> <span class="n">bz</span><span class="o">.</span><span class="n">tocartesian</span><span class="p">(</span><span class="n">normal</span><span class="p">)</span>
         <span class="n">k_o</span> <span class="o">=</span> <span class="n">bz</span><span class="o">.</span><span class="n">tocartesian</span><span class="p">(</span><span class="n">origin</span><span class="p">)</span>
 
@@ -541,7 +585,7 @@
         <span class="n">W</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">kR</span> <span class="o">**</span> <span class="mi">2</span>
         <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">([</span><span class="n">W</span> <span class="o">/</span> <span class="n">N</span><span class="p">],</span> <span class="n">N</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">BrillouinZone</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">BrillouinZone</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="BrillouinZone.copy"><a class="viewcode-back" href="../../../api/generated/sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Create a copy of this object, optionally changing the parent</span>
@@ -1813,7 +1857,7 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    parent : object or array_like</span>
-<span class="sd">       An object with associated `parentcell` and `parent.rcell` or</span>
+<span class="sd">       An object with associated `parent.cell` and `parent.rcell` or</span>
 <span class="sd">       an array of floats which may be turned into a `SuperCell`</span>
 <span class="sd">    points : array_like of float</span>
 <span class="sd">       a list of points that are the *corners* of the path</span>
@@ -1826,6 +1870,14 @@
 <span class="sd">       will be ``sum(divisions) + 1`` due to the end-point constraint.</span>
 <span class="sd">    names : array_like of str</span>
 <span class="sd">       the associated names of the points on the Brillouin Zone path</span>
+<span class="sd">    jump_dk: float or array_like, optional</span>
+<span class="sd">       Percentage of ``self.lineark()[-1]`` that is used as separation between discontinued</span>
+<span class="sd">       jumps in the band-structure.</span>
+<span class="sd">       For band-structures with disconnected jumps the `lineark` and `lineartick` methods</span>
+<span class="sd">       returns a separation between the disconnected points according to this percentage.</span>
+<span class="sd">       Default value is 5% of the total distance. Alternatively an array equal to the</span>
+<span class="sd">       number of discontinuity jumps may be passed for individual percentages.</span>
+<span class="sd">       Keyword only, argument.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1833,6 +1885,12 @@
 <span class="sd">    &gt;&gt;&gt; bs = BandStructure(sc, [[0] * 3, [0.5] * 3], 200)</span>
 <span class="sd">    &gt;&gt;&gt; bs = BandStructure(sc, [[0] * 3, [0.5] * 3, [1.] * 3], 200)</span>
 <span class="sd">    &gt;&gt;&gt; bs = BandStructure(sc, [[0] * 3, [0.5] * 3, [1.] * 3], 200, [&#39;Gamma&#39;, &#39;M&#39;, &#39;Gamma&#39;])</span>
+
+<span class="sd">    A disconnected band structure may be created by either having a point of 0 length, or None.</span>
+<span class="sd">    Note that the number of names does not contain the empty points (they are simply removed).</span>
+<span class="sd">    Such a band-structure may be useful when one is not interested in a fully connected band structure.</span>
+
+<span class="sd">    &gt;&gt;&gt; bs = BandStructure(sc, [[0, 0, 0], [0, 0.5, 0], None, [0.5, 0, 0], [0.5, 0.5, 0]], 200)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="BandStructure.__init__"><a class="viewcode-back" href="../../../api/generated/sisl.physics.BandStructure.html#sisl.physics.BandStructure.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -1870,8 +1928,38 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> unknown arguments after parsing &#39;points&#39;, &#39;divisions&#39; and &#39;names&#39;: </span><span class="si">{</span><span class="n">args</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
+        <span class="c1"># Store empty split size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_jump_dk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;jump_dk&quot;</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">))</span>
+
         <span class="c1"># Copy over points</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">points</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+        <span class="c1"># Check if any of the points is None or has length 0</span>
+        <span class="c1"># In that case it is a disconnected path</span>
+        <span class="k">def</span> <span class="nf">is_empty</span><span class="p">(</span><span class="n">ix</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">ix</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">ix</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span>
+
+        <span class="c1"># filter out jump directions</span>
+        <span class="n">jump_idx</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayi</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">filter</span><span class="p">(</span><span class="n">is_empty</span><span class="p">,</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">points</span><span class="p">))])</span>
+
+        <span class="c1"># store only *valid* points</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">points</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">([</span><span class="n">p</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">points</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">jump_idx</span><span class="p">])</span>
+
+        <span class="c1"># remove erroneous jumps</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="ow">in</span> <span class="n">jump_idx</span><span class="p">:</span>
+            <span class="n">jump_idx</span> <span class="o">=</span> <span class="n">jump_idx</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="mi">0</span> <span class="ow">in</span> <span class="n">jump_idx</span><span class="p">:</span>
+            <span class="n">jump_idx</span> <span class="o">=</span> <span class="n">jump_idx</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_jump_dk</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">jump_idx</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_jump_dk</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> got inconsistent argument lengths (jump_dk does not match jumps in points)&quot;</span><span class="p">)</span>
+
+        <span class="c1"># The jump-idx is equal to using np.split(self.points, jump_idx)</span>
+        <span class="c1"># which then returns continuous sections</span>
+        <span class="c1"># correct for removed indices</span>
+        <span class="n">jump_idx</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">jump_idx</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_jump_idx</span> <span class="o">=</span> <span class="n">jump_idx</span>
 
         <span class="c1"># If the array has fewer points we try and determine</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
@@ -1894,14 +1982,16 @@
 
             <span class="c1"># Get length between different k-points with a total length</span>
             <span class="c1"># of division</span>
-            <span class="n">dists</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">linspace_bz</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tocartesian</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">)))</span>
+            <span class="n">dists</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">linspace_bz</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tocartesian</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">),</span> <span class="n">jumps</span><span class="o">=</span><span class="n">jump_idx</span><span class="p">,</span> <span class="n">jump_dk</span><span class="o">=</span><span class="mf">0.</span><span class="p">))</span>
 
             <span class="c1"># Get floating point divisions</span>
             <span class="n">divs_r</span> <span class="o">=</span> <span class="n">dists</span> <span class="o">*</span> <span class="n">divisions</span> <span class="o">/</span> <span class="n">dists</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
             <span class="c1"># Convert to integers</span>
             <span class="n">divs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rint</span><span class="p">(</span><span class="n">divs_r</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
             <span class="c1"># ensure at least 1 point along each division</span>
+            <span class="c1"># 1 division means only the starting point</span>
             <span class="n">divs</span><span class="p">[</span><span class="n">divs</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">divs</span><span class="p">[</span><span class="n">jump_idx</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="n">divs_sum</span> <span class="o">=</span> <span class="n">divs</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
             <span class="k">while</span> <span class="n">divs_sum</span> <span class="o">!=</span> <span class="n">divisions</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="c1"># only check indices where divs &gt; 1</span>
@@ -1924,6 +2014,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="s1">&#39;ABCDEFGHIJKLMNOPQRSTUVXYZ&#39;</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">)]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="n">names</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;inconsistent number of elements in &#39;points&#39; and &#39;names&#39; argument&quot;</span><span class="p">)</span>
 
         <span class="c1"># Calculate points</span>
         <span class="n">dpoint</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -1933,6 +2025,8 @@
             <span class="n">k</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">divs</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">[</span><span class="n">ik</span><span class="p">]</span> <span class="o">+</span> <span class="n">dk</span> <span class="o">*</span> <span class="n">_a</span><span class="o">.</span><span class="n">aranged</span><span class="p">(</span><span class="n">divs</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">divs</span>
             <span class="n">i</span> <span class="o">+=</span> <span class="n">divs</span>
         <span class="n">k</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># sanity check that should always be obeyed</span>
+        <span class="k">assert</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_k</span> <span class="o">=</span> <span class="n">k</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">fulld</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">),</span> <span class="mi">1</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">))</span></div>
@@ -1947,7 +2041,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span>
-        <span class="n">bz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">divisions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
+        <span class="n">bz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">divisions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">,</span> <span class="n">jump_dk</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_jump_dk</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">bz</span></div>
 
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1955,7 +2049,9 @@
         <span class="n">state</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__getstate__</span><span class="p">()</span>
         <span class="n">state</span><span class="p">[</span><span class="s1">&#39;points&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">state</span><span class="p">[</span><span class="s1">&#39;divisions&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">divisions</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">state</span><span class="p">[</span><span class="s1">&#39;jump_idx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_jump_idx</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">state</span><span class="p">[</span><span class="s1">&#39;names&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
+        <span class="n">state</span><span class="p">[</span><span class="s1">&#39;jump_dk&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_jump_dk</span>
         <span class="k">return</span> <span class="n">state</span>
 
     <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
@@ -1964,6 +2060,64 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">points</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;points&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">divisions</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;divisions&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;names&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_jump_dk</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;jump_dk&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_jump_idx</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;jump_idx&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="BandStructure.insert_jump"><a class="viewcode-back" href="../../../api/generated/sisl.physics.BandStructure.html#sisl.physics.BandStructure.insert_jump">[docs]</a>    <span class="k">def</span> <span class="nf">insert_jump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">arrays</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return a copy of `arrays` filled with `value` at indices of discontinuity jumps</span>
+
+<span class="sd">        Arrays with `value` in jumps is easier to plot since those lines will be naturally discontinued.</span>
+<span class="sd">        For band structures without discontinuity jumps in the Brillouin zone the `arrays` will</span>
+<span class="sd">        be return as is.</span>
+
+<span class="sd">        It will insert `value` along the first dimension matching the length of `self`.</span>
+<span class="sd">        For each discontinuity jump an element will be inserted.</span>
+
+<span class="sd">        This may be useful for plotting since `np.nan` gets interpreted as a discontinuity</span>
+<span class="sd">        in the graph thus removing connections between the segments.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        *arrays : array_like</span>
+<span class="sd">           arrays will get `value` inserted where there are jumps in the band structure</span>
+<span class="sd">        value : optional</span>
+<span class="sd">           the value to be inserted at the jump points in the data array</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Create a bandrstructure with a discontinuity.</span>
+
+<span class="sd">        &gt;&gt;&gt; gr = geom.graphene()</span>
+<span class="sd">        &gt;&gt;&gt; bs = BandStructure(gr, [[0, 0, 0], [0.5, 0, 0], None, [0, 0, 0], [0, 0.5, 0]], 4)</span>
+<span class="sd">        &gt;&gt;&gt; data = np.zeros([len(bs), 10])</span>
+<span class="sd">        &gt;&gt;&gt; data_with_jump = bs.insert_jump(data)</span>
+<span class="sd">        &gt;&gt;&gt; assert data_with_jump.shape == (len(bs)+1, 10)</span>
+<span class="sd">        &gt;&gt;&gt; np.all(data_with_jump[2] == np.nan)</span>
+<span class="sd">        True</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># quick return if nothing needs changed</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_jump_idx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arrays</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">arrays</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">arrays</span>
+
+        <span class="n">nk</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">full_jumps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">divisions</span><span class="p">)[</span><span class="bp">self</span><span class="o">.</span><span class="n">_jump_idx</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">def</span> <span class="nf">_insert</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
+            <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+            <span class="c1"># ensure dtype is equivalent as input array</span>
+            <span class="n">nans</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">full_jumps</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">array</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="n">nans</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">axis</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">nk</span><span class="p">)</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+            <span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">full_jumps</span><span class="p">,</span> <span class="n">nans</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">)</span>
+
+        <span class="c1"># convert all</span>
+        <span class="n">arrays</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">_insert</span><span class="p">(</span><span class="n">array</span><span class="p">)</span> <span class="k">for</span> <span class="n">array</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arrays</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">arrays</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">arrays</span></div>
 
 <div class="viewcode-block" id="BandStructure.lineartick"><a class="viewcode-back" href="../../../api/generated/sisl.physics.BandStructure.html#sisl.physics.BandStructure.lineartick">[docs]</a>    <span class="k">def</span> <span class="nf">lineartick</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; The tick-marks corresponding to the linear-k values</span>
@@ -1979,10 +2133,49 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lineark</span><span class="p">(</span><span class="kc">True</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span></div>
 
+<div class="viewcode-block" id="BandStructure.tolinear"><a class="viewcode-back" href="../../../api/generated/sisl.physics.BandStructure.html#sisl.physics.BandStructure.tolinear">[docs]</a>    <span class="k">def</span> <span class="nf">tolinear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">ret_index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Convert a k-point into the equivalent linear k-point via the distance</span>
+
+<span class="sd">        Finds the index of the k-point in `self.k` that is closests to `k`.</span>
+<span class="sd">        The returned value is then the equivalent index in `lineark`.</span>
+
+<span class="sd">        This is very useful for extracting certain points along the band structure.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        k : array_like</span>
+<span class="sd">           the k-point(s) to locate in the linear values</span>
+<span class="sd">        ret_index : bool, optional</span>
+<span class="sd">           whether the indices are also returned</span>
+<span class="sd">        tol : float, optional</span>
+<span class="sd">           when the found k-point has a distance (in Cartesian coordinates)</span>
+<span class="sd">           is differing by more than `tol` a warning will be issued.</span>
+<span class="sd">           The tolerance is in units 1/Ang.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Faster than to do sqrt all the time</span>
+        <span class="n">tol</span> <span class="o">=</span> <span class="n">tol</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="c1"># first convert to the cartesian coordinates (for proper distances)</span>
+        <span class="n">ks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tocartesian</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
+        <span class="n">kk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tocartesian</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">)</span>
+
+        <span class="c1"># find closest values</span>
+        <span class="k">def</span> <span class="nf">find</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+            <span class="n">dist</span> <span class="o">=</span> <span class="p">((</span><span class="n">kk</span> <span class="o">-</span> <span class="n">k</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">dist</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">tol</span><span class="p">:</span>
+                <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.tolinear could not find a k-point within given tolerance (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">toreduced</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">idx</span>
+
+        <span class="n">idxs</span> <span class="o">=</span> <span class="p">[</span><span class="n">find</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">ks</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">ret_index</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lineark</span><span class="p">()[</span><span class="n">idxs</span><span class="p">],</span> <span class="n">idxs</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lineark</span><span class="p">()[</span><span class="n">idxs</span><span class="p">]</span></div>
+
 <div class="viewcode-block" id="BandStructure.lineark"><a class="viewcode-back" href="../../../api/generated/sisl.physics.BandStructure.html#sisl.physics.BandStructure.lineark">[docs]</a>    <span class="k">def</span> <span class="nf">lineark</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ticks</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; A 1D array which corresponds to the delta-k values of the path</span>
 
-<span class="sd">        This is meant for plotting</span>
+<span class="sd">        This is mainly meant for plotting but may be useful for finding out</span>
+<span class="sd">        distances in the reciprocal lattice.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -2004,6 +2197,10 @@
 <span class="sd">        ticks : bool, optional</span>
 <span class="sd">           if `True` the ticks for the points are also returned</span>
 
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        linspace_bz : converts k-points into a linear distance parameterization</span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        linear_k : numpy.ndarray</span>
@@ -2013,14 +2210,16 @@
 <span class="sd">        ticklabels : list of str</span>
 <span class="sd">            labels at `ticks`, only returned if `ticks` is ``True``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cum_divs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">divisions</span><span class="p">)</span>
         <span class="c1"># Calculate points</span>
-        <span class="n">dK</span> <span class="o">=</span> <span class="n">linspace_bz</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="c1"># First we also need to calculate the jumps</span>
+        <span class="n">dK</span> <span class="o">=</span> <span class="n">linspace_bz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">jumps</span><span class="o">=</span><span class="n">cum_divs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_jump_idx</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">jump_dk</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_jump_dk</span><span class="p">)</span>
 
         <span class="c1"># Get label tick, in case self.names is a single string &#39;ABCD&#39;</span>
         <span class="k">if</span> <span class="n">ticks</span><span class="p">:</span>
             <span class="c1"># Get number of points</span>
             <span class="n">xtick</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-            <span class="n">xtick</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">divisions</span><span class="p">)</span>
+            <span class="n">xtick</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">cum_divs</span>
             <span class="c1"># Ensure the returned label_tick is a copy</span>
             <span class="k">return</span> <span class="n">dK</span><span class="p">,</span> <span class="n">dK</span><span class="p">[</span><span class="n">xtick</span><span class="p">],</span> <span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">names</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">dK</span></div>

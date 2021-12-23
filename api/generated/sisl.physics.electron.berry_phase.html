@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>berry_phase &mdash; sisl 785f223c65 documentation</title>
+  <title>berry_phase &mdash; sisl 0.1.dev1+g127fd00 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                785f223c65
+                0.1.dev1+g127fd00
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -174,20 +174,21 @@ first and last k-point must not be the same.</p></li>
 <li><p><strong>eigvals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – return the eigenvalues of the product of the overlap matrices</p></li>
 <li><p><strong>closed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – whether or not to include the connection of the last and first points in the loop</p></li>
 <li><p><strong>method</strong> (<em>{'berry'</em><em>, </em><em>'zak'}</em>) – ‘berry’ will return the usual integral of the Berry connection over the specified contour
-‘zak’ will compute the Zak phase for 1D systems by performing a closed loop integration but
-taking into account the Bloch factor <span class="math notranslate nohighlight">\(e^{i2\pi/a x}\)</span> accumulated over a Brillouin zone,
-see <a class="footnote-reference brackets" href="#id3" id="id1">1</a>.</p></li>
+‘zak’ will compute the Zak phase for 1D systems by performing
+a closed loop integration, see <a class="footnote-reference brackets" href="#id3" id="id1">1</a>.</p></li>
 </ul>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
 <p>The Brillouin zone object <em>need</em> not contain a closed discretized contour by doubling the first point.</p>
-<p>The implementation is very similar to PythTB and refer to the details outlined in PythTB for
-additional details.</p>
+<p>The implementation is very similar to PythTB, except we are here using the <span class="math notranslate nohighlight">\(\mathbf R\)</span> gauge
+(convention II according to PythTB).</p>
 <p>Note that for systems with band-crossings or degenerate states there is an arbitrariness to the definition
 of the Berry phase for <em>individual</em> bands. However, the total phase (i.e., sum over filled bands) is
 invariant and unaffected by this arbitrariness as long as the filled and empty bands do not intersect,
 see <a class="footnote-reference brackets" href="#id4" id="id2">2</a>.</p>
+<p>For non-orthogonal basis sets it is not fully known how important the dk spacing is since
+it relies on the Lowdin transformation of the states.</p>
 <p class="rubric">Examples</p>
 <p>Calculate the multi-band Berry-phase</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">N</span> <span class="o">=</span> <span class="mi">30</span>

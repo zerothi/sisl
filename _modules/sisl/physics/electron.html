@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.electron &mdash; sisl 785f223c65 documentation</title>
+  <title>sisl.physics.electron &mdash; sisl 0.1.dev1+g127fd00 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                785f223c65
+                0.1.dev1+g127fd00
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -160,8 +160,8 @@
 <span class="kn">from</span> <span class="nn">sisl._math_small</span> <span class="kn">import</span> <span class="n">xyz_to_spherical_cos_phi</span>
 <span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
 <span class="kn">from</span> <span class="nn">sisl.linalg</span> <span class="kn">import</span> <span class="n">svd_destroy</span><span class="p">,</span> <span class="n">eigvals_destroy</span>
-<span class="kn">from</span> <span class="nn">sisl.linalg</span> <span class="kn">import</span> <span class="n">eigh</span><span class="p">,</span> <span class="n">det_destroy</span>
-<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">info</span><span class="p">,</span> <span class="n">warn</span><span class="p">,</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">progressbar</span>
+<span class="kn">from</span> <span class="nn">sisl.linalg</span> <span class="kn">import</span> <span class="n">eigh</span><span class="p">,</span> <span class="n">det_destroy</span><span class="p">,</span> <span class="n">invsqrth</span>
+<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">info</span><span class="p">,</span> <span class="n">warn</span><span class="p">,</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">progressbar</span><span class="p">,</span> <span class="n">deprecate_method</span>
 <span class="kn">from</span> <span class="nn">sisl._help</span> <span class="kn">import</span> <span class="n">dtype_complex_to_real</span><span class="p">,</span> <span class="n">dtype_real_to_complex</span>
 <span class="kn">from</span> <span class="nn">.distribution</span> <span class="kn">import</span> <span class="n">get_distribution</span>
 <span class="kn">from</span> <span class="nn">.spin</span> <span class="kn">import</span> <span class="n">Spin</span>
@@ -172,7 +172,6 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;DOS&#39;</span><span class="p">,</span> <span class="s1">&#39;PDOS&#39;</span><span class="p">,</span> <span class="s1">&#39;COP&#39;</span><span class="p">]</span>
 <span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">,</span> <span class="s1">&#39;velocity_matrix&#39;</span><span class="p">]</span>
 <span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;spin_moment&#39;</span><span class="p">,</span> <span class="s1">&#39;spin_squared&#39;</span><span class="p">]</span>
-<span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;inv_eff_mass_tensor&#39;</span><span class="p">]</span>
 <span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;berry_phase&#39;</span><span class="p">,</span> <span class="s1">&#39;berry_curvature&#39;</span><span class="p">]</span>
 <span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;conductivity&#39;</span><span class="p">]</span>
 <span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;wavefunction&#39;</span><span class="p">]</span>
@@ -625,17 +624,25 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       \mathbf{v}_{i\alpha} = \frac1\hbar \langle \psi_i |</span>
-<span class="sd">                \frac{\partial}{\partial\mathbf k}_\alpha \mathbf H(\mathbf k) | \psi_i \rangle</span>
+<span class="sd">       \mathbf{v}^\alpha_{i} = \frac1\hbar \langle \psi_i |</span>
+<span class="sd">                \frac{\partial}{\partial\mathbf k_\alpha} \mathbf H(\mathbf k) | \psi_i \rangle</span>
 
 <span class="sd">    In case of non-orthogonal basis the equations substitutes :math:`\mathbf H(\mathbf k)` by</span>
 <span class="sd">    :math:`\mathbf H(\mathbf k) - \epsilon_i\mathbf S(\mathbf k)`.</span>
 
-<span class="sd">    The velocities calculated are without the Berry curvature contributions.</span>
-
 <span class="sd">    In case the user requests to project the velocities (`project` is True) the equation follows that</span>
 <span class="sd">    of `PDOS` with the same changes.</span>
 <span class="sd">    In case of non-colinear spin the velocities will be returned also for each spin-direction.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The velocities are calculated without the Berry curvature contribution see Eq. (2) in [1]_.</span>
+<span class="sd">    The missing contribution may be added in later editions, for completeness sake, it is:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \delta \mathbf v = - \mathbf k\times \Omega_i(\mathbf k)</span>
+
+<span class="sd">    where :math:`\Omega_i` is the Berry curvature for state :math:`i`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -664,6 +671,10 @@
 <span class="sd">    --------</span>
 <span class="sd">    Hamiltonian.dHk : function for generating the Hamiltonian derivatives (`dHk` argument)</span>
 <span class="sd">    Hamiltonian.dSk : function for generating the Hamiltonian derivatives (`dSk` argument)</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, &quot;Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation&quot;, PRB, *74*, 195118 (2006)</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -765,16 +776,14 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       \mathbf{v}_{ij\alpha} = \frac1\hbar \langle \psi_j |</span>
-<span class="sd">                \frac{\partial}{\partial\mathbf k}_\alpha \mathbf H(\mathbf k) | \psi_i \rangle</span>
+<span class="sd">       \mathbf{v}^\alpha_{ij} = \frac1\hbar \langle \psi_j |</span>
+<span class="sd">                \frac{\partial}{\partial\mathbf k_\alpha} \mathbf H(\mathbf k) | \psi_i \rangle</span>
 
 <span class="sd">    In case of non-orthogonal basis the equations substitutes :math:`\mathbf H(\mathbf k)` by</span>
 <span class="sd">    :math:`\mathbf H(\mathbf k) - \epsilon_i\mathbf S(\mathbf k)`.</span>
 
-<span class="sd">    Although this matrix should be Hermitian it is not checked, and we explicitly calculate</span>
+<span class="sd">    Although the matrix :math:`\mathbf v` should be Hermitian it is not checked, and we explicitly calculate</span>
 <span class="sd">    all elements.</span>
-
-<span class="sd">    The velocities calculated are without the Berry curvature contributions.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -803,6 +812,16 @@
 <span class="sd">    velocity : only calculate the diagonal components of this matrix</span>
 <span class="sd">    Hamiltonian.dHk : function for generating the Hamiltonian derivatives (`dHk` argument)</span>
 <span class="sd">    Hamiltonian.dSk : function for generating the Hamiltonian derivatives (`dSk` argument)</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The velocities are calculated without the Berry curvature contribution see Eq. (2) in [1]_.</span>
+<span class="sd">    The missing contribution may be added in later editions, for completeness sake, it is:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \delta \mathbf v = - \mathbf k\times \Omega_i(\mathbf k)</span>
+
+<span class="sd">    where :math:`\Omega_i` is the Berry curvature for state :math:`i`.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -883,7 +902,7 @@
 
 
 <div class="viewcode-block" id="berry_curvature"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.berry_curvature.html#sisl.physics.electron.berry_curvature">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">berry_curvature</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">energy</span><span class="p">,</span> <span class="n">dHk</span><span class="p">,</span> <span class="n">dSk</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">degenerate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="nb">complex</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">berry_curvature</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">energy</span><span class="p">,</span> <span class="n">dHk</span><span class="p">,</span> <span class="n">dSk</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">degenerate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the Berry curvature matrix for a set of states (using Kubo)</span>
 
 <span class="sd">    The Berry curvature is calculated using the following expression</span>
@@ -891,12 +910,9 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       \boldsymbol\Omega_{n,\alpha\beta} = - \frac2\hbar^2\Im\sum_{m\neq n}</span>
-<span class="sd">                \frac{v_{nm,\alpha} v_{mn,\beta}}</span>
-<span class="sd">                     {[\epsilon_m - \epsilon_n]^2}</span>
-
-<span class="sd">    Note that this method optionally returns the complex valued equivalent of the above.</span>
-<span class="sd">    I.e. :math:`\Im` is not applied if `complex` is true.</span>
+<span class="sd">       \boldsymbol\Omega_{i,\alpha\beta} = - \frac2{\hbar^2}\Im\sum_{j\neq i}</span>
+<span class="sd">                \frac{v^\alpha_{ij} v^\beta_{ji}}</span>
+<span class="sd">                     {[\epsilon_j - \epsilon_i]^2}</span>
 
 <span class="sd">    For details see Eq. (11) in [1]_ or Eq. (2.59) in [2]_.</span>
 
@@ -920,8 +936,6 @@
 <span class="sd">       is required to decouple them.</span>
 <span class="sd">    degenerate_dir : (3,), optional</span>
 <span class="sd">       along which direction degenerate states are decoupled.</span>
-<span class="sd">    complex : logical, optional</span>
-<span class="sd">       whether the returned quantity is complex valued (i.e. not *only* the imaginary part is returned)</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
@@ -938,14 +952,10 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    numpy.ndarray</span>
-<span class="sd">        Berry flux with final dimension ``(state.shape[0], 3, 3)`` (complex if `complex` is True).</span>
+<span class="sd">        Berry flux with final dimension ``(state.shape[0], 3, 3)``</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">berry_curvature</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">energy</span><span class="p">,</span> <span class="n">dHk</span><span class="p">,</span> <span class="n">dSk</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="p">,</span> <span class="nb">complex</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-
-    <span class="k">if</span> <span class="n">degenerate</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># Fix following routine</span>
-        <span class="n">degenerate</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">return</span> <span class="n">berry_curvature</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">energy</span><span class="p">,</span> <span class="n">dHk</span><span class="p">,</span> <span class="n">dSk</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="n">dtype</span> <span class="o">=</span> <span class="n">find_common_type</span><span class="p">([</span><span class="n">state</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">dHk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">dtype_real_to_complex</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">dtype</span><span class="p">)],</span> <span class="p">[])</span>
     <span class="k">if</span> <span class="n">dSk</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -953,16 +963,14 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">v_matrix</span> <span class="o">=</span> <span class="n">_velocity_matrix_non_ortho</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">dHk</span><span class="p">,</span> <span class="n">energy</span><span class="p">,</span> <span class="n">dSk</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
         <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;berry_curvature calculation for non-orthogonal basis sets are not tested! Do not expect this to be correct!&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">complex</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">_berry_curvature</span><span class="p">(</span><span class="n">v_matrix</span><span class="p">,</span> <span class="n">energy</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">_berry_curvature</span><span class="p">(</span><span class="n">v_matrix</span><span class="p">,</span> <span class="n">energy</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">)</span><span class="o">.</span><span class="n">imag</span></div>
+    <span class="k">return</span> <span class="n">_berry_curvature</span><span class="p">(</span><span class="n">v_matrix</span><span class="p">,</span> <span class="n">energy</span><span class="p">)</span></div>
 
 
 <span class="c1"># This reverses the velocity unit (squared since Berry curvature is v.v)</span>
 <span class="n">_berry_curvature_const</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">_velocity_const</span> <span class="o">**</span> <span class="mi">2</span>
 
 
-<span class="k">def</span> <span class="nf">_berry_curvature</span><span class="p">(</span><span class="n">v_M</span><span class="p">,</span> <span class="n">energy</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_berry_curvature</span><span class="p">(</span><span class="n">v_M</span><span class="p">,</span> <span class="n">energy</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate Berry curvature for a given velocity matrix &quot;&quot;&quot;</span>
 
     <span class="c1"># All matrix elements along the 3 directions</span>
@@ -971,41 +979,33 @@
     <span class="c1"># to calculate anything. Hence we need to initialize as zero</span>
     <span class="c1"># This is a vector of matrices</span>
     <span class="c1">#   \Omega_{n, \alpha \beta}</span>
-    <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">N</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_real_to_complex</span><span class="p">(</span><span class="n">v_M</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
+    <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">N</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_complex_to_real</span><span class="p">(</span><span class="n">v_M</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
 
-    <span class="c1"># Fast index deletion</span>
-    <span class="n">index</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">energy</span><span class="p">):</span>
+        <span class="n">de</span> <span class="o">=</span> <span class="p">(</span><span class="n">energy</span> <span class="o">-</span> <span class="n">e</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="c1"># add factor 2 here, but omit the minus sign until later</span>
+        <span class="c1"># where we are forced to use the constant upon return anyways</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">de</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="p">(</span><span class="n">de</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">),</span> <span class="n">out</span><span class="o">=</span><span class="n">de</span><span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+        <span class="c1"># Calculate the berry-curvature</span>
+        <span class="n">sigma</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="p">((</span><span class="n">de</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">v_M</span><span class="p">[</span><span class="n">s</span><span class="p">])</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">v_M</span><span class="p">[:,</span> <span class="n">s</span><span class="p">])</span><span class="o">.</span><span class="n">imag</span>
 
-        <span class="c1"># Calculate the Berry-curvature from the velocity matrix</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="n">index</span>
-        <span class="k">for</span> <span class="n">deg</span> <span class="ow">in</span> <span class="n">degenerate</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">deg</span><span class="p">:</span>
-                <span class="c1"># We skip degenerate states as that would lead to overflow</span>
-                <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">deg</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">==</span> <span class="n">N</span><span class="p">:</span>
-            <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
-
-        <span class="c1"># Note we do not use an epsilon for accuracy</span>
-        <span class="n">fac</span> <span class="o">=</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="n">energy</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">-</span> <span class="n">energy</span><span class="p">[</span><span class="n">n</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span>
-        <span class="n">sigma</span><span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;i,ij,il-&gt;jl&quot;</span><span class="p">,</span> <span class="n">fac</span><span class="p">,</span> <span class="n">v_M</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="n">n</span><span class="p">],</span> <span class="n">v_M</span><span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="n">idx</span><span class="p">])</span>
-
-    <span class="k">return</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">_berry_curvature_const</span>
+    <span class="c1"># negative here</span>
+    <span class="k">return</span> <span class="n">sigma</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span> <span class="n">_berry_curvature_const</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="conductivity"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.conductivity.html#sisl.physics.electron.conductivity">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">conductivity</span><span class="p">(</span><span class="n">bz</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s1">&#39;fermi-dirac&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;ahc&#39;</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="nb">complex</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">conductivity</span><span class="p">(</span><span class="n">bz</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s1">&#39;fermi-dirac&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;ahc&#39;</span><span class="p">,</span> <span class="n">degenerate</span><span class="o">=</span><span class="mf">1.e-5</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Electronic conductivity for a given `BrillouinZone` integral</span>
 
 <span class="sd">    Currently the *only* implemented method is the anomalous Hall conductivity (AHC)</span>
 <span class="sd">    which may be calculated as:</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">       \sigma_{\alpha\beta} = \frac{-e^2}{\hbar}\int\,\mathrm d\mathbf k\sum_nf_n(\mathbf k)\Omega_{n,\alpha\beta}(\mathbf k)</span>
+<span class="sd">       \sigma_{\alpha\beta} = \frac{-e^2}{\hbar}\int\,\mathrm d\mathbf k\sum_i f_i\Omega_{i,\alpha\beta}(\mathbf k)</span>
 
-<span class="sd">    where :math:`\Omega_{n,\alpha\beta}` is the Berry curvature for state :math:`n` and :math:`f_n` is</span>
-<span class="sd">    the occupation for state :math:`n`.</span>
+<span class="sd">    where :math:`\Omega_{i,\alpha\beta}` and :math:`f_i` is the Berry curvature and occupation</span>
+<span class="sd">    for state :math:`i`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1014,11 +1014,11 @@
 <span class="sd">    distribution : str or func, optional</span>
 <span class="sd">        distribution used to find occupations</span>
 <span class="sd">    method : {&#39;ahc&#39;}</span>
-<span class="sd">       &#39;ahc&#39; calculates the anomalous Hall conductivity</span>
+<span class="sd">       &#39;ahc&#39; calculates the dc anomalous Hall conductivity</span>
+<span class="sd">    degenerate : float, optional</span>
+<span class="sd">       de-couple degenerate states within the given tolerance (in eV)</span>
 <span class="sd">    degenerate_dir : (3,), optional</span>
 <span class="sd">       along which direction degenerate states are decoupled.</span>
-<span class="sd">    complex : logical, optional</span>
-<span class="sd">       whether the returned quantity is complex valued</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
@@ -1036,165 +1036,14 @@
     <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;ahc&#39;</span><span class="p">:</span>
         <span class="k">def</span> <span class="nf">_ahc</span><span class="p">(</span><span class="n">es</span><span class="p">):</span>
             <span class="n">occ</span> <span class="o">=</span> <span class="n">distribution</span><span class="p">(</span><span class="n">es</span><span class="o">.</span><span class="n">eig</span><span class="p">)</span>
-            <span class="n">bc</span> <span class="o">=</span> <span class="n">es</span><span class="o">.</span><span class="n">berry_curvature</span><span class="p">(</span><span class="n">degenerate_dir</span><span class="o">=</span><span class="n">degenerate_dir</span><span class="p">,</span> <span class="nb">complex</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;i,ijl-&gt;jl&#39;</span><span class="p">,</span> <span class="n">occ</span><span class="p">,</span> <span class="n">bc</span><span class="p">)</span>
+            <span class="n">bc</span> <span class="o">=</span> <span class="n">es</span><span class="o">.</span><span class="n">berry_curvature</span><span class="p">(</span><span class="n">degenerate</span><span class="o">=</span><span class="n">degenerate</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="o">=</span><span class="n">degenerate_dir</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">bc</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">distribution</span><span class="p">(</span><span class="n">es</span><span class="o">.</span><span class="n">eig</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
 
-        <span class="n">cond</span> <span class="o">=</span> <span class="o">-</span> <span class="n">bz</span><span class="o">.</span><span class="n">apply</span><span class="o">.</span><span class="n">average</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">(</span><span class="n">wrap</span><span class="o">=</span><span class="n">_ahc</span><span class="p">)</span> <span class="o">/</span> <span class="n">constant</span><span class="o">.</span><span class="n">hbar</span><span class="p">(</span><span class="s1">&#39;eV ps&#39;</span><span class="p">)</span>
+        <span class="n">cond</span> <span class="o">=</span> <span class="o">-</span> <span class="n">bz</span><span class="o">.</span><span class="n">apply</span><span class="o">.</span><span class="n">average</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">(</span><span class="n">wrap</span><span class="o">=</span><span class="n">_ahc</span><span class="p">)</span> <span class="o">*</span> <span class="n">_velocity_const</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span><span class="s2">&quot;conductivity: requires the method to be [ahc]&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">cond</span></div>
-
-
-<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">inv_eff_mass_tensor</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">ddHk</span><span class="p">,</span> <span class="n">energy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ddSk</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">degenerate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">as_matrix</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the effective mass tensor for a set of states (missing off-diagonal terms)</span>
-
-<span class="sd">    These are calculated using the analytic expression (:math:`\alpha,\beta` corresponds to Cartesian directions):</span>
-
-<span class="sd">    .. math::</span>
-
-<span class="sd">        \mathbf M^{-1}_{i\alpha\beta} = \frac1{\hbar^2} \langle \psi_i |</span>
-<span class="sd">             \frac{\partial}{\partial\mathbf k}_\alpha\frac{\partial}{\partial\mathbf k}_\beta \mathbf H(\mathbf k)</span>
-<span class="sd">             | \psi_i \rangle</span>
-
-<span class="sd">    In case of non-orthogonal basis the equations substitutes :math:`\mathbf H(\mathbf k)` by</span>
-<span class="sd">    :math:`\mathbf H(\mathbf k) - \epsilon_i\mathbf S(\mathbf k)`.</span>
-
-<span class="sd">    The matrix :math:`\mathbf M` is known as the effective mass tensor, remark that this function returns the inverse</span>
-<span class="sd">    of :math:`\mathbf M`.</span>
-
-<span class="sd">    Currently this routine only returns the above quations, however, the inverse effective mass tensor</span>
-<span class="sd">    also has contributions from some off-diagonal elements, see [1]_.</span>
-
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    The reason for not inverting the mass-tensor is that for systems with limited</span>
-<span class="sd">    periodicities some of the diagonal elements of the inverse mass tensor matrix</span>
-<span class="sd">    will be 0, in which case the matrix is singular and non-invertible. Therefore</span>
-<span class="sd">    it is the users responsibility to remove any of the non-periodic elements from</span>
-<span class="sd">    the matrix before inverting.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    state : array_like</span>
-<span class="sd">       vectors describing the electronic states, 2nd dimension contains the states. In case of degenerate</span>
-<span class="sd">       states the vectors *may* be rotated upon return.</span>
-<span class="sd">    ddHk : (6,) of array_like</span>
-<span class="sd">       Hamiltonian double derivative with respect to :math:`\mathbf k`. The input must be in Voigt order.</span>
-<span class="sd">    energy : array_like, optional</span>
-<span class="sd">       energies of the states. Required for non-orthogonal basis together with `ddSk`. In case of degenerate</span>
-<span class="sd">       states the eigenvalues of the states will be averaged in the degenerate sub-space.</span>
-<span class="sd">    ddSk : (6,) of array_like, optional</span>
-<span class="sd">       overlap matrix required for non-orthogonal basis. This and `energy` *must* both be</span>
-<span class="sd">       provided when the states are defined in a non-orthogonal basis (otherwise the results will be wrong).</span>
-<span class="sd">       Same order as `ddHk`.</span>
-<span class="sd">    degenerate : list of array_like, optional</span>
-<span class="sd">       a list containing the indices of degenerate states. In that case a subsequent diagonalization</span>
-<span class="sd">       is required to decouple them. This is done 3 times along the diagonal Cartesian directions.</span>
-<span class="sd">    as_matrix : bool, optional</span>
-<span class="sd">       if true the returned tensor will be a symmetric matrix, otherwise the Voigt tensor is returned.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    velocity : band velocity</span>
-<span class="sd">    Hamiltonian.ddHk : function for generating the Hamiltonian derivatives (`ddHk` argument)</span>
-<span class="sd">    Hamiltonian.ddSk : function for generating the Hamiltonian derivatives (`ddSk` argument)</span>
-
-<span class="sd">    References</span>
-<span class="sd">    ----------</span>
-<span class="sd">    .. [1] J. R. Yates, X. Wang, D. Vanderbilt, I. Souza, &quot;Spectral and Fermi surface properties from Wannier interpolation&quot;, PRB, *75*, 195121 (2007)</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    numpy.ndarray</span>
-<span class="sd">        inverse effective mass tensor of each state in units of inverse electron mass</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">inv_eff_mass_tensor</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">ddHk</span><span class="p">,</span> <span class="n">energy</span><span class="p">,</span> <span class="n">ddSk</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">,</span> <span class="n">as_matrix</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-
-    <span class="k">if</span> <span class="n">ddSk</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">_inv_eff_mass_tensor_ortho</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">ddHk</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">,</span> <span class="n">as_matrix</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">_inv_eff_mass_tensor_non_ortho</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">ddHk</span><span class="p">,</span> <span class="n">energy</span><span class="p">,</span> <span class="n">ddSk</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">,</span> <span class="n">as_matrix</span><span class="p">)</span>
-
-
-<span class="c1"># inverse electron mass units in 1/m_e (atomic units)!</span>
-<span class="c1"># ddHk is in [Ang ^ 2 eV]</span>
-<span class="n">_inv_eff_mass_const</span> <span class="o">=</span> <span class="n">units</span><span class="p">(</span><span class="s1">&#39;Ang&#39;</span><span class="p">,</span> <span class="s1">&#39;Bohr&#39;</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="s1">&#39;eV&#39;</span><span class="p">,</span> <span class="s1">&#39;Ha&#39;</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">_inv_eff_mass_tensor_non_ortho</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">ddHk</span><span class="p">,</span> <span class="n">energy</span><span class="p">,</span> <span class="n">ddSk</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">,</span> <span class="n">as_matrix</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; For states in a non-orthogonal basis &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">as_matrix</span><span class="p">:</span>
-        <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">9</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_complex_to_real</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">6</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_complex_to_real</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
-
-    <span class="c1"># Now decouple the degenerate states</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">degenerate</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">deg</span> <span class="ow">in</span> <span class="n">degenerate</span><span class="p">:</span>
-            <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">energy</span><span class="p">[</span><span class="n">deg</span><span class="p">])</span>
-            <span class="n">energy</span><span class="p">[</span><span class="n">deg</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span>
-
-            <span class="c1"># Now diagonalize to find the contributions from individual states</span>
-            <span class="c1"># then re-construct the seperated degenerate states</span>
-            <span class="c1"># We only do this along the double derivative directions</span>
-            <span class="n">state</span><span class="p">[</span><span class="n">deg</span><span class="p">]</span> <span class="o">=</span> <span class="n">degenerate_decouple</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">deg</span><span class="p">],</span> <span class="nb">sum</span><span class="p">(</span><span class="n">ddh</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">dds</span> <span class="k">for</span> <span class="n">ddh</span><span class="p">,</span> <span class="n">dds</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ddHk</span><span class="p">,</span> <span class="n">ddSk</span><span class="p">)))</span>
-
-    <span class="c1"># Since they depend on the state energies and ddSk we have to loop them individually.</span>
-    <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">energy</span><span class="p">):</span>
-
-        <span class="c1"># Since ddHk *may* be a csr_matrix or sparse, we have to do it like</span>
-        <span class="c1"># this. A sparse matrix cannot be re-shaped with an extra dimension.</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>
-            <span class="n">M</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">conj</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">((</span><span class="n">ddHk</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">ddSk</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">]))</span><span class="o">.</span><span class="n">real</span>
-
-    <span class="k">if</span> <span class="n">as_matrix</span><span class="p">:</span>
-        <span class="n">M</span><span class="p">[:,</span> <span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="c1"># zz</span>
-        <span class="n">M</span><span class="p">[:,</span> <span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="c1"># zy</span>
-        <span class="n">M</span><span class="p">[:,</span> <span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[:,</span> <span class="mi">4</span><span class="p">]</span> <span class="c1"># zx</span>
-        <span class="n">M</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[:,</span> <span class="mi">5</span><span class="p">]</span> <span class="c1"># xy</span>
-        <span class="n">M</span><span class="p">[:,</span> <span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[:,</span> <span class="mi">7</span><span class="p">]</span> <span class="c1"># yz</span>
-        <span class="n">M</span><span class="p">[:,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="c1"># yy</span>
-        <span class="n">M</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="c1"># xy</span>
-        <span class="n">M</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[:,</span> <span class="mi">6</span><span class="p">]</span> <span class="c1"># zx</span>
-        <span class="n">M</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">M</span> <span class="o">*</span> <span class="n">_inv_eff_mass_const</span>
-
-
-<span class="k">def</span> <span class="nf">_inv_eff_mass_tensor_ortho</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">ddHk</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">,</span> <span class="n">as_matrix</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; For states in an orthogonal basis &quot;&quot;&quot;</span>
-
-    <span class="c1"># Along all directions</span>
-    <span class="k">if</span> <span class="n">as_matrix</span><span class="p">:</span>
-        <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">9</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_complex_to_real</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">6</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_complex_to_real</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
-
-    <span class="c1"># Now decouple the degenerate states</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">degenerate</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">deg</span> <span class="ow">in</span> <span class="n">degenerate</span><span class="p">:</span>
-            <span class="c1"># Now diagonalize to find the contributions from individual states</span>
-            <span class="c1"># then re-construct the seperated degenerate states</span>
-            <span class="c1"># We only do this along the double derivative directions</span>
-            <span class="n">state</span><span class="p">[</span><span class="n">deg</span><span class="p">]</span> <span class="o">=</span> <span class="n">degenerate_decouple</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">deg</span><span class="p">],</span> <span class="nb">sum</span><span class="p">(</span><span class="n">ddHk</span><span class="p">))</span>
-
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>
-        <span class="n">M</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ij,ji-&gt;i&#39;</span><span class="p">,</span> <span class="n">conj</span><span class="p">(</span><span class="n">state</span><span class="p">),</span> <span class="n">ddHk</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">real</span>
-
-    <span class="k">if</span> <span class="n">as_matrix</span><span class="p">:</span>
-        <span class="n">M</span><span class="p">[:,</span> <span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="c1"># zz</span>
-        <span class="n">M</span><span class="p">[:,</span> <span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="c1"># zy</span>
-        <span class="n">M</span><span class="p">[:,</span> <span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[:,</span> <span class="mi">4</span><span class="p">]</span> <span class="c1"># zx</span>
-        <span class="n">M</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[:,</span> <span class="mi">5</span><span class="p">]</span> <span class="c1"># xy</span>
-        <span class="n">M</span><span class="p">[:,</span> <span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[:,</span> <span class="mi">7</span><span class="p">]</span> <span class="c1"># yz</span>
-        <span class="n">M</span><span class="p">[:,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="c1"># yy</span>
-        <span class="n">M</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="c1"># xy</span>
-        <span class="n">M</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[:,</span> <span class="mi">6</span><span class="p">]</span> <span class="c1"># zx</span>
-        <span class="n">M</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">M</span> <span class="o">*</span> <span class="n">_inv_eff_mass_const</span>
 
 
 <div class="viewcode-block" id="berry_phase"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.berry_phase.html#sisl.physics.electron.berry_phase">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
@@ -1222,21 +1071,23 @@
 <span class="sd">       whether or not to include the connection of the last and first points in the loop</span>
 <span class="sd">    method : {&#39;berry&#39;, &#39;zak&#39;}</span>
 <span class="sd">       &#39;berry&#39; will return the usual integral of the Berry connection over the specified contour</span>
-<span class="sd">       &#39;zak&#39; will compute the Zak phase for 1D systems by performing a closed loop integration but</span>
-<span class="sd">       taking into account the Bloch factor :math:`e^{i2\pi/a x}` accumulated over a Brillouin zone,</span>
-<span class="sd">       see [1]_.</span>
+<span class="sd">       &#39;zak&#39; will compute the Zak phase for 1D systems by performing</span>
+<span class="sd">       a closed loop integration, see [1]_.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    The Brillouin zone object *need* not contain a closed discretized contour by doubling the first point.</span>
 
-<span class="sd">    The implementation is very similar to PythTB and refer to the details outlined in PythTB for</span>
-<span class="sd">    additional details.</span>
+<span class="sd">    The implementation is very similar to PythTB, except we are here using the :math:`\mathbf R` gauge</span>
+<span class="sd">    (convention II according to PythTB).</span>
 
 <span class="sd">    Note that for systems with band-crossings or degenerate states there is an arbitrariness to the definition</span>
 <span class="sd">    of the Berry phase for *individual* bands. However, the total phase (i.e., sum over filled bands) is</span>
 <span class="sd">    invariant and unaffected by this arbitrariness as long as the filled and empty bands do not intersect,</span>
 <span class="sd">    see [2]_.</span>
+
+<span class="sd">    For non-orthogonal basis sets it is not fully known how important the dk spacing is since</span>
+<span class="sd">    it relies on the Lowdin transformation of the states.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1270,14 +1121,18 @@
         <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span><span class="s2">&quot;berry_phase: requires the Brillouin zone object to contain a Hamiltonian!&quot;</span><span class="p">)</span>
     <span class="n">spin</span> <span class="o">=</span> <span class="n">contour</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">spin</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">contour</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span><span class="s2">&quot;berry_phase: requires the Hamiltonian to use an orthogonal basis!&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">contour</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">_lowdin</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+            <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">_lowdin</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot; change state to the lowdin state, assuming everything is in R gauge</span>
+<span class="sd">            So needs to be done before changing gauge &quot;&quot;&quot;</span>
+            <span class="n">S12</span> <span class="o">=</span> <span class="n">invsqrth</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">Sk</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;k&quot;</span><span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;array&#39;</span><span class="p">),</span>
+                           <span class="n">overwrite_a</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">state</span><span class="o">.</span><span class="n">state</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">(</span><span class="n">S12</span> <span class="o">@</span> <span class="n">state</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
 
-    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">contour</span><span class="o">.</span><span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span> <span class="n">contour</span><span class="o">.</span><span class="n">k</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]):</span>
-        <span class="c1"># When the user has the contour points closed, we don&#39;t need to do this in the below loop</span>
-        <span class="n">closed</span> <span class="o">=</span> <span class="kc">False</span>
-
-    <span class="n">method</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="n">method</span><span class="p">,</span> <span class="o">*</span><span class="n">opts</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;berry&quot;</span><span class="p">:</span>
         <span class="k">pass</span>
     <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;zak&quot;</span><span class="p">:</span>
@@ -1285,12 +1140,16 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;berry_phase: requires the method to be [berry, zak]&quot;</span><span class="p">)</span>
 
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">contour</span><span class="o">.</span><span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span> <span class="n">contour</span><span class="o">.</span><span class="n">k</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]):</span>
+        <span class="c1"># When the user has the contour points closed, we don&#39;t need to do this in the below loop</span>
+        <span class="n">closed</span> <span class="o">=</span> <span class="kc">False</span>
+
     <span class="c1"># Whether we should calculate the eigenvalues of the overlap matrix</span>
     <span class="k">if</span> <span class="n">eigvals</span><span class="p">:</span>
         <span class="c1"># We calculate the final eigenvalues</span>
         <span class="k">def</span> <span class="nf">_process</span><span class="p">(</span><span class="n">prd</span><span class="p">,</span> <span class="n">ovr</span><span class="p">):</span>
             <span class="n">U</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">svd_destroy</span><span class="p">(</span><span class="n">ovr</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">dot</span><span class="p">(</span><span class="n">prd</span><span class="p">,</span> <span class="n">dot</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">V</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">dot</span><span class="p">(</span><span class="n">prd</span><span class="p">,</span> <span class="n">U</span> <span class="o">@</span> <span class="n">V</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># We calculate the final angle from the determinant</span>
         <span class="n">_process</span> <span class="o">=</span> <span class="n">dot</span>
@@ -1299,7 +1158,7 @@
         <span class="k">def</span> <span class="nf">_berry</span><span class="p">(</span><span class="n">eigenstates</span><span class="p">):</span>
             <span class="c1"># Grab the first one to be able to form a loop</span>
             <span class="n">first</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">eigenstates</span><span class="p">)</span>
-            <span class="n">first</span><span class="o">.</span><span class="n">change_gauge</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+            <span class="n">_lowdin</span><span class="p">(</span><span class="n">first</span><span class="p">)</span>
             <span class="c1"># Create a variable to keep track of the previous state</span>
             <span class="n">prev</span> <span class="o">=</span> <span class="n">first</span>
 
@@ -1309,24 +1168,12 @@
 
             <span class="c1"># Loop remaining eigenstates</span>
             <span class="k">for</span> <span class="n">second</span> <span class="ow">in</span> <span class="n">eigenstates</span><span class="p">:</span>
-                <span class="n">second</span><span class="o">.</span><span class="n">change_gauge</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+                <span class="n">_lowdin</span><span class="p">(</span><span class="n">second</span><span class="p">)</span>
                 <span class="n">prd</span> <span class="o">=</span> <span class="n">_process</span><span class="p">(</span><span class="n">prd</span><span class="p">,</span> <span class="n">prev</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="n">second</span><span class="p">,</span> <span class="n">diag</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
                 <span class="n">prev</span> <span class="o">=</span> <span class="n">second</span>
 
             <span class="c1"># Complete the loop</span>
             <span class="k">if</span> <span class="n">closed</span><span class="p">:</span>
-                <span class="c1"># Insert Bloch phase for 1D integral?</span>
-                <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;zak&quot;</span><span class="p">:</span>
-                    <span class="n">g</span> <span class="o">=</span> <span class="n">contour</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">geometry</span>
-                    <span class="n">axis</span> <span class="o">=</span> <span class="n">contour</span><span class="o">.</span><span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">contour</span><span class="o">.</span><span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                    <span class="n">axis</span> <span class="o">/=</span> <span class="n">axis</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
-                    <span class="n">phase</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">g</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">no</span><span class="p">)),</span> <span class="p">:],</span> <span class="n">dot</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">rcell</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">spin</span><span class="o">.</span><span class="n">is_diagonal</span><span class="p">:</span>
-                        <span class="n">prev</span><span class="o">.</span><span class="n">state</span> <span class="o">*=</span> <span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">phase</span><span class="p">)</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="c1"># for NC/SOC we have a 2x2 spin-box per orbital</span>
-                        <span class="n">prev</span><span class="o">.</span><span class="n">state</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">phase</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
                 <span class="c1"># Include last-to-first segment</span>
                 <span class="n">prd</span> <span class="o">=</span> <span class="n">_process</span><span class="p">(</span><span class="n">prd</span><span class="p">,</span> <span class="n">prev</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">diag</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
             <span class="k">return</span> <span class="n">prd</span>
@@ -1334,25 +1181,15 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">def</span> <span class="nf">_berry</span><span class="p">(</span><span class="n">eigenstates</span><span class="p">):</span>
             <span class="n">first</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">eigenstates</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">sub</span><span class="p">)</span>
-            <span class="n">first</span><span class="o">.</span><span class="n">change_gauge</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+            <span class="n">_lowdin</span><span class="p">(</span><span class="n">first</span><span class="p">)</span>
             <span class="n">prev</span> <span class="o">=</span> <span class="n">first</span>
             <span class="n">prd</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="k">for</span> <span class="n">second</span> <span class="ow">in</span> <span class="n">eigenstates</span><span class="p">:</span>
                 <span class="n">second</span> <span class="o">=</span> <span class="n">second</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">sub</span><span class="p">)</span>
-                <span class="n">second</span><span class="o">.</span><span class="n">change_gauge</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+                <span class="n">_lowdin</span><span class="p">(</span><span class="n">second</span><span class="p">)</span>
                 <span class="n">prd</span> <span class="o">=</span> <span class="n">_process</span><span class="p">(</span><span class="n">prd</span><span class="p">,</span> <span class="n">prev</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="n">second</span><span class="p">,</span> <span class="n">diag</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
                 <span class="n">prev</span> <span class="o">=</span> <span class="n">second</span>
             <span class="k">if</span> <span class="n">closed</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;zak&quot;</span><span class="p">:</span>
-                    <span class="n">g</span> <span class="o">=</span> <span class="n">contour</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">geometry</span>
-                    <span class="n">axis</span> <span class="o">=</span> <span class="n">contour</span><span class="o">.</span><span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">contour</span><span class="o">.</span><span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                    <span class="n">axis</span> <span class="o">/=</span> <span class="n">axis</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
-                    <span class="n">phase</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">g</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">no</span><span class="p">)),</span> <span class="p">:],</span> <span class="n">dot</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">rcell</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">spin</span><span class="o">.</span><span class="n">is_diagonal</span><span class="p">:</span>
-                        <span class="n">prev</span><span class="o">.</span><span class="n">state</span> <span class="o">*=</span> <span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">phase</span><span class="p">)</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="c1"># for NC/SOC we have a 2x2 spin-box per orbital</span>
-                        <span class="n">prev</span><span class="o">.</span><span class="n">state</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">phase</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
                 <span class="n">prd</span> <span class="o">=</span> <span class="n">_process</span><span class="p">(</span><span class="n">prd</span><span class="p">,</span> <span class="n">prev</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">diag</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
             <span class="k">return</span> <span class="n">prd</span>
 
@@ -1789,40 +1626,12 @@
 <span class="sd">        numpy.ndarray</span>
 <span class="sd">            the squared norm for each state</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">sum</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inner</span><span class="p">()</span>
-
         <span class="c1"># Retrieve the overlap matrix (FULL S is required for NC)</span>
         <span class="n">S</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Sk</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">sum</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="n">matrix</span><span class="o">=</span><span class="n">S</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">conj</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">)</span> <span class="o">*</span> <span class="n">S</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
-
-    <span class="k">def</span> <span class="nf">inner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">matrix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">diag</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the inner product by :math:`\mathbf A_{ij} = \langle\psi_i| \mathbf M |\psi&#39;_j\rangle`</span>
-
-<span class="sd">        The bra will be `self.state`.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        ket : State or array_like, optional</span>
-<span class="sd">           the ket object to calculate the inner product with, if not passed it will do the inner</span>
-<span class="sd">           product with itself.</span>
-<span class="sd">        matrix : array_like, optional</span>
-<span class="sd">           a vector or matrix that expresses the operator `M`. Defaults to the overlap matrix :math:`\mathbf S`.</span>
-<span class="sd">        diag : bool, optional</span>
-<span class="sd">           only return the diagonal matrix :math:`\mathbf A_{ii}`.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        numpy.ndarray</span>
-<span class="sd">            a matrix with the sum of inner state products</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">matrix</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># Retrieve the overlap matrix (FULL S is required for NC)</span>
-            <span class="n">matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Sk</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">ket</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">_FakeMatrix</span><span class="p">):</span>
-                <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.inner uses an overlap matrix that may be incompatible with your ket states, please be aware of this!&quot;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="n">ket</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">diag</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">spin_moment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">project</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate spin moment from the states</span>
@@ -1878,181 +1687,77 @@
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot; A state describing a physical quantity related to electrons, with associated coefficients of the state &quot;&quot;&quot;</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
 
-<div class="viewcode-block" id="StateCElectron.velocity"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron.velocity">[docs]</a>    <span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">project</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="StateCElectron.velocity"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron.velocity">[docs]</a>    <span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate velocity for the states</span>
 
-<span class="sd">        This routine calls `~sisl.physics.electron.velocity` with appropriate arguments</span>
-<span class="sd">        and returns the velocity for the states. I.e. for non-orthogonal basis the overlap</span>
-<span class="sd">        matrix and energy values are also passed.</span>
+<span class="sd">        This routine calls `derivative` with appropriate arguments (1st order derivative)</span>
+<span class="sd">        and returns the velocity for the states.</span>
 
 <span class="sd">        Note that the coefficients associated with the `StateCElectron` *must* correspond</span>
 <span class="sd">        to the energies of the states.</span>
 
-<span class="sd">        See `~sisl.physics.electron.velocity` for details.</span>
+<span class="sd">        See `derivative` for details and possible arguments. One cannot pass the ``order`` argument</span>
+<span class="sd">        as that is fixed to ``1`` in this call.</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        eps : float, optional</span>
-<span class="sd">           precision used to find degenerate states.</span>
-<span class="sd">        degenerate_dir: (3,), optional</span>
-<span class="sd">           which direction is used to decouple the degenerate states.</span>
-<span class="sd">        project : bool, optional</span>
-<span class="sd">           whether to return projected velocities (per orbital), see `velocity` for details</span>
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        The states and energies for the states *may* have changed after calling this routine.</span>
+<span class="sd">        This is because of the velocity un-folding for degenerate modes. I.e. calling</span>
+<span class="sd">        `displacement` and/or `PDOS` after this method *may* change the result.</span>
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
-<span class="sd">        velocity : for an explanation of the projections in case of `project` being True</span>
+<span class="sd">        derivative : for details of the implementation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">opt</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;k&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="s2">&quot;dtype&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">}</span>
-            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;gauge&quot;</span><span class="p">,</span> <span class="s2">&quot;format&quot;</span><span class="p">):</span>
-                <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">opt</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">real</span> <span class="o">*</span> <span class="n">_velocity_const</span></div>
 
-            <span class="c1"># Get dSk before spin</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">:</span>
-                <span class="n">dSk</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">dSk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">dSk</span><span class="p">(</span><span class="o">**</span><span class="n">opt</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="s2">&quot;spin&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">:</span>
-                <span class="n">opt</span><span class="p">[</span><span class="s2">&quot;spin&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;spin&quot;</span><span class="p">]</span>
-            <span class="n">deg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">degenerate</span><span class="p">(</span><span class="n">eps</span><span class="p">)</span>
-        <span class="k">except</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.velocity requires the parent to have a spin associated.&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">velocity</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">dHk</span><span class="p">(</span><span class="o">**</span><span class="n">opt</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">,</span> <span class="n">dSk</span><span class="p">,</span>
-                        <span class="n">degenerate</span><span class="o">=</span><span class="n">deg</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="o">=</span><span class="n">degenerate_dir</span><span class="p">,</span> <span class="n">project</span><span class="o">=</span><span class="n">project</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="StateCElectron.velocity_matrix"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron.velocity_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">velocity_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate velocity matrix for the states</span>
-
-<span class="sd">        This routine calls `~sisl.physics.electron.velocity_matrix` with appropriate arguments</span>
-<span class="sd">        and returns the velocity for the states. I.e. for non-orthogonal basis the overlap</span>
-<span class="sd">        matrix and energy values are also passed.</span>
-
-<span class="sd">        Note that the coefficients associated with the `StateCElectron` *must* correspond</span>
-<span class="sd">        to the energies of the states.</span>
-
-<span class="sd">        See `~sisl.physics.electron.velocity_matrix` for details.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        eps : float, optional</span>
-<span class="sd">           precision used to find degenerate states.</span>
-<span class="sd">        degenerate_dir: (3,), optional</span>
-<span class="sd">           which direction is used to decouple the degenerate states.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">opt</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;k&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="s2">&quot;dtype&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">}</span>
-            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;gauge&quot;</span><span class="p">,</span> <span class="s2">&quot;format&quot;</span><span class="p">):</span>
-                <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">opt</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
-
-            <span class="c1"># Get dSk before spin</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">:</span>
-                <span class="n">dSk</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">dSk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">dSk</span><span class="p">(</span><span class="o">**</span><span class="n">opt</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="s2">&quot;spin&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">:</span>
-                <span class="n">opt</span><span class="p">[</span><span class="s2">&quot;spin&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;spin&quot;</span><span class="p">]</span>
-            <span class="n">deg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">degenerate</span><span class="p">(</span><span class="n">eps</span><span class="p">)</span>
-        <span class="k">except</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.velocity_matrix requires the parent to have a spin associated.&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">velocity_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">dHk</span><span class="p">(</span><span class="o">**</span><span class="n">opt</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">,</span> <span class="n">dSk</span><span class="p">,</span>
-                               <span class="n">degenerate</span><span class="o">=</span><span class="n">deg</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="o">=</span><span class="n">degenerate_dir</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="StateCElectron.berry_curvature"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron.berry_curvature">[docs]</a>    <span class="k">def</span> <span class="nf">berry_curvature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">complex</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)):</span>
+<div class="viewcode-block" id="StateCElectron.berry_curvature"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron.berry_curvature">[docs]</a>    <span class="k">def</span> <span class="nf">berry_curvature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate Berry curvature for the states</span>
 
-<span class="sd">        This routine calls `~sisl.physics.electron.berry_curvature` with appropriate arguments</span>
-<span class="sd">        and returns the Berry curvature for the states.</span>
+<span class="sd">        This routine calls `derivative` with appropriate arguments ``order=1, matrix=True`` and then</span>
+<span class="sd">        post-processes the values and calculates the Berry curvature. Do not pass these arguments.</span>
 
 <span class="sd">        Note that the coefficients associated with the `StateCElectron` *must* correspond</span>
 <span class="sd">        to the energies of the states.</span>
 
 <span class="sd">        See `~sisl.physics.electron.berry_curvature` for details.</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        complex : logical, optional</span>
-<span class="sd">           whether the returned quantity is complex valued</span>
-<span class="sd">        eps : float, optional</span>
-<span class="sd">           precision used to find degenerate states.</span>
-<span class="sd">        degenerate_dir: (3,), optional</span>
-<span class="sd">           which direction is used to decouple the degenerate states.</span>
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        derivative : for details of the implementation</span>
+<span class="sd">        sisl.physics.electron.berry_curvature : for details of the implementation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">opt</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;k&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="s2">&quot;dtype&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">}</span>
-            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;gauge&quot;</span><span class="p">,</span> <span class="s2">&quot;format&quot;</span><span class="p">):</span>
-                <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">opt</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">matrix</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_berry_curvature</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span></div>
 
-            <span class="c1"># Get dSk before spin</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">:</span>
-                <span class="n">dSk</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">dSk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">dSk</span><span class="p">(</span><span class="o">**</span><span class="n">opt</span><span class="p">)</span>
+<div class="viewcode-block" id="StateCElectron.effective_mass"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron.effective_mass">[docs]</a>    <span class="k">def</span> <span class="nf">effective_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate effective mass tensor for the states</span>
 
-            <span class="k">if</span> <span class="s2">&quot;spin&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">:</span>
-                <span class="n">opt</span><span class="p">[</span><span class="s2">&quot;spin&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;spin&quot;</span><span class="p">]</span>
-            <span class="n">deg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">degenerate</span><span class="p">(</span><span class="n">eps</span><span class="p">)</span>
-        <span class="k">except</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.berry_curvature requires the parent to have a spin associated.&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">berry_curvature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">dHk</span><span class="p">(</span><span class="o">**</span><span class="n">opt</span><span class="p">),</span> <span class="n">dSk</span><span class="p">,</span> <span class="n">degenerate</span><span class="o">=</span><span class="n">deg</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="o">=</span><span class="n">degenerate_dir</span><span class="p">,</span> <span class="nb">complex</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="StateCElectron.inv_eff_mass_tensor"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron.inv_eff_mass_tensor">[docs]</a>    <span class="k">def</span> <span class="nf">inv_eff_mass_tensor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">as_matrix</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate inverse effective mass tensor for the states</span>
-
-<span class="sd">        This routine calls `~sisl.physics.electron.inv_eff_mass` with appropriate arguments</span>
-<span class="sd">        and returns the state inverse effective mass tensor. I.e. for non-orthogonal basis the overlap</span>
-<span class="sd">        matrix and energy values are also passed.</span>
+<span class="sd">        This routine calls `derivative` with appropriate arguments (2nd order derivative)</span>
+<span class="sd">        and returns the effective mass tensor for each state.</span>
 
 <span class="sd">        Note that the coefficients associated with the `StateCElectron` *must* correspond</span>
 <span class="sd">        to the energies of the states.</span>
 
-<span class="sd">        See `~sisl.physics.electron.inv_eff_mass_tensor` for details.</span>
+<span class="sd">        See `derivative` for argument details, but disregard the ``order`` argument as that</span>
+<span class="sd">        is fixed to ``2`` in this call.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
-<span class="sd">        The reason for not inverting the mass-tensor is that for systems with limited</span>
-<span class="sd">        periodicities some of the diagonal elements of the inverse mass tensor matrix</span>
-<span class="sd">        will be 0, in which case the matrix is singular and non-invertible. Therefore</span>
-<span class="sd">        it is the users responsibility to remove any of the non-periodic elements from</span>
-<span class="sd">        the matrix.</span>
+<span class="sd">        Since some directions may not be periodic there will be zeros. This routine will</span>
+<span class="sd">        invert elements where the values are different from 0.</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        as_matrix : bool, optional</span>
-<span class="sd">           if true the returned tensor will be a symmetric matrix, otherwise the Voigt tensor is returned.</span>
-<span class="sd">        eps : float, optional</span>
-<span class="sd">           precision used to find degenerate states.</span>
+<span class="sd">        It is not advisable to use a `sub` before calculating the effective mass</span>
+<span class="sd">        since the 1st order perturbation uses the energy differences and the 1st derivative</span>
+<span class="sd">        matrix for correcting the curvature.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        derivative: for details of the implementation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># Ensure we are dealing with the r gauge</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">change_gauge</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
-
-            <span class="n">opt</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;k&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="s2">&quot;dtype&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">}</span>
-            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;gauge&quot;</span><span class="p">,</span> <span class="s2">&quot;format&quot;</span><span class="p">):</span>
-                <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">opt</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
-
-            <span class="c1"># Get dSk before spin</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">:</span>
-                <span class="n">ddSk</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">ddSk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">ddSk</span><span class="p">(</span><span class="o">**</span><span class="n">opt</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="s2">&quot;spin&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">:</span>
-                <span class="n">opt</span><span class="p">[</span><span class="s2">&quot;spin&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;spin&quot;</span><span class="p">]</span>
-            <span class="n">degenerate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">degenerate</span><span class="p">(</span><span class="n">eps</span><span class="p">)</span>
-        <span class="k">except</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.inv_eff_mass_tensor requires the parent to have a spin associated.&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">inv_eff_mass_tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">ddHk</span><span class="p">(</span><span class="o">**</span><span class="n">opt</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">,</span> <span class="n">ddSk</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">,</span> <span class="n">as_matrix</span><span class="p">)</span></div></div>
+        <span class="n">ieff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">real</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">_velocity_const</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">ieff</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="p">(</span><span class="n">ieff</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">),</span> <span class="n">out</span><span class="o">=</span><span class="n">ieff</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ieff</span></div></div>
 
 
 <div class="viewcode-block" id="EigenvalueElectron"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.EigenvalueElectron.html#sisl.physics.electron.EigenvalueElectron">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>

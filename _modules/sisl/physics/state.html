@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.state &mdash; sisl 785f223c65 documentation</title>
+  <title>sisl.physics.state &mdash; sisl 0.1.dev1+g127fd00 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                785f223c65
+                0.1.dev1+g127fd00
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -96,10 +96,12 @@
 <span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
 <span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Real</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">einsum</span><span class="p">,</span> <span class="n">exp</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">bool_</span>
 
+<span class="kn">from</span> <span class="nn">sisl._help</span> <span class="kn">import</span> <span class="n">dtype_real_to_complex</span>
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span><span class="p">,</span> <span class="n">singledispatchmethod</span>
 <span class="kn">from</span> <span class="nn">sisl.linalg</span> <span class="kn">import</span> <span class="n">eigh_destroy</span>
 <span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
@@ -283,12 +285,12 @@
         <span class="n">copy</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span>
         <span class="k">return</span> <span class="n">copy</span></div>
 
-<div class="viewcode-block" id="Coefficient.degenerate"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Coefficient.html#sisl.physics.Coefficient.degenerate">[docs]</a>    <span class="k">def</span> <span class="nf">degenerate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eps</span><span class="p">):</span>
+<div class="viewcode-block" id="Coefficient.degenerate"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Coefficient.html#sisl.physics.Coefficient.degenerate">[docs]</a>    <span class="k">def</span> <span class="nf">degenerate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Find degenerate coefficients with a specified precision</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        eps : float</span>
+<span class="sd">        eps : float, optional</span>
 <span class="sd">           the precision above which coefficients are not considered degenerate</span>
 
 <span class="sd">        Returns</span>
@@ -301,7 +303,7 @@
         <span class="n">dc</span> <span class="o">=</span> <span class="n">_diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">sidx</span><span class="p">])</span>
 
         <span class="c1"># Degenerate indices</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">dc</span> <span class="o">&lt;</span> <span class="n">eps</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">dc</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">eps</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="c1"># There are no degenerate coefficients</span>
             <span class="k">return</span> <span class="n">deg</span>
@@ -953,7 +955,7 @@
             <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">_argmax</span><span class="p">(</span><span class="n">_abs</span><span class="p">(</span><span class="n">s</span><span class="p">)),</span> <span class="n">s</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
             <span class="n">s</span> <span class="o">*=</span> <span class="n">phi</span> <span class="o">*</span> <span class="n">_conj</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">/</span> <span class="n">_abs</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">idx</span><span class="p">]))</span></div>
 
-<div class="viewcode-block" id="State.change_gauge"><a class="viewcode-back" href="../../../api/generated/sisl.physics.State.html#sisl.physics.State.change_gauge">[docs]</a>    <span class="k">def</span> <span class="nf">change_gauge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gauge</span><span class="p">):</span>
+<div class="viewcode-block" id="State.change_gauge"><a class="viewcode-back" href="../../../api/generated/sisl.physics.State.html#sisl.physics.State.change_gauge">[docs]</a>    <span class="k">def</span> <span class="nf">change_gauge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gauge</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; In-place change of the gauge of the state coefficients</span>
 
 <span class="sd">        The two gauges are related through:</span>
@@ -968,6 +970,8 @@
 <span class="sd">        ----------</span>
 <span class="sd">        gauge : {&#39;R&#39;, &#39;r&#39;}</span>
 <span class="sd">            specify the new gauge for the mode coefficients</span>
+<span class="sd">        offset : array_like, optional</span>
+<span class="sd">            whether the coordinates should be offset by another phase-factor</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># These calls will fail if the gauge is not specified.</span>
         <span class="c1"># In that case it will not do anything</span>
@@ -984,7 +988,8 @@
             <span class="k">return</span>
 
         <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">geometry</span>
-        <span class="n">phase</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">g</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">no</span><span class="p">)),</span> <span class="p">:]</span> <span class="o">@</span> <span class="p">(</span><span class="n">k</span> <span class="o">@</span> <span class="n">g</span><span class="o">.</span><span class="n">rcell</span><span class="p">)</span>
+        <span class="n">xyz</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">xyz</span> <span class="o">+</span> <span class="n">offset</span>
+        <span class="n">phase</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[</span><span class="n">g</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">no</span><span class="p">)),</span> <span class="p">:]</span> <span class="o">@</span> <span class="p">(</span><span class="n">k</span> <span class="o">@</span> <span class="n">g</span><span class="o">.</span><span class="n">rcell</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_diagonal</span><span class="p">:</span>
@@ -1146,6 +1151,311 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="StateC.derivative"><a class="viewcode-back" href="../../../api/generated/sisl.physics.StateC.html#sisl.physics.StateC.derivative">[docs]</a>    <span class="k">def</span> <span class="nf">derivative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">degenerate</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">matrix</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the derivative with respect to :math:`\mathbf k` for a set of states up to a given order</span>
+
+<span class="sd">        These are calculated using the analytic expression (:math:`\alpha` corresponding to the Cartesian directions),</span>
+<span class="sd">        here only shown for the 1st order derivative:</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">           \mathbf{d}_{ij\alpha} = \langle \psi_j |</span>
+<span class="sd">                    \frac{\partial}{\partial\mathbf k_\alpha} \mathbf H(\mathbf k) | \psi_i \rangle</span>
+
+<span class="sd">        In case of non-orthogonal basis the equations substitutes :math:`\mathbf H(\mathbf k)` by</span>
+<span class="sd">        :math:`\mathbf H(\mathbf k) - \epsilon_i\mathbf S(\mathbf k)`.</span>
+
+<span class="sd">        The 2nd order derivatives are calculated with the Berry curvature correction:</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">           \mathbf d^2_{ij\alpha\beta} = \langle\psi_j|</span>
+<span class="sd">               \frac{\partial^2}{\partial\mathbf k_\alpha\partial\mathbf k_\beta} \mathbf H(\mathbf k) | \psi_i\rangle</span>
+<span class="sd">               - \frac12\frac{\mathbf{d}_{ij\alpha}\mathbf{d}_{ij\beta}}</span>
+<span class="sd">                     {\epsilon_j - \epsilon_i}</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+
+<span class="sd">        When requesting 2nd derivatives it will not be advisable to use a `sub` before</span>
+<span class="sd">        calculating the derivatives since the 1st order perturbation uses the energy</span>
+<span class="sd">        differences (Berry contribution) and the 1st derivative matrix for correcting the curvature.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        order : {1, 2}</span>
+<span class="sd">           an integer specifying which order of the derivative is being calculated.</span>
+<span class="sd">        degenerate : float or list of array_like, optional</span>
+<span class="sd">           If a float is passed it is regarded as the degeneracy tolerance used to calculate the degeneracy</span>
+<span class="sd">           levels. Defaults to 1e-5 eV.</span>
+<span class="sd">           If a list, it contains the indices of degenerate states. In that case a prior diagonalization</span>
+<span class="sd">           is required to decouple them. See `degenerate_dir` for the sum of directions.</span>
+<span class="sd">        degenerate_dir : (3,), optional</span>
+<span class="sd">           a direction used for degenerate decoupling. The decoupling based on the velocity along this direction</span>
+<span class="sd">        matrix : bool, optional</span>
+<span class="sd">           whether the full matrix or only the diagonal components are returned</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        SparseOrbitalBZ.dPk : function for generating the matrix derivatives</span>
+<span class="sd">        SparseOrbitalBZ.dSk : function for generating the matrix derivatives in non-orthogonal basis</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dv, ddv</span>
+<span class="sd">            if `matrix` is false, they are per state with shape ``(state.shape[0], *)``, ddv is only</span>
+<span class="sd">            returned if ``order&gt;=2``</span>
+<span class="sd">        dv, ddv</span>
+<span class="sd">            if `matrix` is true, they are per state with shape ``(state.shape[0], state.shape[0], *)``, ddv is only</span>
+<span class="sd">            returned if ``order&gt;=2``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Figure out arguments</span>
+        <span class="n">opt</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span>
+            <span class="s2">&quot;dtype&quot;</span><span class="p">:</span> <span class="n">dtype_real_to_complex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">),</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">degenerate</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">degenerate</span><span class="p">,</span> <span class="n">Real</span><span class="p">):</span>
+            <span class="n">degenerate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">degenerate</span><span class="p">(</span><span class="n">degenerate</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">order</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.derivative required order to be in this list: [1, 2], higher order derivatives are not implemented&quot;</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">add_keys</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="o">*</span><span class="n">keys</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+                <span class="c1"># Store gauge, if present</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># this must mean the methods accepts this as an argument</span>
+                    <span class="n">opt</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+
+        <span class="n">add_keys</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="s2">&quot;gauge&quot;</span><span class="p">,</span> <span class="s2">&quot;format&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Initialize variables</span>
+        <span class="n">ddPk</span> <span class="o">=</span> <span class="n">dSk</span> <span class="o">=</span> <span class="n">ddSk</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Figure out if we are dealing with a non-orthogonal basis set</span>
+        <span class="n">is_orthogonal</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">:</span>
+                <span class="n">is_orthogonal</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">dSk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">dSk</span><span class="p">(</span><span class="o">**</span><span class="n">opt</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">order</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">ddSk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">ddSk</span><span class="p">(</span><span class="o">**</span><span class="n">opt</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span> <span class="k">pass</span>
+
+        <span class="c1"># Now figure out if spin is a thing</span>
+        <span class="n">add_keys</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="s2">&quot;spin&quot;</span><span class="p">)</span>
+        <span class="n">dPk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">dPk</span><span class="p">(</span><span class="o">**</span><span class="n">opt</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">order</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">ddPk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">ddPk</span><span class="p">(</span><span class="o">**</span><span class="n">opt</span><span class="p">)</span>
+
+        <span class="c1"># short-hand, everything will now be done *in-place* of this object</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span>
+        <span class="c1"># in case the state is not an Eigenstate*</span>
+        <span class="n">energy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
+
+        <span class="c1"># Now parse the degeneracy handling</span>
+        <span class="k">if</span> <span class="n">degenerate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># normalize direction</span>
+            <span class="n">degenerate_dir</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">degenerate_dir</span><span class="p">)</span>
+            <span class="n">degenerate_dir</span> <span class="o">/=</span> <span class="p">(</span><span class="n">degenerate_dir</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">**</span> <span class="mf">0.5</span>
+
+            <span class="c1"># de-coupling is only done for the 1st derivative</span>
+
+            <span class="c1"># create the degeneracy decoupling projector</span>
+            <span class="n">deg_dPk</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">d</span><span class="o">*</span><span class="n">dh</span> <span class="k">for</span> <span class="n">d</span><span class="p">,</span> <span class="n">dh</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">degenerate_dir</span><span class="p">,</span> <span class="n">dPk</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">is_orthogonal</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">deg</span> <span class="ow">in</span> <span class="n">degenerate</span><span class="p">:</span>
+                    <span class="c1"># Set the average energy</span>
+                    <span class="n">energy</span><span class="p">[</span><span class="n">deg</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">energy</span><span class="p">[</span><span class="n">deg</span><span class="p">])</span>
+                    <span class="c1"># Now diagonalize to find the contributions from individual states</span>
+                    <span class="c1"># then re-construct the seperated degenerate states</span>
+                    <span class="c1"># Since we do this for all directions we should decouple them all</span>
+                    <span class="n">state</span><span class="p">[</span><span class="n">deg</span><span class="p">]</span> <span class="o">=</span> <span class="n">degenerate_decouple</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">deg</span><span class="p">],</span> <span class="n">deg_dPk</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">deg</span> <span class="ow">in</span> <span class="n">degenerate</span><span class="p">:</span>
+                    <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">energy</span><span class="p">[</span><span class="n">deg</span><span class="p">])</span>
+                    <span class="n">energy</span><span class="p">[</span><span class="n">deg</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span>
+                    <span class="n">deg_dSk</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">((</span><span class="n">d</span><span class="o">*</span><span class="n">e</span><span class="p">)</span><span class="o">*</span><span class="n">ds</span> <span class="k">for</span> <span class="n">d</span><span class="p">,</span> <span class="n">ds</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">degenerate_dir</span><span class="p">,</span> <span class="n">dSk</span><span class="p">))</span>
+                    <span class="n">state</span><span class="p">[</span><span class="n">deg</span><span class="p">]</span> <span class="o">=</span> <span class="n">degenerate_decouple</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">deg</span><span class="p">],</span> <span class="n">deg_dPk</span> <span class="o">-</span> <span class="n">deg_dSk</span><span class="p">)</span>
+
+        <span class="c1"># States have been decoupled and we can calculate things now</span>
+        <span class="c1"># number of states</span>
+        <span class="n">nstate</span><span class="p">,</span> <span class="n">lstate</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span>
+        <span class="c1"># we calculate the first derivative matrix</span>
+        <span class="n">cstate</span> <span class="o">=</span> <span class="n">_conj</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+
+        <span class="c1"># We split everything up into orthogonal and non-orthogonal</span>
+        <span class="c1"># This reduces if-checks</span>
+        <span class="k">if</span> <span class="n">is_orthogonal</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="n">matrix</span> <span class="ow">or</span> <span class="n">order</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># calculate the full matrix</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">nstate</span><span class="p">,</span> <span class="n">nstate</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">opt</span><span class="p">[</span><span class="s2">&quot;dtype&quot;</span><span class="p">])</span>
+                <span class="n">v</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cstate</span> <span class="o">@</span> <span class="n">dPk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+                <span class="n">v</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cstate</span> <span class="o">@</span> <span class="n">dPk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+                <span class="n">v</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cstate</span> <span class="o">@</span> <span class="n">dPk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+
+                <span class="k">if</span> <span class="n">matrix</span><span class="p">:</span>
+                    <span class="n">ret</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span><span class="p">,)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># diagonal of nd removes axis0 and axis1 and appends a new</span>
+                    <span class="c1"># axis to the end, this is not what we want</span>
+                    <span class="n">ret</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># calculate projections on states</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">nstate</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">opt</span><span class="p">[</span><span class="s2">&quot;dtype&quot;</span><span class="p">])</span>
+                <span class="n">v</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cstate</span> <span class="o">*</span> <span class="n">dPk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">v</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cstate</span> <span class="o">*</span> <span class="n">dPk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">v</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cstate</span> <span class="o">*</span> <span class="n">dPk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+                <span class="n">ret</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span><span class="p">,)</span>
+
+            <span class="k">if</span> <span class="n">order</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># Now calculate the 2nd order corrections</span>
+                <span class="c1"># loop energies</span>
+
+                <span class="k">if</span> <span class="n">matrix</span><span class="p">:</span>
+                    <span class="n">vv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">nstate</span><span class="p">,</span> <span class="n">nstate</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">opt</span><span class="p">[</span><span class="s2">&quot;dtype&quot;</span><span class="p">])</span>
+                    <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">energy</span><span class="p">):</span>
+                        <span class="n">de</span> <span class="o">=</span> <span class="n">energy</span> <span class="o">-</span> <span class="n">e</span>
+                        <span class="c1"># add factor 2 here</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">de</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="p">(</span><span class="n">de</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">),</span> <span class="n">out</span><span class="o">=</span><span class="n">de</span><span class="p">)</span>
+
+                        <span class="c1"># we will use this multiple times</span>
+                        <span class="n">absv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">s</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+
+                        <span class="c1"># calculate 2nd derivative</span>
+                        <span class="c1"># xx</span>
+                        <span class="n">vv</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">cstate</span> <span class="o">@</span> <span class="n">ddPk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span> <span class="o">-</span> <span class="n">de</span> <span class="o">*</span> <span class="n">absv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span>
+                        <span class="c1"># yy</span>
+                        <span class="n">vv</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">cstate</span> <span class="o">@</span> <span class="n">ddPk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span> <span class="o">-</span> <span class="n">de</span> <span class="o">*</span> <span class="n">absv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span>
+                        <span class="c1"># zz</span>
+                        <span class="n">vv</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">cstate</span> <span class="o">@</span> <span class="n">ddPk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span> <span class="o">-</span> <span class="n">de</span> <span class="o">*</span> <span class="n">absv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span>
+                        <span class="c1"># yz</span>
+                        <span class="n">vv</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">cstate</span> <span class="o">@</span> <span class="n">ddPk</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span> <span class="o">-</span> <span class="n">de</span> <span class="o">*</span> <span class="n">absv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">absv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                        <span class="c1"># xz</span>
+                        <span class="n">vv</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">cstate</span> <span class="o">@</span> <span class="n">ddPk</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span> <span class="o">-</span> <span class="n">de</span> <span class="o">*</span> <span class="n">absv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">absv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                        <span class="c1"># xy</span>
+                        <span class="n">vv</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">cstate</span> <span class="o">@</span> <span class="n">ddPk</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span> <span class="o">-</span> <span class="n">de</span> <span class="o">*</span> <span class="n">absv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">absv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">vv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">nstate</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">opt</span><span class="p">[</span><span class="s2">&quot;dtype&quot;</span><span class="p">])</span>
+                    <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">energy</span><span class="p">):</span>
+                        <span class="n">de</span> <span class="o">=</span> <span class="n">energy</span> <span class="o">-</span> <span class="n">e</span>
+                        <span class="c1"># add factor 2 here</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">de</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="p">(</span><span class="n">de</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">),</span> <span class="n">out</span><span class="o">=</span><span class="n">de</span><span class="p">)</span>
+
+                        <span class="c1"># we will use this multiple times, .T just for easier access</span>
+                        <span class="n">absv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">s</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+
+                        <span class="c1"># calculate 2nd derivative</span>
+                        <span class="c1"># xx</span>
+                        <span class="n">vv</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">cstate</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">@</span> <span class="n">ddPk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span> <span class="o">-</span> <span class="n">de</span> <span class="o">@</span> <span class="n">absv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span>
+                        <span class="c1"># yy</span>
+                        <span class="n">vv</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">cstate</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">@</span> <span class="n">ddPk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span> <span class="o">-</span> <span class="n">de</span> <span class="o">@</span> <span class="n">absv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span>
+                        <span class="c1"># zz</span>
+                        <span class="n">vv</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">cstate</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">@</span> <span class="n">ddPk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span> <span class="o">-</span> <span class="n">de</span> <span class="o">@</span> <span class="n">absv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span>
+                        <span class="c1"># yz</span>
+                        <span class="n">vv</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">cstate</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">@</span> <span class="n">ddPk</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span> <span class="o">-</span> <span class="n">de</span> <span class="o">@</span> <span class="p">(</span><span class="n">absv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">absv</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+                        <span class="c1"># xz</span>
+                        <span class="n">vv</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">cstate</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">@</span> <span class="n">ddPk</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span> <span class="o">-</span> <span class="n">de</span> <span class="o">@</span> <span class="p">(</span><span class="n">absv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">absv</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+                        <span class="c1"># xy</span>
+                        <span class="n">vv</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">cstate</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">@</span> <span class="n">ddPk</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span> <span class="o">-</span> <span class="n">de</span> <span class="o">@</span> <span class="p">(</span><span class="n">absv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">absv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+                <span class="n">ret</span> <span class="o">+=</span> <span class="p">(</span><span class="n">vv</span><span class="p">,)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># non-orthogonal basis set</span>
+
+            <span class="k">if</span> <span class="n">matrix</span> <span class="ow">or</span> <span class="n">order</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># calculate the full matrix</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">nstate</span><span class="p">,</span> <span class="n">nstate</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">opt</span><span class="p">[</span><span class="s2">&quot;dtype&quot;</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">energy</span><span class="p">):</span>
+                    <span class="n">v</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">cstate</span> <span class="o">@</span> <span class="p">(</span><span class="n">dPk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">dSk</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span>
+                    <span class="n">v</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">cstate</span> <span class="o">@</span> <span class="p">(</span><span class="n">dPk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">dSk</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span>
+                    <span class="n">v</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">cstate</span> <span class="o">@</span> <span class="p">(</span><span class="n">dPk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">dSk</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span>
+
+                <span class="k">if</span> <span class="n">matrix</span><span class="p">:</span>
+                    <span class="n">ret</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span><span class="p">,)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># diagonal of nd removes axis0 and axis1 and appends a new</span>
+                    <span class="c1"># axis to the end, this is not what we want</span>
+                    <span class="n">ret</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># calculate diagonal components on states</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">nstate</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">opt</span><span class="p">[</span><span class="s2">&quot;dtype&quot;</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">energy</span><span class="p">):</span>
+                    <span class="n">v</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">cstate</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">@</span> <span class="p">(</span><span class="n">dPk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">dSk</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span>
+                    <span class="n">v</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">cstate</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">@</span> <span class="p">(</span><span class="n">dPk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">dSk</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span>
+                    <span class="n">v</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">cstate</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">@</span> <span class="p">(</span><span class="n">dPk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">dSk</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span>
+
+                <span class="n">ret</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span><span class="p">,)</span>
+
+            <span class="k">if</span> <span class="n">order</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># Now calculate the 2nd order corrections</span>
+                <span class="c1"># loop energies</span>
+
+                <span class="k">if</span> <span class="n">matrix</span><span class="p">:</span>
+                    <span class="n">vv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">nstate</span><span class="p">,</span> <span class="n">nstate</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">opt</span><span class="p">[</span><span class="s2">&quot;dtype&quot;</span><span class="p">])</span>
+                    <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">energy</span><span class="p">):</span>
+                        <span class="n">de</span> <span class="o">=</span> <span class="n">energy</span> <span class="o">-</span> <span class="n">e</span>
+                        <span class="c1"># add factor 2 here</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">de</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="p">(</span><span class="n">de</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">),</span> <span class="n">out</span><span class="o">=</span><span class="n">de</span><span class="p">)</span>
+
+                        <span class="c1"># we will use this multiple times:</span>
+                        <span class="n">absv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">s</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+
+                        <span class="c1"># calculate 2nd derivative</span>
+                        <span class="c1"># xx</span>
+                        <span class="n">vv</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">cstate</span> <span class="o">@</span> <span class="p">(</span><span class="n">ddPk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">ddSk</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span> <span class="o">-</span> <span class="n">de</span> <span class="o">*</span> <span class="n">absv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span>
+                        <span class="c1"># yy</span>
+                        <span class="n">vv</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">cstate</span> <span class="o">@</span> <span class="p">(</span><span class="n">ddPk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">ddSk</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span> <span class="o">-</span> <span class="n">de</span> <span class="o">*</span> <span class="n">absv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span>
+                        <span class="c1"># zz</span>
+                        <span class="n">vv</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">cstate</span> <span class="o">@</span> <span class="p">(</span><span class="n">ddPk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">ddSk</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span> <span class="o">-</span> <span class="n">de</span> <span class="o">*</span> <span class="n">absv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span>
+                        <span class="c1"># yz</span>
+                        <span class="n">vv</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">cstate</span> <span class="o">@</span> <span class="p">(</span><span class="n">ddPk</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">ddSk</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span> <span class="o">-</span> <span class="n">de</span> <span class="o">*</span> <span class="n">absv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">absv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                        <span class="c1"># xz</span>
+                        <span class="n">vv</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">cstate</span> <span class="o">@</span> <span class="p">(</span><span class="n">ddPk</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">ddSk</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span> <span class="o">-</span> <span class="n">de</span> <span class="o">*</span> <span class="n">absv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">absv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                        <span class="c1"># xy</span>
+                        <span class="n">vv</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">cstate</span> <span class="o">@</span> <span class="p">(</span><span class="n">ddPk</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">ddSk</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span> <span class="o">-</span> <span class="n">de</span> <span class="o">*</span> <span class="n">absv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">absv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">vv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">nstate</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">opt</span><span class="p">[</span><span class="s2">&quot;dtype&quot;</span><span class="p">])</span>
+                    <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">energy</span><span class="p">):</span>
+                        <span class="n">de</span> <span class="o">=</span> <span class="n">energy</span> <span class="o">-</span> <span class="n">e</span>
+                        <span class="c1"># add factor 2 here</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">de</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="p">(</span><span class="n">de</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">),</span> <span class="n">out</span><span class="o">=</span><span class="n">de</span><span class="p">)</span>
+
+                        <span class="c1"># we will use this multiple times:</span>
+                        <span class="n">absv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">s</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+
+                        <span class="c1"># calculate 2nd derivative</span>
+                        <span class="c1"># xx</span>
+                        <span class="n">vv</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">cstate</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">@</span> <span class="p">(</span><span class="n">ddPk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">ddSk</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span> <span class="o">-</span> <span class="n">de</span> <span class="o">@</span> <span class="n">absv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span>
+                        <span class="c1"># yy</span>
+                        <span class="n">vv</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">cstate</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">@</span> <span class="p">(</span><span class="n">ddPk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">ddSk</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span> <span class="o">-</span> <span class="n">de</span> <span class="o">@</span> <span class="n">absv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span>
+                        <span class="c1"># zz</span>
+                        <span class="n">vv</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">cstate</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">@</span> <span class="p">(</span><span class="n">ddPk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">ddSk</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span> <span class="o">-</span> <span class="n">de</span> <span class="o">@</span> <span class="n">absv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span>
+                        <span class="c1"># yz</span>
+                        <span class="n">vv</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">cstate</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">@</span> <span class="p">(</span><span class="n">ddPk</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">ddSk</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span> <span class="o">-</span> <span class="n">de</span> <span class="o">@</span> <span class="p">(</span><span class="n">absv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">absv</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+                        <span class="c1"># xz</span>
+                        <span class="n">vv</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">cstate</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">@</span> <span class="p">(</span><span class="n">ddPk</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">ddSk</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span> <span class="o">-</span> <span class="n">de</span> <span class="o">@</span> <span class="p">(</span><span class="n">absv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">absv</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+                        <span class="c1"># xy</span>
+                        <span class="n">vv</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">cstate</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">@</span> <span class="p">(</span><span class="n">ddPk</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">ddSk</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span> <span class="o">-</span> <span class="n">de</span> <span class="o">@</span> <span class="p">(</span><span class="n">absv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">absv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+                <span class="n">ret</span> <span class="o">+=</span> <span class="p">(</span><span class="n">vv</span><span class="p">,)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
 
 <div class="viewcode-block" id="StateC.degenerate"><a class="viewcode-back" href="../../../api/generated/sisl.physics.StateC.html#sisl.physics.StateC.degenerate">[docs]</a>    <span class="k">def</span> <span class="nf">degenerate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eps</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Find degenerate coefficients with a specified precision</span>

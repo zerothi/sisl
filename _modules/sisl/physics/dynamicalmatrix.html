@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.dynamicalmatrix &mdash; sisl 785f223c65 documentation</title>
+  <title>sisl.physics.dynamicalmatrix &mdash; sisl 0.1.dev1+g127fd00 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                785f223c65
+                0.1.dev1+g127fd00
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -100,7 +100,7 @@
 <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">lil_matrix</span>
 
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span> <span class="nn">..messages</span> <span class="kn">import</span> <span class="n">deprecate_method</span>
+<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">deprecate_method</span>
 <span class="kn">from</span> <span class="nn">.sparse</span> <span class="kn">import</span> <span class="n">SparseOrbitalBZ</span>
 <span class="kn">from</span> <span class="nn">.phonon</span> <span class="kn">import</span> <span class="n">EigenvaluePhonon</span><span class="p">,</span> <span class="n">EigenmodePhonon</span>
 
@@ -441,15 +441,15 @@
                 <span class="n">fh</span><span class="o">.</span><span class="n">write_dynamical_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="DynamicalMatrix.velocity"><a class="viewcode-back" href="../../../api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.velocity">[docs]</a>    <span class="nd">@deprecate_method</span><span class="p">(</span><span class="s2">&quot;use DynamicalMatrix.eigenstate(...).velocity() instead&quot;</span><span class="p">,</span> <span class="s2">&quot;0.13.0&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">project</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">matrix</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the velocity for the eigenmodes for a given `k` point</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        k : array_like, optional</span>
 <span class="sd">            k-point at which the velocities are calculated</span>
-<span class="sd">        project : {}</span>
-<span class="sd">            see `sisl.physics.phonon.velocity` for details and possible arguments</span>
+<span class="sd">        matrix : bool, optional</span>
+<span class="sd">            see `EigenmodePhonon.velocity` for details</span>
 <span class="sd">        **kwargs : optional</span>
 <span class="sd">            additional parameters passed to the `eigenmode` routine</span>
 
@@ -459,7 +459,7 @@
 <span class="sd">        displacement : Calculate mode displacements</span>
 <span class="sd">        EigenmodePhonon.velocity : Underlying method used to calculate the velocity</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigenmode</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">velocity</span><span class="p">(</span><span class="n">project</span><span class="o">=</span><span class="n">project</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigenmode</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">velocity</span><span class="p">(</span><span class="n">matrix</span><span class="o">=</span><span class="n">matrix</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="DynamicalMatrix.displacement"><a class="viewcode-back" href="../../../api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.displacement">[docs]</a>    <span class="nd">@deprecate_method</span><span class="p">(</span><span class="s2">&quot;use DynamicalMatrix.eigenstate(...).displacement() instead&quot;</span><span class="p">,</span> <span class="s2">&quot;0.13.0&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">displacement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>

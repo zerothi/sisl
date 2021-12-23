@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>berry_curvature &mdash; sisl 785f223c65 documentation</title>
+  <title>berry_curvature &mdash; sisl 0.1.dev1+g127fd00 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                785f223c65
+                0.1.dev1+g127fd00
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -158,16 +158,14 @@
 <h1>berry_curvature<a class="headerlink" href="#berry-curvature" title="Permalink to this headline"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="sisl.physics.electron.berry_curvature">
-<span class="sig-prename descclassname"><span class="pre">sisl.physics.electron.</span></span><span class="sig-name descname"><span class="pre">berry_curvature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dHk</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dSk</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degenerate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degenerate_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">complex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/electron.html#berry_curvature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.electron.berry_curvature" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sisl.physics.electron.</span></span><span class="sig-name descname"><span class="pre">berry_curvature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dHk</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dSk</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degenerate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degenerate_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/electron.html#berry_curvature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.electron.berry_curvature" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate the Berry curvature matrix for a set of states (using Kubo)</p>
 <p>The Berry curvature is calculated using the following expression
 (<span class="math notranslate nohighlight">\(\alpha\)</span>, <span class="math notranslate nohighlight">\(\beta\)</span> corresponding to Cartesian directions):</p>
 <div class="math notranslate nohighlight">
-\[\boldsymbol\Omega_{n,\alpha\beta} = - \frac2\hbar^2\Im\sum_{m\neq n}
-         \frac{v_{nm,\alpha} v_{mn,\beta}}
-              {[\epsilon_m - \epsilon_n]^2}\]</div>
-<p>Note that this method optionally returns the complex valued equivalent of the above.
-I.e. <span class="math notranslate nohighlight">\(\Im\)</span> is not applied if <em class="xref py py-obj">complex</em> is true.</p>
+\[\boldsymbol\Omega_{i,\alpha\beta} = - \frac2{\hbar^2}\Im\sum_{j\neq i}
+         \frac{v^\alpha_{ij} v^\beta_{ji}}
+              {[\epsilon_j - \epsilon_i]^2}\]</div>
 <p>For details see Eq. (11) in <a class="footnote-reference brackets" href="#id3" id="id1">1</a> or Eq. (2.59) in <a class="footnote-reference brackets" href="#id4" id="id2">2</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -184,7 +182,6 @@ NOTE: Using non-orthogonal basis sets are not tested.</p></li>
 <li><p><strong>degenerate</strong> (<em>list of array_like</em><em>, </em><em>optional</em>) – a list containing the indices of degenerate states. In that case a prior diagonalization
 is required to decouple them.</p></li>
 <li><p><strong>degenerate_dir</strong> (<em>(</em><em>3</em><em>,</em><em>)</em><em>, </em><em>optional</em>) – along which direction degenerate states are decoupled.</p></li>
-<li><p><strong>complex</strong> (<em>logical</em><em>, </em><em>optional</em>) – whether the returned quantity is complex valued (i.e. not <em>only</em> the imaginary part is returned)</p></li>
 </ul>
 </dd>
 </dl>
@@ -219,7 +216,7 @@ is required to decouple them.</p></li>
 </dl>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Berry flux with final dimension <code class="docutils literal notranslate"><span class="pre">(state.shape[0],</span> <span class="pre">3,</span> <span class="pre">3)</span></code> (complex if <em class="xref py py-obj">complex</em> is True).</p>
+<dd class="field-odd"><p>Berry flux with final dimension <code class="docutils literal notranslate"><span class="pre">(state.shape[0],</span> <span class="pre">3,</span> <span class="pre">3)</span></code></p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a></p>

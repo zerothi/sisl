@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.State &mdash; sisl 785f223c65 documentation</title>
+  <title>sisl.physics.State &mdash; sisl 0.1.dev1+g127fd00 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                785f223c65
+                0.1.dev1+g127fd00
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -209,7 +209,7 @@ This <a class="reference internal" href="#id0" title="sisl.physics.State.info"><
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.State.align_phase" title="sisl.physics.State.align_phase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">align_phase</span></code></a>(other[, inplace, ret_index])</p></td>
 <td><p>Align <em class="xref py py-obj">self</em> with the phases for <em class="xref py py-obj">other</em>, a copy may be returned</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.State.change_gauge" title="sisl.physics.State.change_gauge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">change_gauge</span></code></a>(gauge)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.State.change_gauge" title="sisl.physics.State.change_gauge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">change_gauge</span></code></a>(gauge[, offset])</p></td>
 <td><p>In-place change of the gauge of the state coefficients</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.State.copy" title="sisl.physics.State.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>()</p></td>
@@ -341,7 +341,7 @@ The new states (from <em class="xref py py-obj">self</em>) returned is then orde
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.State.change_gauge">
-<span class="sig-name descname"><span class="pre">change_gauge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gauge</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/state.html#State.change_gauge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.State.change_gauge" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">change_gauge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gauge</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/state.html#State.change_gauge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.State.change_gauge" title="Permalink to this definition"></a></dt>
 <dd><p>In-place change of the gauge of the state coefficients</p>
 <p>The two gauges are related through:</p>
 <div class="math notranslate nohighlight">
@@ -349,7 +349,10 @@ The new states (from <em class="xref py py-obj">self</em>) returned is then orde
 <p>where <span class="math notranslate nohighlight">\(C_j\)</span> and <span class="math notranslate nohighlight">\(\tilde C_j\)</span> belongs to the <code class="docutils literal notranslate"><span class="pre">r</span></code> and <code class="docutils literal notranslate"><span class="pre">R</span></code> gauge, respectively.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>gauge</strong> (<em>{'R'</em><em>, </em><em>'r'}</em>) – specify the new gauge for the mode coefficients</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gauge</strong> (<em>{'R'</em><em>, </em><em>'r'}</em>) – specify the new gauge for the mode coefficients</p></li>
+<li><p><strong>offset</strong> (<em>array_like</em><em>, </em><em>optional</em>) – whether the coordinates should be offset by another phase-factor</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>

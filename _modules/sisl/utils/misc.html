@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.utils.misc &mdash; sisl 785f223c65 documentation</title>
+  <title>sisl.utils.misc &mdash; sisl 0.1.dev1+g127fd00 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                785f223c65
+                0.1.dev1+g127fd00
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -406,8 +406,7 @@
         <span class="n">arg_names</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">kwargs_name</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">sig</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">p</span><span class="o">.</span><span class="n">POSITIONAL_ONLY</span> <span class="ow">or</span> <span class="n">p</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">p</span><span class="o">.</span><span class="n">POSITIONAL_OR_KEYWORD</span> \
-               <span class="ow">or</span> <span class="n">p</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">p</span><span class="o">.</span><span class="n">KEYWORD_ONLY</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">POSITIONAL_ONLY</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">POSITIONAL_OR_KEYWORD</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">KEYWORD_ONLY</span><span class="p">):</span>
                 <span class="n">arg_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">p</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">p</span><span class="o">.</span><span class="n">VAR_KEYWORD</span><span class="p">:</span>
                 <span class="n">kwargs_name</span> <span class="o">=</span> <span class="n">name</span>

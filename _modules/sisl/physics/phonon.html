@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.phonon &mdash; sisl 785f223c65 documentation</title>
+  <title>sisl.physics.phonon &mdash; sisl 0.1.dev1+g127fd00 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                785f223c65
+                0.1.dev1+g127fd00
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -132,6 +132,7 @@
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">delete</span>
 
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">deprecate_method</span>
 <span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
 <span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">units</span><span class="p">,</span> <span class="n">constant</span>
 <span class="kn">from</span> <span class="nn">sisl._help</span> <span class="kn">import</span> <span class="n">dtype_complex_to_real</span>
@@ -225,6 +226,7 @@
 
 
 <div class="viewcode-block" id="velocity"><a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.velocity.html#sisl.physics.phonon.velocity">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.phonon&quot;</span><span class="p">)</span>
+<span class="nd">@deprecate_method</span><span class="p">(</span><span class="s2">&quot;use DynamicalMatrix.eigenstate(...).velocity() instead&quot;</span><span class="p">,</span> <span class="s2">&quot;0.13.0&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="n">hw</span><span class="p">,</span> <span class="n">dDk</span><span class="p">,</span> <span class="n">degenerate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">project</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the velocity of a set of modes</span>
 
@@ -398,39 +400,32 @@
     <span class="sd">&quot;&quot;&quot; A mode describing a physical quantity related to phonons, with associated coefficients of the mode &quot;&quot;&quot;</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
 
-<div class="viewcode-block" id="ModeCPhonon.velocity"><a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.ModeCPhonon.html#sisl.physics.phonon.ModeCPhonon.velocity">[docs]</a>    <span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">project</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate velocity for the modes</span>
+<div class="viewcode-block" id="ModeCPhonon.velocity"><a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.ModeCPhonon.html#sisl.physics.phonon.ModeCPhonon.velocity">[docs]</a>    <span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate velocity of the modes</span>
 
-<span class="sd">        This routine calls `~sisl.physics.phonon.velocity` with appropriate arguments</span>
+<span class="sd">        This routine calls `derivative` with appropriate arguments (1st order derivative)</span>
 <span class="sd">        and returns the velocity for the modes.</span>
 
 <span class="sd">        Note that the coefficients associated with the `ModeCPhonon` *must* correspond</span>
 <span class="sd">        to the energies of the modes.</span>
 
-<span class="sd">        See `~sisl.physics.phonon.velocity` for details.</span>
+<span class="sd">        See `derivative` for details and possible arguments. One cannot pass the ``order`` argument</span>
+<span class="sd">        as that is fixed to ``1`` in this call.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
-<span class="sd">        The eigenvectors for the modes *may* have changed after calling this routine.</span>
+<span class="sd">        The states and energies for the modes *may* have changed after calling this routine.</span>
 <span class="sd">        This is because of the velocity un-folding for degenerate modes. I.e. calling</span>
 <span class="sd">        `displacement` and/or `PDOS` after this method *may* change the result.</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        eps : float, optional</span>
-<span class="sd">           precision used to find degenerate modes.</span>
-<span class="sd">        degenerate_dir: (3,), optional</span>
-<span class="sd">           which direction is used to decouple the degenerate states.</span>
-<span class="sd">        project: bool, optional</span>
-<span class="sd">           whether to return projected velocities (per direction), see `velocity` for details</span>
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        derivative : for details of the implementation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">opt</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;k&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))}</span>
-        <span class="n">gauge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;gauge&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">gauge</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">opt</span><span class="p">[</span><span class="s1">&#39;gauge&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gauge</span>
-
-        <span class="n">deg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">degenerate</span><span class="p">(</span><span class="n">eps</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">velocity</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">dDk</span><span class="p">(</span><span class="o">**</span><span class="n">opt</span><span class="p">),</span> <span class="n">degenerate</span><span class="o">=</span><span class="n">deg</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="o">=</span><span class="n">degenerate_dir</span><span class="p">,</span> <span class="n">project</span><span class="o">=</span><span class="n">project</span><span class="p">)</span></div></div>
+        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+        <span class="n">axes</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">ndim</span><span class="p">))</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">_velocity_const</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="p">(</span><span class="n">c</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">))</span></div></div>
 
 
 <div class="viewcode-block" id="EigenvaluePhonon"><a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.EigenvaluePhonon.html#sisl.physics.phonon.EigenvaluePhonon">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.phonon&quot;</span><span class="p">)</span>

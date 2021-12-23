@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.electron.EigenstateElectron &mdash; sisl 785f223c65 documentation</title>
+  <title>sisl.physics.electron.EigenstateElectron &mdash; sisl 0.1.dev1+g127fd00 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                785f223c65
+                0.1.dev1+g127fd00
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -200,10 +200,10 @@ spin moments (spin texture).</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.asState" title="sisl.physics.electron.EigenstateElectron.asState"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asState</span></code></a>()</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.berry_curvature" title="sisl.physics.electron.EigenstateElectron.berry_curvature"><code class="xref py py-obj docutils literal notranslate"><span class="pre">berry_curvature</span></code></a>([complex, eps, degenerate_dir])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.berry_curvature" title="sisl.physics.electron.EigenstateElectron.berry_curvature"><code class="xref py py-obj docutils literal notranslate"><span class="pre">berry_curvature</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Calculate Berry curvature for the states</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.change_gauge" title="sisl.physics.electron.EigenstateElectron.change_gauge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">change_gauge</span></code></a>(gauge)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.change_gauge" title="sisl.physics.electron.EigenstateElectron.change_gauge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">change_gauge</span></code></a>(gauge[, offset])</p></td>
 <td><p>In-place change of the gauge of the state coefficients</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.copy" title="sisl.physics.electron.EigenstateElectron.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>()</p></td>
@@ -212,62 +212,62 @@ spin moments (spin texture).</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.degenerate" title="sisl.physics.electron.EigenstateElectron.degenerate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">degenerate</span></code></a>(eps)</p></td>
 <td><p>Find degenerate coefficients with a specified precision</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.derivative" title="sisl.physics.electron.EigenstateElectron.derivative"><code class="xref py py-obj docutils literal notranslate"><span class="pre">derivative</span></code></a>([order, degenerate, ...])</p></td>
+<td><p>Calculate the derivative with respect to <span class="math notranslate nohighlight">\(\mathbf k\)</span> for a set of states up to a given order</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.effective_mass" title="sisl.physics.electron.EigenstateElectron.effective_mass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">effective_mass</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Calculate effective mass tensor for the states</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.inner" title="sisl.physics.electron.EigenstateElectron.inner"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inner</span></code></a>([ket, matrix, diag])</p></td>
-<td><p>Calculate the inner product by <span class="math notranslate nohighlight">\(\mathbf A_{ij} = \langle\psi_i| \mathbf M |\psi'_j\rangle\)</span></p></td>
+<td><p>Calculate the inner product as <span class="math notranslate nohighlight">\(\mathbf A_{ij} = \langle\psi_i|\mathbf M|\psi'_j\rangle\)</span></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.inv_eff_mass_tensor" title="sisl.physics.electron.EigenstateElectron.inv_eff_mass_tensor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inv_eff_mass_tensor</span></code></a>([as_matrix, eps])</p></td>
-<td><p>Calculate inverse effective mass tensor for the states</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.ipr" title="sisl.physics.electron.EigenstateElectron.ipr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ipr</span></code></a>([q])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.ipr" title="sisl.physics.electron.EigenstateElectron.ipr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ipr</span></code></a>([q])</p></td>
 <td><p>Calculate the inverse participation ratio (IPR) for arbitrary <em class="xref py py-obj">q</em> values</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.iter" title="sisl.physics.electron.EigenstateElectron.iter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter</span></code></a>([asarray])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.iter" title="sisl.physics.electron.EigenstateElectron.iter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter</span></code></a>([asarray])</p></td>
 <td><p>An iterator looping over the states in this system</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.norm" title="sisl.physics.electron.EigenstateElectron.norm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">norm</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.norm" title="sisl.physics.electron.EigenstateElectron.norm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">norm</span></code></a>()</p></td>
 <td><p>Return a vector with the Euclidean norm of each state <span class="math notranslate nohighlight">\(\sqrt{\langle\psi|\psi\rangle}\)</span></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.norm2" title="sisl.physics.electron.EigenstateElectron.norm2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">norm2</span></code></a>([sum])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.norm2" title="sisl.physics.electron.EigenstateElectron.norm2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">norm2</span></code></a>([sum])</p></td>
 <td><p>Return a vector with the norm of each state <span class="math notranslate nohighlight">\(\langle\psi|\mathbf S|\psi\rangle\)</span></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.normalize" title="sisl.physics.electron.EigenstateElectron.normalize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">normalize</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.normalize" title="sisl.physics.electron.EigenstateElectron.normalize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">normalize</span></code></a>()</p></td>
 <td><p>Return a normalized state where each state has <span class="math notranslate nohighlight">\(|\psi|^2=1\)</span></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.occupation" title="sisl.physics.electron.EigenstateElectron.occupation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">occupation</span></code></a>([distribution])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.occupation" title="sisl.physics.electron.EigenstateElectron.occupation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">occupation</span></code></a>([distribution])</p></td>
 <td><p>Calculate the occupations for the states according to a distribution function</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.outer" title="sisl.physics.electron.EigenstateElectron.outer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">outer</span></code></a>([idx])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.outer" title="sisl.physics.electron.EigenstateElectron.outer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">outer</span></code></a>([idx])</p></td>
 <td><p>Return the outer product for the indices <em class="xref py py-obj">idx</em> (or all if <code class="docutils literal notranslate"><span class="pre">None</span></code>) by <span class="math notranslate nohighlight">\(\sum_i|\psi_i\rangle c_i\langle\psi_i|\)</span></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.phase" title="sisl.physics.electron.EigenstateElectron.phase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">phase</span></code></a>([method, ret_index])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.phase" title="sisl.physics.electron.EigenstateElectron.phase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">phase</span></code></a>([method, ret_index])</p></td>
 <td><p>Calculate the Euler angle (phase) for the elements of the state, in the range <span class="math notranslate nohighlight">\(]-\pi;\pi]\)</span></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.remove" title="sisl.physics.electron.EigenstateElectron.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a>(idx)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.remove" title="sisl.physics.electron.EigenstateElectron.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a>(idx)</p></td>
 <td><p>Return a new state without the specified indices</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.rotate" title="sisl.physics.electron.EigenstateElectron.rotate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotate</span></code></a>([phi, individual])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.rotate" title="sisl.physics.electron.EigenstateElectron.rotate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotate</span></code></a>([phi, individual])</p></td>
 <td><p>Rotate all states (in-place) to rotate the largest component to be along the angle <em class="xref py py-obj">phi</em></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.sort" title="sisl.physics.electron.EigenstateElectron.sort"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort</span></code></a>([ascending])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.sort" title="sisl.physics.electron.EigenstateElectron.sort"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort</span></code></a>([ascending])</p></td>
 <td><p>Sort and return a new <code class="xref py py-obj docutils literal notranslate"><span class="pre">StateC</span></code> by sorting the coefficients (default to ascending)</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.spin_moment" title="sisl.physics.electron.EigenstateElectron.spin_moment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spin_moment</span></code></a>([project])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.spin_moment" title="sisl.physics.electron.EigenstateElectron.spin_moment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spin_moment</span></code></a>([project])</p></td>
 <td><p>Calculate spin moment from the states</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.sub" title="sisl.physics.electron.EigenstateElectron.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub</span></code></a>(idx)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.sub" title="sisl.physics.electron.EigenstateElectron.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub</span></code></a>(idx)</p></td>
 <td><p>Return a new state with only the specified states</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.tile" title="sisl.physics.electron.EigenstateElectron.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a>(reps, axis[, normalize, offset])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.tile" title="sisl.physics.electron.EigenstateElectron.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a>(reps, axis[, normalize, offset])</p></td>
 <td><p>Tile the state vectors for a new supercell</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.translate" title="sisl.physics.electron.EigenstateElectron.translate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate</span></code></a>(isc)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.translate" title="sisl.physics.electron.EigenstateElectron.translate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate</span></code></a>(isc)</p></td>
 <td><p>Translate the vectors to a new unit-cell position</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.velocity" title="sisl.physics.electron.EigenstateElectron.velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">velocity</span></code></a>([eps, degenerate_dir, project])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.velocity" title="sisl.physics.electron.EigenstateElectron.velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">velocity</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Calculate velocity for the states</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.velocity_matrix" title="sisl.physics.electron.EigenstateElectron.velocity_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">velocity_matrix</span></code></a>([eps, degenerate_dir])</p></td>
-<td><p>Calculate velocity matrix for the states</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.wavefunction" title="sisl.physics.electron.EigenstateElectron.wavefunction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">wavefunction</span></code></a>(grid[, spinor, eta])</p></td>
 <td><p>Expand the coefficients as the wavefunction on <em class="xref py py-obj">grid</em> <em>as-is</em></p></td>
@@ -433,22 +433,22 @@ The new states (from <em class="xref py py-obj">self</em>) returned is then orde
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.electron.EigenstateElectron.berry_curvature">
-<span class="sig-name descname"><span class="pre">berry_curvature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">complex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degenerate_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.electron.EigenstateElectron.berry_curvature" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">berry_curvature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.electron.EigenstateElectron.berry_curvature" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate Berry curvature for the states</p>
-<p>This routine calls <a class="reference internal" href="sisl.physics.electron.berry_curvature.html#sisl.physics.electron.berry_curvature" title="sisl.physics.electron.berry_curvature"><code class="xref py py-obj docutils literal notranslate"><span class="pre">berry_curvature</span></code></a> with appropriate arguments
-and returns the Berry curvature for the states.</p>
+<p>This routine calls <a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.derivative" title="sisl.physics.electron.EigenstateElectron.derivative"><code class="xref py py-obj docutils literal notranslate"><span class="pre">derivative</span></code></a> with appropriate arguments <code class="docutils literal notranslate"><span class="pre">order=1,</span> <span class="pre">matrix=True</span></code> and then
+post-processes the values and calculates the Berry curvature. Do not pass these arguments.</p>
 <p>Note that the coefficients associated with the <a class="reference internal" href="sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron" title="sisl.physics.electron.StateCElectron"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StateCElectron</span></code></a> <em>must</em> correspond
 to the energies of the states.</p>
 <p>See <a class="reference internal" href="sisl.physics.electron.berry_curvature.html#sisl.physics.electron.berry_curvature" title="sisl.physics.electron.berry_curvature"><code class="xref py py-obj docutils literal notranslate"><span class="pre">berry_curvature</span></code></a> for details.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>complex</strong> (<em>logical</em><em>, </em><em>optional</em>) – whether the returned quantity is complex valued</p></li>
-<li><p><strong>eps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – precision used to find degenerate states.</p></li>
-<li><p><strong>degenerate_dir</strong> (<em>(</em><em>3</em><em>,</em><em>)</em><em>, </em><em>optional</em>) – which direction is used to decouple the degenerate states.</p></li>
-</ul>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.derivative" title="sisl.physics.electron.EigenstateElectron.derivative"><code class="xref py py-obj docutils literal notranslate"><span class="pre">derivative</span></code></a></dt><dd><p>for details of the implementation</p>
+</dd>
+<dt><a class="reference internal" href="sisl.physics.electron.berry_curvature.html#sisl.physics.electron.berry_curvature" title="sisl.physics.electron.berry_curvature"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics.electron.berry_curvature</span></code></a></dt><dd><p>for details of the implementation</p>
 </dd>
 </dl>
+</div>
 </dd></dl>
 
 <dl class="py attribute">
@@ -458,7 +458,7 @@ to the energies of the states.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.electron.EigenstateElectron.change_gauge">
-<span class="sig-name descname"><span class="pre">change_gauge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gauge</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.electron.EigenstateElectron.change_gauge" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">change_gauge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gauge</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.electron.EigenstateElectron.change_gauge" title="Permalink to this definition"></a></dt>
 <dd><p>In-place change of the gauge of the state coefficients</p>
 <p>The two gauges are related through:</p>
 <div class="math notranslate nohighlight">
@@ -466,7 +466,10 @@ to the energies of the states.</p>
 <p>where <span class="math notranslate nohighlight">\(C_j\)</span> and <span class="math notranslate nohighlight">\(\tilde C_j\)</span> belongs to the <code class="docutils literal notranslate"><span class="pre">r</span></code> and <code class="docutils literal notranslate"><span class="pre">R</span></code> gauge, respectively.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>gauge</strong> (<em>{'R'</em><em>, </em><em>'r'}</em>) – specify the new gauge for the mode coefficients</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gauge</strong> (<em>{'R'</em><em>, </em><em>'r'}</em>) – specify the new gauge for the mode coefficients</p></li>
+<li><p><strong>offset</strong> (<em>array_like</em><em>, </em><em>optional</em>) – whether the coordinates should be offset by another phase-factor</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -494,6 +497,62 @@ to the energies of the states.</p>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.electron.EigenstateElectron.derivative">
+<span class="sig-name descname"><span class="pre">derivative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degenerate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degenerate_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.electron.EigenstateElectron.derivative" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the derivative with respect to <span class="math notranslate nohighlight">\(\mathbf k\)</span> for a set of states up to a given order</p>
+<p>These are calculated using the analytic expression (<span class="math notranslate nohighlight">\(\alpha\)</span> corresponding to the Cartesian directions),
+here only shown for the 1st order derivative:</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{d}_{ij\alpha} = \langle \psi_j |
+         \frac{\partial}{\partial\mathbf k_\alpha} \mathbf H(\mathbf k) | \psi_i \rangle\]</div>
+<p>In case of non-orthogonal basis the equations substitutes <span class="math notranslate nohighlight">\(\mathbf H(\mathbf k)\)</span> by
+<span class="math notranslate nohighlight">\(\mathbf H(\mathbf k) - \epsilon_i\mathbf S(\mathbf k)\)</span>.</p>
+<p>The 2nd order derivatives are calculated with the Berry curvature correction:</p>
+<div class="math notranslate nohighlight">
+\[\mathbf d^2_{ij\alpha\beta} = \langle\psi_j|
+    \frac{\partial^2}{\partial\mathbf k_\alpha\partial\mathbf k_\beta} \mathbf H(\mathbf k) | \psi_i\rangle
+    - \frac12\frac{\mathbf{d}_{ij\alpha}\mathbf{d}_{ij\beta}}
+          {\epsilon_j - \epsilon_i}\]</div>
+<p class="rubric">Notes</p>
+<p>When requesting 2nd derivatives it will not be advisable to use a <a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.sub" title="sisl.physics.electron.EigenstateElectron.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub</span></code></a> before
+calculating the derivatives since the 1st order perturbation uses the energy
+differences (Berry contribution) and the 1st derivative matrix for correcting the curvature.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>order</strong> (<em>{1</em><em>, </em><em>2}</em>) – an integer specifying which order of the derivative is being calculated.</p></li>
+<li><p><strong>degenerate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> or </em><em>list of array_like</em><em>, </em><em>optional</em>) – If a float is passed it is regarded as the degeneracy tolerance used to calculate the degeneracy
+levels. Defaults to 1e-5 eV.
+If a list, it contains the indices of degenerate states. In that case a prior diagonalization
+is required to decouple them. See <em class="xref py py-obj">degenerate_dir</em> for the sum of directions.</p></li>
+<li><p><strong>degenerate_dir</strong> (<em>(</em><em>3</em><em>,</em><em>)</em><em>, </em><em>optional</em>) – a direction used for degenerate decoupling. The decoupling based on the velocity along this direction</p></li>
+<li><p><strong>matrix</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the full matrix or only the diagonal components are returned</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">SparseOrbitalBZ.dPk</span></code></dt><dd><p>function for generating the matrix derivatives</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">SparseOrbitalBZ.dSk</span></code></dt><dd><p>function for generating the matrix derivatives in non-orthogonal basis</p>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><em>dv, ddv</em> – if <em class="xref py py-obj">matrix</em> is false, they are per state with shape <code class="docutils literal notranslate"><span class="pre">(state.shape[0],</span> <span class="pre">*)</span></code>, ddv is only
+returned if <code class="docutils literal notranslate"><span class="pre">order&gt;=2</span></code></p></li>
+<li><p><em>dv, ddv</em> – if <em class="xref py py-obj">matrix</em> is true, they are per state with shape <code class="docutils literal notranslate"><span class="pre">(state.shape[0],</span> <span class="pre">state.shape[0],</span> <span class="pre">*)</span></code>, ddv is only
+returned if <code class="docutils literal notranslate"><span class="pre">order&gt;=2</span></code></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.physics.electron.EigenstateElectron.dkind">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dkind</span></span><a class="headerlink" href="#sisl.physics.electron.EigenstateElectron.dkind" title="Permalink to this definition"></a></dt>
@@ -504,6 +563,31 @@ to the energies of the states.</p>
 <dt class="sig sig-object py" id="sisl.physics.electron.EigenstateElectron.dtype">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dtype</span></span><a class="headerlink" href="#sisl.physics.electron.EigenstateElectron.dtype" title="Permalink to this definition"></a></dt>
 <dd><p>Data-type for the state</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.electron.EigenstateElectron.effective_mass">
+<span class="sig-name descname"><span class="pre">effective_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.electron.EigenstateElectron.effective_mass" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate effective mass tensor for the states</p>
+<p>This routine calls <a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.derivative" title="sisl.physics.electron.EigenstateElectron.derivative"><code class="xref py py-obj docutils literal notranslate"><span class="pre">derivative</span></code></a> with appropriate arguments (2nd order derivative)
+and returns the effective mass tensor for each state.</p>
+<p>Note that the coefficients associated with the <a class="reference internal" href="sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron" title="sisl.physics.electron.StateCElectron"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StateCElectron</span></code></a> <em>must</em> correspond
+to the energies of the states.</p>
+<p>See <a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.derivative" title="sisl.physics.electron.EigenstateElectron.derivative"><code class="xref py py-obj docutils literal notranslate"><span class="pre">derivative</span></code></a> for argument details, but disregard the <code class="docutils literal notranslate"><span class="pre">order</span></code> argument as that
+is fixed to <code class="docutils literal notranslate"><span class="pre">2</span></code> in this call.</p>
+<p class="rubric">Notes</p>
+<p>Since some directions may not be periodic there will be zeros. This routine will
+invert elements where the values are different from 0.</p>
+<p>It is not advisable to use a <a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.sub" title="sisl.physics.electron.EigenstateElectron.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub</span></code></a> before calculating the effective mass
+since the 1st order perturbation uses the energy differences and the 1st derivative
+matrix for correcting the curvature.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.derivative" title="sisl.physics.electron.EigenstateElectron.derivative"><code class="xref py py-obj docutils literal notranslate"><span class="pre">derivative</span></code></a></dt><dd><p>for details of the implementation</p>
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 <dl class="py property">
@@ -520,48 +604,28 @@ to the energies of the states.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.electron.EigenstateElectron.inner">
 <span class="sig-name descname"><span class="pre">inner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ket</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.electron.EigenstateElectron.inner" title="Permalink to this definition"></a></dt>
-<dd><p>Calculate the inner product by <span class="math notranslate nohighlight">\(\mathbf A_{ij} = \langle\psi_i| \mathbf M |\psi'_j\rangle\)</span></p>
-<p>The bra will be <em class="xref py py-obj">self.state</em>.</p>
+<dd><p>Calculate the inner product as <span class="math notranslate nohighlight">\(\mathbf A_{ij} = \langle\psi_i|\mathbf M|\psi'_j\rangle\)</span></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ket</strong> (<a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State"><em>State</em></a><em> or </em><em>array_like</em><em>, </em><em>optional</em>) – the ket object to calculate the inner product with, if not passed it will do the inner
-product with itself.</p></li>
-<li><p><strong>matrix</strong> (<em>array_like</em><em>, </em><em>optional</em>) – a vector or matrix that expresses the operator <em class="xref py py-obj">M</em>. Defaults to the overlap matrix <span class="math notranslate nohighlight">\(\mathbf S\)</span>.</p></li>
+<li><p><strong>ket</strong> (<a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State"><em>State</em></a><em>, </em><em>optional</em>) – the ket object to calculate the inner product with, if not passed it will do the inner
+product with itself. The object itself will always be the bra <span class="math notranslate nohighlight">\(\langle\psi_i|\)</span></p></li>
+<li><p><strong>matrix</strong> (<em>array_like</em><em>, </em><em>optional</em>) – whether a matrix is sandwiched between the bra and ket, default to the identity matrix</p></li>
 <li><p><strong>diag</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – only return the diagonal matrix <span class="math notranslate nohighlight">\(\mathbf A_{ii}\)</span>.</p></li>
 </ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This does <em>not</em> take into account a possible overlap matrix when non-orthogonal basis sets are used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – if the number of state coefficients are different for the bra and ket</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>a matrix with the sum of inner state products</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="sisl.physics.electron.EigenstateElectron.inv_eff_mass_tensor">
-<span class="sig-name descname"><span class="pre">inv_eff_mass_tensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">as_matrix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.electron.EigenstateElectron.inv_eff_mass_tensor" title="Permalink to this definition"></a></dt>
-<dd><p>Calculate inverse effective mass tensor for the states</p>
-<p>This routine calls <em class="xref py py-obj">inv_eff_mass</em> with appropriate arguments
-and returns the state inverse effective mass tensor. I.e. for non-orthogonal basis the overlap
-matrix and energy values are also passed.</p>
-<p>Note that the coefficients associated with the <a class="reference internal" href="sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron" title="sisl.physics.electron.StateCElectron"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StateCElectron</span></code></a> <em>must</em> correspond
-to the energies of the states.</p>
-<p>See <code class="xref py py-obj docutils literal notranslate"><span class="pre">inv_eff_mass_tensor</span></code> for details.</p>
-<p class="rubric">Notes</p>
-<p>The reason for not inverting the mass-tensor is that for systems with limited
-periodicities some of the diagonal elements of the inverse mass tensor matrix
-will be 0, in which case the matrix is singular and non-invertible. Therefore
-it is the users responsibility to remove any of the non-periodic elements from
-the matrix.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>as_matrix</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – if true the returned tensor will be a symmetric matrix, otherwise the Voigt tensor is returned.</p></li>
-<li><p><strong>eps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – precision used to find degenerate states.</p></li>
-</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -862,50 +926,25 @@ selects the corresponding state vector</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.electron.EigenstateElectron.velocity">
-<span class="sig-name descname"><span class="pre">velocity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degenerate_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.electron.EigenstateElectron.velocity" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">velocity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.electron.EigenstateElectron.velocity" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate velocity for the states</p>
-<p>This routine calls <a class="reference internal" href="sisl.physics.electron.velocity.html#sisl.physics.electron.velocity" title="sisl.physics.electron.velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">velocity</span></code></a> with appropriate arguments
-and returns the velocity for the states. I.e. for non-orthogonal basis the overlap
-matrix and energy values are also passed.</p>
+<p>This routine calls <a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.derivative" title="sisl.physics.electron.EigenstateElectron.derivative"><code class="xref py py-obj docutils literal notranslate"><span class="pre">derivative</span></code></a> with appropriate arguments (1st order derivative)
+and returns the velocity for the states.</p>
 <p>Note that the coefficients associated with the <a class="reference internal" href="sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron" title="sisl.physics.electron.StateCElectron"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StateCElectron</span></code></a> <em>must</em> correspond
 to the energies of the states.</p>
-<p>See <a class="reference internal" href="sisl.physics.electron.velocity.html#sisl.physics.electron.velocity" title="sisl.physics.electron.velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">velocity</span></code></a> for details.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>eps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – precision used to find degenerate states.</p></li>
-<li><p><strong>degenerate_dir</strong> (<em>(</em><em>3</em><em>,</em><em>)</em><em>, </em><em>optional</em>) – which direction is used to decouple the degenerate states.</p></li>
-<li><p><strong>project</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – whether to return projected velocities (per orbital), see <a class="reference internal" href="sisl.physics.electron.velocity.html#sisl.physics.electron.velocity" title="sisl.physics.electron.velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">velocity</span></code></a> for details</p></li>
-</ul>
-</dd>
-</dl>
+<p>See <a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.derivative" title="sisl.physics.electron.EigenstateElectron.derivative"><code class="xref py py-obj docutils literal notranslate"><span class="pre">derivative</span></code></a> for details and possible arguments. One cannot pass the <code class="docutils literal notranslate"><span class="pre">order</span></code> argument
+as that is fixed to <code class="docutils literal notranslate"><span class="pre">1</span></code> in this call.</p>
+<p class="rubric">Notes</p>
+<p>The states and energies for the states <em>may</em> have changed after calling this routine.
+This is because of the velocity un-folding for degenerate modes. I.e. calling
+<em class="xref py py-obj">displacement</em> and/or <a class="reference internal" href="sisl.physics.electron.PDOS.html#sisl.physics.electron.PDOS" title="sisl.physics.electron.PDOS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PDOS</span></code></a> after this method <em>may</em> change the result.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference internal" href="sisl.physics.electron.velocity.html#sisl.physics.electron.velocity" title="sisl.physics.electron.velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">velocity</span></code></a></dt><dd><p>for an explanation of the projections in case of <em class="xref py py-obj">project</em> being True</p>
+<dt><a class="reference internal" href="#sisl.physics.electron.EigenstateElectron.derivative" title="sisl.physics.electron.EigenstateElectron.derivative"><code class="xref py py-obj docutils literal notranslate"><span class="pre">derivative</span></code></a></dt><dd><p>for details of the implementation</p>
 </dd>
 </dl>
 </div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="sisl.physics.electron.EigenstateElectron.velocity_matrix">
-<span class="sig-name descname"><span class="pre">velocity_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degenerate_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.electron.EigenstateElectron.velocity_matrix" title="Permalink to this definition"></a></dt>
-<dd><p>Calculate velocity matrix for the states</p>
-<p>This routine calls <a class="reference internal" href="sisl.physics.electron.velocity_matrix.html#sisl.physics.electron.velocity_matrix" title="sisl.physics.electron.velocity_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">velocity_matrix</span></code></a> with appropriate arguments
-and returns the velocity for the states. I.e. for non-orthogonal basis the overlap
-matrix and energy values are also passed.</p>
-<p>Note that the coefficients associated with the <a class="reference internal" href="sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron" title="sisl.physics.electron.StateCElectron"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StateCElectron</span></code></a> <em>must</em> correspond
-to the energies of the states.</p>
-<p>See <a class="reference internal" href="sisl.physics.electron.velocity_matrix.html#sisl.physics.electron.velocity_matrix" title="sisl.physics.electron.velocity_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">velocity_matrix</span></code></a> for details.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>eps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – precision used to find degenerate states.</p></li>
-<li><p><strong>degenerate_dir</strong> (<em>(</em><em>3</em><em>,</em><em>)</em><em>, </em><em>optional</em>) – which direction is used to decouple the degenerate states.</p></li>
-</ul>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">

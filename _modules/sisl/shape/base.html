@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.shape.base &mdash; sisl 785f223c65 documentation</title>
+  <title>sisl.shape.base &mdash; sisl 0.1.dev1+g127fd00 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                785f223c65
+                0.1.dev1+g127fd00
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -181,6 +181,8 @@
     <span class="c1"># Define a dispatcher for converting Shapes</span>
     <span class="c1">#  Shape().to.ellipsoid() will convert to an sisl.shape.Ellipsoid object</span>
     <span class="n">to</span> <span class="o">=</span> <span class="n">ClassDispatcher</span><span class="p">(</span><span class="s2">&quot;to&quot;</span><span class="p">,</span>
+                         <span class="c1"># Do not allow class calls</span>
+                         <span class="n">type_dispatcher</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                          <span class="n">obj_getattr</span><span class="o">=</span><span class="k">lambda</span> <span class="n">obj</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span>
                          <span class="p">(</span><span class="n">_</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="p">())</span><span class="o">.</span><span class="n">throw</span><span class="p">(</span>
                              <span class="ne">AttributeError</span><span class="p">((</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">obj</span><span class="si">}</span><span class="s2">.to does not implement &#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
@@ -254,7 +256,11 @@
         <span class="k">return</span> <span class="n">XOrShape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
 
+<span class="n">to_dispatch</span> <span class="o">=</span> <span class="n">Shape</span><span class="o">.</span><span class="n">to</span>
+
 <span class="c1"># Add dispatcher systems</span>
+
+
 <span class="k">class</span> <span class="nc">ShapeToDispatcher</span><span class="p">(</span><span class="n">AbstractDispatch</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Base dispatcher from class passing from a Shape class &quot;&quot;&quot;</span>
     <span class="nd">@staticmethod</span>
@@ -266,15 +272,15 @@
 <span class="k">class</span> <span class="nc">ToEllipsoidDispatcher</span><span class="p">(</span><span class="n">ShapeToDispatcher</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">sphere</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">ellipsoid</span><span class="p">()</span>
-<span class="n">Shape</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;ellipsoid&quot;</span><span class="p">,</span> <span class="n">ToEllipsoidDispatcher</span><span class="p">)</span>
-<span class="n">Shape</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;Ellipsoid&quot;</span><span class="p">,</span> <span class="n">ToEllipsoidDispatcher</span><span class="p">)</span>
+<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;ellipsoid&quot;</span><span class="p">,</span> <span class="n">ToEllipsoidDispatcher</span><span class="p">)</span>
+<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;Ellipsoid&quot;</span><span class="p">,</span> <span class="n">ToEllipsoidDispatcher</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">ToCuboidDispatcher</span><span class="p">(</span><span class="n">ShapeToDispatcher</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">ellipsoid</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">cuboid</span><span class="p">()</span>
-<span class="n">Shape</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;cuboid&quot;</span><span class="p">,</span> <span class="n">ToCuboidDispatcher</span><span class="p">)</span>
-<span class="n">Shape</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;Cuboid&quot;</span><span class="p">,</span> <span class="n">ToCuboidDispatcher</span><span class="p">)</span>
+<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;cuboid&quot;</span><span class="p">,</span> <span class="n">ToCuboidDispatcher</span><span class="p">)</span>
+<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;Cuboid&quot;</span><span class="p">,</span> <span class="n">ToCuboidDispatcher</span><span class="p">)</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.shape&quot;</span><span class="p">)</span>
@@ -531,8 +537,11 @@
         <span class="kn">from</span> <span class="nn">.ellipsoid</span> <span class="kn">import</span> <span class="n">Sphere</span>
         <span class="k">return</span> <span class="n">Sphere</span><span class="p">(</span><span class="mf">1.e-64</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
 
-<span class="n">NullShape</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;sphere&quot;</span><span class="p">,</span> <span class="n">ToSphereDispatcher</span><span class="p">)</span>
-<span class="n">NullShape</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;Sphere&quot;</span><span class="p">,</span> <span class="n">ToSphereDispatcher</span><span class="p">)</span>
+<span class="n">to_dispatch</span> <span class="o">=</span> <span class="n">NullShape</span><span class="o">.</span><span class="n">to</span>
+<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;sphere&quot;</span><span class="p">,</span> <span class="n">ToSphereDispatcher</span><span class="p">)</span>
+<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;Sphere&quot;</span><span class="p">,</span> <span class="n">ToSphereDispatcher</span><span class="p">)</span>
+
+<span class="k">del</span> <span class="n">to_dispatch</span>
 </pre></div>
 
            </div>

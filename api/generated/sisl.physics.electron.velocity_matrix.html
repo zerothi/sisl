@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>velocity_matrix &mdash; sisl 785f223c65 documentation</title>
+  <title>velocity_matrix &mdash; sisl 0.1.dev1+g127fd00 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                785f223c65
+                0.1.dev1+g127fd00
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -162,13 +162,12 @@
 <dd><p>Calculate the velocity matrix of a set of states</p>
 <p>These are calculated using the analytic expression (<span class="math notranslate nohighlight">\(\alpha\)</span> corresponding to the Cartesian directions):</p>
 <div class="math notranslate nohighlight">
-\[\mathbf{v}_{ij\alpha} = \frac1\hbar \langle \psi_j |
-         \frac{\partial}{\partial\mathbf k}_\alpha \mathbf H(\mathbf k) | \psi_i \rangle\]</div>
+\[\mathbf{v}^\alpha_{ij} = \frac1\hbar \langle \psi_j |
+         \frac{\partial}{\partial\mathbf k_\alpha} \mathbf H(\mathbf k) | \psi_i \rangle\]</div>
 <p>In case of non-orthogonal basis the equations substitutes <span class="math notranslate nohighlight">\(\mathbf H(\mathbf k)\)</span> by
 <span class="math notranslate nohighlight">\(\mathbf H(\mathbf k) - \epsilon_i\mathbf S(\mathbf k)\)</span>.</p>
-<p>Although this matrix should be Hermitian it is not checked, and we explicitly calculate
+<p>Although the matrix <span class="math notranslate nohighlight">\(\mathbf v\)</span> should be Hermitian it is not checked, and we explicitly calculate
 all elements.</p>
-<p>The velocities calculated are without the Berry curvature contributions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -198,6 +197,12 @@ is required to decouple them. See <em class="xref py py-obj">degenerate_dir</em>
 </dd>
 </dl>
 </div>
+<p class="rubric">Notes</p>
+<p>The velocities are calculated without the Berry curvature contribution see Eq. (2) in <a href="#id2"><span class="problematic" id="id1">[1]_</span></a>.
+The missing contribution may be added in later editions, for completeness sake, it is:</p>
+<div class="math notranslate nohighlight">
+\[\delta \mathbf v = - \mathbf k\times \Omega_i(\mathbf k)\]</div>
+<p>where <span class="math notranslate nohighlight">\(\Omega_i\)</span> is the Berry curvature for state <span class="math notranslate nohighlight">\(i\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>velocity matrix state with final dimension <code class="docutils literal notranslate"><span class="pre">(state.shape[0],</span> <span class="pre">state.shape[0],</span> <span class="pre">3)</span></code>, the velocity unit is Ang/ps. Units <em>may</em> change in future releases.</p>

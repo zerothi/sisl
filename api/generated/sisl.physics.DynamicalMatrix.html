@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.DynamicalMatrix &mdash; sisl 785f223c65 documentation</title>
+  <title>sisl.physics.DynamicalMatrix &mdash; sisl 0.1.dev1+g127fd00 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                785f223c65
+                0.1.dev1+g127fd00
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -305,7 +305,7 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.DynamicalMatrix.transpose" title="sisl.physics.DynamicalMatrix.transpose"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transpose</span></code></a>([sort])</p></td>
 <td><p>Create the transposed sparse geometry by interchanging supercell indices</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.DynamicalMatrix.velocity" title="sisl.physics.DynamicalMatrix.velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">velocity</span></code></a>([k, project])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.DynamicalMatrix.velocity" title="sisl.physics.DynamicalMatrix.velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">velocity</span></code></a>([k, matrix])</p></td>
 <td><p>Calculate the velocity for the eigenmodes for a given <em class="xref py py-obj">k</em> point</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.DynamicalMatrix.write" title="sisl.physics.DynamicalMatrix.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(sile, *args, **kwargs)</p></td>
@@ -1795,13 +1795,13 @@ if this is true, default</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.DynamicalMatrix.velocity">
-<span class="sig-name descname"><span class="pre">velocity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/dynamicalmatrix.html#DynamicalMatrix.velocity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.DynamicalMatrix.velocity" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">velocity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/dynamicalmatrix.html#DynamicalMatrix.velocity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.DynamicalMatrix.velocity" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate the velocity for the eigenmodes for a given <em class="xref py py-obj">k</em> point</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>k</strong> (<em>array_like</em><em>, </em><em>optional</em>) – k-point at which the velocities are calculated</p></li>
-<li><p><strong>project</strong> (<em>{}</em>) – see <a class="reference internal" href="sisl.physics.phonon.velocity.html#sisl.physics.phonon.velocity" title="sisl.physics.phonon.velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics.phonon.velocity</span></code></a> for details and possible arguments</p></li>
+<li><p><strong>matrix</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – see <code class="xref py py-obj docutils literal notranslate"><span class="pre">EigenmodePhonon.velocity</span></code> for details</p></li>
 <li><p><strong>**kwargs</strong> (<em>optional</em>) – additional parameters passed to the <a class="reference internal" href="#sisl.physics.DynamicalMatrix.eigenmode" title="sisl.physics.DynamicalMatrix.eigenmode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eigenmode</span></code></a> routine</p></li>
 </ul>
 </dd>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.shape.prism4 &mdash; sisl 785f223c65 documentation</title>
+  <title>sisl.shape.prism4 &mdash; sisl 0.1.dev1+g127fd00 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                785f223c65
+                0.1.dev1+g127fd00
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -105,7 +105,6 @@
 <span class="kn">from</span> <span class="nn">sisl.utils.mathematics</span> <span class="kn">import</span> <span class="n">fnorm</span><span class="p">,</span> <span class="n">expand</span>
 <span class="kn">from</span> <span class="nn">sisl._math_small</span> <span class="kn">import</span> <span class="n">dot3</span><span class="p">,</span> <span class="n">cross3</span>
 <span class="kn">from</span> <span class="nn">sisl._indices</span> <span class="kn">import</span> <span class="n">indices_gt_le</span>
-<span class="kn">from</span> <span class="nn">sisl._dispatcher</span> <span class="kn">import</span> <span class="n">ClassDispatcher</span>
 
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">PureShape</span><span class="p">,</span> <span class="n">ShapeToDispatcher</span>
 
@@ -264,6 +263,9 @@
         <span class="k">return</span> <span class="n">fnorm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_v</span><span class="p">)</span>
 
 
+<span class="n">to_dispatch</span> <span class="o">=</span> <span class="n">Cuboid</span><span class="o">.</span><span class="n">to</span>
+
+
 <span class="k">class</span> <span class="nc">CuboidToEllipsoid</span><span class="p">(</span><span class="n">ShapeToDispatcher</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">.ellipsoid</span> <span class="kn">import</span> <span class="n">Ellipsoid</span>
@@ -271,8 +273,8 @@
         <span class="c1"># Rescale each vector</span>
         <span class="k">return</span> <span class="n">Ellipsoid</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">_v</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">**</span> <span class="mf">.5</span><span class="p">,</span> <span class="n">shape</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
 
-<span class="n">Cuboid</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;ellipsoid&quot;</span><span class="p">,</span> <span class="n">CuboidToEllipsoid</span><span class="p">)</span>
-<span class="n">Cuboid</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;Ellipsoid&quot;</span><span class="p">,</span> <span class="n">CuboidToEllipsoid</span><span class="p">)</span>
+<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;ellipsoid&quot;</span><span class="p">,</span> <span class="n">CuboidToEllipsoid</span><span class="p">)</span>
+<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;Ellipsoid&quot;</span><span class="p">,</span> <span class="n">CuboidToEllipsoid</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">CuboidToSphere</span><span class="p">(</span><span class="n">ShapeToDispatcher</span><span class="p">):</span>
@@ -282,16 +284,19 @@
         <span class="c1"># Rescale each vector</span>
         <span class="k">return</span> <span class="n">Sphere</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">edge_length</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">**</span> <span class="mf">.5</span><span class="p">,</span> <span class="n">shape</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
 
-<span class="n">Cuboid</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;sphere&quot;</span><span class="p">,</span> <span class="n">CuboidToSphere</span><span class="p">)</span>
-<span class="n">Cuboid</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;Sphere&quot;</span><span class="p">,</span> <span class="n">CuboidToSphere</span><span class="p">)</span>
+<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;sphere&quot;</span><span class="p">,</span> <span class="n">CuboidToSphere</span><span class="p">)</span>
+<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;Sphere&quot;</span><span class="p">,</span> <span class="n">CuboidToSphere</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">CuboidToCuboid</span><span class="p">(</span><span class="n">ShapeToDispatcher</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-<span class="n">Cuboid</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;cuboid&quot;</span><span class="p">,</span> <span class="n">CuboidToCuboid</span><span class="p">)</span>
-<span class="n">Cuboid</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;Cuboid&quot;</span><span class="p">,</span> <span class="n">CuboidToCuboid</span><span class="p">)</span>
+<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;cuboid&quot;</span><span class="p">,</span> <span class="n">CuboidToCuboid</span><span class="p">)</span>
+<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;Cuboid&quot;</span><span class="p">,</span> <span class="n">CuboidToCuboid</span><span class="p">)</span>
+
+
+<span class="k">del</span> <span class="n">to_dispatch</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.shape&quot;</span><span class="p">)</span>

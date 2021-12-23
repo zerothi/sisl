@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.BrillouinZone &mdash; sisl 785f223c65 documentation</title>
+  <title>sisl.physics.BrillouinZone &mdash; sisl 0.1.dev1+g127fd00 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                785f223c65
+                0.1.dev1+g127fd00
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -213,10 +213,10 @@ an array of floats which may be turned into a <em class="xref py py-obj">SuperCe
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.BrillouinZone.iter" title="sisl.physics.BrillouinZone.iter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter</span></code></a>([ret_weight])</p></td>
 <td><p>An iterator for the k-points and (possibly) the weights</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.BrillouinZone.param_circle" title="sisl.physics.BrillouinZone.param_circle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">param_circle</span></code></a>(sc, N_or_dk, kR, normal, origin)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.BrillouinZone.param_circle" title="sisl.physics.BrillouinZone.param_circle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">param_circle</span></code></a>(parent, N_or_dk, kR, normal, origin)</p></td>
 <td><p>Create a parameterized k-point list where the k-points are generated on a circle around an origin</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.BrillouinZone.parametrize" title="sisl.physics.BrillouinZone.parametrize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parametrize</span></code></a>(sc, func, N, *args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.BrillouinZone.parametrize" title="sisl.physics.BrillouinZone.parametrize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parametrize</span></code></a>(parent, func, N, *args, **kwargs)</p></td>
 <td><p>Generate a new <a class="reference internal" href="#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BrillouinZone</span></code></a> object with k-points parameterized via the function <em class="xref py py-obj">func</em> in <em class="xref py py-obj">N</em> separations</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.BrillouinZone.set_parent" title="sisl.physics.BrillouinZone.set_parent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_parent</span></code></a>(parent)</p></td>
@@ -695,7 +695,7 @@ object.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.BrillouinZone.param_circle">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">param_circle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_or_dk</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/brillouinzone.html#BrillouinZone.param_circle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.BrillouinZone.param_circle" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">param_circle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_or_dk</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/brillouinzone.html#BrillouinZone.param_circle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.BrillouinZone.param_circle" title="Permalink to this definition"></a></dt>
 <dd><p>Create a parameterized k-point list where the k-points are generated on a circle around an origin</p>
 <p>The generated circle is a perfect circle in the reciprocal space (Cartesian coordinates).
 To generate a perfect circle in units of the reciprocal lattice vectors one can
@@ -704,7 +704,7 @@ example below.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>sc</strong> (<a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><em>SuperCell</em></a><em>, or </em><em>SuperCellChild</em>) – the supercell used to construct the k-points</p></li>
+<li><p><strong>parent</strong> (<a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><em>SuperCell</em></a><em>, or </em><em>SuperCellChild</em>) – the parent object</p></li>
 <li><p><strong>N_or_dk</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – number of k-points generated using the parameterization (if an integer),
 otherwise it specifies the discretization length on the circle (in 1/Ang),
 If the latter case will use less than 4 points a warning will be raised and
@@ -740,34 +740,45 @@ the number of points increased to 4.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.BrillouinZone.parametrize">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parametrize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/brillouinzone.html#BrillouinZone.parametrize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.BrillouinZone.parametrize" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parametrize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/brillouinzone.html#BrillouinZone.parametrize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.BrillouinZone.parametrize" title="Permalink to this definition"></a></dt>
 <dd><p>Generate a new <a class="reference internal" href="#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BrillouinZone</span></code></a> object with k-points parameterized via the function <em class="xref py py-obj">func</em> in <em class="xref py py-obj">N</em> separations</p>
 <p>Generator of a parameterized Brillouin zone object that contains a parameterized k-point
 list.</p>
-<p>Basically this generates a new BrillouinZone object as:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">frac</span><span class="p">):</span>
-<span class="gp">... </span>   <span class="k">return</span> <span class="p">[</span><span class="n">frac</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">bz</span> <span class="o">=</span> <span class="n">BrillouinZone</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">bz</span><span class="p">)</span> <span class="o">==</span> <span class="mi">10</span>
-<span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">bz</span><span class="o">.</span><span class="n">k</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:],</span> <span class="p">[</span><span class="mf">9.</span><span class="o">/</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-<span class="go">True</span>
-</pre></div>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>sc</strong> (<a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><em>SuperCell</em></a><em>, or </em><em>SuperCellChild</em>) – the supercell used to construct the k-points</p></li>
-<li><p><strong>func</strong> (<em>callable</em>) – method that parameterizes the k-points, <em>must</em> at least accept two arguments, <code class="docutils literal notranslate"><span class="pre">sc</span></code>
-(super-cell object containing the unit-cell and reciprocal cell) and <code class="docutils literal notranslate"><span class="pre">frac</span></code>
-(current parametrization fraction, between 0 and <code class="docutils literal notranslate"><span class="pre">(N-1)/N</span></code>. It must return
-a k-point in 3 dimensions.</p></li>
-<li><p><strong>N</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – number of k-points generated using the parameterization</p></li>
-<li><p><strong>args</strong> (<em>list of arguments</em>) – arguments passed directly to <em class="xref py py-obj">func</em></p></li>
-<li><p><strong>kwargs</strong> (<em>dictionary of arguments</em>) – keyword arguments passed directly to <em class="xref py py-obj">func</em></p></li>
+<li><p><strong>parent</strong> (<a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><em>SuperCell</em></a><em>, or </em><em>SuperCellChild</em>) – the object that the returned object will contain as parent</p></li>
+<li><p><strong>func</strong> (<em>callable</em>) – <p>method that parameterizes the k-points, <em>must</em> at least accept three arguments,
+1. <code class="docutils literal notranslate"><span class="pre">parent</span></code>: object
+2. <code class="docutils literal notranslate"><span class="pre">N</span></code>: total number of k-points
+3. <code class="docutils literal notranslate"><span class="pre">i</span></code>: current index of the k-point (starting from 0)</p>
+<p>the function must return a k-point in 3 dimensions.</p>
+</p></li>
+<li><p><strong>N</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>list of int</em>) – number of k-points generated using the parameterization,
+or a list of integers that will be looped over.
+In this case arguments <code class="docutils literal notranslate"><span class="pre">N</span></code> and <code class="docutils literal notranslate"><span class="pre">i</span></code> in <em class="xref py py-obj">func</em> will be
+lists accordingly.</p></li>
+<li><p><strong>*args</strong> – additional arguments passed directly to <em class="xref py py-obj">func</em></p></li>
+<li><p><strong>**kwargs</strong> – additional keyword arguments passed directly to <em class="xref py py-obj">func</em></p></li>
 </ul>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>Simple linear k-points</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+<span class="gp">... </span>   <span class="k">return</span> <span class="p">[</span><span class="n">i</span><span class="o">/</span><span class="n">N</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bz</span> <span class="o">=</span> <span class="n">BrillouinZone</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">bz</span><span class="p">)</span> <span class="o">==</span> <span class="mi">10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">bz</span><span class="o">.</span><span class="n">k</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:],</span> <span class="p">[</span><span class="mf">9.</span><span class="o">/</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>For double looping, say to create your own grid</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+<span class="gp">... </span>   <span class="k">return</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">N</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="n">N</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bz</span> <span class="o">=</span> <span class="n">BrillouinZone</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">bz</span><span class="p">)</span> <span class="o">==</span> <span class="mi">50</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py property">
