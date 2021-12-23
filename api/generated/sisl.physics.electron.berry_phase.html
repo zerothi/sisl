@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>berry_phase &mdash; sisl 0.1.dev1+g127fd00 documentation</title>
+  <title>berry_phase &mdash; sisl 0.1.dev1+g129a9c7 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g127fd00
+                0.1.dev1+g129a9c7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -182,12 +182,12 @@ a closed loop integration, see <a class="footnote-reference brackets" href="#id3
 <p class="rubric">Notes</p>
 <p>The Brillouin zone object <em>need</em> not contain a closed discretized contour by doubling the first point.</p>
 <p>The implementation is very similar to PythTB, except we are here using the <span class="math notranslate nohighlight">\(\mathbf R\)</span> gauge
-(convention II according to PythTB).</p>
-<p>Note that for systems with band-crossings or degenerate states there is an arbitrariness to the definition
+(convention II according to PythTB), see discussion in <a class="reference external" href="https://github.com/zerothi/sisl/pull/131">pull request 131</a>.</p>
+<p>For systems with band-crossings or degenerate states there is an arbitrariness to the definition
 of the Berry phase for <em>individual</em> bands. However, the total phase (i.e., sum over filled bands) is
 invariant and unaffected by this arbitrariness as long as the filled and empty bands do not intersect,
 see <a class="footnote-reference brackets" href="#id4" id="id2">2</a>.</p>
-<p>For non-orthogonal basis sets it is not fully known how important the dk spacing is since
+<p>For non-orthogonal basis sets it is not fully known how important the <span class="math notranslate nohighlight">\(\delta\mathbf k\)</span> spacing is since
 it relies on the Lowdin transformation of the states.</p>
 <p class="rubric">Examples</p>
 <p>Calculate the multi-band Berry-phase</p>
@@ -211,14 +211,10 @@ it relies on the Lowdin transformation of the states.</p>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
 <dt class="label" id="id3"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
-<dd><ol class="upperalpha simple" start="10">
-<li><p>Zak, “Berry’s phase for energy bands in solids”, PRL, <strong>62</strong>, 2747 (1989)</p></li>
-</ol>
+<dd><p><a class="reference external" href="https://dx.doi.org/10.1103/PhysRevLett.62.2747">J. Zak, “Berry’s phase for energy bands in solids”, PRL **62**, 2747 (1989)</a></p>
 </dd>
 <dt class="label" id="id4"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
-<dd><ol class="upperalpha simple" start="18">
-<li><p>Resta, “Manifestations of Berry’s phase in molecules and condensed matter”, JPCM, <strong>12</strong>, R107 (2000)</p></li>
-</ol>
+<dd><p><a class="reference external" href="https://dx.doi.org/10.1088/0953-8984/12/9/201">R. Resta, “Manifestations of Berry’s phase in molecules and condensed matter”, JPCM **12**, R107 (2000)</a></p>
 </dd>
 </dl>
 </dd></dl>
