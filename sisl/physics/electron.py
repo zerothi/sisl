@@ -65,7 +65,7 @@ from sisl.oplist import oplist
 from sisl._math_small import xyz_to_spherical_cos_phi
 import sisl._array as _a
 from sisl.linalg import svd_destroy, eigvals_destroy
-from sisl.linalg import eigh, det_destroy, invsqrth
+from sisl.linalg import eigh, det_destroy, sqrth
 from sisl.messages import info, warn, SislError, progressbar, deprecate_method
 from sisl._help import dtype_complex_to_real, dtype_real_to_complex
 from .distribution import get_distribution
@@ -1037,8 +1037,8 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
         def _lowdin(state):
             """ change state to the lowdin state, assuming everything is in R gauge
             So needs to be done before changing gauge """
-            S12 = invsqrth(state.parent.Sk(state.info["k"], format='array'),
-                           overwrite_a=True)
+            S12 = sqrth(state.parent.Sk(state.info["k"], format='array'),
+                        overwrite_a=True)
             state.state[:, :] = (S12 @ state.state.T).T
 
     method, *opts = method.lower().split(':')
