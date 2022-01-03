@@ -22,7 +22,7 @@ def signsqrt(a):
     return np.sign(a) * np.sqrt(np.fabs(a))
 
 
-def sqrth(a, overwrite_a=False, left=False):
+def sqrth(a, overwrite_a=False):
     r""":math:`H^{1/2}` for a Hermitian matrix `A`.
 
     This method is not exactly equivalent to `scipy.linalg.sqrtm` since the latter
@@ -34,8 +34,6 @@ def sqrth(a, overwrite_a=False, left=False):
     """
     eig, ev = eigh(a, overwrite_a=overwrite_a)
     eig = np.emath.sqrt(eig)
-    if left:
-        return ev * eig
     return (ev * eig) @ ev.conj().T
 
 
