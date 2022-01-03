@@ -220,31 +220,38 @@ class Coefficient(ParentContainer):
             deg.append(_append(sidx[idx], sidx[idx[-1] + 1]))
         return deg
 
-    def sub(self, idx):
+    def sub(self, idx, inplace=False):
         """ Return a new coefficient with only the specified coefficients
 
         Parameters
         ----------
         idx : int or array_like
             indices that are retained in the returned object
+        inplace : bool, optional
+            whether the values will be retained inplace
 
         Returns
         -------
         Coefficient
-            a new coefficient only containing the requested elements
+            a new coefficient only containing the requested elements, only if `inplace` is false
         """
         idx = self._sanitize_index(idx)
-        sub = self.__class__(self.c[idx].copy(), self.parent)
-        sub.info = self.info
-        return sub
+        if inplace:
+            self.c = self.c[idx]
+        else:
+            sub = self.__class__(self.c[idx], self.parent)
+            sub.info = self.info
+            return sub
 
-    def remove(self, idx):
+    def remove(self, idx, inplace=False):
         """ Return a new coefficient without the specified coefficients
 
         Parameters
         ----------
         idx : int or array_like
             indices that are removed in the returned object
+        inplace : bool, optional
+            whether the values will be removed inplace
 
         Returns
         -------
@@ -252,7 +259,7 @@ class Coefficient(ParentContainer):
             a new coefficient without containing the requested elements
         """
         idx = np.delete(np.arange(len(self)), self._sanitize_index(idx))
-        return self.sub(idx)
+        return self.sub(idx, inplace)
 
     def __getitem__(self, key):
         """ Return a new coefficient object with only one associated coefficient
@@ -363,39 +370,46 @@ class State(ParentContainer):
         copy.info = self.info
         return copy
 
-    def sub(self, idx):
+    def sub(self, idx, inplace=False):
         """ Return a new state with only the specified states
 
         Parameters
         ----------
         idx : int or array_like
             indices that are retained in the returned object
+        inplace : bool, optional
+            whether the values will be retained inplace
 
         Returns
         -------
         State
-           a new state only containing the requested elements
+           a new state only containing the requested elements, only if `inplace` is false
         """
         idx = self._sanitize_index(idx)
-        sub = self.__class__(self.state[idx].copy(), self.parent)
-        sub.info = self.info
-        return sub
+        if inplace:
+            self.state = self.state[idx]
+        else:
+            sub = self.__class__(self.state[idx], self.parent)
+            sub.info = self.info
+            return sub
 
-    def remove(self, idx):
+    def remove(self, idx, inplace=False):
         """ Return a new state without the specified vectors
 
         Parameters
         ----------
         idx : int or array_like
             indices that are removed in the returned object
+        inplace : bool, optional
+            whether the values will be removed inplace
 
         Returns
         -------
         State
-            a new state without containing the requested elements
+            a new state without containing the requested elements, only if `inplace` is false
         """
         idx = np.delete(np.arange(len(self)), self._sanitize_index(idx))
-        return self.sub(idx)
+        return self.sub(idx, inplace)
 
     def translate(self, isc):
         r""" Translate the vectors to a new unit-cell position
@@ -728,7 +742,7 @@ class State(ParentContainer):
             return _phase(self.state)
         raise ValueError(f"{self.__class__.__name__}.phase only accepts method in [max, all]")
 
-    def align_phase(self, other, inplace=False, ret_index=False):
+    def align_phase(self, other, ret_index=False, inplace=False):
         r""" Align `self` with the phases for `other`, a copy may be returned 
 
         States will be rotated by :math:`\pi` provided the phase difference between the states are above :math:`|\Delta\theta| > \pi/2`.
@@ -737,10 +751,10 @@ class State(ParentContainer):
         ----------
         other : State
            the other state to align onto this state
-        inplace : bool, optional
-           rotate the states in-place
         ret_index : bool, optional
            return which indices got swapped
+        inplace : bool, optional
+           rotate the states in-place
 
         See Also
         --------
@@ -767,7 +781,7 @@ class State(ParentContainer):
             return out, idx
         return out
 
-    def align_norm(self, other, ret_index=False):
+    def align_norm(self, other, ret_index=False, inplace=False):
         r""" Align `self` with the site-norms of `other`, a copy may optionally be returned
 
         To determine the new ordering of `self` first calculate the residual norm of the site-norms.
@@ -785,14 +799,16 @@ class State(ParentContainer):
            the other state to align against
         ret_index : bool, optional
            also return indices for the swapped indices
+        inplace : bool, optional
+           swap states in-place
 
         Returns
         -------
         self_swap : State
-            A swapped instance of `self`
+            A swapped instance of `self`, only if `inplace` is False
         index : array of int
             the indices that swaps `self` to be ``self_swap``, i.e. ``self_swap = self.sub(index)``
-
+            Only if `inplace` is False and `ret_index` is True
         Notes
         -----
         The input state and output state have the same number of states, but their ordering is not necessarily the same.
@@ -801,13 +817,13 @@ class State(ParentContainer):
         --------
         align_phase : rotate states such that their phases align
         """
-        snorm = self.norm2(False)
-        onorm = other.norm2(False)
+        snorm = self.norm2(False).real
+        onorm = other.norm2(False).real
 
         # Now find new orderings
         show_warn = False
-        idx = _a.fulli(len(self), -1)
-        idxr = _a.emptyi(len(self))
+        sidx = _a.fulli(len(self), -1)
+        oidx = _a.emptyi(len(self))
         for i in range(len(self)):
             R = snorm[i] - onorm
             R = einsum('ij,ij->i', R, R)
@@ -815,18 +831,23 @@ class State(ParentContainer):
             # Figure out which band it should correspond to
             # find closest largest one
             for j in np.argsort(R):
-                if j not in idx[:i]:
-                    idx[i] = j
-                    idxr[j] = i
+                if j not in sidx[:i]:
+                    sidx[i] = j
+                    oidx[j] = i
                     break
                 show_warn = True
 
         if show_warn:
             warn(f"{self.__class__.__name__}.align_norm found multiple possible candidates with minimal residue, swapping not unique")
 
-        if ret_index:
-            return self.sub(idxr), idxr
-        return self.sub(idxr)
+        if inplace:
+            self.sub(oidx, inplace=True)
+            if ret_index:
+                return oidx
+        elif ret_index:
+            return self.sub(oidx), oidx
+        else:
+            return self.sub(oidx)
 
     def rotate(self, phi=0., individual=False):
         r""" Rotate all states (in-place) to rotate the largest component to be along the angle `phi`
@@ -1392,39 +1413,47 @@ class StateC(State):
             deg.append(_append(sidx[idx], sidx[idx[-1] + 1]))
         return deg
 
-    def sub(self, idx):
+    def sub(self, idx, inplace=False):
         """ Return a new state with only the specified states
 
         Parameters
         ----------
         idx : int or array_like
             indices that are retained in the returned object
+        inplace : bool, optional
+            whether the values will be retained inplace
 
         Returns
         -------
         StateC
-            a new object with a subset of the states
+            a new object with a subset of the states, only if `inplace` is false
         """
         idx = self._sanitize_index(idx).ravel()
-        sub = self.__class__(self.state[idx, ...], self.c[idx], self.parent)
-        sub.info = self.info
-        return sub
+        if inplace:
+            self.state = self.state[idx]
+            self.c = self.c[idx]
+        else:
+            sub = self.__class__(self.state[idx, ...], self.c[idx], self.parent)
+            sub.info = self.info
+            return sub
 
-    def remove(self, idx):
+    def remove(self, idx, inplace=False):
         """ Return a new state without the specified indices
 
         Parameters
         ----------
         idx : int or array_like
             indices that are removed in the returned object
+        inplace : bool, optional
+            whether the values will be removed inplace
 
         Returns
         -------
         StateC
-            a new state without containing the requested elements
+            a new state without containing the requested elements, only if `inplace` is false
         """
         idx = np.delete(np.arange(len(self)), self._sanitize_index(idx))
-        return self.sub(idx)
+        return self.sub(idx, inplace)
 
     def asState(self):
         s = State(self.state.copy(), self.parent)

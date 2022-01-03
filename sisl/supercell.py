@@ -107,7 +107,6 @@ class SuperCell:
         """ Set origin """
         self._origin[:] = origin
 
-
     def toCuboid(self, orthogonal=False):
         """ A cuboid with vectors as this unit-cell and center with respect to its origin
 

@@ -7,6 +7,7 @@ we hit release version 1.0.0.
 
 ## [Unreleased] - YYYY-MM-DD
 ### Added
+- State.sub|remove are now allowed to be done inplace
 - State.derivative can now correctly calculate 1st and 2nd order derivatives #406
 - Enabled discontinuity jumps in band-structures (pass points as None)
 - COOP and COHP calculations for eigenstates
