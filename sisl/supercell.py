@@ -49,7 +49,7 @@ class SuperCell:
     """
 
     # We limit the scope of this SuperCell object.
-    __slots__ = ('cell', '_origin', 'volume', 'nsc', 'n_s', '_sc_off', '_isc_off')
+    __slots__ = ('cell', '_origin', 'nsc', 'n_s', '_sc_off', '_isc_off')
 
     def __init__(self, cell, nsc=None, origin=None):
 
@@ -67,9 +67,6 @@ class SuperCell:
             if self._origin.size != 3:
                 raise ValueError("Origin *must* be 3 numbers.")
 
-        # Set the volume
-        self._update_vol()
-
         self.nsc = _a.onesi(3)
         # Set the super-cell
         self.set_nsc(nsc=nsc)
@@ -78,6 +75,15 @@ class SuperCell:
     def length(self):
         """ Length of each lattice vector """
         return fnorm(self.cell)
+
+    @property
+    def volume(self):
+        """ Volume of cell """
+        return abs(dot3(self.cell[0, :], cross3(self.cell[1, :], self.cell[2, :])))
+
+    def area(self, ax0, ax1):
+        """ Calculate the area spanned by the two axis `ax0` and `ax1` """
+        return (cross3(self.cell[ax0, :], self.cell[ax1, :]) ** 2).sum() ** 0.5
 
     @property
     def origin(self):
@@ -101,9 +107,6 @@ class SuperCell:
         """ Set origin """
         self._origin[:] = origin
 
-    def area(self, ax0, ax1):
-        """ Calculate the area spanned by the two axis `ax0` and `ax1` """
-        return (cross3(self.cell[ax0, :], self.cell[ax1, :]) ** 2).sum() ** 0.5
 
     def toCuboid(self, orthogonal=False):
         """ A cuboid with vectors as this unit-cell and center with respect to its origin
@@ -172,9 +175,6 @@ class SuperCell:
         gamma = acos(dot3(cell[0, :], cell[1, :])) * f
 
         return abc[0], abc[1], abc[2], alpha, beta, gamma
-
-    def _update_vol(self):
-        self.volume = abs(dot3(self.cell[0, :], cross3(self.cell[1, :], self.cell[2, :])))
 
     def _fill(self, non_filled, dtype=None):
         """ Return a zero filled array of length 3 """
@@ -1086,13 +1086,18 @@ class SuperCellChild:
     set_sc = set_supercell
 
     @property
+    def length(self):
+        """ Returns the inherent `SuperCell` objects `length` """
+        return self.sc.length
+
+    @property
     def volume(self):
-        """ Returns the inherent `SuperCell` objects `vol` """
+        """ Returns the inherent `SuperCell` objects `volume` """
         return self.sc.volume
 
     def area(self, ax0, ax1):
         """ Calculate the area spanned by the two axis `ax0` and `ax1` """
-        return (cross3(self.sc.cell[ax0, :], self.sc.cell[ax1, :]) ** 2).sum() ** 0.5
+        return self.sc.area(ax0, ax1)
 
     @property
     def cell(self):

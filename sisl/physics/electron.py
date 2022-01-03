@@ -907,7 +907,7 @@ def _berry_curvature(v_M, energy):
 def conductivity(bz, distribution='fermi-dirac', method='ahc', degenerate=1.e-5, degenerate_dir=(1, 1, 1)):
     r""" Electronic conductivity for a given `BrillouinZone` integral
 
-    Currently the *only* implemented method is the anomalous Hall conductivity (AHC)
+    Currently the *only* implemented method is the anomalous Hall conductivity (AHC[1]_)
     which may be calculated as:
 
     .. math::
@@ -928,6 +928,10 @@ def conductivity(bz, distribution='fermi-dirac', method='ahc', degenerate=1.e-5,
        de-couple degenerate states within the given tolerance (in eV)
     degenerate_dir : (3,), optional
        along which direction degenerate states are decoupled.
+
+    References
+    ----------
+    .. [1] :doi:`X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, "Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation", PRB **74**, 195118 (2006) <10.1103/PhysRevB.74.195118>`
 
     See Also
     --------
