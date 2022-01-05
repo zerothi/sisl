@@ -37,7 +37,8 @@ jobs:
       - run: test -n $(git rev-list --after="1 week" --max-count=1 ${{ github.sha }})
 
   test:
-    needs: [check_schedule.result == "success" || check_schedule.result == "skipped"]
+    needs: [check_schedule]
+    if: ${{ always() && (contains(needs.check_schedule.result, 'success') || contains(needs.check_scedule.result, 'skipped')) }}
     runs-on: ubuntu-latest
 
     steps:
