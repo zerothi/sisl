@@ -1,3 +1,4 @@
+---
 name: Test sisl
 
 defaults:
@@ -39,16 +40,17 @@ jobs:
     needs: [check_schedule]
     runs-on: ubuntu-latest
 
-    - name: Checkout sisl@${{ github.event.inputs.branch }}
+    steps:
+    - name: Checkout sisl
       uses: actions/checkout@v2
-        with:
-          ref: '${{ github.event.inputs.branch }}'
-          # The files submodule is required for tests purposes
-          submodules: true
-          # the 'files' submodule uses lfs
-          lfs: true
-          # we only need the latest commit
-          fetch-depth: 1
+      with:
+        ref: '${{ github.event.inputs.branch }}'
+        # The files submodule is required for tests purposes
+        submodules: true
+        # the 'files' submodule uses lfs
+        lfs: true
+        # we only need the latest commit
+        fetch-depth: 1
 
     - name: Print-out commit information
       run: |
@@ -57,32 +59,32 @@ jobs:
 
     # This should generally not be required, but in the end it is just easier
     - name: Ensure system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install gfortran
+      run: |
+        sudo apt-get update
+        sudo apt-get install gfortran
 
-    - name: Setup Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
+    - name: Python installation
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
 
     - name: Install sisl + dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install Cython
-          python -m pip install -r requirements.txt
-          python -m pip install .[viz]
-        
-    - name: Run tests
-        env:
-          SISL_FILES_TESTS=${GITHUB_WORKSPACE}/files/tests
-        run: |
-          # This needs to be done in a separate folder
-          # Otherwise the import will try to use the one in the current folder
-          mkdir tmp ; cd tmp
-          py.test -vv --pyargs sisl -rX --cov=sisl --cov-report term-missing --con-config=../.coveragerc
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install Cython
+        python -m pip install -r requirements.txt
+        python -m pip install .[viz]
 
-    - name: Upload coverage
-        uses: codecov/codecov-action@v2
-        with:
-          verbose: true
+    - name: Run tests
+      env:
+        SISL_FILES_TESTS=${GITHUB_WORKSPACE}/files/tests
+      run: |
+        # This needs to be done in a separate folder
+        # Otherwise the import will try to use the one in the current folder
+        mkdir tmp ; cd tmp
+        py.test -vv --pyargs sisl -rX --cov=sisl --cov-report term-missing --con-config=../.coveragerc
+
+    - name: Upload code-coverage
+      uses: codecov/codecov-action@v2
+      with:
+        verbose: true
