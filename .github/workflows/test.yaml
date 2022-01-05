@@ -83,7 +83,7 @@ jobs:
         # This needs to be done in a separate folder
         # Otherwise the import will try to use the one in the current folder
         mkdir tmp ; cd tmp
-        py.test -vv --pyargs sisl -rX --cov=sisl --cov-report term-missing --con-config=../.coveragerc
+        py.test -vv --pyargs sisl -rX --cov=sisl --cov-report term-missing --cov-config=../.coveragerc
 
     - name: Upload code-coverage
       uses: codecov/codecov-action@v2
