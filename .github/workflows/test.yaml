@@ -1,5 +1,5 @@
 ---
-name: Test sisl
+name: sisl tests
 
 defaults:
   run:
@@ -73,10 +73,10 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         python -m pip install Cython
-        python -m pip install -r ci/requirements.txt -r requirements.txt
-        python -m pip install .[viz] -vvv
+        python -m pip install -r ci/requirements.txt -r ci/requirements-viz.txt -r requirements.txt
+        python -m pip install -vvv .
 
-    - name: Run tests
+    - name: Running sisl tests
       env:
         SISL_FILES_TESTS: ${GITHUB_WORKSPACE}/files/tests
       run: |

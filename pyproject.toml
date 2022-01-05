@@ -131,9 +131,12 @@ viz-ase = [
     "ase",
 ]
 
-
 test = [
     "pytest",
+    "pytest-cov",
+    "pytest-env",
+    "pytest-faulthandler",
+    "coveralls",
     "tqdm",
     "dill >= 0.3.2",
     "pathos",
@@ -142,6 +145,7 @@ test = [
     "scikit-image",
     "matplotlib",
     "plotly",
+    "ase"
 ]
 
 
