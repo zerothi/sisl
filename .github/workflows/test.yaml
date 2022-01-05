@@ -32,26 +32,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
- 	  ref: '${{ github.event.inputs.branch }}'
+          ref: '${{ github.event.inputs.branch }}'
       - run: test -n $(git rev-list --after="1 week" --max-count=1 ${{ github.sha }})
-
-  sisl_checkout:
-    runs-on: ubuntu-latest
-
-
-sisl_setup:
-  if: "github.repository == 'zerothi/sisl' && !contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, '[skip github]')"
-  needs: [check_commit]
-
-  steps:
-    - run: |
-      sudo apt-get update
-      sudo apt-get install gfortran
-
-    - uses: actions/setup-python@v2
-      with:
-	python-version: ${{ env.PYTHON_VERSION }}
-
 
   test:
     needs: [check_schedule]
@@ -60,13 +42,13 @@ sisl_setup:
     - name: Checkout sisl@${{ github.event.inputs.branch }}
       uses: actions/checkout@v2
         with:
-	  ref: '${{ github.event.inputs.branch }}'
- 	  # The files submodule is required for tests purposes
- 	  submodules: true
- 	  # the 'files' submodule uses lfs
- 	  lfs: true
-	  # we only need the latest commit
-	  fetch-depth: 1
+          ref: '${{ github.event.inputs.branch }}'
+          # The files submodule is required for tests purposes
+          submodules: true
+          # the 'files' submodule uses lfs
+          lfs: true
+          # we only need the latest commit
+          fetch-depth: 1
 
     - name: Print-out commit information
       run: |
@@ -93,14 +75,14 @@ sisl_setup:
         
     - name: Run tests
         env:
-	  SISL_FILES_TESTS=${GITHUB_WORKSPACE}/files/tests
+          SISL_FILES_TESTS=${GITHUB_WORKSPACE}/files/tests
         run: |
-	  # This needs to be done in a separate folder
-	  # Otherwise the import will try to use the one in the current folder
-	  mkdir tmp ; cd tmp
+          # This needs to be done in a separate folder
+          # Otherwise the import will try to use the one in the current folder
+          mkdir tmp ; cd tmp
           py.test -vv --pyargs sisl -rX --cov=sisl --cov-report term-missing --con-config=../.coveragerc
 
     - name: Upload coverage
         uses: codecov/codecov-action@v2
-	with:
-	  verbose: true
+        with:
+          verbose: true
