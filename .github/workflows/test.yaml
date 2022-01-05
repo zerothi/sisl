@@ -1,0 +1,106 @@
+name: Test sisl
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  PYTHON_VERSION: 3.9
+
+on:
+  pull_request:
+    # all pull-requests on to main
+    branches: [main]
+  schedule:
+    # only once every month, at the 23rd
+    # We can always force run this.
+    - cron: '37 10 23 * *'
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Which branch to test'
+        required: false
+        default: 'main'
+
+
+jobs:
+
+  # Define a few jobs that can be runned
+  check_schedule:
+    if: ${{ github.event_name == 'schedule' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+ 	  ref: '${{ github.event.inputs.branch }}'
+      - run: test -n $(git rev-list --after="1 week" --max-count=1 ${{ github.sha }})
+
+  sisl_checkout:
+    runs-on: ubuntu-latest
+
+
+sisl_setup:
+  if: "github.repository == 'zerothi/sisl' && !contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, '[skip github]')"
+  needs: [check_commit]
+
+  steps:
+    - run: |
+      sudo apt-get update
+      sudo apt-get install gfortran
+
+    - uses: actions/setup-python@v2
+      with:
+	python-version: ${{ env.PYTHON_VERSION }}
+
+
+  test:
+    needs: [check_schedule]
+    runs-on: ubuntu-latest
+
+    - name: Checkout sisl@${{ github.event.inputs.branch }}
+      uses: actions/checkout@v2
+        with:
+	  ref: '${{ github.event.inputs.branch }}'
+ 	  # The files submodule is required for tests purposes
+ 	  submodules: true
+ 	  # the 'files' submodule uses lfs
+ 	  lfs: true
+	  # we only need the latest commit
+	  fetch-depth: 1
+
+    - name: Print-out commit information
+      run: |
+        echo "branch: ${{ github.event.inputs.branch }}"
+        echo "hash: ${{ github.sha }}"
+
+    # This should generally not be required, but in the end it is just easier
+    - name: Ensure system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install gfortran
+
+    - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install sisl + dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install Cython
+          python -m pip install -r requirements.txt
+          python -m pip install .[viz]
+        
+    - name: Run tests
+        env:
+	  SISL_FILES_TESTS=${GITHUB_WORKSPACE}/files/tests
+        run: |
+	  # This needs to be done in a separate folder
+	  # Otherwise the import will try to use the one in the current folder
+	  mkdir tmp ; cd tmp
+          py.test -vv --pyargs sisl -rX --cov=sisl --cov-report term-missing --con-config=../.coveragerc
+
+    - name: Upload coverage
+        uses: codecov/codecov-action@v2
+	with:
+	  verbose: true
