@@ -350,6 +350,7 @@ package_data["sisl_toolbox.siesta.minimizer"] = ["*.yaml"]
 
 
 metadata = dict(
+    name="sisl",
     platforms="any",
 
     # specify setuptools_scm version creation

@@ -13,5 +13,4 @@ import sys
 print(sys.version)
 import sisl
 print(sisl.__version__)
-print(sisl.__git_revision__)
 ```
