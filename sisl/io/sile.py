@@ -375,10 +375,6 @@ class BaseSile:
             filename = Path(self._file).name
         return self._directory / filename_base / filename
 
-    def exist(self):
-        """ Query whether the file exists """
-        return isfile(self.file)
-
     def read(self, *args, **kwargs):
         """ Generic read method which should be overloaded in child-classes
 
@@ -716,7 +712,7 @@ class SileCDF(BaseSile):
         self._lvl = lvl
         # Initialize the _data dictionary for access == 1
         self._data = dict()
-        if self.exist():
+        if self.file.is_file():
             self._access = access
         else:
             # If it has not been created we should not try

@@ -147,7 +147,7 @@ class BaseMinimize:
         _log.debug(f"__enter__ {self.__class__.__name__}")
 
         # check if the file exists
-        if self.out.exists():
+        if self.out.is_file():
             # read in previous data
             # this will be "[variables, runs]"
             data, header = tableSile(self.out).read_data(ret_header=True)
@@ -155,7 +155,7 @@ class BaseMinimize:
             data = np.array([])
 
         # check if the file exists
-        if self.out.exists() and data.size > 0:
+        if self.out.is_file() and data.size > 0:
             nvars = data.shape[0] - 1
             if nvars != len(self):
                 raise ValueError(f"Found old file {self.out} which contains previous data for another number of parameters, please delete or move file")

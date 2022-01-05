@@ -50,6 +50,7 @@ we hit release version 1.0.0.
 - fixed hpc parameters #403
 
 ### Changed
+- removed `Sile.exist`, refer to `Sile.file` which always will be a `pathlib.Path` instance
 - `berry_phase` now uses the gauge=R convention, the code became much simpler
 - `BrillouinZone.parametrize` function changed interface to allow more dimensions
 - `EigenStateElectron.inner` does not use the overlap matrix by default, norm2 is for

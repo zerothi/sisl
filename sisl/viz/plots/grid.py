@@ -1474,7 +1474,7 @@ class WavefunctionPlot(GridPlot):
 
         # Get the WFSX file. If not provided, it is inferred from the fdf.
         wfsx = self.get_sile(wfsx_file or "wfsx_file")
-        if not wfsx.file.exists():
+        if not wfsx.file.is_file():
             raise ValueError(f"File '{wfsx.file}' does not exist.")
 
         sizes = wfsx.read_sizes()

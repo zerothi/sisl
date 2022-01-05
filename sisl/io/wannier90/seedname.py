@@ -180,7 +180,7 @@ class winSileWannier90(SileWannier90):
         sc = self.read_supercell()
 
         self._set_file('_centres.xyz')
-        if self.exist():
+        if self.file.is_file():
             geom = self._read_geometry_centres()
         else:
             self._set_file()

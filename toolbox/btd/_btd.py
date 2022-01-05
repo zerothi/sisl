@@ -23,7 +23,7 @@ It requires two inputs and has several optional flags.
     any implications for the requirement of the TBT.nc file.
 """
 from numbers import Integral
-import os.path as osp
+from pathlib import Path
 
 import numpy as np
 from numpy import conjugate as conj
@@ -548,7 +548,7 @@ class DeviceGreen:
         # Test if the TBT output file exists:
         tbt = None
         for end in ["TBT.nc", "TBT_UP.nc", "TBT_DN.nc"]:
-            if osp.exists(f"{slabel}.{end}"):
+            if Path(f"{slabel}.{end}").is_file():
                 tbt = f"{slabel}.{end}"
         if tbt is None:
             raise FileNotFoundError(f"{cls.__name__}.from_fdf could "
@@ -696,7 +696,7 @@ class DeviceGreen:
             data = elec_data[elec]
 
             if elec in use_tbt_se:
-                if osp.exists(f"{slabel}.TBT.SE.nc"):
+                if Path(f"{slabel}.TBT.SE.nc").is_file():
                     tbtse = si.get_sile(f"{slabel}.TBT.SE.nc")
                 else:
                     raise FileNotFoundError(f"{cls.__name__}.from_fdf "

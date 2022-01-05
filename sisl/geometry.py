@@ -4490,6 +4490,14 @@ class GeometryNewDispatcher(AbstractDispatch):
         return self.dispatch(*args, **kwargs)
 
 
+# Bypass regular Geometry to be returned as is
+class GeometryNewGeometryDispatcher(GeometryNewDispatcher):
+    def dispatch(self, geom):
+        """ Return geometry as-is (no copy), for sanitization purposes """
+        return geom
+new_dispatch.register(Geometry, GeometryNewGeometryDispatcher)
+
+
 class GeometryNewAseDispatcher(GeometryNewDispatcher):
     def dispatch(self, aseg, **kwargs):
         """ Convert an ``ase`` object into a `Geometry` """
@@ -4546,14 +4554,6 @@ try:
     del pymatgen_Molecule, pymatgen_Structure
 except:
     pass
-
-
-# Bypass regular Geometry to be returned as is
-class GeometryNewGeometryDispatcher(GeometryNewDispatcher):
-    def dispatch(self, geom):
-        """ Return geometry as-is (no copy), for sanitization purposes """
-        return geom
-new_dispatch.register(Geometry, GeometryNewGeometryDispatcher)
 
 
 class GeometryNewFileDispatcher(GeometryNewDispatcher):
