@@ -74,7 +74,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install Cython
         python -m pip install -r requirements.txt
-        python -m pip install .[viz]
+        python -m pip install .[viz] -vvv
 
     - name: Run tests
       env:
