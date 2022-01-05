@@ -38,7 +38,7 @@ jobs:
 
   test:
     needs: [check_schedule]
-    if: ${{ always() && (contains(needs.check_schedule.result, 'success') || contains(needs.check_scedule.result, 'skipped')) }}
+    if: ${{ always() && (contains(needs.*.result, 'success') || contains(needs.*.result, 'skipped')) }}
     runs-on: ubuntu-latest
 
     steps:
