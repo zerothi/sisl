@@ -95,7 +95,7 @@ if "--f2py-report-copy" in sys.argv:
 # Although setuptools is not shipped with the standard library, I think
 # this is ok since it should get installed pretty easily.
 from setuptools import Command, Extension
-from setuptools import find_packages
+from setuptools import find_packages, find_namespace_packages
 
 # Patch to allow fortran sources in setup
 # build_ext requires numpy setup
@@ -334,14 +334,14 @@ def cythonizer(extensions, *args, **kwargs):
     return other_extensions + cythonize(cython_extensions, *args, quiet=False, **kwargs)
 
 
-# We need to add sisl.* since that recursively adds modules
-packages = find_packages(include=["sisl", "sisl.*"])
-# Add toolboxes
-# This requires some name-mangling since we can't place them
-# in the correct place unless we use 'package_dir' and this trick.
-# 1. Here we list files as they should appear in packages for end-users
-# 2. In 'package_dir' we defer the package name to the local file path
-packages += map(lambda x: f"sisl_toolbox.{x}", find_packages("toolbox"))
+# This will locate all sisl* packages
+packages = find_packages()
+
+# This requires some name-mangling provided by 'package_dir' option
+# Using namespace packages allows others to provide exactly the same package
+# without causing namespace problems.
+packages += find_namespace_packages(include=["toolbox"])
+
 
 # Please update MANIFEST.in file for stuff to be shipped in the distribution.
 # Otherwise we should use package_data to ensure it gets installed.

@@ -1,11 +1,16 @@
 [run]
+source_pkgs =
+    sisl
+    sisl_toolbox/btd
+    sisl_toolbox/models
+    sisl_toolbox/siesta
+    sisl_toolbox/transiesta
 omit =
     benchmarks
     examples
     sisl/tests/*
     sisl/*/tests/*
     */__config__.py
-    */setup.py
     */conftest.py
     sisl/utils/sdata.py
 
