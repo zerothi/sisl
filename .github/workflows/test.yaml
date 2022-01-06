@@ -79,7 +79,7 @@ jobs:
 
     - name: Running sisl tests
       env:
-        SISL_FILES_TESTS: ${{ env.GITHUB_WORKSPACE }}/files/tests
+        SISL_FILES_TESTS: ${{ github.workspace }}/files/tests
       run: |
         echo path ${{ env.SISL_FILES_TESTS }}
         ls -la ${{ env.SISL_FILES_TESTS }}
