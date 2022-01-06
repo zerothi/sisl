@@ -34,13 +34,11 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: '${{ github.event.inputs.branch }}'
-      - run: test -n $(git rev-list --after="1 week" \
-                                --max-count=1 ${{ github.sha }})
+      - run: test -n $(git rev-list --after="1 week" --max-count=1 ${{ github.sha }})
 
   test:
     needs: [check_schedule]
-    if: ${{ always() && (contains(needs.*.result, 'success') \
-            || contains(needs.*.result, 'skipped')) }}
+    if: ${{ always() && (contains(needs.*.result, 'success') || contains(needs.*.result, 'skipped')) }}
     runs-on: ubuntu-latest
 
     steps:
@@ -75,10 +73,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         python -m pip install Cython
-        python -m pip install \
-           -r ci/requirements.txt \
-           -r ci/requirements-viz.txt \
-           -r requirements.txt
+        python -m pip install -r ci/requirements.txt -r ci/requirements-viz.txt -r requirements.txt
         python -m pip install -vvv .
 
     - name: Running sisl tests
@@ -89,13 +84,7 @@ jobs:
         # Otherwise the import will try to use the one in the current folder
         mkdir sisl-test-dir ; cd sisl-test-dir
         # --cov forces the reading of .coveragerc
-        py.test -vv -rX \
-           --cov --cov-report=term-missing --cov-config=../.coveragerc \
-           --pyargs sisl \
-           sisl_toolbox.btd \
-           sisl_toolbox.models \
-           sisl_toolbox.siesta \
-           sisl_toolbox.transiesta
+        py.test -vv -rX --cov --cov-report=term-missing --cov-config=../.coveragerc --pyargs sisl sisl_toolbox.btd sisl_toolbox.models sisl_toolbox.siesta sisl_toolbox.transiesta
 
     - name: Upload code-coverage
       uses: codecov/codecov-action@v2
