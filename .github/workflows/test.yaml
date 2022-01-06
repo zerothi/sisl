@@ -15,7 +15,7 @@ on:
   schedule:
     # only once every 4 days
     # We can always force run this.
-    - cron: '37 10 /4 * *'
+    - cron: '37 10 */4 * *'
   workflow_dispatch:
     inputs:
       branch:
