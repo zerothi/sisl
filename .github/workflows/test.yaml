@@ -36,7 +36,7 @@ jobs:
           ref: '${{ github.event.inputs.branch }}'
       - run: test -n $(git rev-list --after="1 week" --max-count=1 ${{ github.sha }})
 
-  test:
+  test_runs:
     needs: [check_schedule]
     if: ${{ always() && (contains(needs.*.result, 'success') || contains(needs.*.result, 'skipped')) }}
     runs-on: ubuntu-latest
