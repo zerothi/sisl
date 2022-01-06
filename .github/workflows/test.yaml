@@ -79,7 +79,7 @@ jobs:
 
     - name: Running sisl tests
       env:
-        SISL_FILES_TESTS: ${GITHUB_WORKSPACE}/files/tests
+        SISL_FILES_TESTS: ${GITHUB_WORKSPACE}/sisl/files/tests
       run: |
         # This needs to be done in a separate folder
         # Otherwise the import will try to use the one in the current folder
