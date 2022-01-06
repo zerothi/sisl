@@ -86,6 +86,9 @@ jobs:
         mkdir sisl-test-dir ; cd sisl-test-dir
         # --cov forces the reading of .coveragerc
         py.test -vv -rX --cov --cov-report=term-missing --cov-config=../.coveragerc --pyargs sisl sisl_toolbox.btd sisl_toolbox.models sisl_toolbox.siesta sisl_toolbox.transiesta
+        echo "Listing files after having runned the tests:"
+        ls -la
+        cp .coverage ../
 
     - name: Upload code-coverage
       uses: codecov/codecov-action@v2
