@@ -13,9 +13,9 @@ on:
     # all pull-requests on to main
     branches: [main]
   schedule:
-    # only once every month, at the 23rd
+    # only once every 4 days
     # We can always force run this.
-    - cron: '37 10 23 * *'
+    - cron: '37 10 /4 * *'
   workflow_dispatch:
     inputs:
       branch:
