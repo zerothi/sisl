@@ -340,7 +340,7 @@ packages = find_packages()
 # This requires some name-mangling provided by 'package_dir' option
 # Using namespace packages allows others to provide exactly the same package
 # without causing namespace problems.
-packages += find_namespace_packages(include=["toolbox"])
+packages += map(lambda x: f"sisl_toolbox.{x}", find_namespace_packages(where="toolbox"))
 
 
 # Please update MANIFEST.in file for stuff to be shipped in the distribution.
