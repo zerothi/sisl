@@ -79,10 +79,10 @@ jobs:
 
     - name: Running sisl tests
       env:
-        SISL_FILES_TESTS: ${GITHUB_WORKSPACE}/files/tests
+        SISL_FILES_TESTS: ${{ env.GITHUB_WORKSPACE }}/files/tests
       run: |
-        echo path ${SISL_FILES_TESTS}
-        ls -la ${SISL_FILES_TESTS}
+        echo path ${{ env.SISL_FILES_TESTS }}
+        ls -la ${{ env.SISL_FILES_TESTS }}
         pwd
         ls -la
         # This needs to be done in a separate folder
