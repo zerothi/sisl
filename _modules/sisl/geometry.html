@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.geometry &mdash; sisl 0.1.dev1+g129a9c7 documentation</title>
+  <title>sisl.geometry &mdash; sisl 0.1.dev1+g017ffd1 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g129a9c7
+                0.1.dev1+g017ffd1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -4585,6 +4585,14 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
+<span class="c1"># Bypass regular Geometry to be returned as is</span>
+<span class="k">class</span> <span class="nc">GeometryNewGeometryDispatcher</span><span class="p">(</span><span class="n">GeometryNewDispatcher</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geom</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return geometry as-is (no copy), for sanitization purposes &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">geom</span>
+<span class="n">new_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">Geometry</span><span class="p">,</span> <span class="n">GeometryNewGeometryDispatcher</span><span class="p">)</span>
+
+
 <span class="k">class</span> <span class="nc">GeometryNewAseDispatcher</span><span class="p">(</span><span class="n">GeometryNewDispatcher</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aseg</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Convert an ``ase`` object into a `Geometry` &quot;&quot;&quot;</span>
@@ -4641,14 +4649,6 @@
     <span class="k">del</span> <span class="n">pymatgen_Molecule</span><span class="p">,</span> <span class="n">pymatgen_Structure</span>
 <span class="k">except</span><span class="p">:</span>
     <span class="k">pass</span>
-
-
-<span class="c1"># Bypass regular Geometry to be returned as is</span>
-<span class="k">class</span> <span class="nc">GeometryNewGeometryDispatcher</span><span class="p">(</span><span class="n">GeometryNewDispatcher</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geom</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return geometry as-is (no copy), for sanitization purposes &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">geom</span>
-<span class="n">new_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">Geometry</span><span class="p">,</span> <span class="n">GeometryNewGeometryDispatcher</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">GeometryNewFileDispatcher</span><span class="p">(</span><span class="n">GeometryNewDispatcher</span><span class="p">):</span>
@@ -4905,7 +4905,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

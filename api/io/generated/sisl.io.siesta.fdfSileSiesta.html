@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.fdfSileSiesta &mdash; sisl 0.1.dev1+g129a9c7 documentation</title>
+  <title>sisl.io.siesta.fdfSileSiesta &mdash; sisl 0.1.dev1+g017ffd1 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g129a9c7
+                0.1.dev1+g017ffd1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -200,79 +200,76 @@ By default the <code class="docutils literal notranslate"><span class="pre">base
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.dir_file" title="sisl.io.siesta.fdfSileSiesta.dir_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dir_file</span></code></a>([filename, filename_base])</p></td>
 <td><p>File of the current <em class="xref py py-obj">Sile</em></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.exist" title="sisl.io.siesta.fdfSileSiesta.exist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">exist</span></code></a>()</p></td>
-<td><p>Query whether the file exists</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.get" title="sisl.io.siesta.fdfSileSiesta.get"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get</span></code></a>(label[, default, unit, with_unit])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.get" title="sisl.io.siesta.fdfSileSiesta.get"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get</span></code></a>(label[, default, unit, with_unit])</p></td>
 <td><p>Retrieve fdf-keyword from the file</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.includes" title="sisl.io.siesta.fdfSileSiesta.includes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">includes</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.includes" title="sisl.io.siesta.fdfSileSiesta.includes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">includes</span></code></a>()</p></td>
 <td><p>Return a list of all files that are <em>included</em> or otherwise necessary for reading the fdf file</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.print" title="sisl.io.siesta.fdfSileSiesta.print"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print</span></code></a>(key, value)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.print" title="sisl.io.siesta.fdfSileSiesta.print"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print</span></code></a>(key, value)</p></td>
 <td><p>Return a string which is pretty-printing the key+value</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read" title="sisl.io.siesta.fdfSileSiesta.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read" title="sisl.io.siesta.fdfSileSiesta.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Generic read method which should be overloaded in child-classes</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read_basis" title="sisl.io.siesta.fdfSileSiesta.read_basis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_basis</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read_basis" title="sisl.io.siesta.fdfSileSiesta.read_basis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_basis</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Read the atomic species and figure out the number of atomic orbitals in their basis</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read_density_matrix" title="sisl.io.siesta.fdfSileSiesta.read_density_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_density_matrix</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read_density_matrix" title="sisl.io.siesta.fdfSileSiesta.read_density_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_density_matrix</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Try and read density matrix by reading the &lt;&gt;.nc, &lt;&gt;.TSDE files, &lt;&gt;.DM (in that order)</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read_dynamical_matrix" title="sisl.io.siesta.fdfSileSiesta.read_dynamical_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_dynamical_matrix</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read_dynamical_matrix" title="sisl.io.siesta.fdfSileSiesta.read_dynamical_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_dynamical_matrix</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Read dynamical matrix from output of the calculation</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read_energy_density_matrix" title="sisl.io.siesta.fdfSileSiesta.read_energy_density_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_energy_density_matrix</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read_energy_density_matrix" title="sisl.io.siesta.fdfSileSiesta.read_energy_density_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_energy_density_matrix</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Try and read energy density matrix by reading the &lt;&gt;.nc or &lt;&gt;.TSDE files (in that order)</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read_fermi_level" title="sisl.io.siesta.fdfSileSiesta.read_fermi_level"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_fermi_level</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read_fermi_level" title="sisl.io.siesta.fdfSileSiesta.read_fermi_level"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_fermi_level</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Read fermi-level from output of the calculation</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read_force" title="sisl.io.siesta.fdfSileSiesta.read_force"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_force</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read_force" title="sisl.io.siesta.fdfSileSiesta.read_force"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_force</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Read forces from the output of the calculation (forces are not defined in the input)</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read_force_constant" title="sisl.io.siesta.fdfSileSiesta.read_force_constant"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_force_constant</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read_force_constant" title="sisl.io.siesta.fdfSileSiesta.read_force_constant"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_force_constant</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Read force constant from the output of the calculation</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read_geometry" title="sisl.io.siesta.fdfSileSiesta.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a>([output])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read_geometry" title="sisl.io.siesta.fdfSileSiesta.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a>([output])</p></td>
 <td><p>Returns Geometry object by reading fdf or Siesta output related files.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read_grid" title="sisl.io.siesta.fdfSileSiesta.read_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_grid</span></code></a>(name, *args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read_grid" title="sisl.io.siesta.fdfSileSiesta.read_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_grid</span></code></a>(name, *args, **kwargs)</p></td>
 <td><p>Read grid related information from any of the output files</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read_hamiltonian" title="sisl.io.siesta.fdfSileSiesta.read_hamiltonian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_hamiltonian</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read_hamiltonian" title="sisl.io.siesta.fdfSileSiesta.read_hamiltonian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_hamiltonian</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Try and read the Hamiltonian by reading the &lt;&gt;.nc, &lt;&gt;.TSHS files, &lt;&gt;.HSX (in that order)</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read_overlap" title="sisl.io.siesta.fdfSileSiesta.read_overlap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_overlap</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read_overlap" title="sisl.io.siesta.fdfSileSiesta.read_overlap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_overlap</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Try and read the overlap matrix by reading the &lt;&gt;.nc, &lt;&gt;.TSHS files, &lt;&gt;.HSX, &lt;&gt;.onlyS (in that order)</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read_supercell" title="sisl.io.siesta.fdfSileSiesta.read_supercell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_supercell</span></code></a>([output])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read_supercell" title="sisl.io.siesta.fdfSileSiesta.read_supercell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_supercell</span></code></a>([output])</p></td>
 <td><p>Returns SuperCell object by reading fdf or Siesta output related files.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read_supercell_nsc" title="sisl.io.siesta.fdfSileSiesta.read_supercell_nsc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_supercell_nsc</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read_supercell_nsc" title="sisl.io.siesta.fdfSileSiesta.read_supercell_nsc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_supercell_nsc</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Read supercell size using any method available</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.set" title="sisl.io.siesta.fdfSileSiesta.set"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set</span></code></a>(key, value[, keep])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.set" title="sisl.io.siesta.fdfSileSiesta.set"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set</span></code></a>(key, value[, keep])</p></td>
 <td><p>Add the key and value to the FDF file</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.type" title="sisl.io.siesta.fdfSileSiesta.type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">type</span></code></a>(label)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.type" title="sisl.io.siesta.fdfSileSiesta.type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">type</span></code></a>(label)</p></td>
 <td><p>Return the type of the fdf-keyword</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.write" title="sisl.io.siesta.fdfSileSiesta.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.write" title="sisl.io.siesta.fdfSileSiesta.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Generic write method which should be overloaded in child-classes</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.write_geometry" title="sisl.io.siesta.fdfSileSiesta.write_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_geometry</span></code></a>(geometry[, fmt])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.write_geometry" title="sisl.io.siesta.fdfSileSiesta.write_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_geometry</span></code></a>(geometry[, fmt])</p></td>
 <td><p>Writes the geometry</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.write_supercell" title="sisl.io.siesta.fdfSileSiesta.write_supercell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_supercell</span></code></a>(sc[, fmt])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.write_supercell" title="sisl.io.siesta.fdfSileSiesta.write_supercell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_supercell</span></code></a>(sc[, fmt])</p></td>
 <td><p>Writes the supercell</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.base_file" title="sisl.io.siesta.fdfSileSiesta.base_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base_file</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.base_file" title="sisl.io.siesta.fdfSileSiesta.base_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base_file</span></code></a></p></td>
 <td><p>File of the current <em class="xref py py-obj">Sile</em></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.file" title="sisl.io.siesta.fdfSileSiesta.file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">file</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.file" title="sisl.io.siesta.fdfSileSiesta.file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">file</span></code></a></p></td>
 <td><p>File of the current <em class="xref py py-obj">Sile</em></p></td>
 </tr>
 </tbody>
@@ -292,12 +289,6 @@ By default the <code class="docutils literal notranslate"><span class="pre">base
 <dt class="sig sig-object py" id="sisl.io.siesta.fdfSileSiesta.dir_file">
 <span class="sig-name descname"><span class="pre">dir_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename_base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.dir_file" title="Permalink to this definition"></a></dt>
 <dd><p>File of the current <em class="xref py py-obj">Sile</em></p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="sisl.io.siesta.fdfSileSiesta.exist">
-<span class="sig-name descname"><span class="pre">exist</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.exist" title="Permalink to this definition"></a></dt>
-<dd><p>Query whether the file exists</p>
 </dd></dl>
 
 <dl class="py property">
@@ -499,7 +490,7 @@ By default this is <code class="docutils literal notranslate"><span class="pre">
 <dd class="field-odd"><p><strong>force_constant</strong> – vector <code class="docutils literal notranslate"><span class="pre">[*,</span> <span class="pre">3,</span> <span class="pre">2,</span> <span class="pre">*,</span> <span class="pre">3]</span></code>  with force constant element for each of the atomic displacements</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -703,7 +694,7 @@ fractional and frac are the same.</p></li>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

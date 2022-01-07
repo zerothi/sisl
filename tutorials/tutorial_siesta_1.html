@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Siesta — the H2O molecule &mdash; sisl 0.1.dev1+g129a9c7 documentation</title>
+  <title>Siesta — the H2O molecule &mdash; sisl 0.1.dev1+g017ffd1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g129a9c7
+                0.1.dev1+g017ffd1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -324,7 +324,7 @@ div.nboutput.container div.output_area > div[class^='highlight']{
 }
 
 /* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
-.prompt a.copybtn {
+.prompt .copybtn {
     display: none;
 }
 
@@ -391,8 +391,7 @@ Download IPython notebook <a href="https://raw.githubusercontent.com/zerothi/sis
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="s1">&#39;siesta_1&#39;</span><span class="p">)</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="o">*</span>
@@ -412,8 +411,7 @@ side-lengths <span class="math notranslate nohighlight">\(10\mathrm{Ang}\)</span
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">h2o</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]],</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">h2o</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]],</span>
                <span class="p">[</span><span class="n">Atom</span><span class="p">(</span><span class="s1">&#39;O&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="s1">&#39;H&#39;</span><span class="p">),</span> <span class="n">Atom</span><span class="p">(</span><span class="s1">&#39;H&#39;</span><span class="p">)],</span>
                <span class="n">sc</span><span class="o">=</span><span class="n">SuperCell</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">))</span>
 </pre></div>
@@ -425,8 +423,7 @@ side-lengths <span class="math notranslate nohighlight">\(10\mathrm{Ang}\)</span
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="nb">print</span><span class="p">(</span><span class="n">h2o</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">h2o</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -462,8 +459,7 @@ Geometry{na: 3, no: 3,
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">plot</span><span class="p">(</span><span class="n">h2o</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span><span class="p">(</span><span class="n">h2o</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -488,8 +484,7 @@ Geometry{na: 3, no: 3,
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="nb">open</span><span class="p">(</span><span class="s1">&#39;RUN.fdf&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span><span class="si">%i</span><span class="s2">nclude STRUCT.fdf</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">open</span><span class="p">(</span><span class="s1">&#39;RUN.fdf&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span><span class="si">%i</span><span class="s2">nclude STRUCT.fdf</span>
 <span class="s2">SystemLabel siesta_1</span>
 <span class="s2">PAO.BasisSize SZP</span>
 <span class="s2">MeshCutoff 250. Ry</span>
@@ -518,8 +513,7 @@ Geometry{na: 3, no: 3,
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">fdf</span> <span class="o">=</span> <span class="n">get_sile</span><span class="p">(</span><span class="s1">&#39;RUN.fdf&#39;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fdf</span> <span class="o">=</span> <span class="n">get_sile</span><span class="p">(</span><span class="s1">&#39;RUN.fdf&#39;</span><span class="p">)</span>
 <span class="n">H</span> <span class="o">=</span> <span class="n">fdf</span><span class="o">.</span><span class="n">read_hamiltonian</span><span class="p">()</span>
 <span class="c1"># Create a short-hand to handle the geometry</span>
 <span class="n">h2o</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">geometry</span>
@@ -576,8 +570,7 @@ single-<span class="math notranslate nohighlight">\(\zeta\)</span> calculation <
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="k">def</span> <span class="nf">plot_atom</span><span class="p">(</span><span class="n">atom</span><span class="p">):</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot_atom</span><span class="p">(</span><span class="n">atom</span><span class="p">):</span>
     <span class="n">no</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span> <span class="c1"># number of orbitals</span>
     <span class="n">nx</span> <span class="o">=</span> <span class="n">no</span> <span class="o">//</span> <span class="mi">4</span>
     <span class="n">ny</span> <span class="o">=</span> <span class="n">no</span> <span class="o">//</span> <span class="n">nx</span>
@@ -641,8 +634,7 @@ single-<span class="math notranslate nohighlight">\(\zeta\)</span> calculation <
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">es</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">es</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">()</span>
 
 <span class="c1"># We specify an origin to center the molecule in the grid</span>
 <span class="n">h2o</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">]</span>
@@ -671,8 +663,7 @@ single-<span class="math notranslate nohighlight">\(\zeta\)</span> calculation <
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="k">def</span> <span class="nf">integrate</span><span class="p">(</span><span class="n">g</span><span class="p">):</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">integrate</span><span class="p">(</span><span class="n">g</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Real space integrated wavefunction: </span><span class="si">{:.4f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">grid</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="n">g</span><span class="o">.</span><span class="n">dvolume</span><span class="p">))</span>
 <span class="n">g</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="n">h2o</span><span class="o">.</span><span class="n">sc</span><span class="p">)</span>
 <span class="n">es</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">wavefunction</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
@@ -703,8 +694,7 @@ Real space integrated wavefunction: 1.0000
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">DM</span> <span class="o">=</span> <span class="n">fdf</span><span class="o">.</span><span class="n">read_density_matrix</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DM</span> <span class="o">=</span> <span class="n">fdf</span><span class="o">.</span><span class="n">read_density_matrix</span><span class="p">()</span>
 <span class="n">rho</span> <span class="o">=</span> <span class="n">get_sile</span><span class="p">(</span><span class="s1">&#39;siesta_1.nc&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read_grid</span><span class="p">(</span><span class="s1">&#39;Rho&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -713,8 +703,7 @@ Real space integrated wavefunction: 1.0000
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">DM_rho</span> <span class="o">=</span> <span class="n">rho</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DM_rho</span> <span class="o">=</span> <span class="n">rho</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="n">DM_rho</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">DM</span><span class="o">.</span><span class="n">density</span><span class="p">(</span><span class="n">DM_rho</span><span class="p">)</span>
 <span class="n">diff</span> <span class="o">=</span> <span class="n">DM_rho</span> <span class="o">-</span> <span class="n">rho</span>
@@ -744,7 +733,7 @@ Real space integrated density difference: 2.386e-09
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

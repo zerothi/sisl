@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.sile &mdash; sisl 0.1.dev1+g129a9c7 documentation</title>
+  <title>sisl.io.sile &mdash; sisl 0.1.dev1+g017ffd1 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g129a9c7
+                0.1.dev1+g017ffd1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -470,10 +470,6 @@
             <span class="n">filename</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_directory</span> <span class="o">/</span> <span class="n">filename_base</span> <span class="o">/</span> <span class="n">filename</span></div>
 
-<div class="viewcode-block" id="BaseSile.exist"><a class="viewcode-back" href="../../../api/io/generated/sisl.io.BaseSile.html#sisl.io.BaseSile.exist">[docs]</a>    <span class="k">def</span> <span class="nf">exist</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Query whether the file exists &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span></div>
-
 <div class="viewcode-block" id="BaseSile.read"><a class="viewcode-back" href="../../../api/io/generated/sisl.io.BaseSile.html#sisl.io.BaseSile.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Generic read method which should be overloaded in child-classes</span>
 
@@ -811,7 +807,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_lvl</span> <span class="o">=</span> <span class="n">lvl</span>
         <span class="c1"># Initialize the _data dictionary for access == 1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">exist</span><span class="p">():</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_access</span> <span class="o">=</span> <span class="n">access</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># If it has not been created we should not try</span>
@@ -1117,7 +1113,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

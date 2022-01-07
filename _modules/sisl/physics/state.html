@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.state &mdash; sisl 0.1.dev1+g129a9c7 documentation</title>
+  <title>sisl.physics.state &mdash; sisl 0.1.dev1+g017ffd1 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g129a9c7
+                0.1.dev1+g017ffd1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -315,31 +315,38 @@
             <span class="n">deg</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_append</span><span class="p">(</span><span class="n">sidx</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">sidx</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]))</span>
         <span class="k">return</span> <span class="n">deg</span></div>
 
-<div class="viewcode-block" id="Coefficient.sub"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Coefficient.html#sisl.physics.Coefficient.sub">[docs]</a>    <span class="k">def</span> <span class="nf">sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+<div class="viewcode-block" id="Coefficient.sub"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Coefficient.html#sisl.physics.Coefficient.sub">[docs]</a>    <span class="k">def</span> <span class="nf">sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Return a new coefficient with only the specified coefficients</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        idx : int or array_like</span>
 <span class="sd">            indices that are retained in the returned object</span>
+<span class="sd">        inplace : bool, optional</span>
+<span class="sd">            whether the values will be retained inplace</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        Coefficient</span>
-<span class="sd">            a new coefficient only containing the requested elements</span>
+<span class="sd">            a new coefficient only containing the requested elements, only if `inplace` is false</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_index</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
-        <span class="n">sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
-        <span class="n">sub</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span>
-        <span class="k">return</span> <span class="n">sub</span></div>
+        <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+            <span class="n">sub</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span>
+            <span class="k">return</span> <span class="n">sub</span></div>
 
-<div class="viewcode-block" id="Coefficient.remove"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Coefficient.html#sisl.physics.Coefficient.remove">[docs]</a>    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+<div class="viewcode-block" id="Coefficient.remove"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Coefficient.html#sisl.physics.Coefficient.remove">[docs]</a>    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Return a new coefficient without the specified coefficients</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        idx : int or array_like</span>
 <span class="sd">            indices that are removed in the returned object</span>
+<span class="sd">        inplace : bool, optional</span>
+<span class="sd">            whether the values will be removed inplace</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -347,7 +354,7 @@
 <span class="sd">            a new coefficient without containing the requested elements</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_index</span><span class="p">(</span><span class="n">idx</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">inplace</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Return a new coefficient object with only one associated coefficient</span>
@@ -458,39 +465,46 @@
         <span class="n">copy</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span>
         <span class="k">return</span> <span class="n">copy</span></div>
 
-<div class="viewcode-block" id="State.sub"><a class="viewcode-back" href="../../../api/generated/sisl.physics.State.html#sisl.physics.State.sub">[docs]</a>    <span class="k">def</span> <span class="nf">sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+<div class="viewcode-block" id="State.sub"><a class="viewcode-back" href="../../../api/generated/sisl.physics.State.html#sisl.physics.State.sub">[docs]</a>    <span class="k">def</span> <span class="nf">sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Return a new state with only the specified states</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        idx : int or array_like</span>
 <span class="sd">            indices that are retained in the returned object</span>
+<span class="sd">        inplace : bool, optional</span>
+<span class="sd">            whether the values will be retained inplace</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        State</span>
-<span class="sd">           a new state only containing the requested elements</span>
+<span class="sd">           a new state only containing the requested elements, only if `inplace` is false</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_index</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
-        <span class="n">sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
-        <span class="n">sub</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span>
-        <span class="k">return</span> <span class="n">sub</span></div>
+        <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+            <span class="n">sub</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span>
+            <span class="k">return</span> <span class="n">sub</span></div>
 
-<div class="viewcode-block" id="State.remove"><a class="viewcode-back" href="../../../api/generated/sisl.physics.State.html#sisl.physics.State.remove">[docs]</a>    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+<div class="viewcode-block" id="State.remove"><a class="viewcode-back" href="../../../api/generated/sisl.physics.State.html#sisl.physics.State.remove">[docs]</a>    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Return a new state without the specified vectors</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        idx : int or array_like</span>
 <span class="sd">            indices that are removed in the returned object</span>
+<span class="sd">        inplace : bool, optional</span>
+<span class="sd">            whether the values will be removed inplace</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        State</span>
-<span class="sd">            a new state without containing the requested elements</span>
+<span class="sd">            a new state without containing the requested elements, only if `inplace` is false</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_index</span><span class="p">(</span><span class="n">idx</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">inplace</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="State.translate"><a class="viewcode-back" href="../../../api/generated/sisl.physics.State.html#sisl.physics.State.translate">[docs]</a>    <span class="k">def</span> <span class="nf">translate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">isc</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Translate the vectors to a new unit-cell position</span>
@@ -823,7 +837,7 @@
             <span class="k">return</span> <span class="n">_phase</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.phase only accepts method in [max, all]&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="State.align_phase"><a class="viewcode-back" href="../../../api/generated/sisl.physics.State.html#sisl.physics.State.align_phase">[docs]</a>    <span class="k">def</span> <span class="nf">align_phase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ret_index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="State.align_phase"><a class="viewcode-back" href="../../../api/generated/sisl.physics.State.html#sisl.physics.State.align_phase">[docs]</a>    <span class="k">def</span> <span class="nf">align_phase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">ret_index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Align `self` with the phases for `other`, a copy may be returned </span>
 
 <span class="sd">        States will be rotated by :math:`\pi` provided the phase difference between the states are above :math:`|\Delta\theta| &gt; \pi/2`.</span>
@@ -832,10 +846,10 @@
 <span class="sd">        ----------</span>
 <span class="sd">        other : State</span>
 <span class="sd">           the other state to align onto this state</span>
-<span class="sd">        inplace : bool, optional</span>
-<span class="sd">           rotate the states in-place</span>
 <span class="sd">        ret_index : bool, optional</span>
 <span class="sd">           return which indices got swapped</span>
+<span class="sd">        inplace : bool, optional</span>
+<span class="sd">           rotate the states in-place</span>
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
@@ -862,7 +876,7 @@
             <span class="k">return</span> <span class="n">out</span><span class="p">,</span> <span class="n">idx</span>
         <span class="k">return</span> <span class="n">out</span></div>
 
-<div class="viewcode-block" id="State.align_norm"><a class="viewcode-back" href="../../../api/generated/sisl.physics.State.html#sisl.physics.State.align_norm">[docs]</a>    <span class="k">def</span> <span class="nf">align_norm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">ret_index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="State.align_norm"><a class="viewcode-back" href="../../../api/generated/sisl.physics.State.html#sisl.physics.State.align_norm">[docs]</a>    <span class="k">def</span> <span class="nf">align_norm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">ret_index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Align `self` with the site-norms of `other`, a copy may optionally be returned</span>
 
 <span class="sd">        To determine the new ordering of `self` first calculate the residual norm of the site-norms.</span>
@@ -880,14 +894,16 @@
 <span class="sd">           the other state to align against</span>
 <span class="sd">        ret_index : bool, optional</span>
 <span class="sd">           also return indices for the swapped indices</span>
+<span class="sd">        inplace : bool, optional</span>
+<span class="sd">           swap states in-place</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        self_swap : State</span>
-<span class="sd">            A swapped instance of `self`</span>
+<span class="sd">            A swapped instance of `self`, only if `inplace` is False</span>
 <span class="sd">        index : array of int</span>
 <span class="sd">            the indices that swaps `self` to be ``self_swap``, i.e. ``self_swap = self.sub(index)``</span>
-
+<span class="sd">            Only if `inplace` is False and `ret_index` is True</span>
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 <span class="sd">        The input state and output state have the same number of states, but their ordering is not necessarily the same.</span>
@@ -896,13 +912,13 @@
 <span class="sd">        --------</span>
 <span class="sd">        align_phase : rotate states such that their phases align</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">snorm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm2</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">onorm</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">norm2</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">snorm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm2</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+        <span class="n">onorm</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">norm2</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
 
         <span class="c1"># Now find new orderings</span>
         <span class="n">show_warn</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">fulli</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">idxr</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">emptyi</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="n">sidx</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">fulli</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">oidx</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">emptyi</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
             <span class="n">R</span> <span class="o">=</span> <span class="n">snorm</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">onorm</span>
             <span class="n">R</span> <span class="o">=</span> <span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ij,ij-&gt;i&#39;</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
@@ -910,18 +926,23 @@
             <span class="c1"># Figure out which band it should correspond to</span>
             <span class="c1"># find closest largest one</span>
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">R</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">j</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">idx</span><span class="p">[:</span><span class="n">i</span><span class="p">]:</span>
-                    <span class="n">idx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">j</span>
-                    <span class="n">idxr</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+                <span class="k">if</span> <span class="n">j</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sidx</span><span class="p">[:</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="n">sidx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">j</span>
+                    <span class="n">oidx</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
                     <span class="k">break</span>
                 <span class="n">show_warn</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="k">if</span> <span class="n">show_warn</span><span class="p">:</span>
             <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.align_norm found multiple possible candidates with minimal residue, swapping not unique&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">ret_index</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">idxr</span><span class="p">),</span> <span class="n">idxr</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">idxr</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">oidx</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ret_index</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">oidx</span>
+        <span class="k">elif</span> <span class="n">ret_index</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">oidx</span><span class="p">),</span> <span class="n">oidx</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">oidx</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="State.rotate"><a class="viewcode-back" href="../../../api/generated/sisl.physics.State.html#sisl.physics.State.rotate">[docs]</a>    <span class="k">def</span> <span class="nf">rotate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">individual</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Rotate all states (in-place) to rotate the largest component to be along the angle `phi`</span>
@@ -1487,39 +1508,47 @@
             <span class="n">deg</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_append</span><span class="p">(</span><span class="n">sidx</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">sidx</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]))</span>
         <span class="k">return</span> <span class="n">deg</span></div>
 
-<div class="viewcode-block" id="StateC.sub"><a class="viewcode-back" href="../../../api/generated/sisl.physics.StateC.html#sisl.physics.StateC.sub">[docs]</a>    <span class="k">def</span> <span class="nf">sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+<div class="viewcode-block" id="StateC.sub"><a class="viewcode-back" href="../../../api/generated/sisl.physics.StateC.html#sisl.physics.StateC.sub">[docs]</a>    <span class="k">def</span> <span class="nf">sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Return a new state with only the specified states</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        idx : int or array_like</span>
 <span class="sd">            indices that are retained in the returned object</span>
+<span class="sd">        inplace : bool, optional</span>
+<span class="sd">            whether the values will be retained inplace</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        StateC</span>
-<span class="sd">            a new object with a subset of the states</span>
+<span class="sd">            a new object with a subset of the states, only if `inplace` is false</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_index</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
-        <span class="n">sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
-        <span class="n">sub</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span>
-        <span class="k">return</span> <span class="n">sub</span></div>
+        <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+            <span class="n">sub</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span>
+            <span class="k">return</span> <span class="n">sub</span></div>
 
-<div class="viewcode-block" id="StateC.remove"><a class="viewcode-back" href="../../../api/generated/sisl.physics.StateC.html#sisl.physics.StateC.remove">[docs]</a>    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+<div class="viewcode-block" id="StateC.remove"><a class="viewcode-back" href="../../../api/generated/sisl.physics.StateC.html#sisl.physics.StateC.remove">[docs]</a>    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Return a new state without the specified indices</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        idx : int or array_like</span>
 <span class="sd">            indices that are removed in the returned object</span>
+<span class="sd">        inplace : bool, optional</span>
+<span class="sd">            whether the values will be removed inplace</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        StateC</span>
-<span class="sd">            a new state without containing the requested elements</span>
+<span class="sd">            a new state without containing the requested elements, only if `inplace` is false</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_index</span><span class="p">(</span><span class="n">idx</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">inplace</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="StateC.asState"><a class="viewcode-back" href="../../../api/generated/sisl.physics.StateC.html#sisl.physics.StateC.asState">[docs]</a>    <span class="k">def</span> <span class="nf">asState</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">State</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
@@ -1539,7 +1568,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

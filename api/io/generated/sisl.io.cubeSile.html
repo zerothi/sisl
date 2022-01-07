@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.cubeSile &mdash; sisl 0.1.dev1+g129a9c7 documentation</title>
+  <title>sisl.io.cubeSile &mdash; sisl 0.1.dev1+g017ffd1 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g129a9c7
+                0.1.dev1+g017ffd1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -170,37 +170,34 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.cubeSile.dir_file" title="sisl.io.cubeSile.dir_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dir_file</span></code></a>([filename, filename_base])</p></td>
 <td><p>File of the current <a class="reference internal" href="sisl.io.Sile.html#sisl.io.Sile" title="sisl.io.Sile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Sile</span></code></a></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.cubeSile.exist" title="sisl.io.cubeSile.exist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">exist</span></code></a>()</p></td>
-<td><p>Query whether the file exists</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.cubeSile.read" title="sisl.io.cubeSile.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.cubeSile.read" title="sisl.io.cubeSile.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Generic read method which should be overloaded in child-classes</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.cubeSile.read_geometry" title="sisl.io.cubeSile.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.cubeSile.read_geometry" title="sisl.io.cubeSile.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a>()</p></td>
 <td><p>Returns <em class="xref py py-obj">Geometry</em> object from the CUBE file</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.cubeSile.read_grid" title="sisl.io.cubeSile.read_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_grid</span></code></a>([imag])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.cubeSile.read_grid" title="sisl.io.cubeSile.read_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_grid</span></code></a>([imag])</p></td>
 <td><p>Returns <em class="xref py py-obj">Grid</em> object from the CUBE file</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.cubeSile.read_supercell" title="sisl.io.cubeSile.read_supercell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_supercell</span></code></a>([na])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.cubeSile.read_supercell" title="sisl.io.cubeSile.read_supercell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_supercell</span></code></a>([na])</p></td>
 <td><p>Returns <em class="xref py py-obj">SuperCell</em> object from the CUBE file</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.cubeSile.write" title="sisl.io.cubeSile.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.cubeSile.write" title="sisl.io.cubeSile.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Generic write method which should be overloaded in child-classes</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.cubeSile.write_geometry" title="sisl.io.cubeSile.write_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_geometry</span></code></a>(geometry[, fmt, size, origin])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.cubeSile.write_geometry" title="sisl.io.cubeSile.write_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_geometry</span></code></a>(geometry[, fmt, size, origin])</p></td>
 <td><p>Writes <em class="xref py py-obj">Geometry</em> object attached to this grid</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.cubeSile.write_grid" title="sisl.io.cubeSile.write_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_grid</span></code></a>(grid[, fmt, imag])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.cubeSile.write_grid" title="sisl.io.cubeSile.write_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_grid</span></code></a>(grid[, fmt, imag])</p></td>
 <td><p>Write <em class="xref py py-obj">Grid</em> to the contained file</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.cubeSile.write_supercell" title="sisl.io.cubeSile.write_supercell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_supercell</span></code></a>(sc[, fmt, size, origin])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.cubeSile.write_supercell" title="sisl.io.cubeSile.write_supercell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_supercell</span></code></a>(sc[, fmt, size, origin])</p></td>
 <td><p>Writes <em class="xref py py-obj">SuperCell</em> object attached to this grid</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.cubeSile.base_file" title="sisl.io.cubeSile.base_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base_file</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.cubeSile.base_file" title="sisl.io.cubeSile.base_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base_file</span></code></a></p></td>
 <td><p>File of the current <a class="reference internal" href="sisl.io.Sile.html#sisl.io.Sile" title="sisl.io.Sile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Sile</span></code></a></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.cubeSile.file" title="sisl.io.cubeSile.file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">file</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.cubeSile.file" title="sisl.io.cubeSile.file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">file</span></code></a></p></td>
 <td><p>File of the current <a class="reference internal" href="sisl.io.Sile.html#sisl.io.Sile" title="sisl.io.Sile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Sile</span></code></a></p></td>
 </tr>
 </tbody>
@@ -220,12 +217,6 @@
 <dt class="sig sig-object py" id="sisl.io.cubeSile.dir_file">
 <span class="sig-name descname"><span class="pre">dir_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename_base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.cubeSile.dir_file" title="Permalink to this definition"></a></dt>
 <dd><p>File of the current <a class="reference internal" href="sisl.io.Sile.html#sisl.io.Sile" title="sisl.io.Sile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Sile</span></code></a></p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="sisl.io.cubeSile.exist">
-<span class="sig-name descname"><span class="pre">exist</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.cubeSile.exist" title="Permalink to this definition"></a></dt>
-<dd><p>Query whether the file exists</p>
 </dd></dl>
 
 <dl class="py property">
@@ -351,7 +342,7 @@ real part.</p></li>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

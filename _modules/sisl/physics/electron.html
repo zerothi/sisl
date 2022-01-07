@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.electron &mdash; sisl 0.1.dev1+g129a9c7 documentation</title>
+  <title>sisl.physics.electron &mdash; sisl 0.1.dev1+g017ffd1 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g129a9c7
+                0.1.dev1+g017ffd1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -160,7 +160,7 @@
 <span class="kn">from</span> <span class="nn">sisl._math_small</span> <span class="kn">import</span> <span class="n">xyz_to_spherical_cos_phi</span>
 <span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
 <span class="kn">from</span> <span class="nn">sisl.linalg</span> <span class="kn">import</span> <span class="n">svd_destroy</span><span class="p">,</span> <span class="n">eigvals_destroy</span>
-<span class="kn">from</span> <span class="nn">sisl.linalg</span> <span class="kn">import</span> <span class="n">eigh</span><span class="p">,</span> <span class="n">det_destroy</span><span class="p">,</span> <span class="n">invsqrth</span>
+<span class="kn">from</span> <span class="nn">sisl.linalg</span> <span class="kn">import</span> <span class="n">eigh</span><span class="p">,</span> <span class="n">det_destroy</span><span class="p">,</span> <span class="n">sqrth</span>
 <span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">info</span><span class="p">,</span> <span class="n">warn</span><span class="p">,</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">progressbar</span><span class="p">,</span> <span class="n">deprecate_method</span>
 <span class="kn">from</span> <span class="nn">sisl._help</span> <span class="kn">import</span> <span class="n">dtype_complex_to_real</span><span class="p">,</span> <span class="n">dtype_real_to_complex</span>
 <span class="kn">from</span> <span class="nn">.distribution</span> <span class="kn">import</span> <span class="n">get_distribution</span>
@@ -1002,7 +1002,7 @@
 <span class="k">def</span> <span class="nf">conductivity</span><span class="p">(</span><span class="n">bz</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s1">&#39;fermi-dirac&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;ahc&#39;</span><span class="p">,</span> <span class="n">degenerate</span><span class="o">=</span><span class="mf">1.e-5</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Electronic conductivity for a given `BrillouinZone` integral</span>
 
-<span class="sd">    Currently the *only* implemented method is the anomalous Hall conductivity (AHC)</span>
+<span class="sd">    Currently the *only* implemented method is the anomalous Hall conductivity (AHC[1]_)</span>
 <span class="sd">    which may be calculated as:</span>
 
 <span class="sd">    .. math::</span>
@@ -1023,6 +1023,10 @@
 <span class="sd">       de-couple degenerate states within the given tolerance (in eV)</span>
 <span class="sd">    degenerate_dir : (3,), optional</span>
 <span class="sd">       along which direction degenerate states are decoupled.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] :doi:`X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, &quot;Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation&quot;, PRB **74**, 195118 (2006) &lt;10.1103/PhysRevB.74.195118&gt;`</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
@@ -1132,8 +1136,8 @@
         <span class="k">def</span> <span class="nf">_lowdin</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot; change state to the lowdin state, assuming everything is in R gauge</span>
 <span class="sd">            So needs to be done before changing gauge &quot;&quot;&quot;</span>
-            <span class="n">S12</span> <span class="o">=</span> <span class="n">invsqrth</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">Sk</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;k&quot;</span><span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;array&#39;</span><span class="p">),</span>
-                           <span class="n">overwrite_a</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">S12</span> <span class="o">=</span> <span class="n">sqrth</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">Sk</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;k&quot;</span><span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;array&#39;</span><span class="p">),</span>
+                        <span class="n">overwrite_a</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">state</span><span class="o">.</span><span class="n">state</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">(</span><span class="n">S12</span> <span class="o">@</span> <span class="n">state</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
 
     <span class="n">method</span><span class="p">,</span> <span class="o">*</span><span class="n">opts</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
@@ -1184,12 +1188,13 @@
 
     <span class="k">else</span><span class="p">:</span>
         <span class="k">def</span> <span class="nf">_berry</span><span class="p">(</span><span class="n">eigenstates</span><span class="p">):</span>
-            <span class="n">first</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">eigenstates</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">sub</span><span class="p">)</span>
+            <span class="n">first</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">eigenstates</span><span class="p">)</span>
+            <span class="n">first</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">sub</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">_lowdin</span><span class="p">(</span><span class="n">first</span><span class="p">)</span>
             <span class="n">prev</span> <span class="o">=</span> <span class="n">first</span>
             <span class="n">prd</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="k">for</span> <span class="n">second</span> <span class="ow">in</span> <span class="n">eigenstates</span><span class="p">:</span>
-                <span class="n">second</span> <span class="o">=</span> <span class="n">second</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">sub</span><span class="p">)</span>
+                <span class="n">second</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">sub</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                 <span class="n">_lowdin</span><span class="p">(</span><span class="n">second</span><span class="p">)</span>
                 <span class="n">prd</span> <span class="o">=</span> <span class="n">_process</span><span class="p">(</span><span class="n">prd</span><span class="p">,</span> <span class="n">prev</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="n">second</span><span class="p">,</span> <span class="n">diag</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
                 <span class="n">prev</span> <span class="o">=</span> <span class="n">second</span>
@@ -1898,7 +1903,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
