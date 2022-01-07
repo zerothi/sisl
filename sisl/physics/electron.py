@@ -916,6 +916,9 @@ def conductivity(bz, distribution='fermi-dirac', method='ahc', degenerate=1.e-5,
     where :math:`\Omega_{i,\alpha\beta}` and :math:`f_i` is the Berry curvature and occupation
     for state :math:`i`.
 
+    The conductivity will be averaged by the Brillouin zone volume of the parent. See `BrillouinZone.volume` for details.
+    Hence for 1D the returned unit will be S/Ang, 2D it will be S/Ang^2 and 3D it will be S/Ang^3.
+
     Parameters
     ----------
     bz : BrillouinZone
@@ -936,6 +939,7 @@ def conductivity(bz, distribution='fermi-dirac', method='ahc', degenerate=1.e-5,
     See Also
     --------
     berry_curvature: method used to calculate the Berry-flux for calculating the conductivity
+    BrillouinZone.volume: volume calculation of the Brillouin zone
     """
     from .hamiltonian import Hamiltonian
     # Currently we require the conductivity calculation to *only* accept Hamiltonians
@@ -952,7 +956,11 @@ def conductivity(bz, distribution='fermi-dirac', method='ahc', degenerate=1.e-5,
             bc = es.berry_curvature(degenerate=degenerate, degenerate_dir=degenerate_dir)
             return (bc.T @ distribution(es.eig)).T
 
-        cond = - bz.apply.average.eigenstate(wrap=_ahc) * _velocity_const
+        cond = bz.apply.average.eigenstate(wrap=_ahc) * (-constant.G0 / (4*np.pi))
+
+        # estimate volume
+        cond /= bz.volume()
+
     else:
         raise SislError("conductivity: requires the method to be [ahc]")
 

@@ -54,6 +54,24 @@ class TestBrillouinZone:
         assert len(bz) == 2
         assert len(bz.copy()) == 2
 
+    def test_bz_volume_self(self):
+        bz = BrillouinZone(1.)
+        assert bz.volume(True)[1] == 0
+        bz = BrillouinZone(SuperCell(1, nsc=[3, 1, 1]))
+        assert bz.volume(True)[1] == 1
+        bz = BrillouinZone(SuperCell(1, nsc=[3, 3, 1]))
+        assert bz.volume(True)[1] == 2
+        bz = BrillouinZone(SuperCell(1, nsc=[3, 3, 3]))
+        assert bz.volume(True)[1] == 3
+
+    def test_bz_volume_direct(self):
+        bz = BrillouinZone(1.)
+        assert bz.volume(True, [0, 1])[1] == 2
+        assert bz.volume(True, [1])[1] == 1
+        assert bz.volume(True, [2, 1])[1] == 2
+        assert bz.volume(True, [2, 1, 0])[1] == 3
+        assert bz.volume(True, [])[1] == 0
+
     def test_bz_fail(self, setup):
         with pytest.raises(ValueError):
             BrillouinZone(setup.s1, [0] * 3, [.5] * 2)

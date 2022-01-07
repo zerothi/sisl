@@ -341,6 +341,48 @@ class BrillouinZone:
             return self.__class__.__name__ + '{{nk: {},\n {}\n}}'.format(len(self), str(self.parent).replace('\n', '\n '))
         return self.__class__.__name__ + '{{nk: {},\n {}\n}}'.format(len(self), str(self.parent.sc).replace('\n', '\n '))
 
+    def volume(self, ret_dim=False, periodic=None):
+        """ Calculate the volume of the full Brillouin zone of the parent
+
+        This will return the volume depending on the dimensions of the system.
+        Here the dimensions of the system is determined by how many dimensions
+        have auxilliary supercells that can contribute to Brillouin zone integrals.
+        Therefore the returned value will have differing units depending on
+        dimensionality.
+
+        Parameters
+        ----------
+        ret_dim: bool, optional
+           also return the dimensionality of the system
+        periodic : array_like of int, optional
+           estimate the volume using only the directions indexed by this array.
+           The default value is `(self.parent.nsc > 1).nonzero()[0]`.
+
+        Returns
+        -------
+        vol :
+           the volume of the Brillouin zone. Units are Ang^D with D being the dimensionality.
+           For 0D it will return 0.
+        dimensionality : int
+           the dimensionality of the volume
+        """
+        # default periodic array
+        if periodic is None:
+            periodic = (self.parent.nsc > 1).nonzero()[0]
+
+        dim = len(periodic)
+        vol = 0.
+        if dim == 3:
+            vol = self.parent.volume
+        elif dim == 2:
+            vol = self.parent.area(*periodic)
+        elif dim == 1:
+            vol = self.parent.length[periodic[0]]
+
+        if ret_dim:
+            return vol, dim
+        return vol
+
     @classmethod
     def parametrize(self, parent, func, N, *args, **kwargs):
         """ Generate a new `BrillouinZone` object with k-points parameterized via the function `func` in `N` separations
@@ -588,6 +630,7 @@ class BrillouinZone:
     _bz_attr = None
 
     #@deprecate_method TODO
+
     def __getattr__(self, attr):
         try:
             getattr(self.parent, attr)
