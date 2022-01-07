@@ -1094,13 +1094,13 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
     else:
         def _berry(eigenstates):
             first = next(eigenstates)
-            first.sub(sub, inplace=True)
             _lowdin(first)
+            first.sub(sub, inplace=True)
             prev = first
             prd = 1
             for second in eigenstates:
-                second.sub(sub, inplace=True)
                 _lowdin(second)
+                second.sub(sub, inplace=True)
                 prd = _process(prd, prev.inner(second, diag=False))
                 prev = second
             if closed:
