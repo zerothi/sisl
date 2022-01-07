@@ -151,8 +151,8 @@ A table of contents for all methods may be found :ref:`here <genindex>` while
 a table of contents for the sub-modules may be found :ref:`here <modindex>`.
 
 
-.. |buildstatus| image:: https://travis-ci.org/zerothi/sisl.svg
-.. _buildstatus: https://travis-ci.org/zerothi/sisl
+.. |buildstatus| image:: https://github.com/zerothi/sisl/actions/workflows/test.yaml/badge.svg?branch=main
+.. _buildstatus: https://github.com/zerothi/sisl/actions/workflows/test.yaml
 
 .. |pypi| image:: https://badge.fury.io/py/sisl.svg
 .. _pypi: https://badge.fury.io/py/sisl
@@ -163,14 +163,11 @@ a table of contents for the sub-modules may be found :ref:`here <modindex>`.
 .. |conda| image:: https://anaconda.org/conda-forge/sisl/badges/installer/conda.svg
 .. _conda: https://anaconda.org/conda-forge/sisl
 
-.. |codecov| image:: https://codecov.io/gh/zerothi/sisl/branch/master/graph/badge.svg
+.. |codecov| image:: https://codecov.io/gh/zerothi/sisl/branch/main/graph/badge.svg
 .. _codecov: https://codecov.io/gh/zerothi/sisl
 
 .. |zenodo| image:: https://zenodo.org/badge/doi/10.5281/zenodo.597181.svg
 .. _zenodo: http://dx.doi.org/10.5281/zenodo.597181
-
-.. |gitter| image:: https://img.shields.io/gitter/room/nwjs/nw.js.svg
-.. _gitter: https://gitter.im/sisl-tool/Lobby
 
 .. |discord| image:: https://img.shields.io/discord/742636379871379577.svg?label=&logo=discord&logoColor=ffffff&color=green&labelColor=red
 .. _discord: https://discord.gg/5XnFXFdkv2

@@ -1,5 +1,5 @@
 ---
-name: sisl tests
+name: sisl-ci
 
 defaults:
   run:
@@ -81,27 +81,15 @@ jobs:
       env:
         SISL_FILES_TESTS: ${{ github.workspace }}/files/tests
       run: |
-        echo path ${{ env.SISL_FILES_TESTS }}
-        ls -la ${{ env.SISL_FILES_TESTS }}
-        pwd
-        ls -la
         # This needs to be done in a separate folder
         # Otherwise the import will try to use the one in the current folder
         mkdir sisl-test-dir ; cd sisl-test-dir
         # --cov forces the reading of .coveragerc
         py.test -vv -rX --cov --cov-report term-missing --cov-report xml --cov-config=../.coveragerc --pyargs sisl sisl_toolbox.btd sisl_toolbox.models sisl_toolbox.siesta sisl_toolbox.transiesta
-        echo "Listing files after having runned the tests:"
-        pwd
-        ls -la
-        cp coverage.xml ../
+        #cp coverage.xml ../
 
     - name: Upload code-coverage
       uses: codecov/codecov-action@v2
       with:
         directory: ./sisl-test-dir/
         verbose: true
-
-    - name: Test
-      run: |
-        pwd
-        ls -la
