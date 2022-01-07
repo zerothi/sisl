@@ -18,13 +18,13 @@ class Spin:
 
     Its usage can be summarized in these few examples:
 
-    >>> Spin(Spin.UNPOLARIZED) == Spin('unpolarized') == Spin()
+    >>> Spin(Spin.UNPOLARIZED) == Spin("unpolarized") == Spin()
     True
-    >>> Spin(Spin.POLARIZED) == Spin('polarized') == Spin('p')
+    >>> Spin(Spin.POLARIZED) == Spin("polarized") == Spin("p")
     True
-    >>> Spin(Spin.NONCOLINEAR, dtype=np.complex128) == Spin('non-collinear') == Spin('nc')
+    >>> Spin(Spin.NONCOLINEAR, dtype=np.complex128) == Spin("non-collinear") == Spin("nc")
     True
-    >>> Spin(Spin.SPINORBIT, dtype=np.complex128) == Spin('spin-orbit') == Spin('so')
+    >>> Spin(Spin.SPINORBIT, dtype=np.complex128) == Spin("spin-orbit") == Spin("so") == Spin("soc")
     True
 
     Note that a data-type may be associated with a spin-object. This is not to say
@@ -81,10 +81,10 @@ class Spin:
                 'non-collinear': Spin.NONCOLINEAR, 'nc': Spin.NONCOLINEAR,
                 Spin.NONCOLINEAR: Spin.NONCOLINEAR,
                 'spin-orbit': Spin.SPINORBIT, 'so': Spin.SPINORBIT,
-                Spin.SPINORBIT: Spin.SPINORBIT}.get(kind)
+                'soc': Spin.SPINORBIT, Spin.SPINORBIT: Spin.SPINORBIT}.get(kind)
         if kind is None:
-            raise ValueError(self.__class__.__name__ + ' initialization went wrong because of wrong '
-                             'kind specification. Could not determine the kind of spin!')
+            raise ValueError(f"{self.__class__.__name__} initialization went wrong because of wrong "
+                             "kind specification. Could not determine the kind of spin!")
 
         # Now assert the checks
         self._kind = kind
