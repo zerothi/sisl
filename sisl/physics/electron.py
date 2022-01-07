@@ -936,6 +936,11 @@ def conductivity(bz, distribution='fermi-dirac', method='ahc', degenerate=1.e-5,
     ----------
     .. [1] :doi:`X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, "Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation", PRB **74**, 195118 (2006) <10.1103/PhysRevB.74.195118>`
 
+    Returns
+    -------
+    cond : float
+        conductivity in units [S/cm^D]. The D is the dimensionality of the system.
+
     See Also
     --------
     berry_curvature: method used to calculate the Berry-flux for calculating the conductivity
@@ -956,10 +961,15 @@ def conductivity(bz, distribution='fermi-dirac', method='ahc', degenerate=1.e-5,
             bc = es.berry_curvature(degenerate=degenerate, degenerate_dir=degenerate_dir)
             return (bc.T @ distribution(es.eig)).T
 
+        vol, dim = bz.volume(ret_dim=True)
+
+        if dim == 0:
+            raise SislError(f"conductivity: found a dimensionality of 0 which is non-physical")
+
         cond = bz.apply.average.eigenstate(wrap=_ahc) * (-constant.G0 / (4*np.pi))
 
-        # estimate volume
-        cond /= bz.volume()
+        # Convert the dimensions from S/m^D to S/cm^D
+        cond /= vol * units(f"Ang^{dim}", f"cm^{dim}")
 
     else:
         raise SislError("conductivity: requires the method to be [ahc]")
