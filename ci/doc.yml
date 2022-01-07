@@ -4,12 +4,14 @@ channels:
   - conda-forge
   - nodefaults
 dependencies:
-  - python=3.8
   - fortran-compiler
-  - setuptools
+  - python
+  - wheel
+  - setuptools>=46
+  - setuptools_scm>=6.2
   - pyparsing>=1.5.7
   - numpy
-  - cython
+  - cython>=0.28
   - tqdm
   - scipy
   - netcdf4
