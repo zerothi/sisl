@@ -819,8 +819,8 @@ class SileCDF(BaseSile):
     @staticmethod
     def _crt_dim(n, name, l):
         if name in n.dimensions:
-            return
-        n.createDimension(name, l)
+            return n.dimensions[name]
+        return n.createDimension(name, l)
 
     @staticmethod
     def _crt_var(n, name, *args, **kwargs):
