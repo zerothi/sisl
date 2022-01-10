@@ -497,7 +497,7 @@ class GridPlot(Plot):
         tol: float, optional
             Threshold value to consider a component of the cell nonzero.
         """
-        bigger_than_tol = cell > tol
+        bigger_than_tol = abs(cell) > tol
         return bigger_than_tol.sum() == 3 and bigger_than_tol.any(axis=0).all() and bigger_than_tol.any(axis=1).all()
 
     def _is_1D_cartesian(self, cell, coord_ax, tol=1e-3):
