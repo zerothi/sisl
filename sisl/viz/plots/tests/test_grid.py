@@ -12,6 +12,7 @@ from typing import ChainMap
 
 import pytest
 import numpy as np
+import os.path as osp
 
 import sisl
 from sisl.viz import GridPlot, Animation
@@ -39,13 +40,16 @@ class TestGridPlot(_TestPlot):
         "grid_shape" # Tuple indicating the grid shape
     ]
 
-    @pytest.fixture(scope="class", params=["siesta_RHO", "complex_grid"])
-    def init_func_and_attrs(self, request, siesta_test_files):
+    @pytest.fixture(scope="class", params=["siesta_RHO", "VASP CHGCAR", "complex_grid"])
+    def init_func_and_attrs(self, request, siesta_test_files, vasp_test_files):
         name = request.param
 
         if name == "siesta_RHO":
             init_func = sisl.get_sile(siesta_test_files("SrTiO3.RHO")).plot
             attrs = {"grid_shape": (48, 48, 48)}
+        if name == "VASP CHGCAR":
+            init_func = sisl.get_sile(vasp_test_files(osp.join("graphene", "CHGCAR"))).plot.grid
+            attrs = {"grid_shape": (24, 24, 100)}
         elif name == "complex_grid":
             complex_grid_shape = (8, 10, 10)
             np.random.seed(1)
@@ -196,12 +200,12 @@ class TestGridPlot(_TestPlot):
             assert len(scanned.frames) == 2
 
             # Provide step in Ang
-            step = plot.grid.cell[0, 0]/2
+            step = plot.grid.cell[2, 2]/2
             scanned = plot.scan(along="z", step=step, mode="as_is")
             assert len(scanned.frames) == 2
 
             # Provide breakpoints
-            breakpoints = [plot.grid.cell[0, 0]*frac for frac in [1/3, 2/3, 3/3]]
+            breakpoints = [plot.grid.cell[2, 2]*frac for frac in [1/3, 2/3, 3/3]]
             scanned = plot.scan(along="z", breakpoints=breakpoints, mode="as_is")
             assert len(scanned.frames) == 2
 
