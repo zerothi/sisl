@@ -1804,10 +1804,12 @@ class Geometry(SuperCellChild):
         old_atom_specie = geom.atoms.specie_index(old_atom)
         old_atom_count = (geom.atoms.specie == old_atom_specie).sum()
 
-        # Retrieve index of orbital
-        if isinstance(orbitals, Orbital):
-            orbitals = old_atom.index(orbitals)
-        orbitals = np.sort(np.asarray(orbitals).ravel())
+        if isinstance(orbitals, (Orbital, Integral)):
+            orbitals = [orbitals]
+        if isinstance(orbitals[0], Orbital):
+            orbitals = [old_atom.index(orb) for orb in orbitals]
+        orbitals = np.sort(orbitals)
+
         if len(orbitals) == 0:
             raise ValueError(f"{self.__class__.__name__}.sub_orbital trying to retain 0 orbitals on a given atom. This is not allowed!")
 
@@ -1900,11 +1902,13 @@ class Geometry(SuperCellChild):
         # Get the atom object we wish to reduce
         # We know np.all(geom.atoms[atom] == old_atom)
         old_atom = self.atoms[atoms[0]]
-        # Retrieve index of orbital
-        if isinstance(orbitals, Orbital):
-            orbitals = old_atom.index(orbitals)
-        # Create the reverse index-table to delete those not required
+
+        if isinstance(orbitals, (Orbital, Integral)):
+            orbitals = [orbitals]
+        if isinstance(orbitals[0], Orbital):
+            orbitals = [old_atom.index(orb) for orb in orbitals]
         orbitals = delete(_a.arangei(len(old_atom)), np.asarray(orbitals).ravel())
+        orbitals = np.sort(orbitals)
 
         # now call sub_orbital
         return self.sub_orbital(atoms, orbitals)

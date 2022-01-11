@@ -35,6 +35,7 @@ we hit release version 1.0.0.
 - atom indexing by shapes #337
 
 ### Fixed
+- `sub_orbital` allows lists of orbitals
 - `berry_phase` now works for non-orthogonal basis sets (uses Lowdin transformation)
 	This may require sufficiently small dk for accurateness.
 - `degenerate` argument for `conductivity` to enable decoupling of states

@@ -1545,6 +1545,20 @@ def test_geometry_sanitize_orbs():
     assert np.allclose(bi._sanitize_orbs({bot: [1, 2]}), np.add.outer(bi.firsto[C_idx], [1, 2]).ravel())
 
 
+def test_geometry_sub_orbitals():
+    atom = Atom(6, [1, 2, 3])
+    gr = sisl_geom.graphene(atoms=atom)
+    assert gr.no == 6
+
+    # try and do sub
+    gr2 = gr.sub_orbital(atom, [atom.orbitals[0], atom.orbitals[2]])
+    assert gr2.atoms[0][0] == atom.orbitals[0]
+    assert gr2.atoms[0][1] == atom.orbitals[2]
+
+    gr2 = gr.sub_orbital(atom, atom.orbitals[1])
+    assert gr2.atoms[0][0] == atom.orbitals[1]
+
+
 def test_geometry_new_xyz(sisl_tmp):
     # test that Geometry.new works
     out = sisl_tmp('out.xyz', _dir)

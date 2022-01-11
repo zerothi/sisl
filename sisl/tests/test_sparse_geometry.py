@@ -555,3 +555,23 @@ def test_sparse_orbital_add_no_axis():
     s2 = SparseOrbital(g.add(g, offset=[0, 0, 3]))
     s2.construct([[0.1, 1.5], [1, 2]])
     assert s1.spsame(s2)
+
+
+def test_sparse_orbital_sub_orbital():
+    atom = Atom(1, (1, 2, 3))
+    g = fcc(1., atom) * 2
+    s = SparseOrbital(g)
+
+    # take out some orbitals
+    s1 = s.sub_orbital(atom, 1)
+    assert s1.geometry.no == s1.geometry.na
+
+    s2 = s.sub_orbital(atom, atom.orbitals[1])
+    assert s1 == s2
+
+    s2 = s.sub_orbital(atom, [atom.orbitals[1]])
+    assert s1 == s2
+
+    s2 = s.sub_orbital(atom, [atom.orbitals[1], atom.orbitals[0]])
+    assert s2.geometry.atoms[0].orbitals[0] == atom.orbitals[0]
+    assert s2.geometry.atoms[0].orbitals[1] == atom.orbitals[1]

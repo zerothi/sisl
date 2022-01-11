@@ -30,6 +30,7 @@ def siesta_test_files(sisl_files):
 
     return _siesta_test_files
 
+
 @pytest.fixture(scope="session")
 def vasp_test_files(sisl_files):
 
@@ -37,6 +38,7 @@ def vasp_test_files(sisl_files):
         return sisl_files(osp.join('sisl', 'io', 'vasp', path))
 
     return _siesta_test_files
+
 
 class _TestPlot:
 

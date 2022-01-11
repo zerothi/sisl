@@ -7,6 +7,7 @@ import functools as ftool
 import itertools
 import operator
 from collections import namedtuple
+from collections.abc import Sequence
 import numpy as np
 from numpy.lib.mixins import NDArrayOperatorsMixin
 from numpy import (
@@ -1558,10 +1559,11 @@ class SparseOrbital(_SparseGeometry):
         # Get the atom object we wish to reduce
         # We know np.all(geom.atoms[atom] == old_atom)
         old_atom = self.geometry.atoms[atoms[0]]
-        # Retrieve index of orbital
-        if isinstance(orbitals, Orbital):
-            orbitals = old_atom.index(orbitals)
-        # Create the reverse index-table to delete those not required
+
+        if isinstance(orbitals, (Orbital, Integral)):
+            orbitals = [orbitals]
+        if isinstance(orbitals[0], Orbital):
+            orbitals = [old_atom.index(orb) for orb in orbitals]
         orbitals = delete(_a.arangei(len(old_atom)), np.asarray(orbitals).ravel())
 
         # now call sub_orbital
@@ -1682,48 +1684,17 @@ class SparseOrbital(_SparseGeometry):
                 new = new.sub_orbital(atoms[idx], orbitals)
             return new
 
-        # At this point we are sure that uniq_specie is *only* one specie!
-        geom = self.geometry.copy()
-
         # Get the atom object we wish to reduce
-        old_atom = geom.atoms[atoms[0]]
-        old_atom_specie = geom.atoms.specie_index(old_atom)
-        old_atom_count = (geom.atoms.specie == old_atom_specie).sum()
+        old_atom = self.geometry.atoms[atoms[0]]
 
-        # Retrieve index of orbital
-        if isinstance(orbitals, Orbital):
-            orbitals = old_atom.index(orbitals)
-        orbitals = np.sort(np.asarray(orbitals).ravel())
-        if len(orbitals) == 0:
-            raise ValueError(f"{self.__class__.__name__}.sub_orbital trying to retain 0 orbitals on a given atom. This is not allowed!")
+        if isinstance(orbitals, (Orbital, Integral)):
+            orbitals = [orbitals]
+        if isinstance(orbitals[0], Orbital):
+            orbitals = [old_atom.index(orb) for orb in orbitals]
+        orbitals = np.sort(orbitals)
 
-        # create the new atom
-        new_atom = old_atom.sub(orbitals)
-        # Rename the new-atom to <>_1_2 for orbital == [1, 2]
-        new_atom._tag += '_' + '_'.join(map(str, orbitals))
-
-        # There are now 2 cases.
-        #  1. we replace all atoms of a given specie
-        #  2. we replace a subset of atoms of a given specie
-        if len(atoms) == old_atom_count:
-            new_atom_specie = old_atom_specie
-            # We catch the warning about reducing the number of orbitals!
-            with warnings.catch_warnings():
-                warnings.filterwarnings('ignore')
-                # this is in-place operation and we don't need to worry about
-                geom.atoms.replace_atom(old_atom, new_atom)
-
-        else:
-            # we have to add the new one (in case it does not exist)
-            try:
-                new_atom_specie = geom.atoms.specie_index(new_atom)
-            except:
-                new_atom_specie = geom.atoms.nspecie
-                # the above checks that it is indeed a new atom
-                geom._atoms._atom.append(new_atom)
-            # transfer specie index
-            geom.atoms._specie[atoms] = new_atom_specie
-            geom.atoms._update_orbitals()
+        # At this point we are sure that uniq_specie is *only* one specie!
+        geom = self.geometry.sub_orbital(atoms, orbitals)
 
         # Now create the new sparse orbital class
         SG = self.__class__(geom, self.dim, self.dtype, 1, **self._cls_kwargs())

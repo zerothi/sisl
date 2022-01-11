@@ -1137,7 +1137,7 @@ class Atom(metaclass=AtomMeta):
         """ The orbital corresponding to index `key` """
         if isinstance(key, slice):
             ol = key.indices(len(self))
-            return [self.orbitals[o] for o in range(ol[0], ol[1], ol[2])]
+            return [self.orbitals[o] for o in range(*ol)]
         elif isinstance(key, Integral):
             return self.orbitals[key]
         elif isinstance(key, str):
@@ -1146,7 +1146,7 @@ class Atom(metaclass=AtomMeta):
             if not orbs:
                 return None
             return orbs if len(orbs) != 1 else orbs[0]
-        return [self.orbitals[o] for o in np.asarray(key).ravel()]
+        return (self.orbitals[o] for o in key)
 
     def maxR(self):
         """ Return the maximum range of orbitals. """
