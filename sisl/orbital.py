@@ -170,7 +170,10 @@ class Orbital:
         radial : bool, optional
            also compare that the radial parts are the same
         """
-        if not isinstance(other, Orbital):
+        if isinstance(other, str):
+            # just check for the same name
+            return self.name == other
+        elif not isinstance(other, Orbital):
             return False
         same = abs(self.R - other.R) <= 1e-4 and abs(self.q0 - other.q0) < 1e-4
         if not same:
