@@ -1146,7 +1146,7 @@ class Atom(metaclass=AtomMeta):
             if not orbs:
                 return None
             return orbs if len(orbs) != 1 else orbs[0]
-        return (self.orbitals[o] for o in key)
+        return [self.orbitals[o] for o in key]
 
     def maxR(self):
         """ Return the maximum range of orbitals. """

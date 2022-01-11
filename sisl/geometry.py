@@ -1697,7 +1697,7 @@ class Geometry(SuperCellChild):
 
         return nsc
 
-    def sub(self, atoms, cell=None):
+    def sub(self, atoms):
         """ Create a new `Geometry` with a subset of this `Geometry`
 
         Indices passed *MUST* be unique.
@@ -1708,8 +1708,6 @@ class Geometry(SuperCellChild):
         ----------
         atoms : int or array_like
             indices/boolean of all atoms to be removed
-        cell   : array_like or SuperCell, optional
-            the new associated cell of the geometry (defaults to the same cell)
 
         See Also
         --------
@@ -1717,11 +1715,7 @@ class Geometry(SuperCellChild):
         remove : the negative of this routine, i.e. remove a subset of atoms
         """
         atoms = self.sc2uc(atoms)
-        if cell is None:
-            return self.__class__(self.xyz[atoms, :],
-                                  atoms=self.atoms.sub(atoms), sc=self.sc.copy())
-        return self.__class__(self.xyz[atoms, :],
-                              atoms=self.atoms.sub(atoms), sc=cell)
+        return self.__class__(self.xyz[atoms, :], atoms=self.atoms.sub(atoms), sc=self.sc.copy())
 
     def sub_orbital(self, atoms, orbitals):
         r""" Retain only a subset of the orbitals on `atoms` according to `orbitals`
@@ -1965,7 +1959,8 @@ class Geometry(SuperCellChild):
         # List of atoms
         n = self.na // seps
         off = n * lseg
-        new = self.sub(_a.arangei(off, off + n), cell=sc)
+        new = self.sub(_a.arangei(off, off + n))
+        new.set_supercell(sc)
         if not np.allclose(new.tile(seps, axis).xyz, self.xyz, rtol=rtol, atol=atol):
             st = 'The cut structure cannot be re-created by tiling'
             st += '\nThe tolerance between the coordinates can be altered using rtol, atol'
