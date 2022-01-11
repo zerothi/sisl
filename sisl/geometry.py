@@ -7,13 +7,15 @@ from math import acos
 from itertools import product
 from collections import OrderedDict
 from pathlib import Path
+import warnings
 
 import numpy as np
 from numpy import ndarray, int32, bool_
 from numpy import dot, square, sqrt, diff
-from numpy import floor, ceil, tile
+from numpy import floor, ceil, tile, unique
 from numpy import argsort, split, isin, concatenate
 
+from .orbital import Orbital
 from ._internal import set_module, singledispatchmethod
 from . import _plot as plt
 from . import _array as _a
@@ -1721,6 +1723,192 @@ class Geometry(SuperCellChild):
         return self.__class__(self.xyz[atoms, :],
                               atoms=self.atoms.sub(atoms), sc=cell)
 
+    def sub_orbital(self, atoms, orbitals):
+        r""" Retain only a subset of the orbitals on `atoms` according to `orbitals`
+
+        This allows one to retain only a given subset of geometry.
+
+        Parameters
+        ----------
+        atoms : array_like of int or Atom
+            indices of atoms or `Atom` that will be reduced in size according to `orbitals`
+        orbitals : array_like of int or Orbital
+            indices of the orbitals on `atoms` that are retained in the geometry, the list of
+            orbitals will be sorted.
+
+        Notes
+        -----
+        Future implementations may allow one to re-arange orbitals using this method.
+
+        When using this method the internal species list will be populated by another specie
+        that is named after the orbitals removed. This is to distinguish different atoms.
+
+        Examples
+        --------
+
+        >>> # a Carbon atom with 2 orbitals
+        >>> C = sisl.Atom('C', [1., 2.])
+        >>> # an oxygen atom with 3 orbitals
+        >>> O = sisl.Atom('O', [1., 2., 2.4])
+        >>> geometry = sisl.Geometry([[0] * 3, [1] * 3]], 2, [C, O])
+
+        Now ``geometry`` is a geometry with 2 different species and 6 atoms (3 of each).
+        They are ordered ``[C, O, C, O, C, O]``. In the following we
+        will note species that are different from the original by a ``'`` in the list.
+
+        Retain 2nd orbital on the 2nd atom: ``[C, O', C, O, C, O]``
+
+        >>> new_geom = geometry.sub_orbital(1, 1)
+
+        Retain 2nd orbital on 1st and 2nd atom: ``[C', O', C, O, C, O]``
+
+        >>> new_geom = geometry.sub_orbital([0, 1], 1)
+
+        Retain 2nd orbital on the 1st atom and 3rd orbital on 4th atom: ``[C', O, C, O', C, O]``
+
+        >>> new_geom = geometry.sub_orbital(0, 1).sub_orbital(3, 2)
+
+        Retain 2nd orbital on all atoms equivalent to the first atom: ``[C', O, C', O, C', O]``
+
+        >>> new_geom = geometry.sub_orbital(obj.geometry.atoms[0], 1)
+
+        Retain 1st orbital on 1st atom, and 2nd orbital on 3rd and 5th atom: ``[C', O, C'', O, C'', O]``
+
+        >>> new_geom = geometry.sub_orbital(0, 0).sub_orbital([2, 4], 1)
+
+        See Also
+        --------
+        remove_orbital : removing a set of orbitals (opposite of this)
+        """
+        atoms = self._sanitize_atoms(atoms).ravel()
+
+        # Figure out if all atoms have the same species
+        specie = self.atoms.specie[atoms]
+        uniq_specie, indices = unique(specie, return_inverse=True)
+        if len(uniq_specie) > 1:
+            # In case there are multiple different species but one wishes to
+            # retain the same orbital index, then we loop on the unique species
+            new = self
+            for i in range(uniq_specie.size):
+                idx = (indices == i).nonzero()[0]
+                # now determine whether it is the whole atom
+                # or only part of the geometry
+                new = new.sub_orbital(atoms[idx], orbitals)
+            return new
+
+        # At this point we are sure that uniq_specie is *only* one specie!
+        geom = self.copy()
+
+        # Get the atom object we wish to reduce
+        old_atom = geom.atoms[atoms[0]]
+        old_atom_specie = geom.atoms.specie_index(old_atom)
+        old_atom_count = (geom.atoms.specie == old_atom_specie).sum()
+
+        # Retrieve index of orbital
+        if isinstance(orbitals, Orbital):
+            orbitals = old_atom.index(orbitals)
+        orbitals = np.sort(np.asarray(orbitals).ravel())
+        if len(orbitals) == 0:
+            raise ValueError(f"{self.__class__.__name__}.sub_orbital trying to retain 0 orbitals on a given atom. This is not allowed!")
+
+        # create the new atom
+        new_atom = old_atom.sub(orbitals)
+        # Rename the new-atom to <>_1_2 for orbital == [1, 2]
+        new_atom._tag += '_' + '_'.join(map(str, orbitals))
+
+        # There are now 2 cases.
+        #  1. we replace all atoms of a given specie
+        #  2. we replace a subset of atoms of a given specie
+        if len(atoms) == old_atom_count:
+            new_atom_specie = old_atom_specie
+            # We catch the warning about reducing the number of orbitals!
+            with warnings.catch_warnings():
+                warnings.filterwarnings('ignore')
+                # this is in-place operation and we don't need to worry about
+                geom.atoms.replace_atom(old_atom, new_atom)
+
+        else:
+            # we have to add the new one (in case it does not exist)
+            try:
+                new_atom_specie = geom.atoms.specie_index(new_atom)
+            except:
+                new_atom_specie = geom.atoms.nspecie
+                # the above checks that it is indeed a new atom
+                geom._atoms._atom.append(new_atom)
+            # transfer specie index
+            geom.atoms._specie[atoms] = new_atom_specie
+            geom.atoms._update_orbitals()
+
+        return geom
+
+    def remove(self, atoms):
+        """ Remove atoms from the geometry.
+
+        Indices passed *MUST* be unique.
+
+        Negative indices are wrapped and thus works.
+
+        Parameters
+        ----------
+        atoms : int or array_like
+            indices/boolean of all atoms to be removed
+
+        See Also
+        --------
+        sub : the negative of this routine, i.e. retain a subset of atoms
+        """
+        atoms = self.sc2uc(atoms)
+        if atoms.size == 0:
+            return self.copy()
+        atoms = np.delete(_a.arangei(self.na), atoms)
+        return self.sub(atoms)
+
+    def remove_orbital(self, atoms, orbitals):
+        """ Remove a subset of orbitals on `atoms` according to `orbitals`
+
+        For more detailed examples, please see the equivalent (but opposite) method
+        `sub_orbital`.
+
+        Parameters
+        ----------
+        atoms : array_like of int or Atom
+            indices of atoms or `Atom` that will be reduced in size according to `orbitals`
+        orbitals : array_like of int or Orbital
+            indices of the orbitals on `atoms` that are removed from the geometry.
+
+        See Also
+        --------
+        sub_orbital : retaining a set of orbitals (see here for examples)
+        """
+        # Get specie index of the atom (convert to list of indices)
+        atoms = self._sanitize_atoms(atoms).ravel()
+
+        # Figure out if all atoms have the same species
+        specie = self.atoms.specie[atoms]
+        uniq_specie, indices = unique(specie, return_inverse=True)
+        if len(uniq_specie) > 1:
+            # In case there are multiple different species but one wishes to
+            # retain the same orbital index, then we loop on the unique species
+            new = self
+            for i in range(uniq_specie.size):
+                idx = (indices == i).nonzero()[0]
+                # now determine whether it is the whole atom
+                # or only part of the geometry
+                new = new.remove_orbital(atoms[idx], orbitals)
+            return new
+
+        # Get the atom object we wish to reduce
+        # We know np.all(geom.atoms[atom] == old_atom)
+        old_atom = self.atoms[atoms[0]]
+        # Retrieve index of orbital
+        if isinstance(orbitals, Orbital):
+            orbitals = old_atom.index(orbitals)
+        # Create the reverse index-table to delete those not required
+        orbitals = delete(_a.arangei(len(old_atom)), np.asarray(orbitals).ravel())
+
+        # now call sub_orbital
+        return self.sub_orbital(atoms, orbitals)
+
     def cut(self, seps, axis, seg=0, rtol=1e-4, atol=1e-4):
         """ A subset of atoms from the geometry by cutting the geometry into `seps` parts along the direction `axis`.
 
@@ -1779,28 +1967,6 @@ class Geometry(SuperCellChild):
             st += '\nThe tolerance between the coordinates can be altered using rtol, atol'
             warn(st)
         return new
-
-    def remove(self, atoms):
-        """ Remove atoms from the geometry.
-
-        Indices passed *MUST* be unique.
-
-        Negative indices are wrapped and thus works.
-
-        Parameters
-        ----------
-        atoms : int or array_like
-            indices/boolean of all atoms to be removed
-
-        See Also
-        --------
-        sub : the negative of this routine, i.e. retain a subset of atoms
-        """
-        atoms = self.sc2uc(atoms)
-        if atoms.size == 0:
-            return self.copy()
-        atoms = np.delete(_a.arangei(self.na), atoms)
-        return self.sub(atoms)
 
     def tile(self, reps, axis):
         """ Tile the geometry to create a bigger one

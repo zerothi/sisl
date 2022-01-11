@@ -7,6 +7,7 @@ we hit release version 1.0.0.
 
 ## [Unreleased] - YYYY-MM-DD
 ### Added
+- Geometry.sub_orbital is added
 - BrillouinZone.volume enables easy calculation of volumes for BZ integrals
 - State.sub|remove are now allowed to be done inplace
 - State.derivative can now correctly calculate 1st and 2nd order derivatives #406
