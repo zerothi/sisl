@@ -383,8 +383,8 @@ class BrillouinZone:
             return vol, dim
         return vol
 
-    @classmethod
-    def parametrize(self, parent, func, N, *args, **kwargs):
+    @staticmethod
+    def parametrize(parent, func, N, *args, **kwargs):
         """ Generate a new `BrillouinZone` object with k-points parameterized via the function `func` in `N` separations
 
         Generator of a parameterized Brillouin zone object that contains a parameterized k-point
