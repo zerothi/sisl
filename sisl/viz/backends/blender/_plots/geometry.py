@@ -35,13 +35,13 @@ def add_atoms_frame(ani_objects, child_objects, frame):
         ani_obj.scale = child_obj.scale
         ani_obj.keyframe_insert(data_path="scale", frame=frame)
 
-        # Set the atom color
-        ani_obj.data.materials[0].node_tree.nodes["Principled BSDF"].inputs[0].default_value = child_obj.data.materials[0].node_tree.nodes["Principled BSDF"].inputs[0].default_value
-        ani_obj.data.materials[0].node_tree.nodes["Principled BSDF"].inputs[0].keyframe_insert(data_path="default_value", frame=frame)
+        # Set the atom color and opacity
+        ani_mat_inputs = ani_obj.data.materials[0].node_tree.nodes["Principled BSDF"].inputs
+        child_mat_inputs = child_obj.data.materials[0].node_tree.nodes["Principled BSDF"].inputs
 
-        # And opacity
-        ani_obj.data.materials[0].node_tree.nodes["Principled BSDF"].inputs[19].default_value = child_obj.data.materials[0].node_tree.nodes["Principled BSDF"].inputs[19].default_value
-        ani_obj.data.materials[0].node_tree.nodes["Principled BSDF"].inputs[19].keyframe_insert(data_path="default_value", frame=frame)
+        for input_key in ("Base Color", "Alpha"):
+            ani_mat_inputs[input_key].default_value = child_mat_inputs[input_key].default_value
+            ani_mat_inputs[input_key].keyframe_insert(data_path="default_value", frame=frame)
 
 
 class BlenderGeometryBackend(BlenderBackend, GeometryBackend):
@@ -82,9 +82,9 @@ class BlenderGeometryBackend(BlenderBackend, GeometryBackend):
         self._color_obj(atom, color, opacity=opacity)
 
     def _draw_bonds_3D(self, *args, line=None, **kwargs):
-        # Set the width of the bonds to 0.2, otherwise they look gigantic.
+        # Multiply the width of the bonds to 0.2, otherwise they look gigantic.
         line = line or {}
-        line["width"] = 0.2
+        line["width"] = 0.2 * line.get("width", 1)
         # And call the method to draw bonds (which will use self.draw_line3D)
         collection = self.get_collection("Bonds")
         super()._draw_bonds_3D(*args, line=line, collection=collection, **kwargs)

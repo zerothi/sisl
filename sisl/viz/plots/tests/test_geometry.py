@@ -181,6 +181,21 @@ class TestGeometry(_TestPlot):
                             np.tile(atoms_style[key][sorted_atoms], nsc[0]*nsc[1]*nsc[2])
                         ).sum() == (plot.geometry.na - 1) * nsc[0]*nsc[1]*nsc[2]
 
+    def test_bonds_style(self, plot, axes, ndim, nsc):
+        if ndim == 1:
+            return
+
+        bonds_style = {"width": 2, "opacity": 0.6}
+
+        plot.update_settings(atoms=None, axes=axes, nsc=nsc, bonds_style=bonds_style)
+
+        bonds_props = plot._for_backend["bonds_props"]
+
+        assert bonds_props[0]["width"] == 2
+        assert bonds_props[0]["opacity"] == 0.6
+
+        plot.update_settings(bonds_style={})
+
     def test_arrows(self, plot, axes, ndim, nsc):
         # Check that arrows accepts both a dictionary and a list and the data is properly transferred
         for arrows in ({"data": [0, 0, 2]}, [{"data": [0, 0, 2]}]):
