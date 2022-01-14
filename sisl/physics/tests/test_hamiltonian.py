@@ -787,7 +787,7 @@ class TestHamiltonian:
         bz = BandStructure.param_circle(H, 20, 0.01, [0, 0, 1], [1/3] * 3)
         berry_phase(bz)
         berry_phase(bz, sub=0)
-        berry_phase(bz, eigvals=True, sub=0)
+        berry_phase(bz, eigvals=True, sub=0, method='berry:svd')
 
     def test_berry_phase_fail_sc(self, setup):
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)

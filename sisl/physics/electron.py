@@ -51,9 +51,9 @@ from numpy import find_common_type
 from numpy import zeros, empty
 from numpy import floor, ceil
 from numpy import conj, dot, ogrid, einsum
-from numpy import cos, sin, exp, pi
+from numpy import cos, sin, log, exp, pi
 from numpy import int32, complex128
-from numpy import add, angle, argsort, sort
+from numpy import add, argsort, sort
 from scipy.sparse import isspmatrix
 
 from sisl._internal import set_module
@@ -1000,10 +1000,13 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
        return the eigenvalues of the product of the overlap matrices
     closed : bool, optional
        whether or not to include the connection of the last and first points in the loop
+       Forced true for Zak-phase calculations.
     method : {'berry', 'zak'}
        'berry' will return the usual integral of the Berry connection over the specified contour
        'zak' will compute the Zak phase for 1D systems by performing
        a closed loop integration, see [1]_.
+       Additionally, one may do the Berry-phase calculation using the SVD method of the
+       overlap matrices. Simply append ":svd" to the chosen method, e.g. "berry:svd".
 
     Notes
     -----
@@ -1018,21 +1021,16 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
     see [2]_.
 
     For non-orthogonal basis sets it is not fully known how important the :math:`\delta\mathbf k` spacing is since
-    it relies on the Lowdin transformation of the states.
+    it relies on the Lowdin transformation of the states. However, one should be careful about choosing
+    the correct bands for examination.
+
+    The returned angles are _not_ placed in the interval :math:`]-\pi;\pi]` as what `numpy.angle` would do.
+    This is to allow users to examine the quantities as is.
 
     Examples
     --------
 
-    Calculate the multi-band Berry-phase
-
-    >>> N = 30
-    >>> kR = 0.01
-    >>> normal = [0, 0, 1]
-    >>> origin = [1/3, 2/3, 0]
-    >>> bz = BrillouinZone.param_circle(H, N, kR, normal, origin)
-    >>> phase = berry_phase(bz)
-
-    Calculate Berry-phase for first band
+    Calculate Berry-phase for first band but using the SVD me
 
     >>> N = 30
     >>> kR = 0.01
@@ -1040,6 +1038,16 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
     >>> origin = [1/3, 2/3, 0]
     >>> bz = BrillouinZone.param_circle(H, N, kR, normal, origin)
     >>> phase = berry_phase(bz, sub=0)
+
+    Calculate the multi-band Berry-phase using the SVD method, thus
+    ensuring singular vectors are removed.
+
+    >>> N = 30
+    >>> kR = 0.01
+    >>> normal = [0, 0, 1]
+    >>> origin = [1/3, 2/3, 0]
+    >>> bz = BrillouinZone.param_circle(H, N, kR, normal, origin)
+    >>> phase = berry_phase(bz, method="berry:svd")
 
     References
     ----------
@@ -1075,15 +1083,13 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
         # When the user has the contour points closed, we don't need to do this in the below loop
         closed = False
 
-    # Whether we should calculate the eigenvalues of the overlap matrix
-    if eigvals:
-        # We calculate the final eigenvalues
-        def _process(prd, ovr):
-            U, _, V = svd_destroy(ovr)
+    # We calculate the final angle from the determinant
+    _process = dot
+
+    if "svd" in opts:
+        def _process(prd, overlap):
+            U, _, V = svd_destroy(overlap)
             return dot(prd, U @ V)
-    else:
-        # We calculate the final angle from the determinant
-        _process = dot
 
     if sub is None:
         def _berry(eigenstates):
@@ -1128,12 +1134,16 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
     # Do the actual calculation of the final matrix
     d = _berry(contour.apply.iter.eigenstate())
 
-    # Correct return values
+    # Get the angle of the berry-phase
+    # When using np.angle the returned value is in ]-pi; pi]
+    # However, small numerical differences makes wrap-arounds annoying.
+    # We'll always return the full angle. Then users can them-selves control
+    # how to convert them.
     if eigvals:
-        ret = -angle(eigvals_destroy(d))
+        ret = -log(eigvals_destroy(d)).imag
         ret = sort(ret)
     else:
-        ret = -angle(det_destroy(d))
+        ret = -log(det_destroy(d)).imag
 
     return ret
 
