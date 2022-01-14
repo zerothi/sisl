@@ -64,6 +64,11 @@ class GeometryPlot(Plot):
         A file name that can read a geometry
     show_bonds: bool, optional
         Show bonds between atoms.
+    bonds_style: dict, optional
+        Customize the style of the bonds by passing style specifications.
+        Currently, you can only pass one style specification. Styling bonds
+        individually is not supported yet, but it will be in the future.
+        Structure of the dict: {          }
     axes:  optional
         The axis along which you want to see the geometry.              You
         can provide as many axes as dimensions you want for your plot.
@@ -192,6 +197,27 @@ class GeometryPlot(Plot):
             default=True,
             group="bonds",
             help="Show bonds between atoms."
+        ),
+
+        DictInput(key="bonds_style", name="Bonds style",
+            default={},
+            group="bonds",
+            help = """Customize the style of the bonds by passing style specifications.
+            Currently, you can only pass one style specification. Styling bonds 
+            individually is not supported yet, but it will be in the future. 
+            """,
+            queryForm = [
+
+                ColorInput(key="color", name="Color", default="#cccccc"),
+
+                FloatInput(key="width", name="Width", default=None),
+
+                FloatInput(key="opacity", name="Opacity",
+                    default=1,
+                    params={"min": 0, "max": 1},
+                ),
+
+            ]
         ),
 
         GeomAxisSelect(
@@ -530,8 +556,8 @@ class GeometryPlot(Plot):
         return self._tiled_geometry[self._tiled_atoms(atoms)]
 
     def _set_data(self, axes,
-        atoms, atoms_style, atoms_scale, atoms_colorscale, show_atoms, bind_bonds_to_ats, arrows,
-        dataaxis_1d, show_cell, cell_style, nsc, kwargs3d={}, kwargs2d={}, kwargs1d={}):
+        atoms, atoms_style, atoms_scale, atoms_colorscale, show_atoms, bind_bonds_to_ats, bonds_style,
+        arrows, dataaxis_1d, show_cell, cell_style, nsc, kwargs3d={}, kwargs2d={}, kwargs1d={}):
         self._ndim = len(axes)
 
         if show_atoms == False:
@@ -549,10 +575,16 @@ class GeometryPlot(Plot):
 
         if self._ndim == 3:
             xaxis, yaxis, zaxis = axes
-            backend_info = self._prepare3D(**atoms_kwargs, bind_bonds_to_ats=bind_bonds_to_ats, **kwargs3d)
+            backend_info = self._prepare3D(
+                **atoms_kwargs, bonds_styles=bonds_style,
+                bind_bonds_to_ats=bind_bonds_to_ats, **kwargs3d
+            )
         elif self._ndim == 2:
             xaxis, yaxis = axes
-            backend_info = self._prepare2D(xaxis=xaxis, yaxis=yaxis, **atoms_kwargs, bind_bonds_to_ats=bind_bonds_to_ats, nsc=nsc, **kwargs2d)
+            backend_info = self._prepare2D(
+                xaxis=xaxis, yaxis=yaxis, bonds_styles=bonds_style, **atoms_kwargs,
+                bind_bonds_to_ats=bind_bonds_to_ats, nsc=nsc, **kwargs2d
+            )
         elif self._ndim == 1:
             xaxis = axes[0]
             yaxis = dataaxis_1d
@@ -925,8 +957,8 @@ class GeometryPlot(Plot):
 
     def _prepare2D(self, xaxis="x", yaxis="y",
         atoms=None, atoms_styles=None, atoms_scale=1.,
-        show_bonds=True, bind_bonds_to_ats=True, points_per_bond=5,
-        wrap_atoms=None, wrap_bond=None, nsc=(1, 1, 1)):
+        show_bonds=True, bonds_styles=None, bind_bonds_to_ats=True,
+        points_per_bond=5, wrap_atoms=None, wrap_bond=None, nsc=(1, 1, 1)):
         """Returns a 2D representation of the plot's geometry.
 
         Parameters
@@ -949,6 +981,8 @@ class GeometryPlot(Plot):
         bind_bonds_to_ats: boolean, optional
             whether only the bonds that belong to an atom that is present should be displayed.
             If False, all bonds are displayed regardless of the `atom` parameter.
+        bonds_styles: dict, optional
+            dictionary containing all the style properties of the bonds.
         points_per_bond: int, optional
             If `bonds_together` is True and you provide a variable color or size (using `wrap_bonds`), this is
             the number of points that are used for each bond. See `bonds_together` for more info.
@@ -994,7 +1028,7 @@ class GeometryPlot(Plot):
                 xys = self._projected_2Dcoords(self.geometry, bonds_xyz, xaxis=xaxis, yaxis=yaxis)
 
                 # Try to get the bonds colors (It might be that the user is not setting them)
-                bonds_props = [wrap_bond(bond, xy) for bond, xy in zip(bonds, xys)]
+                bonds_props = [wrap_bond(bond, xy, bonds_styles) for bond, xy in zip(bonds, xys)]
             else:
                 bonds_props = []
         else:
@@ -1008,9 +1042,10 @@ class GeometryPlot(Plot):
     def _default_wrap_atoms2D(self, ats, xy, atoms_styles):
         return self._default_wrap_atoms1D(ats, xy, atoms_styles)
 
-    def _default_wrap_bond2D(self, bond, xys):
+    def _default_wrap_bond2D(self, bond, xys, bonds_styles):
         return {
             "xys": xys,
+            **bonds_styles,
         }
 
     #---------------------------------------------------
@@ -1019,7 +1054,7 @@ class GeometryPlot(Plot):
 
     def _prepare3D(self, wrap_atoms=None, wrap_bond=None,
         atoms=None, atoms_styles=None, bind_bonds_to_ats=True, atoms_scale=1.,
-        show_bonds=True):
+        show_bonds=True, bonds_styles=None):
         """Returns a 3D representation of the plot's geometry.
 
         Parameters
@@ -1061,7 +1096,7 @@ class GeometryPlot(Plot):
             bonds = self.bonds
             if bind_bonds_to_ats:
                 bonds = self._get_atoms_bonds(bonds, self._tiled_atoms(atoms))
-            bonds_props = [wrap_bond(bond) for bond in bonds]
+            bonds_props = [wrap_bond(bond, bonds_styles) for bond in bonds]
         else:
             bonds = []
             bonds_props = []
@@ -1076,10 +1111,11 @@ class GeometryPlot(Plot):
             **{k: self._tile_atomic_data(atoms_styles[k][ats]) for k in ("color", "size", "vertices", "opacity")}
         }
 
-    def _default_wrap_bond3D(self, bond):
+    def _default_wrap_bond3D(self, bond, bonds_styles):
 
         return {
             "xyz1": self._tiled_geometry[bond[0]],
             "xyz2": self._tiled_geometry[bond[1]],
-            "r": 15
+            #"r": 15,
+            **bonds_styles,
         }

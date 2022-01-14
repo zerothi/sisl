@@ -55,6 +55,11 @@ class BondLengthMap(GeometryPlot):
         A file name that can read a geometry
     show_bonds: bool, optional
         Show bonds between atoms.
+    bonds_style: dict, optional
+        Customize the style of the bonds by passing style specifications.
+        Currently, you can only pass one style specification. Styling bonds
+        individually is not supported yet, but it will be in the future.
+        Structure of the dict: {          }
     axes:  optional
         The axis along which you want to see the geometry.              You
         can provide as many axes as dimensions you want for your plot.
@@ -292,7 +297,7 @@ class BondLengthMap(GeometryPlot):
 
         self.get_param("atoms").update_options(self.geometry)
 
-    def _wrap_bond3D(self, bond, show_strain=False):
+    def _wrap_bond3D(self, bond, bonds_styles, show_strain=False):
         """
         Receives a bond and sets its color to the bond length for the 3D case
         """
@@ -306,12 +311,12 @@ class BondLengthMap(GeometryPlot):
         self.colors.append(color)
 
         return {
-            **self._default_wrap_bond3D(bond),
+            **self._default_wrap_bond3D(bond, bonds_styles=bonds_styles),
             "color": color,
             "name": name
         }
 
-    def _wrap_bond2D(self, bond, xys, show_strain=False):
+    def _wrap_bond2D(self, bond, xys, bonds_styles, show_strain=False):
         """
         Receives a bond and sets its color to the bond length for the 2D case
         """
@@ -324,7 +329,10 @@ class BondLengthMap(GeometryPlot):
 
         self.colors.append(color)
 
-        return {"xys": xys, "color": color, "name": name}
+        return {
+            **self._default_wrap_bond2D(bond, xys, bonds_styles=bonds_styles),
+            "color": color, "name": name
+        }
 
     @staticmethod
     def _bond_length(geom, bond):

@@ -125,7 +125,7 @@ class GeometryBackend(Backend):
         self.draw_scatter(xy[:, 0], xy[:, 1], name=name, marker={'size': size, 'color': color, 'colorscale': marker_colorscale, "opacity": opacity}, **kwargs)
 
     def _draw_bonds_2D(self, xys, points_per_bond=5, force_bonds_as_points=False,
-        bonds_color='#cccccc', bonds_size=3, bonds_name=None, name="bonds", **kwargs):
+        bonds_color='#cccccc', bonds_width=3, bonds_opacity=1, bonds_name=None, name="bonds", **kwargs):
         """
         Cheaper than _bond_trace2D because it draws all bonds in a single trace.
         It is also more flexible, since it allows providing bond colors as floats that all
@@ -133,23 +133,21 @@ class GeometryBackend(Backend):
         However, the bonds are represented as dots between the two atoms (if you use enough
         points per bond it almost looks like a line).
         """
-        # Check if we need to build the markers_properties from atoms_* arguments
-        if isinstance(bonds_color, Iterable) and not isinstance(bonds_color, str):
-            bonds_color = np.repeat(bonds_color, points_per_bond)
-            single_color = False
-        else:
-            single_color = True
-
-        if isinstance(bonds_size, Iterable):
-            bonds_size = np.repeat(bonds_size, points_per_bond)
-            single_size = False
-        else:
-            single_size = True
+        # Check if we have a single style for all bonds or not.
+        bonds_style = {"color": bonds_color, "width": bonds_width, "opacity": bonds_opacity}
+        single_style = True
+        for k, style in bonds_style.items():
+            if isinstance(style, Iterable) and not isinstance(style, str):
+                if np.unique(style).shape[0] == 1:
+                    bonds_style[k] = style[0]
+                else:
+                    bonds_style[k] = np.repeat(style, points_per_bond)
+                    single_style = False
 
         x = []
         y = []
         text = []
-        if single_color and single_size and not force_bonds_as_points:
+        if single_style and not force_bonds_as_points:
             # Then we can display this trace as lines! :)
             for i, ((x1, y1), (x2, y2)) in enumerate(xys):
 
@@ -173,13 +171,20 @@ class GeometryBackend(Backend):
             if bonds_name:
                 text = np.repeat(bonds_name, points_per_bond)
 
-        draw_bonds_func(x, y, bonds_color, bonds_size, name=name, text=text if len(text) != 0 else None, **kwargs)
+        draw_bonds_func(x, y, **bonds_style, name=name, text=text if len(text) != 0 else None, **kwargs)
 
-    def _draw_bonds_2D_single_color_size(self, x, y, color, size, name, text, **kwargs):
-        self.draw_line(x, y, name=name, line={"color": color, "width": size}, text=text, **kwargs)
+    def _draw_bonds_2D_single_color_size(self, x, y, color, width, opacity, name, text, **kwargs):
+        self.draw_line(
+            x, y, name=name, line={"color": color, "width": width, "opacity": opacity},
+            text=text, **kwargs
+        )
 
-    def _draw_bonds_2D_multi_color_size(self, x, y, color, size, name, text, coloraxis="coloraxis", colorscale=None, **kwargs):
-        self.draw_scatter(x, y, name=name, marker={"color": color, "size": size, "coloraxis": coloraxis, "colorscale": colorscale}, text=text, **kwargs)
+    def _draw_bonds_2D_multi_color_size(self, x, y, color, width, opacity, name, text, coloraxis="coloraxis", colorscale=None, **kwargs):
+        self.draw_scatter(
+            x, y, name=name,
+            marker={"color": color, "size": width, "opacity": opacity, "coloraxis": coloraxis, "colorscale": colorscale},
+            text=text, **kwargs
+        )
 
     def _draw_cell_2D_axes(self, geometry, cell, xaxis="x", yaxis="y", **kwargs):
         cell_xy = GeometryPlot._projected_2Dcoords(geometry, xyz=cell, xaxis=xaxis, yaxis=yaxis)
@@ -210,10 +215,10 @@ class GeometryBackend(Backend):
         if len(bonds_props) > 0:
             # Unless we have different bond sizes, we want to plot all bonds in the same trace
             different_bond_sizes = False
-            if "size" in bonds_props[0]:
-                first_size = bonds_props[0].get("size")
+            if "width" in bonds_props[0]:
+                first_size = bonds_props[0].get("width")
                 for bond_prop in bonds_props:
-                    if bond_prop.get("size") != first_size:
+                    if bond_prop.get("width") != first_size:
                         different_bond_sizes = True
                         break
 
@@ -258,20 +263,23 @@ class GeometryBackend(Backend):
         elif show_cell == "box":
             self._draw_cell_3D_box(cell=cell, geometry=geometry, line=backend_info["cell_style"])
 
-    def _get_draw_bonds_3D_kwargs(self, xyz1, xyz2, r=10, color='gray', name=None,
-        line_name=None, coloraxis='coloraxis', **kwargs):
+    def _get_draw_bonds_3D_kwargs(self, xyz1, xyz2, width=10, color='gray', opacity=1,
+        name=None, line_name=None, coloraxis='coloraxis', **kwargs):
         """Generates the arguments for the bond drawing function"""
         xyz1 = np.array(xyz1)
         bonds_labels = name
         if not line_name:
             line_name = 'Bonds'
 
-        # Bond color
-        if isinstance(color, Iterable) and not isinstance(color, str):
-            line_color = np.repeat(color, 3)
-            line_color[2::3] = 0
-        else:
-            line_color = color
+        # Check if we have a single style for all bonds or not.
+        bonds_style = {"color": color, "width": width, "opacity": opacity}
+        for k, style in bonds_style.items():
+            if isinstance(style, Iterable) and not isinstance(style, str):
+                if np.unique(style).shape[0] == 1:
+                    bonds_style[k] = style[0]
+                else:
+                    bonds_style[k] = np.repeat(style, 3)
+                    bonds_style[k][2::3] = 0
 
         bonds_xyz = np.full((3*xyz1.shape[0], 3), np.nan)
         bonds_xyz[0::3] = xyz1
@@ -284,7 +292,7 @@ class GeometryBackend(Backend):
 
         return dict(
             x=x, y=y, z=z, name=line_name,
-            line={'width': r, 'color': line_color, 'coloraxis': coloraxis},
+            line={**bonds_style, 'coloraxis': coloraxis},
             bonds_labels=bonds_labels, x_labels=x_labels, y_labels=y_labels, z_labels=z_labels,
             **kwargs
         )
@@ -301,10 +309,10 @@ class GeometryBackend(Backend):
     def _draw_single_atom_3D(self, xyz, size, color="gray", name=None, group=None, showlegend=False, vertices=15, **kwargs):
         raise NotImplementedError(f"{self.__class__.__name__} does not implement a method to draw a single atom in 3D")
 
-    def _draw_single_bond_3D(self, xyz1, xyz2, size=0.3, color="#ccc", name=None, group=None, showlegend=False, line_kwargs={}, **kwargs):
+    def _draw_single_bond_3D(self, xyz1, xyz2, width=0.3, color="#ccc", name=None, group=None, showlegend=False, line_kwargs={}, **kwargs):
         x, y, z = np.array([xyz1, xyz2]).T
 
-        self.draw_line3D(x, y, z, line={'width': size, 'color': color, **line_kwargs}, name=name, **kwargs)
+        self.draw_line3D(x, y, z, line={'width': width, 'color': color, **line_kwargs}, name=name, **kwargs)
 
     def _draw_cell_3D_axes(self, cell, geometry, **kwargs):
 
