@@ -22,7 +22,7 @@ the actual installation begins.
 
 For running sisl you are required these versions:
 
-- `Python`_ 3.6 or above
+- `Python`_ 3.7 or above
 - `numpy`_ (1.13 or later)
 - `scipy`_ (0.18 or later)
 - `netCDF4-python <netcdf4-py_>`_
