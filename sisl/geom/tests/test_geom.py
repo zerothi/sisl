@@ -1,11 +1,13 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from functools import partial
 import pytest
 
 from sisl import Atom
 from sisl.geom import *
 
+import itertools
 import math as m
 import numpy as np
 
@@ -86,3 +88,61 @@ def test_agnr():
 
 def test_zgnr():
     a = zgnr(5)
+
+
+def test_heteroribbon():
+    """Runs the heteroribbon builder for all possible combinations of
+    widths and asserts that they are always properly aligned.
+    """
+    # Build combinations
+    combinations = itertools.product([7, 8, 9, 10, 11], [7, 8, 9, 10, 11])
+    L = itertools.repeat(2)
+
+    for Ws in combinations:
+        geom = heteroribbon(zip(Ws, L), bond=1.42, atoms=Atom(6, 1.43), align="auto", shift_quantum=True)
+
+        # Assert no dangling bonds.
+        assert len(geom.asc2uc({"neighbours": 1})) == 0
+
+
+def test_graphene_heteroribbon():
+    a = graphene_heteroribbon([(7, 2), (9, 2)])
+
+
+def test_graphene_heteroribbon_errors():
+
+
+    # 7-open with 9 can only be perfectly aligned.
+    graphene_heteroribbon([(7,1), (9,1)], align="center", on_lone_atom="raise")
+    with pytest.raises(ValueError):
+        graphene_heteroribbon([(7,1), (9,1,-1)], align="center", on_lone_atom="raise")
+
+    grap_heteroribbon = partial(
+        graphene_heteroribbon, align="auto", shift_quantum=True
+    )
+
+    # Odd section with open end
+    with pytest.raises(ValueError):
+        grap_heteroribbon([(7, 3), (5, 2)])
+
+    # Shift limits are imposed correctly
+    # In this case -2 < shift < 1
+    grap_heteroribbon([(7, 3), (11, 2, 0)])
+    grap_heteroribbon([(7, 3), (11, 2, -1)])
+    with pytest.raises(ValueError):
+        grap_heteroribbon([(7, 3), (11, 2, 1)])
+    with pytest.raises(ValueError):
+        grap_heteroribbon([(7, 3), (11, 2, -2)])
+
+    # Periodic boundary conditions work properly
+    # grap_heteroribbon([[10, 2], [8, 1, 0]], pbc=False)
+    # with pytest.raises(ValueError):
+    #     grap_heteroribbon([[10, 2], [8, 1, 0]], pbc=True)
+
+    # Even ribbons should only be shifted towards the center
+    grap_heteroribbon([(10, 2), (8, 2, -1)])
+    with pytest.raises(ValueError):
+        grap_heteroribbon([(10, 2), (8, 2, 1)])
+    grap_heteroribbon([(10, 1), (8, 2, 1)],) #pbc=False)
+    with pytest.raises(ValueError):
+        grap_heteroribbon([(10, 1), (8, 2, -1)],) #pbc=False)
