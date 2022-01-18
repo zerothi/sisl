@@ -1108,6 +1108,10 @@ class StateC(State):
         calculating the derivatives since the 1st order perturbation uses the energy
         differences (Berry contribution) and the 1st derivative matrix for correcting the curvature.
 
+        For states at the :math:`\Gamma` point you may get warnings about casting complex numbers
+        to reals. In these cases you should force the state at the :math:`\Gamma` point to be calculated
+        in complex numbers to enable the correct decoupling.
+
         Parameters
         ----------
         order : {1, 2}

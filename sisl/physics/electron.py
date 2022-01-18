@@ -1632,14 +1632,10 @@ class StateCElectron(_electron_State, StateC):
     def velocity(self, *args, **kwargs):
         r""" Calculate velocity for the states
 
-        This routine calls `derivative` with appropriate arguments (1st order derivative)
-        and returns the velocity for the states.
+        This routine calls ``derivative(1, *args, **kwargs)`` and returns the velocity for the states.
 
         Note that the coefficients associated with the `StateCElectron` *must* correspond
         to the energies of the states.
-
-        See `derivative` for details and possible arguments. One cannot pass the ``order`` argument
-        as that is fixed to ``1`` in this call.
 
         Notes
         -----
@@ -1656,18 +1652,16 @@ class StateCElectron(_electron_State, StateC):
     def berry_curvature(self, *args, **kwargs):
         r""" Calculate Berry curvature for the states
 
-        This routine calls `derivative` with appropriate arguments ``order=1, matrix=True`` and then
-        post-processes the values and calculates the Berry curvature. Do not pass these arguments.
+        This routine calls ``derivative(1, *args, **kwargs, matrix=True)`` and
+        returns the Berry curvature for the states.
 
         Note that the coefficients associated with the `StateCElectron` *must* correspond
         to the energies of the states.
 
-        See `~sisl.physics.electron.berry_curvature` for details.
-
         See Also
         --------
-        derivative : for details of the implementation
-        sisl.physics.electron.berry_curvature : for details of the implementation
+        derivative : for details of the velocity matrix calculation implementation
+        sisl.physics.electron.berry_curvature : for details of the Berry curvature implementation
         """
         v = self.derivative(1, *args, **kwargs, matrix=True)
         return _berry_curvature(v, self.c)
@@ -1675,14 +1669,11 @@ class StateCElectron(_electron_State, StateC):
     def effective_mass(self, *args, **kwargs):
         r""" Calculate effective mass tensor for the states
 
-        This routine calls `derivative` with appropriate arguments (2nd order derivative)
-        and returns the effective mass tensor for each state.
+        This routine calls ``derivative(2, *args, **kwargs)`` and
+        returns the effective mass for all states.
 
         Note that the coefficients associated with the `StateCElectron` *must* correspond
         to the energies of the states.
-
-        See `derivative` for argument details, but disregard the ``order`` argument as that
-        is fixed to ``2`` in this call.
 
         Notes
         -----
@@ -1692,6 +1683,12 @@ class StateCElectron(_electron_State, StateC):
         It is not advisable to use a `sub` before calculating the effective mass
         since the 1st order perturbation uses the energy differences and the 1st derivative
         matrix for correcting the curvature.
+
+        The returned effective mass is given in the Voigt notation.
+
+        For :math:`\Gamma` point calculations it may be beneficial to pass `dtype=np.complex128`
+        to the `eigenstate` argument to ensure their complex values. This is necessary for the
+        degeneracy decoupling.
 
         See Also
         --------
