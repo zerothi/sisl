@@ -892,7 +892,7 @@ class fdfSileSiesta(SileSiesta):
         but for dynamical matrices it makes sense to let the user control this,
         e.g. through the fdf file.
         By default the mass will be read from the AtomicMass key in the fdf file
-        and _not_ from the basis set information.
+        and *not* from the basis set information.
 
         Parameters
         ----------

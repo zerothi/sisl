@@ -1053,6 +1053,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
     ----------
     .. [1] :doi:`J. Zak, "Berry's phase for energy bands in solids", PRL **62**, 2747 (1989) <10.1103/PhysRevLett.62.2747>`
     .. [2] :doi:`R. Resta, "Manifestations of Berry's phase in molecules and condensed matter", JPCM **12**, R107 (2000) <10.1088/0953-8984/12/9/201>`
+    .. [3] :doi:`Tutorial: Computing Topological Invariants in 2D Photonic Crystals <10.1002/qute.201900117>`
     """
     from .hamiltonian import Hamiltonian
     # Currently we require the Berry phase calculation to *only* accept Hamiltonians
