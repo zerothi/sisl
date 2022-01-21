@@ -12,6 +12,7 @@ from sisl._environ import get_environ_variable
 from .plot import Plot
 from .configurable import Configurable, vizplotly_settings
 from .plotutils import find_files, find_plotable_siles, call_method_if_present, get_plot_classes
+from ._shortcuts import ShortCutable
 
 from .input_fields import TextInput, FilePathInput, BoolInput, RangeSliderInput, Array1DInput
 
@@ -43,7 +44,7 @@ class Warehouse:
         self._warehouse[item] = value
 
 
-class Session(Configurable):
+class Session(Configurable, ShortCutable):
     """ Represents a session of the graphical interface
 
     Plots are organized in different tabs and each tab has a layout
@@ -198,6 +199,9 @@ class Session(Configurable):
         self.on_plot_change_error = None
 
         self.warehouse = Warehouse()
+
+        # Initialize shortcut management
+        ShortCutable.__init__(self)
 
         call_method_if_present(self, "_after_init")
 
@@ -791,9 +795,6 @@ class Session(Configurable):
 
         if figs_only:
             session.figures_only()
-
-        for plotID, plot in session.plots.items():
-            plot._get_pickleable()
 
         with open(path, 'wb') as handle:
             dill.dump(session, handle, protocol=dill.HIGHEST_PROTOCOL)
