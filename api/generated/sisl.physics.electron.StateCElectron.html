@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.electron.StateCElectron &mdash; sisl 0.1.dev1+g017ffd1 documentation</title>
+  <title>sisl.physics.electron.StateCElectron &mdash; sisl 0.1.dev1+ga8efd77 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -20,8 +20,8 @@
         <script src="../../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
-        <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g017ffd1
+                0.1.dev1+ga8efd77
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -375,17 +375,16 @@ Only if <em class="xref py py-obj">inplace</em> is False and <em class="xref py 
 <dt class="sig sig-object py" id="sisl.physics.electron.StateCElectron.berry_curvature">
 <span class="sig-name descname"><span class="pre">berry_curvature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/electron.html#StateCElectron.berry_curvature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.electron.StateCElectron.berry_curvature" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate Berry curvature for the states</p>
-<p>This routine calls <a class="reference internal" href="#sisl.physics.electron.StateCElectron.derivative" title="sisl.physics.electron.StateCElectron.derivative"><code class="xref py py-obj docutils literal notranslate"><span class="pre">derivative</span></code></a> with appropriate arguments <code class="docutils literal notranslate"><span class="pre">order=1,</span> <span class="pre">matrix=True</span></code> and then
-post-processes the values and calculates the Berry curvature. Do not pass these arguments.</p>
+<p>This routine calls <code class="docutils literal notranslate"><span class="pre">derivative(1,</span> <span class="pre">*args,</span> <span class="pre">**kwargs,</span> <span class="pre">matrix=True)</span></code> and
+returns the Berry curvature for the states.</p>
 <p>Note that the coefficients associated with the <a class="reference internal" href="#sisl.physics.electron.StateCElectron" title="sisl.physics.electron.StateCElectron"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StateCElectron</span></code></a> <em>must</em> correspond
 to the energies of the states.</p>
-<p>See <a class="reference internal" href="sisl.physics.electron.berry_curvature.html#sisl.physics.electron.berry_curvature" title="sisl.physics.electron.berry_curvature"><code class="xref py py-obj docutils literal notranslate"><span class="pre">berry_curvature</span></code></a> for details.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference internal" href="#sisl.physics.electron.StateCElectron.derivative" title="sisl.physics.electron.StateCElectron.derivative"><code class="xref py py-obj docutils literal notranslate"><span class="pre">derivative</span></code></a></dt><dd><p>for details of the implementation</p>
+<dt><a class="reference internal" href="#sisl.physics.electron.StateCElectron.derivative" title="sisl.physics.electron.StateCElectron.derivative"><code class="xref py py-obj docutils literal notranslate"><span class="pre">derivative</span></code></a></dt><dd><p>for details of the velocity matrix calculation implementation</p>
 </dd>
-<dt><a class="reference internal" href="sisl.physics.electron.berry_curvature.html#sisl.physics.electron.berry_curvature" title="sisl.physics.electron.berry_curvature"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics.electron.berry_curvature</span></code></a></dt><dd><p>for details of the implementation</p>
+<dt><a class="reference internal" href="sisl.physics.electron.berry_curvature.html#sisl.physics.electron.berry_curvature" title="sisl.physics.electron.berry_curvature"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics.electron.berry_curvature</span></code></a></dt><dd><p>for details of the Berry curvature implementation</p>
 </dd>
 </dl>
 </div>
@@ -458,6 +457,9 @@ here only shown for the 1st order derivative:</p>
 <p>When requesting 2nd derivatives it will not be advisable to use a <a class="reference internal" href="#sisl.physics.electron.StateCElectron.sub" title="sisl.physics.electron.StateCElectron.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub</span></code></a> before
 calculating the derivatives since the 1st order perturbation uses the energy
 differences (Berry contribution) and the 1st derivative matrix for correcting the curvature.</p>
+<p>For states at the <span class="math notranslate nohighlight">\(\Gamma\)</span> point you may get warnings about casting complex numbers
+to reals. In these cases you should force the state at the <span class="math notranslate nohighlight">\(\Gamma\)</span> point to be calculated
+in complex numbers to enable the correct decoupling.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -509,18 +511,20 @@ returned if <code class="docutils literal notranslate"><span class="pre">order&g
 <dt class="sig sig-object py" id="sisl.physics.electron.StateCElectron.effective_mass">
 <span class="sig-name descname"><span class="pre">effective_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/electron.html#StateCElectron.effective_mass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.electron.StateCElectron.effective_mass" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate effective mass tensor for the states</p>
-<p>This routine calls <a class="reference internal" href="#sisl.physics.electron.StateCElectron.derivative" title="sisl.physics.electron.StateCElectron.derivative"><code class="xref py py-obj docutils literal notranslate"><span class="pre">derivative</span></code></a> with appropriate arguments (2nd order derivative)
-and returns the effective mass tensor for each state.</p>
+<p>This routine calls <code class="docutils literal notranslate"><span class="pre">derivative(2,</span> <span class="pre">*args,</span> <span class="pre">**kwargs)</span></code> and
+returns the effective mass for all states.</p>
 <p>Note that the coefficients associated with the <a class="reference internal" href="#sisl.physics.electron.StateCElectron" title="sisl.physics.electron.StateCElectron"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StateCElectron</span></code></a> <em>must</em> correspond
 to the energies of the states.</p>
-<p>See <a class="reference internal" href="#sisl.physics.electron.StateCElectron.derivative" title="sisl.physics.electron.StateCElectron.derivative"><code class="xref py py-obj docutils literal notranslate"><span class="pre">derivative</span></code></a> for argument details, but disregard the <code class="docutils literal notranslate"><span class="pre">order</span></code> argument as that
-is fixed to <code class="docutils literal notranslate"><span class="pre">2</span></code> in this call.</p>
 <p class="rubric">Notes</p>
 <p>Since some directions may not be periodic there will be zeros. This routine will
 invert elements where the values are different from 0.</p>
 <p>It is not advisable to use a <a class="reference internal" href="#sisl.physics.electron.StateCElectron.sub" title="sisl.physics.electron.StateCElectron.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub</span></code></a> before calculating the effective mass
 since the 1st order perturbation uses the energy differences and the 1st derivative
 matrix for correcting the curvature.</p>
+<p>The returned effective mass is given in the Voigt notation.</p>
+<p>For <span class="math notranslate nohighlight">\(\Gamma\)</span> point calculations it may be beneficial to pass <em class="xref py py-obj">dtype=np.complex128</em>
+to the <em class="xref py py-obj">eigenstate</em> argument to ensure their complex values. This is necessary for the
+degeneracy decoupling.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
@@ -846,12 +850,9 @@ selects the corresponding state vector</p>
 <dt class="sig sig-object py" id="sisl.physics.electron.StateCElectron.velocity">
 <span class="sig-name descname"><span class="pre">velocity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/electron.html#StateCElectron.velocity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.electron.StateCElectron.velocity" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate velocity for the states</p>
-<p>This routine calls <a class="reference internal" href="#sisl.physics.electron.StateCElectron.derivative" title="sisl.physics.electron.StateCElectron.derivative"><code class="xref py py-obj docutils literal notranslate"><span class="pre">derivative</span></code></a> with appropriate arguments (1st order derivative)
-and returns the velocity for the states.</p>
+<p>This routine calls <code class="docutils literal notranslate"><span class="pre">derivative(1,</span> <span class="pre">*args,</span> <span class="pre">**kwargs)</span></code> and returns the velocity for the states.</p>
 <p>Note that the coefficients associated with the <a class="reference internal" href="#sisl.physics.electron.StateCElectron" title="sisl.physics.electron.StateCElectron"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StateCElectron</span></code></a> <em>must</em> correspond
 to the energies of the states.</p>
-<p>See <a class="reference internal" href="#sisl.physics.electron.StateCElectron.derivative" title="sisl.physics.electron.StateCElectron.derivative"><code class="xref py py-obj docutils literal notranslate"><span class="pre">derivative</span></code></a> for details and possible arguments. One cannot pass the <code class="docutils literal notranslate"><span class="pre">order</span></code> argument
-as that is fixed to <code class="docutils literal notranslate"><span class="pre">1</span></code> in this call.</p>
 <p class="rubric">Notes</p>
 <p>The states and energies for the states <em>may</em> have changed after calling this routine.
 This is because of the velocity un-folding for degenerate modes. I.e. calling

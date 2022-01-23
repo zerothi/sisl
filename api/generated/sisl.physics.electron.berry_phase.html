@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>berry_phase &mdash; sisl 0.1.dev1+g017ffd1 documentation</title>
+  <title>berry_phase &mdash; sisl 0.1.dev1+ga8efd77 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -20,8 +20,8 @@
         <script src="../../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
-        <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g017ffd1
+                0.1.dev1+ga8efd77
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -170,12 +170,15 @@ of the investigated bands.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>contour</strong> (<a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><em>BrillouinZone</em></a>) – containing the closed contour and has the <code class="docutils literal notranslate"><span class="pre">contour.parent</span></code> as an instance of Hamiltonian. The
 first and last k-point must not be the same.</p></li>
-<li><p><strong>sub</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><em>None</em></a><em> or </em><em>list of int</em><em>, </em><em>optional</em>) – selected bands to calculate the Berry phase of</p></li>
+<li><p><strong>sub</strong> (<em>None</em><em> or </em><em>list of int</em><em>, </em><em>optional</em>) – selected bands to calculate the Berry phase of</p></li>
 <li><p><strong>eigvals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – return the eigenvalues of the product of the overlap matrices</p></li>
-<li><p><strong>closed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – whether or not to include the connection of the last and first points in the loop</p></li>
+<li><p><strong>closed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – whether or not to include the connection of the last and first points in the loop
+Forced true for Zak-phase calculations.</p></li>
 <li><p><strong>method</strong> (<em>{'berry'</em><em>, </em><em>'zak'}</em>) – ‘berry’ will return the usual integral of the Berry connection over the specified contour
 ‘zak’ will compute the Zak phase for 1D systems by performing
-a closed loop integration, see <a class="footnote-reference brackets" href="#id3" id="id1">1</a>.</p></li>
+a closed loop integration, see <a class="footnote-reference brackets" href="#id3" id="id1">1</a>.
+Additionally, one may do the Berry-phase calculation using the SVD method of the
+overlap matrices. Simply append “:svd” to the chosen method, e.g. “berry:svd”.</p></li>
 </ul>
 </dd>
 </dl>
@@ -188,24 +191,28 @@ of the Berry phase for <em>individual</em> bands. However, the total phase (i.e.
 invariant and unaffected by this arbitrariness as long as the filled and empty bands do not intersect,
 see <a class="footnote-reference brackets" href="#id4" id="id2">2</a>.</p>
 <p>For non-orthogonal basis sets it is not fully known how important the <span class="math notranslate nohighlight">\(\delta\mathbf k\)</span> spacing is since
-it relies on the Lowdin transformation of the states.</p>
+it relies on the Lowdin transformation of the states. However, one should be careful about choosing
+the correct bands for examination.</p>
+<p>The returned angles are _not_ placed in the interval <span class="math notranslate nohighlight">\(]-\pi;\pi]\)</span> as what <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.angle.html#numpy.angle" title="(in NumPy v1.22)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.angle</span></code></a> would do.
+This is to allow users to examine the quantities as is.</p>
 <p class="rubric">Examples</p>
-<p>Calculate the multi-band Berry-phase</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">N</span> <span class="o">=</span> <span class="mi">30</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">kR</span> <span class="o">=</span> <span class="mf">0.01</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">normal</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">origin</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">bz</span> <span class="o">=</span> <span class="n">BrillouinZone</span><span class="o">.</span><span class="n">param_circle</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">kR</span><span class="p">,</span> <span class="n">normal</span><span class="p">,</span> <span class="n">origin</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">phase</span> <span class="o">=</span> <span class="n">berry_phase</span><span class="p">(</span><span class="n">bz</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Calculate Berry-phase for first band</p>
+<p>Calculate Berry-phase for first band but using the SVD me</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">N</span> <span class="o">=</span> <span class="mi">30</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">kR</span> <span class="o">=</span> <span class="mf">0.01</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">normal</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">origin</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">bz</span> <span class="o">=</span> <span class="n">BrillouinZone</span><span class="o">.</span><span class="n">param_circle</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">kR</span><span class="p">,</span> <span class="n">normal</span><span class="p">,</span> <span class="n">origin</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">phase</span> <span class="o">=</span> <span class="n">berry_phase</span><span class="p">(</span><span class="n">bz</span><span class="p">,</span> <span class="n">sub</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Calculate the multi-band Berry-phase using the SVD method, thus
+ensuring singular vectors are removed.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">N</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">kR</span> <span class="o">=</span> <span class="mf">0.01</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">normal</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">origin</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bz</span> <span class="o">=</span> <span class="n">BrillouinZone</span><span class="o">.</span><span class="n">param_circle</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">kR</span><span class="p">,</span> <span class="n">normal</span><span class="p">,</span> <span class="n">origin</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phase</span> <span class="o">=</span> <span class="n">berry_phase</span><span class="p">(</span><span class="n">bz</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;berry:svd&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p class="rubric">References</p>
@@ -215,6 +222,9 @@ it relies on the Lowdin transformation of the states.</p>
 </dd>
 <dt class="label" id="id4"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
 <dd><p><a class="reference external" href="https://dx.doi.org/10.1088/0953-8984/12/9/201">R. Resta, “Manifestations of Berry’s phase in molecules and condensed matter”, JPCM **12**, R107 (2000)</a></p>
+</dd>
+<dt class="label" id="id5"><span class="brackets">3</span></dt>
+<dd><p><a class="reference external" href="https://dx.doi.org/10.1002/qute.201900117">Tutorial: Computing Topological Invariants in 2D Photonic Crystals</a></p>
 </dd>
 </dl>
 </dd></dl>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.spin &mdash; sisl 0.1.dev1+g017ffd1 documentation</title>
+  <title>sisl.physics.spin &mdash; sisl 0.1.dev1+ga8efd77 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g017ffd1
+                0.1.dev1+ga8efd77
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -113,13 +113,13 @@
 
 <span class="sd">    Its usage can be summarized in these few examples:</span>
 
-<span class="sd">    &gt;&gt;&gt; Spin(Spin.UNPOLARIZED) == Spin(&#39;unpolarized&#39;) == Spin()</span>
+<span class="sd">    &gt;&gt;&gt; Spin(Spin.UNPOLARIZED) == Spin(&quot;unpolarized&quot;) == Spin()</span>
 <span class="sd">    True</span>
-<span class="sd">    &gt;&gt;&gt; Spin(Spin.POLARIZED) == Spin(&#39;polarized&#39;) == Spin(&#39;p&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; Spin(Spin.POLARIZED) == Spin(&quot;polarized&quot;) == Spin(&quot;p&quot;)</span>
 <span class="sd">    True</span>
-<span class="sd">    &gt;&gt;&gt; Spin(Spin.NONCOLINEAR, dtype=np.complex128) == Spin(&#39;non-collinear&#39;) == Spin(&#39;nc&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; Spin(Spin.NONCOLINEAR, dtype=np.complex128) == Spin(&quot;non-collinear&quot;) == Spin(&quot;nc&quot;)</span>
 <span class="sd">    True</span>
-<span class="sd">    &gt;&gt;&gt; Spin(Spin.SPINORBIT, dtype=np.complex128) == Spin(&#39;spin-orbit&#39;) == Spin(&#39;so&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; Spin(Spin.SPINORBIT, dtype=np.complex128) == Spin(&quot;spin-orbit&quot;) == Spin(&quot;so&quot;) == Spin(&quot;soc&quot;)</span>
 <span class="sd">    True</span>
 
 <span class="sd">    Note that a data-type may be associated with a spin-object. This is not to say</span>
@@ -176,10 +176,10 @@
                 <span class="s1">&#39;non-collinear&#39;</span><span class="p">:</span> <span class="n">Spin</span><span class="o">.</span><span class="n">NONCOLINEAR</span><span class="p">,</span> <span class="s1">&#39;nc&#39;</span><span class="p">:</span> <span class="n">Spin</span><span class="o">.</span><span class="n">NONCOLINEAR</span><span class="p">,</span>
                 <span class="n">Spin</span><span class="o">.</span><span class="n">NONCOLINEAR</span><span class="p">:</span> <span class="n">Spin</span><span class="o">.</span><span class="n">NONCOLINEAR</span><span class="p">,</span>
                 <span class="s1">&#39;spin-orbit&#39;</span><span class="p">:</span> <span class="n">Spin</span><span class="o">.</span><span class="n">SPINORBIT</span><span class="p">,</span> <span class="s1">&#39;so&#39;</span><span class="p">:</span> <span class="n">Spin</span><span class="o">.</span><span class="n">SPINORBIT</span><span class="p">,</span>
-                <span class="n">Spin</span><span class="o">.</span><span class="n">SPINORBIT</span><span class="p">:</span> <span class="n">Spin</span><span class="o">.</span><span class="n">SPINORBIT</span><span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">kind</span><span class="p">)</span>
+                <span class="s1">&#39;soc&#39;</span><span class="p">:</span> <span class="n">Spin</span><span class="o">.</span><span class="n">SPINORBIT</span><span class="p">,</span> <span class="n">Spin</span><span class="o">.</span><span class="n">SPINORBIT</span><span class="p">:</span> <span class="n">Spin</span><span class="o">.</span><span class="n">SPINORBIT</span><span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">kind</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">kind</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39; initialization went wrong because of wrong &#39;</span>
-                             <span class="s1">&#39;kind specification. Could not determine the kind of spin!&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> initialization went wrong because of wrong &quot;</span>
+                             <span class="s2">&quot;kind specification. Could not determine the kind of spin!&quot;</span><span class="p">)</span>
 
         <span class="c1"># Now assert the checks</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_kind</span> <span class="o">=</span> <span class="n">kind</span>

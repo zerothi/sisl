@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.electron &mdash; sisl 0.1.dev1+g017ffd1 documentation</title>
+  <title>sisl.physics.electron &mdash; sisl 0.1.dev1+ga8efd77 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g017ffd1
+                0.1.dev1+ga8efd77
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -146,9 +146,9 @@
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">zeros</span><span class="p">,</span> <span class="n">empty</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">floor</span><span class="p">,</span> <span class="n">ceil</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">conj</span><span class="p">,</span> <span class="n">dot</span><span class="p">,</span> <span class="n">ogrid</span><span class="p">,</span> <span class="n">einsum</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">cos</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">pi</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">cos</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">pi</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">int32</span><span class="p">,</span> <span class="n">complex128</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">add</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">argsort</span><span class="p">,</span> <span class="n">sort</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">add</span><span class="p">,</span> <span class="n">argsort</span><span class="p">,</span> <span class="n">sort</span>
 <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">isspmatrix</span>
 
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
@@ -1011,6 +1011,9 @@
 <span class="sd">    where :math:`\Omega_{i,\alpha\beta}` and :math:`f_i` is the Berry curvature and occupation</span>
 <span class="sd">    for state :math:`i`.</span>
 
+<span class="sd">    The conductivity will be averaged by the Brillouin zone volume of the parent. See `BrillouinZone.volume` for details.</span>
+<span class="sd">    Hence for 1D the returned unit will be S/Ang, 2D it will be S/Ang^2 and 3D it will be S/Ang^3.</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    bz : BrillouinZone</span>
@@ -1028,9 +1031,15 @@
 <span class="sd">    ----------</span>
 <span class="sd">    .. [1] :doi:`X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, &quot;Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation&quot;, PRB **74**, 195118 (2006) &lt;10.1103/PhysRevB.74.195118&gt;`</span>
 
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    cond : float</span>
+<span class="sd">        conductivity in units [S/cm^D]. The D is the dimensionality of the system.</span>
+
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
 <span class="sd">    berry_curvature: method used to calculate the Berry-flux for calculating the conductivity</span>
+<span class="sd">    BrillouinZone.volume: volume calculation of the Brillouin zone</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">.hamiltonian</span> <span class="kn">import</span> <span class="n">Hamiltonian</span>
     <span class="c1"># Currently we require the conductivity calculation to *only* accept Hamiltonians</span>
@@ -1047,7 +1056,16 @@
             <span class="n">bc</span> <span class="o">=</span> <span class="n">es</span><span class="o">.</span><span class="n">berry_curvature</span><span class="p">(</span><span class="n">degenerate</span><span class="o">=</span><span class="n">degenerate</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="o">=</span><span class="n">degenerate_dir</span><span class="p">)</span>
             <span class="k">return</span> <span class="p">(</span><span class="n">bc</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">distribution</span><span class="p">(</span><span class="n">es</span><span class="o">.</span><span class="n">eig</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
 
-        <span class="n">cond</span> <span class="o">=</span> <span class="o">-</span> <span class="n">bz</span><span class="o">.</span><span class="n">apply</span><span class="o">.</span><span class="n">average</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">(</span><span class="n">wrap</span><span class="o">=</span><span class="n">_ahc</span><span class="p">)</span> <span class="o">*</span> <span class="n">_velocity_const</span>
+        <span class="n">vol</span><span class="p">,</span> <span class="n">dim</span> <span class="o">=</span> <span class="n">bz</span><span class="o">.</span><span class="n">volume</span><span class="p">(</span><span class="n">ret_dim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">dim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;conductivity: found a dimensionality of 0 which is non-physical&quot;</span><span class="p">)</span>
+
+        <span class="n">cond</span> <span class="o">=</span> <span class="n">bz</span><span class="o">.</span><span class="n">apply</span><span class="o">.</span><span class="n">average</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">(</span><span class="n">wrap</span><span class="o">=</span><span class="n">_ahc</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="n">constant</span><span class="o">.</span><span class="n">G0</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>
+
+        <span class="c1"># Convert the dimensions from S/m^D to S/cm^D</span>
+        <span class="n">cond</span> <span class="o">/=</span> <span class="n">vol</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ang^</span><span class="si">{</span><span class="n">dim</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;cm^</span><span class="si">{</span><span class="n">dim</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span><span class="s2">&quot;conductivity: requires the method to be [ahc]&quot;</span><span class="p">)</span>
 
@@ -1077,10 +1095,13 @@
 <span class="sd">       return the eigenvalues of the product of the overlap matrices</span>
 <span class="sd">    closed : bool, optional</span>
 <span class="sd">       whether or not to include the connection of the last and first points in the loop</span>
+<span class="sd">       Forced true for Zak-phase calculations.</span>
 <span class="sd">    method : {&#39;berry&#39;, &#39;zak&#39;}</span>
 <span class="sd">       &#39;berry&#39; will return the usual integral of the Berry connection over the specified contour</span>
 <span class="sd">       &#39;zak&#39; will compute the Zak phase for 1D systems by performing</span>
 <span class="sd">       a closed loop integration, see [1]_.</span>
+<span class="sd">       Additionally, one may do the Berry-phase calculation using the SVD method of the</span>
+<span class="sd">       overlap matrices. Simply append &quot;:svd&quot; to the chosen method, e.g. &quot;berry:svd&quot;.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
@@ -1095,21 +1116,16 @@
 <span class="sd">    see [2]_.</span>
 
 <span class="sd">    For non-orthogonal basis sets it is not fully known how important the :math:`\delta\mathbf k` spacing is since</span>
-<span class="sd">    it relies on the Lowdin transformation of the states.</span>
+<span class="sd">    it relies on the Lowdin transformation of the states. However, one should be careful about choosing</span>
+<span class="sd">    the correct bands for examination.</span>
+
+<span class="sd">    The returned angles are _not_ placed in the interval :math:`]-\pi;\pi]` as what `numpy.angle` would do.</span>
+<span class="sd">    This is to allow users to examine the quantities as is.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 
-<span class="sd">    Calculate the multi-band Berry-phase</span>
-
-<span class="sd">    &gt;&gt;&gt; N = 30</span>
-<span class="sd">    &gt;&gt;&gt; kR = 0.01</span>
-<span class="sd">    &gt;&gt;&gt; normal = [0, 0, 1]</span>
-<span class="sd">    &gt;&gt;&gt; origin = [1/3, 2/3, 0]</span>
-<span class="sd">    &gt;&gt;&gt; bz = BrillouinZone.param_circle(H, N, kR, normal, origin)</span>
-<span class="sd">    &gt;&gt;&gt; phase = berry_phase(bz)</span>
-
-<span class="sd">    Calculate Berry-phase for first band</span>
+<span class="sd">    Calculate Berry-phase for first band but using the SVD me</span>
 
 <span class="sd">    &gt;&gt;&gt; N = 30</span>
 <span class="sd">    &gt;&gt;&gt; kR = 0.01</span>
@@ -1118,10 +1134,21 @@
 <span class="sd">    &gt;&gt;&gt; bz = BrillouinZone.param_circle(H, N, kR, normal, origin)</span>
 <span class="sd">    &gt;&gt;&gt; phase = berry_phase(bz, sub=0)</span>
 
+<span class="sd">    Calculate the multi-band Berry-phase using the SVD method, thus</span>
+<span class="sd">    ensuring singular vectors are removed.</span>
+
+<span class="sd">    &gt;&gt;&gt; N = 30</span>
+<span class="sd">    &gt;&gt;&gt; kR = 0.01</span>
+<span class="sd">    &gt;&gt;&gt; normal = [0, 0, 1]</span>
+<span class="sd">    &gt;&gt;&gt; origin = [1/3, 2/3, 0]</span>
+<span class="sd">    &gt;&gt;&gt; bz = BrillouinZone.param_circle(H, N, kR, normal, origin)</span>
+<span class="sd">    &gt;&gt;&gt; phase = berry_phase(bz, method=&quot;berry:svd&quot;)</span>
+
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
 <span class="sd">    .. [1] :doi:`J. Zak, &quot;Berry&#39;s phase for energy bands in solids&quot;, PRL **62**, 2747 (1989) &lt;10.1103/PhysRevLett.62.2747&gt;`</span>
 <span class="sd">    .. [2] :doi:`R. Resta, &quot;Manifestations of Berry&#39;s phase in molecules and condensed matter&quot;, JPCM **12**, R107 (2000) &lt;10.1088/0953-8984/12/9/201&gt;`</span>
+<span class="sd">    .. [3] :doi:`Tutorial: Computing Topological Invariants in 2D Photonic Crystals &lt;10.1002/qute.201900117&gt;`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">.hamiltonian</span> <span class="kn">import</span> <span class="n">Hamiltonian</span>
     <span class="c1"># Currently we require the Berry phase calculation to *only* accept Hamiltonians</span>
@@ -1152,15 +1179,13 @@
         <span class="c1"># When the user has the contour points closed, we don&#39;t need to do this in the below loop</span>
         <span class="n">closed</span> <span class="o">=</span> <span class="kc">False</span>
 
-    <span class="c1"># Whether we should calculate the eigenvalues of the overlap matrix</span>
-    <span class="k">if</span> <span class="n">eigvals</span><span class="p">:</span>
-        <span class="c1"># We calculate the final eigenvalues</span>
-        <span class="k">def</span> <span class="nf">_process</span><span class="p">(</span><span class="n">prd</span><span class="p">,</span> <span class="n">ovr</span><span class="p">):</span>
-            <span class="n">U</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">svd_destroy</span><span class="p">(</span><span class="n">ovr</span><span class="p">)</span>
+    <span class="c1"># We calculate the final angle from the determinant</span>
+    <span class="n">_process</span> <span class="o">=</span> <span class="n">dot</span>
+
+    <span class="k">if</span> <span class="s2">&quot;svd&quot;</span> <span class="ow">in</span> <span class="n">opts</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">_process</span><span class="p">(</span><span class="n">prd</span><span class="p">,</span> <span class="n">overlap</span><span class="p">):</span>
+            <span class="n">U</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">svd_destroy</span><span class="p">(</span><span class="n">overlap</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">dot</span><span class="p">(</span><span class="n">prd</span><span class="p">,</span> <span class="n">U</span> <span class="o">@</span> <span class="n">V</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># We calculate the final angle from the determinant</span>
-        <span class="n">_process</span> <span class="o">=</span> <span class="n">dot</span>
 
     <span class="k">if</span> <span class="n">sub</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">def</span> <span class="nf">_berry</span><span class="p">(</span><span class="n">eigenstates</span><span class="p">):</span>
@@ -1189,13 +1214,13 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">def</span> <span class="nf">_berry</span><span class="p">(</span><span class="n">eigenstates</span><span class="p">):</span>
             <span class="n">first</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">eigenstates</span><span class="p">)</span>
-            <span class="n">first</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">sub</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">_lowdin</span><span class="p">(</span><span class="n">first</span><span class="p">)</span>
+            <span class="n">first</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">sub</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">prev</span> <span class="o">=</span> <span class="n">first</span>
             <span class="n">prd</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="k">for</span> <span class="n">second</span> <span class="ow">in</span> <span class="n">eigenstates</span><span class="p">:</span>
-                <span class="n">second</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">sub</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                 <span class="n">_lowdin</span><span class="p">(</span><span class="n">second</span><span class="p">)</span>
+                <span class="n">second</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">sub</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                 <span class="n">prd</span> <span class="o">=</span> <span class="n">_process</span><span class="p">(</span><span class="n">prd</span><span class="p">,</span> <span class="n">prev</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="n">second</span><span class="p">,</span> <span class="n">diag</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
                 <span class="n">prev</span> <span class="o">=</span> <span class="n">second</span>
             <span class="k">if</span> <span class="n">closed</span><span class="p">:</span>
@@ -1205,12 +1230,16 @@
     <span class="c1"># Do the actual calculation of the final matrix</span>
     <span class="n">d</span> <span class="o">=</span> <span class="n">_berry</span><span class="p">(</span><span class="n">contour</span><span class="o">.</span><span class="n">apply</span><span class="o">.</span><span class="n">iter</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">())</span>
 
-    <span class="c1"># Correct return values</span>
+    <span class="c1"># Get the angle of the berry-phase</span>
+    <span class="c1"># When using np.angle the returned value is in ]-pi; pi]</span>
+    <span class="c1"># However, small numerical differences makes wrap-arounds annoying.</span>
+    <span class="c1"># We&#39;ll always return the full angle. Then users can them-selves control</span>
+    <span class="c1"># how to convert them.</span>
     <span class="k">if</span> <span class="n">eigvals</span><span class="p">:</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="o">-</span><span class="n">angle</span><span class="p">(</span><span class="n">eigvals_destroy</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="o">-</span><span class="n">log</span><span class="p">(</span><span class="n">eigvals_destroy</span><span class="p">(</span><span class="n">d</span><span class="p">))</span><span class="o">.</span><span class="n">imag</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="n">sort</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="o">-</span><span class="n">angle</span><span class="p">(</span><span class="n">det_destroy</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="o">-</span><span class="n">log</span><span class="p">(</span><span class="n">det_destroy</span><span class="p">(</span><span class="n">d</span><span class="p">))</span><span class="o">.</span><span class="n">imag</span>
 
     <span class="k">return</span> <span class="n">ret</span></div>
 
@@ -1699,14 +1728,10 @@
 <div class="viewcode-block" id="StateCElectron.velocity"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron.velocity">[docs]</a>    <span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate velocity for the states</span>
 
-<span class="sd">        This routine calls `derivative` with appropriate arguments (1st order derivative)</span>
-<span class="sd">        and returns the velocity for the states.</span>
+<span class="sd">        This routine calls ``derivative(1, *args, **kwargs)`` and returns the velocity for the states.</span>
 
 <span class="sd">        Note that the coefficients associated with the `StateCElectron` *must* correspond</span>
 <span class="sd">        to the energies of the states.</span>
-
-<span class="sd">        See `derivative` for details and possible arguments. One cannot pass the ``order`` argument</span>
-<span class="sd">        as that is fixed to ``1`` in this call.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
@@ -1723,18 +1748,16 @@
 <div class="viewcode-block" id="StateCElectron.berry_curvature"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron.berry_curvature">[docs]</a>    <span class="k">def</span> <span class="nf">berry_curvature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate Berry curvature for the states</span>
 
-<span class="sd">        This routine calls `derivative` with appropriate arguments ``order=1, matrix=True`` and then</span>
-<span class="sd">        post-processes the values and calculates the Berry curvature. Do not pass these arguments.</span>
+<span class="sd">        This routine calls ``derivative(1, *args, **kwargs, matrix=True)`` and</span>
+<span class="sd">        returns the Berry curvature for the states.</span>
 
 <span class="sd">        Note that the coefficients associated with the `StateCElectron` *must* correspond</span>
 <span class="sd">        to the energies of the states.</span>
 
-<span class="sd">        See `~sisl.physics.electron.berry_curvature` for details.</span>
-
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
-<span class="sd">        derivative : for details of the implementation</span>
-<span class="sd">        sisl.physics.electron.berry_curvature : for details of the implementation</span>
+<span class="sd">        derivative : for details of the velocity matrix calculation implementation</span>
+<span class="sd">        sisl.physics.electron.berry_curvature : for details of the Berry curvature implementation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">matrix</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_berry_curvature</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span></div>
@@ -1742,14 +1765,11 @@
 <div class="viewcode-block" id="StateCElectron.effective_mass"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron.effective_mass">[docs]</a>    <span class="k">def</span> <span class="nf">effective_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate effective mass tensor for the states</span>
 
-<span class="sd">        This routine calls `derivative` with appropriate arguments (2nd order derivative)</span>
-<span class="sd">        and returns the effective mass tensor for each state.</span>
+<span class="sd">        This routine calls ``derivative(2, *args, **kwargs)`` and</span>
+<span class="sd">        returns the effective mass for all states.</span>
 
 <span class="sd">        Note that the coefficients associated with the `StateCElectron` *must* correspond</span>
 <span class="sd">        to the energies of the states.</span>
-
-<span class="sd">        See `derivative` for argument details, but disregard the ``order`` argument as that</span>
-<span class="sd">        is fixed to ``2`` in this call.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
@@ -1759,6 +1779,12 @@
 <span class="sd">        It is not advisable to use a `sub` before calculating the effective mass</span>
 <span class="sd">        since the 1st order perturbation uses the energy differences and the 1st derivative</span>
 <span class="sd">        matrix for correcting the curvature.</span>
+
+<span class="sd">        The returned effective mass is given in the Voigt notation.</span>
+
+<span class="sd">        For :math:`\Gamma` point calculations it may be beneficial to pass `dtype=np.complex128`</span>
+<span class="sd">        to the `eigenstate` argument to ensure their complex values. This is necessary for the</span>
+<span class="sd">        degeneracy decoupling.</span>
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.Spin &mdash; sisl 0.1.dev1+g017ffd1 documentation</title>
+  <title>sisl.physics.Spin &mdash; sisl 0.1.dev1+ga8efd77 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g017ffd1
+                0.1.dev1+ga8efd77
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -154,13 +154,13 @@
 <p>Spin class to determine configurations and spin components.</p>
 <p>The basic class <a class="reference internal" href="#sisl.physics.Spin" title="sisl.physics.Spin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Spin</span></code></a> implements a generic method to determine a spin configuration.</p>
 <p>Its usage can be summarized in these few examples:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Spin</span><span class="p">(</span><span class="n">Spin</span><span class="o">.</span><span class="n">UNPOLARIZED</span><span class="p">)</span> <span class="o">==</span> <span class="n">Spin</span><span class="p">(</span><span class="s1">&#39;unpolarized&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">Spin</span><span class="p">()</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Spin</span><span class="p">(</span><span class="n">Spin</span><span class="o">.</span><span class="n">UNPOLARIZED</span><span class="p">)</span> <span class="o">==</span> <span class="n">Spin</span><span class="p">(</span><span class="s2">&quot;unpolarized&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">Spin</span><span class="p">()</span>
 <span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Spin</span><span class="p">(</span><span class="n">Spin</span><span class="o">.</span><span class="n">POLARIZED</span><span class="p">)</span> <span class="o">==</span> <span class="n">Spin</span><span class="p">(</span><span class="s1">&#39;polarized&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">Spin</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Spin</span><span class="p">(</span><span class="n">Spin</span><span class="o">.</span><span class="n">POLARIZED</span><span class="p">)</span> <span class="o">==</span> <span class="n">Spin</span><span class="p">(</span><span class="s2">&quot;polarized&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">Spin</span><span class="p">(</span><span class="s2">&quot;p&quot;</span><span class="p">)</span>
 <span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Spin</span><span class="p">(</span><span class="n">Spin</span><span class="o">.</span><span class="n">NONCOLINEAR</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span> <span class="o">==</span> <span class="n">Spin</span><span class="p">(</span><span class="s1">&#39;non-collinear&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">Spin</span><span class="p">(</span><span class="s1">&#39;nc&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Spin</span><span class="p">(</span><span class="n">Spin</span><span class="o">.</span><span class="n">NONCOLINEAR</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span> <span class="o">==</span> <span class="n">Spin</span><span class="p">(</span><span class="s2">&quot;non-collinear&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">Spin</span><span class="p">(</span><span class="s2">&quot;nc&quot;</span><span class="p">)</span>
 <span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Spin</span><span class="p">(</span><span class="n">Spin</span><span class="o">.</span><span class="n">SPINORBIT</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span> <span class="o">==</span> <span class="n">Spin</span><span class="p">(</span><span class="s1">&#39;spin-orbit&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">Spin</span><span class="p">(</span><span class="s1">&#39;so&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Spin</span><span class="p">(</span><span class="n">Spin</span><span class="o">.</span><span class="n">SPINORBIT</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span> <span class="o">==</span> <span class="n">Spin</span><span class="p">(</span><span class="s2">&quot;spin-orbit&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">Spin</span><span class="p">(</span><span class="s2">&quot;so&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">Spin</span><span class="p">(</span><span class="s2">&quot;soc&quot;</span><span class="p">)</span>
 <span class="go">True</span>
 </pre></div>
 </div>

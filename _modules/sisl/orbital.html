@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.orbital &mdash; sisl 0.1.dev1+g017ffd1 documentation</title>
+  <title>sisl.orbital &mdash; sisl 0.1.dev1+ga8efd77 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g017ffd1
+                0.1.dev1+ga8efd77
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -265,7 +265,10 @@
 <span class="sd">        radial : bool, optional</span>
 <span class="sd">           also compare that the radial parts are the same</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Orbital</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="c1"># just check for the same name</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">other</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Orbital</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="n">same</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">R</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">1e-4</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">q0</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">q0</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-4</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">same</span><span class="p">:</span>

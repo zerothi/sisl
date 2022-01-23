@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.state &mdash; sisl 0.1.dev1+g017ffd1 documentation</title>
+  <title>sisl.physics.state &mdash; sisl 0.1.dev1+ga8efd77 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g017ffd1
+                0.1.dev1+ga8efd77
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -1202,6 +1202,10 @@
 <span class="sd">        When requesting 2nd derivatives it will not be advisable to use a `sub` before</span>
 <span class="sd">        calculating the derivatives since the 1st order perturbation uses the energy</span>
 <span class="sd">        differences (Berry contribution) and the 1st derivative matrix for correcting the curvature.</span>
+
+<span class="sd">        For states at the :math:`\Gamma` point you may get warnings about casting complex numbers</span>
+<span class="sd">        to reals. In these cases you should force the state at the :math:`\Gamma` point to be calculated</span>
+<span class="sd">        in complex numbers to enable the correct decoupling.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
