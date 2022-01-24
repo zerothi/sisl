@@ -589,9 +589,28 @@ class State(ParentContainer):
                \big[\sum_\nu |\psi_{i\nu}|^2\big]^q}
 
         where :math:`i` is the band index and :math:`\nu` is the orbital.
-        The order of the IPR is defaulted to :math:`q=2`.
+        The order of the IPR is defaulted to :math:`q=2`, see :eq:`ipr2` for details.
         The IPR may be used to distinguish Anderson localization and extended
-        states, see [1]_ for details.
+        states:
+
+        .. math::
+           :nowrap:
+           :label: ipr2
+
+           \begin{align}
+           \lim_{L\to\infty} I_{2,i} = \left\{\begin{aligned}
+                1/L^d & \text{extended state}
+                \\
+                const. & \text{localized state}
+               \end{aligned}
+           \end{align}
+
+        For further details see [1]_. Note that for eigen states the IPR reduces to:
+
+        .. math::
+            I_{q,i} = \sum_\nu |\psi_{i\nu}|^{2q}
+
+        since the denominator is :math:`1^{q} = 1`.
 
         Parameters
         ----------
@@ -604,7 +623,8 @@ class State(ParentContainer):
         """
         # This *has* to be a real value C * C^* == real
         state_abs2 = self.norm2(sum=False).real
-        assert q >= 1, f"{self.__class__.__name__}.ipr requires q>=1"
+        assert q >= 2, f"{self.__class__.__name__}.ipr requires q>=2"
+        # abs2 is already having the exponent 2
         return (state_abs2 ** q).sum(-1) / state_abs2.sum(-1) ** q
 
     def normalize(self):
