@@ -109,13 +109,20 @@ def test_graphene_heteroribbon():
     a = graphene_heteroribbon([(7, 2), (9, 2)])
 
 
+def test_heteroribbon_same_sections():
+    atom = Atom(6, 1.43)
+    S1 = heteroribbon.Section(7, 4, atoms=atom, bond=1.42)
+    S2 = heteroribbon.Section(9, 4, atoms=atom, bond=1.42)
+    S3 = heteroribbon.Section(11, 4, atoms=atom, bond=1.42)
+    graphene_heteroribbon([S1, S2, S1, S3])
+
+
 def test_graphene_heteroribbon_errors():
 
-
     # 7-open with 9 can only be perfectly aligned.
-    graphene_heteroribbon([(7,1), (9,1)], align="center", on_lone_atom="raise")
+    graphene_heteroribbon([(7, 1), (9, 1)], align="center", on_lone_atom="raise")
     with pytest.raises(ValueError):
-        graphene_heteroribbon([(7,1), (9,1,-1)], align="center", on_lone_atom="raise")
+        graphene_heteroribbon([(7, 1), (9, 1, -1)], align="center", on_lone_atom="raise")
 
     grap_heteroribbon = partial(
         graphene_heteroribbon, align="auto", shift_quantum=True
