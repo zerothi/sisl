@@ -239,9 +239,6 @@ class _nanoribbon_section(composite_geometry.Section):
 
         self._open_borders = [False, False]
 
-        # Now create the geometry that we will move and attach
-        # It will be *pristine* in the sense that nothing will be
-        # done to it.
         # TODO consider whether this one should actually
         # be the finally attached geometry? That would mean they could be much
         # easier referenced?
@@ -256,10 +253,8 @@ class _nanoribbon_section(composite_geometry.Section):
         # Another problem of the above is that defaults are not passed down...
         # I don't know how this should be handled...
 
-        self.geometry = nanoribbon(
-            bond=self.bond, atoms=self.atoms,
-            width=self.W, kind=self.kind
-        )
+        # should we have the attached geometry here? I don't think it will work..
+        # but...
 
     def _junction_error(self, what, prev, msg):
         """Helper function to raise an error if the junction is not valid.
@@ -352,7 +347,10 @@ class _nanoribbon_section(composite_geometry.Section):
         return 0
 
     def build_section(self, previous, **kwargs):
-        new_section = self.geometry
+        new_section = nanoribbon(
+            bond=self.bond, atoms=self.atoms,
+            width=self.W, kind=self.kind
+        )
 
         if previous is None:
             if self.invert_first:
