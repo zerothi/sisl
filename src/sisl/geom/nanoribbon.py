@@ -411,7 +411,7 @@ class _heteroribbon_section(_geom_section):
             self._junction_error(prev, "LONE ATOMS: Previous odd section, which has an open end,"
                 " is wider than the incoming one. A wider odd section must always"
                 " have a closed end. You can solve this by making the previous section"
-                " one unit smaller or larger (L = L +- 1).", "raise"
+                " one unit smaller or larger (L = L +- 1).", self.on_lone_atom
             )
         
         # Get the difference in width between the previous and this ribbon section
@@ -420,8 +420,8 @@ class _heteroribbon_section(_geom_section):
         # on 1, 2, 3 or 4 atoms. After that, the cycle just repeats (e.g. 5 == 1, etc).
         diff_mod = W_diff % 4
 
-        # Now, we need to calculate the offset that we have to apply to the incoming
-        # section depending on several factors.
+        # Calculate the shifts that are valid (don't leave atoms with less than 2 bonds)
+        # This depends on several factors.
         if diff_mod % 2 == 0 and W % 2 == 1:
             # Both sections are odd
 
@@ -450,7 +450,7 @@ class _heteroribbon_section(_geom_section):
 
                 # Update the valid shift limits if the sections are aligned on any of the edges.
                 shift_offset = self._offset_from_center(align, prev)
-                valid_shifts += shift_offset
+                valid_shifts -= shift_offset
             elif prev.W == W:
                 valid_shifts = np.array([0])
             else:
@@ -474,7 +474,7 @@ class _heteroribbon_section(_geom_section):
                 shift_offset = self._offset_from_center(align, prev)
 
                 # Apply the offsets and calculate the maximum and minimum shifts.
-                min_shift, max_shift = -shift_lim + shift_offset, shift_lim + shift_offset
+                min_shift, max_shift = -shift_lim - shift_offset, shift_lim - shift_offset
 
                 valid_shifts = np.arange(min_shift, max_shift + 1, 2)
         else:
