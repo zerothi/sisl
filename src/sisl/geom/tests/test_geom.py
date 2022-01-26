@@ -115,6 +115,16 @@ def test_zgnr():
     assert is_right_handed(a)
 
 
+@pytest.mark.parametrize(
+    "W, invert_first", itertools.product(range(3, 20), [True, False]),
+)
+def test_heteroribbon_one_unit(W, invert_first):
+    # Check that all ribbon widths are properly cut into one unit
+    geometry = heteroribbon([(W, 1)], bond=1.42, atoms=Atom(6, 1.43), invert_first=invert_first)
+
+    assert geometry.na == W
+
+
 def test_heteroribbon():
     """Runs the heteroribbon builder for all possible combinations of
     widths and asserts that they are always properly aligned.
@@ -135,8 +145,6 @@ def test_graphene_heteroribbon():
 
 
 def test_graphene_heteroribbon_errors():
-
-
     # 7-open with 9 can only be perfectly aligned.
     graphene_heteroribbon([(7,1), (9,1)], align="center", on_lone_atom="raise")
     with pytest.raises(ValueError):

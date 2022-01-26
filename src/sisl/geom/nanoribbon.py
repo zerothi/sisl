@@ -245,7 +245,9 @@ class _heteroribbon_section(_geom_section):
         It does so by shifting half unit cell. This must be done before any
         tiling of the geometry.
         """
-        geometry = geometry.move(geometry.cell[self.long_ax] / 2)
+        move = np.array([0., 0., 0.])
+        move[self.long_ax] = -geometry.xyz[self.W, self.long_ax]
+        geometry = geometry.move(move)
         geometry.xyz = (geometry.fxyz % 1).dot(geometry.cell)
         return geometry
 
