@@ -120,7 +120,7 @@ def main(token, revision_range):
     # document pull requests
     pull_requests = get_pull_requests(github_repo, revision_range)
     heading = "Pull requests merged"
-    pull_msg = "* `#{0} <{1}>`__: {2}"
+    pull_msg = "* #{0}: {2}"
 
     print()
     print(heading)

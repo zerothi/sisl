@@ -26,12 +26,21 @@ The release cycle should be performed like this:
 
 4. Create tarballs and wheels and upload them
 
-		rm -rf dist
-		python setup.py sdist bdist_wheel
-		twine upload dist/sisl-VERSION*.tar.gz
-		twine upload dist/sisl-VERSION*.whl
+		python3 -m pip install --upgrade build
+		python3 -m build
+		python3 -m pip install --upgrade twine
+		# requires .pypirc with testpypi section
+		python3 -m twine upload --repository testpypi dist/*
 
-5. Create conda uploads.
+		# test installation, preferably in a venv
+		python3 -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ sisl
+
+        # once checked, upload to pypi
+		python3 -m twine upload dist/sisl-0.12.0.tar.gz
+
+5. Make release notes by using `tools/changelog.py` to create the output
+
+6. Create conda uploads.
 
    The conda uploads are based on conda-forge and an associated
    sisl-feedstock is used. To update it, follow these steps:
