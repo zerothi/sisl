@@ -149,7 +149,7 @@ def main(token, revision_range):
         versions.append("Unreleased")
     else:
         versions.append(cur_release)
-    
+
     print_out = False
     out = []
     for line in open("../CHANGELOG.md", 'r'):
