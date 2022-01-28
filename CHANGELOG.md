@@ -5,7 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) once
 we hit release version 1.0.0.
 
-## [Unreleased] - YYYY-MM-DD
+## [UNRELEASED] - YYYY-MM-DD
+
+
+## [0.12.0] - 2022-1-28
 ### Added
 - Geometry.sub_orbital is added
 - BrillouinZone.volume enables easy calculation of volumes for BZ integrals
