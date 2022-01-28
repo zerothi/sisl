@@ -970,6 +970,7 @@ def conductivity(bz, distribution='fermi-dirac', method='ahc', degenerate=1.e-5,
 
         # Convert the dimensions from S/m^D to S/cm^D
         cond /= vol * units(f"Ang^{dim}", f"cm^{dim}")
+        warn("conductivity: be aware that the units are currently not tested, please provide feedback!")
 
     else:
         raise SislError("conductivity: requires the method to be [ahc]")
