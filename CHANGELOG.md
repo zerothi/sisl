@@ -53,6 +53,7 @@ we hit release version 1.0.0.
 - fixed hpc parameters #403
 
 ### Changed
+- order of arguments for `nanoribbon` it was not consistent with the others
 - removed cell argument in `Geometry.sub`
 - removed `Sile.exist`, refer to `Sile.file` which always will be a `pathlib.Path` instance
 - `berry_phase` now uses the gauge=R convention, the code became much simpler

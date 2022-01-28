@@ -64,16 +64,16 @@ def test_bilayer():
 
 def test_nanoribbon():
     for w in range(0, 5):
-        a = nanoribbon(1.42, Atom(6), w, kind='armchair')
-        a = nanoribbon(1.42, Atom(6), w, kind='zigzag')
-        a = nanoribbon(1.42, (Atom(5), Atom(7)), w, kind='armchair')
-        a = nanoribbon(1.42, (Atom(5), Atom(7)), w, kind='zigzag')
+        a = nanoribbon(w, 1.42, Atom(6), kind='armchair')
+        a = nanoribbon(w, 1.42, Atom(6), kind='zigzag')
+        a = nanoribbon(w, 1.42, (Atom(5), Atom(7)), kind='armchair')
+        a = nanoribbon(w, 1.42, (Atom(5), Atom(7)), kind='zigzag')
 
     with pytest.raises(ValueError):
-        nanoribbon(1.42, (Atom(5), Atom(7)), 6, kind='undefined')
+        nanoribbon(6, 1.42, (Atom(5), Atom(7)), kind='undefined')
 
     with pytest.raises(ValueError):
-        nanoribbon(1.42, (Atom(5), Atom(7)), 'str', kind='undefined')
+        nanoribbon('str', 1.42, (Atom(5), Atom(7)), kind='undefined')
 
 
 def test_graphene_nanoribbon():

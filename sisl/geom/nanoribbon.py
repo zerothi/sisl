@@ -11,19 +11,19 @@ __all__ = ['nanoribbon', 'graphene_nanoribbon', 'agnr', 'zgnr']
 
 
 @set_module("sisl.geom")
-def nanoribbon(bond, atoms, width, kind='armchair'):
+def nanoribbon(width, bond, atoms, kind='armchair'):
     r""" Construction of a nanoribbon unit cell of type armchair or zigzag.
 
     The geometry is oriented along the :math:`x` axis.
 
     Parameters
     ----------
+    width : int
+       number of atoms in the transverse direction
     bond : float
        bond length between atoms in the honeycomb lattice
     atoms : Atom
        atom (or atoms) in the honeycomb lattice
-    width : int
-       number of atoms in the transverse direction
     kind : {'armchair', 'zigzag'}
        type of ribbon
 
@@ -105,7 +105,7 @@ def graphene_nanoribbon(width, bond=1.42, atoms=None, kind='armchair'):
     """
     if atoms is None:
         atoms = Atom(Z=6, R=bond * 1.01)
-    return nanoribbon(bond, atoms, width, kind=kind)
+    return nanoribbon(width, bond, atoms, kind=kind)
 
 
 @set_module("sisl.geom")
