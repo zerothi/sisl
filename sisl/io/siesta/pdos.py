@@ -38,6 +38,17 @@ class pdosSileSiesta(SileSiesta):
         """ Read the geometry with coordinates and correct orbital counts """
         return self.read_data()[0]
 
+    def read_fermi_level(self):
+        """ Returns the fermi-level """
+        # Get the element-tree
+        root = xml_parse(self.file).getroot()
+
+        # Try and find the fermi-level
+        Ef = root.find('fermi_energy')
+        if Ef is None:
+            warn(f"{self!s}.read_data could not locate the Fermi-level in the XML tree")
+        return Ef
+
     def read_data(self, as_dataarray=False):
         r""" Returns data associated with the PDOS file
 

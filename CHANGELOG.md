@@ -5,8 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) once
 we hit release version 1.0.0.
 
-## [UNRELEASED] - YYYY-MM-DD
+## [0.12.1] - YYYY-MM-DD
 
+### Added
+- read_fermi_level to siesta.PDOS files
+
+### Fixed
+- MacOS builds
 
 ## [0.12.0] - 2022-1-28
 ### Added
