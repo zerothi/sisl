@@ -19,7 +19,12 @@ The plotly backend.
 import os
 from sisl._environ import register_environ_variable
 
-register_environ_variable("SISL_VIZ_NUM_PROCS", min(1, len(os.sched_getaffinity(0))),
+try:
+    _nprocs = len(os.sched_getaffinity(0))
+except:
+    _nprocs = 1
+
+register_environ_variable("SISL_VIZ_NUM_PROCS", min(1, _nprocs),
                           description="Maximum number of processors used for parallel plotting",
                           process=int)
 
