@@ -82,7 +82,7 @@ class TestSuperCell:
         assert i.dtype == np.int32
         i = sc._fill([1., 1.])
         assert i.dtype == np.float64
-        for dt in [np.int32, np.int64, np.float32, np.float64, np.complex64]:
+        for dt in [np.int32, np.float32, np.float64, np.complex64]:
             i = sc._fill([1., 1.], dt)
             assert i.dtype == dt
             i = sc._fill(np.ones([2], dt))

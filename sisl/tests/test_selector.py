@@ -2,6 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import pytest
+import sys
 
 import time
 import numpy as np
@@ -9,6 +10,10 @@ import numpy as np
 from sisl import TimeSelector
 
 
+if sys.platform.startswith("darwin"):
+    pytest.skip("skipping Mac-OS tests", allow_module_level=True)
+
+    
 @pytest.mark.selector
 class TestSelector:
 
