@@ -350,9 +350,6 @@ package_data["sisl_toolbox.siesta.minimizer"] = ["*.yaml"]
 
 
 metadata = dict(
-    name="sisl",
-    platforms="any",
-
     # specify setuptools_scm version creation
     # TODO update this together with pyproject.toml
     setup_requires=[
@@ -378,7 +375,6 @@ metadata = dict(
     package_data=package_data,
     packages=packages,
     ext_modules=cythonizer(extensions, compiler_directives=directives),
-    zip_safe=False,
 )
 
 cwd = os.path.abspath(os.path.dirname(__file__))
