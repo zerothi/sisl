@@ -422,8 +422,11 @@ class ConfigurableMeta(type):
                 "description": "Here are some unclassified settings. Even if they don't belong to any group, they might still be important. They may be here just because the developer was too lazy to categorize them or forgot to do so. <b>If you are the developer</b> and it's the first case, <b>shame on you<b>."
             })
 
+            # If methods have arguments whose keys correspond to settings, they will receive the
+            # current value of the setting as the default. We can not do that if this is a staticmethod
+            # or a classmethod, because they are not aware of the instance.
             for f_name, f in attrs.items():
-                if callable(f) and not f_name.startswith("__"):
+                if callable(f) and (not f_name.startswith("__")) and (not isinstance(f, (staticmethod, classmethod))):
                     attrs[f_name] = _populate_with_settings(f, [param["key"] for param in class_params])
 
         new_cls = super().__new__(cls, name, bases, attrs)
