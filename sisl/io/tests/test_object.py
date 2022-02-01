@@ -241,8 +241,9 @@ class TestObject:
         # These files does not store the atomic species
         if issubclass(sile, (_ncSileTBtrans, deltancSileTBtrans)):
             return
-        pytest.mark.xfail(sys.platform.startswith("win") and issubclass(sile, chgSileVASP),
-                          reason="Windows reading/writing supercell fails for some unknown reason")
+        if sys.platform.startswith("win") and issubclass(sile, chgSileVASP):
+            pytest.xfail("Windows reading/writing supercell fails for some unknown reason")
+
         # Write
         sile(f, mode="w").write_geometry(G)
         # Read 1
