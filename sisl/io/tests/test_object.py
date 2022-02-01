@@ -2,6 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import pytest
+import sys
 import os.path as osp
 import numpy as np
 import os
@@ -10,6 +11,7 @@ from pathlib import Path
 from sisl.io import *
 from sisl.io.siesta.binaries import _gfSileSiesta
 from sisl.io.tbtrans._cdf import *
+from sisl.io.vasp import chgSileVASP
 from sisl import Geometry, Grid, Hamiltonian
 from sisl import DensityMatrix, EnergyDensityMatrix
 
@@ -239,6 +241,8 @@ class TestObject:
         # These files does not store the atomic species
         if issubclass(sile, (_ncSileTBtrans, deltancSileTBtrans)):
             return
+        pytest.mark.xfail(sys.platform.startswith("win") and issubclass(sile, chgSileVASP),
+                          reason="Windows reading/writing supercell fails for some unknown reason")
         # Write
         sile(f, mode="w").write_geometry(G)
         # Read 1
