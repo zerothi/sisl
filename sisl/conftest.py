@@ -82,6 +82,10 @@ def sisl_tmp(request, tmp_path_factory):
                 f = self.files.pop()
                 if f.is_file():
                     try:
+                        f.close()
+                    except:
+                        pass
+                    try:
                         f.unlink()
                     except:
                         pass

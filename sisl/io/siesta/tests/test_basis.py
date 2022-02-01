@@ -12,7 +12,8 @@ _dir = osp.join('sisl', 'io', 'siesta')
 
 def test_si_ion_nc(sisl_files):
     f = sisl_files(_dir, 'Si.ion.nc')
-    atom = ionncSileSiesta(f).read_basis()
+    with ionncSileSiesta(f) as sile:
+        atom = sile.read_basis()
 
     # Number of orbitals
     assert len(atom) == 13
@@ -20,7 +21,8 @@ def test_si_ion_nc(sisl_files):
 
 def test_si_ion_xml(sisl_files):
     f = sisl_files(_dir, 'Si.ion.xml')
-    atom = ionxmlSileSiesta(f).read_basis()
+    with ionxmlSileSiesta(f) as sile:
+        atom = sile.read_basis()
 
     # Number of orbitals
     assert len(atom) == 13
@@ -28,8 +30,11 @@ def test_si_ion_xml(sisl_files):
 
 def test_si_ion_compare(sisl_files):
     f = sisl_files(_dir, 'Si.ion.nc')
-    nc = ionncSileSiesta(f).read_basis()
+    with ionncSileSiesta(f) as sile:
+        nc = sile.read_basis()
+
     f = sisl_files(_dir, 'Si.ion.xml')
-    xml = ionxmlSileSiesta(f).read_basis()
+    with ionxmlSileSiesta(f) as sile:
+        xml = sile.read_basis()
 
     assert nc == xml

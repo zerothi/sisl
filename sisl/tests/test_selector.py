@@ -10,11 +10,9 @@ import numpy as np
 from sisl import TimeSelector
 
 
-if sys.platform.startswith("darwin"):
-    pytest.skip("skipping Mac-OS tests", allow_module_level=True)
-
-    
 @pytest.mark.selector
+@pytest.mark.xfail(sys.platform.startswith("darwin"),
+                   reason="Sleep on MacOS is not consistent causing erroneous fails.")
 class TestSelector:
 
     def sleep(self, *args):

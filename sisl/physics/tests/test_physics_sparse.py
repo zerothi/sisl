@@ -429,6 +429,7 @@ def test_sparse_orbital_transform_basis():
     assert np.abs(Mcsr[-1] - Mt.tocsr(-1)).sum() == 0
 
 
+@pytest.mark.xfail(sys.platform.startswith("win"), reason="Data type cannot be float128")
 def test_sparse_orbital_transform_combinations():
     M = SparseOrbitalBZSpin(geom.graphene(), spin='polarized', orthogonal=False, dtype=np.int32)
     M.construct(([0.1, 1.44], [(3, 2, 1), (2, 1, 0)]))
@@ -441,12 +442,11 @@ def test_sparse_orbital_transform_combinations():
     assert np.abs(Mcsr[1] - Mt.tocsr(1)).sum() == 0
     assert np.abs(Mcsr[-1] - Mt.tocsr(-1)).sum() == 0
 
-    if not sys.platform.startswith("win"):
-        Mt = M.transform(dtype=np.float128, orthogonal=True).transform(spin='so', dtype=np.float64, orthogonal=False)
-        assert np.abs(Mcsr[0] - Mt.tocsr(0)).sum() == 0
-        assert np.abs(Mcsr[1] - Mt.tocsr(1)).sum() == 0
-        assert np.abs(Mt.tocsr(2)).sum() == 0
-        assert np.abs(Mcsr[-1] - Mt.tocsr(-1)).sum() == 0
+    Mt = M.transform(dtype=np.float128, orthogonal=True).transform(spin='so', dtype=np.float64, orthogonal=False)
+    assert np.abs(Mcsr[0] - Mt.tocsr(0)).sum() == 0
+    assert np.abs(Mcsr[1] - Mt.tocsr(1)).sum() == 0
+    assert np.abs(Mt.tocsr(2)).sum() == 0
+    assert np.abs(Mcsr[-1] - Mt.tocsr(-1)).sum() == 0
 
     Mt = M.transform(spin='polarized', orthogonal=True).transform(spin='so', dtype=np.float64, orthogonal=False)
     assert np.abs(Mcsr[0] - Mt.tocsr(0)).sum() == 0

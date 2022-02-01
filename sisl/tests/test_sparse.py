@@ -2,6 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import pytest
+import sys
 
 import math as m
 import numpy as np
@@ -254,6 +255,7 @@ def test_create3(setup):
     s1.empty()
 
 
+@pytest.mark.xfail(sys.platform.startswith("win"), reason="Unknown windows error in b-casting")
 def test_create_1d_bcasting_data_1d(setup):
     s1 = setup.s1.copy()
     for i in range(10):

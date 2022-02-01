@@ -23,7 +23,8 @@ def test_nc1(sisl_tmp, sisl_system):
     tb.construct([sisl_system.R, sisl_system.t])
     tb.write(ncSileSiesta(f, 'w'))
 
-    ntb = ncSileSiesta(f).read_hamiltonian()
+    with ncSileSiesta(f) as f:
+        ntb = f.read_hamiltonian()
 
     # Assert they are the same
     assert np.allclose(tb.cell, ntb.cell)
@@ -39,7 +40,8 @@ def test_nc2(sisl_tmp, sisl_system):
     tb.construct([sisl_system.R, sisl_system.tS])
     tb.write(ncSileSiesta(f, 'w'))
 
-    ntb = ncSileSiesta(f).read_hamiltonian()
+    with ncSileSiesta(f) as f:
+        ntb = f.read_hamiltonian()
 
     # Assert they are the same
     assert np.allclose(tb.cell, ntb.cell)
@@ -56,13 +58,13 @@ def test_nc_multiple_fail(sisl_tmp, sisl_system):
     H = Hamiltonian(sisl_system.gtb)
     DM = DensityMatrix(sisl_system.gtb)
 
-    sile = ncSileSiesta(f, 'w')
-    H.construct([sisl_system.R, sisl_system.t])
-    H.write(sile)
+    with ncSileSiesta(f, 'w') as sile:
+        H.construct([sisl_system.R, sisl_system.t])
+        H.write(sile)
 
-    DM[0, 0] = 1.
-    with pytest.raises(ValueError):
-        DM.write(sile)
+        DM[0, 0] = 1.
+        with pytest.raises(ValueError):
+            DM.write(sile)
 
 
 @pytest.mark.parametrize(
@@ -74,23 +76,23 @@ def test_nc_multiple_checks(sisl_tmp, sisl_system, sort):
     H = Hamiltonian(sisl_system.gtb)
     DM = DensityMatrix(sisl_system.gtb)
 
-    sile = ncSileSiesta(f, 'w')
-    H.construct([sisl_system.R, sisl_system.t])
-    H.write(sile, sort=sort)
+    with ncSileSiesta(f, 'w') as sile:
+        H.construct([sisl_system.R, sisl_system.t])
+        H.write(sile, sort=sort)
 
-    # fix seed
-    np.random.seed(42)
-    shuffle = np.random.shuffle
-    for io in range(len(H)):
-        edges = H.edges(io) # get all edges
-        shuffle(edges)
-        DM[io, edges] = 2.
+        # fix seed
+        np.random.seed(42)
+        shuffle = np.random.shuffle
+        for io in range(len(H)):
+            edges = H.edges(io) # get all edges
+            shuffle(edges)
+            DM[io, edges] = 2.
 
-    if not sort:
-        with pytest.raises(ValueError):
+        if not sort:
+            with pytest.raises(ValueError):
+                DM.write(sile, sort=sort)
+        else:
             DM.write(sile, sort=sort)
-    else:
-        DM.write(sile, sort=sort)
 
 
 def test_nc_overlap(sisl_tmp, sisl_system):
@@ -99,15 +101,18 @@ def test_nc_overlap(sisl_tmp, sisl_system):
     tb.construct([sisl_system.R, sisl_system.t])
     tb.write(ncSileSiesta(f, 'w'))
 
-    S = ncSileSiesta(f).read_overlap()
+    with ncSileSiesta(f) as sile:
+        S = sile.read_overlap()
 
     # Ensure no empty data-points
     assert np.allclose(S._csr._D.sum(), tb.no)
 
     # Write test
     f = sisl_tmp('s.nc', _dir)
-    S.write(ncSileSiesta(f, "w"))
-    S2 = ncSileSiesta(f).read_overlap()
+    with ncSileSiesta(f, "w") as sile:
+        S.write(sile)
+    with ncSileSiesta(f) as sile:
+        S2 = sile.read_overlap()
     assert S._csr.spsame(S2._csr)
     assert np.allclose(S._csr._D, S2._csr._D)
 
@@ -117,9 +122,12 @@ def test_nc_dynamical_matrix(sisl_tmp, sisl_system):
     dm = DynamicalMatrix(sisl_system.gtb)
     for _, ix in dm.iter_orbitals():
         dm[ix, ix] = ix / 2.
-    dm.write(ncSileSiesta(f, 'w'))
 
-    ndm = ncSileSiesta(f).read_dynamical_matrix()
+    with ncSileSiesta(f, 'w') as sile:
+        dm.write(sile)
+
+    with ncSileSiesta(f) as sile:
+        ndm = sile.read_dynamical_matrix()
 
     # Assert they are the same
     assert np.allclose(dm.cell, ndm.cell)
@@ -134,9 +142,12 @@ def test_nc_density_matrix(sisl_tmp, sisl_system):
     dm = DensityMatrix(sisl_system.gtb)
     for _, ix in dm.iter_orbitals():
         dm[ix, ix] = ix / 2.
-    dm.write(ncSileSiesta(f, 'w'))
 
-    ndm = ncSileSiesta(f).read_density_matrix()
+    with ncSileSiesta(f, 'w') as sile:
+        dm.write(sile)
+
+    with ncSileSiesta(f) as sile:
+        ndm = sile.read_density_matrix()
 
     # Assert they are the same
     assert np.allclose(dm.cell, ndm.cell)
@@ -156,9 +167,11 @@ def test_nc_H_non_colinear(sisl_tmp):
     f2 = sisl_tmp('H2.nc', _dir)
     H1.write(f1)
     H1.finalize()
-    H2 = sisl.get_sile(f1).read_hamiltonian()
+    with sisl.get_sile(f1) as sile:
+        H2 = sile.read_hamiltonian()
     H2.write(f2)
-    H3 = sisl.get_sile(f2).read_hamiltonian()
+    with sisl.get_sile(f2) as sile:
+        H3 = sile.read_hamiltonian()
     assert H1._csr.spsame(H2._csr)
     assert np.allclose(H1._csr._D, H2._csr._D)
     assert H1._csr.spsame(H3._csr)
@@ -175,9 +188,11 @@ def test_nc_DM_non_colinear(sisl_tmp):
     f2 = sisl_tmp('DM2.nc', _dir)
     DM1.write(f1)
     DM1.finalize()
-    DM2 = sisl.get_sile(f1).read_density_matrix()
+    with sisl.get_sile(f1) as sile:
+        DM2 = sile.read_density_matrix()
     DM2.write(f2)
-    DM3 = sisl.get_sile(f2).read_density_matrix()
+    with sisl.get_sile(f2) as sile:
+        DM3 = sile.read_density_matrix()
     assert DM1._csr.spsame(DM2._csr)
     assert DM1._csr.spsame(DM3._csr)
     # DM1 is finalized, but DM2 is not finalized
@@ -198,9 +213,11 @@ def test_nc_EDM_non_colinear(sisl_tmp):
     f2 = sisl_tmp('EDM2.nc', _dir)
     EDM1.write(f1, sort=False)
     EDM1.finalize()
-    EDM2 = sisl.get_sile(f1).read_energy_density_matrix(sort=False)
+    with sisl.get_sile(f1) as sile:
+        EDM2 = sile.read_energy_density_matrix(sort=False)
     EDM2.write(f2, sort=False)
-    EDM3 = sisl.get_sile(f2).read_energy_density_matrix(sort=False)
+    with sisl.get_sile(f2) as sile:
+        EDM3 = sile.read_energy_density_matrix(sort=False)
     assert EDM1._csr.spsame(EDM2._csr)
     assert EDM1._csr.spsame(EDM3._csr)
     # EDM1 is finalized, but EDM2 is not finalized
@@ -222,9 +239,11 @@ def test_nc_H_spin_orbit(sisl_tmp):
     f2 = sisl_tmp('H2.nc', _dir)
     H1.write(f1)
     H1.finalize()
-    H2 = sisl.get_sile(f1).read_hamiltonian()
+    with sisl.get_sile(f1) as sile:
+        H2 = sile.read_hamiltonian()
     H2.write(f2)
-    H3 = sisl.get_sile(f2).read_hamiltonian()
+    with sisl.get_sile(f2) as sile:
+        H3 = sile.read_hamiltonian()
     assert H1._csr.spsame(H2._csr)
     assert np.allclose(H1._csr._D, H2._csr._D)
     assert H1._csr.spsame(H3._csr)
@@ -242,9 +261,11 @@ def test_nc_H_spin_orbit_nc2tshs2nc(sisl_tmp):
     f2 = sisl_tmp('H2.TSHS', _dir)
     H1.write(f1)
     H1.finalize()
-    H2 = sisl.get_sile(f1).read_hamiltonian()
+    with sisl.get_sile(f1) as sile:
+        H2 = sile.read_hamiltonian()
     H2.write(f2)
-    H3 = sisl.get_sile(f2).read_hamiltonian()
+    with sisl.get_sile(f2) as sile:
+        H3 = sile.read_hamiltonian()
     assert H1._csr.spsame(H2._csr)
     assert np.allclose(H1._csr._D, H2._csr._D)
     assert H1._csr.spsame(H3._csr)
@@ -262,9 +283,11 @@ def test_nc_DM_spin_orbit(sisl_tmp):
     f2 = sisl_tmp('DM2.nc', _dir)
     DM1.write(f1)
     DM1.finalize()
-    DM2 = sisl.get_sile(f1).read_density_matrix()
+    with sisl.get_sile(f1) as sile:
+        DM2 = sile.read_density_matrix()
     DM2.write(f2)
-    DM3 = sisl.get_sile(f2).read_density_matrix()
+    with sisl.get_sile(f2) as sile:
+        DM3 = sile.read_density_matrix()
     assert DM1._csr.spsame(DM2._csr)
     assert np.allclose(DM1._csr._D, DM2._csr._D)
     assert DM1._csr.spsame(DM3._csr)
@@ -282,9 +305,11 @@ def test_nc_DM_spin_orbit_nc2dm2nc(sisl_tmp):
     f2 = sisl_tmp('DM2.DM', _dir)
     DM1.finalize()
     DM1.write(f1)
-    DM2 = sisl.get_sile(f1).read_density_matrix()
+    with sisl.get_sile(f1) as sile:
+        DM2 = sile.read_density_matrix()
     DM2.write(f2)
-    DM3 = sisl.get_sile(f2).read_density_matrix()
+    with sisl.get_sile(f2) as sile:
+        DM3 = sile.read_density_matrix()
     assert DM1._csr.spsame(DM2._csr)
     assert np.allclose(DM1._csr._D, DM2._csr._D)
     assert DM1._csr.spsame(DM3._csr)
@@ -298,7 +323,8 @@ def test_nc_ghost(sisl_tmp):
     g = Geometry([[0., 0., i] for i in range(2)], [a1, am1], 2.)
     g.write(ncSileSiesta(f, 'w'))
 
-    g2 = ncSileSiesta(f).read_geometry()
+    with ncSileSiesta(f) as sile:
+        g2 = sile.read_geometry()
     assert np.allclose(g.cell, g2.cell)
     assert np.allclose(g.xyz, g2.xyz)
     assert np.allclose(g.atoms.Z, g2.atoms.Z)
