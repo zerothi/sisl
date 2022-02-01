@@ -255,7 +255,6 @@ def test_create3(setup):
     s1.empty()
 
 
-@pytest.mark.xfail(sys.platform.startswith("win"), reason="Unknown windows error in b-casting")
 def test_create_1d_bcasting_data_1d(setup):
     s1 = setup.s1.copy()
     for i in range(10):
@@ -274,6 +273,7 @@ def test_create_1d_bcasting_data_1d(setup):
     assert np.sum(s1 - s2) == 0
 
 
+@pytest.mark.xfail(sys.platform.startswith("win"), reason="Unknown windows error in b-casting")
 def test_create_1d_bcasting_data_2d(setup):
     s1 = setup.s1.copy()
     data = np.random.randint(1, 100, (4, 3))
