@@ -220,3 +220,21 @@ commands = pytest -s -rXs {posargs}
 [tool.setuptools_scm]
 write_to = "sisl/_version.py"
 fallback_version = "0.0.0.dev+$Format:%H$"
+
+# Options for cibuildwheel
+[tool.cibuildwheel]
+build-verbosity = "3"
+test-extras = "test"
+# Instead of running pytest directly, we use a bash script that will set up
+# the appropiate value for the SISL_FILES_TEST variable, a path pointing to
+# the sisl-files directory, which contains files for testing.
+test-command = "bash {project}/tools/build_tools/test_wheel.sh {project}"
+
+[tool.cibuildwheel.macos]
+# This is to allow building cross compilation of arm64 in macosx_x86_64
+archs = ["x86_64", "universal2",  "arm64"]
+
+[tool.cibuildwheel.windows]
+# Use delvewheel on windows to gather all dll files.
+before-build = "pip install delvewheel"
+repair-wheel-command = "delvewheel repair --no-mangle-all --ignore-in-wheel -w {dest_dir} {wheel}"
