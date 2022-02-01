@@ -9,7 +9,7 @@
 
 # First we define the build-system which we will probably alter the most
 [build-system]
-# TODO update this together with setup.py
+# TODO update this together with setup.cfg
 requires = [
     "wheel",
     "setuptools>=46.0",
@@ -17,7 +17,9 @@ requires = [
     "Cython>=0.28",
     # see https://github.com/scipy/oldest-supported-numpy/
     # should fix #310
-    "oldest-supported-numpy",
+    "oldest-supported-numpy; sys_platform != 'win32'",
+    "numpy==1.19.5 ; sys_platform == 'win32' ; python_version <= '3.9'"
+    "numpy==1.21.5 ; sys_platform == 'win32' ; python_version >= '3.10'"
 ]
 build-backend = "setuptools.build_meta"
 
