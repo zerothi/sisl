@@ -243,13 +243,15 @@ class TestObject:
         sile(f, mode="w").write_geometry(G)
         # Read 1
         try:
-            g = sile(f, mode="r").read_geometry()
+            with sile(f, mode='r') as s:
+                g = s.read_geometry()
             assert g.equal(G, R=False, tol=1e-3) # pdb files have 8.3 for atomic coordinates
         except UnicodeDecodeError as e:
             pass
         # Read 2
         try:
-            g = Geometry.read(sile(f, mode="r"))
+            with sile(f, mode='r') as s:
+                g = Geometry.read(s)
             assert g.equal(G, R=False, tol=1e-3)
         except UnicodeDecodeError as e:
             pass
@@ -264,16 +266,19 @@ class TestObject:
         H.construct([[0.1, 1.45], [0.1, -2.7]])
         f = sisl_tmp("test_read_write_hamiltonian.win", _dir)
         # Write
-        sile(f, mode="w").write_hamiltonian(H)
+        with sile(f, mode='w') as s:
+            s.write_hamiltonian(H)
         # Read 1
         try:
-            h = sile(f, mode="r").read_hamiltonian()
+            with sile(f, mode='r') as s:
+                h = s.read_hamiltonian()
             assert H.spsame(h)
         except UnicodeDecodeError as e:
             pass
         # Read 2
         try:
-            h = Hamiltonian.read(sile(f, mode="r"))
+            with sile(f, mode='r') as s:
+                h = Hamiltonian.read(s)
             assert H.spsame(h)
         except UnicodeDecodeError as e:
             pass
@@ -285,16 +290,19 @@ class TestObject:
         DM.construct([[0.1, 1.45], [0.1, -2.7]])
         f = sisl_tmp("test_read_write_density_matrix.win", _dir)
         # Write
-        sile(f, mode="w").write_density_matrix(DM)
+        with sile(f, mode='w') as s:
+            s.write_density_matrix(DM)
         # Read 1
         try:
-            dm = sile(f, mode="r").read_density_matrix(geometry=DM.geometry)
+            with sile(f, mode='r') as s:
+                dm = s.read_density_matrix(geometry=DM.geometry)
             assert DM.spsame(dm)
         except UnicodeDecodeError as e:
             pass
         # Read 2
         try:
-            dm = DensityMatrix.read(sile(f, mode="r"), geometry=DM.geometry)
+            with sile(f, mode='r') as s:
+                dm = DensityMatrix.read(s, geometry=DM.geometry)
             assert DM.spsame(dm)
         except UnicodeDecodeError as e:
             pass
@@ -306,16 +314,19 @@ class TestObject:
         EDM.construct([[0.1, 1.45], [0.1, -2.7]])
         f = sisl_tmp("test_read_write_energy_density_matrix.win", _dir)
         # Write
-        sile(f, mode="w").write_energy_density_matrix(EDM)
+        with sile(f, mode='w') as s:
+            s.write_energy_density_matrix(EDM)
         # Read 1
         try:
-            edm = sile(f, mode="r").read_energy_density_matrix(geometry=EDM.geometry)
+            with sile(f, mode='r') as s:
+                edm = s.read_energy_density_matrix(geometry=EDM.geometry)
             assert EDM.spsame(edm)
         except UnicodeDecodeError as e:
             pass
         # Read 2
         try:
-            edm = EnergyDensityMatrix.read(sile(f, mode="r"), geometry=EDM.geometry)
+            with sile(f, mode='r') as s:
+                edm = EnergyDensityMatrix.read(s, geometry=EDM.geometry)
             assert EDM.spsame(edm)
         except UnicodeDecodeError as e:
             pass
@@ -330,16 +341,19 @@ class TestObject:
         H.construct([[0.1, 1.45], [(0.1, 1), (-2.7, 0.1)]])
         f = sisl_tmp("test_read_write_hamiltonian_overlap.win", _dir)
         # Write
-        sile(f, mode="w").write_hamiltonian(H)
+        with sile(f, mode='w') as s:
+            s.write_hamiltonian(H)
         # Read 1
         try:
-            h = sile(f, mode="r").read_hamiltonian()
+            with sile(f, mode='r') as s:
+                h = s.read_hamiltonian()
             assert H.spsame(h)
         except UnicodeDecodeError as e:
             pass
         # Read 2
         try:
-            h = Hamiltonian.read(sile(f, mode="r"))
+            with sile(f, mode='r') as s:
+                h = Hamiltonian.read(s)
             assert H.spsame(h)
         except UnicodeDecodeError as e:
             pass
@@ -354,18 +368,22 @@ class TestObject:
         f = sisl_tmp("test_read_write_grid.win", _dir)
         # Write
         try:
-            sile(f, mode="w").write_grid(G)
+            with sile(f, mode="w") as s:
+                s.write_grid(G)
         except SileError:
-            sile(f, mode="wb").write_grid(G)
+            with sile(f, mode="wb") as s:
+                s.write_grid(G)
         # Read 1
         try:
-            g = sile(f, mode="r").read_grid()
+            with sile(f, mode="r") as s:
+                g = s.read_grid()
             assert np.allclose(g.grid, G.grid, atol=1e-5)
         except UnicodeDecodeError as e:
             pass
         # Read 2
         try:
-            g = Grid.read(sile(f, mode="r"))
+            with sile(f, mode='r') as s:
+                g = Grid.read(s)
             assert np.allclose(g.grid, G.grid, atol=1e-5)
         except UnicodeDecodeError as e:
             pass

@@ -21,7 +21,8 @@ def test_nc1(sisl_tmp, sisl_system):
     f = sisl_tmp('gr.nc', _dir)
     tb = Hamiltonian(sisl_system.gtb)
     tb.construct([sisl_system.R, sisl_system.t])
-    tb.write(ncSileSiesta(f, 'w'))
+    with ncSileSiesta(f, 'w') as s:
+        tb.write(s)
 
     with ncSileSiesta(f) as f:
         ntb = f.read_hamiltonian()
@@ -38,7 +39,8 @@ def test_nc2(sisl_tmp, sisl_system):
     f = sisl_tmp('grS.nc', _dir)
     tb = Hamiltonian(sisl_system.gtb, orthogonal=False)
     tb.construct([sisl_system.R, sisl_system.tS])
-    tb.write(ncSileSiesta(f, 'w'))
+    with ncSileSiesta(f, 'w') as s:
+        tb.write(s)
 
     with ncSileSiesta(f) as f:
         ntb = f.read_hamiltonian()
