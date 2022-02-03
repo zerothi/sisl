@@ -350,9 +350,6 @@ package_data["sisl_toolbox.siesta.minimizer"] = ["*.yaml"]
 
 
 metadata = dict(
-    # Options should be specified in pyproject.toml
-    use_scm_version={'fallback_version': '0.0.0.dev+$Format:%H$'},
-
     # Correct the cmdclass
     cmdclass=cmdclass,
 
