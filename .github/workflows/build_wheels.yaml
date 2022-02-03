@@ -1,17 +1,16 @@
-name: Build wheels and (optionally) publish them
+name: wheel creation
 
 # Change this to whatever you want
 on:
-  pull_request:
-    # all pull-requests on to main
-    branches: [main]
+  push:
+    tags:
+     - v*
   workflow_dispatch:
     inputs:
       branch:
         description: 'Which branch to build wheels for'
         required: false
         default: 'main'
-  push:
 
 jobs:
   # Build all the wheels with pypa/cibuildwheels
@@ -122,10 +121,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          # We need the files submodule for testing
-          submodules: recursive
-          # the 'files' submodule uses lfs
-          lfs: true
+	  # we will not use the sisl-files for testing here
+	  # We will test these using testpypi below.
           # we only need the latest commit
           fetch-depth: 1
 
@@ -165,7 +162,7 @@ jobs:
           path: dist/*.tar.gz
   
   # Upload to testpypi
-  upload_test_pypi:
+  upload_testpypi:
     needs: [build_sdist, build_wheels]
     name: Publish package to TestPyPI
     runs-on: ubuntu-latest
@@ -182,8 +179,8 @@ jobs:
           repository_url: https://test.pypi.org/legacy/
   
   # Check that the testpypi installation works
-  test_testpypi_installation:
-    needs: [upload_test_pypi]
+  test_testpypi:
+    needs: [upload_testpypi]
     name: Test installation from TestPyPi
     runs-on: ${{ matrix.os }}
     strategy:
@@ -224,7 +221,7 @@ jobs:
 
   # Upload to PyPI on every tag starting with 'v'
   upload_pypi:
-    needs: [test_testpypi_installation]
+    needs: [test_testpypi]
     name: Publish package to Pypi
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
