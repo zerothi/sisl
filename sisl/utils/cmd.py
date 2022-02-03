@@ -195,6 +195,9 @@ def default_ArgumentParser(*A_args, **A_kwargs):
             if parser is None:
                 # Create the new parser and insert in the argument list
                 parser = argparse.ArgumentParser(*A_args, **A_kwargs)
+            elif "description" in A_kwargs:
+                parser.description = A_kwargs["description"]
+
             return func(self, parser, *args, **kwargs)
         return new_func
     return default_AP

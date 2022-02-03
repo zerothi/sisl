@@ -357,9 +357,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         # Cast to lower
         norm = norm.lower()
         if norm == 'none':
-            NORM = 1.
+            NORM = 1
         elif norm in ['all', 'atom', 'orbital']:
-            NORM = float(self.no_d)
+            NORM = self.no_d
         else:
             raise ValueError(f"{self.__class__.__name__}.norm error on norm keyword in when requesting normalization!")
 
@@ -371,12 +371,12 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         if atoms is None:
             # Get pivoting indices to average over
             if norm == 'orbital':
-                NORM = float(len(self.o2p(orbitals)))
+                NORM = len(self.o2p(orbitals))
             elif norm == 'atom':
                 geom = self.geometry
                 a = unique(geom.o2a(orbitals))
                 # Now sum the orbitals per atom
-                NORM = float(_a.sumi(geom.firsto[a+1] - geom.firsto[a]))
+                NORM = geom.orbitals[a].sum()
             return NORM
 
         if not orbitals is None:
@@ -385,8 +385,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         # atom is specified, this will result in the same normalization
         # regardless of norm == [orbital, atom] since it is all orbitals
         # on the given atoms.
-        if norm in ['orbital', 'atom']:
-            NORM = float(len(self.a2p(atoms)))
+        if norm in ("orbital", "atom"):
+            NORM = len(self.a2p(atoms))
 
         return NORM
 

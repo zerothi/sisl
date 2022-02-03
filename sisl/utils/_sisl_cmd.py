@@ -75,12 +75,6 @@ def sisl_cmd(argv=None, sile=None):
     # We cannot create a separate ArgumentParser to retrieve a positional arguments
     # as that will grab the first argument for an option!
 
-    # Start creating the command-line utilities that are the actual ones.
-    description = """
-This manipulation utility can handle nearly all files in the sisl code in
-changing ways. It handles files dependent on type AND content.
-    """
-
     if argv is not None:
         # We keep the arguments
         pass
@@ -90,6 +84,12 @@ changing ways. It handles files dependent on type AND content.
         argv = ['--help']
     else:
         argv = sys.argv[1:]
+
+    # Start creating the command-line utilities that are the actual ones.
+    description = """
+This manipulation utility can handle nearly all files in the sisl code in
+changing ways. It handles files dependent on type AND content.
+    """
 
     # Ensure that the arguments have pre-pended spaces
     argv = cmd.argv_negative_fix(argv)
