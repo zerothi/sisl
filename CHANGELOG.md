@@ -12,6 +12,7 @@ we hit release version 1.0.0.
 
 ### Fixed
 - MacOS builds
+- `sdata` handling of siesta.PDOS* files, much more versatily now
 
 ## [0.12.0] - 2022-1-28
 ### Added
