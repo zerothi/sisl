@@ -121,8 +121,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-	  # we will not use the sisl-files for testing here
-	  # We will test these using testpypi below.
+          # we will not use the sisl-files for testing here
+          # We will test these using testpypi below.
           # we only need the latest commit
           fetch-depth: 1
 
