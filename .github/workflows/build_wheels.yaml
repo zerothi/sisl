@@ -1,0 +1,239 @@
+name: wheel creation
+
+# Change this to whatever you want
+on:
+  push:
+    tags:
+     - v*
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Which branch to build wheels for'
+        required: false
+        default: 'main'
+
+jobs:
+  # Build all the wheels with pypa/cibuildwheels
+  build_wheels:
+    name: Build wheel for cp${{ matrix.python }}-${{ matrix.platform_id }}-${{ matrix.manylinux_image }}
+    runs-on: ${{ matrix.os }}
+    # cibuildwheels already manages multiple python versions automatically
+    # by just detecting the os. However, it does everything in the same job
+    # and therefore in a serial manner. We build a matrix of operating systems
+    # and python versions so that builds are ran in parallel.
+    # The job matrix is basically copied from https://github.com/scikit-learn/scikit-learn/blob/main/.github/workflows/wheels.yml
+    strategy:
+      # If one of the jobs fails, continue with the others.
+      fail-fast: false
+      matrix:
+        include:
+          # Window 64 bit
+          - os: windows-latest
+            python: 37
+            bitness: 64
+            platform_id: win_amd64
+          - os: windows-latest
+            python: 38
+            bitness: 64
+            platform_id: win_amd64
+          - os: windows-latest
+            python: 39
+            bitness: 64
+            platform_id: win_amd64
+          - os: windows-latest
+            python: 310
+            bitness: 64
+            platform_id: win_amd64
+
+          # Linux 64 bit manylinux2014
+          - os: ubuntu-latest
+            python: 37
+            bitness: 64
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux2014
+          - os: ubuntu-latest
+            python: 38
+            bitness: 64
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux2014
+          - os: ubuntu-latest
+            python: 39
+            bitness: 64
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux2014
+
+          # Linux 64 bit manylinux2010
+          - os: ubuntu-latest
+            python: 37
+            bitness: 64
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux2010
+          - os: ubuntu-latest
+            python: 38
+            bitness: 64
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux2010
+          - os: ubuntu-latest
+            python: 39
+            bitness: 64
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux2010
+
+          # NumPy on Python 3.10 only supports 64bit and is only available with manylinux2014
+          - os: ubuntu-latest
+            python: 310
+            bitness: 64
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux2014
+
+          # MacOS x86_64
+          - os: macos-latest
+            bitness: 64
+            python: 37
+            platform_id: macosx_x86_64
+          - os: macos-latest
+            bitness: 64
+            python: 38
+            platform_id: macosx_x86_64
+          - os: macos-latest
+            bitness: 64
+            python: 39
+            platform_id: macosx_x86_64
+          - os: macos-latest
+            bitness: 64
+            python: 310
+            platform_id: macosx_x86_64
+
+          # MacOS arm64
+          # - os: macos-latest
+          #   bitness: 64
+          #   python: 38
+          #   platform_id: macosx_arm64
+          # - os: macos-latest
+          #   bitness: 64
+          #   python: 39
+          #   platform_id: macosx_arm64
+          # - os: macos-latest
+          #   bitness: 64
+          #   python: 310
+          #   platform_id: macosx_arm64
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+	  # we will not use the sisl-files for testing here
+	  # We will test these using testpypi below.
+          # we only need the latest commit
+          fetch-depth: 1
+
+      # Setup the fortran compiler. This is aware of the operating system.
+      - uses: awvwgk/setup-fortran@e6d2a1f7e1bad99a8adff6c46dd3c237dc14c7d2
+        id: setup-fortran
+        with:
+          compiler: gcc
+          version: 11
+      
+      # We use the cibuildwheel action to take care of everything
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.3.1
+        env:
+          # Specify the exact python-platform version that we want to build
+          # the wheel for.
+          CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
+          # The rest of options are specified at pyproject.toml
+      
+      # Upload the wheel to the action's articfact.
+      - uses: actions/upload-artifact@v2
+        with:
+          path: ./wheelhouse/*.whl
+
+  # Build the source distribution as well
+  build_sdist:
+    name: Build source distribution
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build sdist
+        run: pipx run build --sdist
+
+      - uses: actions/upload-artifact@v2
+        with:
+          path: dist/*.tar.gz
+  
+  # Upload to testpypi
+  upload_testpypi:
+    needs: [build_sdist, build_wheels]
+    name: Publish package to TestPyPI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: artifact
+          path: dist
+
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.TESTPYPI_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
+  
+  # Check that the testpypi installation works
+  test_testpypi:
+    needs: [upload_testpypi]
+    name: Test installation from TestPyPi
+    runs-on: ${{ matrix.os }}
+    strategy:
+      # If one of the jobs fails, continue with the others.
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+          - os: ubuntu-latest
+          - os: macos-latest
+    steps:
+      # Checkout sisl just to have sisl-files available
+      - name: Checkout sisl
+        uses: actions/checkout@v2
+        with:
+          ref: '${{ github.event.inputs.branch }}'
+          # The files submodule is required for tests purposes
+          submodules: true
+          # the 'files' submodule uses lfs
+          lfs: true
+          # we only need the latest commit
+          fetch-depth: 1
+
+      - name: Python installation
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.8"
+      
+      - name: Install sisl + dependencies
+        run: |
+          python -m pip install --index-url https://test.pypi.org/simple/ sisl[test]
+
+      - name: Test the installation
+        env:
+          SISL_FILES_TESTS: ${{ github.workspace }}/files/tests
+        run: |
+          pytest --pyargs sisl
+
+  # Upload to PyPI on every tag starting with 'v'
+  upload_pypi:
+    needs: [test_testpypi]
+    name: Publish package to Pypi
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
+    # alternatively, to publish when a GitHub Release is created, use the following rule:
+    # if: github.event_name == 'release' && github.event.action == 'published'
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: artifact
+          path: dist
+
+      - uses: pypa/gh-action-pypi-publish@v1.4.2
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_TOKEN }}
