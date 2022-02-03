@@ -52,8 +52,8 @@ def test_decorators1():
     p = argparse.ArgumentParser(description='SECOND DEFAULT')
     p = myArgParser(None, p)
     assert "SPBS" not in p.format_help()
-    assert "MY DEFAULT STUFF" not in p.format_help()
-    assert "SECOND DEFAULT" in p.format_help()
+    assert "MY DEFAULT STUFF" in p.format_help()
+    assert "SECOND DEFAULT" not in p.format_help()
 
 
 def test_decorators2():
