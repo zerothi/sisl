@@ -166,6 +166,9 @@ jobs:
     needs: [build_sdist, build_wheels]
     name: Publish package to TestPyPI
     runs-on: ubuntu-latest
+    env:
+	SETUPTOOLS_SCM_PRETEND_VERSION=0.0.1
+
     steps:
       - uses: actions/download-artifact@v2
         with:
@@ -183,6 +186,7 @@ jobs:
     needs: [upload_testpypi]
     name: Test installation from TestPyPi
     runs-on: ${{ matrix.os }}
+
     strategy:
       # If one of the jobs fails, continue with the others.
       fail-fast: false
@@ -211,7 +215,7 @@ jobs:
       
       - name: Install sisl + dependencies
         run: |
-          python -m pip install --index-url https://test.pypi.org/simple/ sisl[test]
+          python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ sisl[test]==0.0.1
 
       - name: Test the installation
         env:
