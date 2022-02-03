@@ -1,5 +1,5 @@
 ---
-name: sisl-ci
+name: Coverage test
 
 defaults:
   run:

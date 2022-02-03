@@ -1,5 +1,5 @@
 ---
-name: Build documentation + upload to gh-pages
+name: Documentation to gh-pages
 
 on:
   schedule:
