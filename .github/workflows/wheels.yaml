@@ -167,7 +167,7 @@ jobs:
     name: Publish package to TestPyPI
     runs-on: ubuntu-latest
     env:
-      SETUPTOOLS_SCM_PRETEND_VERSION=0.0.1
+      SETUPTOOLS_SCM_PRETEND_VERSION: 0.0.1
 
     steps:
       - uses: actions/download-artifact@v2
