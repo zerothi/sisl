@@ -68,15 +68,11 @@ class PlotMeta(ConfigurableMeta):
                 filename = args[0]
                 sile = sisl.get_sile(filename)
 
-                if sile.__class__ == sisl.io.siesta.fdfSileSiesta:
-                    kwargs["root_fdf"] = filename
-                    plot = cls(**kwargs)
+                if hasattr(sile, "plot"):
+                    plot = sile.plot(**{**kwargs, "method": plot_method})
                 else:
-                    if hasattr(sile, "plot"):
-                        plot = sile.plot(**{**kwargs, "method": plot_method})
-                    else:
-                        raise NotImplementedError(
-                            f'There is no plot implementation for {sile.__class__} yet.')
+                    raise NotImplementedError(
+                        f'There is no plot implementation for {sile.__class__} yet.')
             elif isinstance(args[0], Plot):
                 plot = args[0].update_settings(**kwargs)
             else:
