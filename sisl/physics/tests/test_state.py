@@ -251,30 +251,30 @@ def test_state_rotate():
 
     # Angles are 45 and -45
     s = state.copy()
-    assert pytest.approx(np.angle(s.state[0, 0]), np.pi / 4)
-    assert pytest.approx(np.angle(s.state[0, 1]), 0)
-    assert pytest.approx(np.angle(s.state[1, 0]) -np.pi / 4)
-    assert pytest.approx(np.angle(s.state[1, 1]), 0)
+    assert np.pi / 4 == pytest.approx(np.angle(s.state[0, 0]))
+    assert 0 == pytest.approx(np.angle(s.state[0, 1]))
+    assert -np.pi / 4 == pytest.approx(np.angle(s.state[1, 0]))
+    assert 0 == pytest.approx(np.angle(s.state[1, 1]))
 
     s.rotate() # individual false
-    assert pytest.approx(np.angle(s.state[0, 0]), 0)
-    assert pytest.approx(np.angle(s.state[0, 1]), -np.pi / 4)
-    assert pytest.approx(np.angle(s.state[1, 0]), -np.pi / 2)
-    assert pytest.approx(np.angle(s.state[1, 1]), -np.pi / 4)
+    assert 0 == pytest.approx(np.angle(s.state[0, 0]))
+    assert -np.pi / 4 == pytest.approx(np.angle(s.state[0, 1]))
+    assert -np.pi / 2 == pytest.approx(np.angle(s.state[1, 0]))
+    assert -np.pi / 4 == pytest.approx(np.angle(s.state[1, 1]))
 
     s = state.copy()
     s.rotate(individual=True)
-    assert pytest.approx(np.angle(s.state[0, 0]), 0)
-    assert pytest.approx(np.angle(s.state[0, 1]), -np.pi / 4)
-    assert pytest.approx(np.angle(s.state[1, 0]), 0)
-    assert pytest.approx(np.angle(s.state[1, 1]), np.pi / 4)
+    assert 0 == pytest.approx(np.angle(s.state[0, 0]))
+    assert -np.pi / 4 == pytest.approx(np.angle(s.state[0, 1]))
+    assert 0 == pytest.approx(np.angle(s.state[1, 0]))
+    assert np.pi / 4 == pytest.approx(np.angle(s.state[1, 1]))
 
     s = state.copy()
     s.rotate(np.pi / 4, individual=True)
-    assert pytest.approx(np.angle(s.state[0, 0]), np.pi / 4)
-    assert pytest.approx(np.angle(s.state[0, 1]), 0)
-    assert pytest.approx(np.angle(s.state[1, 0]), np.pi / 4)
-    assert pytest.approx(np.angle(s.state[1, 1]), np.pi / 2)
+    assert np.pi / 4 == pytest.approx(np.angle(s.state[0, 0]))
+    assert 0 == pytest.approx(np.angle(s.state[0, 1]))
+    assert np.pi / 4 == pytest.approx(np.angle(s.state[1, 0]))
+    assert np.pi / 2 == pytest.approx(np.angle(s.state[1, 1]))
 
 
 def test_cstate_creation():
