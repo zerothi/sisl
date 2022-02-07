@@ -760,7 +760,7 @@ class Session(Configurable, ShortCutable):
             keys are the plotable ID and values are info about each structure.
         """
         # Empty the plotables dictionary
-        self.warehouse["plotables"] = {}
+        plotables = {}
         path = Path(path or root_dir)
 
         # Get all the files that correspond to registered plotable siles
@@ -772,9 +772,11 @@ class Session(Configurable, ShortCutable):
             default_plot = SileClass.plot._default
 
             # Extend the plotables dict with the files that we find that belong to this sile
-            self.warehouse["plotables"] = {**self.warehouse["plotables"], **{
+            plotables = {**plotables, **{
                 str(uuid.uuid4()): {"name": path.name, "path": path, "plots": avail_plots, "default_plot": default_plot} for path in filepaths
             }}
+
+        self.warehouse["plotables"] = plotables
 
         #Avoid passing unnecessary info to the browser.
         return {id: {"id": id, **{k: plotable[k] for k in ["name", "path", "plots", "default_plot"]}, "chosenPlots": [plotable["default_plot"]]}
