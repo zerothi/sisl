@@ -17,13 +17,18 @@ on:
 env:
   SISL_BUILD_WINDOWS_WHEELS: ${{ false }}
 
-if: ${{ github.event.release.tag_name }} == ''
-  env:
-     SETUPTOOLS_SCM_PRETEND_VERSION: 0.0.1
-
 jobs:
+
+  define_version:
+   steps:
+      - name: Specify release version
+        if: not startsWith(github.ref, 'refs/tags/v')
+        run: |
+          echo "SETUPTOOLS_SCM_PRETEND_VERION=0.0.1" >> $GITHUB_ENV
+
   # Build all the wheels with pypa/cibuildwheels
   build_wheels:
+    needs: [define_version]
     name: Build wheel for cp${{ matrix.python }}-${{ matrix.platform_id }}-${{ matrix.manylinux_image }}
     runs-on: ${{ matrix.os }}
     # cibuildwheels already manages multiple python versions automatically
