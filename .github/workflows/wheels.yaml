@@ -12,6 +12,15 @@ on:
         required: false
         default: 'main'
 
+# Global parameter to turn on/off the windows builds
+# Easier than deleting/commenting out stuff
+env:
+  SISL_BUILD_WINDOWS_WHEELS: ${{ false }}
+
+if: ${{ github.event.release.tag_name }} == ''
+  env:
+     SETUPTOOLS_SCM_PRETEND_VERSION: 0.0.1
+
 jobs:
   # Build all the wheels with pypa/cibuildwheels
   build_wheels:
@@ -29,18 +38,22 @@ jobs:
         include:
           # Window 64 bit
           - os: windows-latest
+            if: ${{ env.SISL_BUILD_WINDOWS_WHEELS }}
             python: 37
             bitness: 64
             platform_id: win_amd64
           - os: windows-latest
+            if: ${{ env.SISL_BUILD_WINDOWS_WHEELS }}
             python: 38
             bitness: 64
             platform_id: win_amd64
           - os: windows-latest
+            if: ${{ env.SISL_BUILD_WINDOWS_WHEELS }}
             python: 39
             bitness: 64
             platform_id: win_amd64
           - os: windows-latest
+            if: ${{ env.SISL_BUILD_WINDOWS_WHEELS }}
             python: 310
             bitness: 64
             platform_id: win_amd64
@@ -166,9 +179,6 @@ jobs:
     needs: [build_sdist, build_wheels]
     name: Publish package to TestPyPI
     runs-on: ubuntu-latest
-    env:
-      SETUPTOOLS_SCM_PRETEND_VERSION: 0.0.1
-
     steps:
       - uses: actions/download-artifact@v2
         with:
@@ -193,6 +203,7 @@ jobs:
       matrix:
         include:
           - os: windows-latest
+            if: ${{ env.SISL_BUILD_WINDOWS_WHEELS }}
           - os: ubuntu-latest
           - os: macos-latest
     steps:
