@@ -19,13 +19,6 @@ env:
 
 jobs:
 
-  define_version:
-   steps:
-      - name: Specify release version
-        if: not startsWith(github.ref, 'refs/tags/v')
-        run: |
-          echo "SETUPTOOLS_SCM_PRETEND_VERION=0.0.1" >> $GITHUB_ENV
-
   # Build all the wheels with pypa/cibuildwheels
   build_wheels:
     needs: [define_version]
@@ -150,7 +143,12 @@ jobs:
         with:
           compiler: gcc
           version: 11
-      
+
+      - name: Specify release version
+        if: not startsWith(github.ref, 'refs/tags/v')
+        run: |
+          echo "SETUPTOOLS_SCM_PRETEND_VERION=0.0.1" >> $GITHUB_ENV
+
       # We use the cibuildwheel action to take care of everything
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.3.1
