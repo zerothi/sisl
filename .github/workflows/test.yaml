@@ -6,7 +6,6 @@ defaults:
     shell: bash
 
 env:
-  PYTHON_VERSION: 3.9
   CFLAGS: -Og
 
 on:
@@ -41,6 +40,9 @@ jobs:
     needs: [check_schedule]
     if: ${{ always() && (contains(needs.*.result, 'success') || contains(needs.*.result, 'skipped')) }}
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10']
 
     steps:
     - name: Checkout sisl
@@ -58,6 +60,7 @@ jobs:
       run: |
         echo "branch: ${{ github.event.inputs.branch }}"
         echo "hash: ${{ github.sha }}"
+        echo "python-version: ${{ matrix.python-version }}"
 
     # This should generally not be required, but in the end it is just easier
     - name: Ensure system dependencies
@@ -68,7 +71,7 @@ jobs:
     - name: Python installation
       uses: actions/setup-python@v2
       with:
-        python-version: ${{ env.PYTHON_VERSION }}
+        python-version: ${{ matrix.python-version }}
 
     - name: Install sisl + dependencies
       run: |
