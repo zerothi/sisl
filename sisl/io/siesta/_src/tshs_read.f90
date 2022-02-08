@@ -25,6 +25,10 @@ subroutine read_tshs_version(fname, version)
     ! we have a version
     rewind(iu)
     read(iu, iostat=ierr) version
+    if ( version /= 1 ) then
+      ! Signal we do not know about this file
+      call iostat_update(-1)
+    end if
   else
     version = 0
   end if
