@@ -16,7 +16,6 @@ jobs:
 
   # Build all the wheels with pypa/cibuildwheels
   build_wheels:
-    needs: [define_version]
     name: Build wheel for cp${{ matrix.python }}-${{ matrix.platform_id }}-${{ matrix.manylinux_image }}
     runs-on: ${{ matrix.os }}
     # cibuildwheels already manages multiple python versions automatically
