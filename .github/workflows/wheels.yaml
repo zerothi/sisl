@@ -12,11 +12,6 @@ on:
         required: false
         default: 'main'
 
-# Global parameter to turn on/off the windows builds
-# Easier than deleting/commenting out stuff
-env:
-  SISL_BUILD_WINDOWS_WHEELS: ${{ false }}
-
 jobs:
 
   # Build all the wheels with pypa/cibuildwheels
@@ -34,27 +29,23 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # Window 64 bit
-          - os: windows-latest
-            if: ${{ env.SISL_BUILD_WINDOWS_WHEELS }}
-            python: 37
-            bitness: 64
-            platform_id: win_amd64
-          - os: windows-latest
-            if: ${{ env.SISL_BUILD_WINDOWS_WHEELS }}
-            python: 38
-            bitness: 64
-            platform_id: win_amd64
-          - os: windows-latest
-            if: ${{ env.SISL_BUILD_WINDOWS_WHEELS }}
-            python: 39
-            bitness: 64
-            platform_id: win_amd64
-          - os: windows-latest
-            if: ${{ env.SISL_BUILD_WINDOWS_WHEELS }}
-            python: 310
-            bitness: 64
-            platform_id: win_amd64
+          ## Window 64 bit
+          #- os: windows-latest
+          #  python: 37
+          #  bitness: 64
+          #  platform_id: win_amd64
+          #- os: windows-latest
+          #  python: 38
+          #  bitness: 64
+          #  platform_id: win_amd64
+          #- os: windows-latest
+          #  python: 39
+          #  bitness: 64
+          #  platform_id: win_amd64
+          #- os: windows-latest
+          #  python: 310
+          #  bitness: 64
+          #  platform_id: win_amd64
 
           # Linux 64 bit manylinux2014
           - os: ubuntu-latest
