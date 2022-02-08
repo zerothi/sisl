@@ -6,7 +6,10 @@ from functools import partial
 import itertools
 
 import numpy as np
-import xarray as xr
+try:
+    import xarray as xr
+except ModuleNotFoundError:
+    pass
 
 import sisl
 from sisl.physics.brillouinzone import BrillouinZone
