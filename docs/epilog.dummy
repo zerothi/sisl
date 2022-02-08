@@ -10,8 +10,8 @@
 
 .. These are external links:
 .. _MPL: https://www.mozilla.org/en-US/MPL/2.0/
+.. _Cython: https://cython.org/
 .. _Python: https://www.python.org/
-.. _setuptools: https://pypi.python.org/pypi/setuptools
 .. _NetCDF: https://www.unidata.ucar.edu/netcdf
 .. _netcdf4-py: http://github.com/Unidata/netcdf4-python
 .. _numpy: http://www.numpy.org/

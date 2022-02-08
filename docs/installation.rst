@@ -9,10 +9,8 @@ sisl is easy to install using any of your preferred methods.
 Required dependencies
 ---------------------
 
-For installation some basic packages are required:
+For source installations some basic packages are required:
 
-- `setuptools`_
-- `setuptools_scm`_
 - `Cython`_
 - C compiler
 - fortran compiler
