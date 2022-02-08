@@ -21,21 +21,23 @@ class BlenderGridBackend(BlenderBackend, GridBackend):
             obj = bpy.data.objects.new(mesh.name, mesh)
 
             col.objects.link(obj)
-            bpy.context.view_layer.objects.active = obj
+            #bpy.context.view_layer.objects.active = obj
 
             edges = []
             mesh.from_pydata(isosurf["vertices"], edges, isosurf["faces"].tolist())
 
-            mat = bpy.data.materials.new("material")
-            mat.use_nodes = True
+            self._color_obj(obj, isosurf["color"], isosurf['opacity'])
 
-            color = self._to_rgb_color(isosurf["color"])
+            # mat = bpy.data.materials.new("material")
+            # mat.use_nodes = True
 
-            if color is not None:
-                mat.node_tree.nodes["Principled BSDF"].inputs[0].default_value = (*color, 1)
+            # color = self._to_rgb_color(isosurf["color"])
 
-            mat.node_tree.nodes["Principled BSDF"].inputs[19].default_value = isosurf["opacity"]
+            # if color is not None:
+            #     mat.node_tree.nodes["Principled BSDF"].inputs[0].default_value = (*color, 1)
 
-            mesh.materials.append(mat)
+            # mat.node_tree.nodes["Principled BSDF"].inputs[19].default_value = isosurf["opacity"]
+
+            # mesh.materials.append(mat)
 
 GridPlot.backends.register("blender", BlenderGridBackend)
