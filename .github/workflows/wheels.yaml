@@ -195,7 +195,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          #- os: windows-latest
+          - os: windows-latest
+            if: ${{ env.SISL_BUILD_WINDOWS_WHEELS }}
           - os: ubuntu-latest
           - os: macos-latest
     steps:
