@@ -170,6 +170,7 @@ jobs:
   # Upload to testpypi
   upload_testpypi:
     needs: [build_sdist, build_wheels]
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
     name: Publish package to TestPyPI
     runs-on: ubuntu-latest
     steps:
@@ -218,7 +219,7 @@ jobs:
       
       - name: Install sisl + dependencies
         run: |
-          python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ sisl[test]==0.0.1
+          python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ sisl[test]
 
       - name: Test the installation
         env:
@@ -231,7 +232,7 @@ jobs:
     needs: [test_testpypi]
     name: Publish package to Pypi
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
     # alternatively, to publish when a GitHub Release is created, use the following rule:
     # if: github.event_name == 'release' && github.event.action == 'published'
     steps:
