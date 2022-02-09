@@ -179,9 +179,6 @@ jobs:
           password: ${{ secrets.TESTPYPI_TOKEN }}
           repository_url: https://test.pypi.org/legacy/
 
-      - name: Sleep for upload
-        run: sleep 10
-  
   # Check that the testpypi installation works
   test_testpypi:
     needs: [upload_testpypi]
@@ -208,11 +205,13 @@ jobs:
         with:
           python-version: "3.8"
       
+      # We should also wait for index to update on remote server
       - name: Install sisl + dependencies
         run: |
+          sleep 10
           version=${GITHUB_REF#refs/*/v}
           version=${version#refs/*/}
-          python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ sisl[test]==${version}
+          python -m pip install --find-links dist --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ sisl[test]==${version}
 
       - name: Test the installation
         run: |
