@@ -200,18 +200,6 @@ jobs:
           - os: ubuntu-latest
           - os: macos-latest
     steps:
-      # Checkout sisl just to have sisl-files available
-      - name: Checkout sisl
-        uses: actions/checkout@v2
-        with:
-          ref: '${{ github.event.inputs.branch }}'
-          # The files submodule is required for tests purposes
-          submodules: true
-          # the 'files' submodule uses lfs
-          lfs: true
-          # we only need the latest commit
-          fetch-depth: 1
-
       - name: Python installation
         uses: actions/setup-python@v2
         with:
@@ -222,8 +210,6 @@ jobs:
           python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ sisl[test]
 
       - name: Test the installation
-        env:
-          SISL_FILES_TESTS: ${{ github.workspace }}/files/tests
         run: |
           pytest --pyargs sisl
 
