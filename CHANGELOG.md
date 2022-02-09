@@ -7,12 +7,17 @@ we hit release version 1.0.0.
 
 ## [0.12.1] - YYYY-MM-DD
 
+
+## [0.12.1rc1] - 2022-2-9
+
 ### Added
 - read_fermi_level to siesta.PDOS files
 
 ### Fixed
 - MacOS builds
 - `sdata` handling of siesta.PDOS* files, much more versatily now
+- masking import of xarray
+- Fixes to sisl.viz module related to 3.10 and other details
 
 ## [0.12.0] - 2022-1-28
 ### Added
