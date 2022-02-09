@@ -178,6 +178,9 @@ jobs:
           user: __token__
           password: ${{ secrets.TESTPYPI_TOKEN }}
           repository_url: https://test.pypi.org/legacy/
+
+      - name: Sleep for upload
+        run: sleep 10
   
   # Check that the testpypi installation works
   test_testpypi:
