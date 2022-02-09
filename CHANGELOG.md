@@ -7,6 +7,8 @@ we hit release version 1.0.0.
 
 ## [0.12.1] - YYYY-MM-DD
 
+### Added
+- return spin moment from SCF output files of Siesta
 
 ## [0.12.1rc1] - 2022-2-9
 
