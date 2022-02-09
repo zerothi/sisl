@@ -9,7 +9,7 @@ import numpy as np
 from numpy import atleast_1d, atleast_2d
 from scipy.linalg.blas import get_blas_funcs
 from scipy.linalg.lapack import get_lapack_funcs
-from scipy.linalg.misc import LinAlgError
+from scipy.linalg import LinAlgError
 from scipy._lib._util import _asarray_validated
 import scipy.linalg as sl
 import scipy.sparse.linalg as ssl
