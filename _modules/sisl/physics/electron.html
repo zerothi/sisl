@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.electron &mdash; sisl 0.1.dev1+ga8efd77 documentation</title>
+  <title>sisl.physics.electron &mdash; sisl 0.1.dev1+g75a34d6 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+ga8efd77
+                0.1.dev1+g75a34d6
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -1065,6 +1065,7 @@
 
         <span class="c1"># Convert the dimensions from S/m^D to S/cm^D</span>
         <span class="n">cond</span> <span class="o">/=</span> <span class="n">vol</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ang^</span><span class="si">{</span><span class="n">dim</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;cm^</span><span class="si">{</span><span class="n">dim</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;conductivity: be aware that the units are currently not tested, please provide feedback!&quot;</span><span class="p">)</span>
 
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span><span class="s2">&quot;conductivity: requires the method to be [ahc]&quot;</span><span class="p">)</span>

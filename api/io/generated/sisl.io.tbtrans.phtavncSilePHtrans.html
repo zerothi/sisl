@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.tbtrans.phtavncSilePHtrans &mdash; sisl 0.1.dev1+ga8efd77 documentation</title>
+  <title>sisl.io.tbtrans.phtavncSilePHtrans &mdash; sisl 0.1.dev1+g75a34d6 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+ga8efd77
+                0.1.dev1+g75a34d6
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -814,7 +814,7 @@ One may figure out the connections via <code class="xref py py-obj docutils lite
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>COHP</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.7.1)"><em>scipy.sparse.csr_matrix</em></a>) – the orbital COHP as retrieved from <a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.orbital_COHP" title="sisl.io.tbtrans.phtavncSilePHtrans.orbital_COHP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orbital_COHP</span></code></a> or <a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.orbital_ACOHP" title="sisl.io.tbtrans.phtavncSilePHtrans.orbital_ACOHP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orbital_ACOHP</span></code></a></p></li>
+<li><p><strong>COHP</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.8.0)"><em>scipy.sparse.csr_matrix</em></a>) – the orbital COHP as retrieved from <a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.orbital_COHP" title="sisl.io.tbtrans.phtavncSilePHtrans.orbital_COHP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orbital_COHP</span></code></a> or <a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.orbital_ACOHP" title="sisl.io.tbtrans.phtavncSilePHtrans.orbital_ACOHP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orbital_ACOHP</span></code></a></p></li>
 <li><p><strong>uc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the returned COHP are only in the unit-cell.
 If <code class="docutils literal notranslate"><span class="pre">True</span></code> this will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na)</span></code>,
 else, it will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na</span> <span class="pre">*</span> <span class="pre">self.n_s)</span></code>.
@@ -884,7 +884,7 @@ One may figure out the connections via <code class="xref py py-obj docutils lite
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>COOP</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.7.1)"><em>scipy.sparse.csr_matrix</em></a>) – the orbital COOP as retrieved from <a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.orbital_COOP" title="sisl.io.tbtrans.phtavncSilePHtrans.orbital_COOP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orbital_COOP</span></code></a> or <a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.orbital_ACOOP" title="sisl.io.tbtrans.phtavncSilePHtrans.orbital_ACOOP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orbital_ACOOP</span></code></a></p></li>
+<li><p><strong>COOP</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.8.0)"><em>scipy.sparse.csr_matrix</em></a>) – the orbital COOP as retrieved from <a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.orbital_COOP" title="sisl.io.tbtrans.phtavncSilePHtrans.orbital_COOP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orbital_COOP</span></code></a> or <a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.orbital_ACOOP" title="sisl.io.tbtrans.phtavncSilePHtrans.orbital_ACOOP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orbital_ACOOP</span></code></a></p></li>
 <li><p><strong>uc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the returned COOP are only in the unit-cell.
 If <code class="docutils literal notranslate"><span class="pre">True</span></code> this will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na)</span></code>,
 else, it will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na</span> <span class="pre">*</span> <span class="pre">self.n_s)</span></code>.
@@ -963,7 +963,7 @@ it will have a larger activity current.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>Jij</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.7.1)"><em>scipy.sparse.csr_matrix</em></a>) – the orbital currents as retrieved from <a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.orbital_current" title="sisl.io.tbtrans.phtavncSilePHtrans.orbital_current"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orbital_current</span></code></a></p></li>
+<li><p><strong>Jij</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.8.0)"><em>scipy.sparse.csr_matrix</em></a>) – the orbital currents as retrieved from <a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.orbital_current" title="sisl.io.tbtrans.phtavncSilePHtrans.orbital_current"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orbital_current</span></code></a></p></li>
 <li><p><strong>activity</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code> to return the activity current, see explanation above</p></li>
 </ul>
 </dd>
@@ -1064,7 +1064,7 @@ all <span class="math notranslate nohighlight">\(J_{\nu\mu}\)</span> are summed 
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>Jij</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.7.1)"><em>scipy.sparse.csr_matrix</em></a>) – the orbital currents as retrieved from <a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.orbital_current" title="sisl.io.tbtrans.phtavncSilePHtrans.orbital_current"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orbital_current</span></code></a></p></li>
+<li><p><strong>Jij</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.8.0)"><em>scipy.sparse.csr_matrix</em></a>) – the orbital currents as retrieved from <a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.orbital_current" title="sisl.io.tbtrans.phtavncSilePHtrans.orbital_current"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orbital_current</span></code></a></p></li>
 <li><p><strong>only</strong> (<em>{'+'</em><em>, </em><em>'-'</em><em>, </em><em>'all'}</em>) – If “+” is supplied only the positive orbital currents are used,
 for “-”, only the negative orbital currents are used,
 else return both.</p></li>
@@ -1577,7 +1577,7 @@ other are set to 0.</p></li>
 <dt class="sig sig-object py" id="sisl.io.tbtrans.phtavncSilePHtrans.orbital_ACOOP">
 <span class="sig-name descname"><span class="pre">orbital_ACOOP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.phtavncSilePHtrans.orbital_ACOOP" title="Permalink to this definition"></a></dt>
 <dd><p>Orbital COOP analysis of the spectral function</p>
-<p>This will return a sparse matrix, see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">csr_matrix</span></code></a> for details.
+<p>This will return a sparse matrix, see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.8.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">csr_matrix</span></code></a> for details.
 Each matrix element of the sparse matrix corresponds to the COOP of the
 underlying geometry.</p>
 <p>The COOP analysis can be written as:</p>
@@ -2115,7 +2115,7 @@ Passed directly to <a class="reference internal" href="#sisl.io.tbtrans.phtavncS
 <span class="math notranslate nohighlight">\(r_\alpha\)</span> are the atomic coordinates.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>Jab</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.7.1)"><em>scipy.sparse.csr_matrix</em></a>) – the bond currents as retrieved from <a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.bond_current" title="sisl.io.tbtrans.phtavncSilePHtrans.bond_current"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bond_current</span></code></a></p>
+<dd class="field-odd"><p><strong>Jab</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.8.0)"><em>scipy.sparse.csr_matrix</em></a>) – the bond currents as retrieved from <a class="reference internal" href="#sisl.io.tbtrans.phtavncSilePHtrans.bond_current" title="sisl.io.tbtrans.phtavncSilePHtrans.bond_current"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bond_current</span></code></a></p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>array of vectors per atom in the Geometry (only non-zero for device atoms)</p>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.state &mdash; sisl 0.1.dev1+ga8efd77 documentation</title>
+  <title>sisl.physics.state &mdash; sisl 0.1.dev1+g75a34d6 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+ga8efd77
+                0.1.dev1+g75a34d6
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -684,9 +684,28 @@
 <span class="sd">               \big[\sum_\nu |\psi_{i\nu}|^2\big]^q}</span>
 
 <span class="sd">        where :math:`i` is the band index and :math:`\nu` is the orbital.</span>
-<span class="sd">        The order of the IPR is defaulted to :math:`q=2`.</span>
+<span class="sd">        The order of the IPR is defaulted to :math:`q=2`, see :eq:`ipr2` for details.</span>
 <span class="sd">        The IPR may be used to distinguish Anderson localization and extended</span>
-<span class="sd">        states, see [1]_ for details.</span>
+<span class="sd">        states:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">           :nowrap:</span>
+<span class="sd">           :label: ipr2</span>
+
+<span class="sd">           \begin{align}</span>
+<span class="sd">           \lim_{L\to\infty} I_{2,i} = \left\{\begin{aligned}</span>
+<span class="sd">                1/L^d &amp; \text{extended state}</span>
+<span class="sd">                \\</span>
+<span class="sd">                const. &amp; \text{localized state}</span>
+<span class="sd">               \end{aligned}</span>
+<span class="sd">           \end{align}</span>
+
+<span class="sd">        For further details see [1]_. Note that for eigen states the IPR reduces to:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            I_{q,i} = \sum_\nu |\psi_{i\nu}|^{2q}</span>
+
+<span class="sd">        since the denominator is :math:`1^{q} = 1`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -699,7 +718,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># This *has* to be a real value C * C^* == real</span>
         <span class="n">state_abs2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm2</span><span class="p">(</span><span class="nb">sum</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
-        <span class="k">assert</span> <span class="n">q</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.ipr requires q&gt;=1&quot;</span>
+        <span class="k">assert</span> <span class="n">q</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.ipr requires q&gt;=2&quot;</span>
+        <span class="c1"># abs2 is already having the exponent 2</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">state_abs2</span> <span class="o">**</span> <span class="n">q</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">state_abs2</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="n">q</span></div>
 
 <div class="viewcode-block" id="State.normalize"><a class="viewcode-back" href="../../../api/generated/sisl.physics.State.html#sisl.physics.State.normalize">[docs]</a>    <span class="k">def</span> <span class="nf">normalize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

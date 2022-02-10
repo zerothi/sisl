@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.out &mdash; sisl 0.1.dev1+ga8efd77 documentation</title>
+  <title>sisl.io.siesta.out &mdash; sisl 0.1.dev1+g75a34d6 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+ga8efd77
+                0.1.dev1+g75a34d6
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -767,7 +767,7 @@
         <span class="k">return</span> <span class="n">val</span></div>
 
 <div class="viewcode-block" id="outSileSiesta.read_scf"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.outSileSiesta.html#sisl.io.siesta.outSileSiesta.read_scf">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">read_scf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;scf&quot;</span><span class="p">,</span> <span class="n">iscf</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">imd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">as_dataframe</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_scf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;scf&quot;</span><span class="p">,</span> <span class="n">iscf</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">imd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">as_dataframe</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ret_header</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Parse SCF information and return a table of SCF information depending on what is requested</span>
 
 <span class="sd">        Parameters</span>
@@ -785,6 +785,9 @@
 <span class="sd">            whether the information should be returned as a `pandas.DataFrame`. The advantage of this</span>
 <span class="sd">            format is that everything is indexed and therefore you know what each value means.You can also</span>
 <span class="sd">            perform operations very easily on a dataframe. </span>
+<span class="sd">        ret_header: bool, optional</span>
+<span class="sd">            whether to also return the headers that define each value in the returned array,</span>
+<span class="sd">            will have no effect if `as_dataframe` is true.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1">#These are the properties that are written in SIESTA scf</span>
@@ -805,14 +808,31 @@
 
         <span class="k">def</span> <span class="nf">common_parse</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;ts-Vha:&#39;</span><span class="p">):</span>
-                <span class="n">d</span><span class="p">[</span><span class="s1">&#39;ts-Vha&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">d</span><span class="p">[</span><span class="s1">&#39;ts-Vha&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])]</span>
+                <span class="k">if</span> <span class="s1">&#39;ts-Vha&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">props</span><span class="p">:</span>
+                    <span class="n">d</span><span class="p">[</span><span class="s1">&#39;order&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;ts-Vha&quot;</span><span class="p">)</span>
+                    <span class="n">props</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;ts-Vha&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;spin moment: S&quot;</span><span class="p">):</span>
+                <span class="c1"># 4.1 and earlier</span>
+                <span class="n">d</span><span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]))</span>
+                <span class="k">if</span> <span class="s1">&#39;Sx&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">props</span><span class="p">:</span>
+                    <span class="n">d</span><span class="p">[</span><span class="s1">&#39;order&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;S&quot;</span><span class="p">)</span>
+                    <span class="n">props</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;Sx&#39;</span><span class="p">,</span> <span class="s1">&#39;Sy&#39;</span><span class="p">,</span> <span class="s1">&#39;Sz&#39;</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;spin moment: </span><span class="si">{S}</span><span class="s2">&quot;</span><span class="p">):</span>
+                <span class="c1"># 4.2 and later</span>
+                <span class="n">d</span><span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;= {&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[:</span><span class="mi">3</span><span class="p">]))</span>
+                <span class="k">if</span> <span class="s1">&#39;Sx&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">props</span><span class="p">:</span>
+                    <span class="n">d</span><span class="p">[</span><span class="s1">&#39;order&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;S&quot;</span><span class="p">)</span>
+                    <span class="n">props</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;Sx&#39;</span><span class="p">,</span> <span class="s1">&#39;Sy&#39;</span><span class="p">,</span> <span class="s1">&#39;Sz&#39;</span><span class="p">])</span>
             <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;bulk-bias: |v&#39;</span><span class="p">):</span>
                 <span class="n">d</span><span class="p">[</span><span class="s1">&#39;bb-v&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]))</span>
-                <span class="k">if</span> <span class="s1">&#39;bb-vx&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">props</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s1">&#39;BB-vx&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">props</span><span class="p">:</span>
+                    <span class="n">d</span><span class="p">[</span><span class="s1">&#39;order&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;bb-v&quot;</span><span class="p">)</span>
                     <span class="n">props</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;BB-vx&#39;</span><span class="p">,</span> <span class="s1">&#39;BB-vy&#39;</span><span class="p">,</span> <span class="s1">&#39;BB-vz&#39;</span><span class="p">])</span>
             <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;bulk-bias: {q&#39;</span><span class="p">):</span>
                 <span class="n">d</span><span class="p">[</span><span class="s1">&#39;bb-q&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]))</span>
-                <span class="k">if</span> <span class="s1">&#39;bb-q+&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">props</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s1">&#39;BB-q+&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">props</span><span class="p">:</span>
+                    <span class="n">d</span><span class="p">[</span><span class="s1">&#39;order&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;bb-q&quot;</span><span class="p">)</span>
                     <span class="n">props</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;BB-q+&#39;</span><span class="p">,</span> <span class="s1">&#39;BB-q-&#39;</span><span class="p">,</span> <span class="s1">&#39;BB-q0&#39;</span><span class="p">])</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">False</span>
@@ -840,10 +860,9 @@
                         <span class="c1"># Populate DATA by splitting</span>
                         <span class="n">data</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
                         <span class="n">data</span> <span class="o">=</span>  <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">:]))</span>
-                    <span class="n">d</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+                    <span class="n">construct_data</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 
         <span class="k">elif</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;ts-scf&#39;</span><span class="p">:</span>
-            <span class="n">props</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;ts-Vha&quot;</span><span class="p">)</span>
             <span class="k">def</span> <span class="nf">parse_next</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)</span>
                 <span class="n">reset_d</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
@@ -864,23 +883,29 @@
                     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="mi">100</span><span class="p">:</span>
                         <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">12</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">12</span><span class="p">:</span><span class="mi">28</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">28</span><span class="p">:</span><span class="mi">44</span><span class="p">]),</span>
                                 <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">44</span><span class="p">:</span><span class="mi">60</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">60</span><span class="p">:</span><span class="mi">70</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">70</span><span class="p">:</span><span class="mi">80</span><span class="p">]),</span>
-                                <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">80</span><span class="p">:</span><span class="mi">90</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">90</span><span class="p">:</span><span class="mi">100</span><span class="p">]),</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;ts-Vha&#39;</span><span class="p">]]</span> <span class="o">+</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;ts-q&#39;</span><span class="p">]</span>
+                                <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">80</span><span class="p">:</span><span class="mi">90</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">90</span><span class="p">:</span><span class="mi">100</span><span class="p">])]</span>
                     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="mi">90</span><span class="p">:</span>
                         <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">12</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">12</span><span class="p">:</span><span class="mi">28</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">28</span><span class="p">:</span><span class="mi">44</span><span class="p">]),</span>
                                 <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">44</span><span class="p">:</span><span class="mi">60</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">60</span><span class="p">:</span><span class="mi">70</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">70</span><span class="p">:</span><span class="mi">80</span><span class="p">]),</span>
-                                <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">80</span><span class="p">:</span><span class="mi">90</span><span class="p">]),</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;ts-Vha&#39;</span><span class="p">]]</span> <span class="o">+</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;ts-q&#39;</span><span class="p">]</span>
+                                <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">80</span><span class="p">:</span><span class="mi">90</span><span class="p">])]</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="c1"># Populate DATA by splitting</span>
                         <span class="n">data</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-                        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">:]))</span> <span class="o">+</span> <span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;ts-Vha&#39;</span><span class="p">]]</span> <span class="o">+</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;ts-q&#39;</span><span class="p">]</span>
-                    <span class="n">d</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">:]))</span>
+                    <span class="n">construct_data</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 
         <span class="c1"># A temporary dictionary to hold information while reading the output file</span>
         <span class="n">d</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;_found_iscf&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
             <span class="s1">&#39;_final_iscf&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
             <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s1">&#39;order&#39;</span><span class="p">:</span> <span class="p">[],</span>
         <span class="p">}</span>
+        <span class="k">def</span> <span class="nf">construct_data</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;order&quot;</span><span class="p">]:</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+            <span class="n">d</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+
         <span class="n">md</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">scf</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
@@ -968,11 +993,13 @@
                     <span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="s2">&quot;iscf&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">df</span>
 
-            <span class="k">if</span> <span class="n">iscf</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">iscf</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="c1"># since each MD step may be a different number of SCF steps</span>
-                <span class="c1"># we cannot convert to a dense array</span>
-                <span class="k">return</span> <span class="n">md</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">md</span><span class="p">)</span>
+                <span class="c1"># we can only convert for a specific entry</span>
+                <span class="n">md</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">md</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ret_header</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">md</span><span class="p">,</span> <span class="n">props</span>
+            <span class="k">return</span> <span class="n">md</span>
 
         <span class="c1"># correct imd to ensure we check against the final size</span>
         <span class="n">imd</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">md</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">md</span><span class="p">)</span> <span class="o">+</span> <span class="n">imd</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
@@ -981,7 +1008,10 @@
             <span class="k">if</span> <span class="n">as_dataframe</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;iscf&quot;</span><span class="p">),</span>
                                     <span class="n">columns</span><span class="o">=</span><span class="n">props</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="n">imd</span><span class="p">])</span>
+            <span class="n">md</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="n">imd</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">ret_header</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">md</span><span class="p">,</span> <span class="n">props</span>
+            <span class="k">return</span> <span class="n">md</span>
 
         <span class="k">if</span> <span class="n">imd</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">md</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.read_scf could not find requested MD step (</span><span class="si">{</span><span class="n">imd</span><span class="si">}</span><span class="s2">).&quot;</span><span class="p">)</span>
@@ -991,6 +1021,8 @@
         <span class="n">scf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="n">imd</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">as_dataframe</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">MDstep_dataframe</span><span class="p">(</span><span class="n">scf</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ret_header</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">scf</span><span class="p">,</span> <span class="n">props</span>
         <span class="k">return</span> <span class="n">scf</span></div>
 
 <div class="viewcode-block" id="outSileSiesta.read_charge"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.outSileSiesta.html#sisl.io.siesta.outSileSiesta.read_charge">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>

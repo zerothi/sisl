@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.tbtrans.tbt &mdash; sisl 0.1.dev1+ga8efd77 documentation</title>
+  <title>sisl.io.tbtrans.tbt &mdash; sisl 0.1.dev1+g75a34d6 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+ga8efd77
+                0.1.dev1+g75a34d6
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -452,9 +452,9 @@
         <span class="c1"># Cast to lower</span>
         <span class="n">norm</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">norm</span> <span class="o">==</span> <span class="s1">&#39;none&#39;</span><span class="p">:</span>
-            <span class="n">NORM</span> <span class="o">=</span> <span class="mf">1.</span>
+            <span class="n">NORM</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">elif</span> <span class="n">norm</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="s1">&#39;atom&#39;</span><span class="p">,</span> <span class="s1">&#39;orbital&#39;</span><span class="p">]:</span>
-            <span class="n">NORM</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">no_d</span><span class="p">)</span>
+            <span class="n">NORM</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">no_d</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.norm error on norm keyword in when requesting normalization!&quot;</span><span class="p">)</span>
 
@@ -466,12 +466,12 @@
         <span class="k">if</span> <span class="n">atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># Get pivoting indices to average over</span>
             <span class="k">if</span> <span class="n">norm</span> <span class="o">==</span> <span class="s1">&#39;orbital&#39;</span><span class="p">:</span>
-                <span class="n">NORM</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">o2p</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)))</span>
+                <span class="n">NORM</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">o2p</span><span class="p">(</span><span class="n">orbitals</span><span class="p">))</span>
             <span class="k">elif</span> <span class="n">norm</span> <span class="o">==</span> <span class="s1">&#39;atom&#39;</span><span class="p">:</span>
                 <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span>
                 <span class="n">a</span> <span class="o">=</span> <span class="n">unique</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">orbitals</span><span class="p">))</span>
                 <span class="c1"># Now sum the orbitals per atom</span>
-                <span class="n">NORM</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">_a</span><span class="o">.</span><span class="n">sumi</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">firsto</span><span class="p">[</span><span class="n">a</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">geom</span><span class="o">.</span><span class="n">firsto</span><span class="p">[</span><span class="n">a</span><span class="p">]))</span>
+                <span class="n">NORM</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">orbitals</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
             <span class="k">return</span> <span class="n">NORM</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">orbitals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -480,8 +480,8 @@
         <span class="c1"># atom is specified, this will result in the same normalization</span>
         <span class="c1"># regardless of norm == [orbital, atom] since it is all orbitals</span>
         <span class="c1"># on the given atoms.</span>
-        <span class="k">if</span> <span class="n">norm</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;orbital&#39;</span><span class="p">,</span> <span class="s1">&#39;atom&#39;</span><span class="p">]:</span>
-            <span class="n">NORM</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a2p</span><span class="p">(</span><span class="n">atoms</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="n">norm</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;orbital&quot;</span><span class="p">,</span> <span class="s2">&quot;atom&quot;</span><span class="p">):</span>
+            <span class="n">NORM</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a2p</span><span class="p">(</span><span class="n">atoms</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">NORM</span></div>
 

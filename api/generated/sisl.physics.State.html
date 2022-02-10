@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.State &mdash; sisl 0.1.dev1+ga8efd77 documentation</title>
+  <title>sisl.physics.State &mdash; sisl 0.1.dev1+g75a34d6 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+ga8efd77
+                0.1.dev1+g75a34d6
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -420,9 +420,20 @@ product with itself. The object itself will always be the bra <span class="math 
 \[I_{q,i} = \frac{\sum_\nu |\psi_{i\nu}|^{2q}}{
    \big[\sum_\nu |\psi_{i\nu}|^2\big]^q}\]</div>
 <p>where <span class="math notranslate nohighlight">\(i\)</span> is the band index and <span class="math notranslate nohighlight">\(\nu\)</span> is the orbital.
-The order of the IPR is defaulted to <span class="math notranslate nohighlight">\(q=2\)</span>.
+The order of the IPR is defaulted to <span class="math notranslate nohighlight">\(q=2\)</span>, see <a class="reference internal" href="sisl.physics.phonon.ModePhonon.html#equation-ipr2">(1)</a> for details.
 The IPR may be used to distinguish Anderson localization and extended
-states, see <a class="footnote-reference brackets" href="#id2" id="id1">1</a> for details.</p>
+states:</p>
+<div class="math notranslate nohighlight" id="equation-ipr2">
+\begin{align}
+\lim_{L\to\infty} I_{2,i} = \left\{\begin{aligned}
+     1/L^d &amp; \text{extended state}
+     \\
+     const. &amp; \text{localized state}
+    \end{aligned}
+\end{align}</div><p>For further details see <a class="footnote-reference brackets" href="#id2" id="id1">1</a>. Note that for eigen states the IPR reduces to:</p>
+<div class="math notranslate nohighlight">
+\[I_{q,i} = \sum_\nu |\psi_{i\nu}|^{2q}\]</div>
+<p>since the denominator is <span class="math notranslate nohighlight">\(1^{q} = 1\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>q</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – order parameter for the IPR</p>
