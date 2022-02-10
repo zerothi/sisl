@@ -2,17 +2,17 @@ cff-version: 1.2.0
 message: "If you use the sisl software, please cite it as below."
 type: software
 authors:
-  - family-names: "Papior"
-    given-names: "Nick"
-    orcid: "https://orcid.org/0000-0003-3038-1855"
-title: "sisl"
+  - family-names: Papior
+    given-names: Nick
+    orcid: https://orcid.org/0000-0003-3038-1855
+title: sisl
 version: "0.12.1"
 doi: 10.5281/zenodo.597181
 url: https://github.com/zerothi/sisl
 repository-code: https://github.com/zerothi/sisl
 license: MPL-2.0
 commit: "$Format:%H$"
-date-released: "$Format:%ci$"
+date-released: "$Format:%cs$"
 keywords:
   - physics
   - tight-binding
