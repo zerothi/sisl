@@ -7,6 +7,10 @@ we hit release version 1.0.0.
 
 ## [UNRELEASED] - YYYY-MM-DD
 
+### Added
+- enabled returning the overlap matrix from `berry_phase`
+
+
 ## [0.12.1] - 2022-2-10
 
 ### Added

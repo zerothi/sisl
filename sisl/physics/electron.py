@@ -64,8 +64,8 @@ from sisl._indices import indices_le
 from sisl.oplist import oplist
 from sisl._math_small import xyz_to_spherical_cos_phi
 import sisl._array as _a
-from sisl.linalg import svd_destroy, eigvals_destroy
-from sisl.linalg import eigh, det_destroy, sqrth
+from sisl.linalg import eigh, det, sqrth, svd_destroy
+from sisl.linalg import eigvals as la_eigvals
 from sisl.messages import info, warn, SislError, progressbar, deprecate_method
 from sisl._help import dtype_complex_to_real, dtype_real_to_complex
 from .distribution import get_distribution
@@ -979,13 +979,15 @@ def conductivity(bz, distribution='fermi-dirac', method='ahc', degenerate=1.e-5,
 
 
 @set_module("sisl.physics.electron")
-def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
+def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry', ret_overlap=False):
     r""" Calculate the Berry-phase on a loop using a predefined path
 
     The Berry phase for a single Bloch state is calculated using the discretized formula:
 
     .. math::
-       \phi = - \Im\ln \mathrm{det} \prod_i^{N-1} \langle \psi_{k_i} | \psi_{k_{i+1}} \rangle
+       \mathbf S = \prod_i^{N-1} \langle \psi_{k_i} | \psi_{k_{i+1}} \rangle
+       \\
+       \phi = - \Im\ln \mathrm{det} \mathbf S \rangle
 
     where :math:`\langle \psi_{k_i} | \psi_{k_{i+1}} \rangle` may be exchanged with an overlap matrix
     of the investigated bands.
@@ -1008,6 +1010,8 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
        a closed loop integration, see [1]_.
        Additionally, one may do the Berry-phase calculation using the SVD method of the
        overlap matrices. Simply append ":svd" to the chosen method, e.g. "berry:svd".
+    ret_overlap: bool, optional
+       optionally return the overlap matrix :math:`\mathbf S`
 
     Notes
     -----
@@ -1134,7 +1138,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
             return prd
 
     # Do the actual calculation of the final matrix
-    d = _berry(contour.apply.iter.eigenstate())
+    S = _berry(contour.apply.iter.eigenstate())
 
     # Get the angle of the berry-phase
     # When using np.angle the returned value is in ]-pi; pi]
@@ -1142,11 +1146,13 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
     # We'll always return the full angle. Then users can them-selves control
     # how to convert them.
     if eigvals:
-        ret = -log(eigvals_destroy(d)).imag
+        ret = -log(la_eigvals(S, overwrite_a=not ret_overlap)).imag
         ret = sort(ret)
     else:
-        ret = -log(det_destroy(d)).imag
+        ret = -log(det(S, overwrite_a=not ret_overlap)).imag
 
+    if ret_overlap:
+        return ret, S
     return ret
 
 
