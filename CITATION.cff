@@ -6,7 +6,7 @@ authors:
     given-names: "Nick"
     orcid: "https://orcid.org/0000-0003-3038-1855"
 title: "sisl"
-version: "0.12.1rc1"
+version: "0.12.1"
 doi: 10.5281/zenodo.597181
 url: https://github.com/zerothi/sisl
 repository-code: https://github.com/zerothi/sisl
