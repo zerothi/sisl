@@ -2,6 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 # To check for integers
+from __future__ import annotations
 from numbers import Integral, Real
 from math import acos
 from itertools import product
@@ -48,7 +49,7 @@ class AtomCategory(Category):
     __slots__ = tuple()
 
     @classmethod
-    def is_class(cls, name, case=True):
+    def is_class(cls, name, case=True) -> bool:
         # Strip off `Atom`
         if case:
             return cls.__name__[4:] == name
@@ -231,14 +232,14 @@ class Geometry(SuperCellChild):
         self.set_supercell(sc_cart)
 
     @property
-    def atoms(self):
+    def atoms(self) -> Atoms:
         """ Atoms for the geometry (`Atoms` object) """
         return self._atoms
 
     # Backwards compatability (do not use)
     @property
     @deprecate_method(f"Geometry.atom is deprecated, use Geometry.atoms instead")
-    def atom(self):
+    def atom(self) -> Atoms:
         """ deprecated atom """
         return self._atoms
 
@@ -248,7 +249,7 @@ class Geometry(SuperCellChild):
         return self._names
 
     @property
-    def q0(self):
+    def q0(self) -> float:
         """ Total initial charge in this geometry (sum of q0 in all atoms) """
         return self.atoms.q0.sum()
 
@@ -257,46 +258,46 @@ class Geometry(SuperCellChild):
         """ The mass of all atoms as an array """
         return self.atoms.mass
 
-    def maxR(self, all=False):
+    def maxR(self, all: bool=False):
         """ Maximum orbital range of the atoms """
         return self.atoms.maxR(all)
 
     @property
-    def na(self):
+    def na(self) -> int:
         """ Number of atoms in geometry """
         return self.xyz.shape[0]
 
     @property
-    def na_s(self):
+    def na_s(self) -> int:
         """ Number of supercell atoms """
         return self.na * self.n_s
 
-    def __len__(self):
+    def __len__(self) -> int:
         """ Number of atoms in geometry """
         return self.na
 
     @property
-    def no(self):
+    def no(self) -> int:
         """ Number of orbitals """
         return self.atoms.no
 
     @property
-    def no_s(self):
+    def no_s(self) -> int:
         """ Number of supercell orbitals """
         return self.no * self.n_s
 
     @property
-    def firsto(self):
+    def firsto(self) -> ndarray:
         """ The first orbital on the corresponding atom """
         return self.atoms.firsto
 
     @property
-    def lasto(self):
+    def lasto(self) -> ndarray:
         """ The last orbital on the corresponding atom """
         return self.atoms.lasto
 
     @property
-    def orbitals(self):
+    def orbitals(self) -> ndarray:
         """ List of orbitals per atom """
         return self.atoms.orbitals
 
@@ -310,24 +311,24 @@ class Geometry(SuperCellChild):
             self.names.add_name(value, atoms)
 
     @singledispatchmethod
-    def __getitem__(self, atoms):
+    def __getitem__(self, atoms) -> ndarray:
         """ Geometry coordinates (allows supercell indices) """
         return self.axyz(atoms)
 
-    @__getitem__.register(slice)
-    def _(self, atoms):
+    @__getitem__.register
+    def _(self, atoms: slice) -> ndarray:
         if atoms.stop is None:
             atoms = atoms.indices(self.na)
         else:
             atoms = atoms.indices(self.na_s)
         return self.axyz(_a.arangei(atoms[0], atoms[1], atoms[2]))
 
-    @__getitem__.register(tuple)
-    def _(self, atoms):
+    @__getitem__.register
+    def _(self, atoms: tuple) -> ndarray:
         return self[atoms[0]][..., atoms[1]]
 
     @singledispatchmethod
-    def _sanitize_atoms(self, atoms):
+    def _sanitize_atoms(self, atoms) -> ndarray:
         """ Converts an `atoms` to index under given inputs
 
         `atoms` may be one of the following:
@@ -346,18 +347,18 @@ class Geometry(SuperCellChild):
             return atoms.nonzero()[0]
         return atoms
 
-    @_sanitize_atoms.register(ndarray)
-    def _(self, atoms):
+    @_sanitize_atoms.register
+    def _(self, atoms: ndarray) -> ndarray:
         if atoms.dtype == bool_:
             return np.flatnonzero(atoms)
         return atoms
 
-    @_sanitize_atoms.register(str)
-    def _(self, atoms):
+    @_sanitize_atoms.register
+    def _(self, atoms: str) -> ndarray:
         return self.names[atoms]
 
-    @_sanitize_atoms.register(Atom)
-    def _(self, atoms):
+    @_sanitize_atoms.register
+    def _(self, atoms: Atom) -> ndarray:
         return self.atoms.index(atoms)
 
     @_sanitize_atoms.register(AtomCategory)
@@ -373,13 +374,13 @@ class Geometry(SuperCellChild):
                     yield ia
         return _a.fromiterl(m(cat))
 
-    @_sanitize_atoms.register(dict)
-    def _(self, atoms):
+    @_sanitize_atoms.register
+    def _(self, atoms: dict) -> ndarray:
         # First do categorization
         return self._sanitize_atoms(AtomCategory.kw(**atoms))
 
-    @_sanitize_atoms.register(Shape)
-    def _(self, atoms):
+    @_sanitize_atoms.register
+    def _(self, atoms: Shape) -> ndarray:
         # This is perhaps a bit weird since a shape could
         # extend into the supercell.
         # Since the others only does this for unit-cell atoms
@@ -423,7 +424,7 @@ class Geometry(SuperCellChild):
             return np.add.outer(self.firsto[atom], orbs).ravel()
         return np.concatenate(tuple(conv(atom, orbs) for atom, orbs in orbitals.items()))
 
-    def as_primary(self, na_primary, axes=(0, 1, 2), ret_super=False):
+    def as_primary(self, na_primary, axes=(0, 1, 2), ret_super: bool=False):
         """ Try and reduce the geometry to the primary unit-cell comprising `na_primary` atoms
 
         This will basically try and find the tiling/repetitions required for the geometry to only have
@@ -538,7 +539,7 @@ class Geometry(SuperCellChild):
             return geom, supercell
         return geom
 
-    def reorder(self):
+    def reorder(self) -> None:
         """ Reorders atoms according to first occurence in the geometry
 
         Notes
@@ -547,7 +548,7 @@ class Geometry(SuperCellChild):
         """
         self._atoms = self.atoms.reorder(in_place=True)
 
-    def reduce(self):
+    def reduce(self) -> None:
         """ Remove all atoms not currently used in the ``self.atoms`` object
 
         Notes
@@ -638,7 +639,7 @@ class Geometry(SuperCellChild):
         return self.Rij(self.o2a(io), self.o2a(jo))
 
     @staticmethod
-    def read(sile, *args, **kwargs):
+    def read(sile, *args, **kwargs) -> Geometry:
         """ Reads geometry from the `Sile` using `Sile.read_geometry`
 
         Parameters
@@ -685,7 +686,7 @@ class Geometry(SuperCellChild):
             with get_sile(sile, 'w') as fh:
                 fh.write_geometry(self, *args, **kwargs)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """ str of the object """
         s = self.__class__.__name__ + f'{{na: {self.na}, no: {self.no},\n '
         s += str(self.atoms).replace('\n', '\n ')
@@ -693,7 +694,7 @@ class Geometry(SuperCellChild):
             s += ',\n ' + str(self.names).replace('\n', '\n ')
         return (s + ',\n maxR: {0:.5f},\n {1}\n}}'.format(self.maxR(), str(self.sc).replace('\n', '\n '))).strip()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """ A simple, short string representation. """
         return f"<{self.__module__}.{self.__class__.__name__} na={self.na}, no={self.no}, nsc={self.nsc}>"
 
@@ -747,7 +748,7 @@ class Geometry(SuperCellChild):
             for ia in self._sanitize_atoms(atoms).ravel():
                 yield ia, self.atoms[ia], self.atoms.specie[ia]
 
-    def iter_orbitals(self, atoms=None, local=True):
+    def iter_orbitals(self, atoms=None, local: bool=True):
         r"""
         Returns an iterator over all atoms and their associated orbitals
 
@@ -1020,7 +1021,7 @@ class Geometry(SuperCellChild):
             print(np.sum(not_passed), len(self))
             raise SislError(f'{self.__class__.__name__}.iter_block_shape error on iterations. Not all atoms have been visited.')
 
-    def iter_block(self, iR=20, R=None, atoms=None, method='rand'):
+    def iter_block(self, iR=20, R=None, atoms=None, method: str='rand'):
         """ Iterator for performance critical loops
 
         NOTE: This requires that `R` has been set correctly as the maximum interaction range.
@@ -1079,7 +1080,7 @@ class Geometry(SuperCellChild):
 
             yield from self.iter_block_shape(dS)
 
-    def copy(self):
+    def copy(self) -> Geometry:
         """ A copy of the object. """
         g = self.__class__(np.copy(self.xyz), atoms=self.atoms.copy(), sc=self.sc.copy())
         g._names = self.names.copy()

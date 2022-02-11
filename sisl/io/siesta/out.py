@@ -730,15 +730,30 @@ class outSileSiesta(SileSiesta):
                     d['order'].append("S")
                     props.extend(['Sx', 'Sy', 'Sz'])
             elif line.startswith('bulk-bias: |v'):
+                # TODO old version should be removed once released
                 d['bb-v'] = list(map(float, line.split()[-3:]))
                 if 'BB-vx' not in props:
                     d['order'].append("bb-v")
                     props.extend(['BB-vx', 'BB-vy', 'BB-vz'])
-            elif line.startswith('bulk-bias: {q'):
-                d['bb-q'] = list(map(float, line.split()[-3:]))
-                if 'BB-q+' not in props:
-                    d['order'].append("bb-q")
-                    props.extend(['BB-q+', 'BB-q-', 'BB-q0'])
+            elif line.startswith("bulk-bias: {v}"):
+                idx = line.index("{v}")
+                if line[idx + 3] == "_":
+                    # we are in a subset
+                    lbl = f"BB-{line[idx + 4:idx + 6]}"
+                else:
+                    lbl = "BB"
+
+                v = line.split("] {")[1].split()
+                v = list(map(float, v[:3]))
+                d[lbl] = v
+                if f"{lbl}-vx" not in props:
+                    d["order"].append(lbl)
+                    props.extend([f"{lbl}-vx", f"{lbl}-vy", f"{lbl}-vz"])
+            elif line.startswith("bulk-bias: dq"):
+                d['BB-q'] = list(map(float, line.split()[-2:]))
+                if "BB-dq" not in props:
+                    d["order"].append("BB-q")
+                    props.extend(["BB-dq", "BB-q0"])
             else:
                 return False
             return True
