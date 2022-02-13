@@ -14,6 +14,11 @@ Bulk
    hcp
    diamond
 
+Surfaces
+========
+   fcc100
+   fcc110
+   fcc111
 
 1D materials
 ============
