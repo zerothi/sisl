@@ -15,6 +15,13 @@ Bulk
    diamond
 
 
+Surfaces
+========
+
+   fcc_slab
+   surface_slab
+
+
 1D materials
 ============
 
@@ -35,6 +42,7 @@ Bulk
 """
 from .basic import *
 from .flat import *
+from .surfaces import *
 from .nanoribbon import *
 from .nanotube import *
 from .special import *

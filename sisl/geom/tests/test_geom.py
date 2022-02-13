@@ -86,3 +86,31 @@ def test_agnr():
 
 def test_zgnr():
     a = zgnr(5)
+
+
+def test_fcc_slab():
+    g = fcc_slab(alat=4.08, atoms='Au', miller=(1, 0, 0))
+    g = fcc_slab(4.08, 'Au', 100)
+    g = fcc_slab(4.08, 'Au', 110)
+    g = fcc_slab(4.08, 'Au', 111)
+    g = fcc_slab(4.08, 79, '100', size=(3, 4, 5))
+    g = fcc_slab(4.08, 79, '110', size=(3, 4, 5), vacuum=10)
+    g = fcc_slab(4.08, 79, '111', size=(3, 4, 5), start=1)
+    g = fcc_slab(4.08, 79, '111', size=(3, 4, 5), start='C')
+    g = fcc_slab(4.08, 79, '111', size=(3, 4, 5), end=2)
+    g = fcc_slab(4.08, 79, '111', size=(3, 4, 5), end='B')
+    g = fcc_slab(4.08, 79, '111', size=(3, 4, 5), orthogonal=True)
+
+
+def test_bcc_slab():
+    g = bcc_slab(alat=4.08, atoms='Au', miller=(1, 0, 0))
+    g = bcc_slab(4.08, 'Au', 100)
+    g = bcc_slab(4.08, 'Au', 110)
+    g = bcc_slab(4.08, 'Au', 111)
+    g = bcc_slab(4.08, 79, '100', size=(3, 4, 5))
+    g = bcc_slab(4.08, 79, '110', size=(3, 4, 5), vacuum=10)
+    g = bcc_slab(4.08, 79, '111', size=(3, 4, 5), start=1)
+    g = bcc_slab(4.08, 79, '111', size=(3, 4, 5), start='C')
+    g = bcc_slab(4.08, 79, '111', size=(3, 4, 5), end=2)
+    g = bcc_slab(4.08, 79, '111', size=(3, 4, 5), end='B')
+    g = bcc_slab(4.08, 79, '111', size=(3, 4, 5), orthogonal=True)

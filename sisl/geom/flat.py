@@ -56,7 +56,7 @@ def graphene(bond=1.42, atoms=None, orthogonal=False):
     ----------
     bond : float
         bond length between atoms (*not* lattice constant)
-    atom : Atom, optional
+    atoms : Atom, optional
         the atom (or atoms) that the honeycomb lattice consists of.
         Default to Carbon atom.
     orthogonal : bool, optional
