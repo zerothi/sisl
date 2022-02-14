@@ -73,8 +73,7 @@ def graphene(bond=1.42, atoms=None, orthogonal=False):
 
 
 def _finish_slab(g, size, vacuum):
-    g = g.tile(size[0], 0).tile(size[1], 1)
-    g = g.sort(axis=[2, 1, 0])
+    g = g.repeat(size[1], 1).repeat(size[0], 0)
     if vacuum is not None:
         g.cell[2, 2] += vacuum
         g.set_nsc([3, 3, 1])
@@ -85,7 +84,7 @@ def _finish_slab(g, size, vacuum):
     return g
 
 
-def fcc100(alat, atoms, size, vacuum=None):
+def fcc100(alat, atoms, size=(1, 1, 2), vacuum=None):
     """ Face-centered cubic (100) surface
 
     Parameters
@@ -94,7 +93,7 @@ def fcc100(alat, atoms, size, vacuum=None):
         lattice constant of the fcc crystal
     atoms : Atom
         the atom that the crystal consists of
-    size : 3-array
+    size : 3-array, optional
         slab size along the lattice vectors
     vacuum : float, optional
         distance added to the third lattice vector to separate
@@ -114,7 +113,7 @@ def fcc100(alat, atoms, size, vacuum=None):
     return g
 
 
-def fcc110(alat, atoms, size, vacuum=None):
+def fcc110(alat, atoms, size=(1, 1, 2), vacuum=None):
     """ Face-centered cubic (110) surface
 
     Parameters
@@ -123,7 +122,7 @@ def fcc110(alat, atoms, size, vacuum=None):
         lattice constant of the fcc crystal
     atoms : Atom
         the atom that the crystal consists of
-    size : 3-array
+    size : 3-array, optional
         slab size along the lattice vectors
     vacuum : float, optional
         distance added to the third lattice vector to separate
@@ -143,7 +142,7 @@ def fcc110(alat, atoms, size, vacuum=None):
     return g
 
 
-def fcc111(alat, atoms, size, vacuum=None, orthogonal=False):
+def fcc111(alat, atoms, size=(1, 1, 3), vacuum=None, orthogonal=False):
     """ Face-centered cubic (111) surface
 
     Parameters
@@ -152,7 +151,7 @@ def fcc111(alat, atoms, size, vacuum=None, orthogonal=False):
         lattice constant of the fcc crystal
     atoms : Atom
         the atom that the crystal consists of
-    size : 3-array
+    size : 3-array, optional
         slab size along the lattice vectors
     vacuum : float, optional
         distance added to the third lattice vector to separate
