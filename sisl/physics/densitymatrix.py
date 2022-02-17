@@ -932,7 +932,7 @@ class DensityMatrix(_densitymatrix):
 
         def Lb(idx_l, DM, sub):
             if len(sub) == 0:
-                return
+                return []
             return (idx_l[sub] * (idx_l[sub] + 1) - 2) ** 0.5 * 0.5 * DM[sub]
 
         def Lc(idx, idx_l, DM, sub):
@@ -1045,7 +1045,7 @@ class DensityMatrix(_densitymatrix):
 
         if "orbital" == projection:
             return L
-        elif "atom" == projection:
+        if "atom" == projection:
             # Now perform summation per atom
             l = np.zeros([geom.na, 3], dtype=L.dtype)
             add.at(l, geom.o2a(np.arange(geom.no)), L)

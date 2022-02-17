@@ -1902,7 +1902,7 @@ class Geometry(SuperCellChild):
             orbitals = [orbitals]
         if isinstance(orbitals[0], Orbital):
             orbitals = [old_atom.index(orb) for orb in orbitals]
-        orbitals = delete(_a.arangei(len(old_atom)), np.asarray(orbitals).ravel())
+        orbitals = np.delete(_a.arangei(len(old_atom)), np.asarray(orbitals).ravel())
         orbitals = np.sort(orbitals)
 
         # now call sub_orbital

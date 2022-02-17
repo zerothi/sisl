@@ -235,7 +235,7 @@ class Category(metaclass=CategoryMeta):
             # if neither is a compositecategory, then they cannot
             # be the same category
             return False
-        elif self.__class__ != other.__class__:
+        if self.__class__ != other.__class__:
             return False
         return self == other
 
@@ -449,7 +449,7 @@ class AndCategory(CompositeCategory):
         def cmp(a, b):
             if isinstance(a, NullCategory):
                 return a
-            elif isinstance(b, NullCategory):
+            if isinstance(b, NullCategory):
                 return b
             return self
 
@@ -483,7 +483,7 @@ class XOrCategory(CompositeCategory):
         def cmp(a, b):
             if isinstance(a, NullCategory):
                 return b
-            elif isinstance(b, NullCategory):
+            if isinstance(b, NullCategory):
                 return a
             # both are not NullCategory, in which case nothing
             # is exclusive, so we return the NullCategory

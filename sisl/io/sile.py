@@ -809,7 +809,7 @@ class SileCDF(BaseSile):
             grp = n
             for group in groups:
                 if len(group) > 0:
-                    grp = _crt_grp(grp, group)
+                    grp = SileCDF._crt_grp(grp, group)
             return grp
 
         if name in n.groups:

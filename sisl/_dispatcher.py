@@ -10,7 +10,6 @@ Here is a small snippet showing how to utilize this module.
 """
 
 from abc import ABCMeta, abstractmethod
-from functools import wraps
 from collections import namedtuple, ChainMap
 
 
@@ -72,7 +71,6 @@ class AbstractDispatch(metaclass=ABCMeta):
                 return method(*args, **kwargs)
 
         """
-        pass
 
     def __getattr__(self, key):
         attr = getattr(self._obj, key)
@@ -91,7 +89,7 @@ class AbstractDispatcher(metaclass=ABCMeta):
 
     def __init__(self, dispatchs=None, default=None, **attrs):
         if dispatchs is None:
-            dispatchs = dict()
+            dispatchs = {}
         if not isinstance(dispatchs, ChainMap):
             dispatchs = ChainMap(dispatchs)
         # we will always use a chainmap to store the dispatches
@@ -175,7 +173,7 @@ class ErrorDispatcher(AbstractDispatcher):
     """
     __slots__ = ()
 
-    def __init__(self, obj, *args, **kwargs):
+    def __init__(self, obj, *args, **kwargs): # pylint: disable=W0231
         raise ValueError(f"Dispatcher on {obj} must not be called in this way, see documentation.")
 
 

@@ -293,7 +293,7 @@ will store the spin x/y components of all atoms in spin_x_all.dat/spin_y_all.dat
             if norm == 'orbital':
                 NORM = len(orbitals)
             elif norm == 'atom':
-                a = unique(geom.o2a(orbitals))
+                a = np.unique(geom.o2a(orbitals))
                 # Now sum the orbitals per atom
                 NORM = geom.orbitals[a].sum()
             return NORM

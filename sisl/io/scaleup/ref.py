@@ -41,7 +41,7 @@ class refSileScaleUp(SileScaleUp):
         na, ns = map(int, self.readline().split()[:2])
         # Convert species to atom objects
         try:
-            species = get_sile(self.file.rsplit('REF', 1)[0] + 'orbocc').read_atom()
+            species = get_sile(str(self.file).replace(".REF", ".orbocc")).read_atom()
         except:
             species = [Atom(s) for s in self.readline().split()[:ns]]
 
@@ -157,7 +157,7 @@ class restartSileScaleUp(refSileScaleUp):
         """
 
         try:
-            ref = get_sile(self.file.rsplit('restart', 1)[0] + 'REF').read_geometry()
+            ref = get_sile(str(self.file).replace(".restart", ".REF")).read_geometry()
         except:
             ref = None
 

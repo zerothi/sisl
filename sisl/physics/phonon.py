@@ -279,7 +279,15 @@ def _displacement(mode, hw, mass):
     return U
 
 
-class _phonon_Mode:
+@set_module("sisl.physics.phonon")
+class CoefficientPhonon(Coefficient):
+    """ Coefficients describing some physical quantity related to phonons """
+    __slots__ = []
+
+
+@set_module("sisl.physics.phonon")
+class ModePhonon(State):
+    """ A mode describing a physical quantity related to phonons """
     __slots__ = []
 
     @property
@@ -289,21 +297,14 @@ class _phonon_Mode:
 
 
 @set_module("sisl.physics.phonon")
-class CoefficientPhonon(Coefficient):
-    """ Coefficients describing some physical quantity related to phonons """
-    __slots__ = []
-
-
-@set_module("sisl.physics.phonon")
-class ModePhonon(_phonon_Mode, State):
-    """ A mode describing a physical quantity related to phonons """
-    __slots__ = []
-
-
-@set_module("sisl.physics.phonon")
-class ModeCPhonon(_phonon_Mode, StateC):
+class ModeCPhonon(StateC):
     """ A mode describing a physical quantity related to phonons, with associated coefficients of the mode """
     __slots__ = []
+
+    @property
+    def mode(self):
+        """ Eigenmodes (states) """
+        return self.state
 
     def velocity(self, *args, **kwargs):
         r""" Calculate velocity of the modes

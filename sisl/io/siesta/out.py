@@ -1011,9 +1011,6 @@ class outSileSiesta(SileSiesta):
             if `as_dataframe` is requested. The dataframe will have multi-indices if multiple
             SCF or MD steps are requested.
         """
-        if not hasattr(self, 'fh'):
-            with self:
-                return read_charge(self, name, iscf, imd, key_scf, as_dataframe)
         namel = name.lower()
         if as_dataframe:
             import pandas as pd
@@ -1096,7 +1093,7 @@ class outSileSiesta(SileSiesta):
             _r_charge = _mulliken_charges
             charge_keys = ["mulliken: Atomic and Orbital Populations"]
         else:
-            raise ValueError(f"{self.__class__.__name__}.read_charge name argument should be one of {known_charges}, got {name}?")
+            raise ValueError(f"{self.__class__.__name__}.read_charge name argument should be one of [voronoi, hirshfeld, mulliken], got {name}?")
 
         # Ensure the key_scf matches exactly (prepend a space)
         key_scf = f" {key_scf.strip()}:"

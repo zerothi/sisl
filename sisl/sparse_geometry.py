@@ -223,7 +223,6 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         return s + '\n}'
 
     def __repr__(self):
-        g = self.geometry
         return f"<{self.__module__}.{self.__class__.__name__} shape={self._csr.shape[:-1]}, dim={self.dim}, nnz={self.nnz}, kind={self.dkind}>"
 
     def __getattr__(self, attr):

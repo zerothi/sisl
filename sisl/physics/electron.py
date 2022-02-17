@@ -47,12 +47,11 @@ automatically passes the correct ``S`` because it knows the states :math:`k`-poi
 
 from functools import reduce
 import numpy as np
-from numpy import find_common_type
+from numpy import find_common_type, int32
 from numpy import zeros, empty
 from numpy import floor, ceil
 from numpy import conj, dot, ogrid, einsum
 from numpy import cos, sin, log, exp, pi
-from numpy import int32, complex128
 from numpy import add, argsort, sort
 from scipy.sparse import isspmatrix
 
@@ -1509,6 +1508,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
 
 
 class _electron_State:
+    # pylint: disable=E1101
     __slots__ = []
 
     def __is_nc(self):

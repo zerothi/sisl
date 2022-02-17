@@ -7,7 +7,7 @@ from functools import lru_cache
 from os.path import isfile
 
 from .sile import SileCDFSiesta
-from ..sile import add_sile, sile_fh_open, sile_raise_write
+from ..sile import add_sile, sile_fh_open, sile_raise_write, SileError
 
 from sisl._internal import set_module
 from sisl._array import aranged, array_arange
@@ -157,7 +157,7 @@ class ncSileSiesta(SileCDFSiesta):
     @lru_cache(maxsize=1)
     def read_force(self):
         """ Returns a vector with final forces contained. """
-        return _a.arrayd(self._value('fa')) * Ry2eV / Bohr2Ang
+        return np.array(self._value('fa')) * Ry2eV / Bohr2Ang
 
     @lru_cache(maxsize=1)
     def read_fermi_level(self):

@@ -10,6 +10,7 @@ import numpy as np
 from ..sile import add_sile
 
 from sisl._internal import set_module
+from sisl.physics import DensityMatrix
 from sisl.utils import *
 from sisl.unit.siesta import unit_convert
 

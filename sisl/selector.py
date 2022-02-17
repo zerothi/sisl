@@ -259,7 +259,7 @@ class Selector:
         arguments are transferred to the routine calls
         """
         if not self.best is None:
-            return self.best(*args, **kwargs)
+            return self.best(*args, **kwargs) # pylint: disable=E1102
 
         # Figure out if we have the metric for all the routines
         idx, routine = self.next()

@@ -921,7 +921,7 @@ class AtomMeta(type):
         elif isinstance(key, (list, tuple)):
             # The key is a list,
             # we need to create a list of atoms
-            return [cls[k] for k in key]
+            return [cls[k] for k in key] # pylint: disable=E1136
         # Index Z based
         return cls(key)
 

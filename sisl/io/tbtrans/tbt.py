@@ -18,7 +18,7 @@ from scipy.sparse import isspmatrix_csr
 from scipy.sparse import SparseEfficiencyWarning
 
 # Import sile objects
-from ..sile import add_sile, sile_raise_write
+from ..sile import add_sile, sile_raise_write, get_sile
 from ._cdf import _devncSileTBtrans
 from sisl.utils import *
 from sisl._internal import set_module

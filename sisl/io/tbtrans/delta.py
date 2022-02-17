@@ -4,7 +4,7 @@
 import numpy as np
 
 # Import sile objects
-from ..sile import add_sile, sile_raise_write, SileWarning
+from ..sile import add_sile, sile_raise_write, SileWarning, SileError
 from .sile import SileCDFTBtrans
 from sisl._internal import set_module
 from sisl.utils import *

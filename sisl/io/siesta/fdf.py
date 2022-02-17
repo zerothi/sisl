@@ -1419,7 +1419,7 @@ class fdfSileSiesta(SileSiesta):
                 origin = sc.cell.sum(0) * 0.5 - np.average(xyz, 0)
             elif opt.startswith('com'):
                 # TODO for ghost atoms its mass should not be used
-                w = atom.mass
+                w = atoms.mass
                 w /= w.sum()
                 origin = sc.cell.sum(0) * 0.5 - np.average(xyz, 0, weights=w)
             elif opt.startswith('min'):
@@ -2083,6 +2083,7 @@ class fdfSileSiesta(SileSiesta):
 
         # We must by-pass this fdf-file for importing
         import sisl.io.siesta as sis
+        import sisl.io.tbtrans as tbt
 
         # The fdf parser is more complicated
 
@@ -2191,28 +2192,28 @@ class fdfSileSiesta(SileSiesta):
         if f.is_file():
             tmp_p = sp.add_parser('tbt',
                                   help="Manipulate tbtrans output file")
-            tmp_p, tmp_ns = sis.tbtncSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
+            tmp_p, tmp_ns = tbt.tbtncSileTBtrans(f).ArgumentParser(tmp_p, *args, **kwargs)
             namespace = merge_instances(namespace, tmp_ns)
 
         f = label_file('.TBT.Proj.nc')
         if f.is_file():
             tmp_p = sp.add_parser('tbt-proj',
                                   help="Manipulate tbtrans projection output file")
-            tmp_p, tmp_ns = sis.tbtprojncSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
+            tmp_p, tmp_ns = tbt.tbtprojncSileTBtrans(f).ArgumentParser(tmp_p, *args, **kwargs)
             namespace = merge_instances(namespace, tmp_ns)
 
         f = label_file('.PHT.nc')
         if f.is_file():
             tmp_p = sp.add_parser('pht',
                                   help="Manipulate the phtrans output file")
-            tmp_p, tmp_ns = sis.phtncSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
+            tmp_p, tmp_ns = tbt.phtncSilePHtrans(f).ArgumentParser(tmp_p, *args, **kwargs)
             namespace = merge_instances(namespace, tmp_ns)
 
         f = label_file('.PHT.Proj.nc')
         if f.is_file():
             tmp_p = sp.add_parser('pht-proj',
                                   help="Manipulate phtrans projection output file")
-            tmp_p, tmp_ns = sis.phtprojncSileSiesta(f).ArgumentParser(tmp_p, *args, **kwargs)
+            tmp_p, tmp_ns = tbt.phtprojncSilePHtrans(f).ArgumentParser(tmp_p, *args, **kwargs)
             namespace = merge_instances(namespace, tmp_ns)
 
         f = label_file('.nc')

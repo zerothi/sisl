@@ -1,7 +1,6 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-import sys
 import functools
 import warnings
 
@@ -112,7 +111,7 @@ def isndarray(arr):
     return isinstance(arr, _ndarray)
 
 
-def get_dtype(var, int=None, other=None):
+def get_dtype(var, int=None, other=None): # pylint: disable=W0622
     """ Returns the `numpy.dtype` equivalent of `var`.
 
     Parameters
@@ -153,20 +152,20 @@ def get_dtype(var, int=None, other=None):
     # of ndarray (or something numpy-like)
     try:
         dtype = var.dtype
-    except:
+    except Exception:
         dtype = np.result_type(var)
 
     if dtype == np.int64:
         dtype = int
     try:
         dtype(1)
-    except:
+    except Exception:
         dtype = dtype.type
 
     if other is not None:
         try:
             other(1)
-        except:
+        except Exception:
             other = other.type
         return np.result_type(dtype(1), other(1))
 
@@ -216,7 +215,7 @@ def array_replace(array, *replace, **kwargs):
     [3, 1, 3]
     """
     ar = array.copy()
-    others = list()
+    others = []
 
     for idx, val in replace:
         if not val is None:

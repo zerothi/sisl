@@ -237,7 +237,7 @@ class xsfSile(Sile):
         geoms = []
         for istep in range(len(steps)):
             if len(atom) == 0:
-                geoms.append(si.Geometry(xyz[istep], sc=SuperCell(cell[istep])))
+                geoms.append(Geometry(xyz[istep], sc=SuperCell(cell[istep])))
             elif len(atom[0]) == 1 and atom[0][0] == -999:
                 # should we perhaps do AtomUnknown?
                 geoms.append(None)

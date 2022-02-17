@@ -46,7 +46,7 @@ def _crt_rop(op):
 def _crt_iop(op, only_self=False):
     if only_self:
         def _(self):
-            for i in range(len(self)):
+            for i in range(len(self)): # pylint: disable=C0200
                 self[i] = op(self[i])
             return self
     else:
@@ -54,10 +54,10 @@ def _crt_iop(op, only_self=False):
             if isiterable(other):
                 if len(self) != len(other):
                     raise ValueError(f"{self.__class__.__name__} requires other data to contain same number of elements (or a scalar).")
-                for i in range(len(self)):
+                for i in range(len(self)): # pylint: disable=C0200
                     self[i] = op(self[i], other[i])
             else:
-                for i in range(len(self)):
+                for i in range(len(self)): # pylint: disable=C0200
                     self[i] = op(self[i], other)
             return self
     return _
@@ -161,9 +161,9 @@ class oplist(list):
             val = func(*args, **kwargs)
             if isinstance(val, oplist):
                 return val
-            elif isinstance(val, cls):
+            if isinstance(val, cls):
                 return val
-            elif isinstance(val, (tuple, list)):
+            if isinstance(val, (tuple, list)):
                 # Currently we only capture these as converted
                 return cls(val)
             # I should probably check all cases

@@ -42,7 +42,7 @@ if has_matplotlib:
     plot = _plot
 else:
     def plot(obj, *args, **kwargs):
-        raise _matplotlib_import_exception   # noqa: F821
+        raise _matplotlib_import_exception   # pylint: disable=E0601
 
 # Clean up
 del has_matplotlib

@@ -58,7 +58,7 @@ class rhamSileScaleUp(SileScaleUp):
         if no + 1 != g.no:
             # First try and read the orbocc file
             try:
-                species = get_sile(self.file.rsplit('rham', 1)[0] + 'orbocc').read_atom()
+                species = get_sile(str(self.file).replace(".rham", ".orbocc")).read_atom()
                 for i, atom in enumerate(species.atom):
                     g.atoms._atom[i] = atom
             except Exception:

@@ -246,7 +246,7 @@ class SparseOrbitalBZ(SparseOrbital):
         k = _a.asarrayd(k).ravel()
         return matrix_ddk(gauge, self, _dim, self.sc, k, dtype, format)
 
-    def Sk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
+    def Sk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs): # pylint: disable=E0202
         r""" Setup the overlap matrix for a given k-point
 
         Creation and return of the overlap matrix for a given k-point (default to Gamma).
@@ -417,7 +417,7 @@ class SparseOrbitalBZ(SparseOrbital):
         k = _a.asarrayd(k).ravel()
         return matrix_dk_nc_diag(gauge, self, self.S_idx, self.sc, k, dtype, format)
 
-    def ddSk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
+    def ddSk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs): # pylint: disable=E0202
         r""" Setup the double :math:`k`-derivatie of the overlap matrix for a given k-point
 
         Creation and return of the double derivative of the overlap matrix for a given k-point (default to Gamma).
