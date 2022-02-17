@@ -938,6 +938,8 @@ class fdfSileSiesta(SileSiesta):
         if FC is None:
             return None
         geom = self.read_geometry()
+        # The dynamical_matrix_from_fc should correctly specify the supercell
+        geom.set_nsc([1, 1, 1])
 
         basis_fdf = self.read_basis(order="fdf")
         for i, atom in enumerate(basis_fdf):
@@ -952,6 +954,8 @@ class fdfSileSiesta(SileSiesta):
         if FC is None:
             return None
         geom = self.read_geometry(order=['nc'])
+        # The dynamical_matrix_from_fc should correctly specify the supercell
+        geom.set_nsc([1, 1, 1])
 
         basis_fdf = self.read_basis(order="fdf")
         for i, atom in enumerate(basis_fdf):
