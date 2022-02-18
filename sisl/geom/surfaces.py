@@ -88,8 +88,8 @@ def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, offs
             g = g.tile(size[2], 2)
 
             # slide ABC layers relative to each other
-            B = (offset + 1) % 6
-            C = (offset + 2) % 6
+            B = (offset + 2) % 6
+            C = (offset + 4) % 6
             vec = 1.5 * sc.cell[0] + sc.cell[1] / 2
             for i in range(2):
                 g.xyz[B+i::6] += vec / 3 - i % 2 * sc.cell[0]
