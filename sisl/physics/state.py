@@ -780,6 +780,8 @@ class State(ParentContainer):
                 raise ValueError(f"{self.__class__.__name__}.inner requires the objects to have matching shapes bra @ M @ ket bra={self.shape}, M={M.shape}, ket={ket.shape[::-1]}")
 
         if diag:
+            if bra.shape[0] != ket.shape[0]:
+                raise ValueError(f"{self.__class__.__name__}.inner diagonal matrix product is non-square, please use diag=False or reduce number of vectors.")
             if ndim == 2:
                 Aij = einsum('ij,ji->i', _conj(bra), M.dot(ket.T))
             elif ndim == 1:

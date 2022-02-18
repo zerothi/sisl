@@ -588,7 +588,9 @@ class TestHamiltonian:
             # inner is not norm2
             assert not np.allclose(es.inner(diag=False), np.eye(len(es)))
 
-            assert es.inner(es.sub(0)).shape == (1, )
+            with pytest.raises(ValueError):
+                es.inner(es.sub(0))
+
             assert es.inner(es.sub(0), diag=False).shape == (len(es), 1)
 
             eig1 = HS.eigh(k)
@@ -625,11 +627,6 @@ class TestHamiltonian:
         assert np.allclose(m1, m2.conj().T)
         assert es1.sub(r).inner(es2, diag=False).shape == (len(r), len(es2))
         assert es1.inner(es2.sub(r), diag=False).shape == (len(es1), len(r))
-        m1 = es1.sub(r).inner(es2, diag=True)
-        assert m1.shape == (len(r), )
-        m2 = es2.inner(es1.sub(r), diag=True)
-        assert m2.shape == (len(r), )
-        assert np.allclose(m1, m2.conj())
 
     def test_gauge_eig(self, setup):
         # Test of eigenvalues
