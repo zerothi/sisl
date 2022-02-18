@@ -21,7 +21,7 @@ def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, offs
         lattice constant of the fcc crystal
     atoms : Atom
         the atom that the crystal consists of
-    miller : str or array
+    miller : int or str or array
         Miller indices of the surface facet
     size : 3-array, optional
         slab size along the lattice vectors
@@ -99,7 +99,7 @@ def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, offs
                 g.xyz[C+i::6] += 2 * vec / 3 - sc.cell[0]
 
     else:
-         raise ValueError("The desired Miller index is not implemented")
+         raise ValueError(f"miller={miller} is not implemented")
 
     # finish slab
     g = g.repeat(size[1], 1).repeat(size[0], 0)
