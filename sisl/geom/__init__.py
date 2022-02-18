@@ -14,11 +14,11 @@ Bulk
    hcp
    diamond
 
+
 Surfaces
 ========
-   fcc100
-   fcc110
-   fcc111
+   fcc_slab
+
 
 1D materials
 ============
@@ -40,6 +40,7 @@ Surfaces
 """
 from .basic import *
 from .flat import *
+from .surfaces import *
 from .nanoribbon import *
 from .nanotube import *
 from .special import *
