@@ -1066,11 +1066,13 @@ class StateC(State):
         s.info = self.info
         return s
 
-    def outer(self, idx=None):
+    def outer(self, coefficients=None, idx=None):
         r""" Return the outer product for the indices `idx` (or all if ``None``) by :math:`\sum_i|\psi_i\rangle c_i\langle\psi_i|`
 
         Parameters
         ----------
+        coefficients : array_like, optional
+           alternative coefficients to be used in the outer product
         idx : int or array_like, optional
            only perform an outer product of the specified indices, otherwise all states are used
 
@@ -1079,10 +1081,14 @@ class StateC(State):
         numpy.ndarray
             a matrix with the sum of outer state products
         """
+        if coefficients is None:
+            c = self.c
+        else:
+            c = _a.asarrayd(coefficients)
         if idx is None:
-            return einsum('k,ki,kj->ij', self.c, self.state, _conj(self.state))
+            return einsum('k,ki,kj->ij', c, self.state, _conj(self.state))
         idx = self._sanitize_index(idx).ravel()
-        return einsum('k,ki,kj->ij', self.c[idx], self.state[idx], _conj(self.state[idx]))
+        return einsum('k,ki,kj->ij', c[idx], self.state[idx], _conj(self.state[idx]))
 
     def sort(self, ascending=True):
         """ Sort and return a new `StateC` by sorting the coefficients (default to ascending)
