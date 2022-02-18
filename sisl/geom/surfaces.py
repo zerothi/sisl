@@ -33,6 +33,9 @@ def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, offs
     offset : int, optional
         index to shuffle the layer sequence, eg ABC to BCA
     """
+    if isinstance(miller, int):
+        miller = str(miller)
+
     if isinstance(miller, str):
         miller = (int(miller[0]), int(miller[1]), int(miller[2]))
 
@@ -68,9 +71,9 @@ def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, offs
             size = (1, 1, 3)
 
         if not orthogonal:
-            sc = SuperCell(np.array([[0.5 ** 0.5, 0, 0],
-                                     [0.125 ** 0.5, 0.375 ** 0.5, 0],
-                                     [0, 0, 1 / 3 ** 0.5]]) * alat)
+            sc = SuperCell(np.array([[0.5, 0, 0],
+                                     [0.125, 0.375, 0],
+                                     [0, 0, 1 / 3]]) ** 0.5 * alat)
             g = Geometry([0, 0, 0], atoms=atoms, sc=sc)
             g = g.tile(size[2], 2)
 
@@ -94,6 +97,9 @@ def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, offs
             for i in range(2):
                 g.xyz[B+i::6] += vec / 3 - i % 2 * sc.cell[0]
                 g.xyz[C+i::6] += 2 * vec / 3 - sc.cell[0]
+
+    else:
+         raise ValueError("The desired Miller index is not implemented")
 
     # finish slab
     g = g.repeat(size[1], 1).repeat(size[0], 0)
