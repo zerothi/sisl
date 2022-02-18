@@ -158,13 +158,34 @@ def test_state_outer():
     assert np.allclose(out, o)
 
 
+def test_state_outer_matrix():
+    state = ar(10, 10)
+    M = ar(10)
+    state = State(state)
+    out = state.outer(matrix=M)
+    out_full = state.outer(matrix=np.diag(M))
+    assert np.allclose(out, out_full)
+
+
 def test_state_inner():
     state = ar(10, 10)
     state = State(state)
-    inner = state.inner()
-    assert np.allclose(inner, state.inner(state))
     inner = state.inner(diag=False)
     assert np.allclose(inner, state.inner(state, diag=False))
+    inner_diag = state.inner()
+    assert np.allclose(np.diag(inner), inner_diag)
+
+
+def test_state_inner_matrix():
+    state = ar(10, 10)
+    M = ar(10)
+    state = State(state)
+    inner = state.inner(matrix=M, diag=False)
+    assert np.allclose(inner, state.inner(state, matrix=np.diag(M), diag=False))
+    inner_diag = state.inner(matrix=M)
+    assert np.allclose(np.diag(inner), inner_diag)
+    inner_diag = state.inner(matrix=np.diag(M))
+    assert np.allclose(np.diag(inner), inner_diag)
 
 
 def test_state_inner_differing_size():
@@ -336,21 +357,3 @@ def test_cstate_norm():
     state = StateC(ar(10, 10), ar(10)).normalize()
     assert len(state) == 10
     assert np.allclose(state.norm(), 1)
-
-
-def test_cstate_outer():
-    state = ar(10, 10)
-    state = StateC(state, ar(10))
-    out = state.outer()
-    o = out.copy()
-    o1 = out.copy()
-    o.fill(0)
-    o1.fill(0)
-    for i, sub in enumerate(state):
-        o += couter(sub.c[0], sub.state[0, :])
-        o1 += state.outer(i)
-
-    assert np.allclose(out, o)
-    assert np.allclose(out, o1)
-    o = state.outer(np.arange(len(state)))
-    assert np.allclose(out, o)
