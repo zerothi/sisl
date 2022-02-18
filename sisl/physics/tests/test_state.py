@@ -348,9 +348,11 @@ def test_cstate_outer():
     o1.fill(0)
     for i, sub in enumerate(state):
         o += couter(sub.c[0], sub.state[0, :])
-        o1 += state.outer(i)
+        o1 += state.outer(idx=i)
 
     assert np.allclose(out, o)
     assert np.allclose(out, o1)
-    o = state.outer(np.arange(len(state)))
+    o = state.outer(idx=np.arange(len(state)))
     assert np.allclose(out, o)
+
+    state.outer(coefficients=np.ones(10))
