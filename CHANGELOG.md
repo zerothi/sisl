@@ -10,6 +10,8 @@ we hit release version 1.0.0.
 ### Added
 - enabled returning the overlap matrix from `berry_phase`
 
+### Changed
+- State*.outer corrected to the same interface as State*.inner
 
 ## [0.12.1] - 2022-2-10
 

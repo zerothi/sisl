@@ -650,7 +650,7 @@ class State(ParentContainer):
         s.info = self.info
         return s
 
-    def outer(self, ket=None):
+    def outer(self, ket=None, matrix=None):
         r""" Return the outer product by :math:`\sum_i|\psi_i\rangle\langle\psi'_i|`
 
         Parameters
@@ -658,6 +658,9 @@ class State(ParentContainer):
         ket : State, optional
            the ket object to calculate the outer product of, if not passed it will do the outer
            product with itself. The object itself will always be the bra :math:`|\psi_i\rangle`
+        matrix : array_like, optional
+           whether a matrix is sandwiched between the ket and bra, defaults to the identity matrix.
+           1D arrays will be treated as a diagonal matrix.
 
         Notes
         -----
@@ -668,14 +671,49 @@ class State(ParentContainer):
         numpy.ndarray
             a matrix with the sum of outer state products
         """
+        if matrix is None:
+            M = _FakeMatrix(self.shape[-1])
+        else:
+            M = matrix
+        ndim = M.ndim
+        if ndim not in (0, 1, 2):
+            raise ValueError(f"{self.__class__.__name__}.outer only accepts matrices up to 2 dimensions.")
+
+        bra = self.state
+        # decide on the ket
         if ket is None:
             ket = self.state
         elif isinstance(ket, State):
+            # check whether this, and ket are both originating from
+            # non-orthogonal basis. That would be non-ideal
             ket = ket.state
+        if len(ket.shape) == 1:
+            ket.shape = (1, -1)
 
-        if not np.array_equal(self.shape, ket.shape):
-            raise ValueError(f"{self.__class__.__name__}.outer requires the objects to have the same shape")
-        return einsum('ki,kj->ij', self.state, _conj(ket))
+        # check that the shapes matches (ket should be transposed)
+        #  ket M bra
+        if ndim == 0:
+            # M,N @ N, L
+            if (ket.shape[1] != bra.shape[1]):
+                raise ValueError(f"{self.__class__.__name__}.outer requires the objects to have matching shapes bra @ ket bra={self.shape}, ket={ket.shape[::-1]}")
+        elif ndim == 1:
+            # M,N @ N @ N, L
+            if (ket.shape[0] != M.shape[0] or
+                M.shape[0] != bra.shape[0]):
+                raise ValueError(f"{self.__class__.__name__}.outer requires the objects to have matching shapes ket @ M @ bra ket={ket.shape[::-1]}, M={M.shape}, bra={self.shape}")
+        elif ndim == 2:
+            # M,N @ N,K @ K,L
+            if (ket.shape[0] != M.shape[0] or
+                M.shape[1] != bra.shape[0]):
+                raise ValueError(f"{self.__class__.__name__}.outer requires the objects to have matching shapes ket @ M @ bra ket={ket.shape[::-1]}, M={M.shape}, bra={self.shape}")
+
+        if ndim == 2:
+            Aij = ket.T @ M.dot(_conj(bra))
+        elif ndim == 1:
+            Aij = einsum('ij,i,ik->jk', ket, M, _conj(bra))
+        elif ndim == 0:
+            Aij = einsum('ij,ik->jk', ket * M, _conj(bra))
+        return Aij
 
     def inner(self, ket=None, matrix=None, diag=True):
         r""" Calculate the inner product as :math:`\mathbf A_{ij} = \langle\psi_i|\mathbf M|\psi'_j\rangle`
@@ -686,7 +724,8 @@ class State(ParentContainer):
            the ket object to calculate the inner product with, if not passed it will do the inner
            product with itself. The object itself will always be the bra :math:`\langle\psi_i|`
         matrix : array_like, optional
-           whether a matrix is sandwiched between the bra and ket, default to the identity matrix
+           whether a matrix is sandwiched between the bra and ket, defaults to the identity matrix.
+           1D arrays will be treated as a diagonal matrix.
         diag : bool, optional
            only return the diagonal matrix :math:`\mathbf A_{ii}`.
 
@@ -709,6 +748,8 @@ class State(ParentContainer):
         else:
             M = matrix
         ndim = M.ndim
+        if ndim not in (0, 1, 2):
+            raise ValueError(f"{self.__class__.__name__}.inner only accepts matrices up to 2 dimensions.")
 
         bra = self.state
         # decide on the ket
@@ -721,25 +762,38 @@ class State(ParentContainer):
         if len(ket.shape) == 1:
             ket.shape = (1, -1)
 
-        # They *must* have same number of basis points per state
-        if self.shape[-1] != ket.shape[-1]:
-            raise ValueError(f"{self.__class__.__name__}.inner requires the objects to have the same number of coefficients per vector {self.shape[-1]} != {ket.shape[-1]}")
+        # check that the shapes matches (ket should be transposed)
+        #  bra M ket
+        if ndim == 0:
+            # M,N @ N, L
+            if (bra.shape[1] != ket.shape[1]):
+                raise ValueError(f"{self.__class__.__name__}.inner requires the objects to have matching shapes bra @ ket bra={self.shape}, ket={ket.shape[::-1]}")
+        elif ndim == 1:
+            # M,N @ N @ N, L
+            if (bra.shape[1] != M.shape[0] or
+                M.shape[0] != ket.shape[1]):
+                raise ValueError(f"{self.__class__.__name__}.inner requires the objects to have matching shapes bra @ M @ ket bra={self.shape}, M={M.shape}, ket={ket.shape[::-1]}")
+        elif ndim == 2:
+            # M,N @ N,K @ K,L
+            if (bra.shape[1] != M.shape[0] or
+                M.shape[1] != ket.shape[1]):
+                raise ValueError(f"{self.__class__.__name__}.inner requires the objects to have matching shapes bra @ M @ ket bra={self.shape}, M={M.shape}, ket={ket.shape[::-1]}")
 
         if diag:
-            if len(bra) != len(ket):
-                warn(f"{self.__class__.__name__}.inner matrix product is non-square, only the first {min(len(bra), len(ket))} diagonal elements will be returned.")
-                if len(bra) < len(ket):
-                    ket = ket[:len(bra)]
-                else:
-                    bra = bra[:len(ket)]
+            if bra.shape[0] != ket.shape[0]:
+                raise ValueError(f"{self.__class__.__name__}.inner diagonal matrix product is non-square, please use diag=False or reduce number of vectors.")
             if ndim == 2:
                 Aij = einsum('ij,ji->i', _conj(bra), M.dot(ket.T))
             elif ndim == 1:
                 Aij = einsum('ij,j,ij->i', _conj(bra), M, ket)
+            elif ndim == 0:
+                Aij = einsum('ij,ij->i', _conj(bra), ket) * M
         elif ndim == 2:
             Aij = _conj(bra) @ M.dot(ket.T)
         elif ndim == 1:
             Aij = einsum('ij,j,kj->ik', _conj(bra), M, ket)
+        elif ndim == 0:
+            Aij = einsum('ij,kj->ik', _conj(bra), ket) * M
         return Aij
 
     def phase(self, method='max', ret_index=False):
@@ -1065,24 +1119,6 @@ class StateC(State):
         s = self.__class__(self.state / n.reshape(-1, 1), self.c.copy(), parent=self.parent)
         s.info = self.info
         return s
-
-    def outer(self, idx=None):
-        r""" Return the outer product for the indices `idx` (or all if ``None``) by :math:`\sum_i|\psi_i\rangle c_i\langle\psi_i|`
-
-        Parameters
-        ----------
-        idx : int or array_like, optional
-           only perform an outer product of the specified indices, otherwise all states are used
-
-        Returns
-        -------
-        numpy.ndarray
-            a matrix with the sum of outer state products
-        """
-        if idx is None:
-            return einsum('k,ki,kj->ij', self.c, self.state, _conj(self.state))
-        idx = self._sanitize_index(idx).ravel()
-        return einsum('k,ki,kj->ij', self.c[idx], self.state[idx], _conj(self.state[idx]))
 
     def sort(self, ascending=True):
         """ Sort and return a new `StateC` by sorting the coefficients (default to ascending)
