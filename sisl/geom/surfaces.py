@@ -20,8 +20,7 @@ def _calc_offset(start, end, layers):
     "Determine offset index from start or end specification"
     if start is not None:
         return -_layer2int(start)
-    else:
-        return layers - 1 - _layer2int(end)
+    return layers - 1 - _layer2int(end)
 
 
 def _finish_slab(g, size, vacuum):
@@ -61,7 +60,7 @@ def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
         lattice constant of the fcc crystal
     atoms : Atom
         the atom that the crystal consists of
-    miller : int or str or 3-array
+    miller : int or str or (3,)
         Miller indices of the surface facet
     size : 3-array, optional
         slab size along the lattice vectors
@@ -71,9 +70,21 @@ def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
     orthogonal : bool, optional
         if True returns an orthogonal lattice
     start : int or string, optional
-        sets the first layer in the slab
+        sets the first layer in the slab. Only one of `start` or `end` must be specified.
     end : int or string, optional
-        sets the last layer in the slab
+        sets the last layer in the slab. Only one of `start` or `end` must be specified.
+
+    Examples
+    --------
+    fcc 111 surface, starting with the A layer
+
+    >>> fcc_slab(alat, atoms, "111", start=0)
+
+    fcc 111 surface, starting with the B layer
+    >>> fcc_slab(alat, atoms, "111", start=1)
+
+    fcc 111 surface, ending with the B layer
+    >>> fcc_slab(alat, atoms, "111", end=1)
 
     See Also
     --------
@@ -83,7 +94,7 @@ def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
     miller = _convert_miller(miller)
 
     if start is not None and end is not None:
-        raise ValueError("Only one of start or end may be supplied")
+        raise ValueError("fcc_slab: Only one of 'start' or 'end' may be supplied")
 
     if start is None and end is None:
         start = 0
@@ -121,7 +132,24 @@ def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
         if size is None:
             size = (1, 1, 3)
 
-        if not orthogonal:
+        if orthogonal:
+            sc = SuperCell(np.array([0.5, 4 * 0.375, 1 / 3]) ** 0.5 * alat)
+            g = Geometry(np.array([[0, 0, 0],
+                                   [0.125, 0.375, 0]]) ** 0.5 * alat,
+                         atoms=atoms, sc=sc)
+            g = g.tile(size[2], 2)
+
+            # slide ABC layers relative to each other
+            offset = _calc_offset(start, end, size[2])
+            B = 2 * (offset + 1) % 6
+            C = 2 * (offset + 2) % 6
+            vec = 1.5 * sc.cell[0] + sc.cell[1] / 2
+            g.xyz[B::6] += vec / 3
+            g.xyz[C::6] += 2 * vec / 3 - sc.cell[0]
+            g.xyz[B+1::6] += vec / 3 - sc.cell[0]
+            g.xyz[C+1::6] += 2 * vec / 3 - sc.cell[0]
+
+        else:
             sc = SuperCell(np.array([[0.5, 0, 0],
                                      [0.125, 0.375, 0],
                                      [0, 0, 1 / 3]]) ** 0.5 * alat)
@@ -135,24 +163,9 @@ def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
             g.xyz[B::3] += sc.cell[0] / 3 + sc.cell[1] / 3
             g.xyz[C::3] += -sc.cell[0] / 3 + 2 * sc.cell[1] / 3
 
-        elif orthogonal:
-            sc = SuperCell(np.array([0.5, 4 * 0.375, 1 / 3]) ** 0.5 * alat)
-            g = Geometry(np.array([[0, 0, 0],
-                                   [0.125, 0.375, 0]]) ** 0.5 * alat,
-                         atoms=atoms, sc=sc)
-            g = g.tile(size[2], 2)
-
-            # slide ABC layers relative to each other
-            offset = _calc_offset(start, end, size[2])
-            B = 2 * (offset + 1) % 6
-            C = 2 * (offset + 2) % 6
-            vec = 1.5 * sc.cell[0] + sc.cell[1] / 2
-            for i in range(2):
-                g.xyz[B+i::6] += vec / 3 - i % 2 * sc.cell[0]
-                g.xyz[C+i::6] += 2 * vec / 3 - sc.cell[0]
 
     else:
-         raise NotImplementedError(f"miller={miller} is not implemented")
+         raise NotImplementedError(f"fcc_slab: miller={miller} is not implemented")
 
     g = _finish_slab(g, size, vacuum)
     return g
