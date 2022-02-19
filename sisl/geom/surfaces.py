@@ -35,7 +35,7 @@ def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
         lattice constant of the fcc crystal
     atoms : Atom
         the atom that the crystal consists of
-    miller : int or str or array
+    miller : int or str or 3-array
         Miller indices of the surface facet
     size : 3-array, optional
         slab size along the lattice vectors
@@ -53,6 +53,8 @@ def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
         miller = str(miller)
     if isinstance(miller, str):
         miller = (int(miller[0]), int(miller[1]), int(miller[2]))
+    if len(miller) != 3:
+        raise ValueError(f"Invalid Miller indices")
 
     if start is not None and end is not None:
         raise ValueError("Only one of start or end may be supplied")
@@ -116,15 +118,15 @@ def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
 
             # slide ABC layers relative to each other
             offset = _calc_offset(start, end, size[2])
-            B = (offset + 2) % 6
-            C = (offset + 4) % 6
+            B = 2 * (offset + 1) % 6
+            C = 2 * (offset + 2) % 6
             vec = 1.5 * sc.cell[0] + sc.cell[1] / 2
             for i in range(2):
                 g.xyz[B+i::6] += vec / 3 - i % 2 * sc.cell[0]
                 g.xyz[C+i::6] += 2 * vec / 3 - sc.cell[0]
 
     else:
-         raise ValueError(f"miller={miller} is not implemented")
+         raise NotImplementedError(f"miller={miller} is not implemented")
 
     # finish slab
     g = g.repeat(size[1], 1).repeat(size[0], 0)
