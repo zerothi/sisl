@@ -17,7 +17,9 @@ Bulk
 
 Surfaces
 ========
+
    fcc_slab
+   surface_slab
 
 
 1D materials
