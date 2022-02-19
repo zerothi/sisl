@@ -9,11 +9,25 @@ from sisl import Atom, Geometry, SuperCell
 __all__ = ['fcc_slab']
 
 
+def _layer2int(layer):
+    if isinstance(layer, str):
+        layer = "ABCDEF".index(layer.upper())
+    return layer
+
+
+def _calc_offset(start, end, layers):
+    if start is not None:
+        return -_layer2int(start)
+    else:
+        return layers - 1 - _layer2int(end)
+
+
 @set_module("sisl.geom")
-def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, offset=0):
+def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, start=None, end=None):
     """ Construction of a surface slab from a face-centered cubic crystal
 
-    The slab layers are stacked along the z-axis
+    The slab layers are stacked along the z-axis. The default stacking is the first
+    layer as an A-layer, defined as the plane containing an atom at (x,y)=(0,0).
 
     Parameters
     ----------
@@ -30,14 +44,21 @@ def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, offs
         the slab from its periodic images
     orthogonal : bool, optional
         if True returns an orthogonal lattice
-    offset : int, optional
-        index to shuffle the layer sequence, eg ABC to BCA
+    start : int or string, optional
+        sets the first layer in the slab
+    end : int or string, optional
+        sets the last layer in the slab
     """
     if isinstance(miller, int):
         miller = str(miller)
-
     if isinstance(miller, str):
         miller = (int(miller[0]), int(miller[1]), int(miller[2]))
+
+    if start is not None and end is not None:
+        raise ValueError("Only one of start or end may be supplied")
+
+    if start is None and end is None:
+        start = 0
 
     if miller == (1, 0, 0):
 
@@ -49,6 +70,7 @@ def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, offs
         g = g.tile(size[2], 2)
 
         # slide AB layers relative to each other
+        offset = _calc_offset(start, end, size[2])
         B = (offset + 1) % 2
         g.xyz[B::2] += (sc.cell[0] + sc.cell[1]) / 2
 
@@ -62,6 +84,7 @@ def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, offs
         g = g.tile(size[2], 2)
 
         # slide AB layers relative to each other
+        offset = _calc_offset(start, end, size[2])
         B = (offset + 1) % 2
         g.xyz[B::2] += (sc.cell[0] + sc.cell[1]) / 2
 
@@ -78,6 +101,7 @@ def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, offs
             g = g.tile(size[2], 2)
 
             # slide ABC layers relative to each other
+            offset = _calc_offset(start, end, size[2])
             B = (offset + 1) % 3
             C = (offset + 2) % 3
             g.xyz[B::3] += sc.cell[0] / 3 + sc.cell[1] / 3
@@ -91,6 +115,7 @@ def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, offs
             g = g.tile(size[2], 2)
 
             # slide ABC layers relative to each other
+            offset = _calc_offset(start, end, size[2])
             B = (offset + 2) % 6
             C = (offset + 4) % 6
             vec = 1.5 * sc.cell[0] + sc.cell[1] / 2
