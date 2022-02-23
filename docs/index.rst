@@ -160,7 +160,7 @@ a table of contents for the sub-modules may be found :ref:`here <modindex>`.
 .. |license| image:: https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg
 .. _license: https://www.mozilla.org/en-US/MPL/2.0/
 
-.. |conda| image:: https://anaconda.org/conda-forge/sisl/badges/installer/conda.svg
+.. |conda| image:: https://anaconda.org/conda-forge/sisl/badges/version.svg
 .. _conda: https://anaconda.org/conda-forge/sisl
 
 .. |codecov| image:: https://codecov.io/gh/zerothi/sisl/branch/main/graph/badge.svg
