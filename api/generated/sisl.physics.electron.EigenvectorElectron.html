@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.electron.EigenvectorElectron &mdash; sisl 0.1.dev1+g75a34d6 documentation</title>
+  <title>sisl.physics.electron.EigenvectorElectron &mdash; sisl 0.1.dev1+gff3f170 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g75a34d6
+                0.1.dev1+gff3f170
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -202,7 +202,7 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenvectorElectron.normalize" title="sisl.physics.electron.EigenvectorElectron.normalize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">normalize</span></code></a>()</p></td>
 <td><p>Return a normalized state where each state has <span class="math notranslate nohighlight">\(|\psi|^2=1\)</span></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenvectorElectron.outer" title="sisl.physics.electron.EigenvectorElectron.outer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">outer</span></code></a>([ket])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenvectorElectron.outer" title="sisl.physics.electron.EigenvectorElectron.outer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">outer</span></code></a>([ket, matrix])</p></td>
 <td><p>Return the outer product by <span class="math notranslate nohighlight">\(\sum_i|\psi_i\rangle\langle\psi'_i|\)</span></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.electron.EigenvectorElectron.phase" title="sisl.physics.electron.EigenvectorElectron.phase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">phase</span></code></a>([method, ret_index])</p></td>
@@ -385,7 +385,8 @@ Only if <em class="xref py py-obj">inplace</em> is False and <em class="xref py 
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ket</strong> (<a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State"><em>State</em></a><em>, </em><em>optional</em>) – the ket object to calculate the inner product with, if not passed it will do the inner
 product with itself. The object itself will always be the bra <span class="math notranslate nohighlight">\(\langle\psi_i|\)</span></p></li>
-<li><p><strong>matrix</strong> (<em>array_like</em><em>, </em><em>optional</em>) – whether a matrix is sandwiched between the bra and ket, default to the identity matrix</p></li>
+<li><p><strong>matrix</strong> (<em>array_like</em><em>, </em><em>optional</em>) – whether a matrix is sandwiched between the bra and ket, defaults to the identity matrix.
+1D arrays will be treated as a diagonal matrix.</p></li>
 <li><p><strong>diag</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – only return the diagonal matrix <span class="math notranslate nohighlight">\(\mathbf A_{ii}\)</span>.</p></li>
 </ul>
 </dd>
@@ -517,12 +518,16 @@ per basis element will be returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.electron.EigenvectorElectron.outer">
-<span class="sig-name descname"><span class="pre">outer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ket</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.electron.EigenvectorElectron.outer" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">outer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ket</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.electron.EigenvectorElectron.outer" title="Permalink to this definition"></a></dt>
 <dd><p>Return the outer product by <span class="math notranslate nohighlight">\(\sum_i|\psi_i\rangle\langle\psi'_i|\)</span></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ket</strong> (<a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State"><em>State</em></a><em>, </em><em>optional</em>) – the ket object to calculate the outer product of, if not passed it will do the outer
-product with itself. The object itself will always be the bra <span class="math notranslate nohighlight">\(|\psi_i\rangle\)</span></p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ket</strong> (<a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State"><em>State</em></a><em>, </em><em>optional</em>) – the ket object to calculate the outer product of, if not passed it will do the outer
+product with itself. The object itself will always be the bra <span class="math notranslate nohighlight">\(|\psi_i\rangle\)</span></p></li>
+<li><p><strong>matrix</strong> (<em>array_like</em><em>, </em><em>optional</em>) – whether a matrix is sandwiched between the ket and bra, defaults to the identity matrix.
+1D arrays will be treated as a diagonal matrix.</p></li>
+</ul>
 </dd>
 </dl>
 <p class="rubric">Notes</p>

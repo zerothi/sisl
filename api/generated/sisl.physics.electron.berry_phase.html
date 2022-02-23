@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>berry_phase &mdash; sisl 0.1.dev1+g75a34d6 documentation</title>
+  <title>berry_phase &mdash; sisl 0.1.dev1+gff3f170 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g75a34d6
+                0.1.dev1+gff3f170
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -158,11 +158,13 @@
 <h1>berry_phase<a class="headerlink" href="#berry-phase" title="Permalink to this headline"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="sisl.physics.electron.berry_phase">
-<span class="sig-prename descclassname"><span class="pre">sisl.physics.electron.</span></span><span class="sig-name descname"><span class="pre">berry_phase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contour</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sub</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eigvals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">closed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'berry'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/electron.html#berry_phase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.electron.berry_phase" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">sisl.physics.electron.</span></span><span class="sig-name descname"><span class="pre">berry_phase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contour</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sub</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eigvals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">closed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'berry'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret_overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/electron.html#berry_phase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.electron.berry_phase" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate the Berry-phase on a loop using a predefined path</p>
 <p>The Berry phase for a single Bloch state is calculated using the discretized formula:</p>
 <div class="math notranslate nohighlight">
-\[\phi = - \Im\ln \mathrm{det} \prod_i^{N-1} \langle \psi_{k_i} | \psi_{k_{i+1}} \rangle\]</div>
+\[\begin{split}\mathbf S = \prod_i^{N-1} \langle \psi_{k_i} | \psi_{k_{i+1}} \rangle
+\\
+\phi = - \Im\ln \mathrm{det} \mathbf S \rangle\end{split}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\langle \psi_{k_i} | \psi_{k_{i+1}} \rangle\)</span> may be exchanged with an overlap matrix
 of the investigated bands.</p>
 <dl class="field-list simple">
@@ -179,6 +181,7 @@ Forced true for Zak-phase calculations.</p></li>
 a closed loop integration, see <a class="footnote-reference brackets" href="#id3" id="id1">1</a>.
 Additionally, one may do the Berry-phase calculation using the SVD method of the
 overlap matrices. Simply append “:svd” to the chosen method, e.g. “berry:svd”.</p></li>
+<li><p><strong>ret_overlap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – optionally return the overlap matrix <span class="math notranslate nohighlight">\(\mathbf S\)</span></p></li>
 </ul>
 </dd>
 </dl>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.Grid &mdash; sisl 0.1.dev1+g75a34d6 documentation</title>
+  <title>sisl.Grid &mdash; sisl 0.1.dev1+gff3f170 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g75a34d6
+                0.1.dev1+gff3f170
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -682,7 +682,7 @@ The interpolation routine is <a class="reference external" href="https://docs.sc
 <dt class="sig sig-object py" id="sisl.Grid.isosurface">
 <span class="sig-name descname"><span class="pre">isosurface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.isosurface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.isosurface" title="Permalink to this definition"></a></dt>
 <dd><p>Calculates the isosurface for a given value.</p>
-<p>It uses <a class="reference external" href="https://scikit-image.org/docs/stable/api/skimage.measure.html#skimage.measure.marching_cubes" title="(in skimage v0.19.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">skimage.measure.marching_cubes</span></code></a>, so you need to have scikit-image installed.</p>
+<p>It uses <a class="reference external" href="https://scikit-image.org/docs/stable/api/skimage.measure.html#skimage.measure.marching_cubes" title="(in skimage v0.19.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">skimage.measure.marching_cubes</span></code></a>, so you need to have scikit-image installed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -690,7 +690,7 @@ The interpolation routine is <a class="reference external" href="https://docs.sc
 If not given or None, the average of the min and max of the grid is used.</p></li>
 <li><p><strong>step_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – step size in voxels. Larger steps yield faster but coarser results.
 The result will always be topologically correct though.</p></li>
-<li><p><strong>**kwargs</strong> – optional arguments passed directly to <a class="reference external" href="https://scikit-image.org/docs/stable/api/skimage.measure.html#skimage.measure.marching_cubes" title="(in skimage v0.19.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">skimage.measure.marching_cubes</span></code></a>
+<li><p><strong>**kwargs</strong> – optional arguments passed directly to <a class="reference external" href="https://scikit-image.org/docs/stable/api/skimage.measure.html#skimage.measure.marching_cubes" title="(in skimage v0.19.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">skimage.measure.marching_cubes</span></code></a>
 for the calculation of isosurfaces.</p></li>
 </ul>
 </dd>
@@ -709,7 +709,7 @@ This can be used by visualization tools to apply a colormap to the mesh.</p></li
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference external" href="https://scikit-image.org/docs/stable/api/skimage.measure.html#skimage.measure.marching_cubes" title="(in skimage v0.19.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">skimage.measure.marching_cubes</span></code></a></dt><dd><p>method used to calculate the isosurface.</p>
+<dt><a class="reference external" href="https://scikit-image.org/docs/stable/api/skimage.measure.html#skimage.measure.marching_cubes" title="(in skimage v0.19.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">skimage.measure.marching_cubes</span></code></a></dt><dd><p>method used to calculate the isosurface.</p>
 </dd>
 </dl>
 </div>

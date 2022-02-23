@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.phonon &mdash; sisl 0.1.dev1+g75a34d6 documentation</title>
+  <title>sisl.physics.phonon &mdash; sisl 0.1.dev1+gff3f170 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g75a34d6
+                0.1.dev1+gff3f170
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -374,15 +374,6 @@
     <span class="k">return</span> <span class="n">U</span>
 
 
-<span class="k">class</span> <span class="nc">_phonon_Mode</span><span class="p">:</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">mode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Eigenmodes (states) &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span>
-
-
 <div class="viewcode-block" id="CoefficientPhonon"><a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.CoefficientPhonon.html#sisl.physics.phonon.CoefficientPhonon">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.phonon&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">CoefficientPhonon</span><span class="p">(</span><span class="n">Coefficient</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Coefficients describing some physical quantity related to phonons &quot;&quot;&quot;</span>
@@ -390,15 +381,25 @@
 
 
 <div class="viewcode-block" id="ModePhonon"><a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.ModePhonon.html#sisl.physics.phonon.ModePhonon">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.phonon&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">ModePhonon</span><span class="p">(</span><span class="n">_phonon_Mode</span><span class="p">,</span> <span class="n">State</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ModePhonon</span><span class="p">(</span><span class="n">State</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; A mode describing a physical quantity related to phonons &quot;&quot;&quot;</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span></div>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Eigenmodes (states) &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span></div>
 
 
 <div class="viewcode-block" id="ModeCPhonon"><a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.ModeCPhonon.html#sisl.physics.phonon.ModeCPhonon">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.phonon&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">ModeCPhonon</span><span class="p">(</span><span class="n">_phonon_Mode</span><span class="p">,</span> <span class="n">StateC</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ModeCPhonon</span><span class="p">(</span><span class="n">StateC</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; A mode describing a physical quantity related to phonons, with associated coefficients of the mode &quot;&quot;&quot;</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Eigenmodes (states) &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span>
 
 <div class="viewcode-block" id="ModeCPhonon.velocity"><a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.ModeCPhonon.html#sisl.physics.phonon.ModeCPhonon.velocity">[docs]</a>    <span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate velocity of the modes</span>

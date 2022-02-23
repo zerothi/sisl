@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.densitymatrix &mdash; sisl 0.1.dev1+g75a34d6 documentation</title>
+  <title>sisl.physics.densitymatrix &mdash; sisl 0.1.dev1+gff3f170 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g75a34d6
+                0.1.dev1+gff3f170
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -1027,7 +1027,7 @@
 
         <span class="k">def</span> <span class="nf">Lb</span><span class="p">(</span><span class="n">idx_l</span><span class="p">,</span> <span class="n">DM</span><span class="p">,</span> <span class="n">sub</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sub</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">return</span>
+                <span class="k">return</span> <span class="p">[]</span>
             <span class="k">return</span> <span class="p">(</span><span class="n">idx_l</span><span class="p">[</span><span class="n">sub</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">idx_l</span><span class="p">[</span><span class="n">sub</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">DM</span><span class="p">[</span><span class="n">sub</span><span class="p">]</span>
 
         <span class="k">def</span> <span class="nf">Lc</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">idx_l</span><span class="p">,</span> <span class="n">DM</span><span class="p">,</span> <span class="n">sub</span><span class="p">):</span>
@@ -1140,7 +1140,7 @@
 
         <span class="k">if</span> <span class="s2">&quot;orbital&quot;</span> <span class="o">==</span> <span class="n">projection</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">L</span>
-        <span class="k">elif</span> <span class="s2">&quot;atom&quot;</span> <span class="o">==</span> <span class="n">projection</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;atom&quot;</span> <span class="o">==</span> <span class="n">projection</span><span class="p">:</span>
             <span class="c1"># Now perform summation per atom</span>
             <span class="n">l</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">geom</span><span class="o">.</span><span class="n">na</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">L</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
             <span class="n">add</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">geom</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">no</span><span class="p">)),</span> <span class="n">L</span><span class="p">)</span>

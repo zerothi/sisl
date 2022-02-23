@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.eig &mdash; sisl 0.1.dev1+g75a34d6 documentation</title>
+  <title>sisl.io.siesta.eig &mdash; sisl 0.1.dev1+gff3f170 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g75a34d6
+                0.1.dev1+gff3f170
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -292,7 +292,7 @@
 
         <span class="c1"># Energy grabs</span>
         <span class="k">class</span> <span class="nc">DOSPlot</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
-            <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="n">dos_self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="n">dos_self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span> <span class="c1"># pylint: disable=E0213</span>
                 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="s1">&#39;_weight&#39;</span><span class="p">):</span>
                     <span class="c1"># Try and read in the k-point-weights</span>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.state &mdash; sisl 0.1.dev1+g75a34d6 documentation</title>
+  <title>sisl.physics.state &mdash; sisl 0.1.dev1+gff3f170 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g75a34d6
+                0.1.dev1+gff3f170
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -745,7 +745,7 @@
         <span class="n">s</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span>
         <span class="k">return</span> <span class="n">s</span></div>
 
-<div class="viewcode-block" id="State.outer"><a class="viewcode-back" href="../../../api/generated/sisl.physics.State.html#sisl.physics.State.outer">[docs]</a>    <span class="k">def</span> <span class="nf">outer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="State.outer"><a class="viewcode-back" href="../../../api/generated/sisl.physics.State.html#sisl.physics.State.outer">[docs]</a>    <span class="k">def</span> <span class="nf">outer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">matrix</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Return the outer product by :math:`\sum_i|\psi_i\rangle\langle\psi&#39;_i|`</span>
 
 <span class="sd">        Parameters</span>
@@ -753,6 +753,9 @@
 <span class="sd">        ket : State, optional</span>
 <span class="sd">           the ket object to calculate the outer product of, if not passed it will do the outer</span>
 <span class="sd">           product with itself. The object itself will always be the bra :math:`|\psi_i\rangle`</span>
+<span class="sd">        matrix : array_like, optional</span>
+<span class="sd">           whether a matrix is sandwiched between the ket and bra, defaults to the identity matrix.</span>
+<span class="sd">           1D arrays will be treated as a diagonal matrix.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
@@ -763,14 +766,49 @@
 <span class="sd">        numpy.ndarray</span>
 <span class="sd">            a matrix with the sum of outer state products</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">matrix</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">M</span> <span class="o">=</span> <span class="n">_FakeMatrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">M</span> <span class="o">=</span> <span class="n">matrix</span>
+        <span class="n">ndim</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">ndim</span>
+        <span class="k">if</span> <span class="n">ndim</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.outer only accepts matrices up to 2 dimensions.&quot;</span><span class="p">)</span>
+
+        <span class="n">bra</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span>
+        <span class="c1"># decide on the ket</span>
         <span class="k">if</span> <span class="n">ket</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ket</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ket</span><span class="p">,</span> <span class="n">State</span><span class="p">):</span>
+            <span class="c1"># check whether this, and ket are both originating from</span>
+            <span class="c1"># non-orthogonal basis. That would be non-ideal</span>
             <span class="n">ket</span> <span class="o">=</span> <span class="n">ket</span><span class="o">.</span><span class="n">state</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ket</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">ket</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">ket</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.outer requires the objects to have the same shape&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ki,kj-&gt;ij&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="n">_conj</span><span class="p">(</span><span class="n">ket</span><span class="p">))</span></div>
+        <span class="c1"># check that the shapes matches (ket should be transposed)</span>
+        <span class="c1">#  ket M bra</span>
+        <span class="k">if</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># M,N @ N, L</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">ket</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">bra</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.outer requires the objects to have matching shapes bra @ ket bra=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, ket=</span><span class="si">{</span><span class="n">ket</span><span class="o">.</span><span class="n">shape</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># M,N @ N @ N, L</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">ket</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span>
+                <span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">bra</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.outer requires the objects to have matching shapes ket @ M @ bra ket=</span><span class="si">{</span><span class="n">ket</span><span class="o">.</span><span class="n">shape</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">, M=</span><span class="si">{</span><span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, bra=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="c1"># M,N @ N,K @ K,L</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">ket</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span>
+                <span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">bra</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.outer requires the objects to have matching shapes ket @ M @ bra ket=</span><span class="si">{</span><span class="n">ket</span><span class="o">.</span><span class="n">shape</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">, M=</span><span class="si">{</span><span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, bra=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">Aij</span> <span class="o">=</span> <span class="n">ket</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">M</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">_conj</span><span class="p">(</span><span class="n">bra</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">Aij</span> <span class="o">=</span> <span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ij,i,ik-&gt;jk&#39;</span><span class="p">,</span> <span class="n">ket</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">_conj</span><span class="p">(</span><span class="n">bra</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">Aij</span> <span class="o">=</span> <span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ij,ik-&gt;jk&#39;</span><span class="p">,</span> <span class="n">ket</span> <span class="o">*</span> <span class="n">M</span><span class="p">,</span> <span class="n">_conj</span><span class="p">(</span><span class="n">bra</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">Aij</span></div>
 
 <div class="viewcode-block" id="State.inner"><a class="viewcode-back" href="../../../api/generated/sisl.physics.State.html#sisl.physics.State.inner">[docs]</a>    <span class="k">def</span> <span class="nf">inner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ket</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">matrix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">diag</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the inner product as :math:`\mathbf A_{ij} = \langle\psi_i|\mathbf M|\psi&#39;_j\rangle`</span>
@@ -781,7 +819,8 @@
 <span class="sd">           the ket object to calculate the inner product with, if not passed it will do the inner</span>
 <span class="sd">           product with itself. The object itself will always be the bra :math:`\langle\psi_i|`</span>
 <span class="sd">        matrix : array_like, optional</span>
-<span class="sd">           whether a matrix is sandwiched between the bra and ket, default to the identity matrix</span>
+<span class="sd">           whether a matrix is sandwiched between the bra and ket, defaults to the identity matrix.</span>
+<span class="sd">           1D arrays will be treated as a diagonal matrix.</span>
 <span class="sd">        diag : bool, optional</span>
 <span class="sd">           only return the diagonal matrix :math:`\mathbf A_{ii}`.</span>
 
@@ -804,6 +843,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">M</span> <span class="o">=</span> <span class="n">matrix</span>
         <span class="n">ndim</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">ndim</span>
+        <span class="k">if</span> <span class="n">ndim</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.inner only accepts matrices up to 2 dimensions.&quot;</span><span class="p">)</span>
 
         <span class="n">bra</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span>
         <span class="c1"># decide on the ket</span>
@@ -816,25 +857,38 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ket</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">ket</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
-        <span class="c1"># They *must* have same number of basis points per state</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">ket</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.inner requires the objects to have the same number of coefficients per vector </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> != </span><span class="si">{</span><span class="n">ket</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="c1"># check that the shapes matches (ket should be transposed)</span>
+        <span class="c1">#  bra M ket</span>
+        <span class="k">if</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># M,N @ N, L</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">bra</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">ket</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.inner requires the objects to have matching shapes bra @ ket bra=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, ket=</span><span class="si">{</span><span class="n">ket</span><span class="o">.</span><span class="n">shape</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># M,N @ N @ N, L</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">bra</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span>
+                <span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">ket</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.inner requires the objects to have matching shapes bra @ M @ ket bra=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, M=</span><span class="si">{</span><span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, ket=</span><span class="si">{</span><span class="n">ket</span><span class="o">.</span><span class="n">shape</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="c1"># M,N @ N,K @ K,L</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">bra</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span>
+                <span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">ket</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.inner requires the objects to have matching shapes bra @ M @ ket bra=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, M=</span><span class="si">{</span><span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, ket=</span><span class="si">{</span><span class="n">ket</span><span class="o">.</span><span class="n">shape</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">diag</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bra</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ket</span><span class="p">):</span>
-                <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.inner matrix product is non-square, only the first </span><span class="si">{</span><span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bra</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">ket</span><span class="p">))</span><span class="si">}</span><span class="s2"> diagonal elements will be returned.&quot;</span><span class="p">)</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bra</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">ket</span><span class="p">):</span>
-                    <span class="n">ket</span> <span class="o">=</span> <span class="n">ket</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">bra</span><span class="p">)]</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">bra</span> <span class="o">=</span> <span class="n">bra</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">ket</span><span class="p">)]</span>
+            <span class="k">if</span> <span class="n">bra</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">ket</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.inner diagonal matrix product is non-square, please use diag=False or reduce number of vectors.&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
                 <span class="n">Aij</span> <span class="o">=</span> <span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ij,ji-&gt;i&#39;</span><span class="p">,</span> <span class="n">_conj</span><span class="p">(</span><span class="n">bra</span><span class="p">),</span> <span class="n">M</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">ket</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
             <span class="k">elif</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">Aij</span> <span class="o">=</span> <span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ij,j,ij-&gt;i&#39;</span><span class="p">,</span> <span class="n">_conj</span><span class="p">(</span><span class="n">bra</span><span class="p">),</span> <span class="n">M</span><span class="p">,</span> <span class="n">ket</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">Aij</span> <span class="o">=</span> <span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ij,ij-&gt;i&#39;</span><span class="p">,</span> <span class="n">_conj</span><span class="p">(</span><span class="n">bra</span><span class="p">),</span> <span class="n">ket</span><span class="p">)</span> <span class="o">*</span> <span class="n">M</span>
         <span class="k">elif</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="n">Aij</span> <span class="o">=</span> <span class="n">_conj</span><span class="p">(</span><span class="n">bra</span><span class="p">)</span> <span class="o">@</span> <span class="n">M</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">ket</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">Aij</span> <span class="o">=</span> <span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ij,j,kj-&gt;ik&#39;</span><span class="p">,</span> <span class="n">_conj</span><span class="p">(</span><span class="n">bra</span><span class="p">),</span> <span class="n">M</span><span class="p">,</span> <span class="n">ket</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">Aij</span> <span class="o">=</span> <span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ij,kj-&gt;ik&#39;</span><span class="p">,</span> <span class="n">_conj</span><span class="p">(</span><span class="n">bra</span><span class="p">),</span> <span class="n">ket</span><span class="p">)</span> <span class="o">*</span> <span class="n">M</span>
         <span class="k">return</span> <span class="n">Aij</span></div>
 
 <div class="viewcode-block" id="State.phase"><a class="viewcode-back" href="../../../api/generated/sisl.physics.State.html#sisl.physics.State.phase">[docs]</a>    <span class="k">def</span> <span class="nf">phase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="n">ret_index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -1160,24 +1214,6 @@
         <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">/</span> <span class="n">n</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
         <span class="n">s</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span>
         <span class="k">return</span> <span class="n">s</span></div>
-
-<div class="viewcode-block" id="StateC.outer"><a class="viewcode-back" href="../../../api/generated/sisl.physics.StateC.html#sisl.physics.StateC.outer">[docs]</a>    <span class="k">def</span> <span class="nf">outer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Return the outer product for the indices `idx` (or all if ``None``) by :math:`\sum_i|\psi_i\rangle c_i\langle\psi_i|`</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        idx : int or array_like, optional</span>
-<span class="sd">           only perform an outer product of the specified indices, otherwise all states are used</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        numpy.ndarray</span>
-<span class="sd">            a matrix with the sum of outer state products</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">idx</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;k,ki,kj-&gt;ij&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="n">_conj</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">))</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_index</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;k,ki,kj-&gt;ij&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">_conj</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="n">idx</span><span class="p">]))</span></div>
 
 <div class="viewcode-block" id="StateC.sort"><a class="viewcode-back" href="../../../api/generated/sisl.physics.StateC.html#sisl.physics.StateC.sort">[docs]</a>    <span class="k">def</span> <span class="nf">sort</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Sort and return a new `StateC` by sorting the coefficients (default to ascending)</span>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.siesta_nc &mdash; sisl 0.1.dev1+g75a34d6 documentation</title>
+  <title>sisl.io.siesta.siesta_nc &mdash; sisl 0.1.dev1+gff3f170 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g75a34d6
+                0.1.dev1+gff3f170
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -102,7 +102,7 @@
 <span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">isfile</span>
 
 <span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileCDFSiesta</span>
-<span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_fh_open</span><span class="p">,</span> <span class="n">sile_raise_write</span>
+<span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_fh_open</span><span class="p">,</span> <span class="n">sile_raise_write</span><span class="p">,</span> <span class="n">SileError</span>
 
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span> <span class="nn">sisl._array</span> <span class="kn">import</span> <span class="n">aranged</span><span class="p">,</span> <span class="n">array_arange</span>
@@ -252,7 +252,7 @@
 <div class="viewcode-block" id="ncSileSiesta.read_force"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.read_force">[docs]</a>    <span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">read_force</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns a vector with final forces contained. &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="s1">&#39;fa&#39;</span><span class="p">))</span> <span class="o">*</span> <span class="n">Ry2eV</span> <span class="o">/</span> <span class="n">Bohr2Ang</span></div>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="s1">&#39;fa&#39;</span><span class="p">))</span> <span class="o">*</span> <span class="n">Ry2eV</span> <span class="o">/</span> <span class="n">Bohr2Ang</span></div>
 
 <div class="viewcode-block" id="ncSileSiesta.read_fermi_level"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.read_fermi_level">[docs]</a>    <span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">read_fermi_level</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

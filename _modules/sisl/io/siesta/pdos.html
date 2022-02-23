@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.pdos &mdash; sisl 0.1.dev1+g75a34d6 documentation</title>
+  <title>sisl.io.siesta.pdos &mdash; sisl 0.1.dev1+gff3f170 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g75a34d6
+                0.1.dev1+gff3f170
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -388,7 +388,7 @@
             <span class="k">if</span> <span class="n">norm</span> <span class="o">==</span> <span class="s1">&#39;orbital&#39;</span><span class="p">:</span>
                 <span class="n">NORM</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">norm</span> <span class="o">==</span> <span class="s1">&#39;atom&#39;</span><span class="p">:</span>
-                <span class="n">a</span> <span class="o">=</span> <span class="n">unique</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">orbitals</span><span class="p">))</span>
+                <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">orbitals</span><span class="p">))</span>
                 <span class="c1"># Now sum the orbitals per atom</span>
                 <span class="n">NORM</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">orbitals</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
             <span class="k">return</span> <span class="n">NORM</span>

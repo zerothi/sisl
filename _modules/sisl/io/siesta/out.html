@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.out &mdash; sisl 0.1.dev1+g75a34d6 documentation</title>
+  <title>sisl.io.siesta.out &mdash; sisl 0.1.dev1+gff3f170 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g75a34d6
+                0.1.dev1+gff3f170
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -825,15 +825,30 @@
                     <span class="n">d</span><span class="p">[</span><span class="s1">&#39;order&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;S&quot;</span><span class="p">)</span>
                     <span class="n">props</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;Sx&#39;</span><span class="p">,</span> <span class="s1">&#39;Sy&#39;</span><span class="p">,</span> <span class="s1">&#39;Sz&#39;</span><span class="p">])</span>
             <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;bulk-bias: |v&#39;</span><span class="p">):</span>
+                <span class="c1"># TODO old version should be removed once released</span>
                 <span class="n">d</span><span class="p">[</span><span class="s1">&#39;bb-v&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]))</span>
                 <span class="k">if</span> <span class="s1">&#39;BB-vx&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">props</span><span class="p">:</span>
                     <span class="n">d</span><span class="p">[</span><span class="s1">&#39;order&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;bb-v&quot;</span><span class="p">)</span>
                     <span class="n">props</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;BB-vx&#39;</span><span class="p">,</span> <span class="s1">&#39;BB-vy&#39;</span><span class="p">,</span> <span class="s1">&#39;BB-vz&#39;</span><span class="p">])</span>
-            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;bulk-bias: {q&#39;</span><span class="p">):</span>
-                <span class="n">d</span><span class="p">[</span><span class="s1">&#39;bb-q&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]))</span>
-                <span class="k">if</span> <span class="s1">&#39;BB-q+&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">props</span><span class="p">:</span>
-                    <span class="n">d</span><span class="p">[</span><span class="s1">&#39;order&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;bb-q&quot;</span><span class="p">)</span>
-                    <span class="n">props</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;BB-q+&#39;</span><span class="p">,</span> <span class="s1">&#39;BB-q-&#39;</span><span class="p">,</span> <span class="s1">&#39;BB-q0&#39;</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;bulk-bias: </span><span class="si">{v}</span><span class="s2">&quot;</span><span class="p">):</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{v}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;_&quot;</span><span class="p">:</span>
+                    <span class="c1"># we are in a subset</span>
+                    <span class="n">lbl</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;BB-</span><span class="si">{</span><span class="n">line</span><span class="p">[</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">4</span><span class="p">:</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">6</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">lbl</span> <span class="o">=</span> <span class="s2">&quot;BB&quot;</span>
+
+                <span class="n">v</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;] {&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">v</span><span class="p">[:</span><span class="mi">3</span><span class="p">]))</span>
+                <span class="n">d</span><span class="p">[</span><span class="n">lbl</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+                <span class="k">if</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lbl</span><span class="si">}</span><span class="s2">-vx&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">props</span><span class="p">:</span>
+                    <span class="n">d</span><span class="p">[</span><span class="s2">&quot;order&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lbl</span><span class="p">)</span>
+                    <span class="n">props</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lbl</span><span class="si">}</span><span class="s2">-vx&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lbl</span><span class="si">}</span><span class="s2">-vy&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lbl</span><span class="si">}</span><span class="s2">-vz&quot;</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;bulk-bias: dq&quot;</span><span class="p">):</span>
+                <span class="n">d</span><span class="p">[</span><span class="s1">&#39;BB-q&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]))</span>
+                <span class="k">if</span> <span class="s2">&quot;BB-dq&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">props</span><span class="p">:</span>
+                    <span class="n">d</span><span class="p">[</span><span class="s2">&quot;order&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;BB-q&quot;</span><span class="p">)</span>
+                    <span class="n">props</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;BB-dq&quot;</span><span class="p">,</span> <span class="s2">&quot;BB-q0&quot;</span><span class="p">])</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">False</span>
             <span class="k">return</span> <span class="kc">True</span>
@@ -1091,9 +1106,6 @@
 <span class="sd">            if `as_dataframe` is requested. The dataframe will have multi-indices if multiple</span>
 <span class="sd">            SCF or MD steps are requested.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;fh&#39;</span><span class="p">):</span>
-            <span class="k">with</span> <span class="bp">self</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">read_charge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">iscf</span><span class="p">,</span> <span class="n">imd</span><span class="p">,</span> <span class="n">key_scf</span><span class="p">,</span> <span class="n">as_dataframe</span><span class="p">)</span>
         <span class="n">namel</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">as_dataframe</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -1176,7 +1188,7 @@
             <span class="n">_r_charge</span> <span class="o">=</span> <span class="n">_mulliken_charges</span>
             <span class="n">charge_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;mulliken: Atomic and Orbital Populations&quot;</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.read_charge name argument should be one of </span><span class="si">{</span><span class="n">known_charges</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">?&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.read_charge name argument should be one of [voronoi, hirshfeld, mulliken], got </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">?&quot;</span><span class="p">)</span>
 
         <span class="c1"># Ensure the key_scf matches exactly (prepend a space)</span>
         <span class="n">key_scf</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">key_scf</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="si">}</span><span class="s2">:&quot;</span>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.electron.StateCElectron &mdash; sisl 0.1.dev1+g75a34d6 documentation</title>
+  <title>sisl.physics.electron.StateCElectron &mdash; sisl 0.1.dev1+gff3f170 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g75a34d6
+                0.1.dev1+gff3f170
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -219,8 +219,8 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.electron.StateCElectron.normalize" title="sisl.physics.electron.StateCElectron.normalize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">normalize</span></code></a>()</p></td>
 <td><p>Return a normalized state where each state has <span class="math notranslate nohighlight">\(|\psi|^2=1\)</span></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.electron.StateCElectron.outer" title="sisl.physics.electron.StateCElectron.outer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">outer</span></code></a>([idx])</p></td>
-<td><p>Return the outer product for the indices <em class="xref py py-obj">idx</em> (or all if <code class="docutils literal notranslate"><span class="pre">None</span></code>) by <span class="math notranslate nohighlight">\(\sum_i|\psi_i\rangle c_i\langle\psi_i|\)</span></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.electron.StateCElectron.outer" title="sisl.physics.electron.StateCElectron.outer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">outer</span></code></a>([ket, matrix])</p></td>
+<td><p>Return the outer product by <span class="math notranslate nohighlight">\(\sum_i|\psi_i\rangle\langle\psi'_i|\)</span></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.electron.StateCElectron.phase" title="sisl.physics.electron.StateCElectron.phase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">phase</span></code></a>([method, ret_index])</p></td>
 <td><p>Calculate the Euler angle (phase) for the elements of the state, in the range <span class="math notranslate nohighlight">\(]-\pi;\pi]\)</span></p></td>
@@ -548,7 +548,8 @@ degeneracy decoupling.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ket</strong> (<a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State"><em>State</em></a><em>, </em><em>optional</em>) – the ket object to calculate the inner product with, if not passed it will do the inner
 product with itself. The object itself will always be the bra <span class="math notranslate nohighlight">\(\langle\psi_i|\)</span></p></li>
-<li><p><strong>matrix</strong> (<em>array_like</em><em>, </em><em>optional</em>) – whether a matrix is sandwiched between the bra and ket, default to the identity matrix</p></li>
+<li><p><strong>matrix</strong> (<em>array_like</em><em>, </em><em>optional</em>) – whether a matrix is sandwiched between the bra and ket, defaults to the identity matrix.
+1D arrays will be treated as a diagonal matrix.</p></li>
 <li><p><strong>diag</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – only return the diagonal matrix <span class="math notranslate nohighlight">\(\mathbf A_{ii}\)</span>.</p></li>
 </ul>
 </dd>
@@ -679,17 +680,26 @@ per basis element will be returned.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.electron.StateCElectron.outer">
-<span class="sig-name descname"><span class="pre">outer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.electron.StateCElectron.outer" title="Permalink to this definition"></a></dt>
-<dd><p>Return the outer product for the indices <em class="xref py py-obj">idx</em> (or all if <code class="docutils literal notranslate"><span class="pre">None</span></code>) by <span class="math notranslate nohighlight">\(\sum_i|\psi_i\rangle c_i\langle\psi_i|\)</span></p>
+<span class="sig-name descname"><span class="pre">outer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ket</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.electron.StateCElectron.outer" title="Permalink to this definition"></a></dt>
+<dd><p>Return the outer product by <span class="math notranslate nohighlight">\(\sum_i|\psi_i\rangle\langle\psi'_i|\)</span></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>idx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>array_like</em><em>, </em><em>optional</em>) – only perform an outer product of the specified indices, otherwise all states are used</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ket</strong> (<a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State"><em>State</em></a><em>, </em><em>optional</em>) – the ket object to calculate the outer product of, if not passed it will do the outer
+product with itself. The object itself will always be the bra <span class="math notranslate nohighlight">\(|\psi_i\rangle\)</span></p></li>
+<li><p><strong>matrix</strong> (<em>array_like</em><em>, </em><em>optional</em>) – whether a matrix is sandwiched between the ket and bra, defaults to the identity matrix.
+1D arrays will be treated as a diagonal matrix.</p></li>
+</ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a matrix with the sum of outer state products</p>
+</dl>
+<p class="rubric">Notes</p>
+<p>This does <em>not</em> take into account a possible overlap matrix when non-orthogonal basis sets are used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a matrix with the sum of outer state products</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
