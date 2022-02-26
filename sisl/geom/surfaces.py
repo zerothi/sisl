@@ -10,26 +10,28 @@ __all__ = ['fcc_slab', 'bcc_slab']
 
 
 def _layer2int(layer):
+    "Convert layer specification to integer"
     if isinstance(layer, str):
         layer = "ABCDEF".index(layer.upper())
     return layer
 
 
 def _calc_offset(start, end, layers):
+    "Determine offset index from start or end specification"
     if start is not None:
         return -_layer2int(start)
     else:
         return layers - 1 - _layer2int(end)
 
-def _finish_slab(g, size, vacuum):
-    g = g.repeat(size[1], 1).repeat(size[0], 0)
 
+def _finish_slab(g, size, vacuum):
+    "Grow slab according to size and vacuum specifications"
+    g = g.repeat(size[1], 1).repeat(size[0], 0)
     if vacuum is not None:
         g.cell[2, 2] += vacuum
         g.set_nsc([3, 3, 1])
     else:
         g.set_nsc([3, 3, 3])
-
     if np.all(g.maxR(True) > 0.):
         g.optimize_nsc()
     return g
@@ -37,7 +39,7 @@ def _finish_slab(g, size, vacuum):
 
 @set_module("sisl.geom")
 def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, start=None, end=None):
-    """ Construction of a surface slab from a face-centered cubic crystal
+    """ Construction of a surface slab from a face-centered cubic (FCC) crystal
 
     The slab layers are stacked along the z-axis. The default stacking is the first
     layer as an A-layer, defined as the plane containing an atom at (x,y)=(0,0).
@@ -64,7 +66,8 @@ def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
 
     See Also
     --------
-    geom.surface_slab
+    geom.fcc
+    geom.bcc_slab
     """
     if isinstance(miller, int):
         miller = str(miller)
@@ -150,7 +153,7 @@ def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
 
 
 def bcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, start=None, end=None):
-    """ Construction of a surface slab from a body-centered cubic crystal
+    """ Construction of a surface slab from a body-centered cubic (BCC) crystal
 
     The slab layers are stacked along the z-axis. The default stacking is the first
     layer as an A-layer, defined as the plane containing an atom at (x,y)=(0,0).
@@ -177,6 +180,7 @@ def bcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
 
     See Also
     --------
+    geom.bcc
     geom.fcc_slab
     """
     if isinstance(miller, int):
