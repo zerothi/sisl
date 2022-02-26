@@ -6,7 +6,7 @@ import numpy as np
 from sisl._internal import set_module
 from sisl import Atom, Geometry, SuperCell
 
-__all__ = ['fcc_slab', 'surface_slab']
+__all__ = ['fcc_slab', 'bcc_slab']
 
 
 def _layer2int(layer):
@@ -285,67 +285,3 @@ def bcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
         g.optimize_nsc()
 
     return g
-
-
-def surface_slab(atoms, miller, alat=None, reference='exp', **kwargs):
-    """ Construction of a surface slab for different elemental crystals
-
-    Parameters
-    ----------
-    atoms : Atom
-        the atom that the crystal consists of
-    miller : int or str or 3-array
-        Miller indices of the surface facet
-    alat : float, optional
-        lattice constant, default from table for the given element
-    reference : {'exp', 'pbe'}
-        select whether the lattice constant is the experimental value
-        or the one obtained with a given xc-functional
-    size : 3-array, optional
-        slab size along the lattice vectors
-    vacuum : float, optional
-        distance added to the third lattice vector to separate
-        the slab from its periodic images
-    orthogonal : bool, optional
-        if True returns an orthogonal lattice
-    start : int or string, optional
-        sets the first layer in the slab
-    end : int or string, optional
-        sets the last layer in the slab
-
-    Note
-    ----
-    Lattice constants are derived from the equilibrium volumes reported in Table II
-    in Schimka, Gaudoin, Klimeš, Marsman, and Kresse, Phys. Rev. B 87, 214102 (2013).
-    The experimental values do not include correction for zero-point vibrational energy.
-    The PBE values correspond to VASP calculations.
-
-    See Also
-    --------
-    geom.fcc_slab
-    """
-
-    if not isinstance(atoms, Atom):
-        atoms = Atom(atoms)
-
-    def fccvol2alat(vol):
-        "Convert fcc volume to lattice constant"
-        return (4 * vol) ** (1 / 3)
-
-    if atoms.tag == 'Cu':
-        if alat is None:
-            volume = {'exp': 11.69, 'pbe': 11.97}
-            alat = fccvol2alat(volume[reference.lower()])
-        return fcc_slab(alat, atoms, miller, **kwargs)
-
-    elif atoms.tag == 'Ag':
-        if alat is None:
-            volume = {'exp': 16.84, 'pbe': 17.81}
-            alat = fccvol2alat(volume[reference.lower()])
-        return fcc_slab(alat, atoms, miller, **kwargs)
-
-    elif atoms.tag == 'Au':
-        if alat is None:
-            volume = {'exp': 16.79, 'pbe': 17.92}
-            alat = fccvol2alat(volume[reference.lower()])
-        return fcc_slab(alat, atoms, miller, **kwargs)
