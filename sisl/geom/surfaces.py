@@ -43,7 +43,7 @@ def _convert_miller(miller):
     if isinstance(miller, str):
         miller = (int(miller[0]), int(miller[1]), int(miller[2]))
     if len(miller) != 3:
-        raise ValueError(f"Invalid Miller indices")
+        raise ValueError(f"Invalid Miller indices, must have length 3")
     return miller
 
 
@@ -163,7 +163,6 @@ def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
             g.xyz[B::3] += sc.cell[0] / 3 + sc.cell[1] / 3
             g.xyz[C::3] += -sc.cell[0] / 3 + 2 * sc.cell[1] / 3
 
-
     else:
          raise NotImplementedError(f"fcc_slab: miller={miller} is not implemented")
 
@@ -196,6 +195,18 @@ def bcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
         sets the first layer in the slab
     end : int or string, optional
         sets the last layer in the slab
+
+    Examples
+    --------
+    bcc 111 surface, starting with the A layer
+
+    >>> bcc_slab(alat, atoms, "111", start=0)
+
+    bcc 111 surface, starting with the B layer
+    >>> bcc_slab(alat, atoms, "111", start=1)
+
+    bcc 111 surface, ending with the B layer
+    >>> bcc_slab(alat, atoms, "111", end=1)
 
     See Also
     --------
@@ -290,7 +301,7 @@ def bcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
                 g.xyz[C+i::6] += 2 * vec / 3 - sc.cell[0]
 
     else:
-         raise NotImplementedError(f"miller={miller} is not implemented")
+         raise NotImplementedError(f"bcc_slab: miller={miller} is not implemented")
 
     g = _finish_slab(g, size, vacuum)
     return g
