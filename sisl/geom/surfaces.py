@@ -37,6 +37,16 @@ def _finish_slab(g, size, vacuum):
     return g
 
 
+def _convert_miller(miller):
+    if isinstance(miller, int):
+        miller = str(miller)
+    if isinstance(miller, str):
+        miller = (int(miller[0]), int(miller[1]), int(miller[2]))
+    if len(miller) != 3:
+        raise ValueError(f"Invalid Miller indices")
+    return miller
+
+
 @set_module("sisl.geom")
 def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, start=None, end=None):
     """ Construction of a surface slab from a face-centered cubic (FCC) crystal
@@ -69,12 +79,7 @@ def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
     geom.fcc
     geom.bcc_slab
     """
-    if isinstance(miller, int):
-        miller = str(miller)
-    if isinstance(miller, str):
-        miller = (int(miller[0]), int(miller[1]), int(miller[2]))
-    if len(miller) != 3:
-        raise ValueError(f"Invalid Miller indices")
+    miller = _convert_miller(miller)
 
     if start is not None and end is not None:
         raise ValueError("Only one of start or end may be supplied")
@@ -183,12 +188,7 @@ def bcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
     geom.bcc
     geom.fcc_slab
     """
-    if isinstance(miller, int):
-        miller = str(miller)
-    if isinstance(miller, str):
-        miller = (int(miller[0]), int(miller[1]), int(miller[2]))
-    if len(miller) != 3:
-        raise ValueError(f"Invalid Miller indices")
+    miller = _convert_miller(miller)
 
     if start is not None and end is not None:
         raise ValueError("Only one of start or end may be supplied")
