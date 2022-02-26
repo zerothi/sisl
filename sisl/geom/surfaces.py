@@ -38,6 +38,7 @@ def _finish_slab(g, size, vacuum):
 
 
 def _convert_miller(miller):
+    "Convert miller specification to 3-tuple"
     if isinstance(miller, int):
         miller = str(miller)
     if isinstance(miller, str):
