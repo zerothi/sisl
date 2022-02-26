@@ -238,8 +238,8 @@ def bcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
             # slide ABC layers relative to each other
             offset = _calc_offset(start, end, size[2])
             B = 2 * (offset + 1) % 4
-            g.xyz[B::4] += (0 * sc.cell[0] + sc.cell[1]) / 2
-            g.xyz[B+1::4] += (0 * sc.cell[0] + sc.cell[1]) / 2
+            g.xyz[B::4] += sc.cell[1] / 2
+            g.xyz[B+1::4] -= sc.cell[1] / 2
 
     elif miller == (1, 1, 1):
 
