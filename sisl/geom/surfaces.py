@@ -240,19 +240,7 @@ def bcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
         if size is None:
             size = (1, 1, 2)
 
-        if not orthogonal:
-            sc = SuperCell(np.array([[1, 0, 0],
-                                     [0.5, 0.5 ** 0.5, 0],
-                                     [0, 0, 0.5 ** 0.5]]) * alat)
-            g = Geometry([0, 0, 0], atoms=atoms, sc=sc)
-            g = g.tile(size[2], 2)
-
-            # slide AB layers relative to each other
-            offset = _calc_offset(start, end, size[2])
-            B = (offset + 1) % 2
-            g.xyz[B::2] += sc.cell[0] / 2
-
-        elif orthogonal:
+        if orthogonal:
             sc = SuperCell(np.array([1, 2, 0.5]) ** 0.5 * alat)
             g = Geometry(np.array([[0, 0, 0],
                                    [0.5, 0.5 ** 0.5, 0]]) * alat,
@@ -265,26 +253,24 @@ def bcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
             g.xyz[B::4] += sc.cell[1] / 2
             g.xyz[B+1::4] -= sc.cell[1] / 2
 
+        else:
+            sc = SuperCell(np.array([[1, 0, 0],
+                                     [0.5, 0.5 ** 0.5, 0],
+                                     [0, 0, 0.5 ** 0.5]]) * alat)
+            g = Geometry([0, 0, 0], atoms=atoms, sc=sc)
+            g = g.tile(size[2], 2)
+
+            # slide AB layers relative to each other
+            offset = _calc_offset(start, end, size[2])
+            B = (offset + 1) % 2
+            g.xyz[B::2] += sc.cell[0] / 2
+
     elif miller == (1, 1, 1):
 
         if size is None:
             size = (1, 1, 3)
 
-        if not orthogonal:
-            sc = SuperCell(np.array([[2, 0, 0],
-                                     [0.5, 1.5, 0],
-                                     [0, 0, 1 / 12]]) ** 0.5 * alat)
-            g = Geometry([0, 0, 0], atoms=atoms, sc=sc)
-            g = g.tile(size[2], 2)
-
-            # slide ABC layers relative to each other
-            offset = _calc_offset(start, end, size[2])
-            B = (offset + 1) % 3
-            C = (offset + 2) % 3
-            g.xyz[B::3] += sc.cell[0] / 3 + sc.cell[1] / 3
-            g.xyz[C::3] += -sc.cell[0] / 3 + 2 * sc.cell[1] / 3
-
-        elif orthogonal:
+        if orthogonal:
             sc = SuperCell(np.array([2, 4 * 1.5, 1 / 12]) ** 0.5 * alat)
             g = Geometry(np.array([[0, 0, 0],
                                    [0.5, 1.5, 0]]) ** 0.5 * alat,
@@ -299,6 +285,20 @@ def bcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
             for i in range(2):
                 g.xyz[B+i::6] += vec / 3 - i % 2 * sc.cell[0]
                 g.xyz[C+i::6] += 2 * vec / 3 - sc.cell[0]
+
+        else:
+            sc = SuperCell(np.array([[2, 0, 0],
+                                     [0.5, 1.5, 0],
+                                     [0, 0, 1 / 12]]) ** 0.5 * alat)
+            g = Geometry([0, 0, 0], atoms=atoms, sc=sc)
+            g = g.tile(size[2], 2)
+
+            # slide ABC layers relative to each other
+            offset = _calc_offset(start, end, size[2])
+            B = (offset + 1) % 3
+            C = (offset + 2) % 3
+            g.xyz[B::3] += sc.cell[0] / 3 + sc.cell[1] / 3
+            g.xyz[C::3] += -sc.cell[0] / 3 + 2 * sc.cell[1] / 3
 
     else:
          raise NotImplementedError(f"bcc_slab: miller={miller} is not implemented")
