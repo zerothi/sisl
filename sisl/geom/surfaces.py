@@ -21,6 +21,19 @@ def _calc_offset(start, end, layers):
     else:
         return layers - 1 - _layer2int(end)
 
+def _finish_slab(g, size, vacuum):
+    g = g.repeat(size[1], 1).repeat(size[0], 0)
+
+    if vacuum is not None:
+        g.cell[2, 2] += vacuum
+        g.set_nsc([3, 3, 1])
+    else:
+        g.set_nsc([3, 3, 3])
+
+    if np.all(g.maxR(True) > 0.):
+        g.optimize_nsc()
+    return g
+
 
 @set_module("sisl.geom")
 def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, start=None, end=None):
@@ -132,18 +145,7 @@ def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
     else:
          raise NotImplementedError(f"miller={miller} is not implemented")
 
-    # finish slab
-    g = g.repeat(size[1], 1).repeat(size[0], 0)
-
-    if vacuum is not None:
-        g.cell[2, 2] += vacuum
-        g.set_nsc([3, 3, 1])
-    else:
-        g.set_nsc([3, 3, 3])
-
-    if np.all(g.maxR(True) > 0.):
-        g.optimize_nsc()
-
+    g = _finish_slab(g, size, vacuum)
     return g
 
 
@@ -272,16 +274,5 @@ def bcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
     else:
          raise NotImplementedError(f"miller={miller} is not implemented")
 
-    # finish slab
-    g = g.repeat(size[1], 1).repeat(size[0], 0)
-
-    if vacuum is not None:
-        g.cell[2, 2] += vacuum
-        g.set_nsc([3, 3, 1])
-    else:
-        g.set_nsc([3, 3, 3])
-
-    if np.all(g.maxR(True) > 0.):
-        g.optimize_nsc()
-
+    g = _finish_slab(g, size, vacuum)
     return g
