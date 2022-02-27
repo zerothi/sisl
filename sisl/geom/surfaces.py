@@ -310,7 +310,7 @@ def bcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
     return g
 
 
-def rocksalt_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, start=None, end=None):
+def rocksalt_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, start=None, end=None, sort=True):
     """ Construction of a surface slab from a two-element rock-salt crystal
 
     This structure is formed by two interlocked fcc crystals for each of the two elements.
@@ -338,6 +338,8 @@ def rocksalt_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False,
         sets the first layer in the slab
     end : int or string, optional
         sets the last layer in the slab
+    sort : bool, optional
+        sorts the atoms along the lattice vectors
 
     Examples
     --------
@@ -372,5 +374,7 @@ def rocksalt_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False,
     else:
          raise NotImplementedError(f"rocksalt_slab: miller={miller} is not implemented")
     g = g1.add(g2)
+    if sort:
+        g = g.sort(lattice=[2, 1, 0])
     g = _finish_slab(g, size, vacuum)
     return g
