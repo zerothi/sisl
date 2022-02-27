@@ -100,6 +100,9 @@ def test_fcc_slab():
         g = fcc_slab(4.08, 79, '111', size=(3, 4, 5), start='C', orthogonal=o)
         g = fcc_slab(4.08, 79, '111', size=(3, 4, 5), end=2, orthogonal=o)
         g = fcc_slab(4.08, 79, '111', size=(3, 4, 5), end='B', orthogonal=o)
+    with pytest.raises(ValueError):
+        fcc_slab(4.08, 'Au', 100, start=0, end=0)
+        fcc_slab(4.08, 'Au', 1000)
 
 
 def test_bcc_slab():
@@ -114,3 +117,17 @@ def test_bcc_slab():
         g = bcc_slab(4.08, 79, '111', size=(3, 4, 5), start='C', orthogonal=o)
         g = bcc_slab(4.08, 79, '111', size=(3, 4, 5), end=2, orthogonal=o)
         g = bcc_slab(4.08, 79, '111', size=(3, 4, 5), end='B', orthogonal=o)
+    with pytest.raises(ValueError):
+        bcc_slab(4.08, 'Au', 100, start=0, end=0)
+        bcc_slab(4.08, 'Au', 1000)
+
+
+def test_rocksalt_slab():
+    g = rocksalt_slab(5.64, [Atom(11, R=3), Atom(17, R=4)], 100)
+    g = rocksalt_slab(5.64, ['Na', 'Cl'], 100)
+    g = rocksalt_slab(5.64, ['Na', 'Cl'], 110)
+    g = rocksalt_slab(5.64, ['Na', 'Cl'], 111, orthogonal=False)
+    g = rocksalt_slab(5.64, ['Na', 'Cl'], 111, orthogonal=True)
+    with pytest.raises(ValueError):
+        rocksalt_slab(5.64, ['Na', 'Cl'], 100, start=0, end=0)
+        rocksalt_slab(5.64, ['Na', 'Cl'], 1000)

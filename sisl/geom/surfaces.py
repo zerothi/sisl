@@ -6,7 +6,7 @@ import numpy as np
 from sisl._internal import set_module
 from sisl import Atom, Geometry, SuperCell
 
-__all__ = ['fcc_slab', 'bcc_slab']
+__all__ = ['fcc_slab', 'bcc_slab', 'rocksalt_slab']
 
 
 def _layer2int(layer):
@@ -88,8 +88,9 @@ def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
 
     See Also
     --------
-    geom.fcc
-    geom.bcc_slab
+    fcc
+    bcc_slab : routine called to create the slabs, `kwargs` is passed directly here
+    rocksalt_slab : routine called to create the slabs, `kwargs` is passed directly here
     """
     miller = _convert_miller(miller)
 
@@ -303,5 +304,71 @@ def bcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
     else:
          raise NotImplementedError(f"bcc_slab: miller={miller} is not implemented")
 
+    g = _finish_slab(g, size, vacuum)
+    return g
+
+
+def rocksalt_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, start=None, end=None):
+    """ Construction of a surface slab from a two-element rock-salt crystal
+
+    This structure is formed by two interlocked fcc crystals for each of the two elements.
+
+    The slab layers are stacked along the z-axis. The default stacking is the first
+    layer as an A-layer, defined as the plane containing the first atom in the atoms list
+    at (x,y)=(0,0).
+
+    Parameters
+    ----------
+    alat : float
+        lattice constant of the rock-salt crystal
+    atoms : list
+        a list of two atoms that the crystal consist of
+    miller : int or str or 3-array
+        Miller indices of the surface facet
+    size : 3-array, optional
+        slab size along the lattice vectors
+    vacuum : float, optional
+        distance added to the third lattice vector to separate
+        the slab from its periodic images
+    orthogonal : bool, optional
+        if True returns an orthogonal lattice
+    start : int or string, optional
+        sets the first layer in the slab
+    end : int or string, optional
+        sets the last layer in the slab
+
+    Examples
+    --------
+    NaCl(100) slab, starting with A-layer
+
+    >>> rocksalt_slab(5.64, ['Na', 'Cl'], 100)
+
+    6-layer NaCl(100) slab, ending with A-layer
+
+    >>> rocksalt_slab(5.64, ['Na', 'Cl'], 100, size=(1, 1, 6), end='A')
+
+    See Also
+    --------
+    fcc_slab : routine called to create the slabs, `kwargs` is passed directly here
+    """
+    if len(atoms) != 2:
+        raise ValueError(f"Invalid list of atoms, must have length 2")
+    miller = _convert_miller(miller)
+    if size is None:
+        s = None
+        size = (1, 1, 0)
+    else:
+        s = (1, 1, size[2])
+    g1 = fcc_slab(alat, atoms[0], miller, size=s, orthogonal=orthogonal, start=start, end=end)
+    g2 = fcc_slab(alat, atoms[1], miller, size=s, orthogonal=orthogonal, start=start, end=end)
+    if miller == (1, 0, 0):
+        g2 = g2.move(np.array([0.5, 0.5, 0]) ** 0.5 * alat / 2)
+    elif miller == (1, 1, 0):
+        g2 = g2.move(np.array([1, 0, 0]) * alat / 2)
+    elif miller == (1, 1, 1):
+        g2 = g2.move(np.array([0, 2 / 3, 1 / 3]) ** 0.5 * alat / 2)
+    else:
+         raise NotImplementedError(f"rocksalt_slab: miller={miller} is not implemented")
+    g = g1.add(g2)
     g = _finish_slab(g, size, vacuum)
     return g

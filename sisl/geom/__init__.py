@@ -19,7 +19,8 @@ Surfaces
 ========
 
    fcc_slab
-   surface_slab
+   bcc_slab
+   rocksalt_slab
 
 
 1D materials
