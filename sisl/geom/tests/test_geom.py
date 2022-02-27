@@ -103,6 +103,8 @@ def test_fcc_slab():
     with pytest.raises(ValueError):
         fcc_slab(4.08, 'Au', 100, start=0, end=0)
         fcc_slab(4.08, 'Au', 1000)
+    with pytest.raises(NotImplementedError):
+        fcc_slab(4.08, 'Au', 200)
 
 
 def test_bcc_slab():
@@ -120,7 +122,8 @@ def test_bcc_slab():
     with pytest.raises(ValueError):
         bcc_slab(4.08, 'Au', 100, start=0, end=0)
         bcc_slab(4.08, 'Au', 1000)
-
+    with pytest.raises(NotImplementedError):
+        bcc_slab(4.08, 'Au', 200)
 
 def test_rocksalt_slab():
     g = rocksalt_slab(5.64, [Atom(11, R=3), Atom(17, R=4)], 100)
@@ -132,3 +135,5 @@ def test_rocksalt_slab():
         rocksalt_slab(5.64, 'Na', 100)
         rocksalt_slab(5.64, ['Na', 'Cl'], 100, start=0, end=0)
         rocksalt_slab(5.64, ['Na', 'Cl'], 1000)
+    with pytest.raises(NotImplementedError):
+        rocksalt_slab(5.64, ['Na', 'Cl'], 200)

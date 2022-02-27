@@ -41,7 +41,9 @@ def _convert_miller(miller):
     if isinstance(miller, int):
         miller = str(miller)
     if isinstance(miller, str):
-        miller = (int(miller[0]), int(miller[1]), int(miller[2]))
+        miller = [int(i) for i in miller]
+    if isinstance(miller, list):
+        miller = tuple(miller)
     if len(miller) != 3:
         raise ValueError(f"Invalid Miller indices, must have length 3")
     return miller
