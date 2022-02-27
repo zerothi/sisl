@@ -129,5 +129,6 @@ def test_rocksalt_slab():
     g = rocksalt_slab(5.64, ['Na', 'Cl'], 111, orthogonal=False)
     g = rocksalt_slab(5.64, ['Na', 'Cl'], 111, orthogonal=True)
     with pytest.raises(ValueError):
+        rocksalt_slab(5.64, 'Na', 100)
         rocksalt_slab(5.64, ['Na', 'Cl'], 100, start=0, end=0)
         rocksalt_slab(5.64, ['Na', 'Cl'], 1000)
