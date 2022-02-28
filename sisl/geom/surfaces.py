@@ -151,11 +151,11 @@ def fcc_slab(alat, atoms, miller, layers=None, rep=(1, 1), vacuum=None, orthogon
             offset = _calc_offset(start, end, layers)
             B = 2 * (offset + 1) % 6
             C = 2 * (offset + 2) % 6
-            vec = (3 * sc.cell[0] + sc.cell[1]) / 2
-            g.xyz[B::6] += vec / 3
-            g.xyz[C::6] += 2 * vec / 3
-            g.xyz[B+1::6] += vec / 3
-            g.xyz[C+1::6] += 2 * vec / 3
+            vec = (3 * sc.cell[0] + sc.cell[1]) / 6
+            g.xyz[B::6] += vec
+            g.xyz[B+1::6] += vec
+            g.xyz[C::6] += 2 * vec
+            g.xyz[C+1::6] += 2 * vec
 
         else:
             sc = SuperCell(np.array([[0.5, 0, 0],
@@ -168,8 +168,9 @@ def fcc_slab(alat, atoms, miller, layers=None, rep=(1, 1), vacuum=None, orthogon
             offset = _calc_offset(start, end, layers)
             B = (offset + 1) % 3
             C = (offset + 2) % 3
-            g.xyz[B::3] += (sc.cell[0] + sc.cell[1]) / 3
-            g.xyz[C::3] += (-sc.cell[0] + 2 * sc.cell[1]) / 3
+            vec = (sc.cell[0] + sc.cell[1]) / 3
+            g.xyz[B::3] += vec
+            g.xyz[C::3] += 2 * vec
 
     else:
          raise NotImplementedError(f"fcc_slab: miller={miller} is not implemented")
@@ -260,8 +261,9 @@ def bcc_slab(alat, atoms, miller, layers=None, rep=(1, 1), vacuum=None, orthogon
             # slide ABC layers relative to each other
             offset = _calc_offset(start, end, layers)
             B = 2 * (offset + 1) % 4
-            g.xyz[B::4] += sc.cell[1] / 2
-            g.xyz[B+1::4] -= sc.cell[1] / 2
+            vec = sc.cell[1] / 2
+            g.xyz[B::4] += vec
+            g.xyz[B+1::4] += vec
 
         else:
             sc = SuperCell(np.array([[1, 0, 0],
@@ -291,10 +293,10 @@ def bcc_slab(alat, atoms, miller, layers=None, rep=(1, 1), vacuum=None, orthogon
             offset = _calc_offset(start, end, layers)
             B = 2 * (offset + 1) % 6
             C = 2 * (offset + 2) % 6
-            vec = (3 * sc.cell[0] + sc.cell[1]) / 2
+            vec = (3 * sc.cell[0] + sc.cell[1]) / 6
             for i in range(2):
-                g.xyz[B+i::6] += vec / 3
-                g.xyz[C+i::6] += 2 * vec / 3
+                g.xyz[B+i::6] += vec
+                g.xyz[C+i::6] += 2 * vec
 
         else:
             sc = SuperCell(np.array([[2, 0, 0],
@@ -307,8 +309,9 @@ def bcc_slab(alat, atoms, miller, layers=None, rep=(1, 1), vacuum=None, orthogon
             offset = _calc_offset(start, end, layers)
             B = (offset + 1) % 3
             C = (offset + 2) % 3
-            g.xyz[B::3] += (sc.cell[0] + sc.cell[1]) / 3
-            g.xyz[C::3] += (-sc.cell[0] + 2 * sc.cell[1]) / 3
+            vec = (sc.cell[0] + sc.cell[1]) / 3
+            g.xyz[B::3] += vec
+            g.xyz[C::3] += 2 * vec
 
     else:
          raise NotImplementedError(f"bcc_slab: miller={miller} is not implemented")
