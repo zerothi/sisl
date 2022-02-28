@@ -285,7 +285,7 @@ def bcc_slab(alat, atoms, miller, layers=None, rep=(1, 1), vacuum=None, orthogon
             offset = _calc_offset(start, end, layers)
             B = 2 * (offset + 1) % 6
             C = 2 * (offset + 2) % 6
-            vec = (3 * sc.cell[0] + sc.cell[1]) / 6
+            vec = (sc.cell[0] + sc.cell[1]) / 3
             for i in range(2):
                 g.xyz[B+i::6] += vec
                 g.xyz[C+i::6] += 2 * vec
