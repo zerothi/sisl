@@ -1575,3 +1575,22 @@ def test_geometry_new_xyz(sisl_tmp):
     gr2 = gr.new(out)
     assert np.allclose(gr.xyz, gr2.xyz)
     assert gr == gr2
+
+
+def test_translate2uc():
+    gr = sisl_geom.graphene() * (2, 3, 1)
+    gr = gr.move([5, 5, 5])
+    gr2 = gr.translate2uc()
+    assert not np.allclose(gr.xyz, gr2.xyz)
+
+
+def test_translate2uc_axes():
+    gr = sisl_geom.graphene() * (2, 3, 1)
+    gr = gr.move([5, 5, 5])
+    gr_once = gr.translate2uc()
+    gr_individual = gr.translate2uc(axes=0)
+    assert not np.allclose(gr_once.xyz, gr_individual.xyz)
+    gr_individual = gr_individual.translate2uc(axes=1)
+    assert np.allclose(gr_once.xyz, gr_individual.xyz)
+    gr_individual = gr_individual.translate2uc(axes=2)
+    assert np.allclose(gr_once.xyz, gr_individual.xyz)
