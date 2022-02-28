@@ -18,6 +18,10 @@ def _layer2int(layer):
 
 def _calc_offset(start, end, layers):
     "Determine offset index from start or end specification"
+    if start is not None and end is not None:
+        raise ValueError("Only one of 'start' or 'end' may be supplied")
+    if start is None and end is None:
+        start = 0
     if start is not None:
         return -_layer2int(start)
     return layers - 1 - _layer2int(end)
@@ -100,12 +104,6 @@ def fcc_slab(alat, atoms, miller, layers=None, rep=(1, 1), vacuum=None, orthogon
     rocksalt_slab : routine called to create the slabs, `kwargs` is passed directly here
     """
     miller = _convert_miller(miller)
-
-    if start is not None and end is not None:
-        raise ValueError("fcc_slab: Only one of 'start' or 'end' may be supplied")
-
-    if start is None and end is None:
-        start = 0
 
     if miller == (1, 0, 0):
 
@@ -225,12 +223,6 @@ def bcc_slab(alat, atoms, miller, layers=None, rep=(1, 1), vacuum=None, orthogon
     geom.fcc_slab
     """
     miller = _convert_miller(miller)
-
-    if start is not None and end is not None:
-        raise ValueError("Only one of start or end may be supplied")
-
-    if start is None and end is None:
-        start = 0
 
     if miller == (1, 0, 0):
 
@@ -369,19 +361,27 @@ def rocksalt_slab(alat, atoms, miller, layers=None, rep=(1, 1), vacuum=None, ort
     """
     if len(atoms) != 2:
         raise ValueError(f"Invalid list of atoms, must have length 2")
+
     miller = _convert_miller(miller)
+
     g1 = fcc_slab(alat, atoms[0], miller, layers=layers, orthogonal=orthogonal, start=start, end=end)
     g2 = fcc_slab(alat, atoms[1], miller, layers=layers, orthogonal=orthogonal, start=start, end=end)
+
     if miller == (1, 0, 0):
         g2 = g2.move(np.array([0.5, 0.5, 0]) ** 0.5 * alat / 2)
+
     elif miller == (1, 1, 0):
         g2 = g2.move(np.array([1, 0, 0]) * alat / 2)
+
     elif miller == (1, 1, 1):
         g2 = g2.move(np.array([0, 2 / 3, 1 / 3]) ** 0.5 * alat / 2)
+
     else:
          raise NotImplementedError(f"rocksalt_slab: miller={miller} is not implemented")
+
     g = g1.add(g2)
     if sort:
         g = g.sort(lattice=[2, 1, 0])
+
     g = _finish_slab(g, rep, vacuum)
     return g
