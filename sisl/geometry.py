@@ -2325,7 +2325,7 @@ class Geometry(SuperCellChild):
         a = acos(np.sum(lm * lv))
         return self.rotate(a, cp, rad=True)
 
-    def move(self, v, atoms=None, cell=False):
+    def translate(self, v, atoms=None, cell=False):
         """ Translates the geometry by `v`
 
         One can translate a subset of the atoms by supplying `atoms`.
@@ -2344,13 +2344,13 @@ class Geometry(SuperCellChild):
         """
         g = self.copy()
         if atoms is None:
-            g.xyz[:, :] += np.asarray(v, g.xyz.dtype)[None, :]
+            g.xyz += np.asarray(v, g.xyz.dtype)
         else:
-            g.xyz[self._sanitize_atoms(atoms).ravel(), :] += np.asarray(v, g.xyz.dtype)[None, :]
+            g.xyz[self._sanitize_atoms(atoms).ravel(), :] += np.asarray(v, g.xyz.dtype)
         if cell:
             g.set_supercell(g.sc.translate(v))
         return g
-    translate = move
+    move = translate
 
     def swap(self, atoms_a, atoms_b):
         """ Swap a set of atoms in the geometry and return a new one

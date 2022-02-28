@@ -34,7 +34,7 @@ The easiest way to get started is to follow some tutorials [here](https://zeroth
 
 Please find documentation here:
 
-- [documentation](https://zerothi.github.io/sisl/index.html)
+- [Documentation](https://zerothi.github.io/sisl/index.html)
 - [API documentation](https://zerothi.github.io/sisl/api/index.html)
 - [Installation](https://zerothi.github.io/sisl/installation.html)
 
