@@ -31,7 +31,7 @@ def _finish_slab(g, rep, vacuum):
     "Grow slab according to repetition and vacuum specifications"
     d = np.ones(3) * 1e-4
     g = g.move(d).translate2uc().move(-d)
-    g.xyz = np.abs(g.xyz)
+    g.xyz = np.where(g.xyz > 0, g.xyz, 0)
     g = g.sort(lattice=[2, 1, 0])
     g = g.repeat(rep[1], 1).repeat(rep[0], 0)
     if vacuum is not None:
