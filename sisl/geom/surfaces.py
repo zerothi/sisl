@@ -23,12 +23,12 @@ def _calc_offset(start, end, layers):
     return layers - 1 - _layer2int(end)
 
 
-def _finish_slab(g, size, vacuum):
-    "Grow slab according to size and vacuum specifications"
+def _finish_slab(g, rep, vacuum):
+    "Grow slab according to repetition and vacuum specifications"
     d = np.ones(3) * 1e-4
     g = g.move(d).translate2uc().move(-d)
     g.xyz = np.abs(g.xyz)
-    g = g.repeat(size[1], 1).repeat(size[0], 0)
+    g = g.repeat(rep[1], 1).repeat(rep[0], 0)
     if vacuum is not None:
         g.cell[2, 2] += vacuum
         g.set_nsc([3, 3, 1])
@@ -53,7 +53,7 @@ def _convert_miller(miller):
 
 
 @set_module("sisl.geom")
-def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, start=None, end=None):
+def fcc_slab(alat, atoms, miller, layers=None, rep=(1, 1), vacuum=None, orthogonal=False, start=None, end=None):
     """ Construction of a surface slab from a face-centered cubic (FCC) crystal
 
     The slab layers are stacked along the z-axis. The default stacking is the first
@@ -67,8 +67,10 @@ def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
         the atom that the crystal consists of
     miller : int or str or (3,)
         Miller indices of the surface facet
-    size : 3-array, optional
-        slab size along the lattice vectors
+    layers : int, optional
+        Number of layers in the slab
+    rep : 2-array, optional
+        repetitions along along the first two lattice vectors
     vacuum : float, optional
         distance added to the third lattice vector to separate
         the slab from its periodic images
@@ -107,46 +109,46 @@ def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
 
     if miller == (1, 0, 0):
 
-        if size is None:
-            size = (1, 1, 2)
+        if layers is None:
+            layers = 2
 
         sc = SuperCell(np.array([0.5 ** 0.5, 0.5 ** 0.5, 0.5]) * alat)
         g = Geometry([0, 0, 0], atoms=atoms, sc=sc)
-        g = g.tile(size[2], 2)
+        g = g.tile(layers, 2)
 
         # slide AB layers relative to each other
-        offset = _calc_offset(start, end, size[2])
+        offset = _calc_offset(start, end, layers)
         B = (offset + 1) % 2
         g.xyz[B::2] += (sc.cell[0] + sc.cell[1]) / 2
 
     elif miller == (1, 1, 0):
 
-        if size is None:
-            size = (1, 1, 2)
+        if layers is None:
+            layers = 2
 
         sc = SuperCell(np.array([1., 0.5, 0.125]) ** 0.5 * alat)
         g = Geometry([0, 0, 0], atoms=atoms, sc=sc)
-        g = g.tile(size[2], 2)
+        g = g.tile(layers, 2)
 
         # slide AB layers relative to each other
-        offset = _calc_offset(start, end, size[2])
+        offset = _calc_offset(start, end, layers)
         B = (offset + 1) % 2
         g.xyz[B::2] += (sc.cell[0] + sc.cell[1]) / 2
 
     elif miller == (1, 1, 1):
 
-        if size is None:
-            size = (1, 1, 3)
+        if layers is None:
+            layers = 3
 
         if orthogonal:
             sc = SuperCell(np.array([0.5, 4 * 0.375, 1 / 3]) ** 0.5 * alat)
             g = Geometry(np.array([[0, 0, 0],
                                    [0.125, 0.375, 0]]) ** 0.5 * alat,
                          atoms=atoms, sc=sc)
-            g = g.tile(size[2], 2)
+            g = g.tile(layers, 2)
 
             # slide ABC layers relative to each other
-            offset = _calc_offset(start, end, size[2])
+            offset = _calc_offset(start, end, layers)
             B = 2 * (offset + 1) % 6
             C = 2 * (offset + 2) % 6
             vec = (3 * sc.cell[0] + sc.cell[1]) / 2
@@ -160,10 +162,10 @@ def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
                                      [0.125, 0.375, 0],
                                      [0, 0, 1 / 3]]) ** 0.5 * alat)
             g = Geometry([0, 0, 0], atoms=atoms, sc=sc)
-            g = g.tile(size[2], 2)
+            g = g.tile(layers, 2)
 
             # slide ABC layers relative to each other
-            offset = _calc_offset(start, end, size[2])
+            offset = _calc_offset(start, end, layers)
             B = (offset + 1) % 3
             C = (offset + 2) % 3
             g.xyz[B::3] += (sc.cell[0] + sc.cell[1]) / 3
@@ -172,11 +174,11 @@ def fcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
     else:
          raise NotImplementedError(f"fcc_slab: miller={miller} is not implemented")
 
-    g = _finish_slab(g, size, vacuum)
+    g = _finish_slab(g, rep, vacuum)
     return g
 
 
-def bcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, start=None, end=None):
+def bcc_slab(alat, atoms, miller, layers=None, rep=(1, 1), vacuum=None, orthogonal=False, start=None, end=None):
     """ Construction of a surface slab from a body-centered cubic (BCC) crystal
 
     The slab layers are stacked along the z-axis. The default stacking is the first
@@ -190,8 +192,10 @@ def bcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
         the atom that the crystal consists of
     miller : int or str or 3-array
         Miller indices of the surface facet
-    size : 3-array, optional
-        slab size along the lattice vectors
+    layers : int, optional
+        Number of layers in the slab
+    rep : 2-array, optional
+        repetitions along along the first two lattice vectors
     vacuum : float, optional
         distance added to the third lattice vector to separate
         the slab from its periodic images
@@ -229,32 +233,32 @@ def bcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
 
     if miller == (1, 0, 0):
 
-        if size is None:
-            size = (1, 1, 2)
+        if layers is None:
+            layers = 2
 
         sc = SuperCell(np.array([1, 1, 0.5]) * alat)
         g = Geometry([0, 0, 0], atoms=atoms, sc=sc)
-        g = g.tile(size[2], 2)
+        g = g.tile(layers, 2)
 
         # slide AB layers relative to each other
-        offset = _calc_offset(start, end, size[2])
+        offset = _calc_offset(start, end, layers)
         B = (offset + 1) % 2
         g.xyz[B::2] += (sc.cell[0] + sc.cell[1]) / 2
 
     elif miller == (1, 1, 0):
 
-        if size is None:
-            size = (1, 1, 2)
+        if layers is None:
+            layers = 2
 
         if orthogonal:
             sc = SuperCell(np.array([1, 2, 0.5]) ** 0.5 * alat)
             g = Geometry(np.array([[0, 0, 0],
                                    [0.5, 0.5 ** 0.5, 0]]) * alat,
                          atoms=atoms, sc=sc)
-            g = g.tile(size[2], 2)
+            g = g.tile(layers, 2)
 
             # slide ABC layers relative to each other
-            offset = _calc_offset(start, end, size[2])
+            offset = _calc_offset(start, end, layers)
             B = 2 * (offset + 1) % 4
             g.xyz[B::4] += sc.cell[1] / 2
             g.xyz[B+1::4] -= sc.cell[1] / 2
@@ -264,27 +268,27 @@ def bcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
                                      [0.5, 0.5 ** 0.5, 0],
                                      [0, 0, 0.5 ** 0.5]]) * alat)
             g = Geometry([0, 0, 0], atoms=atoms, sc=sc)
-            g = g.tile(size[2], 2)
+            g = g.tile(layers, 2)
 
             # slide AB layers relative to each other
-            offset = _calc_offset(start, end, size[2])
+            offset = _calc_offset(start, end, layers)
             B = (offset + 1) % 2
             g.xyz[B::2] += sc.cell[0] / 2
 
     elif miller == (1, 1, 1):
 
-        if size is None:
-            size = (1, 1, 3)
+        if layers is None:
+            layers = 3
 
         if orthogonal:
             sc = SuperCell(np.array([2, 4 * 1.5, 1 / 12]) ** 0.5 * alat)
             g = Geometry(np.array([[0, 0, 0],
                                    [0.5, 1.5, 0]]) ** 0.5 * alat,
                          atoms=atoms, sc=sc)
-            g = g.tile(size[2], 2)
+            g = g.tile(layers, 2)
 
             # slide ABC layers relative to each other
-            offset = _calc_offset(start, end, size[2])
+            offset = _calc_offset(start, end, layers)
             B = 2 * (offset + 1) % 6
             C = 2 * (offset + 2) % 6
             vec = (3 * sc.cell[0] + sc.cell[1]) / 2
@@ -297,10 +301,10 @@ def bcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
                                      [0.5, 1.5, 0],
                                      [0, 0, 1 / 12]]) ** 0.5 * alat)
             g = Geometry([0, 0, 0], atoms=atoms, sc=sc)
-            g = g.tile(size[2], 2)
+            g = g.tile(layers, 2)
 
             # slide ABC layers relative to each other
-            offset = _calc_offset(start, end, size[2])
+            offset = _calc_offset(start, end, layers)
             B = (offset + 1) % 3
             C = (offset + 2) % 3
             g.xyz[B::3] += (sc.cell[0] + sc.cell[1]) / 3
@@ -309,11 +313,11 @@ def bcc_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, star
     else:
          raise NotImplementedError(f"bcc_slab: miller={miller} is not implemented")
 
-    g = _finish_slab(g, size, vacuum)
+    g = _finish_slab(g, rep, vacuum)
     return g
 
 
-def rocksalt_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False, start=None, end=None, sort=True):
+def rocksalt_slab(alat, atoms, miller, layers=None, rep=(1, 1), vacuum=None, orthogonal=False, start=None, end=None, sort=True):
     """ Construction of a surface slab from a two-element rock-salt crystal
 
     This structure is formed by two interlocked fcc crystals for each of the two elements.
@@ -330,8 +334,10 @@ def rocksalt_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False,
         a list of two atoms that the crystal consist of
     miller : int or str or 3-array
         Miller indices of the surface facet
-    size : 3-array, optional
-        slab size along the lattice vectors
+    layers : int, optional
+        Number of layers in the slab
+    rep : 2-array, optional
+        repetitions along along the first two lattice vectors
     vacuum : float, optional
         distance added to the third lattice vector to separate
         the slab from its periodic images
@@ -352,7 +358,7 @@ def rocksalt_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False,
 
     6-layer NaCl(100) slab, ending with A-layer
 
-    >>> rocksalt_slab(5.64, ['Na', 'Cl'], 100, size=(1, 1, 6), end='A')
+    >>> rocksalt_slab(5.64, ['Na', 'Cl'], 100, layers=6, end='A')
 
     See Also
     --------
@@ -361,13 +367,8 @@ def rocksalt_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False,
     if len(atoms) != 2:
         raise ValueError(f"Invalid list of atoms, must have length 2")
     miller = _convert_miller(miller)
-    if size is None:
-        s = None
-        size = (1, 1, 0)
-    else:
-        s = (1, 1, size[2])
-    g1 = fcc_slab(alat, atoms[0], miller, size=s, orthogonal=orthogonal, start=start, end=end)
-    g2 = fcc_slab(alat, atoms[1], miller, size=s, orthogonal=orthogonal, start=start, end=end)
+    g1 = fcc_slab(alat, atoms[0], miller, layers=layers, orthogonal=orthogonal, start=start, end=end)
+    g2 = fcc_slab(alat, atoms[1], miller, layers=layers, orthogonal=orthogonal, start=start, end=end)
     if miller == (1, 0, 0):
         g2 = g2.move(np.array([0.5, 0.5, 0]) ** 0.5 * alat / 2)
     elif miller == (1, 1, 0):
@@ -379,5 +380,5 @@ def rocksalt_slab(alat, atoms, miller, size=None, vacuum=None, orthogonal=False,
     g = g1.add(g2)
     if sort:
         g = g.sort(lattice=[2, 1, 0])
-    g = _finish_slab(g, size, vacuum)
+    g = _finish_slab(g, rep, vacuum)
     return g
