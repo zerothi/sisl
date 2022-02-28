@@ -128,8 +128,6 @@ def test_bcc_slab():
 def test_rocksalt_slab():
     g = rocksalt_slab(5.64, [Atom(11, R=3), Atom(17, R=4)], 100)
     g = rocksalt_slab(5.64, ['Na', 'Cl'], 100, layers=5, rep=(3, 4))
-    gs = rocksalt_slab(5.64, ['Na', 'Cl'], 100, layers=5, rep=(3, 4), sort=False)
-    assert not np.allclose(g.xyz, gs.xyz)
     g = rocksalt_slab(5.64, ['Na', 'Cl'], 110)
     g = rocksalt_slab(5.64, ['Na', 'Cl'], 111, orthogonal=False)
     g = rocksalt_slab(5.64, ['Na', 'Cl'], 111, orthogonal=True)
