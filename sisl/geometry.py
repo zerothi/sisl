@@ -2352,7 +2352,7 @@ class Geometry(SuperCellChild):
         return g
     translate = move
 
-    def translate2uc(self, atoms=None, tol=1e-5):
+    def translate2uc(self, atoms=None, axes=(0, 1, 2), tol=1e-5):
         """Translates atoms in the geometry into the unit cell
 
         One can translate a subset of the atoms by supplying `atoms`
@@ -2362,14 +2362,16 @@ class Geometry(SuperCellChild):
         atoms : int or array_like, optional
              only translate the given atomic indices, if not specified, all
              atoms will be translated
+        axes : int or array_like, optional
+             only translate certain lattice directions, defaults to all
         tol : float, optional
              tolerance controlling a temporary shift of coordinates
         """
-        shift = np.ones(3) * tol
-        fxyz = (self.fxyz + shift) % 1
-        fxyz -= shift
+        # extract fractional coordinates
+        fxyz = self.fxyz
+        fxyz[:, axes] = (fxyz[:, axes] + tol) % 1 - tol
         # remove negative rounding errors
-        fxyz = np.where(fxyz > 0, fxyz, 0)
+        fxyz[:, axes] = np.where(fxyz[:, axes] > 0, fxyz[:, axes], 0)
         g = self.copy()
         if atoms is None:
             g.xyz = fxyz.dot(self.cell)
