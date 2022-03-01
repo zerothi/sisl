@@ -10,14 +10,14 @@ __all__ = ['fcc_slab', 'bcc_slab', 'rocksalt_slab']
 
 
 def _layer2int(layer):
-    "Convert layer specification to integer"
+    """Convert layer specification to integer"""
     if isinstance(layer, str):
         layer = "ABCDEF".index(layer.upper())
     return layer
 
 
 def _calc_offset(start, end, layers):
-    "Determine offset index from start or end specification"
+    """Determine offset index from start or end specification"""
     if start is not None and end is not None:
         raise ValueError("Only one of 'start' or 'end' may be supplied")
     if start is None and end is None:
@@ -27,13 +27,12 @@ def _calc_offset(start, end, layers):
     return layers - 1 - _layer2int(end)
 
 
-def _finish_slab(g, rep, vacuum):
-    "Grow slab according to repetition and vacuum specifications"
+def _finish_slab(g, vacuum):
+    """Grow slab according vacuum specifications"""
     d = np.ones(3) * 1e-4
     g = g.move(d).translate2uc().move(-d)
     g.xyz = np.where(g.xyz > 0, g.xyz, 0)
     g = g.sort(lattice=[2, 1, 0])
-    g = g.repeat(rep[1], 1).repeat(rep[0], 0)
     if vacuum is not None:
         g.cell[2, 2] += vacuum
         g.set_nsc([3, 3, 1])
@@ -45,7 +44,7 @@ def _finish_slab(g, rep, vacuum):
 
 
 def _convert_miller(miller):
-    "Convert miller specification to 3-tuple"
+    """Convert miller specification to 3-tuple"""
     if isinstance(miller, int):
         miller = str(miller)
     if isinstance(miller, str):
@@ -58,11 +57,11 @@ def _convert_miller(miller):
 
 
 @set_module("sisl.geom")
-def fcc_slab(alat, atoms, miller, layers=None, rep=(1, 1), vacuum=None, orthogonal=False, start=None, end=None):
-    """ Construction of a surface slab from a face-centered cubic (FCC) crystal
+def fcc_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=False, start=None, end=None):
+    r""" Construction of a surface slab from a face-centered cubic (FCC) crystal
 
-    The slab layers are stacked along the z-axis. The default stacking is the first
-    layer as an A-layer, defined as the plane containing an atom at (x,y)=(0,0).
+    The slab layers are stacked along the :math:`z`-axis. The default stacking is the first
+    layer as an A-layer, defined as the plane containing an atom at :math:`(x,y)=(0,0)`.
 
     Parameters
     ----------
@@ -74,11 +73,10 @@ def fcc_slab(alat, atoms, miller, layers=None, rep=(1, 1), vacuum=None, orthogon
         Miller indices of the surface facet
     layers : int, optional
         Number of layers in the slab
-    rep : 2-array, optional
-        repetitions along along the first two lattice vectors
     vacuum : float, optional
         distance added to the third lattice vector to separate
-        the slab from its periodic images
+        the slab from its periodic images. If this is None, the slab will be a fully
+        periodic geometry but with the slab layers. Useful for appending geometries together.
     orthogonal : bool, optional
         if True returns an orthogonal lattice
     start : int or string, optional
@@ -89,20 +87,19 @@ def fcc_slab(alat, atoms, miller, layers=None, rep=(1, 1), vacuum=None, orthogon
     Examples
     --------
     fcc 111 surface, starting with the A layer
-
     >>> fcc_slab(alat, atoms, "111", start=0)
 
     fcc 111 surface, starting with the B layer
     >>> fcc_slab(alat, atoms, "111", start=1)
 
     fcc 111 surface, ending with the B layer
-    >>> fcc_slab(alat, atoms, "111", end=1)
+    >>> fcc_slab(alat, atoms, "111", end='B')
 
     See Also
     --------
-    fcc
-    bcc_slab : routine called to create the slabs, `kwargs` is passed directly here
-    rocksalt_slab : routine called to create the slabs, `kwargs` is passed directly here
+    fcc : Fully periodic equivalent of this slab structure
+    bcc_slab : Slab in BCC structure
+    rocksalt_slab : Slab in rocksalt/halite structure
     """
     miller = _convert_miller(miller)
 
@@ -174,15 +171,15 @@ def fcc_slab(alat, atoms, miller, layers=None, rep=(1, 1), vacuum=None, orthogon
     else:
          raise NotImplementedError(f"fcc_slab: miller={miller} is not implemented")
 
-    g = _finish_slab(g, rep, vacuum)
+    g = _finish_slab(g, vacuum)
     return g
 
 
-def bcc_slab(alat, atoms, miller, layers=None, rep=(1, 1), vacuum=None, orthogonal=False, start=None, end=None):
-    """ Construction of a surface slab from a body-centered cubic (BCC) crystal
+def bcc_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=False, start=None, end=None):
+    r""" Construction of a surface slab from a body-centered cubic (BCC) crystal
 
-    The slab layers are stacked along the z-axis. The default stacking is the first
-    layer as an A-layer, defined as the plane containing an atom at (x,y)=(0,0).
+    The slab layers are stacked along the :math:`z`-axis. The default stacking is the first
+    layer as an A-layer, defined as the plane containing an atom at :math:`(x,y)=(0,0)`.
 
     Parameters
     ----------
@@ -194,11 +191,10 @@ def bcc_slab(alat, atoms, miller, layers=None, rep=(1, 1), vacuum=None, orthogon
         Miller indices of the surface facet
     layers : int, optional
         Number of layers in the slab
-    rep : 2-array, optional
-        repetitions along along the first two lattice vectors
     vacuum : float, optional
         distance added to the third lattice vector to separate
-        the slab from its periodic images
+        the slab from its periodic images. If this is None, the slab will be a fully
+        periodic geometry but with the slab layers. Useful for appending geometries together.
     orthogonal : bool, optional
         if True returns an orthogonal lattice
     start : int or string, optional
@@ -209,19 +205,19 @@ def bcc_slab(alat, atoms, miller, layers=None, rep=(1, 1), vacuum=None, orthogon
     Examples
     --------
     bcc 111 surface, starting with the A layer
-
     >>> bcc_slab(alat, atoms, "111", start=0)
 
     bcc 111 surface, starting with the B layer
     >>> bcc_slab(alat, atoms, "111", start=1)
 
     bcc 111 surface, ending with the B layer
-    >>> bcc_slab(alat, atoms, "111", end=1)
+    >>> bcc_slab(alat, atoms, "111", end='B')
 
     See Also
     --------
-    geom.bcc
-    geom.fcc_slab
+    bcc : Fully periodic equivalent of this slab structure
+    fcc_slab : Slab in FCC structure
+    rocksalt_slab : Slab in rocksalt/halite structure
     """
     miller = _convert_miller(miller)
 
@@ -309,18 +305,18 @@ def bcc_slab(alat, atoms, miller, layers=None, rep=(1, 1), vacuum=None, orthogon
     else:
          raise NotImplementedError(f"bcc_slab: miller={miller} is not implemented")
 
-    g = _finish_slab(g, rep, vacuum)
+    g = _finish_slab(g, vacuum)
     return g
 
 
-def rocksalt_slab(alat, atoms, miller, layers=None, rep=(1, 1), vacuum=None, orthogonal=False, start=None, end=None):
-    """ Construction of a surface slab from a two-element rock-salt crystal
+def rocksalt_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=False, start=None, end=None):
+    r""" Construction of a surface slab from a two-element rock-salt crystal
 
     This structure is formed by two interlocked fcc crystals for each of the two elements.
 
-    The slab layers are stacked along the z-axis. The default stacking is the first
+    The slab layers are stacked along the :math:`z`-axis. The default stacking is the first
     layer as an A-layer, defined as the plane containing the first atom in the atoms list
-    at (x,y)=(0,0).
+    at :math:`(x,y)=(0,0)`.
 
     Parameters
     ----------
@@ -332,11 +328,10 @@ def rocksalt_slab(alat, atoms, miller, layers=None, rep=(1, 1), vacuum=None, ort
         Miller indices of the surface facet
     layers : int, optional
         Number of layers in the slab
-    rep : 2-array, optional
-        repetitions along along the first two lattice vectors
     vacuum : float, optional
         distance added to the third lattice vector to separate
-        the slab from its periodic images
+        the slab from its periodic images. If this is None, the slab will be a fully
+        periodic geometry but with the slab layers. Useful for appending geometries together.
     orthogonal : bool, optional
         if True returns an orthogonal lattice
     start : int or string, optional
@@ -347,24 +342,25 @@ def rocksalt_slab(alat, atoms, miller, layers=None, rep=(1, 1), vacuum=None, ort
     Examples
     --------
     NaCl(100) slab, starting with A-layer
-
     >>> rocksalt_slab(5.64, ['Na', 'Cl'], 100)
 
     6-layer NaCl(100) slab, ending with A-layer
-
     >>> rocksalt_slab(5.64, ['Na', 'Cl'], 100, layers=6, end='A')
 
     See Also
     --------
-    fcc_slab : routine called to create the slabs, `kwargs` is passed directly here
+    fcc_slab : Slab in FCC structure (this slab is a combination of fcc slab structures)
+    bcc_slab : Slab in BCC structure
     """
     if len(atoms) != 2:
         raise ValueError(f"Invalid list of atoms, must have length 2")
+    if isinstance(atoms, str):
+        atoms = [atoms, atoms]
 
     miller = _convert_miller(miller)
 
-    g1 = fcc_slab(alat, atoms[0], miller, layers=layers, orthogonal=orthogonal, start=start, end=end)
-    g2 = fcc_slab(alat, atoms[1], miller, layers=layers, orthogonal=orthogonal, start=start, end=end)
+    g1 = fcc_slab(alat, atoms[0], miller, layers=layers, vacuum=None, orthogonal=orthogonal, start=start, end=end)
+    g2 = fcc_slab(alat, atoms[1], miller, layers=layers, vacuum=None, orthogonal=orthogonal, start=start, end=end)
 
     if miller == (1, 0, 0):
         g2 = g2.move(np.array([0.5, 0.5, 0]) ** 0.5 * alat / 2)
@@ -380,5 +376,5 @@ def rocksalt_slab(alat, atoms, miller, layers=None, rep=(1, 1), vacuum=None, ort
 
     g = g1.add(g2)
 
-    g = _finish_slab(g, rep, vacuum)
+    g = _finish_slab(g, vacuum)
     return g
