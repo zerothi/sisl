@@ -34,7 +34,7 @@ To specify the atomic specie one may do::
 
    >>> single_carbon = Geometry([[0., 0., 0.]], Atom('C'))
 
-which changes the Hydrogen to a Carbon atom. See <link to atom_01.rst> on how to create different atoms.
+which changes the Hydrogen to a Carbon atom.
    
 To create a geometry with two different atomic species, for instance a chain
 of alternating Natrium an Chloride atoms, separated by 1.6 A one may do::

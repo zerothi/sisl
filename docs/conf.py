@@ -112,8 +112,8 @@ rst_epilog = ''.join(open('epilog.dummy').readlines())
 autosummary_generate = True
 
 # General information about the project.
-project = 'sisl'
-author = 'Nick Papior'
+project = "sisl"
+author = "Nick Papior"
 copyright = f"2015-{date.today().year}, {author}"
 
 # If building this on RTD, mock out fortran sources

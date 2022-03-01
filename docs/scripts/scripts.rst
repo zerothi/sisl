@@ -13,4 +13,4 @@ with *all* the data files compatible with `sisl`.
    sdata
    sgeom
    sgrid
-   stool
+   stoolbox
