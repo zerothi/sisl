@@ -94,14 +94,15 @@ def test_fcc_slab():
         g = fcc_slab(4.08, 'Au', 100, orthogonal=o)
         g = fcc_slab(4.08, 'Au', 110, orthogonal=o)
         g = fcc_slab(4.08, 'Au', 111, orthogonal=o)
-        g = fcc_slab(4.08, 79, '100', layers=5, rep=(3, 4), orthogonal=o)
-        g = fcc_slab(4.08, 79, '110', layers=5, rep=(3, 4), vacuum=10, orthogonal=o)
-        g = fcc_slab(4.08, 79, '111', layers=5, rep=(3, 4), start=1, orthogonal=o)
-        g = fcc_slab(4.08, 79, '111', layers=5, rep=(3, 4), start='C', orthogonal=o)
-        g = fcc_slab(4.08, 79, '111', layers=5, rep=(3, 4), end=2, orthogonal=o)
-        g = fcc_slab(4.08, 79, '111', layers=5, rep=(3, 4), end='B', orthogonal=o)
+        g = fcc_slab(4.08, 79, '100', layers=5, vacuum=None, orthogonal=o)
+        g = fcc_slab(4.08, 79, '110', layers=5, orthogonal=o)
+        g = fcc_slab(4.08, 79, '111', layers=5, start=1, orthogonal=o)
+        g = fcc_slab(4.08, 79, '111', layers=5, start='C', orthogonal=o)
+        g = fcc_slab(4.08, 79, '111', layers=5, end=2, orthogonal=o)
+        g = fcc_slab(4.08, 79, '111', layers=5, end='B', orthogonal=o)
     with pytest.raises(ValueError):
         fcc_slab(4.08, 'Au', 100, start=0, end=0)
+    with pytest.raises(ValueError):
         fcc_slab(4.08, 'Au', 1000)
     with pytest.raises(NotImplementedError):
         fcc_slab(4.08, 'Au', 200)
@@ -113,27 +114,29 @@ def test_bcc_slab():
         g = bcc_slab(4.08, 'Au', 100, orthogonal=o)
         g = bcc_slab(4.08, 'Au', 110, orthogonal=o)
         g = bcc_slab(4.08, 'Au', 111, orthogonal=o)
-        g = bcc_slab(4.08, 79, '100', layers=5, rep=(3, 4), orthogonal=o)
-        g = bcc_slab(4.08, 79, '110', layers=5, rep=(3, 4), vacuum=10, orthogonal=o)
-        g = bcc_slab(4.08, 79, '111', layers=5, rep=(3, 4), start=1, orthogonal=o)
-        g = bcc_slab(4.08, 79, '111', layers=5, rep=(3, 4), start='C', orthogonal=o)
-        g = bcc_slab(4.08, 79, '111', layers=5, rep=(3, 4), end=2, orthogonal=o)
-        g = bcc_slab(4.08, 79, '111', layers=5, rep=(3, 4), end='B', orthogonal=o)
+        g = bcc_slab(4.08, 79, '100', layers=5, vacuum=None, orthogonal=o)
+        g = bcc_slab(4.08, 79, '110', layers=5, orthogonal=o)
+        g = bcc_slab(4.08, 79, '111', layers=5, start=1, orthogonal=o)
+        g = bcc_slab(4.08, 79, '111', layers=5, start='C', orthogonal=o)
+        g = bcc_slab(4.08, 79, '111', layers=5, end=2, orthogonal=o)
+        g = bcc_slab(4.08, 79, '111', layers=5, end='B', orthogonal=o)
     with pytest.raises(ValueError):
         bcc_slab(4.08, 'Au', 100, start=0, end=0)
+    with pytest.raises(ValueError):
         bcc_slab(4.08, 'Au', 1000)
     with pytest.raises(NotImplementedError):
         bcc_slab(4.08, 'Au', 200)
 
 def test_rocksalt_slab():
     g = rocksalt_slab(5.64, [Atom(11, R=3), Atom(17, R=4)], 100)
-    g = rocksalt_slab(5.64, ['Na', 'Cl'], 100, layers=5, rep=(3, 4))
-    g = rocksalt_slab(5.64, ['Na', 'Cl'], 110)
+    g = rocksalt_slab(5.64, ['Na', 'Cl'], 100, layers=5)
+    g = rocksalt_slab(5.64, ['Na', 'Cl'], 110, vacuum=None)
     g = rocksalt_slab(5.64, ['Na', 'Cl'], 111, orthogonal=False)
     g = rocksalt_slab(5.64, ['Na', 'Cl'], 111, orthogonal=True)
+    g = rocksalt_slab(5.64, 'Na', 100)
     with pytest.raises(ValueError):
-        rocksalt_slab(5.64, 'Na', 100)
         rocksalt_slab(5.64, ['Na', 'Cl'], 100, start=0, end=0)
+    with pytest.raises(ValueError):
         rocksalt_slab(5.64, ['Na', 'Cl'], 1000)
     with pytest.raises(NotImplementedError):
         rocksalt_slab(5.64, ['Na', 'Cl'], 200)
