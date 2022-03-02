@@ -164,6 +164,7 @@ def _slab_with_vacuum(func, layers, *args, **kwargs):
         geoms_none.pop(0)
         vacuum = SuperCell([0, 0, vacuums[iv]])
         out = geoms_none.pop(0).add(vacuum, offset=(0, 0, vacuum.cell[2, 2]))
+        out.set_nsc(c=1)
         iv += 1
     else:
         out = geoms_none.pop(0)
@@ -177,6 +178,10 @@ def _slab_with_vacuum(func, layers, *args, **kwargs):
             out = out.add(vacuum)
         else:
             out = out.append(geom, 2)
+
+    if geoms_none[-1] is None:
+        # ensure that nsc is 1 if there has been inserted vacuum
+        out.set_nsc(c=1)
 
     return out
 
@@ -198,11 +203,14 @@ def fcc_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=False, 
         Miller indices of the surface facet
     layers : int or str, optional
         Number of layers in the slab or explicit layer specification.
+        An empty character `' '` will be denoted as a vacuum slot, see examples.
         Currently the layers cannot have stacking faults.
-    vacuum : float, optional
+    vacuum : float or array_like, optional
         distance added to the third lattice vector to separate
         the slab from its periodic images. If this is None, the slab will be a fully
         periodic geometry but with the slab layers. Useful for appending geometries together.
+        If an array layers should be a str, it should be no longer than the number of spaces
+        in `layers`. If shorter the last item will be repeated (like `zip_longest`).
     orthogonal : bool, optional
         if True returns an orthogonal lattice
     start : int or string, optional
@@ -214,17 +222,31 @@ def fcc_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=False, 
 
     Examples
     --------
-    fcc 111 surface, starting with the A layer
+    111 surface, starting with the A layer
     >>> fcc_slab(alat, atoms, "111", start=0)
 
-    fcc 111 surface, starting with the B layer
+    111 surface, starting with the B layer
     >>> fcc_slab(alat, atoms, "111", start=1)
 
-    fcc 111 surface, ending with the B layer
+    111 surface, ending with the B layer
     >>> fcc_slab(alat, atoms, "111", end='B')
 
-    fcc 111 surface, with explicit layers in a given order
+    111 surface, with explicit layers in a given order
     >>> fcc_slab(alat, atoms, "111", layers='BCABCA')
+
+    111 surface, with (1 Ang vacuum)BCA(2 Ang vacuum)ABC(3 Ang vacuum)
+    >>> fcc_slab(alat, atoms, "111", layers=' BCA ABC ', vacuum=(1, 2, 3))
+
+    111 surface, with (20 Ang vacuum)BCA
+    >>> fcc_slab(alat, atoms, "111", layers=' BCA', vacuum=20)
+
+    111 surface, with (2 Ang vacuum)BCA(1 Ang vacuum)ABC(1 Ang vacuum)
+    >>> fcc_slab(alat, atoms, "111", layers=' BCA ABC ', vacuum=(2, 1))
+
+    111 periodic structure with ABC(20 Ang vacuum)BC
+    The unit cell parameters will be periodic in this case, and it will not be
+    a slab.
+    >>> fcc_slab(alat, atoms, "111", layers='ABC BC', vacuum=20.)
 
     Raises
     ------
@@ -327,11 +349,14 @@ def bcc_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=False, 
         Miller indices of the surface facet
     layers : int or str, optional
         Number of layers in the slab or explicit layer specification.
+        An empty character `' '` will be denoted as a vacuum slot, see examples.
         Currently the layers cannot have stacking faults.
-    vacuum : float, optional
+    vacuum : float or array_like, optional
         distance added to the third lattice vector to separate
         the slab from its periodic images. If this is None, the slab will be a fully
         periodic geometry but with the slab layers. Useful for appending geometries together.
+        If an array layers should be a str, it should be no longer than the number of spaces
+        in `layers`. If shorter the last item will be repeated (like `zip_longest`).
     orthogonal : bool, optional
         if True returns an orthogonal lattice
     start : int or string, optional
@@ -343,17 +368,29 @@ def bcc_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=False, 
 
     Examples
     --------
-    bcc 111 surface, starting with the A layer
+    111 surface, starting with the A layer
     >>> bcc_slab(alat, atoms, "111", start=0)
 
-    bcc 111 surface, starting with the B layer
+    111 surface, starting with the B layer
     >>> bcc_slab(alat, atoms, "111", start=1)
 
-    bcc 111 surface, ending with the B layer
+    111 surface, ending with the B layer
     >>> bcc_slab(alat, atoms, "111", end='B')
 
-    bcc 111 surface, with explicit layers in a given order
+    111 surface, with explicit layers in a given order
     >>> bcc_slab(alat, atoms, "111", layers='BCABCA')
+
+    111 surface, with (1 Ang vacuum)BCA(2 Ang vacuum)ABC(3 Ang vacuum)
+    >>> bcc_slab(alat, atoms, "111", layers=' BCA ABC ', vacuum=(1, 2, 3))
+
+    111 surface, with (20 Ang vacuum)BCA
+    >>> bcc_slab(alat, atoms, "111", layers=' BCA', vacuum=20)
+
+    111 surface, with (2 Ang vacuum)BCA(1 Ang vacuum)ABC(1 Ang vacuum)
+    >>> bcc_slab(alat, atoms, "111", layers=' BCA ABC ', vacuum=(2, 1))
+
+    111 periodic structure with ABC(20 Ang vacuum)BC
+    >>> bcc_slab(alat, atoms, "111", layers='ABC BC', vacuum=20.)
 
     Raises
     ------
@@ -474,11 +511,14 @@ def rocksalt_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=Fa
         Miller indices of the surface facet
     layers : int or str, optional
         Number of layers in the slab or explicit layer specification.
+        An empty character `' '` will be denoted as a vacuum slot, see examples.
         Currently the layers cannot have stacking faults.
-    vacuum : float, optional
+    vacuum : float or array_like, optional
         distance added to the third lattice vector to separate
         the slab from its periodic images. If this is None, the slab will be a fully
         periodic geometry but with the slab layers. Useful for appending geometries together.
+        If an array layers should be a str, it should be no longer than the number of spaces
+        in `layers`. If shorter the last item will be repeated (like `zip_longest`).
     orthogonal : bool, optional
         if True returns an orthogonal lattice
     start : int or string, optional
@@ -498,6 +538,9 @@ def rocksalt_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=Fa
 
     6-layer NaCl(100) slab, ending with A-layer
     >>> rocksalt_slab(5.64, ['Na', 'Cl'], 100, layers=6, end='A')
+
+    For more examples see `fcc_slab`, the vacuum displacements are directly
+    translateable to this function.
 
     Raises
     ------
