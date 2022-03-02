@@ -3,13 +3,13 @@
 Other resources
 ===============
 
-One of sisl goals is an easy interaction between a variety of DFT simulations, much like `ASE`_ with
+One of sisl's goals is an easy interaction between a variety of DFT simulations, much like `ASE`_ with
 a high emphasis on `Siesta`_, while simultaneously providing the tools necessary to perform tight-binding
 calculations.
 
 
 However, sisl is far from the only Python package that implements simplistic tight-binding calculations.
-We are currently aware of 3 established tight-binding methods used in litterature (in random order):
+We are currently aware of 3 established tight-binding methods used in literature (in random order):
 
 - `PythTB <http://physics.rutgers.edu/pythtb/index.html>`_
 - `kwant`_

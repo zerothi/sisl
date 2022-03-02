@@ -28,7 +28,7 @@
 sisl: tight-binding and DFT interface library
 =============================================
 
-The Python library `sisl <http://github.com/zerothi/sisl>`_ was born out of a need to handle(create and read), manipulate and analyse output from DFT programs.
+The Python library `sisl <http://github.com/zerothi/sisl>`_ was born out of a need to handle (create and read), manipulate and analyse output from DFT programs.
 It was initially developed by Nick Papior (co-developer of `Siesta`_) as a side-project to `TranSiesta`_
 and `TBtrans`_ to efficiently analyse TBtrans output for N-electrode calculations.  
 Since then it has expanded to accommodate a rich set of DFT code input/outputs such as (but not limited to)
@@ -39,9 +39,9 @@ However, every code implements their own analysis and post-processing utilities 
 turns out to be equivalent utilities only having the interface differently.
 
 sisl tries to solve some of the analysis issues by creating a unified scripting approach
-in Python which does analysis using the same interface, regardless of code being used.
-For instance one may read the Kohn-Sham eigenvalue spectrum from various codes and return them
-in a consistent manner so the post-processing is the same, regardless of code being used.
+in Python which does analysis using the same interface, regardless of the code being used.
+For instance, one may read the Kohn-Sham eigenvalue spectrum from various codes and return them
+in a consistent manner so the post-processing is the same, regardless of the code being used.
 
 sisl is also part of the training material for a series of workshops hosted `here <workshop_>`_.
 
@@ -67,7 +67,7 @@ one would do::
 
 Which calculates the DOS for a 13x13x13 Monkhorst-Pack grid.
 
-Another common analysis is real-space charge analysis, the following command line subtracts two real-space
+Another common analysis is real-space charge analysis. The following command line subtracts two real-space
 charge grids and writes them to a CUBE file:
 
 .. code-block:: bash
@@ -80,7 +80,7 @@ which may be analysed using VMD, XCrySDen or other tools.
 Every use of sisl
 -----------------
 
-There are different places for getting information on using sisl, here is a short list
+There are different places for getting information on using sisl. Here is a short list
 of places to search/ask for answers:
 
 - This page for the documentation!
@@ -88,26 +88,8 @@ of places to search/ask for answers:
 - Ask questions on its use on the Github `issue page <issue_>`_
 - Ask questions on `Discord <sisl-discord_>`_
 
-If sisl was used to produce scientific contributions, please use this `DOI <sisl-doi_>`_ for citation.
-We recommend to specify the version of sisl in combination of this citation:
-
-.. code-block:: bash
-   
-    @misc{zerothi_sisl,
-      author       = {Papior, Nick},
-      title        = {sisl: v<fill-version>},
-      year         = {2021},
-      doi          = {10.5281/zenodo.597181},
-      url          = {https://doi.org/10.5281/zenodo.597181}
-    }
-
-To get the BibTeX entry easily you may issue the following command:
-
-.. code-block:: bash
-   
-   sdata --cite
-
-which fills in the version number.
+If sisl is used to produce scientific contributions, please use this `DOI <sisl-doi_>`_ for citation.
+For more details see :ref:`this page <cite>`.
 
 
 .. toctree::
@@ -118,6 +100,7 @@ which fills in the version number.
    contribute
    other
    cite
+   publications
 
 .. toctree::
    :maxdepth: 2

@@ -2,7 +2,7 @@
 Tutorials
 =========
 
-sisl is shipped with these tutorials which introduces the basics.
+sisl is shipped with these tutorials which introduce the basics.
 
 All examples are assumed to have this in the header::
 
@@ -26,7 +26,7 @@ Siesta/TranSiesta support
 sisl was initiated around the `Siesta`_/`TranSiesta`_ code. And it may be *very* educational to
 look at the sisl+TBtrans+TranSiesta tutorial located `here <https://github.com/zerothi/ts-tbt-sisl-tutorial/>`_.
 
-If you plan on using sisl as an analyzation tool for Siesta you are highly recommended to follow
+If you plan on using sisl as an analysis tool for Siesta you are highly recommended to follow
 these tutorials:
 
 .. toctree::
