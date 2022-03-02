@@ -2,6 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from collections import namedtuple
+from itertools import groupby
 from numbers import Integral
 import numpy as np
 
@@ -99,7 +100,7 @@ def _finish_slab(g, vacuum):
     g.xyz = np.where(g.xyz > 0, g.xyz, 0)
     g = g.sort(lattice=[2, 1, 0])
     if vacuum is not None:
-        g.cell[2, 2] += vacuum
+        g.cell[2, 2] = g.xyz[:, 2].max() + vacuum
         g.set_nsc([3, 3, 1])
     else:
         g.set_nsc([3, 3, 3])
@@ -119,6 +120,65 @@ def _convert_miller(miller):
     if len(miller) != 3:
         raise ValueError(f"Invalid Miller indices, must have length 3")
     return miller
+
+
+def _slab_with_vacuum(func, layers, *args, **kwargs):
+    """Function to wrap `func` with vacuum in between """
+    if not isinstance(layers, str):
+        return None
+
+    if layers.count(' ') == 0:
+        return None
+
+    if layers.count('  ') > 0:
+        raise ValueError("Denoting several vacuum layers next to each other is not supported. "
+                         "Please pass 'vacuum' as an array instead.")
+
+    vacuum = np.asarray(kwargs.pop("vacuum"))
+    vacuums = np.full(layers.count(' '), 0.)
+    if vacuum.ndim == 0:
+        vacuums[:] = vacuum
+    else:
+        vacuums[:len(vacuum)] = vacuum
+        vacuums[len(vacuum):] = vacuum[-1]
+
+    # We are now sure that there is a vacuum!
+
+    # Create the necessary geometries
+    # Then we will fill in vacuum afterwards
+    def iter_func(layer):
+        if layer == ' ':
+            return None
+        return func(*args, layers=layer, vacuum=None, **kwargs)
+
+    geoms_none = [
+        iter_func(''.join(g))
+        for _, g in groupby(layers,
+                            # group by vacuum positions and not vacuum positions
+                            lambda l: 0 if l == ' ' else 1)
+    ]
+
+    iv = 0
+    if geoms_none[0] is None:
+        # our starting geometry will be the 2nd entry
+        geoms_none.pop(0)
+        vacuum = SuperCell([0, 0, vacuums[iv]])
+        out = geoms_none.pop(0).add(vacuum, offset=(0, 0, vacuum.cell[2, 2]))
+        iv += 1
+    else:
+        out = geoms_none.pop(0)
+
+    for geom in geoms_none:
+        if geom is None:
+            dx = out.cell[2, 2] - out.xyz[:, 2].max()
+            # this ensures the vacuum is exactly vacuums[iv]
+            vacuum = SuperCell([0, 0, vacuums[iv] - dx])
+            iv += 1
+            out = out.add(vacuum)
+        else:
+            out = out.append(geom, 2)
+
+    return out
 
 
 @set_module("sisl.geom")
@@ -178,6 +238,12 @@ def fcc_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=False, 
     bcc_slab : Slab in BCC structure
     rocksalt_slab : Slab in rocksalt/halite structure
     """
+    geom = _slab_with_vacuum(fcc_slab, layers, alat, atoms, miller,
+                             vacuum=vacuum, orthogonal=orthogonal,
+                             start=start, end=end)
+    if geom is not None:
+        return geom
+
     miller = _convert_miller(miller)
 
     if miller == (1, 0, 0):
@@ -301,6 +367,12 @@ def bcc_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=False, 
     fcc_slab : Slab in FCC structure
     rocksalt_slab : Slab in rocksalt/halite structure
     """
+    geom = _slab_with_vacuum(bcc_slab, layers, alat, atoms, miller,
+                             vacuum=vacuum, orthogonal=orthogonal,
+                             start=start, end=end)
+    if geom is not None:
+        return geom
+
     miller = _convert_miller(miller)
 
     if miller == (1, 0, 0):
@@ -438,10 +510,16 @@ def rocksalt_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=Fa
     fcc_slab : Slab in FCC structure (this slab is a combination of fcc slab structures)
     bcc_slab : Slab in BCC structure
     """
-    if len(atoms) != 2:
-        raise ValueError(f"Invalid list of atoms, must have length 2")
+    geom = _slab_with_vacuum(rocksalt_slab, layers, alat, atoms, miller,
+                             vacuum=vacuum, orthogonal=orthogonal,
+                             start=start, end=end)
+    if geom is not None:
+        return geom
+
     if isinstance(atoms, str):
         atoms = [atoms, atoms]
+    if len(atoms) != 2:
+        raise ValueError(f"Invalid list of atoms, must have length 2")
 
     miller = _convert_miller(miller)
 
