@@ -9,11 +9,19 @@ publications below.
 Please help maintaining the list complete via a `pull request <pr_>`_ or
 by writing an email to `nickpapior AT gmail.com <mailto:nickpapior@gmail.com>`_.
 
-#. A. Pezo, *et. al.*,
+#. T. Wang, *et al.*,
+   *Magnetic interactions between radical pairs in chiral graphene nanoribbons*,
+   Nano Lett. **22**, `164-171 (2022) <https://doi.org/10.1021/acs.nanolett.1c03578>`_
+
+#. J. Hieulle, *et al.*,
+   *On-surface synthesis and collective spin excitations of a triangulene-based nanostar*
+   Angew. Chem. Int. Ed. **60**, `25224-25229 (2021) <https://doi.org/10.1002/anie.202108301>`_
+
+#. A. Pezo, *et al.*,
    *Manipulation of spin transport in graphene/transition metal dichalcogenide heterobilayers upon twisting*,
    2D Materials, **9**, `015008 (2021) <https://doi.org/10.1088/2053-1583/ac3378>`_
 
-#. J. Tong, *et. al.*,
+#. J. Tong, *et al.*,
    *Breaking the symmetry of spin-sublattices in antiferromagnet by interfacial tailoring in the L10-MnPt/NaCl/Fe junction*,
    Applied Physics Letter, **119**, `172401 (2021) <https://doi.org/10.1063/5.0064931>`_
 
@@ -37,7 +45,7 @@ by writing an email to `nickpapior AT gmail.com <mailto:nickpapior@gmail.com>`_.
    *Electrochemical Control of Charge Current Flow in Nanoporous Graphene*,
    Advanced Functional Materials, `2104031 (2021) <https://doi.org/10.1002/adfm.202104031>`_
 
-#. J. Li, *et. al.*,
+#. J. Li, *et al.*,
    *Topological phase transition in chiral graphene nanoribbons: from edge bands to end states*,
    Nature Communications **12**, `5538 (2021) <https://doi.org/10.1038/s41467-021-25688-z>`_
 
@@ -69,7 +77,7 @@ by writing an email to `nickpapior AT gmail.com <mailto:nickpapior@gmail.com>`_.
    *High and reversible spin polarization in a collinear antiferromagnet*,
    Applied Physics Review, **7**, `031405 (2020) <https://aip.scitation.org/doi/10.1063/5.0004564>`_
 
-#. A. Garcia, *et. al.*,
+#. A. Garcia, *et al.*,
    *Siesta: Recent developments and applications*,
    J. Chem. Phys. **152**, `204108 (2020) <https://doi.org/10.1063/5.0005077>`_
 

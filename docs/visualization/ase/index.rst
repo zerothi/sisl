@@ -8,7 +8,7 @@ plotted.
 .. code::
 
    import sisl
-   import ase.visualize.view as view
+   from ase.visualize import view
 
    geom = sisl.geom.graphene()
    view(geom.to.ase())

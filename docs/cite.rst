@@ -6,13 +6,13 @@ Citing sisl
 sisl is an open-source software package intended for the scientific community. It is
 released under the MPL-2 license.
 
-You are encouraged to cite sisl you use it to produce scientific contributions.
+You are encouraged to cite sisl when you use it to produce scientific contributions.
 
 The sisl citation can be found through Zenodo:
 
 |zenodo|_
 
-By citing sisl you are encouraging development and expoosing the software package.
+By citing sisl you are encouraging development and exposing the software package.
 
 
 Citing basic usage
@@ -26,7 +26,7 @@ you should cite this (Zenodo DOI):
     @misc{zerothi_sisl,
       author       = {Papior, Nick},
       title        = {sisl: v<fill-version>},
-      year         = {2021},
+      year         = {2022},
       doi          = {10.5281/zenodo.597181},
       url          = {https://doi.org/10.5281/zenodo.597181}
     }
@@ -48,8 +48,8 @@ which fill in the version for you, all yield the same output.
 Citing transport backend
 ------------------------
 
-When using sisl as tight-binding setup for Hamiltonians and dynamical matrices for
-`TBtrans`_ and ``PHtrans`` you should cite these two DOI's:
+When using sisl as tight-binding setup for Hamiltonians and/or dynamical matrices for
+`TBtrans`_ and/or ``PHtrans`` you should cite these two DOI's:
 
 
 .. code-block:: bash
@@ -57,7 +57,7 @@ When using sisl as tight-binding setup for Hamiltonians and dynamical matrices f
     @misc{zerothi_sisl,
       author       = {Papior, Nick},
       title        = {sisl: v<fill-version>},
-      year         = {2021},
+      year         = {2022},
       doi          = {10.5281/zenodo.597181},
       url          = {https://doi.org/10.5281/zenodo.597181}
     }
@@ -75,11 +75,6 @@ When using sisl as tight-binding setup for Hamiltonians and dynamical matrices f
       year = {2017}
     }
 
-
-.. toctree::
-   :maxdepth: 1
-
-   publications
 
 
 .. |zenodo| image:: https://zenodo.org/badge/doi/10.5281/zenodo.597181.svg
