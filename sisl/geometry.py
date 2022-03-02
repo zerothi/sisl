@@ -2636,13 +2636,13 @@ class Geometry(SuperCellChild):
         insert : insert a geometry
         """
         if isinstance(other, SuperCell):
-            xyz = self.xyz.copy()
+            xyz = self.xyz.copy() + _a.arrayd(offset)
             sc = self.sc + other
             atoms = self.atoms.copy()
             names = self._names.copy()
         else:
             other = self.new(other)
-            xyz = np.append(self.xyz, other.xyz + _a.arrayd(offset).reshape(1, 3), axis=0)
+            xyz = np.append(self.xyz, other.xyz + _a.arrayd(offset), axis=0)
             sc = self.sc.copy()
             atoms = self.atoms.add(other.atoms)
             names = self._names.merge(other._names, offset=len(self))

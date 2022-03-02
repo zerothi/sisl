@@ -106,6 +106,24 @@ def test_fcc_slab():
         fcc_slab(4.08, 'Au', 1000)
     with pytest.raises(NotImplementedError):
         fcc_slab(4.08, 'Au', 200)
+    assert not np.allclose(
+        fcc_slab(5.64, 'Au', 100, end=1, layers='BABAB').xyz,
+        fcc_slab(5.64, 'Au', 100, end=1, layers=' BABAB ').xyz)
+    assert np.allclose(
+        fcc_slab(5.64, 'Au', 100, layers=' AB AB BA ', vacuum=2).xyz,
+        fcc_slab(5.64, 'Au', 100, layers=(None, 2, 2, 2, None), vacuum=2, start=(0, 0, 1)).xyz)
+    assert np.allclose(
+        fcc_slab(5.64, 'Au', 100, layers=' AB AB BA ', vacuum=(2, 1)).xyz,
+        fcc_slab(5.64, 'Au', 100, layers=(None, 2, ' ', 2, None, 2, None), vacuum=(2, 1), end=(1, 1, 0)).xyz)
+
+    # example in documentation
+    assert np.allclose(
+        fcc_slab(4., 'Au', 100, layers=(' ', 3, 5, 3), start=(0, 1, 0), vacuum=(10, 1, 2)).xyz,
+        fcc_slab(4., 'Au', 100, layers=' ABA BABAB ABA', vacuum=(10, 1, 2)).xyz)
+
+    assert np.allclose(
+        fcc_slab(4., 'Au', 100, layers=(' ', 3, 5, 3), start=(1, 0), vacuum=(10, 1, 2)).xyz,
+        fcc_slab(4., 'Au', 100, layers=' BAB ABABA ABA', vacuum=(10, 1, 2)).xyz)
 
 
 def test_bcc_slab():
@@ -131,6 +149,9 @@ def test_bcc_slab():
         bcc_slab(4.08, 'Au', 1000)
     with pytest.raises(NotImplementedError):
         bcc_slab(4.08, 'Au', 200)
+    assert not np.allclose(
+        bcc_slab(5.64, 'Au', 100, end=1, layers='BABAB').xyz,
+        bcc_slab(5.64, 'Au', 100, end=1, layers=' BABAB ').xyz)
 
 
 def test_rocksalt_slab():
@@ -155,3 +176,6 @@ def test_rocksalt_slab():
     with pytest.raises(ValueError):
         rocksalt_slab(5.64, ['Na', 'Cl'], 100, end=0, layers='BABAB')
     rocksalt_slab(5.64, ['Na', 'Cl'], 100, end=1, layers='BABAB')
+    assert not np.allclose(
+        rocksalt_slab(5.64, ['Na', 'Cl'], 100, end=1, layers='BABAB').xyz,
+        rocksalt_slab(5.64, ['Na', 'Cl'], 100, end=1, layers=' BABAB ').xyz)
