@@ -5,6 +5,7 @@ import numpy as np
 
 from sisl._internal import set_module
 from sisl import Geometry, SuperCell
+from ._common import geometry_define_nsc
 
 __all__ = ['sc', 'bcc', 'fcc', 'hcp', 'rocksalt']
 
@@ -35,10 +36,7 @@ def sc(alat, atom):
                              [0, 1, 0],
                              [0, 0, 1]], np.float64) * alat)
     g = Geometry([0, 0, 0], atom, sc=sc)
-    if np.all(g.maxR(True) > 0.):
-        g.optimize_nsc()
-    else:
-        g.set_nsc([3, 3, 3])
+    geometry_define_nsc(g)
     return g
 
 
@@ -66,10 +64,7 @@ def bcc(alat, atoms, orthogonal=False):
                                  [1, -1, 1],
                                  [1, 1, -1]], np.float64) * alat / 2)
         g = Geometry([0, 0, 0], atoms, sc=sc)
-    if np.all(g.maxR(True) > 0.):
-        g.optimize_nsc()
-    else:
-        g.set_nsc([3, 3, 3])
+    geometry_define_nsc(g)
     return g
 
 
@@ -98,8 +93,7 @@ def fcc(alat, atoms, orthogonal=False):
                                  [1, 0, 1],
                                  [1, 1, 0]], np.float64) * alat / 2)
         g = Geometry([0, 0, 0], atoms, sc=sc)
-    if np.all(g.maxR(True) > 0.):
-        g.optimize_nsc()
+    geometry_define_nsc(g)
     return g
 
 
@@ -142,10 +136,7 @@ def hcp(a, atoms, coa=1.63333, orthogonal=False):
         sc = SuperCell([a, a, c, 90, 90, 60])
         g = Geometry([[0, 0, 0], [a3sq * _c30, a3sq * _s30, c / 2]],
                      atoms, sc=sc)
-    if np.all(g.maxR(True) > 0.):
-        g.optimize_nsc()
-    else:
-        g.set_nsc([3, 3, 3])
+    geometry_define_nsc(g)
     return g
 
 
@@ -175,8 +166,5 @@ def rocksalt(alat, atoms, orthogonal=False):
     g = g.move(d).translate2uc().move(-d)
     g.xyz = np.where(g.xyz > 0, g.xyz, 0)
     g = g.sort(lattice=[2, 1, 0])
-    if np.all(g.maxR(True) > 0.):
-        g.optimize_nsc()
-    else:
-        g.set_nsc([3, 3, 3])
+    geometry_define_nsc(g)
     return g

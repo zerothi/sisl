@@ -5,6 +5,7 @@ import numpy as np
 
 from sisl._internal import set_module
 from sisl import Atom, Geometry, SuperCell
+from ._common import geometry_define_nsc
 
 __all__ = ['honeycomb', 'graphene']
 
@@ -46,6 +47,7 @@ def honeycomb(bond, atoms, orthogonal=False):
         g = Geometry(np.array([[0., 0., 0.],
                                [1., 0., 0.]], np.float64) * bond,
                      atoms, sc=sc)
+    geometry_define_nsc(g, [True, True, False])
     return g
 
 
@@ -68,5 +70,5 @@ def graphene(bond=1.42, atoms=None, orthogonal=False):
     bilayer: create bilayer honeycomb lattices
     """
     if atoms is None:
-        return honeycomb(bond, Atom(Z=6, R=bond * 1.01), orthogonal)
+        atoms = Atom(Z=6, R=bond * 1.01)
     return honeycomb(bond, atoms, orthogonal)

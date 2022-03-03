@@ -5,6 +5,7 @@ import numpy as np
 
 from sisl._internal import set_module
 from sisl import Atom, Geometry, SuperCell
+from ._common import geometry_define_nsc
 
 __all__ = ['diamond']
 
@@ -29,4 +30,6 @@ def diamond(alat=3.57, atoms=None):
                    nsc=[3, 3, 3])
     dia = Geometry(np.array([[0, 0, 0], [1, 1, 1]], np.float64) * alat / 4,
                    atoms, sc=sc)
+
+    geometry_define_nsc(dia)
     return dia

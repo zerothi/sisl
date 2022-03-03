@@ -8,6 +8,7 @@ import numpy as np
 
 from sisl._internal import set_module
 from sisl import Atom, Geometry, SuperCell
+from ._common import geometry_define_nsc
 
 __all__ = ['fcc_slab', 'bcc_slab', 'rocksalt_slab']
 
@@ -100,12 +101,10 @@ def _finish_slab(g, vacuum):
     g.xyz = np.where(g.xyz > 0, g.xyz, 0)
     g = g.sort(lattice=[2, 1, 0])
     if vacuum is not None:
+        geometry_define_nsc(g, [True, True, False])
         g.cell[2, 2] = g.xyz[:, 2].max() + vacuum
-        g.set_nsc([3, 3, 1])
     else:
-        g.set_nsc([3, 3, 3])
-    if np.all(g.maxR(True) > 0.):
-        g.optimize_nsc()
+        geometry_define_nsc(g, [True, True, True])
     return g
 
 

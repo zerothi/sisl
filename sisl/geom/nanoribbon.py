@@ -6,6 +6,7 @@ import numpy as np
 
 from sisl._internal import set_module
 from sisl import geom, Atom, Geometry
+from ._common import geometry_define_nsc
 
 __all__ = ['nanoribbon', 'graphene_nanoribbon', 'agnr', 'zgnr']
 
@@ -76,6 +77,8 @@ def nanoribbon(width, bond, atoms, kind='armchair'):
 
     # Move inside unit cell
     xyz = ribbon.xyz.min(axis=0) * [1, 1, 0]
+
+    geometry_define_nsc(ribbon, [True, False, False])
 
     return ribbon.move(-xyz + [0, 10, 0])
 

@@ -7,6 +7,7 @@ from math import acos, pi
 
 from sisl._internal import set_module
 from sisl import geom, Atom, Cuboid
+from ._common import geometry_define_nsc
 
 __all__ = ['bilayer']
 
@@ -156,6 +157,8 @@ def bilayer(bond=1.42, bottom_atoms=None, top_atoms=None, stacking='AB',
 
     # Sanity check
     assert len(bilayer) == natoms
+
+    geometry_define_nsc(bilayer, [True, True, False])
 
     if ret_angle:
         return bilayer, theta
