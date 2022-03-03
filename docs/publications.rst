@@ -9,6 +9,10 @@ publications below.
 Please help maintaining the list complete via a `pull request <pr_>`_ or
 by writing an email to `nickpapior AT gmail.com <mailto:nickpapior@gmail.com>`_.
 
+#. G. Yu, *et al.*,
+   *Interlayer hybridization in graphene quasicrystal and other bilayer graphene systems*,
+   Physical Review B, **105**, `125403 (2022) <https://doi.org/10.1103/PhysRevB.105.125403>`_
+
 #. T. Wang, *et al.*,
    *Magnetic interactions between radical pairs in chiral graphene nanoribbons*,
    Nano Lett. **22**, `164-171 (2022) <https://doi.org/10.1021/acs.nanolett.1c03578>`_
