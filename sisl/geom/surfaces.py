@@ -590,6 +590,8 @@ def rocksalt_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=Fa
     layer as an A-layer, defined as the plane containing the first atom in the atoms list
     at :math:`(x,y)=(0,0)`.
 
+    This is equivalent to the NaCl crystal structure (halite).
+
     Parameters
     ----------
     alat : float
@@ -642,6 +644,7 @@ def rocksalt_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=Fa
 
     See Also
     --------
+    rocksalt : Basic structure of this one
     fcc_slab : Slab in FCC structure (this slab is a combination of fcc slab structures)
     bcc_slab : Slab in BCC structure
     """
