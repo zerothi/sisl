@@ -37,6 +37,8 @@ def sc(alat, atom):
     g = Geometry([0, 0, 0], atom, sc=sc)
     if np.all(g.maxR(True) > 0.):
         g.optimize_nsc()
+    else:
+        g.set_nsc([3, 3, 3])
     return g
 
 
@@ -66,6 +68,8 @@ def bcc(alat, atoms, orthogonal=False):
         g = Geometry([0, 0, 0], atoms, sc=sc)
     if np.all(g.maxR(True) > 0.):
         g.optimize_nsc()
+    else:
+        g.set_nsc([3, 3, 3])
     return g
 
 
@@ -140,7 +144,10 @@ def hcp(a, atoms, coa=1.63333, orthogonal=False):
                      atoms, sc=sc)
     if np.all(g.maxR(True) > 0.):
         g.optimize_nsc()
+    else:
+        g.set_nsc([3, 3, 3])
     return g
+
 
 @set_module("sisl.geom")
 def rocksalt(alat, atoms, orthogonal=False):

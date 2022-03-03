@@ -11,6 +11,7 @@ Bulk
    sc
    bcc
    fcc
+   rocksalt
    hcp
    diamond
 
