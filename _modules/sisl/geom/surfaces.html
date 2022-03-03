@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.geom.surfaces &mdash; sisl 0.1.dev1+ga29df33 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                0.1.dev1+ga29df33
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cite.html">Citing sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../publications.html">Publications using sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>sisl.geom.surfaces</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sisl.geom.surfaces</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
+<span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
+<span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">groupby</span>
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Integral</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">SuperCell</span>
+<span class="kn">from</span> <span class="nn">._common</span> <span class="kn">import</span> <span class="n">geometry_define_nsc</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;fcc_slab&#39;</span><span class="p">,</span> <span class="s1">&#39;bcc_slab&#39;</span><span class="p">,</span> <span class="s1">&#39;rocksalt_slab&#39;</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">_layer2int</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">periodicity</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert layer specification to integer&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">layer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">layer</span> <span class="o">=</span> <span class="s2">&quot;ABCDEF&quot;</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">layer</span> <span class="o">%</span> <span class="n">periodicity</span>
+
+
+<span class="k">def</span> <span class="nf">_calc_info</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">layers</span><span class="p">,</span> <span class="n">periodicity</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Determine offset index from start or end specification&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">end</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only one of &#39;start&#39; or &#39;end&#39; may be supplied&quot;</span><span class="p">)</span>
+
+    <span class="n">Info</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;Info&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;layers&quot;</span><span class="p">,</span> <span class="s2">&quot;nlayers&quot;</span><span class="p">,</span> <span class="s2">&quot;offset&quot;</span><span class="p">,</span> <span class="s2">&quot;periodicity&quot;</span><span class="p">])</span>
+
+    <span class="c1"># First check valid input, start or end should conform or die</span>
+    <span class="n">stacking</span> <span class="o">=</span> <span class="s2">&quot;ABCDEF&quot;</span><span class="p">[:</span><span class="n">periodicity</span><span class="p">]</span>
+
+    <span class="c1"># convert to integers in range range(periodicity)</span>
+    <span class="c1"># However, if they are None, they will still be none</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">_layer2int</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">periodicity</span><span class="p">)</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">_layer2int</span><span class="p">(</span><span class="n">end</span><span class="p">,</span> <span class="n">periodicity</span><span class="p">)</span>
+
+    <span class="c1"># First convert `layers` to integer, and possibly determine start/end</span>
+    <span class="k">if</span> <span class="n">layers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># default to a single stacking</span>
+        <span class="n">layers</span> <span class="o">=</span> <span class="n">periodicity</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layers</span><span class="p">,</span> <span class="n">Integral</span><span class="p">):</span>
+        <span class="c1"># convert to proper layers</span>
+        <span class="n">nlayers</span> <span class="o">=</span> <span class="n">layers</span>
+
+        <span class="c1"># + 2 to allow rotating</span>
+        <span class="n">layers</span> <span class="o">=</span> <span class="n">stacking</span> <span class="o">*</span> <span class="p">(</span><span class="n">nlayers</span> <span class="o">//</span> <span class="n">periodicity</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># the following will figure it out</span>
+            <span class="n">layers</span> <span class="o">=</span> <span class="n">layers</span><span class="p">[:</span><span class="n">nlayers</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># end is not none</span>
+            <span class="n">layers</span> <span class="o">=</span> <span class="n">layers</span><span class="p">[</span><span class="n">end</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="n">layers</span><span class="p">[:</span><span class="n">end</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">layers</span> <span class="o">=</span> <span class="n">layers</span><span class="p">[</span><span class="o">-</span><span class="n">nlayers</span><span class="p">:]</span>
+        <span class="k">elif</span> <span class="n">end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># start is not none</span>
+            <span class="n">layers</span> <span class="o">=</span> <span class="n">layers</span><span class="p">[</span><span class="n">start</span><span class="p">:]</span> <span class="o">+</span> <span class="n">layers</span><span class="p">[:</span><span class="n">start</span><span class="p">]</span>
+            <span class="n">layers</span> <span class="o">=</span> <span class="n">layers</span><span class="p">[:</span><span class="n">nlayers</span><span class="p">]</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layers</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">nlayers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># + 2 to allow rotating</span>
+            <span class="p">(</span><span class="n">stacking</span> <span class="o">*</span> <span class="p">(</span><span class="n">nlayers</span> <span class="o">//</span> <span class="n">periodicity</span> <span class="o">+</span> <span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stacking faults are not implemented, requested </span><span class="si">{</span><span class="n">layers</span><span class="si">}</span><span class="s2"> with stacking </span><span class="si">{</span><span class="n">stacking</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># easy case, we just calculate one of them</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">_layer2int</span><span class="p">(</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">periodicity</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">start</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">_layer2int</span><span class="p">(</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">periodicity</span><span class="p">)</span> <span class="o">!=</span> <span class="n">start</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Passing both &#39;layers&#39; and &#39;start&#39; requires them to be conforming; found layers=</span><span class="si">{</span><span class="n">layers</span><span class="si">}</span><span class="s2"> &quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot;and start=</span><span class="si">{</span><span class="s1">&#39;ABCDEF&#39;</span><span class="p">[</span><span class="n">start</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">end</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">_layer2int</span><span class="p">(</span><span class="n">layers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">periodicity</span><span class="p">)</span> <span class="o">!=</span> <span class="n">end</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Passing both &#39;layers&#39; and &#39;end&#39; requires them to be conforming; found layers=</span><span class="si">{</span><span class="n">layers</span><span class="si">}</span><span class="s2"> &quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot;and end=</span><span class="si">{</span><span class="s1">&#39;ABCDEF&#39;</span><span class="p">[</span><span class="n">end</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># a sanity check for the algorithm, should always hold!</span>
+    <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">_layer2int</span><span class="p">(</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">periodicity</span><span class="p">)</span> <span class="o">==</span> <span class="n">start</span>
+    <span class="k">if</span> <span class="n">end</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">_layer2int</span><span class="p">(</span><span class="n">layers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">periodicity</span><span class="p">)</span> <span class="o">==</span> <span class="n">end</span>
+
+    <span class="c1"># Convert layers variable to the list of layers in integer space</span>
+    <span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">_layer2int</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">periodicity</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">Info</span><span class="p">(</span><span class="n">layers</span><span class="p">,</span> <span class="n">nlayers</span><span class="p">,</span> <span class="o">-</span><span class="n">_layer2int</span><span class="p">(</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">periodicity</span><span class="p">),</span> <span class="n">periodicity</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_finish_slab</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">vacuum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Grow slab according vacuum specifications&quot;&quot;&quot;</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e-4</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">.</span><span class="n">translate2uc</span><span class="p">()</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="o">-</span><span class="n">d</span><span class="p">)</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">xyz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">xyz</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">xyz</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">lattice</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">vacuum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">geometry_define_nsc</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">])</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">xyz</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="n">vacuum</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">geometry_define_nsc</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">g</span>
+
+
+<span class="k">def</span> <span class="nf">_convert_miller</span><span class="p">(</span><span class="n">miller</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert miller specification to 3-tuple&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">miller</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">miller</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">miller</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">miller</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">miller</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">miller</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">miller</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">miller</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">miller</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">miller</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid Miller indices, must have length 3&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">miller</span>
+
+
+<span class="k">def</span> <span class="nf">_slab_with_vacuum</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Function to wrap `func` with vacuum in between &quot;&quot;&quot;</span>
+    <span class="n">layers</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">layers</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layers</span><span class="p">,</span> <span class="n">Integral</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">is_vacuum</span><span class="p">(</span><span class="n">layer</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; A vacuum is defined by one of these variables:</span>
+
+<span class="sd">        - None</span>
+<span class="sd">        - &#39; &#39;</span>
+<span class="sd">        - 0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">layer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">layer</span> <span class="o">==</span> <span class="s1">&#39; &#39;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">Integral</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">layer</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># we are dealing either with a list of ints or str</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layers</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">nvacuums</span> <span class="o">=</span> <span class="n">layers</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">nvacuums</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">layers</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;  &#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Denoting several vacuum layers next to each other is not supported. &quot;</span>
+                             <span class="s2">&quot;Please pass &#39;vacuum&#39; as an array instead.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># determine number of slabs</span>
+        <span class="n">nslabs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># this must be a list of ints, fill in none between ints</span>
+        <span class="k">def</span> <span class="nf">are_layers</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+            <span class="n">a_layer</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">is_vacuum</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+            <span class="n">b_layer</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">is_vacuum</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">a_layer</span> <span class="ow">and</span> <span class="n">b_layer</span>
+        <span class="c1"># convert list correctly</span>
+        <span class="n">layers</span> <span class="o">=</span> <span class="p">[[</span><span class="n">p</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="k">if</span> <span class="n">are_layers</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">p</span><span class="p">]</span>
+                  <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">layers</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">layers</span><span class="p">[</span><span class="mi">1</span><span class="p">:])]</span> <span class="o">+</span> <span class="p">[[</span><span class="n">layers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]]</span>
+        <span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">l</span> <span class="k">for</span> <span class="n">ls</span> <span class="ow">in</span> <span class="n">layers</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">ls</span><span class="p">]</span>
+        <span class="n">nvacuums</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="mi">1</span> <span class="k">if</span> <span class="n">is_vacuum</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="k">else</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">])</span>
+        <span class="n">nslabs</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="mi">0</span> <span class="k">if</span> <span class="n">is_vacuum</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="k">else</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">])</span>
+
+    <span class="c1"># Now we need to ensure that `start` and `end` are the same</span>
+    <span class="c1"># length as nslabs</span>
+    <span class="k">def</span> <span class="nf">ensure_length</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">nslabs</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">var</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">nslabs</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="p">(</span><span class="n">Integral</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">*</span> <span class="n">nslabs</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">var</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">nslabs</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Specification of </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> has too many elements compared to the &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;number of slabs </span><span class="si">{</span><span class="n">nslabs</span><span class="si">}</span><span class="s2">, please reduce length from </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">var</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># it must be an array of some sorts</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">nslabs</span>
+        <span class="n">out</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">var</span><span class="p">)]</span> <span class="o">=</span> <span class="n">var</span><span class="p">[:]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">var</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">):</span>
+            <span class="c1"># a list requires a list on the rhs</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">var</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">)):</span>
+                <span class="n">out</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">var</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">out</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">ensure_length</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;start&quot;</span><span class="p">),</span> <span class="n">nslabs</span><span class="p">,</span> <span class="s2">&quot;start&quot;</span><span class="p">)</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">ensure_length</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;end&quot;</span><span class="p">),</span> <span class="n">nslabs</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">)</span>
+
+    <span class="n">vacuum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;vacuum&quot;</span><span class="p">))</span>
+    <span class="n">vacuums</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">nvacuums</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">vacuum</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">vacuums</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">vacuum</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">vacuums</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">vacuum</span><span class="p">)]</span> <span class="o">=</span> <span class="n">vacuum</span>
+        <span class="n">vacuums</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">vacuum</span><span class="p">):]</span> <span class="o">=</span> <span class="n">vacuum</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">vacuums</span> <span class="o">=</span> <span class="n">vacuums</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+    <span class="c1"># We are now sure that there is a vacuum!</span>
+    <span class="k">def</span> <span class="nf">iter_func</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">layer</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># layer is an iterator, convert to list</span>
+        <span class="n">layer</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layer</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">layer</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Grouper returned long list </span><span class="si">{</span><span class="n">layer</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">layer</span> <span class="o">=</span> <span class="n">layer</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">is_vacuum</span><span class="p">(</span><span class="n">layer</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">layer</span>
+
+    <span class="c1"># group stuff</span>
+    <span class="n">layers</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">iter_func</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">group</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groupby</span><span class="p">(</span><span class="n">layers</span><span class="p">,</span>
+                                  <span class="c1"># group by vacuum positions and not vacuum positions</span>
+                                  <span class="k">lambda</span> <span class="n">l</span><span class="p">:</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">is_vacuum</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="k">else</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="c1"># Now we need to loop and create the things</span>
+    <span class="n">reduce_nsc_c</span> <span class="o">=</span> <span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">layers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span>
+    <span class="n">ivacuum</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">islab</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">layers</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># vacuum specification</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                   <span class="n">layers</span><span class="o">=</span><span class="n">layers</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+                   <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+                   <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+                   <span class="n">vacuum</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># add vacuum</span>
+        <span class="n">vacuum</span> <span class="o">=</span> <span class="n">SuperCell</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">vacuums</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)])</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">vacuum</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">vacuum</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]))</span>
+        <span class="n">ivacuum</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">islab</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                   <span class="n">layers</span><span class="o">=</span><span class="n">layers</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+                   <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+                   <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+                   <span class="n">vacuum</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">islab</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">layer</span> <span class="o">=</span> <span class="n">layers</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">layer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dx</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">out</span><span class="o">.</span><span class="n">xyz</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="c1"># this ensures the vacuum is exactly vacuums[iv]</span>
+            <span class="n">vacuum</span> <span class="o">=</span> <span class="n">SuperCell</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">vacuums</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">dx</span><span class="p">])</span>
+            <span class="n">ivacuum</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">vacuum</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">geom</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                        <span class="n">layers</span><span class="o">=</span><span class="n">layer</span><span class="p">,</span>
+                        <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+                        <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+                        <span class="n">vacuum</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">islab</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">assert</span> <span class="n">islab</span> <span class="o">==</span> <span class="n">nslabs</span><span class="p">,</span> <span class="s2">&quot;Error in determining correct slab counts&quot;</span>
+    <span class="k">assert</span> <span class="n">ivacuum</span> <span class="o">==</span> <span class="n">nvacuums</span><span class="p">,</span> <span class="s2">&quot;Error in determining correct vacuum counts&quot;</span>
+
+    <span class="k">if</span> <span class="n">reduce_nsc_c</span><span class="p">:</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">out</span>
+
+
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.geom&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">fcc_slab</span><span class="p">(</span><span class="n">alat</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">miller</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vacuum</span><span class="o">=</span><span class="mf">20.</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">orthogonal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Construction of a surface slab from a face-centered cubic (FCC) crystal</span>
+
+<span class="sd">    The slab layers are stacked along the :math:`z`-axis. The default stacking is the first</span>
+<span class="sd">    layer as an A-layer, defined as the plane containing an atom at :math:`(x,y)=(0,0)`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    alat : float</span>
+<span class="sd">        lattice constant of the fcc crystal</span>
+<span class="sd">    atoms : Atom</span>
+<span class="sd">        the atom that the crystal consists of</span>
+<span class="sd">    miller : int or str or (3,)</span>
+<span class="sd">        Miller indices of the surface facet</span>
+<span class="sd">    layers : int or str or array_like of ints, optional</span>
+<span class="sd">        Number of layers in the slab or explicit layer specification.</span>
+<span class="sd">        An array like can either use ints for layer size, or str&#39;s as layer specification.</span>
+<span class="sd">        An empty character `&#39; &#39;` will be denoted as a vacuum slot, see examples.</span>
+<span class="sd">        Currently the layers cannot have stacking faults.</span>
+<span class="sd">        See examples for details.</span>
+<span class="sd">    vacuum : float or array_like, optional</span>
+<span class="sd">        distance added to the third lattice vector to separate</span>
+<span class="sd">        the slab from its periodic images. If this is None, the slab will be a fully</span>
+<span class="sd">        periodic geometry but with the slab layers. Useful for appending geometries together.</span>
+<span class="sd">        If an array layers should be a str, it should be no longer than the number of spaces</span>
+<span class="sd">        in `layers`. If shorter the last item will be repeated (like `zip_longest`).</span>
+<span class="sd">    orthogonal : bool, optional</span>
+<span class="sd">        if True returns an orthogonal lattice</span>
+<span class="sd">    start : int or string, optional</span>
+<span class="sd">        sets the first layer in the slab. Only one of `start` or `end` must be specified.</span>
+<span class="sd">        Discouraged to pass if `layers` is a str.</span>
+<span class="sd">    end : int or string, optional</span>
+<span class="sd">        sets the last layer in the slab. Only one of `start` or `end` must be specified.</span>
+<span class="sd">        Discouraged to pass if `layers` is a str.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    111 surface, starting with the A layer</span>
+<span class="sd">    &gt;&gt;&gt; fcc_slab(alat, atoms, &quot;111&quot;, start=0)</span>
+
+<span class="sd">    111 surface, starting with the B layer</span>
+<span class="sd">    &gt;&gt;&gt; fcc_slab(alat, atoms, &quot;111&quot;, start=1)</span>
+
+<span class="sd">    111 surface, ending with the B layer</span>
+<span class="sd">    &gt;&gt;&gt; fcc_slab(alat, atoms, &quot;111&quot;, end=&#39;B&#39;)</span>
+
+<span class="sd">    111 surface, with explicit layers in a given order</span>
+<span class="sd">    &gt;&gt;&gt; fcc_slab(alat, atoms, &quot;111&quot;, layers=&#39;BCABCA&#39;)</span>
+
+<span class="sd">    111 surface, with (1 Ang vacuum)BCA(2 Ang vacuum)ABC(3 Ang vacuum)</span>
+<span class="sd">    &gt;&gt;&gt; fcc_slab(alat, atoms, &quot;111&quot;, layers=&#39; BCA ABC &#39;, vacuum=(1, 2, 3))</span>
+
+<span class="sd">    111 surface, with (20 Ang vacuum)BCA</span>
+<span class="sd">    &gt;&gt;&gt; fcc_slab(alat, atoms, &quot;111&quot;, layers=&#39; BCA&#39;, vacuum=20)</span>
+
+<span class="sd">    111 surface, with (2 Ang vacuum)BCA(1 Ang vacuum)ABC(1 Ang vacuum)</span>
+<span class="sd">    The last item in `vacuum` gets repeated.</span>
+<span class="sd">    &gt;&gt;&gt; fcc_slab(alat, atoms, &quot;111&quot;, layers=&#39; BCA ABC &#39;, vacuum=(2, 1))</span>
+
+<span class="sd">    111 periodic structure with ABC(20 Ang vacuum)BC</span>
+<span class="sd">    The unit cell parameters will be periodic in this case, and it will not be</span>
+<span class="sd">    a slab.</span>
+<span class="sd">    &gt;&gt;&gt; fcc_slab(alat, atoms, &quot;111&quot;, layers=&#39;ABC BC&#39;, vacuum=20.)</span>
+
+<span class="sd">    111 surface in an orthogonal (4x5) cell, maintaining the atom ordering</span>
+<span class="sd">    according to `lattice=[2, 1, 0]`:</span>
+<span class="sd">    &gt;&gt;&gt; fcc_slab(alat, atoms, &quot;111&quot;, orthogonal=True).repeat(5, axis=1).repeat(4, axis=0)</span>
+
+<span class="sd">    111 surface with number specifications of layers together with start</span>
+<span class="sd">    Between each number an implicit vacuum is inserted, only the first and last</span>
+<span class="sd">    are required if vacuum surrounding the slab is needed. The following two calls</span>
+<span class="sd">    are equivalent.</span>
+<span class="sd">    Structure: (10 Ang vacuum)(ABC)(1 Ang vacuum)(BCABC)(2 Ang vacuum)(CAB)</span>
+<span class="sd">    &gt;&gt;&gt; fcc_slab(alat, atoms, &quot;111&quot;, layers=(&#39; &#39;, 3, 5, 3), start=(0, 1, 2), vacuum=(10, 1, 2))</span>
+<span class="sd">    &gt;&gt;&gt; fcc_slab(alat, atoms, &quot;111&quot;, layers=&#39; ABC BCABC CAB&#39;, vacuum=(10, 1, 2))</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    NotImplementedError</span>
+<span class="sd">        In case the Miller index has not been implemented or a stacking fault is</span>
+<span class="sd">        introduced in `layers`.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    fcc : Fully periodic equivalent of this slab structure</span>
+<span class="sd">    bcc_slab : Slab in BCC structure</span>
+<span class="sd">    rocksalt_slab : Slab in rocksalt/halite structure</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">geom</span> <span class="o">=</span> <span class="n">_slab_with_vacuum</span><span class="p">(</span><span class="n">fcc_slab</span><span class="p">,</span> <span class="n">alat</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">miller</span><span class="p">,</span>
+                             <span class="n">vacuum</span><span class="o">=</span><span class="n">vacuum</span><span class="p">,</span> <span class="n">orthogonal</span><span class="o">=</span><span class="n">orthogonal</span><span class="p">,</span>
+                             <span class="n">layers</span><span class="o">=</span><span class="n">layers</span><span class="p">,</span>
+                             <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">geom</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">geom</span>
+
+    <span class="n">miller</span> <span class="o">=</span> <span class="n">_convert_miller</span><span class="p">(</span><span class="n">miller</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">miller</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+
+        <span class="n">info</span> <span class="o">=</span> <span class="n">_calc_info</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">layers</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">sc</span> <span class="o">=</span> <span class="n">SuperCell</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span> <span class="o">**</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span> <span class="o">**</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span> <span class="o">*</span> <span class="n">alat</span><span class="p">)</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">atoms</span><span class="o">=</span><span class="n">atoms</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="n">sc</span><span class="p">)</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">nlayers</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="c1"># slide AB layers relative to each other</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">offset</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">B</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
+
+    <span class="k">elif</span> <span class="n">miller</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+
+        <span class="n">info</span> <span class="o">=</span> <span class="n">_calc_info</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">layers</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">sc</span> <span class="o">=</span> <span class="n">SuperCell</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.125</span><span class="p">])</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">alat</span><span class="p">)</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">atoms</span><span class="o">=</span><span class="n">atoms</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="n">sc</span><span class="p">)</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">nlayers</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="c1"># slide AB layers relative to each other</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">offset</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">B</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
+
+    <span class="k">elif</span> <span class="n">miller</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+
+        <span class="n">info</span> <span class="o">=</span> <span class="n">_calc_info</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">layers</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">orthogonal</span><span class="p">:</span>
+            <span class="n">sc</span> <span class="o">=</span> <span class="n">SuperCell</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="mf">0.375</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">3</span><span class="p">])</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">alat</span><span class="p">)</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                                   <span class="p">[</span><span class="mf">0.125</span><span class="p">,</span> <span class="mf">0.375</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">alat</span><span class="p">,</span>
+                         <span class="n">atoms</span><span class="o">=</span><span class="n">atoms</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="n">sc</span><span class="p">)</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">nlayers</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+            <span class="c1"># slide ABC layers relative to each other</span>
+            <span class="n">B</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">offset</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">6</span>
+            <span class="n">C</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">offset</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span> <span class="o">%</span> <span class="mi">6</span>
+            <span class="n">vec</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="mi">6</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">B</span><span class="p">::</span><span class="mi">6</span><span class="p">]</span> <span class="o">+=</span> <span class="n">vec</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">B</span><span class="o">+</span><span class="mi">1</span><span class="p">::</span><span class="mi">6</span><span class="p">]</span> <span class="o">+=</span> <span class="n">vec</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">C</span><span class="p">::</span><span class="mi">6</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">vec</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">C</span><span class="o">+</span><span class="mi">1</span><span class="p">::</span><span class="mi">6</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">vec</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sc</span> <span class="o">=</span> <span class="n">SuperCell</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                                     <span class="p">[</span><span class="mf">0.125</span><span class="p">,</span> <span class="mf">0.375</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                                     <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">3</span><span class="p">]])</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">alat</span><span class="p">)</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">atoms</span><span class="o">=</span><span class="n">atoms</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="n">sc</span><span class="p">)</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">nlayers</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+            <span class="c1"># slide ABC layers relative to each other</span>
+            <span class="n">B</span> <span class="o">=</span> <span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">offset</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">3</span>
+            <span class="n">C</span> <span class="o">=</span> <span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">offset</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span> <span class="o">%</span> <span class="mi">3</span>
+            <span class="n">vec</span> <span class="o">=</span> <span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="mi">3</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">B</span><span class="p">::</span><span class="mi">3</span><span class="p">]</span> <span class="o">+=</span> <span class="n">vec</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">C</span><span class="p">::</span><span class="mi">3</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">vec</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;fcc_slab: miller=</span><span class="si">{</span><span class="n">miller</span><span class="si">}</span><span class="s2"> is not implemented&quot;</span><span class="p">)</span>
+
+    <span class="n">g</span> <span class="o">=</span> <span class="n">_finish_slab</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">vacuum</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">g</span>
+
+
+<div class="viewcode-block" id="bcc_slab"><a class="viewcode-back" href="../../../api/generated/sisl.geom.bcc_slab.html#sisl.geom.bcc_slab">[docs]</a><span class="k">def</span> <span class="nf">bcc_slab</span><span class="p">(</span><span class="n">alat</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">miller</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vacuum</span><span class="o">=</span><span class="mf">20.</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">orthogonal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Construction of a surface slab from a body-centered cubic (BCC) crystal</span>
+
+<span class="sd">    The slab layers are stacked along the :math:`z`-axis. The default stacking is the first</span>
+<span class="sd">    layer as an A-layer, defined as the plane containing an atom at :math:`(x,y)=(0,0)`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    alat : float</span>
+<span class="sd">        lattice constant of the fcc crystal</span>
+<span class="sd">    atoms : Atom</span>
+<span class="sd">        the atom that the crystal consists of</span>
+<span class="sd">    miller : int or str or (3,)</span>
+<span class="sd">        Miller indices of the surface facet</span>
+<span class="sd">    layers : int or str or array_like of ints, optional</span>
+<span class="sd">        Number of layers in the slab or explicit layer specification.</span>
+<span class="sd">        An array like can either use ints for layer size, or str&#39;s as layer specification.</span>
+<span class="sd">        An empty character `&#39; &#39;` will be denoted as a vacuum slot, see examples.</span>
+<span class="sd">        Currently the layers cannot have stacking faults.</span>
+<span class="sd">        See examples for details.</span>
+<span class="sd">    vacuum : float or array_like, optional</span>
+<span class="sd">        distance added to the third lattice vector to separate</span>
+<span class="sd">        the slab from its periodic images. If this is None, the slab will be a fully</span>
+<span class="sd">        periodic geometry but with the slab layers. Useful for appending geometries together.</span>
+<span class="sd">        If an array layers should be a str, it should be no longer than the number of spaces</span>
+<span class="sd">        in `layers`. If shorter the last item will be repeated (like `zip_longest`).</span>
+<span class="sd">    orthogonal : bool, optional</span>
+<span class="sd">        if True returns an orthogonal lattice</span>
+<span class="sd">    start : int or string, optional</span>
+<span class="sd">        sets the first layer in the slab. Only one of `start` or `end` must be specified.</span>
+<span class="sd">        Discouraged to pass if `layers` is a str.</span>
+<span class="sd">    end : int or string, optional</span>
+<span class="sd">        sets the last layer in the slab. Only one of `start` or `end` must be specified.</span>
+<span class="sd">        Discouraged to pass if `layers` is a str.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    Please see `fcc_slab` for examples, they are equivalent to this method.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    NotImplementedError</span>
+<span class="sd">        In case the Miller index has not been implemented or a stacking fault is</span>
+<span class="sd">        introduced in `layers`.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    bcc : Fully periodic equivalent of this slab structure</span>
+<span class="sd">    fcc_slab : Slab in FCC structure</span>
+<span class="sd">    rocksalt_slab : Slab in rocksalt/halite structure</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">geom</span> <span class="o">=</span> <span class="n">_slab_with_vacuum</span><span class="p">(</span><span class="n">bcc_slab</span><span class="p">,</span> <span class="n">alat</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">miller</span><span class="p">,</span>
+                             <span class="n">vacuum</span><span class="o">=</span><span class="n">vacuum</span><span class="p">,</span> <span class="n">orthogonal</span><span class="o">=</span><span class="n">orthogonal</span><span class="p">,</span>
+                             <span class="n">layers</span><span class="o">=</span><span class="n">layers</span><span class="p">,</span>
+                             <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">geom</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">geom</span>
+
+    <span class="n">miller</span> <span class="o">=</span> <span class="n">_convert_miller</span><span class="p">(</span><span class="n">miller</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">miller</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+
+        <span class="n">info</span> <span class="o">=</span> <span class="n">_calc_info</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">layers</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">sc</span> <span class="o">=</span> <span class="n">SuperCell</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span> <span class="o">*</span> <span class="n">alat</span><span class="p">)</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">atoms</span><span class="o">=</span><span class="n">atoms</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="n">sc</span><span class="p">)</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">nlayers</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="c1"># slide AB layers relative to each other</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">offset</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">B</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
+
+    <span class="k">elif</span> <span class="n">miller</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+
+        <span class="n">info</span> <span class="o">=</span> <span class="n">_calc_info</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">layers</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">orthogonal</span><span class="p">:</span>
+            <span class="n">sc</span> <span class="o">=</span> <span class="n">SuperCell</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">alat</span><span class="p">)</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                                   <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span> <span class="o">**</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span> <span class="o">*</span> <span class="n">alat</span><span class="p">,</span>
+                         <span class="n">atoms</span><span class="o">=</span><span class="n">atoms</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="n">sc</span><span class="p">)</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">nlayers</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+            <span class="c1"># slide ABC layers relative to each other</span>
+            <span class="n">B</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">offset</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">4</span>
+            <span class="n">vec</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">B</span><span class="p">::</span><span class="mi">4</span><span class="p">]</span> <span class="o">+=</span> <span class="n">vec</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">B</span><span class="o">+</span><span class="mi">1</span><span class="p">::</span><span class="mi">4</span><span class="p">]</span> <span class="o">+=</span> <span class="n">vec</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sc</span> <span class="o">=</span> <span class="n">SuperCell</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                                     <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span> <span class="o">**</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                                     <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span> <span class="o">**</span> <span class="mf">0.5</span><span class="p">]])</span> <span class="o">*</span> <span class="n">alat</span><span class="p">)</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">atoms</span><span class="o">=</span><span class="n">atoms</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="n">sc</span><span class="p">)</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">nlayers</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+            <span class="c1"># slide AB layers relative to each other</span>
+            <span class="n">B</span> <span class="o">=</span> <span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">offset</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">B</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
+
+    <span class="k">elif</span> <span class="n">miller</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+
+        <span class="n">info</span> <span class="o">=</span> <span class="n">_calc_info</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">layers</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">orthogonal</span><span class="p">:</span>
+            <span class="n">sc</span> <span class="o">=</span> <span class="n">SuperCell</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">12</span><span class="p">])</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">alat</span><span class="p">)</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                                   <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">alat</span><span class="p">,</span>
+                         <span class="n">atoms</span><span class="o">=</span><span class="n">atoms</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="n">sc</span><span class="p">)</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">nlayers</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+            <span class="c1"># slide ABC layers relative to each other</span>
+            <span class="n">B</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">offset</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">6</span>
+            <span class="n">C</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">offset</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span> <span class="o">%</span> <span class="mi">6</span>
+            <span class="n">vec</span> <span class="o">=</span> <span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="mi">3</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">B</span><span class="o">+</span><span class="n">i</span><span class="p">::</span><span class="mi">6</span><span class="p">]</span> <span class="o">+=</span> <span class="n">vec</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">C</span><span class="o">+</span><span class="n">i</span><span class="p">::</span><span class="mi">6</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">vec</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sc</span> <span class="o">=</span> <span class="n">SuperCell</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                                     <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                                     <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">12</span><span class="p">]])</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">alat</span><span class="p">)</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">atoms</span><span class="o">=</span><span class="n">atoms</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="n">sc</span><span class="p">)</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">nlayers</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+            <span class="c1"># slide ABC layers relative to each other</span>
+            <span class="n">B</span> <span class="o">=</span> <span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">offset</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">3</span>
+            <span class="n">C</span> <span class="o">=</span> <span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">offset</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span> <span class="o">%</span> <span class="mi">3</span>
+            <span class="n">vec</span> <span class="o">=</span> <span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="mi">3</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">B</span><span class="p">::</span><span class="mi">3</span><span class="p">]</span> <span class="o">+=</span> <span class="n">vec</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">C</span><span class="p">::</span><span class="mi">3</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">vec</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;bcc_slab: miller=</span><span class="si">{</span><span class="n">miller</span><span class="si">}</span><span class="s2"> is not implemented&quot;</span><span class="p">)</span>
+
+    <span class="n">g</span> <span class="o">=</span> <span class="n">_finish_slab</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">vacuum</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">g</span></div>
+
+
+<div class="viewcode-block" id="rocksalt_slab"><a class="viewcode-back" href="../../../api/generated/sisl.geom.rocksalt_slab.html#sisl.geom.rocksalt_slab">[docs]</a><span class="k">def</span> <span class="nf">rocksalt_slab</span><span class="p">(</span><span class="n">alat</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">miller</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vacuum</span><span class="o">=</span><span class="mf">20.</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">orthogonal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Construction of a surface slab from a two-element rock-salt crystal</span>
+
+<span class="sd">    This structure is formed by two interlocked fcc crystals for each of the two elements.</span>
+
+<span class="sd">    The slab layers are stacked along the :math:`z`-axis. The default stacking is the first</span>
+<span class="sd">    layer as an A-layer, defined as the plane containing the first atom in the atoms list</span>
+<span class="sd">    at :math:`(x,y)=(0,0)`.</span>
+
+<span class="sd">    This is equivalent to the NaCl crystal structure (halite).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    alat : float</span>
+<span class="sd">        lattice constant of the rock-salt crystal</span>
+<span class="sd">    atoms : list</span>
+<span class="sd">        a list of two atoms that the crystal consist of</span>
+<span class="sd">    miller : int or str or (3,)</span>
+<span class="sd">        Miller indices of the surface facet</span>
+<span class="sd">    layers : int or str or array_like of ints, optional</span>
+<span class="sd">        Number of layers in the slab or explicit layer specification.</span>
+<span class="sd">        An array like can either use ints for layer size, or str&#39;s as layer specification.</span>
+<span class="sd">        An empty character `&#39; &#39;` will be denoted as a vacuum slot, see examples.</span>
+<span class="sd">        Currently the layers cannot have stacking faults.</span>
+<span class="sd">        See examples for details.</span>
+<span class="sd">    vacuum : float or array_like, optional</span>
+<span class="sd">        distance added to the third lattice vector to separate</span>
+<span class="sd">        the slab from its periodic images. If this is None, the slab will be a fully</span>
+<span class="sd">        periodic geometry but with the slab layers. Useful for appending geometries together.</span>
+<span class="sd">        If an array layers should be a str, it should be no longer than the number of spaces</span>
+<span class="sd">        in `layers`. If shorter the last item will be repeated (like `zip_longest`).</span>
+<span class="sd">    orthogonal : bool, optional</span>
+<span class="sd">        if True returns an orthogonal lattice</span>
+<span class="sd">    start : int or string, optional</span>
+<span class="sd">        sets the first layer in the slab. Only one of `start` or `end` must be specified.</span>
+<span class="sd">        Discouraged to pass if `layers` is a str.</span>
+<span class="sd">    end : int or string, optional</span>
+<span class="sd">        sets the last layer in the slab. Only one of `start` or `end` must be specified.</span>
+<span class="sd">        Discouraged to pass if `layers` is a str.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    NaCl(100) slab, starting with A-layer</span>
+<span class="sd">    &gt;&gt;&gt; rocksalt_slab(5.64, [&#39;Na&#39;, &#39;Cl&#39;], 100)</span>
+
+<span class="sd">    6-layer NaCl(100) slab, ending with A-layer</span>
+<span class="sd">    &gt;&gt;&gt; rocksalt_slab(5.64, [&#39;Na&#39;, &#39;Cl&#39;], 100, layers=6, end=&#39;A&#39;)</span>
+
+<span class="sd">    6-layer NaCl(100) slab, starting with Cl A layer and with a vacuum</span>
+<span class="sd">    gap of 20 Å on both sides of the slab</span>
+<span class="sd">    &gt;&gt;&gt; rocksalt_slab(5.64, [&#39;Cl&#39;, &#39;Na&#39;], 100, layers=&#39; ABAB &#39;)</span>
+
+<span class="sd">    For more examples see `fcc_slab`, the vacuum displacements are directly</span>
+<span class="sd">    translateable to this function.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    NotImplementedError</span>
+<span class="sd">        In case the Miller index has not been implemented or a stacking fault is</span>
+<span class="sd">        introduced in `layers`.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    rocksalt : Basic structure of this one</span>
+<span class="sd">    fcc_slab : Slab in FCC structure (this slab is a combination of fcc slab structures)</span>
+<span class="sd">    bcc_slab : Slab in BCC structure</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">geom</span> <span class="o">=</span> <span class="n">_slab_with_vacuum</span><span class="p">(</span><span class="n">rocksalt_slab</span><span class="p">,</span> <span class="n">alat</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">miller</span><span class="p">,</span>
+                             <span class="n">vacuum</span><span class="o">=</span><span class="n">vacuum</span><span class="p">,</span> <span class="n">orthogonal</span><span class="o">=</span><span class="n">orthogonal</span><span class="p">,</span>
+                             <span class="n">layers</span><span class="o">=</span><span class="n">layers</span><span class="p">,</span>
+                             <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">geom</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">geom</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">atoms</span> <span class="o">=</span> <span class="p">[</span><span class="n">atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid list of atoms, must have length 2&quot;</span><span class="p">)</span>
+
+    <span class="n">miller</span> <span class="o">=</span> <span class="n">_convert_miller</span><span class="p">(</span><span class="n">miller</span><span class="p">)</span>
+
+    <span class="n">g1</span> <span class="o">=</span> <span class="n">fcc_slab</span><span class="p">(</span><span class="n">alat</span><span class="p">,</span> <span class="n">atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">miller</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="n">layers</span><span class="p">,</span> <span class="n">vacuum</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orthogonal</span><span class="o">=</span><span class="n">orthogonal</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
+    <span class="n">g2</span> <span class="o">=</span> <span class="n">fcc_slab</span><span class="p">(</span><span class="n">alat</span><span class="p">,</span> <span class="n">atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">miller</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="n">layers</span><span class="p">,</span> <span class="n">vacuum</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orthogonal</span><span class="o">=</span><span class="n">orthogonal</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">miller</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">g2</span> <span class="o">=</span> <span class="n">g2</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">alat</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">miller</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">g2</span> <span class="o">=</span> <span class="n">g2</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">alat</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">miller</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">g2</span> <span class="o">=</span> <span class="n">g2</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">/</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">3</span><span class="p">])</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">alat</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;rocksalt_slab: miller=</span><span class="si">{</span><span class="n">miller</span><span class="si">}</span><span class="s2"> is not implemented&quot;</span><span class="p">)</span>
+
+    <span class="n">g</span> <span class="o">=</span> <span class="n">g1</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">g2</span><span class="p">)</span>
+
+    <span class="n">g</span> <span class="o">=</span> <span class="n">_finish_slab</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">vacuum</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">g</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

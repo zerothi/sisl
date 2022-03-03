@@ -6,7 +6,7 @@
 <meta content="LCAO, Siesta, TranSiesta, OpenMX, TBtrans, VASP, GULP, BigDFT, DFT, tight-binding, electron, electrons, phonon, phonons" name="keywords" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl: Toolbox for electronic structure calculations &mdash; sisl 0.1.dev1+gff3f170 documentation</title>
+  <title>sisl: Toolbox for electronic structure calculations &mdash; sisl 0.1.dev1+ga29df33 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/plot_directive.css" type="text/css" />
@@ -36,7 +36,7 @@
             <a href="#" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gff3f170
+                0.1.dev1+ga29df33
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -51,6 +51,7 @@
 <li class="toctree-l1"><a class="reference internal" href="contribute.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="other.html">Other resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cite.html">Citing sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="publications.html">Publications using sisl</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
@@ -121,7 +122,7 @@
 }
 </style>
 <p><a class="reference external" href="https://badge.fury.io/py/sisl"><img alt="pypi" src="https://badge.fury.io/py/sisl.svg" /></a>
-<a class="reference external" href="https://anaconda.org/conda-forge/sisl"><img alt="conda" src="https://anaconda.org/conda-forge/sisl/badges/installer/conda.svg" /></a>
+<a class="reference external" href="https://anaconda.org/conda-forge/sisl"><img alt="conda" src="https://anaconda.org/conda-forge/sisl/badges/version.svg" /></a>
 <a class="reference external" href="http://dx.doi.org/10.5281/zenodo.597181"><img alt="zenodo" src="https://zenodo.org/badge/doi/10.5281/zenodo.597181.svg" /></a>
 <a class="reference external" href="https://discord.gg/5XnFXFdkv2"><img alt="discord" src="https://img.shields.io/discord/742636379871379577.svg?label=&amp;logo=discord&amp;logoColor=ffffff&amp;color=green&amp;labelColor=red" /></a></p>
 <p><a class="reference external" href="https://www.mozilla.org/en-US/MPL/2.0/"><img alt="license" src="https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg" /></a>
@@ -129,7 +130,7 @@
 <a class="reference external" href="https://codecov.io/gh/zerothi/sisl"><img alt="codecov" src="https://codecov.io/gh/zerothi/sisl/branch/main/graph/badge.svg" /></a></p>
 <section id="sisl-tight-binding-and-dft-interface-library">
 <h1>sisl: tight-binding and DFT interface library<a class="headerlink" href="#sisl-tight-binding-and-dft-interface-library" title="Permalink to this headline"></a></h1>
-<p>The Python library <a class="reference external" href="http://github.com/zerothi/sisl">sisl</a> was born out of a need to handle(create and read), manipulate and analyse output from DFT programs.
+<p>The Python library <a class="reference external" href="http://github.com/zerothi/sisl">sisl</a> was born out of a need to handle (create and read), manipulate and analyse output from DFT programs.
 It was initially developed by Nick Papior (co-developer of <a class="reference external" href="https://siesta-project.org">Siesta</a>) as a side-project to <a class="reference external" href="https://siesta-project.org">TranSiesta</a>
 and <a class="reference external" href="https://siesta-project.org">TBtrans</a> to efficiently analyse TBtrans output for N-electrode calculations.
 Since then it has expanded to accommodate a rich set of DFT code input/outputs such as (but not limited to)
@@ -138,9 +139,9 @@ Since then it has expanded to accommodate a rich set of DFT code input/outputs s
 However, every code implements their own analysis and post-processing utilities which typically
 turns out to be equivalent utilities only having the interface differently.</p>
 <p>sisl tries to solve some of the analysis issues by creating a unified scripting approach
-in Python which does analysis using the same interface, regardless of code being used.
-For instance one may read the Kohn-Sham eigenvalue spectrum from various codes and return them
-in a consistent manner so the post-processing is the same, regardless of code being used.</p>
+in Python which does analysis using the same interface, regardless of the code being used.
+For instance, one may read the Kohn-Sham eigenvalue spectrum from various codes and return them
+in a consistent manner so the post-processing is the same, regardless of the code being used.</p>
 <p>sisl is also part of the training material for a series of workshops hosted <a class="reference external" href="https://github.com/zerothi/ts-tbt-sisl-tutorial">here</a>.</p>
 <p>In some regards it has overlap with <a class="reference external" href="https://wiki.fysik.dtu.dk/ase">ASE</a> and sisl also interfaces with ASE.</p>
 <section id="first-time-use">
@@ -159,7 +160,7 @@ one would do:</p>
 </pre></div>
 </div>
 <p>Which calculates the DOS for a 13x13x13 Monkhorst-Pack grid.</p>
-<p>Another common analysis is real-space charge analysis, the following command line subtracts two real-space
+<p>Another common analysis is real-space charge analysis. The following command line subtracts two real-space
 charge grids and writes them to a CUBE file:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid reference/Rho.grid.nc --diff Rho.grid.nc --geometry RUN.fdf --out diff.cube
 </pre></div>
@@ -168,7 +169,7 @@ charge grids and writes them to a CUBE file:</p>
 </section>
 <section id="every-use-of-sisl">
 <h2>Every use of sisl<a class="headerlink" href="#every-use-of-sisl" title="Permalink to this headline"></a></h2>
-<p>There are different places for getting information on using sisl, here is a short list
+<p>There are different places for getting information on using sisl. Here is a short list
 of places to search/ask for answers:</p>
 <ul class="simple">
 <li><p>This page for the documentation!</p></li>
@@ -176,22 +177,8 @@ of places to search/ask for answers:</p>
 <li><p>Ask questions on its use on the Github <a class="reference external" href="http://github.com/zerothi/sisl/issues">issue page</a></p></li>
 <li><p>Ask questions on <a class="reference external" href="https://discord.gg/5XnFXFdkv2">Discord</a></p></li>
 </ul>
-<p>If sisl was used to produce scientific contributions, please use this <a class="reference external" href="http://dx.doi.org/10.5281/zenodo.597181">DOI</a> for citation.
-We recommend to specify the version of sisl in combination of this citation:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>@misc<span class="o">{</span>zerothi_sisl,
-  <span class="nv">author</span>       <span class="o">=</span> <span class="o">{</span>Papior, Nick<span class="o">}</span>,
-  <span class="nv">title</span>        <span class="o">=</span> <span class="o">{</span>sisl: v&lt;fill-version&gt;<span class="o">}</span>,
-  <span class="nv">year</span>         <span class="o">=</span> <span class="o">{</span><span class="m">2021</span><span class="o">}</span>,
-  <span class="nv">doi</span>          <span class="o">=</span> <span class="o">{</span><span class="m">10</span>.5281/zenodo.597181<span class="o">}</span>,
-  <span class="nv">url</span>          <span class="o">=</span> <span class="o">{</span>https://doi.org/10.5281/zenodo.597181<span class="o">}</span>
-<span class="o">}</span>
-</pre></div>
-</div>
-<p>To get the BibTeX entry easily you may issue the following command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sdata --cite
-</pre></div>
-</div>
-<p>which fills in the version number.</p>
+<p>If sisl is used to produce scientific contributions, please use this <a class="reference external" href="http://dx.doi.org/10.5281/zenodo.597181">DOI</a> for citation.
+For more details see <span class="xref std std-ref">this page</span>.</p>
 <div class="toctree-wrapper compound">
 </div>
 <div class="toctree-wrapper compound">
@@ -217,7 +204,7 @@ We recommend to specify the version of sisl in combination of this citation:</p>
 <li class="toctree-l2"><a class="reference internal" href="scripts/sdata.html"><em class="xref py py-obj">sdata</em></a></li>
 <li class="toctree-l2"><a class="reference internal" href="scripts/sgeom.html"><em class="xref py py-obj">sgeom</em></a></li>
 <li class="toctree-l2"><a class="reference internal" href="scripts/sgrid.html"><em class="xref py py-obj">sgrid</em></a></li>
-<li class="toctree-l2"><a class="reference internal" href="scripts/stool.html"><em class="xref py py-obj">stool</em></a></li>
+<li class="toctree-l2"><a class="reference internal" href="scripts/stoolbox.html"><em class="xref py py-obj">stoolbox</em></a></li>
 </ul>
 </li>
 </ul>

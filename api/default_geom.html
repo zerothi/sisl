@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Common geometries &mdash; sisl 0.1.dev1+gff3f170 documentation</title>
+  <title>Common geometries &mdash; sisl 0.1.dev1+ga29df33 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gff3f170
+                0.1.dev1+ga29df33
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -50,6 +50,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../contribute.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../other.html">Other resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../cite.html">Citing sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../publications.html">Publications using sisl</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
@@ -74,7 +75,11 @@
 <li class="toctree-l3"><a class="reference internal" href="#bulk">Bulk</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.sc.html">sc</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.bcc.html">bcc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.bcc_slab.html">bcc_slab</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.fcc.html">fcc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.fcc_slab.html">fcc_slab</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.rocksalt.html">rocksalt</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.rocksalt_slab.html">rocksalt_slab</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.hcp.html">hcp</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.diamond.html">diamond</a></li>
 </ul>
@@ -173,8 +178,20 @@ geometries via a <a class="reference external" href="pr">pull request</a>.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.geom.bcc.html#sisl.geom.bcc" title="sisl.geom.bcc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bcc</span></code></a>(alat, atoms[, orthogonal])</p></td>
 <td><p>Body centered cubic lattice with 1 (non-orthogonal) or 2 atoms (orthogonal)</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.fcc.html#sisl.geom.fcc" title="sisl.geom.fcc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fcc</span></code></a>(alat, atoms[, orthogonal])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.bcc_slab.html#sisl.geom.bcc_slab" title="sisl.geom.bcc_slab"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bcc_slab</span></code></a>(alat, atoms, miller[, layers, ...])</p></td>
+<td><p>Construction of a surface slab from a body-centered cubic (BCC) crystal</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.geom.fcc.html#sisl.geom.fcc" title="sisl.geom.fcc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fcc</span></code></a>(alat, atoms[, orthogonal])</p></td>
 <td><p>Face centered cubic lattice with 1 (non-orthogonal) or 4 atoms (orthogonal)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.fcc_slab.html#sisl.geom.fcc_slab" title="sisl.geom.fcc_slab"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fcc_slab</span></code></a>(alat, atoms, miller[, layers, ...])</p></td>
+<td><p>Construction of a surface slab from a face-centered cubic (FCC) crystal</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.geom.rocksalt.html#sisl.geom.rocksalt" title="sisl.geom.rocksalt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rocksalt</span></code></a>(alat, atoms[, orthogonal])</p></td>
+<td><p>Two-element rocksalt lattice with 2 (non-orthogonal) or 8 atoms (orthogonal)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.rocksalt_slab.html#sisl.geom.rocksalt_slab" title="sisl.geom.rocksalt_slab"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rocksalt_slab</span></code></a>(alat, atoms, miller[, layers, ...])</p></td>
+<td><p>Construction of a surface slab from a two-element rock-salt crystal</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.geom.hcp.html#sisl.geom.hcp" title="sisl.geom.hcp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hcp</span></code></a>(a, atoms[, coa, orthogonal])</p></td>
 <td><p>Hexagonal closed packed lattice with 2 (non-orthogonal) or 4 atoms (orthogonal)</p></td>
