@@ -148,6 +148,7 @@ def hcp(a, atoms, coa=1.63333, orthogonal=False):
         g.set_nsc([3, 3, 3])
     return g
 
+
 @set_module("sisl.geom")
 def rocksalt(alat, atoms, orthogonal=False):
     """ Two-element rocksalt lattice with 2 (non-orthogonal) or 8 atoms (orthogonal)
