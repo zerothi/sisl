@@ -13,7 +13,7 @@ import numpy as np
 pytestmark = [pytest.mark.geom]
 
 
-def test_basis():
+def test_basic():
     a = sc(2.52, Atom['Fe'])
     a = bcc(2.52, Atom['Fe'])
     a = bcc(2.52, Atom['Fe'], orthogonal=True)
@@ -21,6 +21,8 @@ def test_basis():
     a = fcc(2.52, Atom['Au'], orthogonal=True)
     a = hcp(2.52, Atom['Au'])
     a = hcp(2.52, Atom['Au'], orthogonal=True)
+    a = rocksalt(5.64, ['Na', 'Cl'])
+    a = rocksalt(5.64, [Atom('Na', R=3), Atom('Cl', R=4)], orthogonal=True)
 
 
 def test_flat():
