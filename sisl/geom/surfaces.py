@@ -90,7 +90,7 @@ def _calc_info(start, end, layers, periodicity):
 
     # Convert layers variable to the list of layers in integer space
     layers = [_layer2int(l, periodicity) for l in layers]
-    return Info(layers, nlayers, _layer2int(layers[0], periodicity), periodicity)
+    return Info(layers, nlayers, -_layer2int(layers[0], periodicity), periodicity)
 
 
 def _finish_slab(g, vacuum):
