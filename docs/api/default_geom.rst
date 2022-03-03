@@ -23,7 +23,11 @@ Bulk
 
    sc
    bcc
+   bcc_slab
    fcc
+   fcc_slab
+   rocksalt
+   rocksalt_slab
    hcp
    diamond
 

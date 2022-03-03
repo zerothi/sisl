@@ -11,8 +11,17 @@ Bulk
    sc
    bcc
    fcc
+   rocksalt
    hcp
    diamond
+
+
+Surfaces
+========
+
+   fcc_slab
+   bcc_slab
+   rocksalt_slab
 
 
 1D materials
@@ -35,6 +44,7 @@ Bulk
 """
 from .basic import *
 from .flat import *
+from .surfaces import *
 from .nanoribbon import *
 from .nanotube import *
 from .special import *

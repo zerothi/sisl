@@ -9,6 +9,7 @@ we hit release version 1.0.0.
 
 ### Added
 - enabled returning the overlap matrix from `berry_phase`
+- slab geometry creations, `fcc_slab`, `bcc_slab` and `rocksalt_slab`
 
 ### Changed
 - State*.outer corrected to the same interface as State*.inner
