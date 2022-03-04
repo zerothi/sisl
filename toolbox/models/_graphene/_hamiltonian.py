@@ -144,3 +144,25 @@ class Cummings2019Dispatch(ReferenceDispatch):
 
 GrapheneHamiltonian.ref.register("Cummings2019", Cummings2019Dispatch)
 GrapheneHamiltonian.ref.register(Cummings2019Dispatch.doi, Cummings2019Dispatch)
+
+
+class Wu2011Dispatch(ReferenceDispatch):
+    """ Implementing reference model from 10.1007/s11671-010-9791-y """
+    doi = "10.1007/s11671-010-9791-y"
+
+    def dispatch(self, a=1.42, orthogonal=False):
+        distance = self._obj.distance
+        da = 0.0005
+
+        R = (distance(0, a)+da, distance(1, a)+da, distance(2, a)+da, distance(3, a)+da)
+        # Define the graphene lattice
+        C = si.Atom(6, si.AtomicOrbital(n=2, l=1, m=0, R=R[-1]))
+        graphene = si.geom.graphene(a, C, orthogonal=orthogonal)
+        # Define the Hamiltonian
+        H = si.Hamiltonian(graphene, orthogonal=False)
+        t = [(-0.45, 1), (-2.78, 0.117), (-0.15, 0.004), (-0.095, 0.002)]
+        H.construct([R, t)])
+        return H
+
+GrapheneHamiltonian.ref.register("Wu2011", Wu2011Dispatch)
+GrapheneHamiltonian.ref.register(Wu2011Dispatch.doi, Wu2011Dispatch)
