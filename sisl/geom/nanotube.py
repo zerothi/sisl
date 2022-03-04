@@ -142,4 +142,4 @@ def nanotube(bond, atoms=None, chirality=(1, 1)):
 
     geometry_define_nsc(geom, [False, False, True])
 
-    return geom.translate(-np.amin(geom.xyz, axis=0))
+    return geom

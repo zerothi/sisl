@@ -9,10 +9,14 @@ we hit release version 1.0.0.
 
 ### Added
 - enabled returning the overlap matrix from `berry_phase`
-- slab geometry creations, `fcc_slab`, `bcc_slab` and `rocksalt_slab`
+- added `rocksalt` @tfrederiksen
+- slab geometry creations, `fcc_slab`, `bcc_slab` and `rocksalt_slab` @tfrederiksen
+- added `Geometry.translate2uc` to shift everything into the unit-cell
 
 ### Changed
 - State*.outer corrected to the same interface as State*.inner
+- all `sisl.geom` geometries are now calling `optimize_nsc` if needed
+
 
 ## [0.12.1] - 2022-2-10
 
