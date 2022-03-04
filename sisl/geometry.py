@@ -2334,8 +2334,9 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        v : array_like
-             the vector to displace all atomic coordinates
+        v : float or array_like
+             the value or vector to displace all atomic coordinates
+             It should just be broad-castable with the geometry's coordinates.
         atoms : int or array_like, optional
              only displace the given atomic indices, if not specified, all
              atoms will be displaced
@@ -2355,7 +2356,15 @@ class Geometry(SuperCellChild):
     def translate2uc(self, atoms=None, axes=(0, 1, 2)):
         """Translates atoms in the geometry into the unit cell
 
-        One can translate a subset of the atoms by supplying `atoms`
+        One can translate a subset of the atoms or axes by appropriate arguments.
+
+        When coordinates are lying on one of the edges, they may move to the other
+        side of the unit-cell due to small rounding errors.
+        In such situations you are encouraged to shift all coordinates by a small
+        amount to remove numerical errors, in the following case we have atomic
+        coordinates lying close to the lower side of each lattice vector.
+
+        >>> geometry.move(1e-10).translate2uc().move(-1e-10)
 
         Parameters
         ----------
@@ -2365,17 +2374,16 @@ class Geometry(SuperCellChild):
         axes : int or array_like, optional
              only translate certain lattice directions, defaults to all
         """
-        # extract fractional coordinates
         fxyz = self.fxyz
-        fxyz[:, axes] = fxyz[:, axes] % 1
-        # remove negative rounding errors
-        fxyz[:, axes] = np.where(fxyz[:, axes] > 0, fxyz[:, axes], 0)
+        # move to unit-cell
+        fxyz[:, axes] %= 1
         g = self.copy()
+        # convert back
         if atoms is None:
-            g.xyz = fxyz.dot(self.cell)
+            g.xyz[:, :] = fxyz @ self.cell
         else:
             idx = self._sanitize_atoms(atoms).ravel()
-            g.xyz[idx] = fxyz[idx].dot(self.cell)
+            g.xyz[idx] = fxyz[idx] @ self.cell
         return g
 
     def swap(self, atoms_a, atoms_b):
