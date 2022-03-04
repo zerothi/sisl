@@ -161,7 +161,7 @@ class Wu2011Dispatch(ReferenceDispatch):
         # Define the Hamiltonian
         H = si.Hamiltonian(graphene, orthogonal=False)
         t = [(-0.45, 1), (-2.78, 0.117), (-0.15, 0.004), (-0.095, 0.002)]
-        H.construct([R, t)])
+        H.construct([R, t])
         return H
 
 GrapheneHamiltonian.ref.register("Wu2011", Wu2011Dispatch)
