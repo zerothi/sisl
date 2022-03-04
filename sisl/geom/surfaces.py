@@ -95,9 +95,11 @@ def _calc_info(start, end, layers, periodicity):
 
 
 def _finish_slab(g, vacuum):
-    """Grow slab according vacuum specifications"""
-    d = np.ones(3) * 1e-4
-    g = g.move(d).translate2uc().move(-d)
+    """Move slab to the unit-cell and move it very slightly to
+    stick to the lower side of the unit-cell borders.
+    """
+    dx = 1e-8
+    g = g.move(dx).translate2uc().move(-dx)
     g.xyz = np.where(g.xyz > 0, g.xyz, 0)
     g = g.sort(lattice=[2, 1, 0])
     if vacuum is not None:
