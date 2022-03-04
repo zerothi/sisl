@@ -88,9 +88,6 @@ of places to search/ask for answers:
 - Ask questions on its use on the Github `issue page <issue_>`_
 - Ask questions on `Discord <sisl-discord_>`_
 
-If sisl is used to produce scientific contributions, please use this `DOI <sisl-doi_>`_ for citation.
-For more details see :ref:`this page <cite>`.
-
 
 .. toctree::
    :hidden:

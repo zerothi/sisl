@@ -135,7 +135,7 @@ def nanotube(bond, atoms=None, chirality=(1, 1)):
     idx = np.argsort(xyz[:, 2])
     xyz = xyz[idx, :]
 
-    sc = SuperCell([rs * 4, rs * 4, t], nsc=[1, 1, 3])
+    sc = SuperCell([rs * 4, rs * 4, t])
 
     geom = Geometry(xyz, atoms, sc=sc)
     geom = geom.translate(-np.amin(geom.xyz, axis=0))
