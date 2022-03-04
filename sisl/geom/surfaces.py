@@ -315,34 +315,43 @@ def fcc_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=False, 
     Examples
     --------
     111 surface, starting with the A layer
+
     >>> fcc_slab(alat, atoms, "111", start=0)
 
     111 surface, starting with the B layer
+
     >>> fcc_slab(alat, atoms, "111", start=1)
 
     111 surface, ending with the B layer
+
     >>> fcc_slab(alat, atoms, "111", end='B')
 
     111 surface, with explicit layers in a given order
+
     >>> fcc_slab(alat, atoms, "111", layers='BCABCA')
 
     111 surface, with (1 Ang vacuum)BCA(2 Ang vacuum)ABC(3 Ang vacuum)
+
     >>> fcc_slab(alat, atoms, "111", layers=' BCA ABC ', vacuum=(1, 2, 3))
 
     111 surface, with (20 Ang vacuum)BCA
+
     >>> fcc_slab(alat, atoms, "111", layers=' BCA', vacuum=20)
 
     111 surface, with (2 Ang vacuum)BCA(1 Ang vacuum)ABC(1 Ang vacuum)
     The last item in `vacuum` gets repeated.
+
     >>> fcc_slab(alat, atoms, "111", layers=' BCA ABC ', vacuum=(2, 1))
 
     111 periodic structure with ABC(20 Ang vacuum)BC
     The unit cell parameters will be periodic in this case, and it will not be
     a slab.
+
     >>> fcc_slab(alat, atoms, "111", layers='ABC BC', vacuum=20.)
 
     111 surface in an orthogonal (4x5) cell, maintaining the atom ordering
     according to `lattice=[2, 1, 0]`:
+
     >>> fcc_slab(alat, atoms, "111", orthogonal=True).repeat(5, axis=1).repeat(4, axis=0)
 
     111 surface with number specifications of layers together with start
@@ -350,6 +359,7 @@ def fcc_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=False, 
     are required if vacuum surrounding the slab is needed. The following two calls
     are equivalent.
     Structure: (10 Ang vacuum)(ABC)(1 Ang vacuum)(BCABC)(2 Ang vacuum)(CAB)
+
     >>> fcc_slab(alat, atoms, "111", layers=(' ', 3, 5, 3), start=(0, 1, 2), vacuum=(10, 1, 2))
     >>> fcc_slab(alat, atoms, "111", layers=' ABC BCABC CAB', vacuum=(10, 1, 2))
 
@@ -623,13 +633,16 @@ def rocksalt_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=Fa
     Examples
     --------
     NaCl(100) slab, starting with A-layer
+
     >>> rocksalt_slab(5.64, ['Na', 'Cl'], 100)
 
     6-layer NaCl(100) slab, ending with A-layer
+
     >>> rocksalt_slab(5.64, ['Na', 'Cl'], 100, layers=6, end='A')
 
     6-layer NaCl(100) slab, starting with Cl A layer and with a vacuum
     gap of 20 Å on both sides of the slab
+
     >>> rocksalt_slab(5.64, ['Cl', 'Na'], 100, layers=' ABAB ')
 
     For more examples see `fcc_slab`, the vacuum displacements are directly
