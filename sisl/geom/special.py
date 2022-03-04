@@ -26,8 +26,7 @@ def diamond(alat=3.57, atoms=None):
         atoms = Atom(Z=6, R=dist * 1.01)
     sc = SuperCell(np.array([[0, 1, 1],
                              [1, 0, 1],
-                             [1, 1, 0]], np.float64) * alat / 2,
-                   nsc=[3, 3, 3])
+                             [1, 1, 0]], np.float64) * alat / 2)
     dia = Geometry(np.array([[0, 0, 0], [1, 1, 1]], np.float64) * alat / 4,
                    atoms, sc=sc)
 
