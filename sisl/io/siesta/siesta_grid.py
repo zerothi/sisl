@@ -23,7 +23,10 @@ Ry2eV = unit_convert('Ry', 'eV')
 
 @set_module("sisl.io.siesta")
 class gridncSileSiesta(SileCDFSiesta):
-    """ NetCDF real-space grid file """
+    """ NetCDF real-space grid file
+
+    The grid sile will automatically convert the units from Siesta units (Bohr, Ry) to sisl units (Ang, eV) provided the correct extension is present.
+    """
 
     def read_supercell(self):
         """ Returns a SuperCell object from a Siesta.grid.nc file
