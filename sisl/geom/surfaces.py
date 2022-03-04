@@ -8,7 +8,7 @@ import numpy as np
 
 from sisl._internal import set_module
 from sisl import Atom, Geometry, SuperCell
-from ._common import geometry_define_nsc
+from ._common import geometry_define_nsc, geometry2uc
 
 __all__ = ['fcc_slab', 'bcc_slab', 'rocksalt_slab']
 
@@ -98,10 +98,7 @@ def _finish_slab(g, vacuum):
     """Move slab to the unit-cell and move it very slightly to
     stick to the lower side of the unit-cell borders.
     """
-    dx = 1e-8
-    g = g.move(dx).translate2uc().move(-dx)
-    g.xyz = np.where(g.xyz > 0, g.xyz, 0)
-    g = g.sort(lattice=[2, 1, 0])
+    g = geometry2uc(g).sort(lattice=[2, 1, 0])
     if vacuum is not None:
         geometry_define_nsc(g, [True, True, False])
         g.cell[2, 2] = g.xyz[:, 2].max() + vacuum

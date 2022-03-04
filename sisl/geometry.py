@@ -2364,7 +2364,7 @@ class Geometry(SuperCellChild):
         amount to remove numerical errors, in the following case we have atomic
         coordinates lying close to the lower side of each lattice vector.
 
-        >>> geometry.move(1e-10).translate2uc().move(-1e-10)
+        >>> geometry.move(1e-8).translate2uc().move(-1e-8)
 
         Parameters
         ----------

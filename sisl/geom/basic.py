@@ -5,7 +5,7 @@ import numpy as np
 
 from sisl._internal import set_module
 from sisl import Geometry, SuperCell
-from ._common import geometry_define_nsc
+from ._common import geometry_define_nsc, geometry2uc
 
 __all__ = ['sc', 'bcc', 'fcc', 'hcp', 'rocksalt']
 
@@ -162,9 +162,6 @@ def rocksalt(alat, atoms, orthogonal=False):
     g1 = fcc(alat, atoms[0], orthogonal=orthogonal)
     g2 = fcc(alat, atoms[1], orthogonal=orthogonal).move(np.array([1, 1, 1]) * alat / 2)
     g = g1.add(g2)
-    d = np.ones(3) * 1e-4
-    g = g.move(d).translate2uc().move(-d)
-    g.xyz = np.where(g.xyz > 0, g.xyz, 0)
-    g = g.sort(lattice=[2, 1, 0])
+    g = geometry2uc(g).sort(lattice=[2, 1, 0])
     geometry_define_nsc(g)
     return g

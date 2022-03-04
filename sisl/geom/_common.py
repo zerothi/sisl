@@ -1,6 +1,6 @@
 import numpy as np
 
-__all__ = ["geometry_define_nsc"]
+__all__ = ["geometry_define_nsc", "geometry2uc"]
 
 
 def geometry_define_nsc(geometry, periodic=(True, True, True)):
@@ -16,3 +16,10 @@ def geometry_define_nsc(geometry, periodic=(True, True, True)):
     else:
         nsc = [3 if p else 1 for p in periodic]
         geometry.set_nsc(nsc)
+
+
+def geometry2uc(geometry, dx=1e-8):
+    """ Translate the geometry to the unit cell by first shifting `dx` """
+    geometry = geometry.move(dx).translate2uc().move(-dx)
+    geometry.xyz[geometry.xyz < 0] = 0
+    return geometry
