@@ -86,6 +86,8 @@ Sparse matrices
    SparseOrbitalBZSpin - sparse orbital matrix with k-dependent properties and spin configuration
 
 """
+from ._feature import *
+
 from .distribution import *
 from .brillouinzone import *
 # Patch BrillouinZone objects and import apply classes
