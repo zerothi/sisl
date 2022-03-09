@@ -44,5 +44,3 @@ def yield_manifolds(values, atol: float=0.1, axis: int=-1) -> Iterator[List]:
             manifold.append(i)
     if len(manifold) > 0:
         yield manifold
-
-    

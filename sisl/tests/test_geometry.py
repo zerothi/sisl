@@ -556,12 +556,12 @@ class TestGeometry:
         assert np.allclose(setup.g.cell[1, :], s.cell[0, :])
 
     def test_center(self, setup):
-        one = setup.g.center(atoms=[0])
-        assert np.allclose(setup.g[0], one)
-        al = setup.g.center()
-        assert np.allclose(np.mean(setup.g.xyz, axis=0), al)
-        al = setup.g.center(what='mass')
-        al = setup.g.center(what='mm(xyz)')
+        g = setup.g.copy()
+        assert np.allclose(g[1], g.center(atoms=[1]))
+        assert np.allclose(np.mean(g.xyz, axis=0), g.center())
+        # in this case the pbc COM is equivalent to the simple one
+        assert np.allclose(g.center(what='mass'), g.center(what='mass:pbc'))
+        assert np.allclose(g.center(what='mm:xyz'), g.center(what='mm(xyz)'))
 
     def test_center_raise(self, setup):
         with pytest.raises(ValueError):
