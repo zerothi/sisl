@@ -2440,33 +2440,52 @@ class Geometry(SuperCellChild):
         By specifying `what` one can control whether it should be:
 
         * ``xyz|position``: Center of coordinates (default)
-        * ``mm(xyz)``: Center of minimum/maximum of coordinates
+        * ``mm:xyz`` or ``mm(xyz)``: Center of minimum/maximum of coordinates
         * ``mass``: Center of mass
+        * ``mass:pbc``: Center of mass using periodicity, if the point 0, 0, 0 is returned it
+            may likely be because of a completely periodic system with no true center of mass
         * ``cell``: Center of cell
 
         Parameters
         ----------
         atoms : array_like
             list of atomic indices to find center of
-        what : {'xyz', 'mm(xyz)', 'mass', 'cell'}
-            determine whether center should be of 'cell', mass-centered ('mass'),
-            center of minimum/maximum position of atoms or absolute center of the positions.
+        what : {'xyz', 'mm:xyz', 'mass', 'mass:pbc', 'cell'}
+            determine which center to calculate
         """
-        if 'cell' == what:
+        if "cell" == what:
             return self.sc.center()
+
         if atoms is None:
             g = self
         else:
             g = self.sub(atoms)
-        if 'mass' == what:
-            mass = self.mass
+
+        if "mass:pbc" == what:
+            mass = g.mass
+            sum_mass = mass.sum()
+            # the periodic center of mass is determined by transfering all
+            # coordinates onto a circle -> fxyz % 1 * 2pi
+            # Then we mass average the circle angles for each of the fractional
+            # coordinates, and transform back into the cartesian coordinate system
+            theta = (g.fxyz % 1) * 2 * np.pi
+            # construct angles
+            avg_cos = (mass @ np.cos(theta)) / sum_mass
+            avg_sin = (mass @ np.sin(theta)) / sum_mass
+            avg_theta = np.arctan2(-avg_sin, -avg_cos) / (2*np.pi) + 0.5
+            return avg_theta @ g.sc.cell
+
+        if "mass" == what:
+            mass = g.mass
             return dot(mass, g.xyz) / np.sum(mass)
-        if 'mm(xyz)' == what:
-            return (self.xyz.min(0) + self.xyz.max(0)) / 2
-        if not ('xyz' in what or 'position' in what):
-            raise ValueError(
-                'Unknown what, not one of [xyz,position,mass,cell]')
-        return np.mean(g.xyz, axis=0)
+
+        if what in ("mm:xyz", "mm(xyz)"):
+            return (g.xyz.min(0) + g.xyz.max(0)) / 2
+
+        if what in ("xyz", "position"):
+            return np.mean(g.xyz, axis=0)
+
+        raise ValueError(f"{self.__class__.__name__}.center could not understand option 'what' got {what}")
 
     def append(self, other, axis, offset='none'):
         """ Appends two structures along `axis`

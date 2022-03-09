@@ -8,10 +8,14 @@ we hit release version 1.0.0.
 ## [UNRELEASED] - YYYY-MM-DD
 
 ### Added
+- enabled center of mass for periodic systems (chooses *best* COM)
 - enabled returning the overlap matrix from `berry_phase`
 - added `rocksalt` @tfrederiksen
 - slab geometry creations, `fcc_slab`, `bcc_slab` and `rocksalt_slab` @tfrederiksen
 - added `Geometry.translate2uc` to shift everything into the unit-cell
+
+### Fixed
+- incorrect handling of `atoms` argument in `Geometry.center` calls
 
 ### Changed
 - State*.outer corrected to the same interface as State*.inner
