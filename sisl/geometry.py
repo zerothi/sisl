@@ -2465,10 +2465,10 @@ class Geometry(SuperCellChild):
             mass = g.mass
             sum_mass = mass.sum()
             # the periodic center of mass is determined by transfering all
-            # coordinates onto a circle -> fxyz % 1 * 2pi
+            # coordinates onto a circle -> fxyz * 2pi
             # Then we mass average the circle angles for each of the fractional
             # coordinates, and transform back into the cartesian coordinate system
-            theta = (g.fxyz % 1) * 2 * np.pi
+            theta = g.fxyz * (2 * np.pi)
             # construct angles
             avg_cos = (mass @ np.cos(theta)) / sum_mass
             avg_sin = (mass @ np.sin(theta)) / sum_mass
