@@ -1472,6 +1472,10 @@ def test_geometry_sort_group():
     assert np.allclose(BN.atoms.Z, BN2.atoms.Z)
     assert np.allclose(BN.atoms.Z, BN3.atoms.Z)
 
+    mass = bi.sort(group='mass')
+    Z = bi.sort(group='Z')
+    assert np.allclose(mass.atoms.Z, Z.atoms.Z)
+
 
 def test_geometry_sort_fail_keyword():
     with pytest.raises(ValueError):

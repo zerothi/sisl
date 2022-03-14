@@ -1268,7 +1268,7 @@ class Geometry(SuperCellChild):
 
         >>> geom.sort(axis=2, lattice=0, atoms=np.arange(1, 5))
 
-        Sort two groups of atoms ``[range(1, 5), range(5, 10)]`` (individually) by :math:`z`
+        Sort two groups of atoms ``[range(1, 5), range(5, 10)]`` (individually) by :math:`z` coordinate
 
         >>> geom.sort(axis=2, atoms=[np.arange(1, 5), np.arange(5, 10)])
 
@@ -1305,12 +1305,18 @@ class Geometry(SuperCellChild):
         One may group several elements together on an equal footing (``None`` means all non-mentioned elements)
         The order of the groups are important (the first two are _not_ equal, the last three _are_ equal)
 
-        >>> geom.sort(group=('symbol', 'C'), axis=2) # C will be sorted along 3rd axis
-        >>> geom.sort(axis=1, atoms='C', axis1=2) # all along 2nd, then C sorted along 3rd
+        >>> geom.sort(group=('symbol', 'C'), axis=2) # C will be sorted along z
+        >>> geom.sort(axis=1, atoms='C', axis1=2) # all along y, then C sorted along z
         >>> geom.sort(group=('symbol', 'C', None)) # C, [B, N]
         >>> geom.sort(group=('symbol', None, 'C')) # [B, N], C
         >>> geom.sort(group=('symbol', ['N', 'B'], 'C')) # [B, N], C (B and N unaltered order)
         >>> geom.sort(group=('symbol', ['B', 'N'], 'C')) # [B, N], C (B and N unaltered order)
+
+        A group based sorting can use *anything* that can be fetched from the `Atom` object, 
+        sort first according to mass, then for all with the same mass, sort according to atomic
+        tag:
+
+        >>> geom.sort(group0='mass', group1='tag')
 
         A too high `atol` may have unexpected side-effects. This is because of the way
         the sorting algorithm splits the sections for nested sorting.
@@ -1484,7 +1490,7 @@ class Geometry(SuperCellChild):
             """
             nl = NestedList()
 
-            # Create unique list of integers
+            # Create unique list of values
             uniq_vals = np.unique(vals)
             if len(groups) == 0:
                 # fake the groups argument
@@ -1555,21 +1561,24 @@ class Geometry(SuperCellChild):
                         nl.append(at[isin(at, idx)])
                 return nl
 
-            method = method.lower()
+            # See if the attribute exists for the atoms
+            if method.lower() == "species":
+                # this one has two spelling options!
+                method = "specie"
 
-            if method == 'z':
-                return _group_vals(self.atoms.Z, groups, atoms, **kwargs)
-            elif method in ['specie', 'species']:
-                return _group_vals(self.atoms.specie, groups, atoms, **kwargs)
-            elif method == 'tag':
-                # create numpy array
-                strs = np.array(list(map(lambda a: a.tag, self.atoms)))
-                return _group_vals(strs, groups, atoms, **kwargs)
-            elif method == 'symbol':
-                strs = np.array(list(map(lambda a: a.symbol, self.atoms)))
-                return _group_vals(strs, groups, atoms, **kwargs)
+            # now get them through `getattr`
+            if hasattr(self.atoms[0], method):
+                vals = [getattr(a, method) for a in self.atoms]
+
+            elif hasattr(self.atoms[0], method.lower()):
+                method = method.lower()
+                vals = [getattr(a, method) for a in self.atoms]
+
             else:
-                raise ValueError(f"{self.__class__.__name__}.sort group only supports ['Z','species','tag','symbol'] for sorting")
+                raise ValueError(f"{self.__class__.__name__}.sort group only supports attributes that can be fetched from Atom objects, some are [Z, species, tag, symbol, mass, ...] and more")
+
+            return _group_vals(np.array(vals), groups, atoms, **kwargs)
+
         funcs["group"] = _group
 
         def stripint(s):
