@@ -23,13 +23,21 @@ Bulk
 
    sc
    bcc
-   bcc_slab
    fcc
-   fcc_slab
    rocksalt
-   rocksalt_slab
    hcp
    diamond
+
+
+Surfaces (slabs)
+================
+
+.. autosummary::
+   :toctree: generated/
+
+   bcc_slab
+   fcc_slab
+   rocksalt_slab
 
 
 1D materials

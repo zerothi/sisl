@@ -182,10 +182,6 @@ def _slab_with_vacuum(func, *args, **kwargs):
         # it must be an array of some sorts
         out = [None] * nslabs
         out[:len(var)] = var[:]
-        if len(var) < len(out):
-            # a list requires a list on the rhs
-            for i in range(len(var), len(out)):
-                out[i] = var[-1]
         return out
     start = ensure_length(kwargs.pop("start"), nslabs, "start")
     end = ensure_length(kwargs.pop("end"), nslabs, "end")
@@ -277,10 +273,13 @@ def _slab_with_vacuum(func, *args, **kwargs):
 
 @set_module("sisl.geom")
 def fcc_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=False, start=None, end=None):
-    r""" Construction of a surface slab from a face-centered cubic (FCC) crystal
+    r""" Surface slabs forming a face-centered cubic (FCC) crystal
 
     The slab layers are stacked along the :math:`z`-axis. The default stacking is the first
     layer as an A-layer, defined as the plane containing an atom at :math:`(x,y)=(0,0)`.
+
+    Several vacuum separated segments can be created by specifying specific positions through
+    either `layers` being a list, or by having spaces in its `str` form, see Examples.
 
     Parameters
     ----------
@@ -292,24 +291,26 @@ def fcc_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=False, 
         Miller indices of the surface facet
     layers : int or str or array_like of ints, optional
         Number of layers in the slab or explicit layer specification.
-        An array like can either use ints for layer size, or str's as layer specification.
-        An empty character `' '` will be denoted as a vacuum slot, see examples.
-        Currently the layers cannot have stacking faults.
+        For array like arguments vacuum will be placed between each index of the layers.
+        Each element can either be an int or a str to specify number of layers or an explicit
+        order of layers.
+        If a `str` it can contain spaces to specify vacuum positions (then equivalent to ``layers.split()``).
+        If there are no vacuum positions specified a vacuum will be placed *after* the layers.
         See examples for details.
     vacuum : float or array_like, optional
-        distance added to the third lattice vector to separate
-        the slab from its periodic images. If this is None, the slab will be a fully
-        periodic geometry but with the slab layers. Useful for appending geometries together.
-        If an array layers should be a str, it should be no longer than the number of spaces
-        in `layers`. If shorter the last item will be repeated (like `zip_longest`).
+        size of vacuum at locations specified in `layers`. The vacuum will always
+        be placed along the :math:`z`-axis (3rd lattice vector).
+        Each segment in `layers` will be appended the vacuum as found by ``zip_longest(layers, vacuum)``.
     orthogonal : bool, optional
         if True returns an orthogonal lattice
-    start : int or string, optional
+    start : int or str or array_like, optional
         sets the first layer in the slab. Only one of `start` or `end` must be specified.
-        Discouraged to pass if `layers` is a str.
-    end : int or string, optional
+        Discouraged to pass if `layers` is a str since a `ValueError` will be raised if they do
+        not match.
+    end : int or str or array_like, optional
         sets the last layer in the slab. Only one of `start` or `end` must be specified.
-        Discouraged to pass if `layers` is a str.
+        Discouraged to pass if `layers` is a str since a `ValueError` will be raised if they do
+        not match.
 
     Examples
     --------
@@ -367,6 +368,9 @@ def fcc_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=False, 
     NotImplementedError
         In case the Miller index has not been implemented or a stacking fault is
         introduced in `layers`.
+
+    ValueError
+        For wrongly specified `layers` and `vacuum` arguments.
 
     See Also
     --------
@@ -454,6 +458,9 @@ def bcc_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=False, 
     The slab layers are stacked along the :math:`z`-axis. The default stacking is the first
     layer as an A-layer, defined as the plane containing an atom at :math:`(x,y)=(0,0)`.
 
+    Several vacuum separated segments can be created by specifying specific positions through
+    either `layers` being a list, or by having spaces in its `str` form, see Examples.
+
     Parameters
     ----------
     alat : float
@@ -464,22 +471,22 @@ def bcc_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=False, 
         Miller indices of the surface facet
     layers : int or str or array_like of ints, optional
         Number of layers in the slab or explicit layer specification.
-        An array like can either use ints for layer size, or str's as layer specification.
-        An empty character `' '` will be denoted as a vacuum slot, see examples.
-        Currently the layers cannot have stacking faults.
+        For array like arguments vacuum will be placed between each index of the layers.
+        Each element can either be an int or a str to specify number of layers or an explicit
+        order of layers.
+        If a `str` it can contain spaces to specify vacuum positions (then equivalent to ``layers.split()``).
+        If there are no vacuum positions specified a vacuum will be placed *after* the layers.
         See examples for details.
     vacuum : float or array_like, optional
-        distance added to the third lattice vector to separate
-        the slab from its periodic images. If this is None, the slab will be a fully
-        periodic geometry but with the slab layers. Useful for appending geometries together.
-        If an array layers should be a str, it should be no longer than the number of spaces
-        in `layers`. If shorter the last item will be repeated (like `zip_longest`).
+        size of vacuum at locations specified in `layers`. The vacuum will always
+        be placed along the :math:`z`-axis (3rd lattice vector).
+        Each segment in `layers` will be appended the vacuum as found by ``zip_longest(layers, vacuum)``.
     orthogonal : bool, optional
         if True returns an orthogonal lattice
-    start : int or string, optional
+    start : int or str or array_like, optional
         sets the first layer in the slab. Only one of `start` or `end` must be specified.
         Discouraged to pass if `layers` is a str.
-    end : int or string, optional
+    end : int or str or array_like, optional
         sets the last layer in the slab. Only one of `start` or `end` must be specified.
         Discouraged to pass if `layers` is a str.
 
@@ -598,6 +605,9 @@ def rocksalt_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=Fa
     layer as an A-layer, defined as the plane containing the first atom in the atoms list
     at :math:`(x,y)=(0,0)`.
 
+    Several vacuum separated segments can be created by specifying specific positions through
+    either `layers` being a list, or by having spaces in its `str` form, see Examples.
+
     This is equivalent to the NaCl crystal structure (halite).
 
     Parameters
@@ -610,22 +620,22 @@ def rocksalt_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=Fa
         Miller indices of the surface facet
     layers : int or str or array_like of ints, optional
         Number of layers in the slab or explicit layer specification.
-        An array like can either use ints for layer size, or str's as layer specification.
-        An empty character `' '` will be denoted as a vacuum slot, see examples.
-        Currently the layers cannot have stacking faults.
+        For array like arguments vacuum will be placed between each index of the layers.
+        Each element can either be an int or a str to specify number of layers or an explicit
+        order of layers.
+        If a `str` it can contain spaces to specify vacuum positions (then equivalent to ``layers.split()``).
+        If there are no vacuum positions specified a vacuum will be placed *after* the layers.
         See examples for details.
     vacuum : float or array_like, optional
-        distance added to the third lattice vector to separate
-        the slab from its periodic images. If this is None, the slab will be a fully
-        periodic geometry but with the slab layers. Useful for appending geometries together.
-        If an array layers should be a str, it should be no longer than the number of spaces
-        in `layers`. If shorter the last item will be repeated (like `zip_longest`).
+        size of vacuum at locations specified in `layers`. The vacuum will always
+        be placed along the :math:`z`-axis (3rd lattice vector).
+        Each segment in `layers` will be appended the vacuum as found by ``zip_longest(layers, vacuum)``.
     orthogonal : bool, optional
         if True returns an orthogonal lattice
-    start : int or string, optional
+    start : int or str or array_like, optional
         sets the first layer in the slab. Only one of `start` or `end` must be specified.
         Discouraged to pass if `layers` is a str.
-    end : int or string, optional
+    end : int or str or array_like, optional
         sets the last layer in the slab. Only one of `start` or `end` must be specified.
         Discouraged to pass if `layers` is a str.
 
