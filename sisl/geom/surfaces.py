@@ -273,7 +273,7 @@ def _slab_with_vacuum(func, *args, **kwargs):
 
 @set_module("sisl.geom")
 def fcc_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=False, start=None, end=None):
-    r""" Surface slabs forming a face-centered cubic (FCC) crystal
+    r""" Surface slab forming a face-centered cubic (FCC) crystal
 
     The slab layers are stacked along the :math:`z`-axis. The default stacking is the first
     layer as an A-layer, defined as the plane containing an atom at :math:`(x,y)=(0,0)`.
@@ -597,7 +597,7 @@ def bcc_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=False, 
 
 
 def rocksalt_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=False, start=None, end=None):
-    r""" Construction of a surface slab from a two-element rock-salt crystal
+    r""" Surface slab forming a rock-salt crystal (halite)
 
     This structure is formed by two interlocked fcc crystals for each of the two elements.
 
@@ -676,7 +676,7 @@ def rocksalt_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=Fa
     if geom is not None:
         return geom
 
-    if isinstance(atoms, str):
+    if isinstance(atoms, (str, Integral, Atom)):
         atoms = [atoms, atoms]
     if len(atoms) != 2:
         raise ValueError(f"Invalid list of atoms, must have length 2")
