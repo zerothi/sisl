@@ -166,8 +166,8 @@ class TestSuperCell:
         with pytest.raises(Exception):
             setup.sc.sc_index([100, 100, 100])
 
-    def test_cell_vertices(self, setup):
-        verts = setup.sc.cell_vertices()
+    def test_vertices(self, setup):
+        verts = setup.sc.vertices()
 
         assert verts.shape == (2, 2, 2, 3)
         assert np.allclose(verts[0, 0, 0], [0, 0, 0])
