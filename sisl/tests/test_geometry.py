@@ -692,6 +692,24 @@ class TestGeometry:
         assert len(two) == len(setup.g)
         assert np.allclose(two.xyz[:, :] / 2., setup.g.xyz)
 
+    def test_scale_vector_abc(self, setup):
+        two = setup.g.scale([2, 1, 1], what="abc")
+        assert len(two) == len(setup.g)
+        # Check that cell has been scaled accordingly
+        assert np.allclose(two.cell[0] / 2., setup.g.cell[0])
+        assert np.allclose(two.cell[1:], setup.g.cell[1:])
+        # Now check that fractional coordinates are still the same
+        assert np.allclose(two.fxyz, setup.g.fxyz)
+    
+    def test_scale_vector_xyz(self, setup):
+        two = setup.g.scale([2, 1, 1], what="xyz")
+        assert len(two) == len(setup.g)
+        # Check that cell has been scaled accordingly
+        assert np.allclose(two.cell[:, 0] / 2., setup.g.cell[:, 0])
+        assert np.allclose(two.cell[:, 1:], setup.g.cell[:, 1:])
+        # Now check that fractional coordinates are still the same
+        assert np.allclose(two.fxyz, setup.g.fxyz)
+
     def test_close1(self, setup):
         three = range(3)
         for ia in setup.mol:

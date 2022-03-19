@@ -7,6 +7,7 @@ from numbers import Integral, Real
 from math import acos
 from itertools import product
 from collections import OrderedDict
+from collections.abc import Iterable
 from pathlib import Path
 import warnings
 
@@ -3000,18 +3001,58 @@ class Geometry(SuperCellChild):
         # Neither of atoms, or isc are `None`, we add the offset to all coordinates
         return self.axyz(atoms) + self.sc.offset(isc)
 
-    def scale(self, scale) -> Geometry:
+    def scale(self, scale, what="abc", scale_atoms=True) -> Geometry:
         """ Scale coordinates and unit-cell to get a new geometry with proper scaling
 
         Parameters
         ----------
-        scale : float
+        scale : float or array-like of floats with shape (3,)
            the scale factor for the new geometry (lattice vectors, coordinates
            and the atomic radii are scaled).
+        what: {"abc", "xyz"}
+           If three different scale factors are provided, whether each scaling factor
+           is to be applied on the corresponding lattice vector ("abc") or on the
+           corresponding cartesian coordinate ("xyz").
+        scale_atoms : bool
+           whether atoms (basis) should be scaled as well.
         """
-        xyz = self.xyz * scale
-        atoms = self.atoms.scale(scale)
-        sc = self.sc.scale(scale)
+        if isinstance(scale, Iterable):
+            # The scale is a vector
+
+            # We first rescale the supercell
+            sc = self.sc.scale(scale, what=what)
+
+            if what == "abc":
+                # And then scale the coordinates by keeping fractional coordinates the same
+                xyz = self.fxyz @ sc.cell
+
+                if scale_atoms:
+                    # To rescale atoms, we need to know the span of each cartesian coordinate before and
+                    # after the scaling, and scale the atoms according to the coordinate that has
+                    # been scaled by the largest factor.
+                    prev_verts = self.sc.cell_vertices().reshape(8, 3)
+                    prev_span = prev_verts.max(axis=0) - prev_verts.min(axis=0)
+                    scaled_verts = sc.cell_vertices().reshape(8, 3)
+                    scaled_span = scaled_verts.max(axis=0) - scaled_verts.min(axis=0)
+                    max_scale = np.max(scaled_span / prev_span)
+                    
+                    atoms = self.atoms.scale(max_scale) 
+            elif what == "xyz":
+                # It is faster to rescale coordinates by simply multiplying them by the scale
+                xyz = self.xyz * scale
+                if scale_atoms:
+                    # Atoms are rescaled to the maximum scale factor
+                    atoms = self.atoms.scale(np.max(scale))
+        else:
+            # If there is a single scale, we just need to multiply everything by that number.
+            xyz = self.xyz * scale
+            sc = self.sc.scale(scale)
+            if scale_atoms:
+                atoms = self.atoms.scale(scale)
+        
+        if not scale_atoms:
+            atoms = self.atoms.copy()
+
         return self.__class__(xyz, atoms=atoms, sc=sc)
 
     def within_sc(self, shapes, isc=None,
