@@ -677,13 +677,13 @@ class SuperCell:
         --------
         array of shape (2, 2, 2, 3):
             The coordinates of the vertices of the cell. The first three dimensions
-            correspond to each cell axis, and the last one contains the xyz coordinates.
+            correspond to each cell axis (off, on), and the last one contains the xyz coordinates.
         """
         verts = np.zeros([2, 2, 2, 3])
         verts[1, :, :, 0] = 1
         verts[:, 1, :, 1] = 1
         verts[:, :, 1, 2] = 1
-        return (verts.reshape(-1, 3) @ self.cell).reshape(2, 2, 2, 3)
+        return verts @ self.cell
 
     def scale(self, scale, what="abc"):
         """ Scale lattice vectors
