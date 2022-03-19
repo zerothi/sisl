@@ -2419,7 +2419,7 @@ class Geometry(SuperCellChild):
         xyz[atoms_b, :] = self.xyz[atoms_a, :]
         return self.__class__(xyz, atoms=self.atoms.swap(atoms_a, atoms_b), sc=self.sc.copy())
 
-    def swapaxes(self, axis_a, axis_b, swap='cell+xyz') -> Geometry:
+    def swapaxes(self, axis_a, axis_b, what="cell+xyz") -> Geometry:
         """ Swap the axis for the atomic coordinates and the cell vectors
 
         If ``swapaxes(0,1)`` it returns the 0 and 1 values
@@ -2431,24 +2431,24 @@ class Geometry(SuperCellChild):
            axis 1, swaps with `b`
         axis_b : int
            axis 2, swaps with `a`
-        swap : {'cell+xyz', 'cell', 'xyz'}
-           decide what to swap, if `'cell'` is in `swap` then
+        what : {'cell+xyz', 'cell', 'xyz'}
+           decide what to swap, if `'cell'` is in `what` then
            the cell axis are swapped.
-           if `'xyz'` is in `swap` then
+           if `'xyz'` is in `what` then
            the xyz (Cartesian) axis are swapped.
-           Both may be in `swap`.
+           Both may be in `what`.
         """
         xyz = np.copy(self.xyz)
-        if 'xyz' in swap:
+        if "xyz" in what:
             xyz[:, axis_a] = self.xyz[:, axis_b]
             xyz[:, axis_b] = self.xyz[:, axis_a]
-        if 'cell' in swap:
+        if "cell" in what:
             sc = self.sc.swapaxes(axis_a, axis_b)
         else:
             sc = self.sc.copy()
         return self.__class__(xyz, atoms=self.atoms.copy(), sc=sc)
 
-    def center(self, atoms=None, what='xyz') -> ndarray:
+    def center(self, atoms=None, what="xyz") -> ndarray:
         """ Returns the center of the geometry
 
         By specifying `what` one can control whether it should be:
@@ -2501,7 +2501,7 @@ class Geometry(SuperCellChild):
 
         raise ValueError(f"{self.__class__.__name__}.center could not understand option 'what' got {what}")
 
-    def append(self, other, axis, offset='none') -> Geometry:
+    def append(self, other, axis, offset="none") -> Geometry:
         """ Appends two structures along `axis`
 
         This will automatically add the ``self.cell[axis,:]`` to all atomic
@@ -2578,7 +2578,7 @@ class Geometry(SuperCellChild):
 
         return self.__class__(xyz, atoms=atoms, sc=sc, names=names)
 
-    def prepend(self, other, axis, offset='none') -> Geometry:
+    def prepend(self, other, axis, offset="none") -> Geometry:
         """ Prepend two structures along `axis`
 
         This will automatically add the ``self.cell[axis,:]`` to all atomic
