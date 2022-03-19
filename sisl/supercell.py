@@ -6,6 +6,7 @@
 This class is the basis of many different objects.
 """
 
+from collections.abc import Iterable
 import math
 import warnings
 from numbers import Integral
@@ -669,16 +670,43 @@ class SuperCell:
 
         return idx
 
-    def scale(self, scale):
+    def cell_vertices(self):
+        """Vertices of the cell.
+        
+        Returns
+        --------
+        array of shape (2, 2, 2, 3):
+            The coordinates of the vertices of the cell. The first three dimensions
+            correspond to each cell axis, and the last one contains the xyz coordinates.
+        """
+        verts_fxyz = np.zeros((8,3))
+        verts_fxyz[4:, 0] = 1
+        verts_fxyz[[2, 3, 6, 7], 1] = 1
+        verts_fxyz[1::2, 2] = 1
+
+        return (verts_fxyz @ self.cell).reshape(2, 2, 2, 3)
+
+    def scale(self, scale, what="abc"):
         """ Scale lattice vectors
 
         Does not scale `origin`.
 
         Parameters
         ----------
-        scale : ``float``
-           the scale factor for the new lattice vectors
+        scale : ``float`` or array-like of floats with shape (3,)
+           the scale factor for the new lattice vectors.
+        what: {"abc", "xyz"}
+           If three different scale factors are provided, whether each scaling factor
+           is to be applied on the corresponding lattice vector ("abc") or on the
+           corresponding cartesian coordinate ("xyz").
         """
+        if isinstance(scale, Iterable):
+            if what == "abc":
+                # The scale is a vector, reshape it so that in the multiplication each item
+                # is the scale factor of the corresponding lattice vector
+                scale = np.reshape(scale, (-1, 1))
+            elif what != "xyz":
+                raise ValueError(f"'what' argument must be either 'abc' or 'xyz'. '{what}' was provided.")
         return self.copy(self.cell * scale)
 
     def tile(self, reps, axis):

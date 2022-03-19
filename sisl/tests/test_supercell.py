@@ -166,6 +166,14 @@ class TestSuperCell:
         with pytest.raises(Exception):
             setup.sc.sc_index([100, 100, 100])
 
+    def test_cell_vertices(self, setup):
+        verts = setup.sc.cell_vertices()
+
+        assert verts.shape == (2, 2, 2, 3)
+        assert np.allclose(verts[0, 0, 0], [0, 0, 0])
+        assert np.allclose(verts[1, 0, 0], setup.sc.cell[0])
+        assert np.allclose(verts[1, 1, 1], setup.sc.cell.sum(axis=0))
+
     def test_cut1(self, setup):
         cut = setup.sc.cut(2, 0)
         assert np.allclose(cut.cell[0, :] * 2, setup.sc.cell[0, :])
