@@ -3016,41 +3016,39 @@ class Geometry(SuperCellChild):
         scale_atoms : bool
            whether atoms (basis) should be scaled as well.
         """
-        if isinstance(scale, Iterable):
-            # The scale is a vector
+        # Ensure we are dealing with a numpy array
+        scale = np.asarray(scale)
+        if scale.size == 1:
+            # scaling with a scalar is equivalent to scaling
+            # cartesian coordinates
+            what = "xyz"
 
-            # We first rescale the supercell
-            sc = self.sc.scale(scale, what=what)
+        # Scale the supercell
+        sc = self.sc.scale(scale, what=what)
 
-            if what == "abc":
-                # And then scale the coordinates by keeping fractional coordinates the same
-                xyz = self.fxyz @ sc.cell
-
-                if scale_atoms:
-                    # To rescale atoms, we need to know the span of each cartesian coordinate before and
-                    # after the scaling, and scale the atoms according to the coordinate that has
-                    # been scaled by the largest factor.
-                    prev_verts = self.sc.cell_vertices().reshape(8, 3)
-                    prev_span = prev_verts.max(axis=0) - prev_verts.min(axis=0)
-                    scaled_verts = sc.cell_vertices().reshape(8, 3)
-                    scaled_span = scaled_verts.max(axis=0) - scaled_verts.min(axis=0)
-                    max_scale = np.max(scaled_span / prev_span)
-                    
-                    atoms = self.atoms.scale(max_scale) 
-            elif what == "xyz":
-                # It is faster to rescale coordinates by simply multiplying them by the scale
-                xyz = self.xyz * scale
-                if scale_atoms:
-                    # Atoms are rescaled to the maximum scale factor
-                    atoms = self.atoms.scale(np.max(scale))
-        else:
-            # If there is a single scale, we just need to multiply everything by that number.
+        if what == "xyz":
+            # It is faster to rescale coordinates by simply multiplying them by the scale
             xyz = self.xyz * scale
-            sc = self.sc.scale(scale)
+            max_scale = scale.max()
+
+        elif what == "abc":
+            # Scale the coordinates by keeping fractional coordinates the same
+            xyz = self.fxyz @ sc.cell
+
             if scale_atoms:
-                atoms = self.atoms.scale(scale)
-        
-        if not scale_atoms:
+                # To rescale atoms, we need to know the span of each cartesian coordinate before and
+                # after the scaling, and scale the atoms according to the coordinate that has
+                # been scaled by the largest factor.
+                prev_verts = self.sc.vertices().reshape(8, 3)
+                prev_span = prev_verts.max(axis=0) - prev_verts.min(axis=0)
+                scaled_verts = sc.vertices().reshape(8, 3)
+                scaled_span = scaled_verts.max(axis=0) - scaled_verts.min(axis=0)
+                max_scale = (scaled_span / prev_span).max()      
+
+        if scale_atoms:
+            # Atoms are rescaled to the maximum scale factor
+            atoms = self.atoms.scale(max_scale)
+        else:        
             atoms = self.atoms.copy()
 
         return self.__class__(xyz, atoms=atoms, sc=sc)
