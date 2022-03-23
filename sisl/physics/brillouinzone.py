@@ -1401,6 +1401,7 @@ class MonkhorstPack(BrillouinZone):
         self._size = size # vector
         self._centered = centered
         self._trs = i_trs
+        self._k_vol = np.full((self._k.shape[0], 3), self._size / self._diag)
 
     def __str__(self):
         """ String representation of MonkhorstPack """
@@ -1744,18 +1745,6 @@ class MonkhorstPack(BrillouinZone):
         if not isinstance(mp, MonkhorstPack):
             raise ValueError('Object `mp` is not a MonkhorstPack object')
 
-        # We can easily figure out the BZ that each k-point is averaging
-        k_vol = self._size / self._diag
-        # Compare against the size of this one
-        # Since we can remove more than one k-point, we require that the
-        # size of the replacement MP is an integer multiple of the
-        # k-point volumes.
-        k_int = mp._size / k_vol
-        if not np.allclose(np.rint(k_int), k_int):
-            raise SislError(f'{self.__class__.__name__}.reduce could not replace k-point, BZ '
-                            'volume replaced is not equivalent to the inherent k-point volume.')
-        k_int = np.rint(k_int)
-
         # 1. find all k-points
         k = self.in_primitive(k).reshape(1, 3)
         dk = (mp._size / 2).reshape(1, 3)
@@ -1768,6 +1757,18 @@ class MonkhorstPack(BrillouinZone):
         idx = np.logical_and.reduce(np.abs(diff_k) <= dk, axis=1).nonzero()[0]
         if len(idx) == 0:
             raise SislError(f'{self.__class__.__name__}.reduce could not find any points to replace.')
+
+        # Figure out the BZ that each k-point is averaging
+        k_vol = self._k_vol[idx, :]
+        # Compare against the size of this one
+        # Since we can remove more than one k-point, we require that the
+        # size of the replacement MP is an integer multiple of the
+        # k-point volumes.
+        k_int = mp._size / k_vol
+        if not np.allclose(np.rint(k_int), k_int):
+            raise SislError(f'{self.__class__.__name__}.reduce could not replace k-point, BZ '
+                            'volume replaced is not equivalent to the inherent k-point volume.')
+        k_int = np.rint(k_int)
 
         # Now we have the k-points we need to remove
         # Figure out if the total weight is consistent
@@ -1792,10 +1793,12 @@ class MonkhorstPack(BrillouinZone):
 
         self._k = np.delete(self._k, idx, axis=0)
         self._w = np.delete(self._w, idx)
+        self._k_vol = np.delete(self._k_vol, idx, axis=0)
 
         # Append the new k-points and weights
         self._k = np.concatenate((self._k, mp._k), axis=0)
         self._w = np.concatenate((self._w, mp._w * weight_factor))
+        self._k_vol = np.concatenate((self._k_vol, mp._k_vol), axis=0)
 
 
 @set_module("sisl.physics")
