@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>rocksalt_slab &mdash; sisl 0.1.dev1+ga29df33 documentation</title>
+  <title>rocksalt_slab &mdash; sisl 0.1.dev1+g81c6f5c documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -19,14 +19,14 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="hcp" href="sisl.geom.hcp.html" />
-    <link rel="prev" title="rocksalt" href="sisl.geom.rocksalt.html" /> 
+    <link rel="next" title="nanoribbon" href="sisl.geom.nanoribbon.html" />
+    <link rel="prev" title="fcc_slab" href="sisl.geom.fcc_slab.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+ga29df33
+                0.1.dev1+g81c6f5c
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -74,16 +74,11 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../basic.html">Basic classes</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../default_geom.html">Common geometries</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="../default_geom.html#bulk">Bulk</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="sisl.geom.sc.html">sc</a></li>
-<li class="toctree-l4"><a class="reference internal" href="sisl.geom.bcc.html">bcc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../default_geom.html#bulk">Bulk</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../default_geom.html#surfaces-slabs">Surfaces (slabs)</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="sisl.geom.bcc_slab.html">bcc_slab</a></li>
-<li class="toctree-l4"><a class="reference internal" href="sisl.geom.fcc.html">fcc</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.geom.fcc_slab.html">fcc_slab</a></li>
-<li class="toctree-l4"><a class="reference internal" href="sisl.geom.rocksalt.html">rocksalt</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">rocksalt_slab</a></li>
-<li class="toctree-l4"><a class="reference internal" href="sisl.geom.hcp.html">hcp</a></li>
-<li class="toctree-l4"><a class="reference internal" href="sisl.geom.diamond.html">diamond</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../default_geom.html#d-materials">1D materials</a></li>
@@ -92,6 +87,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../physics.html">Physical objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mixing.html">Mixing self-consistent quantities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../viz/index.html">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../unit_constant.html">Units and constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
@@ -154,11 +150,13 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="sisl.geom.rocksalt_slab">
 <span class="sig-prename descclassname"><span class="pre">sisl.geom.</span></span><span class="sig-name descname"><span class="pre">rocksalt_slab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">miller</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vacuum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orthogonal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/geom/surfaces.html#rocksalt_slab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.geom.rocksalt_slab" title="Permalink to this definition"></a></dt>
-<dd><p>Construction of a surface slab from a two-element rock-salt crystal</p>
+<dd><p>Surface slab forming a rock-salt crystal (halite)</p>
 <p>This structure is formed by two interlocked fcc crystals for each of the two elements.</p>
 <p>The slab layers are stacked along the <span class="math notranslate nohighlight">\(z\)</span>-axis. The default stacking is the first
 layer as an A-layer, defined as the plane containing the first atom in the atoms list
 at <span class="math notranslate nohighlight">\((x,y)=(0,0)\)</span>.</p>
+<p>Several vacuum separated segments can be created by specifying specific positions through
+either <em class="xref py py-obj">layers</em> being a list, or by having spaces in its <em class="xref py py-obj">str</em> form, see Examples.</p>
 <p>This is equivalent to the NaCl crystal structure (halite).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -167,31 +165,37 @@ at <span class="math notranslate nohighlight">\((x,y)=(0,0)\)</span>.</p>
 <li><p><strong>atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a>) – a list of two atoms that the crystal consist of</p></li>
 <li><p><strong>miller</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><em>(</em><em>3</em><em>,</em><em>)</em>) – Miller indices of the surface facet</p></li>
 <li><p><strong>layers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><em>array_like of ints</em><em>, </em><em>optional</em>) – Number of layers in the slab or explicit layer specification.
-An array like can either use ints for layer size, or str’s as layer specification.
-An empty character <em class="xref py py-obj">‘ ‘</em> will be denoted as a vacuum slot, see examples.
-Currently the layers cannot have stacking faults.
+For array like arguments vacuum will be placed between each index of the layers.
+Each element can either be an int or a str to specify number of layers or an explicit
+order of layers.
+If a <em class="xref py py-obj">str</em> it can contain spaces to specify vacuum positions (then equivalent to <code class="docutils literal notranslate"><span class="pre">layers.split()</span></code>).
+If there are no vacuum positions specified a vacuum will be placed <em>after</em> the layers.
 See examples for details.</p></li>
-<li><p><strong>vacuum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> or </em><em>array_like</em><em>, </em><em>optional</em>) – distance added to the third lattice vector to separate
-the slab from its periodic images. If this is None, the slab will be a fully
-periodic geometry but with the slab layers. Useful for appending geometries together.
-If an array layers should be a str, it should be no longer than the number of spaces
-in <em class="xref py py-obj">layers</em>. If shorter the last item will be repeated (like <em class="xref py py-obj">zip_longest</em>).</p></li>
+<li><p><strong>vacuum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> or </em><em>array_like</em><em>, </em><em>optional</em>) – size of vacuum at locations specified in <em class="xref py py-obj">layers</em>. The vacuum will always
+be placed along the <span class="math notranslate nohighlight">\(z\)</span>-axis (3rd lattice vector).
+Each segment in <em class="xref py py-obj">layers</em> will be appended the vacuum as found by <code class="docutils literal notranslate"><span class="pre">zip_longest(layers,</span> <span class="pre">vacuum)</span></code>.</p></li>
 <li><p><strong>orthogonal</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – if True returns an orthogonal lattice</p></li>
-<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>string</em><em>, </em><em>optional</em>) – sets the first layer in the slab. Only one of <em class="xref py py-obj">start</em> or <em class="xref py py-obj">end</em> must be specified.
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><em>array_like</em><em>, </em><em>optional</em>) – sets the first layer in the slab. Only one of <em class="xref py py-obj">start</em> or <em class="xref py py-obj">end</em> must be specified.
 Discouraged to pass if <em class="xref py py-obj">layers</em> is a str.</p></li>
-<li><p><strong>end</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>string</em><em>, </em><em>optional</em>) – sets the last layer in the slab. Only one of <em class="xref py py-obj">start</em> or <em class="xref py py-obj">end</em> must be specified.
+<li><p><strong>end</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><em>array_like</em><em>, </em><em>optional</em>) – sets the last layer in the slab. Only one of <em class="xref py py-obj">start</em> or <em class="xref py py-obj">end</em> must be specified.
 Discouraged to pass if <em class="xref py py-obj">layers</em> is a str.</p></li>
 </ul>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>NaCl(100) slab, starting with A-layer
-&gt;&gt;&gt; rocksalt_slab(5.64, [‘Na’, ‘Cl’], 100)</p>
-<p>6-layer NaCl(100) slab, ending with A-layer
-&gt;&gt;&gt; rocksalt_slab(5.64, [‘Na’, ‘Cl’], 100, layers=6, end=’A’)</p>
+<p>NaCl(100) slab, starting with A-layer</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rocksalt_slab</span><span class="p">(</span><span class="mf">5.64</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Na&#39;</span><span class="p">,</span> <span class="s1">&#39;Cl&#39;</span><span class="p">],</span> <span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>6-layer NaCl(100) slab, ending with A-layer</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rocksalt_slab</span><span class="p">(</span><span class="mf">5.64</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Na&#39;</span><span class="p">,</span> <span class="s1">&#39;Cl&#39;</span><span class="p">],</span> <span class="mi">100</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;A&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>6-layer NaCl(100) slab, starting with Cl A layer and with a vacuum
-gap of 20 Å on both sides of the slab
-&gt;&gt;&gt; rocksalt_slab(5.64, [‘Cl’, ‘Na’], 100, layers=’ ABAB ‘)</p>
+gap of 20 Å on both sides of the slab</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rocksalt_slab</span><span class="p">(</span><span class="mf">5.64</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Cl&#39;</span><span class="p">,</span> <span class="s1">&#39;Na&#39;</span><span class="p">],</span> <span class="mi">100</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="s1">&#39; ABAB &#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>For more examples see <a class="reference internal" href="sisl.geom.fcc_slab.html#sisl.geom.fcc_slab" title="sisl.geom.fcc_slab"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fcc_slab</span></code></a>, the vacuum displacements are directly
 translateable to this function.</p>
 <dl class="field-list simple">
@@ -219,8 +223,8 @@ translateable to this function.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="sisl.geom.rocksalt.html" class="btn btn-neutral float-left" title="rocksalt" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="sisl.geom.hcp.html" class="btn btn-neutral float-right" title="hcp" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="sisl.geom.fcc_slab.html" class="btn btn-neutral float-left" title="fcc_slab" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sisl.geom.nanoribbon.html" class="btn btn-neutral float-right" title="nanoribbon" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

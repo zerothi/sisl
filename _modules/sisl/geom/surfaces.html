@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.geom.surfaces &mdash; sisl 0.1.dev1+ga29df33 documentation</title>
+  <title>sisl.geom.surfaces &mdash; sisl 0.1.dev1+g81c6f5c documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -18,7 +18,7 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -32,7 +32,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+ga29df33
+                0.1.dev1+g81c6f5c
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -104,7 +104,7 @@
 
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">SuperCell</span>
-<span class="kn">from</span> <span class="nn">._common</span> <span class="kn">import</span> <span class="n">geometry_define_nsc</span>
+<span class="kn">from</span> <span class="nn">._common</span> <span class="kn">import</span> <span class="n">geometry_define_nsc</span><span class="p">,</span> <span class="n">geometry2uc</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;fcc_slab&#39;</span><span class="p">,</span> <span class="s1">&#39;bcc_slab&#39;</span><span class="p">,</span> <span class="s1">&#39;rocksalt_slab&#39;</span><span class="p">]</span>
 
@@ -191,11 +191,10 @@
 
 
 <span class="k">def</span> <span class="nf">_finish_slab</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">vacuum</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Grow slab according vacuum specifications&quot;&quot;&quot;</span>
-    <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e-4</span>
-    <span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">.</span><span class="n">translate2uc</span><span class="p">()</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="o">-</span><span class="n">d</span><span class="p">)</span>
-    <span class="n">g</span><span class="o">.</span><span class="n">xyz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">xyz</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">xyz</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">lattice</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+    <span class="sd">&quot;&quot;&quot;Move slab to the unit-cell and move it very slightly to</span>
+<span class="sd">    stick to the lower side of the unit-cell borders.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">geometry2uc</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">lattice</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
     <span class="k">if</span> <span class="n">vacuum</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">geometry_define_nsc</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">])</span>
         <span class="n">g</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">xyz</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="n">vacuum</span>
@@ -279,10 +278,6 @@
         <span class="c1"># it must be an array of some sorts</span>
         <span class="n">out</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">nslabs</span>
         <span class="n">out</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">var</span><span class="p">)]</span> <span class="o">=</span> <span class="n">var</span><span class="p">[:]</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">var</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">):</span>
-            <span class="c1"># a list requires a list on the rhs</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">var</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">)):</span>
-                <span class="n">out</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">var</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">out</span>
     <span class="n">start</span> <span class="o">=</span> <span class="n">ensure_length</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;start&quot;</span><span class="p">),</span> <span class="n">nslabs</span><span class="p">,</span> <span class="s2">&quot;start&quot;</span><span class="p">)</span>
     <span class="n">end</span> <span class="o">=</span> <span class="n">ensure_length</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;end&quot;</span><span class="p">),</span> <span class="n">nslabs</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">)</span>
@@ -374,10 +369,13 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.geom&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">fcc_slab</span><span class="p">(</span><span class="n">alat</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">miller</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vacuum</span><span class="o">=</span><span class="mf">20.</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">orthogonal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Construction of a surface slab from a face-centered cubic (FCC) crystal</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Surface slab forming a face-centered cubic (FCC) crystal</span>
 
 <span class="sd">    The slab layers are stacked along the :math:`z`-axis. The default stacking is the first</span>
 <span class="sd">    layer as an A-layer, defined as the plane containing an atom at :math:`(x,y)=(0,0)`.</span>
+
+<span class="sd">    Several vacuum separated segments can be created by specifying specific positions through</span>
+<span class="sd">    either `layers` being a list, or by having spaces in its `str` form, see Examples.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -389,56 +387,67 @@
 <span class="sd">        Miller indices of the surface facet</span>
 <span class="sd">    layers : int or str or array_like of ints, optional</span>
 <span class="sd">        Number of layers in the slab or explicit layer specification.</span>
-<span class="sd">        An array like can either use ints for layer size, or str&#39;s as layer specification.</span>
-<span class="sd">        An empty character `&#39; &#39;` will be denoted as a vacuum slot, see examples.</span>
-<span class="sd">        Currently the layers cannot have stacking faults.</span>
+<span class="sd">        For array like arguments vacuum will be placed between each index of the layers.</span>
+<span class="sd">        Each element can either be an int or a str to specify number of layers or an explicit</span>
+<span class="sd">        order of layers.</span>
+<span class="sd">        If a `str` it can contain spaces to specify vacuum positions (then equivalent to ``layers.split()``).</span>
+<span class="sd">        If there are no vacuum positions specified a vacuum will be placed *after* the layers.</span>
 <span class="sd">        See examples for details.</span>
 <span class="sd">    vacuum : float or array_like, optional</span>
-<span class="sd">        distance added to the third lattice vector to separate</span>
-<span class="sd">        the slab from its periodic images. If this is None, the slab will be a fully</span>
-<span class="sd">        periodic geometry but with the slab layers. Useful for appending geometries together.</span>
-<span class="sd">        If an array layers should be a str, it should be no longer than the number of spaces</span>
-<span class="sd">        in `layers`. If shorter the last item will be repeated (like `zip_longest`).</span>
+<span class="sd">        size of vacuum at locations specified in `layers`. The vacuum will always</span>
+<span class="sd">        be placed along the :math:`z`-axis (3rd lattice vector).</span>
+<span class="sd">        Each segment in `layers` will be appended the vacuum as found by ``zip_longest(layers, vacuum)``.</span>
 <span class="sd">    orthogonal : bool, optional</span>
 <span class="sd">        if True returns an orthogonal lattice</span>
-<span class="sd">    start : int or string, optional</span>
+<span class="sd">    start : int or str or array_like, optional</span>
 <span class="sd">        sets the first layer in the slab. Only one of `start` or `end` must be specified.</span>
-<span class="sd">        Discouraged to pass if `layers` is a str.</span>
-<span class="sd">    end : int or string, optional</span>
+<span class="sd">        Discouraged to pass if `layers` is a str since a `ValueError` will be raised if they do</span>
+<span class="sd">        not match.</span>
+<span class="sd">    end : int or str or array_like, optional</span>
 <span class="sd">        sets the last layer in the slab. Only one of `start` or `end` must be specified.</span>
-<span class="sd">        Discouraged to pass if `layers` is a str.</span>
+<span class="sd">        Discouraged to pass if `layers` is a str since a `ValueError` will be raised if they do</span>
+<span class="sd">        not match.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    111 surface, starting with the A layer</span>
+
 <span class="sd">    &gt;&gt;&gt; fcc_slab(alat, atoms, &quot;111&quot;, start=0)</span>
 
 <span class="sd">    111 surface, starting with the B layer</span>
+
 <span class="sd">    &gt;&gt;&gt; fcc_slab(alat, atoms, &quot;111&quot;, start=1)</span>
 
 <span class="sd">    111 surface, ending with the B layer</span>
+
 <span class="sd">    &gt;&gt;&gt; fcc_slab(alat, atoms, &quot;111&quot;, end=&#39;B&#39;)</span>
 
 <span class="sd">    111 surface, with explicit layers in a given order</span>
+
 <span class="sd">    &gt;&gt;&gt; fcc_slab(alat, atoms, &quot;111&quot;, layers=&#39;BCABCA&#39;)</span>
 
 <span class="sd">    111 surface, with (1 Ang vacuum)BCA(2 Ang vacuum)ABC(3 Ang vacuum)</span>
+
 <span class="sd">    &gt;&gt;&gt; fcc_slab(alat, atoms, &quot;111&quot;, layers=&#39; BCA ABC &#39;, vacuum=(1, 2, 3))</span>
 
 <span class="sd">    111 surface, with (20 Ang vacuum)BCA</span>
+
 <span class="sd">    &gt;&gt;&gt; fcc_slab(alat, atoms, &quot;111&quot;, layers=&#39; BCA&#39;, vacuum=20)</span>
 
 <span class="sd">    111 surface, with (2 Ang vacuum)BCA(1 Ang vacuum)ABC(1 Ang vacuum)</span>
 <span class="sd">    The last item in `vacuum` gets repeated.</span>
+
 <span class="sd">    &gt;&gt;&gt; fcc_slab(alat, atoms, &quot;111&quot;, layers=&#39; BCA ABC &#39;, vacuum=(2, 1))</span>
 
 <span class="sd">    111 periodic structure with ABC(20 Ang vacuum)BC</span>
 <span class="sd">    The unit cell parameters will be periodic in this case, and it will not be</span>
 <span class="sd">    a slab.</span>
+
 <span class="sd">    &gt;&gt;&gt; fcc_slab(alat, atoms, &quot;111&quot;, layers=&#39;ABC BC&#39;, vacuum=20.)</span>
 
 <span class="sd">    111 surface in an orthogonal (4x5) cell, maintaining the atom ordering</span>
 <span class="sd">    according to `lattice=[2, 1, 0]`:</span>
+
 <span class="sd">    &gt;&gt;&gt; fcc_slab(alat, atoms, &quot;111&quot;, orthogonal=True).repeat(5, axis=1).repeat(4, axis=0)</span>
 
 <span class="sd">    111 surface with number specifications of layers together with start</span>
@@ -446,6 +455,7 @@
 <span class="sd">    are required if vacuum surrounding the slab is needed. The following two calls</span>
 <span class="sd">    are equivalent.</span>
 <span class="sd">    Structure: (10 Ang vacuum)(ABC)(1 Ang vacuum)(BCABC)(2 Ang vacuum)(CAB)</span>
+
 <span class="sd">    &gt;&gt;&gt; fcc_slab(alat, atoms, &quot;111&quot;, layers=(&#39; &#39;, 3, 5, 3), start=(0, 1, 2), vacuum=(10, 1, 2))</span>
 <span class="sd">    &gt;&gt;&gt; fcc_slab(alat, atoms, &quot;111&quot;, layers=&#39; ABC BCABC CAB&#39;, vacuum=(10, 1, 2))</span>
 
@@ -454,6 +464,9 @@
 <span class="sd">    NotImplementedError</span>
 <span class="sd">        In case the Miller index has not been implemented or a stacking fault is</span>
 <span class="sd">        introduced in `layers`.</span>
+
+<span class="sd">    ValueError</span>
+<span class="sd">        For wrongly specified `layers` and `vacuum` arguments.</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
@@ -541,6 +554,9 @@
 <span class="sd">    The slab layers are stacked along the :math:`z`-axis. The default stacking is the first</span>
 <span class="sd">    layer as an A-layer, defined as the plane containing an atom at :math:`(x,y)=(0,0)`.</span>
 
+<span class="sd">    Several vacuum separated segments can be created by specifying specific positions through</span>
+<span class="sd">    either `layers` being a list, or by having spaces in its `str` form, see Examples.</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    alat : float</span>
@@ -551,22 +567,22 @@
 <span class="sd">        Miller indices of the surface facet</span>
 <span class="sd">    layers : int or str or array_like of ints, optional</span>
 <span class="sd">        Number of layers in the slab or explicit layer specification.</span>
-<span class="sd">        An array like can either use ints for layer size, or str&#39;s as layer specification.</span>
-<span class="sd">        An empty character `&#39; &#39;` will be denoted as a vacuum slot, see examples.</span>
-<span class="sd">        Currently the layers cannot have stacking faults.</span>
+<span class="sd">        For array like arguments vacuum will be placed between each index of the layers.</span>
+<span class="sd">        Each element can either be an int or a str to specify number of layers or an explicit</span>
+<span class="sd">        order of layers.</span>
+<span class="sd">        If a `str` it can contain spaces to specify vacuum positions (then equivalent to ``layers.split()``).</span>
+<span class="sd">        If there are no vacuum positions specified a vacuum will be placed *after* the layers.</span>
 <span class="sd">        See examples for details.</span>
 <span class="sd">    vacuum : float or array_like, optional</span>
-<span class="sd">        distance added to the third lattice vector to separate</span>
-<span class="sd">        the slab from its periodic images. If this is None, the slab will be a fully</span>
-<span class="sd">        periodic geometry but with the slab layers. Useful for appending geometries together.</span>
-<span class="sd">        If an array layers should be a str, it should be no longer than the number of spaces</span>
-<span class="sd">        in `layers`. If shorter the last item will be repeated (like `zip_longest`).</span>
+<span class="sd">        size of vacuum at locations specified in `layers`. The vacuum will always</span>
+<span class="sd">        be placed along the :math:`z`-axis (3rd lattice vector).</span>
+<span class="sd">        Each segment in `layers` will be appended the vacuum as found by ``zip_longest(layers, vacuum)``.</span>
 <span class="sd">    orthogonal : bool, optional</span>
 <span class="sd">        if True returns an orthogonal lattice</span>
-<span class="sd">    start : int or string, optional</span>
+<span class="sd">    start : int or str or array_like, optional</span>
 <span class="sd">        sets the first layer in the slab. Only one of `start` or `end` must be specified.</span>
 <span class="sd">        Discouraged to pass if `layers` is a str.</span>
-<span class="sd">    end : int or string, optional</span>
+<span class="sd">    end : int or str or array_like, optional</span>
 <span class="sd">        sets the last layer in the slab. Only one of `start` or `end` must be specified.</span>
 <span class="sd">        Discouraged to pass if `layers` is a str.</span>
 
@@ -677,13 +693,16 @@
 
 
 <div class="viewcode-block" id="rocksalt_slab"><a class="viewcode-back" href="../../../api/generated/sisl.geom.rocksalt_slab.html#sisl.geom.rocksalt_slab">[docs]</a><span class="k">def</span> <span class="nf">rocksalt_slab</span><span class="p">(</span><span class="n">alat</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">miller</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vacuum</span><span class="o">=</span><span class="mf">20.</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">orthogonal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Construction of a surface slab from a two-element rock-salt crystal</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Surface slab forming a rock-salt crystal (halite)</span>
 
 <span class="sd">    This structure is formed by two interlocked fcc crystals for each of the two elements.</span>
 
 <span class="sd">    The slab layers are stacked along the :math:`z`-axis. The default stacking is the first</span>
 <span class="sd">    layer as an A-layer, defined as the plane containing the first atom in the atoms list</span>
 <span class="sd">    at :math:`(x,y)=(0,0)`.</span>
+
+<span class="sd">    Several vacuum separated segments can be created by specifying specific positions through</span>
+<span class="sd">    either `layers` being a list, or by having spaces in its `str` form, see Examples.</span>
 
 <span class="sd">    This is equivalent to the NaCl crystal structure (halite).</span>
 
@@ -697,35 +716,38 @@
 <span class="sd">        Miller indices of the surface facet</span>
 <span class="sd">    layers : int or str or array_like of ints, optional</span>
 <span class="sd">        Number of layers in the slab or explicit layer specification.</span>
-<span class="sd">        An array like can either use ints for layer size, or str&#39;s as layer specification.</span>
-<span class="sd">        An empty character `&#39; &#39;` will be denoted as a vacuum slot, see examples.</span>
-<span class="sd">        Currently the layers cannot have stacking faults.</span>
+<span class="sd">        For array like arguments vacuum will be placed between each index of the layers.</span>
+<span class="sd">        Each element can either be an int or a str to specify number of layers or an explicit</span>
+<span class="sd">        order of layers.</span>
+<span class="sd">        If a `str` it can contain spaces to specify vacuum positions (then equivalent to ``layers.split()``).</span>
+<span class="sd">        If there are no vacuum positions specified a vacuum will be placed *after* the layers.</span>
 <span class="sd">        See examples for details.</span>
 <span class="sd">    vacuum : float or array_like, optional</span>
-<span class="sd">        distance added to the third lattice vector to separate</span>
-<span class="sd">        the slab from its periodic images. If this is None, the slab will be a fully</span>
-<span class="sd">        periodic geometry but with the slab layers. Useful for appending geometries together.</span>
-<span class="sd">        If an array layers should be a str, it should be no longer than the number of spaces</span>
-<span class="sd">        in `layers`. If shorter the last item will be repeated (like `zip_longest`).</span>
+<span class="sd">        size of vacuum at locations specified in `layers`. The vacuum will always</span>
+<span class="sd">        be placed along the :math:`z`-axis (3rd lattice vector).</span>
+<span class="sd">        Each segment in `layers` will be appended the vacuum as found by ``zip_longest(layers, vacuum)``.</span>
 <span class="sd">    orthogonal : bool, optional</span>
 <span class="sd">        if True returns an orthogonal lattice</span>
-<span class="sd">    start : int or string, optional</span>
+<span class="sd">    start : int or str or array_like, optional</span>
 <span class="sd">        sets the first layer in the slab. Only one of `start` or `end` must be specified.</span>
 <span class="sd">        Discouraged to pass if `layers` is a str.</span>
-<span class="sd">    end : int or string, optional</span>
+<span class="sd">    end : int or str or array_like, optional</span>
 <span class="sd">        sets the last layer in the slab. Only one of `start` or `end` must be specified.</span>
 <span class="sd">        Discouraged to pass if `layers` is a str.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    NaCl(100) slab, starting with A-layer</span>
+
 <span class="sd">    &gt;&gt;&gt; rocksalt_slab(5.64, [&#39;Na&#39;, &#39;Cl&#39;], 100)</span>
 
 <span class="sd">    6-layer NaCl(100) slab, ending with A-layer</span>
+
 <span class="sd">    &gt;&gt;&gt; rocksalt_slab(5.64, [&#39;Na&#39;, &#39;Cl&#39;], 100, layers=6, end=&#39;A&#39;)</span>
 
 <span class="sd">    6-layer NaCl(100) slab, starting with Cl A layer and with a vacuum</span>
 <span class="sd">    gap of 20 Å on both sides of the slab</span>
+
 <span class="sd">    &gt;&gt;&gt; rocksalt_slab(5.64, [&#39;Cl&#39;, &#39;Na&#39;], 100, layers=&#39; ABAB &#39;)</span>
 
 <span class="sd">    For more examples see `fcc_slab`, the vacuum displacements are directly</span>
@@ -750,7 +772,7 @@
     <span class="k">if</span> <span class="n">geom</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">geom</span>
 
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Integral</span><span class="p">,</span> <span class="n">Atom</span><span class="p">)):</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="p">[</span><span class="n">atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">]</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid list of atoms, must have length 2&quot;</span><span class="p">)</span>
