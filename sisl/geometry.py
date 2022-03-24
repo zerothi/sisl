@@ -3043,12 +3043,12 @@ class Geometry(SuperCellChild):
                 prev_span = prev_verts.max(axis=0) - prev_verts.min(axis=0)
                 scaled_verts = sc.vertices().reshape(8, 3)
                 scaled_span = scaled_verts.max(axis=0) - scaled_verts.min(axis=0)
-                max_scale = (scaled_span / prev_span).max()      
+                max_scale = (scaled_span / prev_span).max()
 
         if scale_atoms:
             # Atoms are rescaled to the maximum scale factor
             atoms = self.atoms.scale(max_scale)
-        else:        
+        else:
             atoms = self.atoms.copy()
 
         return self.__class__(xyz, atoms=atoms, sc=sc)
@@ -3914,7 +3914,7 @@ class Geometry(SuperCellChild):
         unique : bool, optional
            If True the returned indices are unique and sorted.
         """
-        orbitals = _a.asarrayi(orbitals) % self.no
+        orbitals = _a.asarray(orbitals) % self.no
         if unique:
             return np.unique(orbitals)
         return orbitals
@@ -3929,7 +3929,7 @@ class Geometry(SuperCellChild):
         unique : bool, optional
            If True the returned indices are unique and sorted.
         """
-        orbitals = _a.asarrayi(orbitals) % self.no
+        orbitals = _a.asarray(orbitals) % self.no
         orbitals = (orbitals.reshape(1, -1) +
                     _a.arangei(self.n_s).reshape(-1, 1) * self.no).ravel()
         if unique:
@@ -3959,7 +3959,7 @@ class Geometry(SuperCellChild):
 
         Returns a vector of 3 numbers with integers.
         """
-        orbitals = _a.asarrayi(orbitals) // self.no
+        orbitals = _a.asarray(orbitals) // self.no
         return self.sc.sc_off[orbitals, :]
 
     def o2sc(self, orbitals) -> ndarray:
@@ -4445,10 +4445,12 @@ class Geometry(SuperCellChild):
         limit_args = kwargs.get('limit_arguments', True)
         short = kwargs.get('short', False)
 
-        def opts(*args):
-            if short:
+        if short:
+            def opts(*args):
                 return args
-            return [args[0]]
+        else:
+            def opts(*args):
+                return [arg for arg in args if arg.startswith("--")]
 
         # We limit the import to occur here
         import argparse
@@ -4484,7 +4486,8 @@ class Geometry(SuperCellChild):
             def __call__(self, parser, ns, value, option_string=None):
                 xyz = ns._geometry.center(what='xyz')
                 ns._geometry = ns._geometry.translate(ns._geometry.center(what=value) - xyz)
-        p.add_argument(*opts('--center-of', '-co'), choices=['mass', 'xyz', 'position', 'cell'],
+        p.add_argument(*opts('--center-of', '-co'),
+                       choices=["mass", "mass:pbc", "xyz", "position", "cell", "mm:xyz"],
                        action=MoveCenterOf,
                        help='Move coordinates to the center of the designated choice.')
 
