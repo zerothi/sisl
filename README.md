@@ -16,8 +16,9 @@ It couples to a wide range of density functional theory codes and has a high con
 ## Features ##
 
 - *Simple command-line interface*: To extract or quickly plot calculation output
-- *Tight-binding API*: Easily create (non-) orthogonal tight-binding matrices and do Brillouin zone analysis
-- *Post analyse DFT simulations*: Post-process LCAO Hamiltonians by redoing (projected) density of states, inverse participation ration and many more
+- *Tight-binding API*: Easily create (non-) orthogonal tight-binding matrices and do electronic structure analysis
+- *Manipulation of sparse matrices*: Extract, replace, append matrices and sub-matrices to one another
+- *Post analyse DFT simulations*: Post-process LCAO Hamiltonians by doing (projected) density of states, inverse participation ratio and many more
 - *Post analyse NEGF simulations*: Effectively create and post-analyse NEGF output from [TBtrans][tbtrans]
 - *Real-space grid analysis*: Perform mathematical operations on DFT real-space grid outputs, spin-density differences and wavefunction plots
 - *Conversion of geometries and real-space grid*: Easy conversion of geometry files and real-space grid file formats (cube, xsf, etc.)
