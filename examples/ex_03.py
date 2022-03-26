@@ -201,8 +201,8 @@ dyn = gout.read_dynamical_matrix(order=order)
 # may require this anyway.
 dyn.apply_newton()
 
-dev = dyn.cut(4, 0)
+dev = dyn.untile(4, 0)
 dev.write('DEVICE_zz.nc')
 
-el = dev.cut(4, 1)
+el = dev.untile(4, 1)
 el.write('ELEC_zz.nc')

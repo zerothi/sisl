@@ -17,6 +17,7 @@ from numpy import (
     searchsorted,
     tile, repeat, concatenate
 )
+from scipy.sparse import csr_matrix
 
 from ._internal import set_module
 from . import _array as _a
@@ -361,7 +362,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         Force a sparse geometry to be Hermitian:
 
         >>> sp = SparseOrbital(...)
-        >>> sp = (sp + sp.transpose()) * 0.5
+        >>> sp = (sp + sp.transpose()) / 2
 
         Returns
         -------
@@ -665,6 +666,184 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         full[b] = a
         return self.sub(full)
 
+    def untile(self, prefix, reps, axis, segment=0, *args, sym=True, **kwargs):
+        """ Cuts the sparse model into different parts. """
+        new_w = None
+        # Create new geometry
+        with warnings.catch_warnings(record=True) as w:
+            # Cause all warnings to always be triggered.
+            warnings.simplefilter("always")
+            # Create new untiled geometry
+            geom = self.geometry.untile(reps, axis, segment, *args, **kwargs)
+            # Check whether the warning exists
+            if len(w) > 0:
+                if issubclass(w[-1].category, SislWarning):
+                    warn(f"{str(w[-1].message)}\n---\n"
+                         "The sparse matrix cannot be untiled as the structure "
+                         "cannot be tiled accordingly. ANY use of the model has been "
+                         "relieved from sisl.")
+
+        # Now we need to re-create number of supercells
+        no = getattr(self, f"n{prefix}")
+        geom_no = getattr(geom, f"n{prefix}")
+
+        # orig-orbs
+        orig_orbs = _a.arangei(segment * geom_no, (segment+1) * geom_no)
+
+        # create correct linear offset due to the segment.
+        # Further below we will take out the linear indices by modulo and integer
+        # division operations.
+        lsc = tile(self.geometry.sc.sc_off, (1, reps)).reshape(-1, reps, 3)
+        lsc[:, :, axis] = lsc[:, :, axis] * reps + _a.arangei(reps) - segment
+        lsc.shape = (-1, 3)
+
+        # now we have the *correct* lsc that corresponds to the
+        # sc_off in the cut structure.
+        # We will later down correct the *wrong* indices
+        # since we may have nsc == 1 and cut it X times.
+        # In this case we may find [0, 1, 2, 3, ..., X-1]
+        # which is clearly wrong. In stead we should determine
+        # the correct nsc for the output geometry and convert it to
+        #   [-X//2, ..., 0, ... , X//2] (or close to this)
+
+        # First we need to figure out how long the interaction range is
+        # in the cut-direction
+        # We initialize to be the same as the parent direction
+        nsc = self.nsc.copy()
+
+        # get unique couplings for the orbitals we are cutting out
+        # we ensure the *onsite* columns are also there
+        # create sample sparse pattern so we can figure out the columns
+        # they connect to
+        S = self.tocsr(0)
+        sub = np.union1d(unique(S[orig_orbs, :].indices), orig_orbs)
+        del S
+
+        if len(sub) == 0:
+            raise ValueError(f"{self.__class__.__name__}.untile couples to no "
+                             "matrix elements, an empty sparse model cannot be split.")
+
+        # Figure out the supercell indices of sub
+        sub_sc = getattr(self.geometry, f"{prefix}2isc")(sub)
+
+        # convert the sub_sc[axis] into the linear index to figure out the
+        # actual number of required nsc
+        sub_lsc = (sub % no + sub_sc[:, axis] * no) // geom_no - segment
+
+        # calculate (sorted) unique linear cells
+        # This is just to figure out how many we are connecting too
+        sub_lsc = unique(sub_lsc)
+
+        # determine the cut placement
+        if nsc[axis] == 1:
+            # no initial supercell, special handling
+            dsub_lsc = np.diff(sub_lsc)
+            if np.all(dsub_lsc == 1) and len(sub_lsc) == reps:
+                # the full cut region is touched
+                nsc[axis] = (reps // 2) * 2 + 1
+
+                # here the couplings *touches* each others segments
+                # We have to figure out if the couplings are *for* real
+                # or whether we can easily cut them.
+                if reps % 2 == 1:
+                    # an un-even number of couplings in total
+                    # this means that the same couplings will be duplicated
+                    # to the right and left.
+                    # Example:
+                    #   [-1 0 1 2] or [0 1 2 3]
+                    # [0] -> [2] positive direction
+                    # [0] <- [2] negative direction
+                    if sym:
+                        msg = f"The elements connecting from the primary unit-cell to the {nsc[axis]//2} unit-cell will be halved, sym={sym}."
+                    else:
+                        msg = f"The returned matrix will not have symmetric couplings due to sym={sym} argument."
+
+                    warn(f"{self.__class__.__name__}.untile matrix has connections crossing "
+                         "the entire unit cell. "
+                         f"This may result in wrong behavior due to non-unique matrix elements. {msg}")
+
+                else:
+                    # even case
+                    #   [-1 0 1]
+                    # [0] -> [1] positive direction
+                    # [0] <- [-1] negative direction
+                    # or [0 1 2]
+                    # [0] -> [1] positive direction
+                    # [0] <- [2] negative direction
+                    warn(f"{self.__class__.__name__}.untile may have connections crossing "
+                         "the entire unit cell. "
+                         "This may result in wrong behavior due to non-unique matrix elements.")
+
+            else:
+                # we have something like
+                #  [0 1 - 3]
+                # meaning that there is a gab in the couplings
+                axis0 = (sub_lsc == 0).nonzero()[0][0]
+                total_nsc = 0
+                while True:
+                    try:
+                        if sub_lsc[axis0+total_nsc+1] == total_nsc + 1:
+                            total_nsc += 1
+                        else:
+                            break
+                    except: pass
+                    try:
+                        if sub_lsc[axis0-total_nsc-1] == -total_nsc - 1:
+                            total_nsc += 1
+                        else:
+                            break
+                    except: pass
+
+                nsc[axis] = total_nsc * 2 + 1
+
+            # correct the linear indices that are *too* high
+            hnsc = nsc[axis] // 2
+            lsc[lsc[:, axis] > hnsc, axis] -= reps
+            lsc[lsc[:, axis] < -hnsc, axis] += reps
+            # this will still leave some supercell indices *wrong*
+            # But the algorithm should detect that they are not coupled and
+            # thus should not be queried.
+
+        else:
+            # *easy* case, we always have supercells so we can't cut too short
+            # Simply track off the biggest one
+            nsc[axis] = np.abs(sub_lsc).max() * 2 + 1
+
+            # Create the to-columns
+            if sub_lsc.max() != -sub_lsc.min():
+                raise ValueError(f"{self.__class__.__name__}.untile found inconsistent supercell matrix. "
+                                 f"The untiled sparse matrix couples to {sub_lsc} supercells but expected a symmetric set of couplings. "
+                                 "This may happen if doing multiple cuts along the same direction, or if the matrix is not correctly constructed.")
+
+        # Update number of super-cells
+        geom.set_nsc(nsc)
+
+        # Now we have the following items:
+        # 1. sub_sc, the supercell offsets for the connecting orbitals
+        # 2. lsc, containing the linear indices of sub_sc that are directly related
+        #    to the cut structure
+        # 3. geom, which is the cut structure
+        def conv(dim):
+            csr = self.tocsr(dim)[orig_orbs, :]
+            cols = csr.indices
+
+            # now convert cols
+            cols_lsc = lsc[cols // geom_no]
+
+            cols = cols % geom_no + geom.sc_index(cols_lsc) * geom_no
+
+            return csr_matrix((csr.data, cols, csr.indptr),
+                              shape=(geom_no, geom_no * geom.n_s), dtype=self.dtype)
+
+        Ps = [conv(dim) for dim in range(self.dim)]
+        S = self.fromsp(geom, Ps, **self._cls_kwargs())
+
+        if sym:
+            S *= 0.5
+            return S + S.transpose()
+
+        return S
+
     def finalize(self):
         """ Finalizes the model
 
@@ -877,119 +1056,65 @@ class SparseAtom(_SparseGeometry):
         """
         super().set_nsc(self.na, *args, **kwargs)
 
-    def cut(self, seps, axis, *args, **kwargs):
-        """ Cuts the sparse atom model into different parts.
+    def untile(self, reps, axis, segment=0, *args, sym=True, **kwargs):
+        """ Untiles the sparse model into different parts (retaining couplings)
 
-        Recreates a new sparse atom object with only the cutted
-        atoms in the structure.
-
-        Cutting is the opposite of tiling.
+        Recreates a new sparse object with only the cutted
+        atoms in the structure. This will preserve matrix elements in the supercell.
 
         Parameters
         ----------
-        seps : int
-           number of times the structure will be cut
+        reps : int
+           number of repetitions the tiling function created (opposite meaning as in `untile`)
         axis : int
-           the axis that will be cut
+           which axis to untile along
+        segment : int, optional
+           which segment to retain. Generally each segment should be equivalent, however
+           requesting individiual segments can help uncover inconsistencies in the sparse matrix
+        *args :
+           arguments passed directly to `Geometry.untile`
+        sym : bool, optional
+           if True, the algorithm will ensure the returned matrix is symmetrized (i.e.
+           return ``(M + M.transpose())/2``, else return data as is.
+           False should generally only be used for debugging precision of the matrix elements,
+           or if one wishes to check the warnings.
+        **kwargs :
+           keyword arguments passed directly to `Geometry.untile`
+
+        Notes
+        -----
+        Untiling structures with ``nsc == 1`` along `axis` are assumed to have periodic boundary
+        conditions.
+
+        When untiling structures with ``nsc == 1`` along `axis` it is important to
+        untile *as much as possible*. This is because otherwise the algorithm cannot determine
+        the correct couplings. Therefore to create a geometry of 3 times a unit-cell, one should
+        untile to the unit-cell, and subsequently tile 3 times.
+
+        Consider for example a system of 4 atoms, each atom connects to its 2 neighbours.
+        Due to the PBC atom 0 will connect to 1 and 3. Untiling this structure in 2 will
+        group couplings of atoms 0 and 1. As it will only see one coupling to the right
+        it will halve the coupling and use the same coupling to the left, which is clearly wrong.
+
+        In the following the latter is the correct way to do it.
+
+        >>> SPM.untile(2, 0) != SPM.untile(4, 0).tile(2, 0)
+
+        Raises
+        ------
+        ValueError :
+           in case the matrix elements are not conseuctive when determining the
+           new supercell structure. This may often happen if untiling a matrix
+           too few times, and then untiling it again.
+
+        See Also
+        --------
+        tile : opposite of this method
+        Geometry.untile : same as this method, see details about parameters here
         """
-        new_w = None
-        # Create new geometry
-        with warnings.catch_warnings(record=True) as w:
-            # Cause all warnings to always be triggered.
-            warnings.simplefilter("always")
-            # Create new cut geometry
-            geom = self.geometry.cut(seps, axis, *args, **kwargs)
-            # Check whether the warning exists
-            if len(w) > 0:
-                if issubclass(w[-1].category, SislWarning):
-                    new_w = str(w[-1].message)
-                    new_w += ("\n---\n"
-                              "The sparse atom cannot be cut as the structure "
-                              "cannot be tiled accordingly. ANY use of the model has been "
-                              "relieved from sisl.")
-                    warn(new_w)
+        return super().untile('a', reps, axis, segment, *args, sym=sym, **kwargs)
 
-        # Now we need to re-create number of supercells
-        na = self.na
-        S = self.tocsr(0)
-
-        # First we need to figure out how long the interaction range is
-        # in the cut-direction
-        # We initialize to be the same as the parent direction
-        nsc = _a.arrayi(self.nsc // 2)
-        nsc[axis] = 0  # we count the new direction
-        isc = _a.zerosi([3])
-        isc[axis] -= 1
-        out = False
-        while not out:
-            # Get supercell index
-            isc[axis] += 1
-            try:
-                idx = self.sc_index(isc)
-            except:
-                break
-
-            # TODO this is inconsistent if seg= is used as argument
-            sub = S[0:geom.na, idx * na:(idx + 1) * na].indices[:]
-
-            if len(sub) == 0:
-                break
-
-            # figure out how many cells it is connecting to
-            ncell = np.amax(sub % na) // geom.na
-            ic = idx * na
-            for icell in range(ncell):
-                idx = ic + geom.na * icell
-                # We need to ensure that every "in between" index exists
-                # if it does not we discard those indices
-                if len(np.logical_and(idx <= sub,
-                                      sub < idx + geom.na).nonzero()[0]) == 0:
-                    ncell = icell - 1
-                    out = True
-                    break
-            nsc[axis] = isc[axis] * seps + ncell
-
-            if out:
-                warn('Cut the connection at nsc={} in direction {}.'.format(nsc[axis], axis))
-
-        # Update number of super-cells
-        nsc[:] = nsc[:] * 2 + 1
-        geom.set_nsc(nsc)
-
-        # Now we have a correct geometry, and
-        # we are now ready to create the sparsity pattern
-        # Reduce the sparsity pattern, first create the new one
-        S = self.__class__(geom, self.dim, self.dtype, np.amax(self._csr.ncol), **self._cls_kwargs())
-
-        def _sca2sca(M, a, m, seps, axis):
-            # Converts an o from M to m
-            isc = _a.arrayi(M.a2isc(a))
-            isc[axis] = isc[axis] * seps
-            # Correct for cell-offset
-            isc[axis] = isc[axis] + (a % M.na) // m.na
-            # find the equivalent cell in m
-            try:
-                # If a fail happens it is due to a discarded
-                # interaction across a non-interacting region
-                return (a % m.na,
-                        m.sc_index(isc) * m.na,
-                        m.sc_index(-isc) * m.na)
-            except:
-                return None, None, None
-
-        # only loop on the atoms remaining in the cutted structure
-        for ja, ia in self.iter_nnz(range(geom.na)):
-
-            # Get the equivalent orbital in the smaller cell
-            a, afp, afm = _sca2sca(self.geometry, ia, S.geometry, seps, axis)
-            if a is None:
-                continue
-            d = self[ja, ia]
-            S[ja, a + afp] = d
-            # TODO check that we indeed have Hermiticity for non-collinear and spin-orbit
-            S[a, ja + afm] = d
-
-        return S
+    cut = deprecate_method("*.cut is deprecated, use .untile instead", "0.13")(untile)
 
     def sub(self, atoms):
         """ Create a subset of this sparse matrix by only retaining the elements corresponding to the `atoms`
@@ -1044,9 +1169,10 @@ class SparseAtom(_SparseGeometry):
 
         See Also
         --------
+        repeat: a different ordering of the final geometry
+        untile : opposite of this method
         Geometry.tile: the same ordering as the final geometry
         Geometry.repeat: a different ordering of the final geometry
-        repeat: a different ordering of the final geometry
         """
         # Create the new sparse object
         g = self.geometry.tile(reps, axis)
@@ -1315,7 +1441,7 @@ class SparseOrbital(_SparseGeometry):
             requested atom). The returned edges are also atoms.
         exclude : int or list of int or None, optional
            remove edges which are in the `exclude` list, this list refers to orbitals.
-        orbital : int or list of int
+        orbitals : int or list of int
             the edges are returned only for the given orbital. The returned edges are orbitals.
 
         See Also
@@ -1389,120 +1515,6 @@ class SparseOrbital(_SparseGeometry):
         SuperCell.set_nsc : the underlying called method
         """
         super().set_nsc(self.no, *args, **kwargs)
-
-    def cut(self, seps, axis, *args, **kwargs):
-        """ Cuts the sparse orbital model into different parts.
-
-        Recreates a new sparse orbital object with only the cutted
-        atoms in the structure.
-
-        Cutting is the opposite of tiling.
-
-        Parameters
-        ----------
-        seps : int
-           number of times the structure will be cut
-        axis : int
-           the axis that will be cut
-        """
-        new_w = None
-        # Create new geometry
-        with warnings.catch_warnings(record=True) as w:
-            # Cause all warnings to always be triggered.
-            warnings.simplefilter("always")
-            # Create new cut geometry
-            geom = self.geometry.cut(seps, axis, *args, **kwargs)
-            # Check whether the warning exists
-            if len(w) > 0:
-                if issubclass(w[-1].category, SislWarning):
-                    new_w = str(w[-1].message)
-                    new_w += ("\n---\n"
-                              "The sparse orbital cannot be cut as the structure "
-                              "cannot be tiled accordingly. ANY use of the model has been "
-                              "relieved from sisl.")
-                    warn(new_w)
-
-        # Now we need to re-create number of supercells
-        no = self.no
-        S = self.tocsr(0)
-
-        # First we need to figure out how long the interaction range is
-        # in the cut-direction
-        # We initialize to be the same as the parent direction
-        nsc = self.nsc // 2
-        nsc[axis] = 0  # we count the new direction
-        isc = _a.zerosi([3])
-        isc[axis] -= 1
-        out = False
-        while not out:
-            # Get supercell index
-            isc[axis] += 1
-            try:
-                idx = self.sc_index(isc)
-            except:
-                break
-
-            # TODO this is inconsistent if seg= is used as argument
-            sub = S[0:geom.no, idx * no:(idx + 1) * no].indices[:]
-
-            if len(sub) == 0:
-                break
-
-            # figure out how many cells it is connecting to
-            ncell = np.amax(sub % no) // geom.no
-            ic = idx * no
-            for icell in range(ncell):
-                idx = ic + geom.no * icell
-                # We need to ensure that every "in between" index exists
-                # if it does not we discard those indices
-                if len(np.logical_and(idx <= sub,
-                                      sub < idx + geom.no).nonzero()[0]) == 0:
-                    ncell = icell - 1
-                    out = True
-                    break
-            nsc[axis] = isc[axis] * seps + ncell
-
-            if out:
-                warn('Cut the connection at nsc={} in direction {}.'.format(nsc[axis], axis))
-
-        # Update number of super-cells
-        nsc[:] = nsc[:] * 2 + 1
-        geom.set_nsc(nsc)
-
-        # Now we have a correct geometry, and
-        # we are now ready to create the sparsity pattern
-        # Reduce the sparsity pattern, first create the new one
-        S = self.__class__(geom, self.dim, self.dtype, np.amax(self._csr.ncol), **self._cls_kwargs())
-
-        def _sco2sco(M, o, m, seps, axis):
-            # Converts an o from M to m
-            isc = _a.arrayi(M.o2isc(o), copy=True)
-            isc[axis] = isc[axis] * seps
-            # Correct for cell-offset
-            isc[axis] = isc[axis] + (o % M.no) // m.no
-            # find the equivalent cell in m
-            try:
-                # If a fail happens it is due to a discarded
-                # interaction across a non-interacting region
-                return (o % m.no,
-                        m.sc_index(isc) * m.no,
-                        m.sc_index(-isc) * m.no)
-            except:
-                return None, None, None
-
-        # only loop on the orbitals remaining in the cutted structure
-        for jo, io in self.iter_nnz(orbitals=range(geom.no)):
-
-            # Get the equivalent orbital in the smaller cell
-            o, ofp, ofm = _sco2sco(self.geometry, io, S.geometry, seps, axis)
-            if o is None:
-                continue
-            d = self[jo, io]
-            S[jo, o + ofp] = d
-            # TODO check that we indeed have Hermiticity for non-collinear and spin-orbit
-            S[o, jo + ofm] = d
-
-        return S
 
     def remove(self, atoms):
         """ Remove a subset of this sparse matrix by only retaining the atoms corresponding to `atoms`
@@ -1731,9 +1743,10 @@ class SparseOrbital(_SparseGeometry):
 
         See Also
         --------
+        repeat: a different ordering of the final geometry
+        untile : opposite of this method
         Geometry.tile: the same ordering as the final geometry
         Geometry.repeat: a different ordering of the final geometry
-        repeat: a different ordering of the final geometry
         """
         # Create the new sparse object
         g = self.geometry.tile(reps, axis)
@@ -1794,6 +1807,66 @@ class SparseOrbital(_SparseGeometry):
                            shape=(geom_n.no, geom_n.no_s))
 
         return S
+
+    def untile(self, reps, axis, segment=0, *args, sym=True, **kwargs):
+        """ Untiles the sparse model into different parts (retaining couplings)
+
+        Recreates a new sparse object with only the cutted
+        atoms in the structure. This will preserve matrix elements in the supercell.
+
+        Parameters
+        ----------
+        reps : int
+           number of repetitions the tiling function created (opposite meaning as in `untile`)
+        axis : int
+           which axis to untile along
+        segment : int, optional
+           which segment to retain. Generally each segment should be equivalent, however
+           requesting individiual segments can help uncover inconsistencies in the sparse matrix
+        *args :
+           arguments passed directly to `Geometry.untile`
+        sym : bool, optional
+           if True, the algorithm will ensure the returned matrix is symmetrized (i.e.
+           return ``(M + M.transpose())/2``, else return data as is.
+           False should generally only be used for debugging precision of the matrix elements,
+           or if one wishes to check the warnings.
+        **kwargs :
+           keyword arguments passed directly to `Geometry.untile`
+
+        Notes
+        -----
+        Untiling structures with ``nsc == 1`` along `axis` are assumed to have periodic boundary
+        conditions.
+
+        When untiling structures with ``nsc == 1`` along `axis` it is important to
+        untile *as much as possible*. This is because otherwise the algorithm cannot determine
+        the correct couplings. Therefore to create a geometry of 3 times a unit-cell, one should
+        untile to the unit-cell, and subsequently tile 3 times.
+
+        Consider for example a system of 4 atoms, each atom connects to its 2 neighbours.
+        Due to the PBC atom 0 will connect to 1 and 3. Untiling this structure in 2 will
+        group couplings of atoms 0 and 1. As it will only see one coupling to the right
+        it will halve the coupling and use the same coupling to the left, which is clearly wrong.
+
+        In the following the latter is the correct way to do it.
+
+        >>> SPM.untile(2, 0) != SPM.untile(4, 0).tile(2, 0)
+
+        Raises
+        ------
+        ValueError :
+           in case the matrix elements are not conseuctive when determining the
+           new supercell structure. This may often happen if untiling a matrix
+           too few times, and then untiling it again.
+
+        See Also
+        --------
+        tile : opposite of this method
+        Geometry.untile : same as this method, see details about parameters here
+        """
+        return super().untile('o', reps, axis, segment, *args, sym=sym, **kwargs)
+
+    cut = deprecate_method("*.cut is deprecated, use .untile instead", "0.13")(untile)
 
     def repeat(self, reps, axis):
         """ Create a repeated sparse orbital object, equivalent to `Geometry.repeat`
@@ -2154,12 +2227,12 @@ class SparseOrbital(_SparseGeometry):
         To retain couplings only from the *left* sparse matrix, do:
 
         >>> sporb = left.append(right, 0, scale=(2, 0))
-        >>> sporb = (sporb + sporb.transpose()) * 0.5
+        >>> sporb = (sporb + sporb.transpose()) / 2
 
         To retain couplings only from the *right* sparse matrix, do:
 
         >>> sporb = left.append(right, 0, scale=(0, 2.))
-        >>> sporb = (sporb + sporb.transpose()) * 0.5
+        >>> sporb = (sporb + sporb.transpose()) / 2
 
         Notes
         -----
@@ -2424,12 +2497,12 @@ class SparseOrbital(_SparseGeometry):
         and is effectively copying couplings from ``big`` to the replaced region.
 
         >>> big2 = big.replace(np.arange(big.na), minimal, scale=(2, 0))
-        >>> big2 = (big2 + big2.transpose()) * 0.5
+        >>> big2 = (big2 + big2.transpose()) / 2
 
         To only retain couplings from the ``minimal`` sparse matrix:
 
         >>> big2 = big.replace(np.arange(big.na), minimal, scale=(0, 2))
-        >>> big2 = (big2 + big2.transpose()) * 0.5
+        >>> big2 = (big2 + big2.transpose()) / 2
 
         Notes
         -----

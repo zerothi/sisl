@@ -309,22 +309,22 @@ class TestGeometry:
                                                         [1.42, 0, 0]])
         assert np.allclose(setup.g.oRij(0, 2), [1.42, 0, 0])
 
-    def test_cut(self, setup):
+    def test_untile(self, setup):
         with pytest.warns(SislWarning) as warns:
-            assert len(setup.g.cut(1, 1)) == 2
-            assert len(setup.g.cut(2, 1)) == 1
-            assert len(setup.g.cut(2, 1, 1)) == 1
+            assert len(setup.g.untile(1, 1)) == 2
+            assert len(setup.g.untile(2, 1)) == 1
+            assert len(setup.g.untile(2, 1, 1)) == 1
         assert len(warns) == 2
 
-    def test_cut2(self, setup):
+    def test_untile2(self, setup):
         with pytest.warns(SislWarning) as warns:
-            c1 = setup.g.cut(2, 1)
-            c2 = setup.g.cut(2, 1, 1)
+            c1 = setup.g.untile(2, 1)
+            c2 = setup.g.untile(2, 1, 1)
         assert len(warns) == 2
         assert np.allclose(c1.xyz[0, :], setup.g.xyz[0, :])
         assert np.allclose(c2.xyz[0, :], setup.g.xyz[1, :])
 
-    def test_cut3(self, setup):
+    def test_untile3(self, setup):
         nr = range(2, 5)
         g = setup.g.copy()
         for x in nr:
@@ -333,13 +333,13 @@ class TestGeometry:
                 gy = gx.tile(y, 1)
                 for z in nr:
                     gz = gy.tile(z, 2)
-                    G = gz.cut(z, 2)
+                    G = gz.untile(z, 2)
                     assert np.allclose(G.xyz, gy.xyz)
                     assert np.allclose(G.cell, gy.cell)
-                G = gy.cut(y, 1)
+                G = gy.untile(y, 1)
                 assert np.allclose(G.xyz, gx.xyz)
                 assert np.allclose(G.cell, gx.cell)
-            G = gx.cut(x, 0)
+            G = gx.untile(x, 0)
             assert np.allclose(G.xyz, g.xyz)
             assert np.allclose(G.cell, g.cell)
 
@@ -700,7 +700,7 @@ class TestGeometry:
         assert np.allclose(two.cell[1:], setup.g.cell[1:])
         # Now check that fractional coordinates are still the same
         assert np.allclose(two.fxyz, setup.g.fxyz)
-    
+
     def test_scale_vector_xyz(self, setup):
         two = setup.g.scale([2, 1, 1], what="xyz")
         assert len(two) == len(setup.g)
@@ -1170,9 +1170,9 @@ class TestGeometry:
                 '--tile', '2', 'x',
                 '--tile', '2', 'y',
                 '--tile', '2', 'z',
-                '--cut', '2', 'z',
-                '--cut', '2', 'y',
-                '--cut', '2', 'x',
+                '--untile', '2', 'z',
+                '--untile', '2', 'y',
+                '--untile', '2', 'x',
         ]
         if kwargs.get('limit_arguments', True):
             opts.extend(['--rotate', '-90', 'x',
@@ -1268,10 +1268,10 @@ class TestGeometry:
         with pytest.raises(ValueError):
             g.as_primary(3)
 
-    def test_geometry_cut_raise_nondivisable(self):
+    def test_geometry_untile_raise_nondivisable(self):
         g = sisl_geom.graphene()
         with pytest.raises(ValueError):
-            g.cut(3, 0)
+            g.untile(3, 0)
 
     def test_geometry_iR_negative_R(self):
         g = sisl_geom.graphene()

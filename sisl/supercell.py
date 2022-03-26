@@ -672,7 +672,7 @@ class SuperCell:
 
     def vertices(self):
         """Vertices of the cell
-        
+
         Returns
         --------
         array of shape (2, 2, 2, 3):
@@ -747,11 +747,20 @@ class SuperCell:
         """
         return self.tile(reps, axis)
 
-    def cut(self, seps, axis):
-        """ Cuts the cell into several different sections. """
+    def untile(self, reps, axis):
+        """Reverses a `SuperCell.tile` and returns the segmented version
+
+        See Also
+        --------
+        tile : opposite of this method
+        """
         cell = np.copy(self.cell)
-        cell[axis, :] /= seps
+        cell[axis, :] /= reps
         return self.copy(cell)
+
+    unrepeat = untile
+
+    cut = deprecate_method("*.cut is deprecated, use .untile instead", "0.13")(untile)
 
     def append(self, other, axis):
         """ Appends other `SuperCell` to this grid along axis """

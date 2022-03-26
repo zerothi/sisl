@@ -174,8 +174,8 @@ class TestSuperCell:
         assert np.allclose(verts[1, 0, 0], setup.sc.cell[0])
         assert np.allclose(verts[1, 1, 1], setup.sc.cell.sum(axis=0))
 
-    def test_cut1(self, setup):
-        cut = setup.sc.cut(2, 0)
+    def test_untile1(self, setup):
+        cut = setup.sc.untile(2, 0)
         assert np.allclose(cut.cell[0, :] * 2, setup.sc.cell[0, :])
         assert np.allclose(cut.cell[1, :], setup.sc.cell[1, :])
 

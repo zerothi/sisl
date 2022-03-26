@@ -520,7 +520,7 @@ class Geometry(SuperCellChild):
         # Cut down the supercell (TODO this does not correct the number of supercell connections!)
         sc = self.sc.copy()
         for i in range(3):
-            sc = sc.cut(supercell[i], i)
+            sc = sc.untile(supercell[i], i)
 
         # Now we need to find the atoms that are in the primary cell
         # We do this by finding all coordinates within the primary unit-cell
@@ -1923,17 +1923,17 @@ class Geometry(SuperCellChild):
         # now call sub_orbital
         return self.sub_orbital(atoms, orbitals)
 
-    def cut(self, seps, axis, seg=0, rtol=1e-4, atol=1e-4) -> Geometry:
-        """ A subset of atoms from the geometry by cutting the geometry into `seps` parts along the direction `axis`.
+    def untile(self, reps, axis, segment=0, rtol=1e-4, atol=1e-4) -> Geometry:
+        """ A subset of atoms from the geometry by cutting the geometry into `reps` parts along the direction `axis`.
 
         This will effectively change the unit-cell in the `axis` as-well
-        as removing ``self.na/seps`` atoms.
-        It requires that ``self.na % seps == 0``.
+        as removing ``self.na/reps`` atoms.
+        It requires that ``self.na % reps == 0``.
 
         REMARK: You need to ensure that all atoms within the first
         cut out region are within the primary unit-cell.
 
-        Doing ``geom.cut(2, 1).tile(2, 1)``, could for symmetric setups,
+        Doing ``geom.untile(2, 1).tile(2, 1)``, could for symmetric setups,
         be equivalent to a no-op operation. A ``UserWarning`` will be issued
         if this is not the case.
 
@@ -1941,12 +1941,12 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        seps : int
-            number of times the structure will be cut.
+        reps : int
+            number of times the structure will be cut (untiled)
         axis : int
             the axis that will be cut
-        seg : int, optional
-            returns the i'th segment of the cut structure
+        segment : int, optional
+            returns the i'th segment of the untiled structure
             Currently the atomic coordinates are not translated,
             this may change in the future.
         rtol : (tolerance for checking tiling, see `numpy.allclose`)
@@ -1956,7 +1956,7 @@ class Geometry(SuperCellChild):
         --------
         >>> g = sisl.geom.graphene()
         >>> gxyz = g.tile(4, 0).tile(3, 1).tile(2, 2)
-        >>> G = gxyz.cut(2, 2).cut(3, 1).cut(4, 0)
+        >>> G = gxyz.untile(2, 2).untile(3, 1).untile(4, 0)
         >>> np.allclose(g.xyz, G.xyz)
         True
 
@@ -1964,24 +1964,25 @@ class Geometry(SuperCellChild):
         --------
         tile : opposite method of this
         """
-        if self.na % seps != 0:
-            raise ValueError(f'{self.__class__.__name__}.cut '
-                             f'cannot be cut into {seps} different '
+        if self.na % reps != 0:
+            raise ValueError(f'{self.__class__.__name__}.untile '
+                             f'cannot be cut into {reps} different '
                              'pieces. Please check your geometry and input.')
         # Truncate to the correct segments
-        lseg = seg % seps
+        lseg = segment % reps
         # Cut down cell
-        sc = self.sc.cut(seps, axis)
+        sc = self.sc.untile(reps, axis)
         # List of atoms
-        n = self.na // seps
+        n = self.na // reps
         off = n * lseg
         new = self.sub(_a.arangei(off, off + n))
         new.set_supercell(sc)
-        if not np.allclose(new.tile(seps, axis).xyz, self.xyz, rtol=rtol, atol=atol):
-            st = 'The cut structure cannot be re-created by tiling'
-            st += '\nThe tolerance between the coordinates can be altered using rtol, atol'
-            warn(st)
+        if not np.allclose(new.tile(reps, axis).xyz, self.xyz, rtol=rtol, atol=atol):
+            warn("The cut structure cannot be re-created by tiling\n"
+                 "The tolerance between the coordinates can be altered using rtol, atol")
         return new
+
+    cut = deprecate_method("*.cut is deprecated, use .untile instead", "0.13")(untile)
 
     def tile(self, reps, axis) -> Geometry:
         """ Tile the geometry to create a bigger one
@@ -4555,14 +4556,14 @@ class Geometry(SuperCellChild):
                        action=ReduceSub,
                        help='Removes specified atoms, can be complex ranges.')
 
-        class ReduceCut(argparse.Action):
+        class ReduceUntile(argparse.Action):
             def __call__(self, parser, ns, values, option_string=None):
                 s = int(values[0])
                 d = direction(values[1])
-                ns._geometry = ns._geometry.cut(s, d)
-        p.add_argument(*opts('--cut', '-c'), nargs=2, metavar=('SEPS', 'DIR'),
-                       action=ReduceCut,
-                       help='Cuts the geometry into `seps` parts along the unit-cell direction `dir`.')
+                ns._geometry = ns._geometry.untile(s, d)
+        p.add_argument(*opts('--untile', '--cut', '-ut'), nargs=2, metavar=('REPS', 'DIR'),
+                       action=ReduceUntile,
+                       help='Untiles the geometry into `reps` parts along the unit-cell direction `dir`.')
 
         # Swaps atoms
         class AtomSwap(argparse.Action):

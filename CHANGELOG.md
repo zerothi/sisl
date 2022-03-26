@@ -12,7 +12,7 @@ we hit release version 1.0.0.
 - enabled returning the overlap matrix from `berry_phase`
 - added `rocksalt` @tfrederiksen
 - slab geometry creations, `fcc_slab`, `bcc_slab` and `rocksalt_slab` @tfrederiksen
-- added `Geometry.translate2uc` to shift everything into the unit-cell
+- added `Geometry.translate2uc` to shift everything into the unit-cell @tfrederiksen
 
 ### Fixed
 - incorrect handling of `atoms` argument in `Geometry.center` calls
@@ -20,6 +20,11 @@ we hit release version 1.0.0.
 ### Changed
 - State*.outer corrected to the same interface as State*.inner
 - all `sisl.geom` geometries are now calling `optimize_nsc` if needed
+- `SparseGeometry.cut` -> `SparseGeometry.untile`
+  - much faster
+  - many more checks to warn about wrong usage
+	- `cut` is now deprecated (removed in 0.13)
+	- changed the --cut flag in `sgeom` to `--untile`, deprecated flag
 
 
 ## [0.12.1] - 2022-2-10

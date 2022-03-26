@@ -1881,12 +1881,15 @@ def _ufunc_sp_sp(ufunc, a, b, **kwargs):
         bsl = arange(bsl.start, bsl.stop)
 
         # Common indices
-        idx, aover, bover, iaonly, ibonly = intersect_and_diff_sets(aidx, bidx)
-        out._D[idx, :] = ufunc(adata[asl[aover], :],
-                               bdata[bsl[bover], :], **kwargs)
+        iover, aover, bover, iaonly, ibonly = intersect_and_diff_sets(aidx, bidx)
 
-        # Remaining indices
+        # overlapping indices
+        out._D[iover, :] = ufunc(adata[asl[aover], :],
+                                 bdata[bsl[bover], :], **kwargs)
+
+        # only a
         out._D[aidx[iaonly]] = ufunc(adata[asl[iaonly], :], 0, **kwargs)
+        # only b
         out._D[bidx[ibonly]] = ufunc(0, bdata[bsl[ibonly], :], **kwargs)
 
     return out

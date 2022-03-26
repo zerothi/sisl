@@ -487,7 +487,7 @@ class TestHamiltonian:
         h = 1.j ** H
         assert h.dtype == np.complex128
 
-    def test_cut1(self, setup):
+    def test_untile1(self, setup):
         # Test of eigenvalues using a cut
         # Hamiltonian
         R, param = [0.1, 1.5], [1., 0.1]
@@ -499,14 +499,14 @@ class TestHamiltonian:
         H = Hamiltonian(g)
         H.construct([R, param])
         # Create cut Hamiltonian
-        Hc = H.cut(2, 1).cut(2, 0)
+        Hc = H.untile(2, 1).untile(2, 0)
         eigc = Hc.eigh()
         eigg = Hg.eigh()
         assert np.allclose(eigc, eigg)
         assert np.allclose(Hg.eigh(), Hc.eigh())
         del Hc, H
 
-    def test_cut2(self, setup):
+    def test_untile2(self, setup):
         # Test of eigenvalues using a cut
         # Hamiltonian
         R, param = [0.1, 1.5], [(1., 1.), (0.1, 0.1)]
@@ -519,7 +519,7 @@ class TestHamiltonian:
         H = Hamiltonian(g, orthogonal=False)
         H.construct([R, param])
         # Create cut Hamiltonian
-        Hc = H.cut(2, 1).cut(2, 0)
+        Hc = H.untile(2, 1).untile(2, 0)
         eigc = Hc.eigh()
         eigg = Hg.eigh()
         assert np.allclose(Hg.eigh(), Hc.eigh())

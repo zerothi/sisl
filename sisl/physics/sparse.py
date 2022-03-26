@@ -158,8 +158,9 @@ class SparseOrbitalBZ(SparseOrbital):
         dim = len(P)
         if not S is None:
             P.append(S)
+            kwargs["orthogonal"] = False
 
-        p = cls(geometry, dim, P[0].dtype, 1, orthogonal=S is None, **kwargs)
+        p = cls(geometry, dim, P[0].dtype, 1, **kwargs)
         p._csr = p._csr.fromsp(*P, dtype=kwargs.get("dtype"))
 
         if p._size != P[0].shape[0]:
