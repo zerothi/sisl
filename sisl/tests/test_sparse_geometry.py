@@ -147,7 +147,7 @@ class TestSparseAtom:
         ds.finalize()
         assert np.absolute(ds)._csr._D.sum() > 0
 
-    def test_untile_segment(self):
+    def test_untile_segment_single(self):
         # one should not untile
         geometry = Geometry([0] * 3, Atom(1, R=1.001), SuperCell(1, nsc=[1]* 3))
         geometry = geometry.tile(4, 0)
@@ -163,6 +163,48 @@ class TestSparseAtom:
             ds = s4 - sx
             ds.finalize()
             assert np.absolute(ds)._csr._D.sum() == pytest.approx(0.)
+
+    @pytest.mark.parametrize("axis", [0, 1, 2])
+    def test_untile_segment_three(self, axis):
+        # one should not untile
+        nsc = [3] * 3
+        nsc[axis] = 1
+        geometry = Geometry([0] * 3, Atom(1, R=1.001), SuperCell(1, nsc=nsc))
+        geometry = geometry.tile(4, axis)
+        s = SparseAtom(geometry)
+        s.construct([[0.1, 1.01], [1, 2]])
+        s[0, 3] = 2
+        s[3, 0] = 2
+
+        # check that untiling twice is not the same as untiling 4 times and coupling it
+        s4 = s.untile(4, axis).tile(2, axis)
+        for seg in range(1, 4):
+            sx = s.untile(4, axis, segment=seg).tile(2, axis)
+            ds = s4 - sx
+            ds.finalize()
+            assert np.absolute(ds)._csr._D.sum() == pytest.approx(0.)
+
+    def test_unrepeat_setup(self, setup):
+        s1 = SparseAtom(setup.g)
+        s1.construct([[0.1, 1.5], [1, 2]])
+        s2 = SparseAtom(setup.g * ((2, 2, 2), 'r'))
+        s2.construct([[0.1, 1.5], [1, 2]])
+        s2 = s2.unrepeat(2, 2).unrepeat(2, 1).unrepeat(2, 0)
+        assert s1.spsame(s2)
+
+        s1 = SparseAtom(setup.g)
+        s1.construct([[0.1, 1.5], [1, 2]])
+        s2 = SparseAtom(setup.g * ([2, 1, 1], 'r'))
+        s2.construct([[0.1, 1.5], [1, 2]])
+        s2 = s2.unrepeat(2, 0)
+        assert s1.spsame(s2)
+
+        s1 = SparseAtom(setup.g)
+        s1.construct([[0.1, 1.5], [1, 2]])
+        s2 = SparseAtom(setup.g * ([1, 2, 1], 'r'))
+        s2.construct([[0.1, 1.5], [1, 2]])
+        s2 = s2.unrepeat(2, 1)
+        assert s1.spsame(s2)
 
     def test_iter(self, setup):
         s1 = SparseAtom(setup.g)

@@ -309,14 +309,14 @@ class TestGeometry:
                                                         [1.42, 0, 0]])
         assert np.allclose(setup.g.oRij(0, 2), [1.42, 0, 0])
 
-    def test_untile(self, setup):
+    def test_untile_warns(self, setup):
         with pytest.warns(SislWarning) as warns:
             assert len(setup.g.untile(1, 1)) == 2
             assert len(setup.g.untile(2, 1)) == 1
             assert len(setup.g.untile(2, 1, 1)) == 1
         assert len(warns) == 2
 
-    def test_untile2(self, setup):
+    def test_untile_check_same(self, setup):
         with pytest.warns(SislWarning) as warns:
             c1 = setup.g.untile(2, 1)
             c2 = setup.g.untile(2, 1, 1)
@@ -324,7 +324,7 @@ class TestGeometry:
         assert np.allclose(c1.xyz[0, :], setup.g.xyz[0, :])
         assert np.allclose(c2.xyz[0, :], setup.g.xyz[1, :])
 
-    def test_untile3(self, setup):
+    def test_untile_algo(self, setup):
         nr = range(2, 5)
         g = setup.g.copy()
         for x in nr:
@@ -340,6 +340,25 @@ class TestGeometry:
                 assert np.allclose(G.xyz, gx.xyz)
                 assert np.allclose(G.cell, gx.cell)
             G = gx.untile(x, 0)
+            assert np.allclose(G.xyz, g.xyz)
+            assert np.allclose(G.cell, g.cell)
+
+    def test_unrepeat_algo(self, setup):
+        nr = range(2, 5)
+        g = setup.g.copy()
+        for x in nr:
+            gx = g.repeat(x, 0)
+            for y in nr:
+                gy = gx.repeat(y, 1)
+                for z in nr:
+                    gz = gy.repeat(z, 2)
+                    G = gz.unrepeat(z, 2)
+                    assert np.allclose(G.xyz, gy.xyz)
+                    assert np.allclose(G.cell, gy.cell)
+                G = gy.unrepeat(y, 1)
+                assert np.allclose(G.xyz, gx.xyz)
+                assert np.allclose(G.cell, gx.cell)
+            G = gx.unrepeat(x, 0)
             assert np.allclose(G.xyz, g.xyz)
             assert np.allclose(G.cell, g.cell)
 

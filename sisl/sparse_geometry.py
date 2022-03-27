@@ -844,6 +844,15 @@ class _SparseGeometry(NDArrayOperatorsMixin):
 
         return S
 
+    def unrepeat(self, reps, axis, segment=0, *args, sym=True, **kwargs):
+        """ Unrepeats the sparse model into different parts (retaining couplings)
+
+        Please see `untile` for details, the algorithm and arguments are the same however,
+        this is the opposite of `repeat`.
+        """
+        atoms = np.arange(self.geometry.na).reshape(-1, reps).T.ravel()
+        return self.sub(atoms).untile(reps, axis, segment, *args, sym=sym, **kwargs)
+
     def finalize(self):
         """ Finalizes the model
 

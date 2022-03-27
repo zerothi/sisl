@@ -1923,6 +1923,15 @@ class Geometry(SuperCellChild):
         # now call sub_orbital
         return self.sub_orbital(atoms, orbitals)
 
+    def unrepeat(self, reps, axis, *args, **kwargs) -> Geometry:
+        """ Unrepeats the geometry similarly as `untile`
+
+        Please see `untile` for argument details, the algorithm and arguments are the same however,
+        this is the opposite of `repeat`.
+        """
+        atoms = np.arange(self.na).reshape(-1, reps).T.ravel()
+        return self.sub(atoms).untile(reps, axis, *args, **kwargs)
+
     def untile(self, reps, axis, segment=0, rtol=1e-4, atol=1e-4) -> Geometry:
         """ A subset of atoms from the geometry by cutting the geometry into `reps` parts along the direction `axis`.
 
@@ -4556,15 +4565,6 @@ class Geometry(SuperCellChild):
                        action=ReduceSub,
                        help='Removes specified atoms, can be complex ranges.')
 
-        class ReduceUntile(argparse.Action):
-            def __call__(self, parser, ns, values, option_string=None):
-                s = int(values[0])
-                d = direction(values[1])
-                ns._geometry = ns._geometry.untile(s, d)
-        p.add_argument(*opts('--untile', '--cut', '-ut'), nargs=2, metavar=('REPS', 'DIR'),
-                       action=ReduceUntile,
-                       help='Untiles the geometry into `reps` parts along the unit-cell direction `dir`.')
-
         # Swaps atoms
         class AtomSwap(argparse.Action):
             def __call__(self, parser, ns, value, option_string=None):
@@ -4632,6 +4632,15 @@ class Geometry(SuperCellChild):
                            action=PeriodRepeatZ,
                            help='Repeats the geometry along the third cell vector.')
 
+        class ReduceUnrepeat(argparse.Action):
+            def __call__(self, parser, ns, values, option_string=None):
+                s = int(values[0])
+                d = direction(values[1])
+                ns._geometry = ns._geometry.unrepeat(s, d)
+        p.add_argument(*opts('--unrepeat', '-ur'), nargs=2, metavar=('REPS', 'DIR'),
+                       action=ReduceUnrepeat,
+                       help='Unrepeats the geometry into `reps` parts along the unit-cell direction `dir` (opposite of --repeat).')
+
         class PeriodTile(argparse.Action):
             def __call__(self, parser, ns, values, option_string=None):
                 r = int(values[0])
@@ -4662,6 +4671,15 @@ class Geometry(SuperCellChild):
             p.add_argument(*opts('--tile-z', '-tz'), metavar='TIMES',
                            action=PeriodTileZ,
                            help='Tiles the geometry along the third cell vector.')
+
+        class ReduceUntile(argparse.Action):
+            def __call__(self, parser, ns, values, option_string=None):
+                s = int(values[0])
+                d = direction(values[1])
+                ns._geometry = ns._geometry.untile(s, d)
+        p.add_argument(*opts('--untile', '--cut', '-ut'), nargs=2, metavar=('REPS', 'DIR'),
+                       action=ReduceUntile,
+                       help='Untiles the geometry into `reps` parts along the unit-cell direction `dir` (opposite of --tile).')
 
         # Sort
         class Sort(argparse.Action):

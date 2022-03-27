@@ -13,6 +13,8 @@ we hit release version 1.0.0.
 - added `rocksalt` @tfrederiksen
 - slab geometry creations, `fcc_slab`, `bcc_slab` and `rocksalt_slab` @tfrederiksen
 - added `Geometry.translate2uc` to shift everything into the unit-cell @tfrederiksen
+- added `Geometry.unrepeat` to reverse `repeat` calls (and to `sgeom`)
+- added `SparseGeometry.unrepeat` to reverse `repeat` calls
 
 ### Fixed
 - incorrect handling of `atoms` argument in `Geometry.center` calls
