@@ -27,7 +27,7 @@ we hit release version 1.0.0.
   - many more checks to warn about wrong usage
 	- `cut` is now deprecated (removed in 0.13)
 	- changed the --cut flag in `sgeom` to `--untile`, deprecated flag
-
+- enabled in/out arguments to tbt siles (easier to remember meaning)
 
 ## [0.12.1] - 2022-2-10
 
