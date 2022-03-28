@@ -118,7 +118,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
 
     Parameters
     ----------
-    root_fdf: fdfSileSiesta, optional
+    fdf: fdfSileSiesta, optional
         Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
         Directory where the files with the simulations results are
@@ -162,7 +162,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
     _parameters = (
 
         SileInput(
-            key = "root_fdf", name = "Path to fdf file",
+            key = "fdf", name = "Path to fdf file",
             dtype=sisl.io.siesta.fdfSileSiesta,
             group="dataread",
             help="Path to the fdf file that is the 'parent' of the results.",
@@ -835,7 +835,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
 
         self._files_to_follow = new_files if unfollow else [*self._files_to_follow, *new_files]
 
-    def get_sile(self, path, results_path, root_fdf, *args, follow=True, follow_kwargs={}, file_contents=None, **kwargs):
+    def get_sile(self, path, results_path, fdf, *args, follow=True, follow_kwargs={}, file_contents=None, **kwargs):
         """ A wrapper around get_sile so that the reading of the file is registered
 
         It has to main functions:
@@ -845,7 +845,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
                 self.follow(file)
                 sisl.get_sile(file)
                 ```
-            - Infering files from a root file. For example, using the root_fdf. 
+            - Infering files from a root file. For example, using the fdf. 
 
         Parameters
         ----------
@@ -874,7 +874,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
                 sile_type = self.get_param(setting_key).dtype
                 # We need to check here if it is a SIESTA related sile!
 
-                fdf_sile = sisl.get_sile(root_fdf)
+                fdf_sile = sisl.get_sile(fdf)
 
                 for rule in sisl.get_sile_rules(cls=sile_type):
                     filename = fdf_sile.get('SystemLabel', default='siesta') + f'.{rule.suffix}'
@@ -884,7 +884,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
                     except:
                         pass
                 else:
-                    raise FileNotFoundError(f"Tried to infer {setting_key} from the 'root_fdf', "
+                    raise FileNotFoundError(f"Tried to infer {setting_key} from the 'fdf', "
                     f"but didn't find any {sile_type.__name__} in {Path(fdf_sile._directory) / results_path }")
 
         if follow:
@@ -1072,18 +1072,18 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
         """ Sets up the hamiltonian for calculations with sisl """
         NEW_FDF = True
         if len(self.settings_history) > 1:
-            NEW_FDF = self.settings_history.was_updated("root_fdf")
+            NEW_FDF = self.settings_history.was_updated("fdf")
 
         if not hasattr(self, "geometry") or NEW_FDF:
             try:
-                fdf_sile = self.get_sile("root_fdf")
+                fdf_sile = self.get_sile("fdf")
                 self.geometry = fdf_sile.read_geometry(output = True)
             except:
                 pass
 
         if not self.PROVIDED_H and (not hasattr(self, "H") or NEW_FDF):
             #Read the hamiltonian
-            fdf_sile = self.get_sile("root_fdf")
+            fdf_sile = self.get_sile("fdf")
             self.H = fdf_sile.read_hamiltonian()
         else:
             if isinstance(self.H, (str, Path)):
@@ -1481,7 +1481,7 @@ class MultiplePlot(Plot):
 
     Parameters
     ----------
-    root_fdf: fdfSileSiesta, optional
+    fdf: fdfSileSiesta, optional
         Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
         Directory where the files with the simulations results are
@@ -1757,7 +1757,7 @@ class Animation(MultiplePlot):
         not appear.
     ani_method:  optional
         It determines how the animation is rendered.
-    root_fdf: fdfSileSiesta, optional
+    fdf: fdfSileSiesta, optional
         Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
         Directory where the files with the simulations results are
@@ -1873,7 +1873,7 @@ class SubPlots(MultiplePlot):
         decide             how the layout should look like.
     make_subplots_kwargs: dict, optional
         Extra keyword arguments that will be passed to make_subplots.
-    root_fdf: fdfSileSiesta, optional
+    fdf: fdfSileSiesta, optional
         Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
         Directory where the files with the simulations results are

@@ -192,11 +192,11 @@ class LDOSmap(Plot):
             """.format(*stsPosition, *(np.array(Erange) + self.fermi), nE, STSEta)
 
     @entry_point('siesta')
-    def _read_siesta_output(self, Erange, nE, STSEta, root_fdf, trajectory, points, dist_step, widen_func):
+    def _read_siesta_output(self, Erange, nE, STSEta, fdf, trajectory, points, dist_step, widen_func):
         """Function that uses denchar to get STSpecra along a path"""
         import xarray as xr
 
-        fdf_sile = self.get_sile(root_fdf)
+        fdf_sile = self.get_sile(fdf)
         root_dir = fdf_sile._directory
 
         self.geom = fdf_sile.read_geometry(output = True)
@@ -232,7 +232,7 @@ class LDOSmap(Plot):
             fdf_sile.dir_file(f"{system_label}.WFSX"))
 
         #Get the fdf file and replace include paths so that they work
-        with open(root_fdf, "r") as f:
+        with open(fdf, "r") as f:
             self.fdfLines = f.readlines()
 
         for i, line in enumerate(self.fdfLines):
@@ -306,7 +306,7 @@ class LDOSmap(Plot):
             root_dir, self.struct,
             #All the strings that need to be added to each file
             [[self._getdencharSTSfdf(point, Erange, nE, STSEta) for point in points] for points in self.path],
-            kwargsList = {"root_fdf": root_fdf, "fdfLines": self.fdfLines},
+            kwargsList = {"fdf": fdf, "fdfLines": self.fdfLines},
             messageFn = lambda nTasks, nodes: "Calculating {} simultaneous paths in {} nodes".format(nTasks, nodes),
             serial = self.isChildPlot
         )

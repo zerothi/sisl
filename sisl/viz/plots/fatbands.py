@@ -105,7 +105,7 @@ class FatbandsPlot(BandsPlot):
     spindown_color: str, optional
         Choose the color for the spin down bands.Only used if the
         calculation is spin polarized.
-    root_fdf: fdfSileSiesta, optional
+    fdf: fdfSileSiesta, optional
         Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
         Directory where the files with the simulations results are
@@ -178,7 +178,7 @@ class FatbandsPlot(BandsPlot):
         return self.bands_data["weight"]
 
     @entry_point("wfsx file", 0)
-    def _read_from_wfsx(self, root_fdf, wfsx_file):
+    def _read_from_wfsx(self, fdf, wfsx_file):
         """Generates fatbands from SIESTA output.
 
         Uses the `.wfsx` file to retrieve the eigenstates. From them, it computes

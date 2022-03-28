@@ -106,7 +106,7 @@ class BandsPlot(Plot):
     spindown_color: str, optional
         Choose the color for the spin down bands.Only used if the
         calculation is spin polarized.
-    root_fdf: fdfSileSiesta, optional
+    fdf: fdfSileSiesta, optional
         Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
         Directory where the files with the simulations results are
@@ -426,7 +426,7 @@ class BandsPlot(Plot):
         return bands_wrapper, all_vars, coords_values
 
     @entry_point('wfsx file', 2)
-    def _read_from_wfsx(self, root_fdf, wfsx_file, extra_vars=(), need_H=False):
+    def _read_from_wfsx(self, fdf, wfsx_file, extra_vars=(), need_H=False):
         """Plots bands from the eigenvalues contained in a WFSX file.
 
         It also needs to get a geometry.
@@ -439,7 +439,7 @@ class BandsPlot(Plot):
             self.geometry = parent.geometry
         else:
             # Get the fdf sile
-            fdf = self.get_sile(root_fdf or "root_fdf")
+            fdf = self.get_sile(fdf or "fdf")
             # Read the geometry from the fdf sile
             self.geometry = fdf.read_geometry(output=True)
             parent = self.geometry

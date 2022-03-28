@@ -140,7 +140,7 @@ class GeometryPlot(Plot):
     cell_style: dict, optional
         The style of the unit cell lines   Structure of the dict: {
         'color':          'width':          'opacity':  }
-    root_fdf: fdfSileSiesta, optional
+    fdf: fdfSileSiesta, optional
         Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
         Directory where the files with the simulations results are
@@ -421,11 +421,11 @@ class GeometryPlot(Plot):
             raise ValueError("No geometry has been provided.")
 
     @entry_point('geometry file', 1)
-    def _read_siesta_output(self, geom_file, root_fdf):
+    def _read_siesta_output(self, geom_file, fdf):
         """
         Reads from a sile that contains a geometry using the `read_geometry` method.
         """
-        geom_file = geom_file or root_fdf
+        geom_file = geom_file or fdf
 
         self.geometry = self.get_sile(geom_file).read_geometry()
 

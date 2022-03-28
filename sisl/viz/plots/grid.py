@@ -112,7 +112,7 @@ class GridPlot(Plot):
     geom_kwargs: dict, optional
         Extra arguments that are passed to geom.plot() if plot_geom is set to
         True
-    root_fdf: fdfSileSiesta, optional
+    fdf: fdfSileSiesta, optional
         Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
         Directory where the files with the simulations results are
@@ -1266,7 +1266,7 @@ class WavefunctionPlot(GridPlot):
         Note that an eigenstate can contain coefficients for multiple states.
     wfsx_file: wfsxSileSiesta, optional
         Siesta WFSX file to directly read the coefficients from.
-        If the root_fdf file is provided but the wfsx one isn't, we will try
+        If the fdf file is provided but the wfsx one isn't, we will try
         to find it             as SystemLabel.WFSX.
     geometry: Geometry, optional
         Necessary to generate the grid and to plot the wavefunctions, since
@@ -1378,7 +1378,7 @@ class WavefunctionPlot(GridPlot):
     geom_kwargs: dict, optional
         Extra arguments that are passed to geom.plot() if plot_geom is set to
         True
-    root_fdf: fdfSileSiesta, optional
+    fdf: fdfSileSiesta, optional
         Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
         Directory where the files with the simulations results are
@@ -1406,7 +1406,7 @@ class WavefunctionPlot(GridPlot):
             dtype=sisl.io.siesta.wfsxSileSiesta,
             default=None,
             help="""Siesta WFSX file to directly read the coefficients from.
-            If the root_fdf file is provided but the wfsx one isn't, we will try to find it
+            If the fdf file is provided but the wfsx one isn't, we will try to find it
             as SystemLabel.WFSX.
             """
         ),
@@ -1464,12 +1464,12 @@ class WavefunctionPlot(GridPlot):
         self.eigenstate = eigenstate
 
     @entry_point('wfsx file', 1)
-    def _read_from_WFSX_file(self, wfsx_file, k, spin, root_fdf):
+    def _read_from_WFSX_file(self, wfsx_file, k, spin, fdf):
         """Reads the wavefunction coefficients from a SIESTA WFSX file"""
         # Try to read the geometry
-        fdf = self.get_sile(root_fdf or "root_fdf")
+        fdf = self.get_sile(fdf or "fdf")
         if fdf is None:
-            raise ValueError("The setting 'root_fdf' needs to point to an fdf file with a geometry")
+            raise ValueError("The setting 'fdf' needs to point to an fdf file with a geometry")
         geometry = fdf.read_geometry(output=True)
 
         # Get the WFSX file. If not provided, it is inferred from the fdf.

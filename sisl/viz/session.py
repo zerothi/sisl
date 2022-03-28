@@ -314,7 +314,7 @@ class Session(Configurable, ShortCutable):
         if plotable_path is not None:
             args = (plotable_path,)
         if structID:
-            kwargs = {**kwargs, "root_fdf": self.warehouse["structs"][structID]["path"]}
+            kwargs = {**kwargs, "fdf": self.warehouse["structs"][structID]["path"]}
 
         if animation:
             wdir = self.warehouse["structs"][structID]["path"].parent if structID else self.get_setting("root_dir")

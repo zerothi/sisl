@@ -78,7 +78,7 @@ class PdosPlot(Plot):
         'orbitals':          'spin':          'normalize':          'color':
         'linewidth':          'dash':          'split_on':          'scale':
         The final DOS will be multiplied by this number. }
-    root_fdf: fdfSileSiesta, optional
+    fdf: fdfSileSiesta, optional
         Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
         Directory where the files with the simulations results are
@@ -314,7 +314,7 @@ class PdosPlot(Plot):
         self.geometry, self.E, self.PDOS = self.get_sile(pdos_file or "pdos_file").read_data()
 
     @entry_point("TB trans", 2)
-    def _read_TBtrans(self, root_fdf, tbt_nc):
+    def _read_TBtrans(self, fdf, tbt_nc):
         """
         Reads the PDOS from a *.TBT.nc file coming from a TBtrans run.
         """
@@ -324,9 +324,9 @@ class PdosPlot(Plot):
         self.E = tbt_sile.E
 
         read_geometry_kwargs = {}
-        # Try to get the basis information from the root_fdf, if possible
+        # Try to get the basis information from the fdf, if possible
         try:
-            read_geometry_kwargs["atom"] = self.get_sile("root_fdf").read_geometry(output=True).atoms
+            read_geometry_kwargs["atom"] = self.get_sile("fdf").read_geometry(output=True).atoms
         except (FileNotFoundError, TypeError):
             pass
 
@@ -334,7 +334,7 @@ class PdosPlot(Plot):
         self.geometry = tbt_sile.read_geometry(**read_geometry_kwargs).sub(tbt_sile.a_dev)
 
     @entry_point('wfsx file', 3)
-    def _read_from_wfsx(self, root_fdf, wfsx_file, Erange, nE, E0, distribution):
+    def _read_from_wfsx(self, fdf, wfsx_file, Erange, nE, E0, distribution):
         """Generates the PDOS values from a file containing eigenstates."""
         # Read the hamiltonian. We need it because we need the overlap matrix.
         if not hasattr(self, "H"):

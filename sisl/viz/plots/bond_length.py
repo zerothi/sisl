@@ -131,7 +131,7 @@ class BondLengthMap(GeometryPlot):
     cell_style: dict, optional
         The style of the unit cell lines   Structure of the dict: {
         'color':          'width':          'opacity':  }
-    root_fdf: fdfSileSiesta, optional
+    fdf: fdfSileSiesta, optional
         Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
         Directory where the files with the simulations results are
