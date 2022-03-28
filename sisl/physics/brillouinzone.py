@@ -1764,8 +1764,8 @@ class MonkhorstPack(BrillouinZone):
         # on the boundary.
         # This does remove boundary points because we shift everything into the positive
         # plane.
-        diff_k = self.in_primitive(self.k % 1. - k % 1.)
-        idx = np.logical_and.reduce(np.abs(diff_k) <= dk, axis=1).nonzero()[0]
+        idx = np.logical_and.reduce(
+            np.fabs(self.in_primitive(self.k % 1. - k % 1.)) <= dk, axis=1).nonzero()[0]
         if len(idx) == 0:
             raise SislError(f'{self.__class__.__name__}.reduce could not find any points to replace.')
 
@@ -1790,12 +1790,9 @@ class MonkhorstPack(BrillouinZone):
             print(self.k[idx, :])
             raise SislError(f'{self.__class__.__name__}.reduce could not assert the weights are consistent during replacement.')
 
-        self._k = np.delete(self._k, idx, axis=0)
-        self._w = np.delete(self._w, idx)
-
-        # Append the new k-points and weights
-        self._k = np.concatenate((self._k, mp._k), axis=0)
-        self._w = np.concatenate((self._w, mp._w * weight_factor))
+        # delete and append new k-points and weights
+        self._k = np.concatenate((np.delete(self._k, idx, axis=0), mp._k), axis=0)
+        self._w = np.concatenate((np.delete(self._w, idx), mp._w * weight_factor))
 
 
 @set_module("sisl.physics")
