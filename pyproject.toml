@@ -46,7 +46,7 @@ license = {text = "MPL-2.0"}
 keywords = ["tight-binding", "DFT", "LCAO", "NEGF", "physics"]
 
 authors = [
-    {name = "Nick Papior", email = "nickpapior|at|gmail.com"}
+    {name = "Nick Papior", email = "nickpapior@gmail.com"}
 ]
 maintainers = [{name="sisl developers"}]
 
