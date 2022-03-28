@@ -28,7 +28,7 @@
 sisl: tight-binding and DFT interface library
 =============================================
 
-The Python library `sisl <http://github.com/zerothi/sisl>`_ was born out of a need to handle (create and read), manipulate and analyse output from DFT programs.
+The Python library `sisl <https://github.com/zerothi/sisl>`_ was born out of a need to handle (create and read), manipulate and analyse output from DFT programs.
 It was initially developed by Nick Papior (co-developer of `Siesta`_) as a side-project to `TranSiesta`_
 and `TBtrans`_ to efficiently analyse TBtrans output for N-electrode calculations.  
 Since then it has expanded to accommodate a rich set of DFT code input/outputs such as (but not limited to)
@@ -147,7 +147,7 @@ a table of contents for the sub-modules may be found :ref:`here <modindex>`.
 .. _codecov: https://codecov.io/gh/zerothi/sisl
 
 .. |zenodo| image:: https://zenodo.org/badge/doi/10.5281/zenodo.597181.svg
-.. _zenodo: http://dx.doi.org/10.5281/zenodo.597181
+.. _zenodo: https://doi.org/10.5281/zenodo.597181
 
 .. |discord| image:: https://img.shields.io/discord/742636379871379577.svg?label=&logo=discord&logoColor=ffffff&color=green&labelColor=red
 .. _discord: https://discord.gg/5XnFXFdkv2
