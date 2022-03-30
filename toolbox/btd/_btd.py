@@ -1678,6 +1678,15 @@ class DeviceGreen:
            diagonalized and only eigenvectors with eigenvalues ``>=cutoff_elec`` are retained,
            thus reducing the initial propagated modes. The normalization explained for `cutoff`
            also applies here.
+
+        Returns
+        -------
+        scat : StateCElectron
+           the scattering states from the spectral function. The ``scat.state`` contains
+           the scattering state vectors (eigenvectors of the spectral function).
+           ``scat.c`` contains the DOS of the scattering states scaled by :math:`1/(2\pi)`
+           so ensure correct density of states.
+           One may recreate the spectral function with ``scat.outer(matrix=scat.c * 2 * pi)``.
         """
         elec = self._elec(elec)
         self._prepare(E, k)
@@ -1828,11 +1837,11 @@ class DeviceGreen:
     def eigenchannel(self, state, elec_to, ret_coeff=False):
         r""" Calculate the eigen channel from scattering states entering electrodes `elec_to`
 
-        The energy and k-point is inferred from the `state` object and it should have
-        been a returned value from `scattering_state`.
+        The energy and k-point is inferred from the `state` object as returned from
+        `scattering_state`.
 
         The eigenchannels are the eigen states of the transmission matrix in the
-        energy weighted scattering states:
+        DOS weighted scattering states:
 
         .. math::
             \mathbf A_{\mathfrak{e}}(E,\mathbf k) \mathbf u &= 2\pi\mathbf a \mathbf u
@@ -1840,8 +1849,8 @@ class DeviceGreen:
             \mathbf t_{\mathbf u} &= \sum \langle \mathbf u | \boldsymbol\Gamma_{\mathfrak{e\to}} | \mathbf u\rangle
 
         where the eigenvectors of :math:`\mathbf t_{\mathbf u}` is the coefficients of the
-        scattering states for the individual eigen channels. The eigenvalues are the
-        transmission eigenvalues.
+        DOS weighted scattering states (:math:`\sqrt{2\pi a_i} u_i`) for the individual eigen channels.
+        The eigenvalues are the transmission eigenvalues. Further details may be found in [1]_.
 
         Parameters
         ----------
@@ -1858,11 +1867,15 @@ class DeviceGreen:
         T_eig : sisl.physics.StateCElectron
             the transmission eigenchannels, the ``T_eig.c`` contains the transmission
             eigenvalues.
-        state_coeff : sisl.physics.StateElectron
+        coeff : sisl.physics.StateElectron
             coefficients of `state` that creates the transmission eigenchannels
             Only returned if `ret_coeff` is True. There is a one-to-one correspondance
-            between ``state_coeff`` and ``T_eig``. This is equivalent to the ``T_eig``
-            states in the scattering state basis.
+            between ``coeff`` and ``T_eig`` (with a prefactor of :math:`\sqrt{2\pi}`).
+            This is equivalent to the ``T_eig`` states in the scattering state basis.
+
+        References
+        ----------
+        .. [1] :doi:`M. Paulsson and M. Brandbyge, "Transmission eigenchannels from non-equilibrium Green's functions", PRB **76**, 115117 (2007) <10.1103/PhysRevB.76.115117>`
         """
         self._prepare_se(state.info["E"], state.info["k"])
         if isinstance(elec_to, (Integral, str, PivotSelfEnergy)):
@@ -1887,9 +1900,14 @@ class DeviceGreen:
         # Create the first electrode
         el = elec_to[0]
         idx = elec_pvt_dev[el].ravel()
+
+        # Retrive the scattering states `A` and apply the proper scaling
+        # We need this scaling for the eigenchannel construction anyways.
         u = A[:, idx]
         # the summed transmission matrix
         Ut = u.conj() @ G[el] @ u.T
+
+        # same for other electrodes
         for el in elec_to[1:]:
             idx = elec_pvt_dev[el].ravel()
             u = A[:, idx]
