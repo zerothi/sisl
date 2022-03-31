@@ -71,6 +71,13 @@ classifiers = [
 # We purposefully get the version dynamically
 dynamic = ["version"]
 
+[project.scripts]
+sgeom = "sisl.geometry:sgeom"
+sgrid = "sisl.grid:sgrid"
+sdata = "sisl.utils._sisl_cmd:sisl_cmd"
+stoolbox = "sisl_toolbox.cli:stoolbox_cli"
+
+
 [project.urls]
 Homepage = "https://zerothi.github.io/sisl"
 Releases = "https://github.com/zerothi/sisl/releases"
