@@ -9,6 +9,14 @@ publications below.
 Please help maintaining the list complete via a `pull request <pr_>`_ or
 by writing an email to `nickpapior AT gmail.com <mailto:nickpapior@gmail.com>`_.
 
+#. EA. Haidar, S.A. Tawfik, C. Stampfl,
+   *Twist-Dependent Electron Charge Transfer and Transport in Phosphorene–Graphene Heterobilayers*,
+   Journal of Physical Chemistry C, `(2022) <https://doi.org/10.1021/acs.jpcc.1c08282>`_
+
+#. M. Tenorio, *et al.*,
+   *Atomically Sharp Lateral Superlattice Heterojunctions Built-in Nitrogen-doped Nanoporous Graphene*,
+   Advanced Materials, `(2022) https://doi.org/10.1002/adma.202110099 >`_
+
 #. G. Yu, *et al.*,
    *Interlayer hybridization in graphene quasicrystal and other bilayer graphene systems*,
    Physical Review B, **105**, `125403 (2022) <https://doi.org/10.1103/PhysRevB.105.125403>`_
