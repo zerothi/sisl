@@ -40,7 +40,7 @@ dependencies = [
 
 
 name = "sisl"
-description = "Manipulating of DFT output, geometries and creating tight-binding parameter sets for NEGF transport"
+description = "Manipulation of DFT output, geometries and creating tight-binding parameter sets for NEGF transport"
 readme = "README.md"
 license = {text = "MPL-2.0"}
 keywords = ["tight-binding", "DFT", "LCAO", "NEGF", "physics"]
@@ -49,14 +49,6 @@ authors = [
     {name = "Nick Papior", email = "nickpapior@gmail.com"}
 ]
 maintainers = [{name="sisl developers"}]
-
-# instead one could do [project.urls] homepage = ... ; documentation = ...
-urls = [
-   {homepage = "https://zerothi.github.io/sisl"},
-   {releases = "https://github.com/zerothi/sisl/releases"},
-   {documentation = "https://zerothi.github.io/sisl"},
-   {repository = "https://github.com/zerothi/sisl"}
-]
 
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -78,6 +70,14 @@ classifiers = [
 
 # We purposefully get the version dynamically
 dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://zerothi.github.io/sisl"
+Releases = "https://github.com/zerothi/sisl/releases"
+Documentation = "https://zerothi.github.io/sisl"
+Repository = "https://github.com/zerothi/sisl"
+Source = "https://github.com/zerothi/sisl"
+
 
 [project.optional-dependencies]
 

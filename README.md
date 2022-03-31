@@ -6,7 +6,7 @@
 [![Join discussion on Discord](https://img.shields.io/discord/742636379871379577.svg?label=&logo=discord&logoColor=ffffff&color=green&labelColor=red)](https://discord.gg/5XnFXFdkv2)
 <!--- [![Documentation on RTD](https://readthedocs.org/projects/docs/badge/?version=latest)](http://sisl.readthedocs.io/en/latest/) -->
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://www.mozilla.org/en-US/MPL/2.0/)
-![Build Status](https://github.com/zerothi/sisl/actions/workflows/test.yaml/badge.svg?branch=main)
+[![Build Status](https://github.com/zerothi/sisl/actions/workflows/test.yaml/badge.svg?branch=main)](https://github.com/zerothi/sisl/actions/workflows/test.yaml)
 [![Checkout sisl code coverage](https://codecov.io/gh/zerothi/sisl/branch/main/graph/badge.svg)](https://codecov.io/gh/zerothi/sisl)
 
 sisl is an *open-source easy-to-use density functional theory API framework* to post-analyse density functional theory codes output
