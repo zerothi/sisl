@@ -1290,19 +1290,21 @@ class MonkhorstPack(BrillouinZone):
 
         # Now we have a matrix of k-points
         if np.any(nkpt - np.diag(np.diag(nkpt)) != 0):
-            raise NotImplementedError(self.__class__.__name__ + " with off-diagonal components is not implemented yet")
+            raise NotImplementedError(f"{self.__class__.__name__} with off-diagonal components is not implemented yet")
 
         if displacement is None:
             displacement = np.zeros(3, np.float64)
         elif isinstance(displacement, Real):
             displacement = _a.fulld(3, displacement)
+        else:
+            displacement = _a.asarrayd(displacement)
 
         if size is None:
             size = _a.onesd(3)
         elif isinstance(size, Real):
             size = _a.fulld(3, size)
         else:
-            size = _a.arrayd(size)
+            size = _a.asarrayd(size)
 
         # Retrieve the diagonal number of values
         Dn = np.diag(nkpt).astype(np.int32)
@@ -1408,8 +1410,8 @@ class MonkhorstPack(BrillouinZone):
             p = self.parent
         else:
             p = self.parent.sc
-        return ('{cls}{{nk: {nk:d}, size: [{size[0]:.3f} {size[1]:.3f} {size[0]:.3f}], trs: {trs},'
-                '\n diagonal: [{diag[0]:d} {diag[1]:d} {diag[2]:d}], displacement: [{disp[0]:.3f} {disp[1]:.3f} {disp[2]:.3f}],'
+        return ('{cls}{{nk: {nk:d}, size: [{size[0]:.5f} {size[1]:.5f} {size[0]:.5f}], trs: {trs},'
+                '\n diagonal: [{diag[0]:d} {diag[1]:d} {diag[2]:d}], displacement: [{disp[0]:.5f} {disp[1]:.5f} {disp[2]:.5f}],'
                 '\n {sc}\n}}').format(cls=self.__class__.__name__, nk=len(self),
                                       size=self._size, trs={0: 'A', 1: 'B', 2: 'C'}.get(self._trs, 'no'),
                                       diag=self._diag, disp=self._displ, sc=str(p).replace('\n', '\n '))
@@ -1444,6 +1446,7 @@ class MonkhorstPack(BrillouinZone):
         if parent is None:
             parent = self.parent
         bz = self.__class__(parent, self._diag, self._displ, self._size, self._centered, self._trs >= 0)
+        # this is required due to replace calls
         bz._k = self._k.copy()
         bz._w = self._w.copy()
         return bz
@@ -1648,24 +1651,27 @@ class MonkhorstPack(BrillouinZone):
         if displ != 0. or size != 1.:
             centered = False
 
+        # size *per k-point*
+        dsize = size / n
+
         # We create the full grid, then afterwards we figure out TRS
         n_half = n // 2
         if n % 2 == 1:
-            k = _a.aranged(-n_half, n_half + 1) * size / n + displ
+            k = _a.aranged(-n_half, n_half + 1) * dsize + displ
         else:
-            k = _a.aranged(-n_half, n_half) * size / n + displ
+            k = _a.aranged(-n_half, n_half) * dsize + displ
             if not centered:
                 # Shift everything by halve the size each occupies
-                k += size / (2 * n)
+                k += dsize / 2
 
         # Move k to the primitive cell and generate weights
         k = cls.in_primitive(k)
-        w = _a.fulld(n, size / n)
+        w = _a.fulld(n, dsize)
 
         # Check for TRS points
         if trs and np.any(k < 0.):
             # Make all positive to remove the double conting terms
-            k_pos = np.abs(k)
+            k_pos = np.fabs(k)
 
             # Sort k-points and weights
             idx = argsort(k_pos)
@@ -1675,8 +1681,8 @@ class MonkhorstPack(BrillouinZone):
             w = w[idx]
 
             # Find indices of all equivalent k-points (tolerance of 1e-10 in reciprocal units)
-            #  1e-10 ~ 1e10 k-points (no body will do this!)
-            idx_same = (np.diff(k_pos) < 1e-10).nonzero()[0]
+            # Use the dsize to estimate the difference in positions
+            idx_same = (np.diff(k_pos) < dsize * 1e-3).nonzero()[0]
 
             # The above algorithm should never create more than two duplicates.
             # Hence we can simply remove all idx_same and double the weight for all
