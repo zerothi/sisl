@@ -8,6 +8,7 @@ we hit release version 1.0.0.
 ## [UNRELEASED] - YYYY-MM-DD
 
 ### Added
+- enabled manifold extractions `sisl.physics.yield_manifolds`
 - enabled center of mass for periodic systems (chooses *best* COM)
 - enabled returning the overlap matrix from `berry_phase`
 - added `rocksalt` @tfrederiksen

@@ -12,8 +12,8 @@ __all__ = ["yield_manifolds"]
 def yield_manifolds(values, atol: float=0.1, axis: int=-1) -> Iterator[List]:
     r""" Yields indices for manifolds along the axis `axis`
 
-    A manifold is found under the criteria that neighbouring
-    values are all seperated by `atol`.
+    A manifold is found under the criteria that all neighbouring
+    values along `axis` are separated by at least `atol`.
 
     Parameters
     ----------
@@ -23,7 +23,15 @@ def yield_manifolds(values, atol: float=0.1, axis: int=-1) -> Iterator[List]:
     atol : float, optional
        the tolerance used for assigning an index with a manifold.
     axis : int, optional
-       which axis we use for examining the manifold, all other axes will be reduced
+       which axis we use for extracting the manifold, all other axes will be reduced
+
+    Examples
+    --------
+    >>> H = Hamiltonian(...)
+    >>> mp = MonkhorstPack(H, [2, 2, 2])
+    >>> eigs = mp.apply.ndarray.eigh()
+    >>> for manifold in yield_manifolds(eigs):
+    ...    print(manifold, eigs[:, manifold])
     """
     values = np.asarray(values)
 
@@ -42,5 +50,4 @@ def yield_manifolds(values, atol: float=0.1, axis: int=-1) -> Iterator[List]:
             manifold = [i]
         else:
             manifold.append(i)
-    if len(manifold) > 0:
-        yield manifold
+    yield manifold
