@@ -26,8 +26,10 @@ Miscellaneous routines
    angle - radian to degree
    iter_shape
    math_eval
+   batched_indices
 
 """
+from ._arrays import *
 from .cmd import *
 from .misc import *
 from .ranges import *
