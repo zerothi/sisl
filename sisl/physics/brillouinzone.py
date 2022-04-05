@@ -140,6 +140,7 @@ import types
 from numbers import Integral, Real
 import warnings
 import itertools
+from functools import reduce
 
 from numpy import pi
 import numpy as np
@@ -151,6 +152,7 @@ from sisl.unit import units
 from sisl.quaternion import Quaternion
 from sisl.utils.mathematics import cart2spher, fnorm
 from sisl.utils.misc import allow_kwargs
+from sisl.utils import batched_indices
 import sisl._array as _a
 from sisl.messages import info, warn, SislError, progressbar, deprecate_method, deprecate
 from sisl.supercell import SuperCell
@@ -614,15 +616,7 @@ class BrillouinZone:
         k = _a.arrayd(k) % 1.
 
         # Ensure that we are in the interval ]-0.5; 0.5]
-        idx = (k.ravel() > 0.5).nonzero()[0]
-        while len(idx) > 0:
-            k[np.unravel_index(idx, k.shape)] -= 1.
-            idx = (k.ravel() > 0.5).nonzero()[0]
-
-        idx = (k.ravel() <= -0.5).nonzero()[0]
-        while len(idx) > 0:
-            k[np.unravel_index(idx, k.shape)] += 1.
-            idx = (k.ravel() <= -0.5).nonzero()[0]
+        k[k > 0.5] -= 1
 
         return k
 
@@ -1700,7 +1694,7 @@ class MonkhorstPack(BrillouinZone):
         # Return values
         return k, w
 
-    def replace(self, k, mp):
+    def replace(self, k, mp, displacement=False, as_index=False):
         r""" Replace a k-point with a new set of k-points from a Monkhorst-Pack grid
 
         This method tries to replace an area corresponding to `mp.size` around the k-point `k`
@@ -1710,9 +1704,18 @@ class MonkhorstPack(BrillouinZone):
         Parameters
         ----------
         k : array_like
-           k-point in this object to replace
+           k-point in this object to replace, if `as_index` is true, it will be regarded as integer
+           positions of the k-points to replace, otherwise the indices of the k-points will be located
+           individually (in chunks of 200 MB).
         mp : MonkhorstPack
            object containing the replacement k-points.
+        displacement : array_like or bool, optional
+           the displacment of the `mp` k-points. Needed for doing *lots* of replacements due to efficiency.
+           Defaults to not displace anything. The inserted k-points will be `mp.k + displacement`.
+           If True, it will use `k` as the displacement vector. For multiple k-point replacements
+           each k-point will be replaced my `mp` with k as the displacement.
+        as_index : bool, optional
+           whether `k` is input as reciprocal k-points, or as indices of k-points in this object.
 
         Examples
         --------
@@ -1748,7 +1751,7 @@ class MonkhorstPack(BrillouinZone):
         # Secondly we need to ensure that the k-points we remove are occupying *exactly*
         # the Brillouin zone we wish to replace.
         if not isinstance(mp, MonkhorstPack):
-            raise ValueError('Object `mp` is not a MonkhorstPack object')
+            raise ValueError("Object 'mp' is not a MonkhorstPack object")
 
         # We can easily figure out the BZ that each k-point is averaging
         k_vol = self._size / self._diag
@@ -1758,47 +1761,80 @@ class MonkhorstPack(BrillouinZone):
         # k-point volumes.
         k_int = mp._size / k_vol
         if not np.allclose(np.rint(k_int), k_int):
-            raise SislError(f'{self.__class__.__name__}.reduce could not replace k-point, BZ '
-                            'volume replaced is not equivalent to the inherent k-point volume.')
+            raise SislError(f"{self.__class__.__name__}.reduce could not replace k-point, BZ "
+                            "volume replaced is not equivalent to the inherent k-point volume.")
         k_int = np.rint(k_int)
 
-        # 1. find all k-points
-        k = self.in_primitive(k).reshape(1, 3)
+        # the size of the k-points that will be added
         dk = (mp._size / 2).reshape(1, 3)
-        # Find all points within [k - dk; k + dk]
-        # Since the volume of each k-point is non-zero we know that no k-points will be located
-        # on the boundary.
-        # This does remove boundary points because we shift everything into the positive
-        # plane.
-        idx = np.logical_and.reduce(
-            np.fabs(self.in_primitive(self.k % 1. - k % 1.)) <= dk, axis=1).nonzero()[0]
-        if len(idx) == 0:
-            raise SislError(f'{self.__class__.__name__}.reduce could not find any points to replace.')
+
+        # determine indices of k-point inputs
+        k = np.asarray(k)
+
+        if as_index:
+            idx = k.ravel()
+            k = self.k[idx]
+        else:
+            # find k-points in batches of 200 MB
+            k = k.reshape(-1, 3)
+            idx = batched_indices(self.k, k, atol=dk, batch_size=200,
+                                  diff_func=self.in_primitive)[0]
+
+        # Idea of fast replacements is attributed @ahkole in #454, but the resulting code needed some
+        # changes since that code was not stable againts *wrong input*, i.e. k=[0, 0, 0]
+        # replacements.
+
+        # determine the displacement vector
+        if isinstance(displacement, bool):
+            if displacement:
+                displacement = k
+            else:
+                displacement = None
+
+        elif displacement is not None:
+            # convert to array
+            displacement = _a.asarray(displacement).reshape(-1, 3)
+
+        if displacement is None:
+            displ_nk = 1
+        else:
+            displ_nk = len(displacement)
 
         # Now we have the k-points we need to remove
         # Figure out if the total weight is consistent
         total_weight = self.weight[idx].sum()
-        replace_weight = mp.weight.sum()
-        if abs(total_weight - replace_weight) < 1e-8:
+        replace_weight = mp.weight.sum() * displ_nk
+        atol = min(total_weight, replace_weight) * 1e-4
+        if abs(total_weight - replace_weight) < atol:
             weight_factor = 1.
-        elif abs(total_weight - replace_weight * 2) < 1e-8:
+        elif abs(total_weight - replace_weight * 2) < atol:
             weight_factor = 2.
             if self._trs < 0:
-                info(f'{self.__class__.__name__}.reduce assumes that the replaced k-point has double weights.')
+                info(f"{self.__class__.__name__}.reduce assumes that the replaced k-point has double weights.")
         else:
-            print('k-point to replace:')
-            print(' ', k.ravel())
-            print('delta-k:')
-            print(' ', dk.ravel())
-            print('Found k-indices that will be replaced:')
-            print(' ', idx)
-            print('k-points replaced:')
-            print(self.k[idx, :])
-            raise SislError(f'{self.__class__.__name__}.reduce could not assert the weights are consistent during replacement.')
+            #print("k-point to replace: ", k.ravel())
+            #print("delta-k: ", dk.ravel())
+            #print("Found k-indices that will be replaced:")
+            #print(idx)
+            #print("k-points replaced:")
+            #print(self.k[idx, :])
+            #print("weights replaced:")
+            #print(self.weight[idx])
+            #print(self.weight.min(), self.weight.max())
+            #print(mp.weight.min(), mp.weight.max())
+            #print("Summed weights vs. replaced summed weights: ")
+            #print(total_weight, replace_weight)
+            #print(mp)
+            raise SislError(f"{self.__class__.__name__}.reduce found inconsistent replacement weights "
+                            f"self={total_weight} vs. mp={replace_weight}.")
 
         # delete and append new k-points and weights
-        self._k = np.concatenate((np.delete(self._k, idx, axis=0), mp._k), axis=0)
-        self._w = np.concatenate((np.delete(self._w, idx), mp._w * weight_factor))
+        if displacement is None:
+            self._k = np.concatenate((np.delete(self._k, idx, axis=0), mp._k), axis=0)
+        else:
+            self._k = np.concatenate((np.delete(self._k, idx, axis=0),
+                                      (mp.k + displacement.reshape(-1, 1, 3)).reshape(-1, 3)), axis=0)
+        self._w = np.concatenate((np.delete(self._w, idx), np.tile(mp._w * weight_factor, displ_nk)))
 
 
 @set_module("sisl.physics")
