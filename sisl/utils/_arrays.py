@@ -30,8 +30,9 @@ def batched_indices(ref, y, axis=-1, atol=1e-8, batch_size=200, diff_func=None):
        which axis to do a logical reduction along, if `None` it means that they
        are 1D arrays and no axis will be reduced, i.e. same as ``ref.ravel() - y.reshape(-1, 1)``
        but retaining indices of the same dimension as `ref`.
-    atol : float, optional
-       absolute tolerance for comparing values
+    atol : float or array_like, optional
+       absolute tolerance for comparing values, for array_like values it must have the same
+       length as ``ref.shape[axis]``
     batch_size : float, optional
        maximum size of broad-casted array. Internal algorithms will determine
        the chunk size of `y`
@@ -48,6 +49,8 @@ def batched_indices(ref, y, axis=-1, atol=1e-8, batch_size=200, diff_func=None):
     # first ensure the arrays are numpy arrays
     ref = np.asarray(ref)
     y = np.asarray(y)
+    # atol may be an array of the same dimension as the axis
+    atol = np.asarray(atol)
 
     # determine best chunk-size of `y`
     n = batch_size / (np.prod(ref.shape) * ref.itemsize / 1024**2)
@@ -71,6 +74,8 @@ def batched_indices(ref, y, axis=-1, atol=1e-8, batch_size=200, diff_func=None):
 
     # determine the batch size
     if axis is None:
+        if atol.size != 1:
+            raise ValueError(f"batched_indices: for 1D comparisons atol can only be a single number.")
         if y.ndim != 1:
             raise ValueError(f"batched_indices: axis is None and y.ndim != 1 ({y.ndim}). For ravel comparisons the "
                              "dimensionality of y must be 1D.")
@@ -107,10 +112,16 @@ def batched_indices(ref, y, axis=-1, atol=1e-8, batch_size=200, diff_func=None):
     # create shapes, since we change the shapes we must fix the axis'
     if axis < 0:
         axis = axis + ref.ndim
-    
+
     y = np.expand_dims(y, tuple(range(ref.ndim - 1)))
     y = np.moveaxis(y, -1, axis)
     ref = np.expand_dims(ref, ref.ndim)
+
+    if atol.size > 1:
+        if atol.size != ref.shape[axis]:
+            raise ValueError(f"batched_indices: atol size does not match the axis {axis} for ref argument.")
+        atol = np.expand_dims(atol.ravel(), tuple(range(ref.ndim - 1)))
+        atol = np.moveaxis(atol, -1, axis)
 
     # b-cast size is
     for idx in yield_cs(n, y.shape[-1]):
