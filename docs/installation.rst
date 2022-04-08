@@ -9,16 +9,7 @@ sisl is easy to install using any of your preferred methods.
 Required dependencies
 ---------------------
 
-For source installations some basic packages are required:
-
-- `Cython`_
-- C compiler
-- fortran compiler
-
-When installing the package they should be readily installed before
-the actual installation begins.
-
-For running sisl you are required these versions:
+Running sisl requires these versions:
 
 - `Python`_ 3.7 or above
 - `numpy`_ (1.13 or later)
@@ -41,6 +32,7 @@ Cython is required if one wishes to re-generate the C-sources with a different
 Cython version. Note that this is not a necessary step and should typically only
 be considered by developers of Cython modules.
 
+.. _installation-pip:
 
 pip
 ---
@@ -72,18 +64,57 @@ When wanting to pass options to :code:`pip` simply use the following
 note that options are accummulated.
 
 
+.. _installation-conda:
+
 conda
 -----
 
-Installing sisl using conda can be done by
+It is recommended to install sisl in a separate environment to decouple its dependencies
+from other packages that may be installed.
+To find more information about the conda-forge enabled versions please see
+`here <conda-releases_>`_.
+
+conda is a somewhat fragile environment when users want to update/upgrade packages.
+Therefore when conda installations fails, or when it will not update to a more recent version it
+is advisable to create a new environment (starting from scratch) to ensure that your currently
+installed packages are not limiting the upgrading of other packages.
+
+For sisl there are two options, whether one wants to use a stable sisl release, or be
+able to install the latest development version from `here <sisl-git_>`_.
+
+Stable
+~~~~~~
+
+Installing the stable sisl release in conda all that is needed is:
+
 
 .. code-block:: bash
 
+   conda create -n sisl
+   conda activate sisl
    conda config --add channels conda-forge
-   conda install sisl
+   conda install -c conda-forge python=3.9 scipy matplotlib plotly netcdf4 sisl
 
-To find more information about the conda-forge installation please see
-`here <conda-releases_>`_.
+which will install all dependencies including the graphical visualization
+capabilities of sisl.
+
+
+Development
+~~~~~~~~~~~
+
+Installing the development version of sisl requires some other basic packages
+while also using :code:`pip` to install sisl, the procedure would be:
+
+.. code-block:: bash
+
+   conda create -n sisl-dev
+   conda activate sisl-dev
+   conda config --add channels conda-forge
+   conda install -c conda-forge fortran-compiler c-compiler python=3.9
+   conda install -c conda-forge scipy netcdf4 cftime plotly matplotlib
+
+
+Subsequent installation of sisl in your conda enviroment would follow :ref:`installation-development`.
 
 
 Manual installation
@@ -148,8 +179,16 @@ A basic procedure would be:
    SISL_FILES_TESTS=$(pwd)/sisl-files/tests pytest --pyargs sisl
 
 
+.. _installation-development:
+
 Development version
 -------------------
+
+For source/development installations some basic packages are required:
+
+- `Cython`_
+- C compiler
+- fortran compiler
 
 To install the development version using :code:`pip` you may use the URL command:
 
