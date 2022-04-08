@@ -14,6 +14,7 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
+from importlib.metadata import version
 import sys
 import os
 import pathlib
@@ -125,7 +126,7 @@ else:
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
-version = sisl.__version__
+version = version("sisl")
 release = version
 print(f"sisl version {version}")
 
