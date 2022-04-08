@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.Geometry &mdash; sisl 0.1.dev1+g81c6f5c documentation</title>
+  <title>sisl.Geometry &mdash; sisl 0.1.dev1+g9590202 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g81c6f5c
+                0.1.dev1+g9590202
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -222,7 +222,7 @@ on how to add more conversion methods.</p>
 </dl>
 </div>
 <p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
+<table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -288,8 +288,8 @@ on how to add more conversion methods.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.copy" title="sisl.Geometry.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>()</p></td>
 <td><p>A copy of the object.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.cut" title="sisl.Geometry.cut"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cut</span></code></a>(seps, axis[, seg, rtol, atol])</p></td>
-<td><p>A subset of atoms from the geometry by cutting the geometry into <em class="xref py py-obj">seps</em> parts along the direction <em class="xref py py-obj">axis</em>.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.cut" title="sisl.Geometry.cut"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cut</span></code></a>(reps, axis[, segment, rtol, atol])</p></td>
+<td><p>A subset of atoms from the geometry by cutting the geometry into <em class="xref py py-obj">reps</em> parts along the direction <em class="xref py py-obj">axis</em>.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.distance" title="sisl.Geometry.distance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">distance</span></code></a>([atoms, R, tol, method])</p></td>
 <td><p>Calculate the distances for all atoms in shells of radius <em class="xref py py-obj">tol</em> within <em class="xref py py-obj">max_R</em></p></td>
@@ -452,6 +452,12 @@ on how to add more conversion methods.</p>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.uc2sc" title="sisl.Geometry.uc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">uc2sc</span></code></a>(atoms[, unique])</p></td>
 <td><p>Returns atom from unit-cell indices to supercell indices, possibly removing dublicates</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.unrepeat" title="sisl.Geometry.unrepeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unrepeat</span></code></a>(reps, axis, *args, **kwargs)</p></td>
+<td><p>Unrepeats the geometry similarly as <a class="reference internal" href="#sisl.Geometry.untile" title="sisl.Geometry.untile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">untile</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.untile" title="sisl.Geometry.untile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">untile</span></code></a>(reps, axis[, segment, rtol, atol])</p></td>
+<td><p>A subset of atoms from the geometry by cutting the geometry into <em class="xref py py-obj">reps</em> parts along the direction <em class="xref py py-obj">axis</em>.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.within" title="sisl.Geometry.within"><code class="xref py py-obj docutils literal notranslate"><span class="pre">within</span></code></a>(shapes[, atoms, atoms_xyz, ret_xyz, ...])</p></td>
 <td><p>Indices of atoms in the entire supercell within a given shape from a given coordinate</p></td>
@@ -1031,23 +1037,23 @@ for each of the couplings.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Geometry.cut">
-<span class="sig-name descname"><span class="pre">cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#sisl.Geometry" title="sisl.Geometry"><span class="pre">sisl.Geometry</span></a></span></span><a class="reference internal" href="../../_modules/sisl/geometry.html#Geometry.cut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Geometry.cut" title="Permalink to this definition"></a></dt>
-<dd><p>A subset of atoms from the geometry by cutting the geometry into <em class="xref py py-obj">seps</em> parts along the direction <em class="xref py py-obj">axis</em>.</p>
+<span class="sig-name descname"><span class="pre">cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#sisl.Geometry" title="sisl.Geometry"><span class="pre">sisl.Geometry</span></a></span></span><a class="headerlink" href="#sisl.Geometry.cut" title="Permalink to this definition"></a></dt>
+<dd><p>A subset of atoms from the geometry by cutting the geometry into <em class="xref py py-obj">reps</em> parts along the direction <em class="xref py py-obj">axis</em>.</p>
 <p>This will effectively change the unit-cell in the <em class="xref py py-obj">axis</em> as-well
-as removing <code class="docutils literal notranslate"><span class="pre">self.na/seps</span></code> atoms.
-It requires that <code class="docutils literal notranslate"><span class="pre">self.na</span> <span class="pre">%</span> <span class="pre">seps</span> <span class="pre">==</span> <span class="pre">0</span></code>.</p>
+as removing <code class="docutils literal notranslate"><span class="pre">self.na/reps</span></code> atoms.
+It requires that <code class="docutils literal notranslate"><span class="pre">self.na</span> <span class="pre">%</span> <span class="pre">reps</span> <span class="pre">==</span> <span class="pre">0</span></code>.</p>
 <p>REMARK: You need to ensure that all atoms within the first
 cut out region are within the primary unit-cell.</p>
-<p>Doing <code class="docutils literal notranslate"><span class="pre">geom.cut(2,</span> <span class="pre">1).tile(2,</span> <span class="pre">1)</span></code>, could for symmetric setups,
+<p>Doing <code class="docutils literal notranslate"><span class="pre">geom.untile(2,</span> <span class="pre">1).tile(2,</span> <span class="pre">1)</span></code>, could for symmetric setups,
 be equivalent to a no-op operation. A <code class="docutils literal notranslate"><span class="pre">UserWarning</span></code> will be issued
 if this is not the case.</p>
 <p>This method may be regarded as the opposite of <a class="reference internal" href="#sisl.Geometry.tile" title="sisl.Geometry.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>seps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – number of times the structure will be cut.</p></li>
+<li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – number of times the structure will be cut (untiled)</p></li>
 <li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – the axis that will be cut</p></li>
-<li><p><strong>seg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – returns the i’th segment of the cut structure
+<li><p><strong>segment</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – returns the i’th segment of the untiled structure
 Currently the atomic coordinates are not translated,
 this may change in the future.</p></li>
 <li><p><strong>rtol</strong> ((tolerance for checking tiling, see <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.allclose.html#numpy.allclose" title="(in NumPy v1.22)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.allclose</span></code></a>)) – </p></li>
@@ -1058,7 +1064,7 @@ this may change in the future.</p></li>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">geom</span><span class="o">.</span><span class="n">graphene</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">gxyz</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="n">gxyz</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="n">gxyz</span><span class="o">.</span><span class="n">untile</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">untile</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">untile</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">xyz</span><span class="p">,</span> <span class="n">G</span><span class="o">.</span><span class="n">xyz</span><span class="p">)</span>
 <span class="go">True</span>
 </pre></div>
@@ -2548,6 +2554,57 @@ atoms will be translated</p></li>
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Geometry.unrepeat">
+<span class="sig-name descname"><span class="pre">unrepeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#sisl.Geometry" title="sisl.Geometry"><span class="pre">sisl.Geometry</span></a></span></span><a class="reference internal" href="../../_modules/sisl/geometry.html#Geometry.unrepeat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Geometry.unrepeat" title="Permalink to this definition"></a></dt>
+<dd><p>Unrepeats the geometry similarly as <a class="reference internal" href="#sisl.Geometry.untile" title="sisl.Geometry.untile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">untile</span></code></a></p>
+<p>Please see <a class="reference internal" href="#sisl.Geometry.untile" title="sisl.Geometry.untile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">untile</span></code></a> for argument details, the algorithm and arguments are the same however,
+this is the opposite of <a class="reference internal" href="#sisl.Geometry.repeat" title="sisl.Geometry.repeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Geometry.untile">
+<span class="sig-name descname"><span class="pre">untile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#sisl.Geometry" title="sisl.Geometry"><span class="pre">sisl.Geometry</span></a></span></span><a class="reference internal" href="../../_modules/sisl/geometry.html#Geometry.untile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Geometry.untile" title="Permalink to this definition"></a></dt>
+<dd><p>A subset of atoms from the geometry by cutting the geometry into <em class="xref py py-obj">reps</em> parts along the direction <em class="xref py py-obj">axis</em>.</p>
+<p>This will effectively change the unit-cell in the <em class="xref py py-obj">axis</em> as-well
+as removing <code class="docutils literal notranslate"><span class="pre">self.na/reps</span></code> atoms.
+It requires that <code class="docutils literal notranslate"><span class="pre">self.na</span> <span class="pre">%</span> <span class="pre">reps</span> <span class="pre">==</span> <span class="pre">0</span></code>.</p>
+<p>REMARK: You need to ensure that all atoms within the first
+cut out region are within the primary unit-cell.</p>
+<p>Doing <code class="docutils literal notranslate"><span class="pre">geom.untile(2,</span> <span class="pre">1).tile(2,</span> <span class="pre">1)</span></code>, could for symmetric setups,
+be equivalent to a no-op operation. A <code class="docutils literal notranslate"><span class="pre">UserWarning</span></code> will be issued
+if this is not the case.</p>
+<p>This method may be regarded as the opposite of <a class="reference internal" href="#sisl.Geometry.tile" title="sisl.Geometry.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – number of times the structure will be cut (untiled)</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – the axis that will be cut</p></li>
+<li><p><strong>segment</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – returns the i’th segment of the untiled structure
+Currently the atomic coordinates are not translated,
+this may change in the future.</p></li>
+<li><p><strong>rtol</strong> ((tolerance for checking tiling, see <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.allclose.html#numpy.allclose" title="(in NumPy v1.22)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.allclose</span></code></a>)) – </p></li>
+<li><p><strong>atol</strong> ((tolerance for checking tiling, see <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.allclose.html#numpy.allclose" title="(in NumPy v1.22)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.allclose</span></code></a>)) – </p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">geom</span><span class="o">.</span><span class="n">graphene</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gxyz</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="n">gxyz</span><span class="o">.</span><span class="n">untile</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">untile</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">untile</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">xyz</span><span class="p">,</span> <span class="n">G</span><span class="o">.</span><span class="n">xyz</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.Geometry.tile" title="sisl.Geometry.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a></dt><dd><p>opposite method of this</p>
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 <dl class="py property">

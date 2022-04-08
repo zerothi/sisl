@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.supercell &mdash; sisl 0.1.dev1+g81c6f5c documentation</title>
+  <title>sisl.supercell &mdash; sisl 0.1.dev1+g9590202 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g81c6f5c
+                0.1.dev1+g9590202
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -768,7 +768,7 @@
 
 <div class="viewcode-block" id="SuperCell.vertices"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.vertices">[docs]</a>    <span class="k">def</span> <span class="nf">vertices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Vertices of the cell</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        --------</span>
 <span class="sd">        array of shape (2, 2, 2, 3):</span>
@@ -843,11 +843,20 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SuperCell.cut"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.cut">[docs]</a>    <span class="k">def</span> <span class="nf">cut</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seps</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Cuts the cell into several different sections. &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="SuperCell.untile"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.untile">[docs]</a>    <span class="k">def</span> <span class="nf">untile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reverses a `SuperCell.tile` and returns the segmented version</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        tile : opposite of this method</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
-        <span class="n">cell</span><span class="p">[</span><span class="n">axis</span><span class="p">,</span> <span class="p">:]</span> <span class="o">/=</span> <span class="n">seps</span>
+        <span class="n">cell</span><span class="p">[</span><span class="n">axis</span><span class="p">,</span> <span class="p">:]</span> <span class="o">/=</span> <span class="n">reps</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span></div>
+
+    <span class="n">unrepeat</span> <span class="o">=</span> <span class="n">untile</span>
+
+    <span class="n">cut</span> <span class="o">=</span> <span class="n">deprecate_method</span><span class="p">(</span><span class="s2">&quot;*.cut is deprecated, use .untile instead&quot;</span><span class="p">,</span> <span class="s2">&quot;0.13&quot;</span><span class="p">)(</span><span class="n">untile</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SuperCell.append"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Appends other `SuperCell` to this grid along axis &quot;&quot;&quot;</span>

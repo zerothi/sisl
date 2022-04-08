@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installation &mdash; sisl 0.1.dev1+g81c6f5c documentation</title>
+  <title>Installation &mdash; sisl 0.1.dev1+g9590202 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g81c6f5c
+                0.1.dev1+g9590202
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -57,7 +57,11 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#required-dependencies">Required dependencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pip">pip</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#conda">conda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#conda">conda</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#stable">Stable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#development">Development</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#manual-installation">Manual installation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#windows">Windows</a></li>
 </ul>
@@ -136,20 +140,12 @@
 <p>sisl is easy to install using any of your preferred methods.</p>
 <section id="required-dependencies">
 <h2>Required dependencies<a class="headerlink" href="#required-dependencies" title="Permalink to this headline"></a></h2>
-<p>For source installations some basic packages are required:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://cython.org/">Cython</a></p></li>
-<li><p>C compiler</p></li>
-<li><p>fortran compiler</p></li>
-</ul>
-<p>When installing the package they should be readily installed before
-the actual installation begins.</p>
-<p>For running sisl you are required these versions:</p>
+<p>Running sisl requires these versions:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.python.org/">Python</a> 3.7 or above</p></li>
-<li><p><a class="reference external" href="http://www.numpy.org/">numpy</a> (1.13 or later)</p></li>
+<li><p><a class="reference external" href="https://www.numpy.org/">numpy</a> (1.13 or later)</p></li>
 <li><p><a class="reference external" href="https://scipy.org/scipylib/index.html">scipy</a> (0.18 or later)</p></li>
-<li><p><a class="reference external" href="http://github.com/Unidata/netcdf4-python">netCDF4-python</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Unidata/netcdf4-python">netCDF4-python</a></p></li>
 <li><p><a class="reference external" href="https://github.com/pyparsing/pyparsing">pyparsing</a> (1.5.7 or later)</p></li>
 </ul>
 <p>Optional dependencies:</p>
@@ -158,7 +154,7 @@ the actual installation begins.</p>
 <li><p><a class="reference external" href="https://github.com/uqfoundation/pathos">pathos</a> (for parallel BrillouinZone calculations)</p></li>
 <li><p><a class="reference external" href="https://matplotlib.org/">matplotlib</a></p></li>
 <li><p><a class="reference external" href="https://github.com/tqdm/tqdm">tqdm</a> (for displaying progress-bars)</p></li>
-<li><p><a class="reference external" href="http://xarray.pydata.org/en/stable/index.html">xarray</a> (for advanced table data structures in certain methods)</p></li>
+<li><p><a class="reference external" href="https://xarray.pydata.org/en/stable/index.html">xarray</a> (for advanced table data structures in certain methods)</p></li>
 <li><p><a class="reference external" href="https://plotly.com/python/">plotly</a> (for advanced visualization)</p></li>
 </ul>
 <p>sisl implements certain methods in Cython which speeds up the execution.
@@ -167,7 +163,7 @@ Cython version. Note that this is not a necessary step and should typically only
 be considered by developers of Cython modules.</p>
 </section>
 <section id="pip">
-<h2>pip<a class="headerlink" href="#pip" title="Permalink to this headline"></a></h2>
+<span id="installation-pip"></span><h2>pip<a class="headerlink" href="#pip" title="Permalink to this headline"></a></h2>
 <p>Installing sisl using PyPi can be done using</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 -m pip install sisl
 <span class="c1"># for better analysis</span>
@@ -188,21 +184,49 @@ is desired.</p>
 <p>note that options are accummulated.</p>
 </section>
 <section id="conda">
-<h2>conda<a class="headerlink" href="#conda" title="Permalink to this headline"></a></h2>
-<p>Installing sisl using conda can be done by</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda config --add channels conda-forge
-conda install sisl
+<span id="installation-conda"></span><h2>conda<a class="headerlink" href="#conda" title="Permalink to this headline"></a></h2>
+<p>It is recommended to install sisl in a separate environment to decouple its dependencies
+from other packages that may be installed.
+To find more information about the conda-forge enabled versions please see
+<a class="reference external" href="https://anaconda.org/conda-forge/sisl">here</a>.</p>
+<p>conda is a somewhat fragile environment when users want to update/upgrade packages.
+Therefore when conda installations fails, or when it will not update to a more recent version it
+is advisable to create a new environment (starting from scratch) to ensure that your currently
+installed packages are not limiting the upgrading of other packages.</p>
+<p>For sisl there are two options, whether one wants to use a stable sisl release, or be
+able to install the latest development version from <a class="reference external" href="https://github.com/zerothi/sisl/">here</a>.</p>
+<section id="stable">
+<h3>Stable<a class="headerlink" href="#stable" title="Permalink to this headline"></a></h3>
+<p>Installing the stable sisl release in conda all that is needed is:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda create -n sisl
+conda activate sisl
+conda config --add channels conda-forge
+conda install -c conda-forge <span class="nv">python</span><span class="o">=</span><span class="m">3</span>.9 scipy matplotlib plotly netcdf4 sisl
 </pre></div>
 </div>
-<p>To find more information about the conda-forge installation please see
-<a class="reference external" href="https://anaconda.org/conda-forge/sisl">here</a>.</p>
+<p>which will install all dependencies including the graphical visualization
+capabilities of sisl.</p>
+</section>
+<section id="development">
+<h3>Development<a class="headerlink" href="#development" title="Permalink to this headline"></a></h3>
+<p>Installing the development version of sisl requires some other basic packages
+while also using <code class="code docutils literal notranslate"><span class="pre">pip</span></code> to install sisl, the procedure would be:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda create -n sisl-dev
+conda activate sisl-dev
+conda config --add channels conda-forge
+conda install -c conda-forge fortran-compiler c-compiler <span class="nv">python</span><span class="o">=</span><span class="m">3</span>.9
+conda install -c conda-forge scipy netcdf4 cftime plotly matplotlib
+</pre></div>
+</div>
+<p>Subsequent installation of sisl in your conda enviroment would follow <a class="reference internal" href="#installation-development"><span class="std std-ref">Development version</span></a>.</p>
+</section>
 </section>
 <section id="manual-installation">
 <h2>Manual installation<a class="headerlink" href="#manual-installation" title="Permalink to this headline"></a></h2>
 <p>The regular <code class="code docutils literal notranslate"><span class="pre">pip</span></code> codes may be used to install git clones or downloaded
 tarballs.</p>
-<p>Simply download the release tar from <a class="reference external" href="http://github.com/zerothi/sisl/releases">this page</a>, or clone
-the <a class="reference external" href="http://github.com/zerothi/sisl/">git repository</a> for the latest developments</p>
+<p>Simply download the release tar from <a class="reference external" href="https://github.com/zerothi/sisl/releases">this page</a>, or clone
+the <a class="reference external" href="https://github.com/zerothi/sisl/">git repository</a> for the latest developments</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 -m pip install . --prefix<span class="o">=</span>&lt;prefix&gt;
 </pre></div>
 </div>
@@ -243,12 +267,18 @@ and setting the environment variable <em class="xref py py-obj">SISL_FILES_TESTS
 </div>
 </section>
 <section id="development-version">
-<h2>Development version<a class="headerlink" href="#development-version" title="Permalink to this headline"></a></h2>
+<span id="installation-development"></span><h2>Development version<a class="headerlink" href="#development-version" title="Permalink to this headline"></a></h2>
+<p>For source/development installations some basic packages are required:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://cython.org/">Cython</a></p></li>
+<li><p>C compiler</p></li>
+<li><p>fortran compiler</p></li>
+</ul>
 <p>To install the development version using <code class="code docutils literal notranslate"><span class="pre">pip</span></code> you may use the URL command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 -m pip install -U git+https://github.com/zerothi/sisl.git
 </pre></div>
 </div>
-<p>Otherwise follow the manual installation by cloning the <a class="reference external" href="http://github.com/zerothi/sisl/">git repository</a>.
+<p>Otherwise follow the manual installation by cloning the <a class="reference external" href="https://github.com/zerothi/sisl/">git repository</a>.
 Remark that the <code class="code docutils literal notranslate"><span class="pre">git+https</span></code> protocol is buggy (as of pip v19.0.3) because you cannot pass compiler
 options to <code class="code docutils literal notranslate"><span class="pre">setuptools</span></code>. If you want to install the development version with e.g.
 the Intel compilers you should do:</p>

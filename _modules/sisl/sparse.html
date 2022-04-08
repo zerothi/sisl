@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.sparse &mdash; sisl 0.1.dev1+g81c6f5c documentation</title>
+  <title>sisl.sparse &mdash; sisl 0.1.dev1+g9590202 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g81c6f5c
+                0.1.dev1+g9590202
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -1977,12 +1977,15 @@
         <span class="n">bsl</span> <span class="o">=</span> <span class="n">arange</span><span class="p">(</span><span class="n">bsl</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">bsl</span><span class="o">.</span><span class="n">stop</span><span class="p">)</span>
 
         <span class="c1"># Common indices</span>
-        <span class="n">idx</span><span class="p">,</span> <span class="n">aover</span><span class="p">,</span> <span class="n">bover</span><span class="p">,</span> <span class="n">iaonly</span><span class="p">,</span> <span class="n">ibonly</span> <span class="o">=</span> <span class="n">intersect_and_diff_sets</span><span class="p">(</span><span class="n">aidx</span><span class="p">,</span> <span class="n">bidx</span><span class="p">)</span>
-        <span class="n">out</span><span class="o">.</span><span class="n">_D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">ufunc</span><span class="p">(</span><span class="n">adata</span><span class="p">[</span><span class="n">asl</span><span class="p">[</span><span class="n">aover</span><span class="p">],</span> <span class="p">:],</span>
-                               <span class="n">bdata</span><span class="p">[</span><span class="n">bsl</span><span class="p">[</span><span class="n">bover</span><span class="p">],</span> <span class="p">:],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">iover</span><span class="p">,</span> <span class="n">aover</span><span class="p">,</span> <span class="n">bover</span><span class="p">,</span> <span class="n">iaonly</span><span class="p">,</span> <span class="n">ibonly</span> <span class="o">=</span> <span class="n">intersect_and_diff_sets</span><span class="p">(</span><span class="n">aidx</span><span class="p">,</span> <span class="n">bidx</span><span class="p">)</span>
 
-        <span class="c1"># Remaining indices</span>
+        <span class="c1"># overlapping indices</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">_D</span><span class="p">[</span><span class="n">iover</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">ufunc</span><span class="p">(</span><span class="n">adata</span><span class="p">[</span><span class="n">asl</span><span class="p">[</span><span class="n">aover</span><span class="p">],</span> <span class="p">:],</span>
+                                 <span class="n">bdata</span><span class="p">[</span><span class="n">bsl</span><span class="p">[</span><span class="n">bover</span><span class="p">],</span> <span class="p">:],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># only a</span>
         <span class="n">out</span><span class="o">.</span><span class="n">_D</span><span class="p">[</span><span class="n">aidx</span><span class="p">[</span><span class="n">iaonly</span><span class="p">]]</span> <span class="o">=</span> <span class="n">ufunc</span><span class="p">(</span><span class="n">adata</span><span class="p">[</span><span class="n">asl</span><span class="p">[</span><span class="n">iaonly</span><span class="p">],</span> <span class="p">:],</span> <span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># only b</span>
         <span class="n">out</span><span class="o">.</span><span class="n">_D</span><span class="p">[</span><span class="n">bidx</span><span class="p">[</span><span class="n">ibonly</span><span class="p">]]</span> <span class="o">=</span> <span class="n">ufunc</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">bdata</span><span class="p">[</span><span class="n">bsl</span><span class="p">[</span><span class="n">ibonly</span><span class="p">],</span> <span class="p">:],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">out</span>

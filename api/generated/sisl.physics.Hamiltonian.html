@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.Hamiltonian &mdash; sisl 0.1.dev1+g81c6f5c documentation</title>
+  <title>sisl.physics.Hamiltonian &mdash; sisl 0.1.dev1+g9590202 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g81c6f5c
+                0.1.dev1+g9590202
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -181,7 +181,7 @@ This is a keyword-only argument.</p></li>
 </dd>
 </dl>
 <p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
+<table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -217,8 +217,8 @@ This is a keyword-only argument.</p></li>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.Hamiltonian.create_construct" title="sisl.physics.Hamiltonian.create_construct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_construct</span></code></a>(R, param)</p></td>
 <td><p>Create a simple function for passing to the <a class="reference internal" href="#sisl.physics.Hamiltonian.construct" title="sisl.physics.Hamiltonian.construct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">construct</span></code></a> function.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.Hamiltonian.cut" title="sisl.physics.Hamiltonian.cut"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cut</span></code></a>(seps, axis, *args, **kwargs)</p></td>
-<td><p>Cuts the sparse orbital model into different parts.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.Hamiltonian.cut" title="sisl.physics.Hamiltonian.cut"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cut</span></code></a>(reps, axis[, segment, sym])</p></td>
+<td><p>Untiles the sparse model into different parts (retaining couplings)</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.Hamiltonian.dHk" title="sisl.physics.Hamiltonian.dHk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dHk</span></code></a>([k, dtype, gauge, format])</p></td>
 <td><p>Setup the Hamiltonian derivative for a given k-point</p></td>
@@ -342,6 +342,12 @@ This is a keyword-only argument.</p></li>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.Hamiltonian.trs" title="sisl.physics.Hamiltonian.trs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trs</span></code></a>()</p></td>
 <td><p>Create a new matrix with applied time-reversal-symmetry</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.Hamiltonian.unrepeat" title="sisl.physics.Hamiltonian.unrepeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unrepeat</span></code></a>(reps, axis[, segment, sym])</p></td>
+<td><p>Unrepeats the sparse model into different parts (retaining couplings)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.Hamiltonian.untile" title="sisl.physics.Hamiltonian.untile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">untile</span></code></a>(reps, axis[, segment, sym])</p></td>
+<td><p>Untiles the sparse model into different parts (retaining couplings)</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.Hamiltonian.velocity" title="sisl.physics.Hamiltonian.velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">velocity</span></code></a>([k, matrix])</p></td>
 <td><p>Calculate the velocity for the eigenstates for a given <em class="xref py py-obj">k</em> point</p></td>
@@ -651,12 +657,12 @@ same orbital ordering.</p>
 </div>
 <p>To retain couplings only from the <em>left</em> sparse matrix, do:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sporb</span> <span class="o">=</span> <span class="n">left</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sporb</span> <span class="o">=</span> <span class="p">(</span><span class="n">sporb</span> <span class="o">+</span> <span class="n">sporb</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span> <span class="o">*</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sporb</span> <span class="o">=</span> <span class="p">(</span><span class="n">sporb</span> <span class="o">+</span> <span class="n">sporb</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span> <span class="o">/</span> <span class="mi">2</span>
 </pre></div>
 </div>
 <p>To retain couplings only from the <em>right</em> sparse matrix, do:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sporb</span> <span class="o">=</span> <span class="n">left</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">2.</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sporb</span> <span class="o">=</span> <span class="p">(</span><span class="n">sporb</span> <span class="o">+</span> <span class="n">sporb</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span> <span class="o">*</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sporb</span> <span class="o">=</span> <span class="p">(</span><span class="n">sporb</span> <span class="o">+</span> <span class="n">sporb</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span> <span class="o">/</span> <span class="mi">2</span>
 </pre></div>
 </div>
 <p class="rubric">Notes</p>
@@ -824,19 +830,57 @@ for the all atoms within <code class="docutils literal notranslate"><span class=
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.Hamiltonian.cut">
-<span class="sig-name descname"><span class="pre">cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.Hamiltonian.cut" title="Permalink to this definition"></a></dt>
-<dd><p>Cuts the sparse orbital model into different parts.</p>
-<p>Recreates a new sparse orbital object with only the cutted
-atoms in the structure.</p>
-<p>Cutting is the opposite of tiling.</p>
+<span class="sig-name descname"><span class="pre">cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sym</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.Hamiltonian.cut" title="Permalink to this definition"></a></dt>
+<dd><p>Untiles the sparse model into different parts (retaining couplings)</p>
+<p>Recreates a new sparse object with only the cutted
+atoms in the structure. This will preserve matrix elements in the supercell.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>seps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – number of times the structure will be cut</p></li>
-<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – the axis that will be cut</p></li>
+<li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – number of repetitions the tiling function created (opposite meaning as in <a class="reference internal" href="#sisl.physics.Hamiltonian.untile" title="sisl.physics.Hamiltonian.untile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">untile</span></code></a>)</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – which axis to untile along</p></li>
+<li><p><strong>segment</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – which segment to retain. Generally each segment should be equivalent, however
+requesting individiual segments can help uncover inconsistencies in the sparse matrix</p></li>
+<li><p><strong>*args</strong> – arguments passed directly to <em class="xref py py-obj">Geometry.untile</em></p></li>
+<li><p><strong>sym</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – if True, the algorithm will ensure the returned matrix is symmetrized (i.e.
+return <code class="docutils literal notranslate"><span class="pre">(M</span> <span class="pre">+</span> <span class="pre">M.transpose())/2</span></code>, else return data as is.
+False should generally only be used for debugging precision of the matrix elements,
+or if one wishes to check the warnings.</p></li>
+<li><p><strong>**kwargs</strong> – keyword arguments passed directly to <em class="xref py py-obj">Geometry.untile</em></p></li>
 </ul>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<p>Untiling structures with <code class="docutils literal notranslate"><span class="pre">nsc</span> <span class="pre">==</span> <span class="pre">1</span></code> along <em class="xref py py-obj">axis</em> are assumed to have periodic boundary
+conditions.</p>
+<p>When untiling structures with <code class="docutils literal notranslate"><span class="pre">nsc</span> <span class="pre">==</span> <span class="pre">1</span></code> along <em class="xref py py-obj">axis</em> it is important to
+untile <em>as much as possible</em>. This is because otherwise the algorithm cannot determine
+the correct couplings. Therefore to create a geometry of 3 times a unit-cell, one should
+untile to the unit-cell, and subsequently tile 3 times.</p>
+<p>Consider for example a system of 4 atoms, each atom connects to its 2 neighbours.
+Due to the PBC atom 0 will connect to 1 and 3. Untiling this structure in 2 will
+group couplings of atoms 0 and 1. As it will only see one coupling to the right
+it will halve the coupling and use the same coupling to the left, which is clearly wrong.</p>
+<p>In the following the latter is the correct way to do it.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SPM</span><span class="o">.</span><span class="n">untile</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">!=</span> <span class="n">SPM</span><span class="o">.</span><span class="n">untile</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError :</strong> – in case the matrix elements are not conseuctive when determining the
+    new supercell structure. This may often happen if untiling a matrix
+    too few times, and then untiling it again.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.physics.Hamiltonian.tile" title="sisl.physics.Hamiltonian.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a></dt><dd><p>opposite of this method</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.untile</span></code></dt><dd><p>same as this method, see details about parameters here</p>
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -1071,7 +1115,7 @@ in supercell indices (i.e. <code class="docutils literal notranslate"><span clas
 <li><p><strong>atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>list of int</em>) – the edges are returned only for the given atom (but by using  all orbitals of the
 requested atom). The returned edges are also atoms.</p></li>
 <li><p><strong>exclude</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>list of int</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – remove edges which are in the <em class="xref py py-obj">exclude</em> list, this list refers to orbitals.</p></li>
-<li><p><strong>orbital</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>list of int</em>) – the edges are returned only for the given orbital. The returned edges are orbitals.</p></li>
+<li><p><strong>orbitals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>list of int</em>) – the edges are returned only for the given orbital. The returned edges are orbitals.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1520,12 +1564,12 @@ of the orbitals.</p>
 do the following (note the subsequent transposing which ensures hermiticy
 and is effectively copying couplings from <code class="docutils literal notranslate"><span class="pre">big</span></code> to the replaced region.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">big2</span> <span class="o">=</span> <span class="n">big</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">big</span><span class="o">.</span><span class="n">na</span><span class="p">),</span> <span class="n">minimal</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">big2</span> <span class="o">=</span> <span class="p">(</span><span class="n">big2</span> <span class="o">+</span> <span class="n">big2</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span> <span class="o">*</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">big2</span> <span class="o">=</span> <span class="p">(</span><span class="n">big2</span> <span class="o">+</span> <span class="n">big2</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span> <span class="o">/</span> <span class="mi">2</span>
 </pre></div>
 </div>
 <p>To only retain couplings from the <code class="docutils literal notranslate"><span class="pre">minimal</span></code> sparse matrix:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">big2</span> <span class="o">=</span> <span class="n">big</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">big</span><span class="o">.</span><span class="n">na</span><span class="p">),</span> <span class="n">minimal</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">big2</span> <span class="o">=</span> <span class="p">(</span><span class="n">big2</span> <span class="o">+</span> <span class="n">big2</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span> <span class="o">*</span> <span class="mf">0.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">big2</span> <span class="o">=</span> <span class="p">(</span><span class="n">big2</span> <span class="o">+</span> <span class="n">big2</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span> <span class="o">/</span> <span class="mi">2</span>
 </pre></div>
 </div>
 <p class="rubric">Notes</p>
@@ -1856,11 +1900,13 @@ to the new supercell by repeating them in blocks like the coordinates.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
+<dt><a class="reference internal" href="#sisl.physics.Hamiltonian.repeat" title="sisl.physics.Hamiltonian.repeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat</span></code></a></dt><dd><p>a different ordering of the final geometry</p>
+</dd>
+<dt><a class="reference internal" href="#sisl.physics.Hamiltonian.untile" title="sisl.physics.Hamiltonian.untile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">untile</span></code></a></dt><dd><p>opposite of this method</p>
+</dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.tile</span></code></dt><dd><p>the same ordering as the final geometry</p>
 </dd>
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.repeat</span></code></dt><dd><p>a different ordering of the final geometry</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.physics.Hamiltonian.repeat" title="sisl.physics.Hamiltonian.repeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat</span></code></a></dt><dd><p>a different ordering of the final geometry</p>
 </dd>
 </dl>
 </div>
@@ -1962,6 +2008,69 @@ if this is true, default</p></li>
 <div class="math notranslate nohighlight">
 \[2\mathbf M^{\mathrm{TRS}} = \mathbf M + \boldsymbol\sigma_y \mathbf M^* \boldsymbol\sigma_y\]</div>
 <p>where <span class="math notranslate nohighlight">\(*\)</span> is the conjugation operator.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.Hamiltonian.unrepeat">
+<span class="sig-name descname"><span class="pre">unrepeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sym</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.Hamiltonian.unrepeat" title="Permalink to this definition"></a></dt>
+<dd><p>Unrepeats the sparse model into different parts (retaining couplings)</p>
+<p>Please see <a class="reference internal" href="#sisl.physics.Hamiltonian.untile" title="sisl.physics.Hamiltonian.untile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">untile</span></code></a> for details, the algorithm and arguments are the same however,
+this is the opposite of <a class="reference internal" href="#sisl.physics.Hamiltonian.repeat" title="sisl.physics.Hamiltonian.repeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.Hamiltonian.untile">
+<span class="sig-name descname"><span class="pre">untile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sym</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.Hamiltonian.untile" title="Permalink to this definition"></a></dt>
+<dd><p>Untiles the sparse model into different parts (retaining couplings)</p>
+<p>Recreates a new sparse object with only the cutted
+atoms in the structure. This will preserve matrix elements in the supercell.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – number of repetitions the tiling function created (opposite meaning as in <a class="reference internal" href="#sisl.physics.Hamiltonian.untile" title="sisl.physics.Hamiltonian.untile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">untile</span></code></a>)</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – which axis to untile along</p></li>
+<li><p><strong>segment</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – which segment to retain. Generally each segment should be equivalent, however
+requesting individiual segments can help uncover inconsistencies in the sparse matrix</p></li>
+<li><p><strong>*args</strong> – arguments passed directly to <em class="xref py py-obj">Geometry.untile</em></p></li>
+<li><p><strong>sym</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – if True, the algorithm will ensure the returned matrix is symmetrized (i.e.
+return <code class="docutils literal notranslate"><span class="pre">(M</span> <span class="pre">+</span> <span class="pre">M.transpose())/2</span></code>, else return data as is.
+False should generally only be used for debugging precision of the matrix elements,
+or if one wishes to check the warnings.</p></li>
+<li><p><strong>**kwargs</strong> – keyword arguments passed directly to <em class="xref py py-obj">Geometry.untile</em></p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Untiling structures with <code class="docutils literal notranslate"><span class="pre">nsc</span> <span class="pre">==</span> <span class="pre">1</span></code> along <em class="xref py py-obj">axis</em> are assumed to have periodic boundary
+conditions.</p>
+<p>When untiling structures with <code class="docutils literal notranslate"><span class="pre">nsc</span> <span class="pre">==</span> <span class="pre">1</span></code> along <em class="xref py py-obj">axis</em> it is important to
+untile <em>as much as possible</em>. This is because otherwise the algorithm cannot determine
+the correct couplings. Therefore to create a geometry of 3 times a unit-cell, one should
+untile to the unit-cell, and subsequently tile 3 times.</p>
+<p>Consider for example a system of 4 atoms, each atom connects to its 2 neighbours.
+Due to the PBC atom 0 will connect to 1 and 3. Untiling this structure in 2 will
+group couplings of atoms 0 and 1. As it will only see one coupling to the right
+it will halve the coupling and use the same coupling to the left, which is clearly wrong.</p>
+<p>In the following the latter is the correct way to do it.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SPM</span><span class="o">.</span><span class="n">untile</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">!=</span> <span class="n">SPM</span><span class="o">.</span><span class="n">untile</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError :</strong> – in case the matrix elements are not conseuctive when determining the
+    new supercell structure. This may often happen if untiling a matrix
+    too few times, and then untiling it again.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.physics.Hamiltonian.tile" title="sisl.physics.Hamiltonian.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a></dt><dd><p>opposite of this method</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.untile</span></code></dt><dd><p>same as this method, see details about parameters here</p>
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 <dl class="py method">

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.brillouinzone &mdash; sisl 0.1.dev1+g81c6f5c documentation</title>
+  <title>sisl.physics.brillouinzone &mdash; sisl 0.1.dev1+g9590202 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g81c6f5c
+                0.1.dev1+g9590202
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -1386,19 +1386,21 @@
 
         <span class="c1"># Now we have a matrix of k-points</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">nkpt</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">nkpt</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot; with off-diagonal components is not implemented yet&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> with off-diagonal components is not implemented yet&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">displacement</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">displacement</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">displacement</span><span class="p">,</span> <span class="n">Real</span><span class="p">):</span>
             <span class="n">displacement</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">fulld</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">displacement</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">displacement</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">displacement</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">size</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">onesd</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">Real</span><span class="p">):</span>
             <span class="n">size</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">fulld</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">size</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
 
         <span class="c1"># Retrieve the diagonal number of values</span>
         <span class="n">Dn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">nkpt</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
@@ -1504,8 +1506,8 @@
             <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">sc</span>
-        <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">{cls}</span><span class="s1">{{nk: </span><span class="si">{nk:d}</span><span class="s1">, size: [</span><span class="si">{size[0]:.3f}</span><span class="s1"> </span><span class="si">{size[1]:.3f}</span><span class="s1"> </span><span class="si">{size[0]:.3f}</span><span class="s1">], trs: </span><span class="si">{trs}</span><span class="s1">,&#39;</span>
-                <span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> diagonal: [</span><span class="si">{diag[0]:d}</span><span class="s1"> </span><span class="si">{diag[1]:d}</span><span class="s1"> </span><span class="si">{diag[2]:d}</span><span class="s1">], displacement: [</span><span class="si">{disp[0]:.3f}</span><span class="s1"> </span><span class="si">{disp[1]:.3f}</span><span class="s1"> </span><span class="si">{disp[2]:.3f}</span><span class="s1">],&#39;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">{cls}</span><span class="s1">{{nk: </span><span class="si">{nk:d}</span><span class="s1">, size: [</span><span class="si">{size[0]:.5f}</span><span class="s1"> </span><span class="si">{size[1]:.5f}</span><span class="s1"> </span><span class="si">{size[0]:.5f}</span><span class="s1">], trs: </span><span class="si">{trs}</span><span class="s1">,&#39;</span>
+                <span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> diagonal: [</span><span class="si">{diag[0]:d}</span><span class="s1"> </span><span class="si">{diag[1]:d}</span><span class="s1"> </span><span class="si">{diag[2]:d}</span><span class="s1">], displacement: [</span><span class="si">{disp[0]:.5f}</span><span class="s1"> </span><span class="si">{disp[1]:.5f}</span><span class="s1"> </span><span class="si">{disp[2]:.5f}</span><span class="s1">],&#39;</span>
                 <span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> </span><span class="si">{sc}</span><span class="se">\n</span><span class="s1">}}&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">nk</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
                                       <span class="n">size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_size</span><span class="p">,</span> <span class="n">trs</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_trs</span><span class="p">,</span> <span class="s1">&#39;no&#39;</span><span class="p">),</span>
                                       <span class="n">diag</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_diag</span><span class="p">,</span> <span class="n">disp</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_displ</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">))</span>
@@ -1540,6 +1542,7 @@
         <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span>
         <span class="n">bz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_diag</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_displ</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_centered</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trs</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># this is required due to replace calls</span>
         <span class="n">bz</span><span class="o">.</span><span class="n">_k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_k</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">bz</span><span class="o">.</span><span class="n">_w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">bz</span></div>
@@ -1744,24 +1747,27 @@
         <span class="k">if</span> <span class="n">displ</span> <span class="o">!=</span> <span class="mf">0.</span> <span class="ow">or</span> <span class="n">size</span> <span class="o">!=</span> <span class="mf">1.</span><span class="p">:</span>
             <span class="n">centered</span> <span class="o">=</span> <span class="kc">False</span>
 
+        <span class="c1"># size *per k-point*</span>
+        <span class="n">dsize</span> <span class="o">=</span> <span class="n">size</span> <span class="o">/</span> <span class="n">n</span>
+
         <span class="c1"># We create the full grid, then afterwards we figure out TRS</span>
         <span class="n">n_half</span> <span class="o">=</span> <span class="n">n</span> <span class="o">//</span> <span class="mi">2</span>
         <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">k</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">aranged</span><span class="p">(</span><span class="o">-</span><span class="n">n_half</span><span class="p">,</span> <span class="n">n_half</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">size</span> <span class="o">/</span> <span class="n">n</span> <span class="o">+</span> <span class="n">displ</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">aranged</span><span class="p">(</span><span class="o">-</span><span class="n">n_half</span><span class="p">,</span> <span class="n">n_half</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">dsize</span> <span class="o">+</span> <span class="n">displ</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">k</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">aranged</span><span class="p">(</span><span class="o">-</span><span class="n">n_half</span><span class="p">,</span> <span class="n">n_half</span><span class="p">)</span> <span class="o">*</span> <span class="n">size</span> <span class="o">/</span> <span class="n">n</span> <span class="o">+</span> <span class="n">displ</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">aranged</span><span class="p">(</span><span class="o">-</span><span class="n">n_half</span><span class="p">,</span> <span class="n">n_half</span><span class="p">)</span> <span class="o">*</span> <span class="n">dsize</span> <span class="o">+</span> <span class="n">displ</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">centered</span><span class="p">:</span>
                 <span class="c1"># Shift everything by halve the size each occupies</span>
-                <span class="n">k</span> <span class="o">+=</span> <span class="n">size</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n</span><span class="p">)</span>
+                <span class="n">k</span> <span class="o">+=</span> <span class="n">dsize</span> <span class="o">/</span> <span class="mi">2</span>
 
         <span class="c1"># Move k to the primitive cell and generate weights</span>
         <span class="n">k</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">in_primitive</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
-        <span class="n">w</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">fulld</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">size</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">fulld</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">dsize</span><span class="p">)</span>
 
         <span class="c1"># Check for TRS points</span>
         <span class="k">if</span> <span class="n">trs</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">k</span> <span class="o">&lt;</span> <span class="mf">0.</span><span class="p">):</span>
             <span class="c1"># Make all positive to remove the double conting terms</span>
-            <span class="n">k_pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+            <span class="n">k_pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
 
             <span class="c1"># Sort k-points and weights</span>
             <span class="n">idx</span> <span class="o">=</span> <span class="n">argsort</span><span class="p">(</span><span class="n">k_pos</span><span class="p">)</span>
@@ -1771,8 +1777,8 @@
             <span class="n">w</span> <span class="o">=</span> <span class="n">w</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
 
             <span class="c1"># Find indices of all equivalent k-points (tolerance of 1e-10 in reciprocal units)</span>
-            <span class="c1">#  1e-10 ~ 1e10 k-points (no body will do this!)</span>
-            <span class="n">idx_same</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">k_pos</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-10</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="c1"># Use the dsize to estimate the difference in positions</span>
+            <span class="n">idx_same</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">k_pos</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">dsize</span> <span class="o">*</span> <span class="mf">1e-3</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 
             <span class="c1"># The above algorithm should never create more than two duplicates.</span>
             <span class="c1"># Hence we can simply remove all idx_same and double the weight for all</span>
@@ -1860,8 +1866,8 @@
         <span class="c1"># on the boundary.</span>
         <span class="c1"># This does remove boundary points because we shift everything into the positive</span>
         <span class="c1"># plane.</span>
-        <span class="n">diff_k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_primitive</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">%</span> <span class="mf">1.</span> <span class="o">-</span> <span class="n">k</span> <span class="o">%</span> <span class="mf">1.</span><span class="p">)</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">diff_k</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">dk</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_primitive</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">%</span> <span class="mf">1.</span> <span class="o">-</span> <span class="n">k</span> <span class="o">%</span> <span class="mf">1.</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="n">dk</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">.reduce could not find any points to replace.&#39;</span><span class="p">)</span>
 
@@ -1886,12 +1892,9 @@
             <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:])</span>
             <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">.reduce could not assert the weights are consistent during replacement.&#39;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_k</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_w</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span>
-
-        <span class="c1"># Append the new k-points and weights</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_k</span><span class="p">,</span> <span class="n">mp</span><span class="o">.</span><span class="n">_k</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_w</span><span class="p">,</span> <span class="n">mp</span><span class="o">.</span><span class="n">_w</span> <span class="o">*</span> <span class="n">weight_factor</span><span class="p">))</span></div>
+        <span class="c1"># delete and append new k-points and weights</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_k</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">mp</span><span class="o">.</span><span class="n">_k</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_w</span><span class="p">,</span> <span class="n">idx</span><span class="p">),</span> <span class="n">mp</span><span class="o">.</span><span class="n">_w</span> <span class="o">*</span> <span class="n">weight_factor</span><span class="p">))</span></div>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics&quot;</span><span class="p">)</span>

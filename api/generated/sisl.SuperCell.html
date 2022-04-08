@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.SuperCell &mdash; sisl 0.1.dev1+g81c6f5c documentation</title>
+  <title>sisl.SuperCell &mdash; sisl 0.1.dev1+g9590202 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g81c6f5c
+                0.1.dev1+g9590202
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -174,7 +174,7 @@ is returned from <a class="reference internal" href="#sisl.SuperCell.tocell" tit
 </dd>
 </dl>
 <p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
+<table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
@@ -204,8 +204,8 @@ is returned from <a class="reference internal" href="#sisl.SuperCell.tocell" tit
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.copy" title="sisl.SuperCell.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>([cell, origin])</p></td>
 <td><p>A deepcopy of the object</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.cut" title="sisl.SuperCell.cut"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cut</span></code></a>(seps, axis)</p></td>
-<td><p>Cuts the cell into several different sections.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.cut" title="sisl.SuperCell.cut"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cut</span></code></a>(reps, axis)</p></td>
+<td><p>Reverses a <a class="reference internal" href="#sisl.SuperCell.tile" title="sisl.SuperCell.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell.tile</span></code></a> and returns the segmented version</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.equal" title="sisl.SuperCell.equal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">equal</span></code></a>(other[, tol])</p></td>
 <td><p>Check whether two supercell are equivalent</p></td>
@@ -269,6 +269,12 @@ is returned from <a class="reference internal" href="#sisl.SuperCell.tocell" tit
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.translate" title="sisl.SuperCell.translate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate</span></code></a>(v)</p></td>
 <td><p>Appends additional space to the object</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.unrepeat" title="sisl.SuperCell.unrepeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unrepeat</span></code></a>(reps, axis)</p></td>
+<td><p>Reverses a <a class="reference internal" href="#sisl.SuperCell.tile" title="sisl.SuperCell.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell.tile</span></code></a> and returns the segmented version</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.untile" title="sisl.SuperCell.untile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">untile</span></code></a>(reps, axis)</p></td>
+<td><p>Reverses a <a class="reference internal" href="#sisl.SuperCell.tile" title="sisl.SuperCell.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell.tile</span></code></a> and returns the segmented version</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.vertices" title="sisl.SuperCell.vertices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vertices</span></code></a>()</p></td>
 <td><p>Vertices of the cell</p></td>
@@ -410,8 +416,15 @@ vectors and it must have length 3</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.SuperCell.cut">
-<span class="sig-name descname"><span class="pre">cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/supercell.html#SuperCell.cut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SuperCell.cut" title="Permalink to this definition"></a></dt>
-<dd><p>Cuts the cell into several different sections.</p>
+<span class="sig-name descname"><span class="pre">cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SuperCell.cut" title="Permalink to this definition"></a></dt>
+<dd><p>Reverses a <a class="reference internal" href="#sisl.SuperCell.tile" title="sisl.SuperCell.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell.tile</span></code></a> and returns the segmented version</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.SuperCell.tile" title="sisl.SuperCell.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a></dt><dd><p>opposite of this method</p>
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -802,6 +815,32 @@ before checking the number of arguments.</p>
 <dt class="sig sig-object py" id="sisl.SuperCell.translate">
 <span class="sig-name descname"><span class="pre">translate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SuperCell.translate" title="Permalink to this definition"></a></dt>
 <dd><p>Appends additional space to the object</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SuperCell.unrepeat">
+<span class="sig-name descname"><span class="pre">unrepeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SuperCell.unrepeat" title="Permalink to this definition"></a></dt>
+<dd><p>Reverses a <a class="reference internal" href="#sisl.SuperCell.tile" title="sisl.SuperCell.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell.tile</span></code></a> and returns the segmented version</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.SuperCell.tile" title="sisl.SuperCell.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a></dt><dd><p>opposite of this method</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SuperCell.untile">
+<span class="sig-name descname"><span class="pre">untile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/supercell.html#SuperCell.untile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SuperCell.untile" title="Permalink to this definition"></a></dt>
+<dd><p>Reverses a <a class="reference internal" href="#sisl.SuperCell.tile" title="sisl.SuperCell.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell.tile</span></code></a> and returns the segmented version</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.SuperCell.tile" title="sisl.SuperCell.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a></dt><dd><p>opposite of this method</p>
+</dd>
+</dl>
+</div>
 </dd></dl>
 
 <dl class="py method">

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.geometry &mdash; sisl 0.1.dev1+g81c6f5c documentation</title>
+  <title>sisl.geometry &mdash; sisl 0.1.dev1+g9590202 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g81c6f5c
+                0.1.dev1+g9590202
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -616,7 +616,7 @@
         <span class="c1"># Cut down the supercell (TODO this does not correct the number of supercell connections!)</span>
         <span class="n">sc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
-            <span class="n">sc</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">supercell</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">i</span><span class="p">)</span>
+            <span class="n">sc</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">untile</span><span class="p">(</span><span class="n">supercell</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">i</span><span class="p">)</span>
 
         <span class="c1"># Now we need to find the atoms that are in the primary cell</span>
         <span class="c1"># We do this by finding all coordinates within the primary unit-cell</span>
@@ -2019,17 +2019,26 @@
         <span class="c1"># now call sub_orbital</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_orbital</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Geometry.cut"><a class="viewcode-back" href="../../api/generated/sisl.Geometry.html#sisl.Geometry.cut">[docs]</a>    <span class="k">def</span> <span class="nf">cut</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seps</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">seg</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot; A subset of atoms from the geometry by cutting the geometry into `seps` parts along the direction `axis`.</span>
+<div class="viewcode-block" id="Geometry.unrepeat"><a class="viewcode-back" href="../../api/generated/sisl.Geometry.html#sisl.Geometry.unrepeat">[docs]</a>    <span class="k">def</span> <span class="nf">unrepeat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; Unrepeats the geometry similarly as `untile`</span>
+
+<span class="sd">        Please see `untile` for argument details, the algorithm and arguments are the same however,</span>
+<span class="sd">        this is the opposite of `repeat`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">atoms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">na</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">reps</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span><span class="o">.</span><span class="n">untile</span><span class="p">(</span><span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Geometry.untile"><a class="viewcode-back" href="../../api/generated/sisl.Geometry.html#sisl.Geometry.untile">[docs]</a>    <span class="k">def</span> <span class="nf">untile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">segment</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; A subset of atoms from the geometry by cutting the geometry into `reps` parts along the direction `axis`.</span>
 
 <span class="sd">        This will effectively change the unit-cell in the `axis` as-well</span>
-<span class="sd">        as removing ``self.na/seps`` atoms.</span>
-<span class="sd">        It requires that ``self.na % seps == 0``.</span>
+<span class="sd">        as removing ``self.na/reps`` atoms.</span>
+<span class="sd">        It requires that ``self.na % reps == 0``.</span>
 
 <span class="sd">        REMARK: You need to ensure that all atoms within the first</span>
 <span class="sd">        cut out region are within the primary unit-cell.</span>
 
-<span class="sd">        Doing ``geom.cut(2, 1).tile(2, 1)``, could for symmetric setups,</span>
+<span class="sd">        Doing ``geom.untile(2, 1).tile(2, 1)``, could for symmetric setups,</span>
 <span class="sd">        be equivalent to a no-op operation. A ``UserWarning`` will be issued</span>
 <span class="sd">        if this is not the case.</span>
 
@@ -2037,12 +2046,12 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        seps : int</span>
-<span class="sd">            number of times the structure will be cut.</span>
+<span class="sd">        reps : int</span>
+<span class="sd">            number of times the structure will be cut (untiled)</span>
 <span class="sd">        axis : int</span>
 <span class="sd">            the axis that will be cut</span>
-<span class="sd">        seg : int, optional</span>
-<span class="sd">            returns the i&#39;th segment of the cut structure</span>
+<span class="sd">        segment : int, optional</span>
+<span class="sd">            returns the i&#39;th segment of the untiled structure</span>
 <span class="sd">            Currently the atomic coordinates are not translated,</span>
 <span class="sd">            this may change in the future.</span>
 <span class="sd">        rtol : (tolerance for checking tiling, see `numpy.allclose`)</span>
@@ -2052,7 +2061,7 @@
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; g = sisl.geom.graphene()</span>
 <span class="sd">        &gt;&gt;&gt; gxyz = g.tile(4, 0).tile(3, 1).tile(2, 2)</span>
-<span class="sd">        &gt;&gt;&gt; G = gxyz.cut(2, 2).cut(3, 1).cut(4, 0)</span>
+<span class="sd">        &gt;&gt;&gt; G = gxyz.untile(2, 2).untile(3, 1).untile(4, 0)</span>
 <span class="sd">        &gt;&gt;&gt; np.allclose(g.xyz, G.xyz)</span>
 <span class="sd">        True</span>
 
@@ -2060,24 +2069,25 @@
 <span class="sd">        --------</span>
 <span class="sd">        tile : opposite method of this</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">na</span> <span class="o">%</span> <span class="n">seps</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">.cut &#39;</span>
-                             <span class="sa">f</span><span class="s1">&#39;cannot be cut into </span><span class="si">{</span><span class="n">seps</span><span class="si">}</span><span class="s1"> different &#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">na</span> <span class="o">%</span> <span class="n">reps</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">.untile &#39;</span>
+                             <span class="sa">f</span><span class="s1">&#39;cannot be cut into </span><span class="si">{</span><span class="n">reps</span><span class="si">}</span><span class="s1"> different &#39;</span>
                              <span class="s1">&#39;pieces. Please check your geometry and input.&#39;</span><span class="p">)</span>
         <span class="c1"># Truncate to the correct segments</span>
-        <span class="n">lseg</span> <span class="o">=</span> <span class="n">seg</span> <span class="o">%</span> <span class="n">seps</span>
+        <span class="n">lseg</span> <span class="o">=</span> <span class="n">segment</span> <span class="o">%</span> <span class="n">reps</span>
         <span class="c1"># Cut down cell</span>
-        <span class="n">sc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">seps</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+        <span class="n">sc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">untile</span><span class="p">(</span><span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
         <span class="c1"># List of atoms</span>
-        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">na</span> <span class="o">//</span> <span class="n">seps</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">na</span> <span class="o">//</span> <span class="n">reps</span>
         <span class="n">off</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="n">lseg</span>
         <span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="n">off</span><span class="p">,</span> <span class="n">off</span> <span class="o">+</span> <span class="n">n</span><span class="p">))</span>
         <span class="n">new</span><span class="o">.</span><span class="n">set_supercell</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">new</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">seps</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span><span class="o">.</span><span class="n">xyz</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">xyz</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="n">rtol</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">atol</span><span class="p">):</span>
-            <span class="n">st</span> <span class="o">=</span> <span class="s1">&#39;The cut structure cannot be re-created by tiling&#39;</span>
-            <span class="n">st</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">The tolerance between the coordinates can be altered using rtol, atol&#39;</span>
-            <span class="n">warn</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">new</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span><span class="o">.</span><span class="n">xyz</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">xyz</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="n">rtol</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">atol</span><span class="p">):</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;The cut structure cannot be re-created by tiling</span><span class="se">\n</span><span class="s2">&quot;</span>
+                 <span class="s2">&quot;The tolerance between the coordinates can be altered using rtol, atol&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">new</span></div>
+
+    <span class="n">cut</span> <span class="o">=</span> <span class="n">deprecate_method</span><span class="p">(</span><span class="s2">&quot;*.cut is deprecated, use .untile instead&quot;</span><span class="p">,</span> <span class="s2">&quot;0.13&quot;</span><span class="p">)(</span><span class="n">untile</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Geometry.tile"><a class="viewcode-back" href="../../api/generated/sisl.Geometry.html#sisl.Geometry.tile">[docs]</a>    <span class="k">def</span> <span class="nf">tile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot; Tile the geometry to create a bigger one</span>
@@ -3139,12 +3149,12 @@
                 <span class="n">prev_span</span> <span class="o">=</span> <span class="n">prev_verts</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">prev_verts</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
                 <span class="n">scaled_verts</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">vertices</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
                 <span class="n">scaled_span</span> <span class="o">=</span> <span class="n">scaled_verts</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">scaled_verts</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-                <span class="n">max_scale</span> <span class="o">=</span> <span class="p">(</span><span class="n">scaled_span</span> <span class="o">/</span> <span class="n">prev_span</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>      
+                <span class="n">max_scale</span> <span class="o">=</span> <span class="p">(</span><span class="n">scaled_span</span> <span class="o">/</span> <span class="n">prev_span</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">scale_atoms</span><span class="p">:</span>
             <span class="c1"># Atoms are rescaled to the maximum scale factor</span>
             <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">max_scale</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>        
+        <span class="k">else</span><span class="p">:</span>
             <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="n">atoms</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="n">sc</span><span class="p">)</span></div>
@@ -4010,7 +4020,7 @@
 <span class="sd">        unique : bool, optional</span>
 <span class="sd">           If True the returned indices are unique and sorted.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">orbitals</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayi</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span>
+        <span class="n">orbitals</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span>
         <span class="k">if</span> <span class="n">unique</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">orbitals</span></div>
@@ -4025,7 +4035,7 @@
 <span class="sd">        unique : bool, optional</span>
 <span class="sd">           If True the returned indices are unique and sorted.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">orbitals</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayi</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span>
+        <span class="n">orbitals</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span>
         <span class="n">orbitals</span> <span class="o">=</span> <span class="p">(</span><span class="n">orbitals</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span>
                     <span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_s</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">unique</span><span class="p">:</span>
@@ -4055,7 +4065,7 @@
 
 <span class="sd">        Returns a vector of 3 numbers with integers.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">orbitals</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayi</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span>
+        <span class="n">orbitals</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">sc_off</span><span class="p">[</span><span class="n">orbitals</span><span class="p">,</span> <span class="p">:]</span></div>
 
 <div class="viewcode-block" id="Geometry.o2sc"><a class="viewcode-back" href="../../api/generated/sisl.Geometry.html#sisl.Geometry.o2sc">[docs]</a>    <span class="k">def</span> <span class="nf">o2sc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
@@ -4541,10 +4551,12 @@
         <span class="n">limit_args</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;limit_arguments&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="n">short</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;short&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">opts</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">short</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">short</span><span class="p">:</span>
+            <span class="k">def</span> <span class="nf">opts</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">args</span>
-            <span class="k">return</span> <span class="p">[</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">def</span> <span class="nf">opts</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+                <span class="k">return</span> <span class="p">[</span><span class="n">arg</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span> <span class="k">if</span> <span class="n">arg</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;--&quot;</span><span class="p">)]</span>
 
         <span class="c1"># We limit the import to occur here</span>
         <span class="kn">import</span> <span class="nn">argparse</span>
@@ -4580,7 +4592,8 @@
             <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
                 <span class="n">xyz</span> <span class="o">=</span> <span class="n">ns</span><span class="o">.</span><span class="n">_geometry</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">what</span><span class="o">=</span><span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
                 <span class="n">ns</span><span class="o">.</span><span class="n">_geometry</span> <span class="o">=</span> <span class="n">ns</span><span class="o">.</span><span class="n">_geometry</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_geometry</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">what</span><span class="o">=</span><span class="n">value</span><span class="p">)</span> <span class="o">-</span> <span class="n">xyz</span><span class="p">)</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="o">*</span><span class="n">opts</span><span class="p">(</span><span class="s1">&#39;--center-of&#39;</span><span class="p">,</span> <span class="s1">&#39;-co&#39;</span><span class="p">),</span> <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;mass&#39;</span><span class="p">,</span> <span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="s1">&#39;position&#39;</span><span class="p">,</span> <span class="s1">&#39;cell&#39;</span><span class="p">],</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="o">*</span><span class="n">opts</span><span class="p">(</span><span class="s1">&#39;--center-of&#39;</span><span class="p">,</span> <span class="s1">&#39;-co&#39;</span><span class="p">),</span>
+                       <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;mass&quot;</span><span class="p">,</span> <span class="s2">&quot;mass:pbc&quot;</span><span class="p">,</span> <span class="s2">&quot;xyz&quot;</span><span class="p">,</span> <span class="s2">&quot;position&quot;</span><span class="p">,</span> <span class="s2">&quot;cell&quot;</span><span class="p">,</span> <span class="s2">&quot;mm:xyz&quot;</span><span class="p">],</span>
                        <span class="n">action</span><span class="o">=</span><span class="n">MoveCenterOf</span><span class="p">,</span>
                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Move coordinates to the center of the designated choice.&#39;</span><span class="p">)</span>
 
@@ -4647,15 +4660,6 @@
         <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="o">*</span><span class="n">opts</span><span class="p">(</span><span class="s1">&#39;--sub&#39;</span><span class="p">,</span> <span class="s1">&#39;-s&#39;</span><span class="p">),</span> <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;RNG&#39;</span><span class="p">,</span>
                        <span class="n">action</span><span class="o">=</span><span class="n">ReduceSub</span><span class="p">,</span>
                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Removes specified atoms, can be complex ranges.&#39;</span><span class="p">)</span>
-
-        <span class="k">class</span> <span class="nc">ReduceCut</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
-            <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-                <span class="n">s</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-                <span class="n">d</span> <span class="o">=</span> <span class="n">direction</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                <span class="n">ns</span><span class="o">.</span><span class="n">_geometry</span> <span class="o">=</span> <span class="n">ns</span><span class="o">.</span><span class="n">_geometry</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="o">*</span><span class="n">opts</span><span class="p">(</span><span class="s1">&#39;--cut&#39;</span><span class="p">,</span> <span class="s1">&#39;-c&#39;</span><span class="p">),</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;SEPS&#39;</span><span class="p">,</span> <span class="s1">&#39;DIR&#39;</span><span class="p">),</span>
-                       <span class="n">action</span><span class="o">=</span><span class="n">ReduceCut</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Cuts the geometry into `seps` parts along the unit-cell direction `dir`.&#39;</span><span class="p">)</span>
 
         <span class="c1"># Swaps atoms</span>
         <span class="k">class</span> <span class="nc">AtomSwap</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
@@ -4724,6 +4728,15 @@
                            <span class="n">action</span><span class="o">=</span><span class="n">PeriodRepeatZ</span><span class="p">,</span>
                            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Repeats the geometry along the third cell vector.&#39;</span><span class="p">)</span>
 
+        <span class="k">class</span> <span class="nc">ReduceUnrepeat</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
+            <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">direction</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">ns</span><span class="o">.</span><span class="n">_geometry</span> <span class="o">=</span> <span class="n">ns</span><span class="o">.</span><span class="n">_geometry</span><span class="o">.</span><span class="n">unrepeat</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="o">*</span><span class="n">opts</span><span class="p">(</span><span class="s1">&#39;--unrepeat&#39;</span><span class="p">,</span> <span class="s1">&#39;-ur&#39;</span><span class="p">),</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;REPS&#39;</span><span class="p">,</span> <span class="s1">&#39;DIR&#39;</span><span class="p">),</span>
+                       <span class="n">action</span><span class="o">=</span><span class="n">ReduceUnrepeat</span><span class="p">,</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Unrepeats the geometry into `reps` parts along the unit-cell direction `dir` (opposite of --repeat).&#39;</span><span class="p">)</span>
+
         <span class="k">class</span> <span class="nc">PeriodTile</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
             <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
                 <span class="n">r</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -4754,6 +4767,15 @@
             <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="o">*</span><span class="n">opts</span><span class="p">(</span><span class="s1">&#39;--tile-z&#39;</span><span class="p">,</span> <span class="s1">&#39;-tz&#39;</span><span class="p">),</span> <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;TIMES&#39;</span><span class="p">,</span>
                            <span class="n">action</span><span class="o">=</span><span class="n">PeriodTileZ</span><span class="p">,</span>
                            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Tiles the geometry along the third cell vector.&#39;</span><span class="p">)</span>
+
+        <span class="k">class</span> <span class="nc">ReduceUntile</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
+            <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">direction</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">ns</span><span class="o">.</span><span class="n">_geometry</span> <span class="o">=</span> <span class="n">ns</span><span class="o">.</span><span class="n">_geometry</span><span class="o">.</span><span class="n">untile</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="o">*</span><span class="n">opts</span><span class="p">(</span><span class="s1">&#39;--untile&#39;</span><span class="p">,</span> <span class="s1">&#39;--cut&#39;</span><span class="p">,</span> <span class="s1">&#39;-ut&#39;</span><span class="p">),</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;REPS&#39;</span><span class="p">,</span> <span class="s1">&#39;DIR&#39;</span><span class="p">),</span>
+                       <span class="n">action</span><span class="o">=</span><span class="n">ReduceUntile</span><span class="p">,</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Untiles the geometry into `reps` parts along the unit-cell direction `dir` (opposite of --tile).&#39;</span><span class="p">)</span>
 
         <span class="c1"># Sort</span>
         <span class="k">class</span> <span class="nc">Sort</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>

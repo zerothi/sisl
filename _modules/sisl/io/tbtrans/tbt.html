@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.tbtrans.tbt &mdash; sisl 0.1.dev1+g81c6f5c documentation</title>
+  <title>sisl.io.tbtrans.tbt &mdash; sisl 0.1.dev1+g9590202 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g81c6f5c
+                0.1.dev1+g9590202
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -105,6 +105,7 @@
 <span class="kn">import</span> <span class="nn">itertools</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">ndarray</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">in1d</span><span class="p">,</span> <span class="n">sqrt</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">repeat</span><span class="p">,</span> <span class="n">unique</span>
 
@@ -283,7 +284,7 @@
         <span class="c1"># Return data</span>
         <span class="k">return</span> <span class="n">data</span>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.transmission"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.transmission">[docs]</a>    <span class="k">def</span> <span class="nf">transmission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">elec_to</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.transmission"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.transmission">[docs]</a>    <span class="k">def</span> <span class="nf">transmission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">elec_to</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Transmission from `elec_from` to `elec_to`.</span>
 
 <span class="sd">        The transmission between two electrodes may be retrieved</span>
@@ -320,7 +321,7 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_avg</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">elec_to</span><span class="si">}</span><span class="s2">.T&quot;</span><span class="p">,</span> <span class="n">elec_from</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="n">kavg</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.reflection"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.reflection">[docs]</a>    <span class="k">def</span> <span class="nf">reflection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">from_single</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.reflection"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.reflection">[docs]</a>    <span class="k">def</span> <span class="nf">reflection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">from_single</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Reflection into electrode `elec`</span>
 
 <span class="sd">        The reflection into electrode `elec` is calculated as:</span>
@@ -372,7 +373,7 @@
 
         <span class="k">return</span> <span class="n">BT</span> <span class="o">-</span> <span class="n">T</span></div>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.transmission_eig"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.transmission_eig">[docs]</a>    <span class="k">def</span> <span class="nf">transmission_eig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">elec_to</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.transmission_eig"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.transmission_eig">[docs]</a>    <span class="k">def</span> <span class="nf">transmission_eig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">elec_to</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot; Transmission eigenvalues from `elec_from` to `elec_to`.</span>
 
 <span class="sd">        Parameters</span>
@@ -397,7 +398,7 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_avg</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">elec_to</span><span class="si">}</span><span class="s2">.T.Eig&quot;</span><span class="p">,</span> <span class="n">elec_from</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="n">kavg</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.transmission_bulk"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.transmission_bulk">[docs]</a>    <span class="k">def</span> <span class="nf">transmission_bulk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.transmission_bulk"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.transmission_bulk">[docs]</a>    <span class="k">def</span> <span class="nf">transmission_bulk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot; Bulk transmission for the `elec` electrode</span>
 
 <span class="sd">        The bulk transmission is equivalent to creating a 2 terminal device with</span>
@@ -419,7 +420,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_avg</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elec</span><span class="p">(</span><span class="n">elec</span><span class="p">),</span> <span class="n">kavg</span><span class="o">=</span><span class="n">kavg</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.norm"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.norm">[docs]</a>    <span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.norm"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.norm">[docs]</a>    <span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Normalization factor depending on the input</span>
 
 <span class="sd">        The normalization can be performed in one of the below methods.</span>
@@ -486,7 +487,7 @@
 
         <span class="k">return</span> <span class="n">NORM</span></div>
 
-    <span class="k">def</span> <span class="nf">_DOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">DOS</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">,</span> <span class="nb">sum</span><span class="p">,</span> <span class="n">norm</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_DOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">DOS</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">,</span> <span class="nb">sum</span><span class="p">,</span> <span class="n">norm</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot; Averages/sums the DOS</span>
 
 <span class="sd">        Parameters</span>
@@ -599,7 +600,7 @@
 
         <span class="k">return</span> <span class="n">nDOS</span>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.DOS"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.DOS">[docs]</a>    <span class="k">def</span> <span class="nf">DOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">sum</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.DOS"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.DOS">[docs]</a>    <span class="k">def</span> <span class="nf">DOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">sum</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Green function density of states (DOS) (1/eV).</span>
 
 <span class="sd">        Extract the DOS on a selected subset of atoms/orbitals in the device region</span>
@@ -638,7 +639,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_DOS</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value_E</span><span class="p">(</span><span class="s1">&#39;DOS&#39;</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="n">kavg</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="n">E</span><span class="p">),</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">,</span> <span class="nb">sum</span><span class="p">,</span> <span class="n">norm</span><span class="p">)</span> <span class="o">*</span> <span class="n">eV2Ry</span></div>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.ADOS"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.ADOS">[docs]</a>    <span class="k">def</span> <span class="nf">ADOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">sum</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.ADOS"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.ADOS">[docs]</a>    <span class="k">def</span> <span class="nf">ADOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">sum</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Spectral density of states (DOS) (1/eV).</span>
 
 <span class="sd">        Extract the spectral DOS from electrode `elec` on a selected subset of atoms/orbitals in the device region</span>
@@ -679,7 +680,7 @@
         <span class="n">elec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elec</span><span class="p">(</span><span class="n">elec</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_DOS</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value_E</span><span class="p">(</span><span class="s1">&#39;ADOS&#39;</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="n">kavg</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="n">E</span><span class="p">),</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">,</span> <span class="nb">sum</span><span class="p">,</span> <span class="n">norm</span><span class="p">)</span> <span class="o">*</span> <span class="n">eV2Ry</span></div>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.BDOS"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.BDOS">[docs]</a>    <span class="k">def</span> <span class="nf">BDOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">sum</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.BDOS"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.BDOS">[docs]</a>    <span class="k">def</span> <span class="nf">BDOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">sum</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Bulk density of states (DOS) (1/eV).</span>
 
 <span class="sd">        Extract the bulk DOS from electrode `elec` on a selected subset of atoms/orbitals in the device region</span>
@@ -730,7 +731,7 @@
         <span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transmission</span><span class="p">(</span><span class="n">elec_from</span><span class="p">,</span> <span class="n">elec_to</span><span class="p">,</span> <span class="n">kavg</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">E</span><span class="p">[</span><span class="n">idx_sort</span><span class="p">],</span> <span class="n">T</span><span class="p">[</span><span class="n">idx_sort</span><span class="p">]</span>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.current"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.current">[docs]</a>    <span class="k">def</span> <span class="nf">current</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">elec_to</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.current"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.current">[docs]</a>    <span class="k">def</span> <span class="nf">current</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">elec_to</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Current from `from` to `to` using the k-weights and energy spacings in the file.</span>
 
 <span class="sd">        Calculates the current as:</span>
@@ -764,7 +765,7 @@
                                       <span class="n">elec_to</span><span class="p">,</span> <span class="n">mu_t</span><span class="p">,</span> <span class="n">kt_t</span><span class="p">,</span> <span class="n">kavg</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="tbtncSileTBtrans.current_parameter"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.current_parameter">[docs]</a>    <span class="k">def</span> <span class="nf">current_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="p">,</span> <span class="n">mu_from</span><span class="p">,</span> <span class="n">kt_from</span><span class="p">,</span>
-                          <span class="n">elec_to</span><span class="p">,</span> <span class="n">mu_to</span><span class="p">,</span> <span class="n">kt_to</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                          <span class="n">elec_to</span><span class="p">,</span> <span class="n">mu_to</span><span class="p">,</span> <span class="n">kt_to</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Current from `from` to `to` using the k-weights and energy spacings in the file.</span>
 
 <span class="sd">        Calculates the current as:</span>
@@ -837,7 +838,7 @@
             <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">func_name</span><span class="si">}</span><span class="s2"> does possibly not have all relevant transmission eigenvalues in the &quot;</span>
                  <span class="s2">&quot;calculation. For some energy values all transmission eigenvalues are above </span><span class="si">{eps}</span><span class="s2">!&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.shot_noise"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.shot_noise">[docs]</a>    <span class="k">def</span> <span class="nf">shot_noise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">elec_to</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">classical</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.shot_noise"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.shot_noise">[docs]</a>    <span class="k">def</span> <span class="nf">shot_noise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">elec_to</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">classical</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Shot-noise term `from` to `to` using the k-weights</span>
 
 <span class="sd">        Calculates the shot-noise term according to `classical` (also known as the Poisson value).</span>
@@ -911,7 +912,7 @@
 
         <span class="k">return</span> <span class="n">noise_const</span> <span class="o">*</span> <span class="n">sn</span></div>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.noise_power"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.noise_power">[docs]</a>    <span class="k">def</span> <span class="nf">noise_power</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">elec_to</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.noise_power"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.noise_power">[docs]</a>    <span class="k">def</span> <span class="nf">noise_power</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">elec_to</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Noise power `from` to `to` using the k-weights and energy spacings in the file (temperature dependent)</span>
 
 <span class="sd">        Calculates the noise power as</span>
@@ -991,7 +992,7 @@
         <span class="c1"># Do final conversion</span>
         <span class="k">return</span> <span class="n">noise_const</span> <span class="o">*</span> <span class="n">np</span></div>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.fano"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.fano">[docs]</a>    <span class="k">def</span> <span class="nf">fano</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">elec_to</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">zero_T</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">):</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.fano"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.fano">[docs]</a>    <span class="k">def</span> <span class="nf">fano</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_from</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">elec_to</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">zero_T</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; The Fano-factor for the calculation (requires calculated transmission eigenvalues)</span>
 
 <span class="sd">        Calculate the Fano factor defined as (or through the shot-noise):</span>
@@ -1072,7 +1073,7 @@
         <span class="n">fano</span><span class="p">[</span><span class="n">T</span> <span class="o">&lt;=</span> <span class="mf">0.</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.</span>
         <span class="k">return</span> <span class="n">fano</span></div>
 
-    <span class="k">def</span> <span class="nf">_sparse_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_sparse_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot; Internal routine for retrieving sparse data (orbital current, COOP) &quot;&quot;&quot;</span>
         <span class="c1"># Get the geometry for obtaining the sparsity pattern.</span>
         <span class="k">if</span> <span class="n">elec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1185,8 +1186,12 @@
 
         <span class="k">return</span> <span class="n">csr_matrix</span><span class="p">((</span><span class="n">D</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">rptr</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="n">mat_size</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_sparse_data_orb_to_atom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Dij</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_sparse_data_orb_to_atom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Dij</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot; Reduce orbital sparse data to atomic sparse data</span>
+
+<span class="sd">        This algorithm will keep all the same nnz entries, but will return</span>
+<span class="sd">        a new csr_matrix with duplicate indices. Subsequent algorithms should</span>
+<span class="sd">        sort out what to do with these duplicate entries.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1258,7 +1263,7 @@
         <span class="c1"># I.e. sometimes we want to remove negative values, etc.</span>
         <span class="k">return</span> <span class="n">Dab</span>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.orbital_current"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.orbital_current">[docs]</a>    <span class="k">def</span> <span class="nf">orbital_current</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.orbital_current"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.orbital_current">[docs]</a>    <span class="k">def</span> <span class="nf">orbital_current</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Orbital current originating from `elec` as a sparse matrix</span>
 
 <span class="sd">        This will return a sparse matrix, see ``scipy.sparse.csr_matrix`` for details.</span>
@@ -1267,8 +1272,8 @@
 
 <span class="sd">        When requesting orbital-currents it is vital to consider how the data needs to be analysed</span>
 <span class="sd">        before extracting the data. For instance, if only local currents are interesting one should</span>
-<span class="sd">        use ``only=&#39;+&#39;``. While if one is interested in the transmission between subset of orbitals,</span>
-<span class="sd">        ``only=&#39;all&#39;`` is the correct method.</span>
+<span class="sd">        use ``only=&quot;+&quot;``. While if one is interested in the transmission between subset of orbitals,</span>
+<span class="sd">        ``only=&quot;all&quot;`` is the correct method.</span>
 
 <span class="sd">        For inexperienced users it is adviced to try out all three values of ``only`` to ensure</span>
 <span class="sd">        the correct physics is obtained.</span>
@@ -1292,9 +1297,10 @@
 <span class="sd">           the returned bond currents from the unit-cell (``[None, None, None]``) to</span>
 <span class="sd">           the given supercell, the default is all orbital currents for the supercell.</span>
 <span class="sd">           To only get unit cell orbital currents, pass ``[0, 0, 0]``.</span>
-<span class="sd">        only : {&#39;all&#39;, &#39;+&#39;, &#39;-&#39;}</span>
-<span class="sd">           which orbital currents to return, all, positive or negative values only.</span>
-<span class="sd">           Default to ``&#39;all&#39;`` because it can then be used in the subsequent default</span>
+<span class="sd">        only : {&quot;all&quot;/&quot;both&quot;, &quot;+&quot;/&quot;out&quot;, &quot;-&quot;/&quot;in&quot;}</span>
+<span class="sd">           which orbital currents to return, all, positive (outgoing) or negative (incoming)</span>
+<span class="sd">           values only.</span>
+<span class="sd">           Default to ``&quot;all&quot;`` because it can then be used in the subsequent default</span>
 <span class="sd">           arguments for `bond_current_from_orbital` and `atom_current_from_orbital`.</span>
 <span class="sd">        orbitals : array-like or dict, optional</span>
 <span class="sd">           only retain orbital currents for a subset of orbitals.</span>
@@ -1320,17 +1326,21 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">J</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sparse_data</span><span class="p">(</span><span class="s1">&#39;J&#39;</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="p">,</span> <span class="n">isc</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">only</span> <span class="o">==</span> <span class="s1">&#39;+&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">only</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;out&quot;</span><span class="p">):</span>
             <span class="n">J</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">J</span><span class="o">.</span><span class="n">data</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">elif</span> <span class="n">only</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">only</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;in&quot;</span><span class="p">):</span>
             <span class="n">J</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">J</span><span class="o">.</span><span class="n">data</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">elif</span> <span class="n">only</span> <span class="o">!=</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.orbital_current &#39;only&#39;&#39; keyword has &quot;</span>
-                             <span class="s2">&quot;wrong value [&#39;all&#39;, &#39;+&#39;, &#39;-&#39;] allowed.&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">only</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;both&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.orbital_current &#39;only&#39; keyword has &quot;</span>
+                             <span class="s2">&quot;wrong value [all/both, +/out,-/in] allowed.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># do not delete explicit 0&#39;s as the user can then know the sparse matrices</span>
+        <span class="c1"># calculated.</span>
+        <span class="c1"># Users can them-selves remove them (eliminate_zeros)</span>
 
         <span class="k">return</span> <span class="n">J</span></div>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.bond_current_from_orbital"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.bond_current_from_orbital">[docs]</a>    <span class="k">def</span> <span class="nf">bond_current_from_orbital</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Jij</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.bond_current_from_orbital"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.bond_current_from_orbital">[docs]</a>    <span class="k">def</span> <span class="nf">bond_current_from_orbital</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Jij</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="s2">&quot;out&quot;</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Bond-current between atoms (sum of orbital currents) from an external orbital current</span>
 
 <span class="sd">        Conversion routine from orbital currents into bond currents.</span>
@@ -1342,20 +1352,20 @@
 
 <span class="sd">        where if</span>
 
-<span class="sd">        * ``only=&#39;+&#39;``:</span>
+<span class="sd">        * ``only=&quot;out&quot;``:</span>
 <span class="sd">          only :math:`J_{\nu\mu} &gt; 0` are summed onto the corresponding atom,</span>
-<span class="sd">        * ``only=&#39;-&#39;``:</span>
+<span class="sd">        * ``only=&quot;in&quot;``:</span>
 <span class="sd">          only :math:`J_{\nu\mu} &lt; 0` are summed onto the corresponding atom,</span>
-<span class="sd">        * ``only=&#39;all&#39;``:</span>
+<span class="sd">        * ``only=&quot;both&quot;``:</span>
 <span class="sd">          all :math:`J_{\nu\mu}` are summed onto the corresponding atom.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        Jij : scipy.sparse.csr_matrix</span>
 <span class="sd">           the orbital currents as retrieved from `orbital_current`</span>
-<span class="sd">        only : {&#39;+&#39;, &#39;-&#39;, &#39;all&#39;}</span>
-<span class="sd">           If &quot;+&quot; is supplied only the positive orbital currents are used,</span>
-<span class="sd">           for &quot;-&quot;, only the negative orbital currents are used,</span>
+<span class="sd">        only : {&quot;+&quot;/&quot;out&quot;, &quot;-&quot;/&quot;in&quot;, &quot;all&quot;/&quot;both&quot;}</span>
+<span class="sd">           If +/out is supplied only the positive orbital currents are used (outgoing)</span>
+<span class="sd">           for -/in, only the negative orbital currents are used (incoming),</span>
 <span class="sd">           else return both.</span>
 <span class="sd">        uc : bool, optional</span>
 <span class="sd">           whether the returned bond-currents are only in the unit-cell.</span>
@@ -1378,20 +1388,20 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Jab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sparse_data_orb_to_atom</span><span class="p">(</span><span class="n">Jij</span><span class="p">,</span> <span class="n">uc</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">only</span> <span class="o">==</span> <span class="s1">&#39;+&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">only</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;out&quot;</span><span class="p">):</span>
             <span class="n">Jab</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">Jab</span><span class="o">.</span><span class="n">data</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">elif</span> <span class="n">only</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">only</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;in&quot;</span><span class="p">):</span>
             <span class="n">Jab</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">Jab</span><span class="o">.</span><span class="n">data</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">elif</span> <span class="n">only</span> <span class="o">!=</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">only</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;both&quot;</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.bond_current_from_orbital &#39;only&#39; keyword has &quot;</span>
-                             <span class="s2">&quot;wrong value [&#39;+&#39;, &#39;-&#39;, &#39;all&#39;] allowed.&quot;</span><span class="p">)</span>
+                             <span class="s2">&quot;wrong value [+/out, -/in, all/both] allowed.&quot;</span><span class="p">)</span>
 
         <span class="c1"># Do in-place operations by removing all the things not required</span>
         <span class="n">Jab</span><span class="o">.</span><span class="n">sum_duplicates</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="n">Jab</span></div>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.bond_current"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.bond_current">[docs]</a>    <span class="k">def</span> <span class="nf">bond_current</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.bond_current"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.bond_current">[docs]</a>    <span class="k">def</span> <span class="nf">bond_current</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="s2">&quot;out&quot;</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot; Bond-current between atoms (sum of orbital currents)</span>
 
 <span class="sd">        Short hand function for calling `orbital_current` and `bond_current_from_orbital`.</span>
@@ -1411,10 +1421,10 @@
 <span class="sd">           the returned bond currents from the unit-cell (``[None, None, None]``) (default) to</span>
 <span class="sd">           the given supercell. If ``[None, None, None]`` is passed all</span>
 <span class="sd">           bond currents are returned.</span>
-<span class="sd">        only : {&#39;+&#39;, &#39;-&#39;, &#39;all&#39;}</span>
-<span class="sd">           If &quot;+&quot; is supplied only the positive orbital currents are used,</span>
-<span class="sd">           for &quot;-&quot;, only the negative orbital currents are used,</span>
-<span class="sd">           else return the sum of both. Please see discussion in `orbital_current`.</span>
+<span class="sd">        only : {&quot;+&quot;/&quot;out&quot;, &quot;-&quot;/&quot;in&quot;, &quot;all&quot;/&quot;both&quot;}</span>
+<span class="sd">           If +/out is supplied only the positive orbital currents are used (going out)</span>
+<span class="sd">           for -/in, only the negative orbital currents are used (going in),</span>
+<span class="sd">           else return both. Please see discussion in `orbital_current`.</span>
 <span class="sd">        orbitals : array-like or dict, optional</span>
 <span class="sd">           only retain orbital currents for a subset of orbitals before calculating bond-current</span>
 <span class="sd">           Passed directly to `orbital_current`.</span>
@@ -1426,7 +1436,7 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; Jij = tbt.orbital_current(0, -1.0, only=&#39;+&#39;) # orbital current @ E = -1 eV originating from electrode ``0``</span>
+<span class="sd">        &gt;&gt;&gt; Jij = tbt.orbital_current(0, -1.0, only=&quot;out&quot;) # orbital current @ E = -1 eV originating from electrode ``0``</span>
 <span class="sd">        &gt;&gt;&gt; Jab1 = tbt.bond_current_from_orbital(Jij)</span>
 <span class="sd">        &gt;&gt;&gt; Jab2 = tbt.bond_current(0, -1.0)</span>
 <span class="sd">        &gt;&gt;&gt; Jab1 == Jab2</span>
@@ -1443,7 +1453,7 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bond_current_from_orbital</span><span class="p">(</span><span class="n">Jij</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="n">uc</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="n">only</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.atom_current_from_orbital"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.atom_current_from_orbital">[docs]</a>    <span class="k">def</span> <span class="nf">atom_current_from_orbital</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Jij</span><span class="p">,</span> <span class="n">activity</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.atom_current_from_orbital"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.atom_current_from_orbital">[docs]</a>    <span class="k">def</span> <span class="nf">atom_current_from_orbital</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Jij</span><span class="p">,</span> <span class="n">activity</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Atomic current of atoms by passing the orbital current</span>
 
 <span class="sd">        The atomic current is a single number specifying a figure of the *magnitude*</span>
@@ -1484,14 +1494,14 @@
 <span class="sd">        &gt;&gt;&gt; Ja = tbt.atom_current_from_orbital(Jij)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Create the bond-currents with all summations</span>
-        <span class="n">Jab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bond_current_from_orbital</span><span class="p">(</span><span class="n">Jij</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+        <span class="n">Jab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bond_current_from_orbital</span><span class="p">(</span><span class="n">Jij</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">)</span>
         <span class="c1"># We take the absolute and sum it over all connecting atoms</span>
         <span class="n">Ja</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">Jab</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">activity</span><span class="p">:</span>
             <span class="c1"># Calculate the absolute summation of all orbital</span>
             <span class="c1"># currents and transfer it to a bond-current</span>
-            <span class="n">Jab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bond_current_from_orbital</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">Jij</span><span class="p">),</span> <span class="n">only</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+            <span class="n">Jab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bond_current_from_orbital</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">Jij</span><span class="p">),</span> <span class="n">only</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">)</span>
 
             <span class="c1"># Sum to make it per atom, it is already the absolute</span>
             <span class="n">Jo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">Jab</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
@@ -1505,7 +1515,7 @@
 
         <span class="k">return</span> <span class="n">Ja</span></div>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.atom_current"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.atom_current">[docs]</a>    <span class="k">def</span> <span class="nf">atom_current</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">activity</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.atom_current"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.atom_current">[docs]</a>    <span class="k">def</span> <span class="nf">atom_current</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">activity</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot; Atomic current of atoms</span>
 
 <span class="sd">        Short hand function for calling `orbital_current` and `atom_current_from_orbital`.</span>
@@ -1537,7 +1547,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom_current_from_orbital</span><span class="p">(</span><span class="n">Jorb</span><span class="p">,</span> <span class="n">activity</span><span class="o">=</span><span class="n">activity</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="tbtncSileTBtrans.vector_current_from_bond"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.vector_current_from_bond">[docs]</a>    <span class="nd">@wrap_filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">SparseEfficiencyWarning</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">vector_current_from_bond</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Jab</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">vector_current_from_bond</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Jab</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Vector for each atom being the sum of bond-current times the normalized bond between the atoms</span>
 
 <span class="sd">        The vector current is defined as:</span>
@@ -1595,7 +1605,7 @@
 
         <span class="k">return</span> <span class="n">Ja</span></div>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.vector_current"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.vector_current">[docs]</a>    <span class="k">def</span> <span class="nf">vector_current</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.vector_current"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.vector_current">[docs]</a>    <span class="k">def</span> <span class="nf">vector_current</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="s2">&quot;out&quot;</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot; Vector for each atom describing the *mean* path for the current travelling through the atom</span>
 
 <span class="sd">        See `vector_current_from_bond` for details.</span>
@@ -1611,12 +1621,12 @@
 <span class="sd">        kavg: bool, int, optional</span>
 <span class="sd">           whether the returned vector current is k-averaged, or an explicit (unweighed) k-point</span>
 <span class="sd">           is returned</span>
-<span class="sd">        only : {&#39;+&#39;, &#39;-&#39;, &#39;all&#39;}</span>
-<span class="sd">           By default only sum *outgoing* vector currents (``&#39;+&#39;``).</span>
-<span class="sd">           The *incoming* vector currents may be retrieved by ``&#39;-&#39;``, while the</span>
-<span class="sd">           average incoming and outgoing direction can be obtained with ``&#39;all&#39;``.</span>
+<span class="sd">        only : {&quot;+&quot;/&quot;out&quot;, &quot;-&quot;/&quot;in&quot;, &quot;all&quot;/&quot;both&quot;}</span>
+<span class="sd">           By default only sum *outgoing* vector currents (``&quot;out&quot;``).</span>
+<span class="sd">           The *incoming* vector currents may be retrieved by ``&quot;in&quot;``, while the</span>
+<span class="sd">           average incoming and outgoing direction can be obtained with ``&quot;both&quot;``.</span>
 <span class="sd">           In the last case the vector currents are divided by 2 to ensure the length</span>
-<span class="sd">           of the vector is compatibile with the other options given a pristine system.</span>
+<span class="sd">           of the vector is compatible with the other options given a pristine system.</span>
 <span class="sd">        orbitals : array-like or dict, optional</span>
 <span class="sd">           only retain orbital currents for a subset of orbitals before calculating bond-current</span>
 <span class="sd">           Passed directly to `orbital_current`.</span>
@@ -1637,7 +1647,7 @@
         <span class="c1"># retain vectors crossing the boundaries</span>
         <span class="n">Jab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bond_current</span><span class="p">(</span><span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="n">only</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="n">orbitals</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">only</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">only</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;both&quot;</span><span class="p">):</span>
             <span class="c1"># When we divide by two one can *always* compare the bulk</span>
             <span class="c1"># vector currents using either of the sum-rules.</span>
             <span class="c1"># I.e. it will be much easier to distinguish differences</span>
@@ -1646,7 +1656,7 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector_current_from_bond</span><span class="p">(</span><span class="n">Jab</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.density_matrix"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.density_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">density_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.density_matrix"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.density_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">density_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Density matrix from the Green function at energy `E` (1/eV)</span>
 
 <span class="sd">        The density matrix can be used to calculate the LDOS in real-space.</span>
@@ -1695,7 +1705,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Adensity_matrix</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="p">,</span> <span class="n">isc</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="n">orbitals</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.Adensity_matrix"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.Adensity_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">Adensity_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.Adensity_matrix"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.Adensity_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">Adensity_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Spectral function density matrix at energy `E` (1/eV)</span>
 
 <span class="sd">        The density matrix can be used to calculate the LDOS in real-space.</span>
@@ -1755,7 +1765,7 @@
             <span class="n">DM</span> <span class="o">=</span> <span class="n">DensityMatrix</span><span class="o">.</span><span class="n">fromsp</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">dm</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">DM</span></div>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.orbital_COOP"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.orbital_COOP">[docs]</a>    <span class="k">def</span> <span class="nf">orbital_COOP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.orbital_COOP"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.orbital_COOP">[docs]</a>    <span class="k">def</span> <span class="nf">orbital_COOP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Orbital COOP analysis of the Green function</span>
 
 <span class="sd">        This will return a sparse matrix, see ``scipy.sparse.csr_matrix`` for details.</span>
@@ -1822,7 +1832,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">orbital_ACOOP</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="p">,</span> <span class="n">isc</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.orbital_ACOOP"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.orbital_ACOOP">[docs]</a>    <span class="k">def</span> <span class="nf">orbital_ACOOP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.orbital_ACOOP"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.orbital_ACOOP">[docs]</a>    <span class="k">def</span> <span class="nf">orbital_ACOOP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Orbital COOP analysis of the spectral function</span>
 
 <span class="sd">        This will return a sparse matrix, see `~scipy.sparse.csr_matrix` for details.</span>
@@ -1891,7 +1901,7 @@
         <span class="n">COOP</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sparse_data</span><span class="p">(</span><span class="s1">&#39;COOP&#39;</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="p">,</span> <span class="n">isc</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">)</span> <span class="o">*</span> <span class="n">eV2Ry</span>
         <span class="k">return</span> <span class="n">COOP</span></div>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.atom_COOP_from_orbital"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.atom_COOP_from_orbital">[docs]</a>    <span class="k">def</span> <span class="nf">atom_COOP_from_orbital</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">COOP</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.atom_COOP_from_orbital"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.atom_COOP_from_orbital">[docs]</a>    <span class="k">def</span> <span class="nf">atom_COOP_from_orbital</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">COOP</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the atomic COOP curve from the orbital COOP</span>
 
 <span class="sd">        The atomic COOP are a sum over all orbital COOP:</span>
@@ -1919,7 +1929,7 @@
         <span class="n">COOP</span><span class="o">.</span><span class="n">sum_duplicates</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">COOP</span></div>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.atom_COOP"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.atom_COOP">[docs]</a>    <span class="k">def</span> <span class="nf">atom_COOP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.atom_COOP"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.atom_COOP">[docs]</a>    <span class="k">def</span> <span class="nf">atom_COOP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Atomic COOP curve of the Green function</span>
 
 <span class="sd">        Parameters</span>
@@ -1953,7 +1963,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom_ACOOP</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="p">,</span> <span class="n">isc</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">,</span> <span class="n">uc</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.atom_ACOOP"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.atom_ACOOP">[docs]</a>    <span class="k">def</span> <span class="nf">atom_ACOOP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.atom_ACOOP"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.atom_ACOOP">[docs]</a>    <span class="k">def</span> <span class="nf">atom_ACOOP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Atomic COOP curve of the spectral function</span>
 
 <span class="sd">        Parameters</span>
@@ -1990,7 +2000,7 @@
         <span class="n">COOP</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">orbital_ACOOP</span><span class="p">(</span><span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="p">,</span> <span class="n">isc</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom_COOP_from_orbital</span><span class="p">(</span><span class="n">COOP</span><span class="p">,</span> <span class="n">uc</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.orbital_COHP"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.orbital_COHP">[docs]</a>    <span class="k">def</span> <span class="nf">orbital_COHP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.orbital_COHP"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.orbital_COHP">[docs]</a>    <span class="k">def</span> <span class="nf">orbital_COHP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Orbital resolved COHP analysis of the Green function</span>
 
 <span class="sd">        This will return a sparse matrix, see ``scipy.sparse.csr_matrix`` for details.</span>
@@ -2039,7 +2049,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">orbital_ACOHP</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="p">,</span> <span class="n">isc</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.orbital_ACOHP"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.orbital_ACOHP">[docs]</a>    <span class="k">def</span> <span class="nf">orbital_ACOHP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.orbital_ACOHP"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.orbital_ACOHP">[docs]</a>    <span class="k">def</span> <span class="nf">orbital_ACOHP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Orbital resolved COHP analysis of the spectral function</span>
 
 <span class="sd">        This will return a sparse matrix, see ``scipy.sparse.csr_matrix`` for details.</span>
@@ -2086,7 +2096,7 @@
         <span class="n">COHP</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sparse_data</span><span class="p">(</span><span class="s1">&#39;COHP&#39;</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="p">,</span> <span class="n">isc</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">COHP</span></div>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.atom_COHP_from_orbital"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.atom_COHP_from_orbital">[docs]</a>    <span class="k">def</span> <span class="nf">atom_COHP_from_orbital</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">COHP</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.atom_COHP_from_orbital"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.atom_COHP_from_orbital">[docs]</a>    <span class="k">def</span> <span class="nf">atom_COHP_from_orbital</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">COHP</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the atomic COHP curve from the orbital COHP</span>
 
 <span class="sd">        The atomic COHP are a sum over all orbital COHP:</span>
@@ -2112,7 +2122,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom_COOP_from_orbital</span><span class="p">(</span><span class="n">COHP</span><span class="p">,</span> <span class="n">uc</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.atom_COHP"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.atom_COHP">[docs]</a>    <span class="k">def</span> <span class="nf">atom_COHP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.atom_COHP"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.atom_COHP">[docs]</a>    <span class="k">def</span> <span class="nf">atom_COHP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Atomic COHP curve of the Green function</span>
 
 <span class="sd">        Parameters</span>
@@ -2146,7 +2156,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom_ACOHP</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="p">,</span> <span class="n">isc</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">,</span> <span class="n">uc</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.atom_ACOHP"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.atom_ACOHP">[docs]</a>    <span class="k">def</span> <span class="nf">atom_ACOHP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.atom_ACOHP"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.atom_ACOHP">[docs]</a>    <span class="k">def</span> <span class="nf">atom_ACOHP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Atomic COHP curve of the spectral function</span>
 
 <span class="sd">        Parameters</span>
