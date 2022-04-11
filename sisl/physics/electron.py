@@ -63,7 +63,7 @@ from sisl._indices import indices_le
 from sisl.oplist import oplist
 from sisl._math_small import xyz_to_spherical_cos_phi
 import sisl._array as _a
-from sisl.linalg import eigh, det, sqrth, svd_destroy
+from sisl.linalg import det, sqrth, svd_destroy
 from sisl.linalg import eigvals as la_eigvals
 from sisl.messages import info, warn, SislError, progressbar, deprecate_method
 from sisl._help import dtype_complex_to_real, dtype_real_to_complex
@@ -958,7 +958,7 @@ def conductivity(bz, distribution='fermi-dirac', method='ahc', degenerate=1.e-5,
         def _ahc(es):
             occ = distribution(es.eig)
             bc = es.berry_curvature(degenerate=degenerate, degenerate_dir=degenerate_dir)
-            return (bc.T @ distribution(es.eig)).T
+            return (bc.T @ occ).T
 
         vol, dim = bz.volume(ret_dim=True)
 
@@ -1063,7 +1063,6 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry', r
     # Currently we require the Berry phase calculation to *only* accept Hamiltonians
     if not isinstance(contour.parent, Hamiltonian):
         raise SislError("berry_phase: requires the Brillouin zone object to contain a Hamiltonian!")
-    spin = contour.parent.spin
 
     if contour.parent.orthogonal:
         def _lowdin(state):
@@ -1515,7 +1514,7 @@ class _electron_State:
         """ Internal routine to check whether this is a non-colinear calculation """
         try:
             return not self.parent.spin.is_diagonal
-        except:
+        except Exception:
             return False
 
     def Sk(self, format=None, spin=None):

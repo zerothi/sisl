@@ -74,7 +74,7 @@ class EigenvalueMetric(SiestaMetric):
         else:
             try:
                 a = eig_ref * dist
-            except:
+            except Exception:
                 raise ValueError(f"{self.__class__.__name__} was passed `dist` which was not "
                                  "broadcastable to `eig_ref`. Please ensure compatibility.")
             self.dist = dist.copy()
@@ -97,7 +97,7 @@ class EigenvalueMetric(SiestaMetric):
             metric = (((eig - self.eig_ref) * self.dist) ** 2).sum() ** 0.5 / eig.shape[1]
             metric = self.failure(metric, False)
             _log.debug(f"metric.eigenvalue [{self.eig_file}] success {metric}")
-        except:
+        except Exception:
             metric = self.failure(0., True)
             _log.warning(f"metric.eigenvalue [{self.eig_file}] fail {metric}")
         return metric
@@ -187,7 +187,7 @@ class ForceMetric(SiestaMetric):
             force = self.force(get_sile(self.file).read_force())
             metric = self.failure(force, False)
             _log.debug(f"metric.force [{self.file}] success {metric}")
-        except:
+        except Exception:
             metric = self.failure(0., True)
             _log.debug(f"metric.force [{self.file}] fail {metric}")
         return metric

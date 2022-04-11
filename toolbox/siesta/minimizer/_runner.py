@@ -288,7 +288,7 @@ class SiestaRunner(CommandRunner):
         for pre, f in [('>', stdout), ('2>', stderr)]:
             try:
                 pipe += f"{pre} {f.name}"
-            except:
+            except Exception:
                 pass
         cmd = [str(cmd) for cmd in self.cmd + [self.fdf]]
         _log.debug(f"running Siesta using command[{self.path}]: {' '.join(cmd)} {pipe}")

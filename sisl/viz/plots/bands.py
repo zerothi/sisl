@@ -27,7 +27,7 @@ from ..input_fields import (
 try:
     import pathos
     _do_parallel_calc = True
-except:
+except Exception:
     _do_parallel_calc = False
 
 

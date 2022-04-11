@@ -29,7 +29,7 @@ def argv_negative_fix(argv):
         try:
             strseq(complex, a)
             strmap(complex, a)
-        except:
+        except Exception:
             rgv.append(a)
         else:
             rgv.append(' ' + a)

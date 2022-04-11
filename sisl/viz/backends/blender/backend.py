@@ -234,7 +234,7 @@ class BlenderAnimationBackend(BlenderBackend, AnimationBackend):
                 # Some objects don't have materials associated.
                 try:
                     new_obj.data.materials[0] = obj.data.materials[0].copy()
-                except:
+                except Exception:
                     pass
                 collection.objects.link(new_obj)
 

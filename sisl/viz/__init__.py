@@ -21,7 +21,7 @@ from sisl._environ import register_environ_variable
 
 try:
     _nprocs = len(os.sched_getaffinity(0))
-except:
+except Exception:
     _nprocs = 1
 
 register_environ_variable("SISL_VIZ_NUM_PROCS", min(1, _nprocs),

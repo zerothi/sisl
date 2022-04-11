@@ -118,7 +118,7 @@ class outSileVASP(SileVASP):
                 line = next(itt)
             line = next(itt)
             E["free"] = float(line.split()[-2])
-            line = next(itt)
+            next(itt)
             line = next(itt)
             v = line.split()
             E["total"] = float(v[4])
@@ -134,7 +134,7 @@ class outSileVASP(SileVASP):
         try:
             # this just puts the job_completed flag. But otherwise not used
             self.cpu_time()
-        except:
+        except Exception:
             pass
 
         if all:

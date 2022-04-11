@@ -89,7 +89,7 @@ class _FakeMatrix:
                 out = np.zeros_like(v)
                 np.fill_diagonal(out, diag)
                 return out
-        except:
+        except Exception:
             pass
         return v
 
@@ -995,7 +995,7 @@ class State(ParentContainer):
             if not self.parent.spin.is_diagonal:
                 # for NC/SOC we have a 2x2 spin-box per orbital
                 phase = np.repeat(phase, 2)
-        except:
+        except Exception:
             pass
 
         if gauge == 'r':
@@ -1232,7 +1232,7 @@ class StateC(State):
                 dSk = self.parent.dSk(**opt)
                 if order > 1:
                     ddSk = self.parent.ddSk(**opt)
-        except: pass
+        except Exception: pass
 
         # Now figure out if spin is a thing
         add_keys(opt, "spin")

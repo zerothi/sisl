@@ -792,12 +792,11 @@ class outSileSiesta(SileSiesta):
                     data = line.split()[1:]
                     try:
                         d['ts-q'] = list(map(float, data))
-                    except:
+                    except Exception:
                         # We are probably reading a device list
                         # ensure that props are appended
                         if data[-1] not in props:
                             props.extend(data)
-                        pass
                 elif line.startswith('ts-scf:'):
                     d['_found_iscf'] = True
                     if len(line) == 100:
@@ -1058,7 +1057,7 @@ class outSileSiesta(SileSiesta):
                     line = self.readline()
                     charge_vals = _parse_charge(line)
                     atom_charges.append(charge_vals)
-                except:
+                except Exception:
                     # We already have the charge values and we reached a line that can't be parsed,
                     # this means we have reached the end.
                     break
@@ -1238,7 +1237,7 @@ class outSileSiesta(SileSiesta):
                 def get_md_scf_charge(scf_charge, iscf):
                     try:
                         return scf_charge[iscf]
-                    except:
+                    except Exception:
                         return nan_array
             if FOUND_MD:
                 md_charge = np.stack(md_charge)

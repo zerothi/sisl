@@ -38,10 +38,10 @@ class eigenvalSileVASP(SileVASP):
         # read first line
         line = self.readline()  # NIONS, NIONS, NBLOCK * KBLOCK, NSPIN
         ns = int(line.split()[-1])
-        line = self.readline()  # AOMEGA, LATT_CUR%ANORM(1:3) *1e-10, POTIM * 1e-15
-        line = self.readline()  # TEMP
-        line = self.readline()  # ' CAR '
-        line = self.readline()  # name
+        self.readline()  # AOMEGA, LATT_CUR%ANORM(1:3) *1e-10, POTIM * 1e-15
+        self.readline()  # TEMP
+        self.readline()  # ' CAR '
+        self.readline()  # name
         line = list(map(int, self.readline().split()))  # electrons, k-points, bands
         nk = line[1]
         nb = line[2]

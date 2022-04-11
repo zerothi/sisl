@@ -846,7 +846,7 @@ class GeometryPlot(Plot):
 
         try:
             all_lattice_vecs = len(set([xaxis, yaxis]).intersection(["a", "b", "c"])) == 2
-        except:
+        except Exception:
             # If set fails it is because xaxis/yaxis is unhashable, which means it
             # is a numpy array
             all_lattice_vecs = False
@@ -1085,7 +1085,7 @@ class GeometryPlot(Plot):
 
         try:
             atoms_styles["color"] = np.array(values_to_colors(atoms_styles["color"], atoms_styles["colorscale"]))
-        except:
+        except Exception:
             pass
 
         atoms_props = wrap_atoms(atoms, atoms_styles)

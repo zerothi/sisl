@@ -250,11 +250,11 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
 
             try:
                 bloch = self.bloch(elec)
-            except:
+            except Exception:
                 bloch = [1] * 3
             try:
                 n_btd = self.n_btd(elec)
-            except:
+            except Exception:
                 n_btd = 'unknown'
             prnt()
             prnt(f"Electrode: {elec}")

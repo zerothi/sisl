@@ -12,7 +12,7 @@ __all__ = ['tbtgfSileTBtrans']
 dic = {}
 try:
     dic['__doc__'] = _gfSileSiesta.__doc__.replace(_gfSileSiesta.__name__, 'tbtgfSileTBtrans')
-except:
+except Exception:
     pass
 
 tbtgfSileTBtrans = set_module("sisl.io.tbtrans")(type("tbtgfSileTBtrans", (_gfSileSiesta, ), dic))

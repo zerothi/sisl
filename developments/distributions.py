@@ -116,7 +116,7 @@ for dist in distributions:
     try:
         # cold function may fail
         axs[1].plot(E, [func(e) for e in E], label=dist.name)
-    except: pass
+    except Exception: pass
 
     if dist.entropy is None:
         dist.entropy = -(dist.pdf*x).integrate((x, -sy.oo, x)).doit(simplify=True).simplify()
@@ -127,7 +127,7 @@ for dist in distributions:
     try:
         # cold function may fail
         axs[2].plot(E, [func(e) for e in E], label=dist.name)
-    except: pass
+    except Exception: pass
 
     var = (dist.pdf*x*x).integrate((x, -sy.oo, sy.oo)).doit(simplify=True).simplify()
     print(f"    variance = {var}")

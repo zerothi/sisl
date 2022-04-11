@@ -50,7 +50,7 @@ class AtomBasis:
         for key in self.opts.keys():
             try:
                 n, l = key
-            except:
+            except Exception:
                 continue
             found = False
             for orb in self.atom:
@@ -179,7 +179,7 @@ class AtomBasis:
             symbol, nl, opt = specie
             try:
                 opts["ion_charge"] = float(opt)
-            except:
+            except Exception:
                 opts["type"] = opt
         elif len(specie) == 2:
             # we have Symbol, nl
@@ -218,7 +218,7 @@ class AtomBasis:
                         npol = int(nl_line[0])
                         nl_line.pop(0)
                         nlopts["pol"] = npol
-                    except:
+                    except Exception:
                         nlopts["pol"] = 1
                 elif opt == "S":
                     nlopts["split"] = float(nl_line.pop(0))
@@ -230,7 +230,7 @@ class AtomBasis:
                     try:
                         ri = float(nl_line[0]) / _Ang2Bohr
                         nl_line.pop(0)
-                    except:
+                    except Exception:
                         # default to None (uses siesta default)
                         ri = None
                     nlopts["soft"] = [V0, ri]
@@ -241,13 +241,13 @@ class AtomBasis:
                         # this is in Bohr-1
                         yukawa = float(nl_line[0]) * _Ang2Bohr
                         nl_line.pop(0)
-                    except:
+                    except Exception:
                         # default to None (uses siesta default)
                         yukawa = None
                     try:
                         width = float(nl_line[0]) / _Ang2Bohr
                         nl_line.pop(0)
-                    except:
+                    except Exception:
                         # default to None (uses siesta default)
                         width = None
                     nlopts["charge"] = [charge, yukawa, width]

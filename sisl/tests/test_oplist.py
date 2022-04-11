@@ -55,7 +55,7 @@ def test_oplist_imath(op, key):
     l2 = d[key]
     try:
         l1 = oplist(data * 2 for data in l2)
-    except:
+    except Exception:
         l1 = oplist([ar.aranged(1, 10), ar.aranged(2, 3)])
     op(l1, l2)
 

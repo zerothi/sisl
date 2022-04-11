@@ -4,10 +4,7 @@
 from numbers import Integral
 import warnings
 import functools as ftool
-import itertools
-import operator
 from collections import namedtuple
-from collections.abc import Sequence
 import numpy as np
 from numpy.lib.mixins import NDArrayOperatorsMixin
 from numpy import (
@@ -26,8 +23,6 @@ from .atom import Atom
 from .orbital import Orbital
 from .geometry import Geometry
 from .messages import warn, SislError, SislWarning, progressbar, deprecate_method
-from ._indices import indices_only
-from ._help import get_dtype
 from .utils.ranges import list2str
 from .sparse import SparseCSR, isspmatrix, _ncol_to_indptr
 
@@ -390,12 +385,12 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         # First extract the actual data
         ncol = csr.ncol.view()
         if csr.finalized:
-            ptr = csr.ptr.view()
+            #ptr = csr.ptr.view()
             col = csr.col.copy()
             D = csr._D.copy()
         else:
             idx = array_arange(csr.ptr[:-1], n=ncol, dtype=int32)
-            ptr = _ncol_to_indptr(ncol)
+            #ptr = _ncol_to_indptr(ncol)
             col = csr.col[idx]
             D = csr._D[idx, :].copy()
             del idx
@@ -668,7 +663,6 @@ class _SparseGeometry(NDArrayOperatorsMixin):
 
     def untile(self, prefix, reps, axis, segment=0, *args, sym=True, **kwargs):
         """ Cuts the sparse model into different parts. """
-        new_w = None
         # Create new geometry
         with warnings.catch_warnings(record=True) as w:
             # Cause all warnings to always be triggered.
@@ -786,13 +780,13 @@ class _SparseGeometry(NDArrayOperatorsMixin):
                             total_nsc += 1
                         else:
                             break
-                    except: pass
+                    except Exception: pass
                     try:
                         if sub_lsc[axis0-total_nsc-1] == -total_nsc - 1:
                             total_nsc += 1
                         else:
                             break
-                    except: pass
+                    except Exception: pass
 
                 nsc[axis] = total_nsc * 2 + 1
 
@@ -2168,8 +2162,9 @@ class SparseOrbital(_SparseGeometry):
 
         # Now figure out if the supercells can be kept, at all...
         # find SC indices in other corresponding to self
-        o_idx_uc = other.geometry.sc.sc_index([0] * 3)
-        o_idx_sc = _a.arangei(other.geometry.sc.n_s)
+        #o_idx_uc = other.geometry.sc.sc_index([0] * 3)
+        #o_idx_sc = _a.arangei(other.geometry.sc.n_s)
+
         # Remove couplings along axis
         for i in range(3):
             if i == axis:
@@ -2599,7 +2594,7 @@ class SparseOrbital(_SparseGeometry):
             if unique(atoms).size != atoms.size:
                 raise ValueError(f"{self.__class__.__name__}.replace requires a unique set of atoms")
             orbs = geom.a2o(atoms, all=True)
-            other_orbs = geom.ouc2sc(np.delete(_a.arangei(geom.no), orbs))
+            #other_orbs = geom.ouc2sc(np.delete(_a.arangei(geom.no), orbs))
 
             # Find the orbitals that these atoms connect to such that we can compare
             # atomic coordinates
@@ -2815,7 +2810,7 @@ depending on your use case. Note indices in the following are supercell indices.
         ainsert_idx = atoms.min()
         oinsert_idx = sgeom.a2o(ainsert_idx)
         # this is the indices of the new atoms in the new geometry
-        self_other_atoms = _a.arangei(ainsert_idx, ainsert_idx + len(other_atoms))
+        #self_other_atoms = _a.arangei(ainsert_idx, ainsert_idx + len(other_atoms))
 
         # We need to do the replacement in two steps
         # A. the geometry

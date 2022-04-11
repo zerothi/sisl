@@ -83,11 +83,11 @@ def sisl_tmp(request, tmp_path_factory):
                 if f.is_file():
                     try:
                         f.close()
-                    except:
+                    except Exception:
                         pass
                     try:
                         f.unlink()
-                    except:
+                    except Exception:
                         pass
             while len(self.dirs) > 0:
                 # Do each removal separately (from back of directory)
@@ -95,7 +95,7 @@ def sisl_tmp(request, tmp_path_factory):
                 if d.is_dir():
                     try:
                         d.rmdir()
-                    except:
+                    except Exception:
                         pass
     ff = FileFactory()
     request.addfinalizer(ff.teardown)

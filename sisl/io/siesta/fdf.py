@@ -127,7 +127,7 @@ class fdfSileSiesta(SileSiesta):
             while self._popfile():
                 pass
             self.fh.seek(0)
-        except:
+        except Exception:
             pass
 
     @sile_fh_open()
@@ -291,7 +291,7 @@ class fdfSileSiesta(SileSiesta):
                     # a real number (otherwise an integer)
                     return 'r'
                 return 'i'
-            except:
+            except Exception:
                 pass
             # fall-back to name with everything
 
@@ -300,7 +300,7 @@ class fdfSileSiesta(SileSiesta):
             try:
                 float(values[0])
                 return 'p'
-            except:
+            except Exception:
                 pass
 
         return 'n'
@@ -428,7 +428,7 @@ class fdfSileSiesta(SileSiesta):
                 self.get(key)
                 # Get the file of the containing data
                 top_file = str(self.fh.name)
-            except:
+            except Exception:
                 pass
 
         # Ensure that all files are closed
@@ -1131,7 +1131,6 @@ class fdfSileSiesta(SileSiesta):
                                       "since there are atoms with 0 mass.")
 
         # Now we can build the dynamical matrix (it will always be real)
-        na = len(geom)
 
         if np.all(supercell <= 1):
             # also catches supercell == 0
@@ -1796,7 +1795,7 @@ class fdfSileSiesta(SileSiesta):
                     n = first
                     l = second
                     nzeta = int(nl_line.pop(0))
-                except:
+                except Exception:
                     l = first
                     nzeta = second
 
@@ -1808,7 +1807,7 @@ class fdfSileSiesta(SileSiesta):
                         try:
                             npol = int(nl_line[0])
                             nl_line.pop(0)
-                        except:
+                        except Exception:
                             npol = 1
 
                 # now we have everything to build the orbitals etc.
@@ -1859,7 +1858,7 @@ class fdfSileSiesta(SileSiesta):
                 M._csr._D[:, -1] = S._csr._D[:, 0]
             else:
                 raise ValueError
-        except:
+        except Exception:
             warn(str(self) + f' could not succesfully read the overlap matrix in {parent_call}.')
 
     def read_density_matrix(self, *args, **kwargs):
@@ -2160,7 +2159,7 @@ class fdfSileSiesta(SileSiesta):
                                   help="Edit the contained geometry in the file")
             tmp_p, tmp_ns = geom.ArgumentParser(tmp_p, *args, **kwargs)
             namespace = merge_instances(namespace, tmp_ns)
-        except:
+        except Exception:
             # Allowed pass due to pythonic reading
             pass
 

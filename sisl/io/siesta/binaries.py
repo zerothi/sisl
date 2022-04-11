@@ -898,19 +898,19 @@ class hsxSileSiesta(SileBinSiesta):
                 symbol = _ptbl.Z_label(label)
                 symbols.append(symbol)
                 continue
-            except:
+            except Exception:
                 pass
             try:
                 symbol = _ptbl.Z_label(label[:2])
                 symbols.append(symbol)
                 continue
-            except:
+            except Exception:
                 pass
             try:
                 symbol = _ptbl.Z_label(label[:1])
                 symbols.append(symbol)
                 continue
-            except:
+            except Exception:
                 # we have no clue, assign -1
                 symbols.append(-1)
 
@@ -1135,15 +1135,15 @@ class wfsxSileSiesta(SileBinSiesta):
         del self._ispin
         try:
             del self._sizes
-        except:
+        except Exception:
             pass
         try:
             del self._basis
-        except:
+        except Exception:
             pass
         try:
             del self._funcs
-        except:
+        except Exception:
             pass
 
     def _setup_parsing(self, close=True, skip_basis=True):
@@ -1648,11 +1648,11 @@ class _gfSileSiesta(SileBinSiesta):
         del self._ispin
         try:
             del self._no_u
-        except:
+        except Exception:
             pass
         try:
             del self._nspin
-        except:
+        except Exception:
             pass
 
     def _step_counter(self, method, **kwargs):
@@ -1969,7 +1969,6 @@ class _gfSileSiesta(SileBinSiesta):
         # index makes firsto behave like fortran lasto
         lasto = obj.geometry.firsto
         bloch = _a.onesi(3)
-        mu = mu
         NE = len(E)
         if E.dtype not in [np.complex64, np.complex128]:
             E = E + 1j * obj.eta
@@ -2084,7 +2083,7 @@ def _type(name, obj, dic=None):
     if not '__doc__' in dic:
         try:
             dic['__doc__'] = obj.__doc__.replace(obj.__name__, name)
-        except:
+        except Exception:
             pass
     return type(name, (obj, ), dic)
 

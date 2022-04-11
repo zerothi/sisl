@@ -398,7 +398,7 @@ class TestObject:
         for sile in get_siles(["ArgumentParser"]):
             try:
                 sile(f).ArgumentParser()
-            except:
+            except Exception:
                 pass
 
     def test_arg_parser2(self, sisl_tmp):
@@ -406,5 +406,5 @@ class TestObject:
         for sile in get_siles(["ArgumentParser_out"]):
             try:
                 sile(f).ArgumentParser()
-            except:
+            except Exception:
                 pass

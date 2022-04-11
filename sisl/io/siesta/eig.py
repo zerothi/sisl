@@ -221,18 +221,18 @@ class eigSileSiesta(SileSiesta):
                     try:
                         dE = float(value[i])
                         i += 1
-                    except: pass
+                    except Exception: pass
                     try:
                         kT = float(value[i])
                         i += 1
-                    except: pass
+                    except Exception: pass
                     try:
                         distr = get_distribution(value[i], smearing=kT)
                         i += 1
-                    except: pass
+                    except Exception: pass
                     try:
                         out = value[i]
-                    except: pass
+                    except Exception: pass
 
                 # Now we are ready to process
                 E = np.arange(ns._Emap[0] - kT * 4, ns._Emap[1] + kT * 4, dE)

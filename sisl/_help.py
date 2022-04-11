@@ -29,7 +29,7 @@ try:
         defusedxml_version = list(map(int, defusedxml_version.split(".")))
         if defusedxml_version[0] == 0 and defusedxml_version[1] <= 5:
             raise ImportError
-    except:
+    except Exception:
         raise ImportError
 except ImportError:
     from xml.etree.ElementTree import parse as xml_parse
@@ -43,7 +43,7 @@ def array_fill_repeat(array, size, cls=None):
     """
     try:
         reps = size // len(array)
-    except:
+    except Exception:
         array = [array]
         reps = size // len(array)
     if size % len(array) != 0:

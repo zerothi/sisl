@@ -228,10 +228,10 @@ def linspace_bz(bz, stop=None, jumps=None, jump_dk=0.05):
     # calculate distances
     dist = (dcart ** 2).sum(1) ** 0.5
 
-    # calculate the total distance
-    total_dist = dist.sum()
-
     if jumps is not None:
+        # calculate the total distance
+        total_dist = dist.sum()
+
         # Zero out the jumps
         dist[jumps] = 0.
         total_dist = dist.sum()
@@ -315,7 +315,7 @@ class BrillouinZone:
             parent.cell
             parent.rcell
             self.parent = parent
-        except:
+        except Exception:
             self.parent = SuperCell(parent)
 
     def __getstate__(self):
@@ -1189,7 +1189,7 @@ class BrillouinZone:
         """
         try:
             func = "." + self._bz_get_func().__name__
-        except:
+        except Exception:
             func = ""
         try:
             call = getattr(self, '_bz_call')
@@ -1888,7 +1888,7 @@ class BandStructure(BrillouinZone):
         def is_empty(ix):
             try:
                 return len(ix[1]) == 0
-            except:
+            except Exception:
                 return ix[1] is None
 
         # filter out jump directions

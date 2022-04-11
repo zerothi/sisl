@@ -50,7 +50,7 @@ class Metric:
         """
         try:
             return a.dot(self._metric(b))
-        except:
+        except Exception:
             return (a * self._metric(b)).sum()
 
     __call__ = inner

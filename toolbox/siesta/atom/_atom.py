@@ -170,7 +170,7 @@ class AtomInput:
         try:
             core = reduce(min, (_shell_order.index(f"{orb.n}{_spdfg[orb.l]}")
                                 for orb in atom), len(_shell_order))
-        except:
+        except Exception:
             core = -1
 
         self.opts.setdefault("core", core)

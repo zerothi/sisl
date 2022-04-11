@@ -103,7 +103,7 @@ class NamedHistory:
             try:
                 # If it's an array-like of strings, we will get the full history of each key
                 return {key: np.array(self._vals[key])[self._hist[key]] for key in item}
-            except:
+            except Exception:
                 # Otherwise, we just map the array with __getitem__()
                 return [self.__getitem__(i) for i in item]
         elif isinstance(item, slice):
@@ -146,7 +146,7 @@ class NamedHistory:
                             if val == saved_val:
                                 new_index = i
                                 break
-                        except:
+                        except Exception:
                             # It is possible that the value itself is not a numpy array
                             # but contains one. This is very hard to handle
                             # Also we will assume that any other exception raised mean the
@@ -945,7 +945,7 @@ def _populate_with_settings(f, class_params):
         # In this case it was just an overhead.
         idx_params = tuple(filter(lambda i_p: i_p[1] in class_params,
                                   enumerate(params)))
-    except:
+    except Exception:
         return f
 
     if len(idx_params) == 0:

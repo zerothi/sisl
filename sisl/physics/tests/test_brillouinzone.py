@@ -382,7 +382,7 @@ class TestBrillouinZone:
         try:
             import psutil
             nprocs = len(psutil.Process().cpu_affinity()) // 2
-        except:
+        except Exception:
             nprocs = os.cpu_count() // 2
         omp_num_threads = os.environ.get("OMP_NUM_THREADS")
 

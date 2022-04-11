@@ -40,7 +40,7 @@ class bandsSileSiesta(SileSiesta):
         try:
             _, _ = map(float, l.split())
             band_lines = True
-        except:
+        except Exception:
             # We are dealing with a band-points file
             pass
 

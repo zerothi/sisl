@@ -5,8 +5,6 @@
 
 This class is the basis of many different objects.
 """
-
-from collections.abc import Iterable
 import math
 import warnings
 from numbers import Integral
@@ -1112,7 +1110,7 @@ class SuperCellChild:
                 try:
                     if isinstance(getattr(self, a), SuperCellChild):
                         getattr(self, a).set_supercell(self.sc)
-                except:
+                except Exception:
                     pass
 
     set_sc = set_supercell

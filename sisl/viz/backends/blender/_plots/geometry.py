@@ -63,7 +63,7 @@ class BlenderGeometryBackend(BlenderBackend, GeometryBackend):
         try:
             atom = self._template_atom.copy()
             atom.data = self._template_atom.data.copy()
-        except:
+        except Exception:
             bpy.ops.surface.primitive_nurbs_surface_sphere_add(radius=1, enter_editmode=False, align='WORLD')
             self._template_atom = bpy.context.object
             atom = self._template_atom

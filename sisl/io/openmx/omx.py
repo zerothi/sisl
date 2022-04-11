@@ -85,7 +85,7 @@ class omxSileOpenMX(SileOpenMX):
             while self._popfile():
                 pass
             self.fh.seek(0)
-        except:
+        except Exception:
             pass
 
     @sile_fh_open()
@@ -186,7 +186,7 @@ class omxSileOpenMX(SileOpenMX):
                     # a real number (otherwise an integer)
                     return 'r'
                 return 'i'
-            except:
+            except Exception:
                 pass
             # fall-back to name with everything
 
@@ -302,7 +302,7 @@ class omxSileOpenMX(SileOpenMX):
                 Z = Zr[:idx]
                 try:
                     R = float(Zr[idx:])
-                except:
+                except Exception:
                     pass
 
             # Now figure out the orbitals
@@ -319,11 +319,11 @@ class omxSileOpenMX(SileOpenMX):
                     l = 'spdfg'.index(c)
                     try:
                         nZ = int(spec[i+1])
-                    except:
+                    except Exception:
                         nZ = 1
                     for z in range(nZ):
                         orbs.extend(SphericalOrbital(l, rf_func(R)).toAtomicOrbital(m=m_order[l], zeta=z+1))
-                except:
+                except Exception:
                     pass
 
             return Z, orbs

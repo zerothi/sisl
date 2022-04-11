@@ -34,7 +34,11 @@ from scipy.sparse.linalg import svds
 import sisl as si
 from sisl.messages import warn
 from sisl import _array as _a
-from sisl.linalg import *
+from sisl.linalg import (
+    eigh_destroy, svd_destroy, inv_destroy,
+    signsqrt,
+    cholesky, solve
+)
 from sisl.utils.misc import PropertyDict
 
 
@@ -262,7 +266,7 @@ class DownfoldSelfEnergy(PivotSelfEnergy):
         eta = None
         try:
             eta = self._se.eta
-        except: pass
+        except Exception: pass
         se = str(self._se).replace('\n', '\n ')
         return f"{self.__class__.__name__}{{no: {len(self)}, blocks: {len(self.btd)}, eta: {eta}, eta_device: {self._eta_device},\n {se}\n}}"
 
@@ -282,7 +286,8 @@ class DownfoldSelfEnergy(PivotSelfEnergy):
             self._data.Ed = E + 1j * self._eta_device
             try:
                 self._data.Eb = E + 1j * self._se.eta
-            except: pass
+            except Exception:
+                pass
         self._data.k = np.asarray(k, dtype=np.float64)
 
         return False

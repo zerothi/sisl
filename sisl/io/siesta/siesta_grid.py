@@ -76,7 +76,7 @@ class gridncSileSiesta(SileCDFSiesta):
         try:
             # <>.grid.nc
             base = f.split('.')[-3]
-        except:
+        except Exception:
             base = 'None'
 
         # Unit-conversion

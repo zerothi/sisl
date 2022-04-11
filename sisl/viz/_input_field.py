@@ -279,7 +279,7 @@ class InputField:
                     val = val.lower() not in ('false', 'f', 'no', 'n')
                 elif dtype in [list, int, float]:
                     val = dtype(val)
-            except:
+            except Exception:
                 continue
 
         return val

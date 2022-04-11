@@ -22,7 +22,7 @@ class ArrayNDInput(InputField):
         # For variable shapes, a different input (ListInput) should be used
         try:
             kwargs["params"]["shape"]
-        except:
+        except Exception:
             shape = np.array(kwargs["default"]).shape
 
             if kwargs.get("params", False):

@@ -55,7 +55,7 @@ class fcSileSiesta(SileSiesta):
             self.fh.seek(0)
             try:
                 displacement = float(line[-1])
-            except:
+            except Exception:
                 warn(f"{self.__class__.__name__}.read_force assumes displacement=0.04 Bohr!")
                 displacement = 0.04 * unit_convert('Bohr', 'Ang')
 
@@ -86,7 +86,7 @@ class fcSileSiesta(SileSiesta):
         if na is None:
             try:
                 na = int(line[-2])
-            except:
+            except Exception:
                 na = None
 
         fc = list()

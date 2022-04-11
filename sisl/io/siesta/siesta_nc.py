@@ -22,7 +22,7 @@ from sisl.physics.overlap import Overlap
 from ._help import *
 try:
     from . import _siesta
-except:
+except Exception:
     pass
 
 
@@ -391,7 +391,7 @@ class ncSileSiesta(SileCDFSiesta):
             if v.unit == 'Ry':
                 # Convert to ev
                 grid *= Ry2eV
-        except:
+        except Exception:
             # Allowed pass due to pythonic reading
             pass
 

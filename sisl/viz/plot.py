@@ -881,7 +881,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
                     try:
                         path = fdf_sile.dir_file(filename, results_path)
                         return self.get_sile(path, *args, follow=True, follow_kwargs={}, file_contents=None, **kwargs)
-                    except:
+                    except Exception:
                         pass
                 else:
                     raise FileNotFoundError(f"Tried to infer {setting_key} from the 'root_fdf', "
@@ -1078,7 +1078,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
             try:
                 fdf_sile = self.get_sile("root_fdf")
                 self.geometry = fdf_sile.read_geometry(output = True)
-            except:
+            except Exception:
                 pass
 
         if not self.PROVIDED_H and (not hasattr(self, "H") or NEW_FDF):
@@ -1204,7 +1204,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
 
             try:
                 widget = self._backend.get_ipywidget()
-            except:
+            except Exception:
                 return _try_backend()
 
             if False and self._widgets["events"]:

@@ -802,7 +802,7 @@ class AtomicOrbital(Orbital):
                     n = int(s[0])
                     # Remove n specification
                     s = s[1:]
-                except:
+                except Exception:
                     n = _n.get(s[0], n)
 
                 # Get l
@@ -818,7 +818,7 @@ class AtomicOrbital(Orbital):
                         zeta = int(s[iZ+1])
                         # Remove Z + int
                         s = s[:iZ] + s[iZ+2:]
-                    except:
+                    except Exception:
                         zeta = 1
                         s = s[:iZ] + s[iZ+1:]
 

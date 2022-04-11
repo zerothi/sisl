@@ -70,7 +70,7 @@ def get_environ_variable(name):
 # We register a few variables that may be used several places
 try:
     _nprocs = len(os.sched_getaffinity(0))
-except:
+except Exception:
     _nprocs = 1
 
 register_environ_variable("SISL_NUM_PROCS", min(1, _nprocs),

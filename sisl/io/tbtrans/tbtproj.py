@@ -587,17 +587,16 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
 
             try:
                 bloch = self.bloch(elec)
-            except:
+            except Exception:
                 bloch = [1] * 3
             try:
                 n_btd = self.n_btd(elec)
-            except:
+            except Exception:
                 n_btd = 'unknown'
             prnt()
             prnt(f"Electrode: {elec}")
             prnt(f"  - number of BTD blocks: {n_btd}")
             prnt("  - Bloch: [{}, {}, {}]".format(*bloch))
-            gelec = self.groups[elec]
             if 'TBT' in self._trans_type:
                 prnt("  - chemical potential: {:.4f} eV".format(self.chemical_potential(elec)))
                 prnt("  - electron temperature: {:.2f} K".format(self.electron_temperature(elec)))

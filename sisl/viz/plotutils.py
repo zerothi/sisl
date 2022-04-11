@@ -11,12 +11,12 @@ import itertools
 try:
     from pathos.pools import ProcessPool as Pool
     pathos_avail = True
-except:
+except Exception:
     pathos_avail = False
 try:
     import tqdm
     tqdm_avail = True
-except:
+except Exception:
     tqdm_avail = False
 
 from copy import deepcopy
@@ -86,7 +86,7 @@ def check_widgets():
         try:
             import ipyevents
             widgets['events_avail'] = True
-        except:
+        except Exception:
             pass
     if 'ipyevents' in err:
         widgets['events_error'] = True

@@ -410,7 +410,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
             # use it in this routine
             # Otherwise we raise an ImportError
             unique([[0, 1], [2, 3]], axis=0)
-        except:
+        except Exception:
             raise NotImplementedError(f"{self.__class__.__name__}.density requires numpy >= 1.13, either update "
                                       "numpy or do not use this function!")
 

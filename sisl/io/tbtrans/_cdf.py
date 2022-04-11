@@ -213,7 +213,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
         g = super().read_geometry(*args, **kwargs)
         try:
             g['Buffer'] = self.a_buf[:]
-        except:
+        except Exception:
             # Then no buffer atoms
             pass
         g['Device'] = self.a_dev[:]
@@ -221,7 +221,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
             for elec in self.elecs:
                 g[elec] = self._value('a', [elec]) - 1
                 g[f"{elec}+"] = self._value('a_down', [elec]) - 1
-        except:
+        except Exception:
             pass
         return g
 
@@ -312,7 +312,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
         try:
             elec = int(elec)
             return self.elecs[elec]
-        except:
+        except Exception:
             return elec
 
     @property
@@ -339,7 +339,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
         """
         try:
             return self._value('eta', self._elec(elec))[0] * self._E2eV
-        except:
+        except Exception:
             return 0. # unknown!
 
     @lru_cache(maxsize=16)

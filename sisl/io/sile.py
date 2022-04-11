@@ -87,7 +87,7 @@ class _sile_rule:
                 try:
                     i = children.index(obj)
                     children.pop(i)
-                except:
+                except Exception:
                     pass
             for child in list(children): # ensure we have a copy for infinite loops
                 for c in child.__bases__:
@@ -492,7 +492,7 @@ class BaseSile:
         try:
             # bypass d.is_relative_to, added in 3.9
             d = d.relative_to(Path('.').resolve())
-        except: pass
+        except Exception: pass
         return f"{self.__class__.__name__}({self.base_file!s}, base={d!s})"
 
 

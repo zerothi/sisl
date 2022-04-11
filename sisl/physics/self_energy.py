@@ -359,7 +359,7 @@ class RecursiveSI(SemiInfinite):
                 del ab, alpha, beta, ab2, tab
                 return inv(GB)
 
-        raise ValueError(self.__class__.__name__+".green could not converge Green function calculation")
+        raise ValueError(f"{self.__class__.__name__}.green could not converge Green function calculation")
 
     def self_energy(self, E, k=(0, 0, 0), dtype=None, eps=1e-14, bulk=False, **kwargs):
         r""" Return a dense matrix with the self-energy at energy `E` and k-point `k` (default Gamma).
@@ -938,7 +938,7 @@ class RealSpaceSE(SelfEnergy):
         try:
             # If the BZ implements TRS (MonkhorstPack) then force it
             trs = bz._trs >= 0
-        except:
+        except Exception:
             trs = opt["trs"]
 
         if dtype is None:
@@ -1531,7 +1531,7 @@ class RealSpaceSI(SelfEnergy):
         try:
             # If the BZ implements TRS (MonkhorstPack) then force it
             trs = bz._trs >= 0
-        except:
+        except Exception:
             trs = opt["trs"]
 
         if dtype is None:

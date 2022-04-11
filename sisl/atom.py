@@ -1396,7 +1396,7 @@ class Atoms:
                     a = Atom(a)
                 try:
                     s = uatoms.index(a)
-                except:
+                except Exception:
                     s = len(uatoms)
                     uatoms.append(a)
                 specie.append(s)

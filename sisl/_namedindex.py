@@ -110,7 +110,7 @@ class NamedIndex:
         try:
             i = self._name.index(name)
             return self._index[i]
-        except:
+        except Exception:
             if isinstance(name, str):
                 return None
             return name

@@ -71,7 +71,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
         sc = SuperCell(cell, nsc=nsc)
         try:
             sc.sc_off = self._value('isc_off')
-        except:
+        except Exception:
             # This is ok, we simply do not have the supercell offsets
             pass
 
@@ -206,7 +206,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
 
         try:
             lvl = self._get_lvl(ilvl)
-        except:
+        except Exception:
             return ilvl, -1, -1
 
         # Now determine the energy and k-indices

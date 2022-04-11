@@ -1758,7 +1758,7 @@ This may be unexpected but enables one to do advanced manipulations.
     try:
         if not hasattr(ns, '_input_file'):
             setattr(ns, '_input_file', input_file)
-    except:
+    except Exception:
         pass
 
     # Now try and figure out the actual arguments

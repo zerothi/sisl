@@ -35,7 +35,7 @@ if on_rtd:
 try:
     import sisl
     print(f"Located sisl here: {sisl.__path__}")
-except:
+except Exception:
     _pp = os.environ.get("PYTHONPATH", "")
     if len(_pp) > 0:
         os.environ["PYTHONPATH"] = f"{_root}:{_pp}"
@@ -454,7 +454,7 @@ def sisl_skip(app, what, name, obj, skip, options):
 
     try:
         cls = sisl_method2class(obj)
-    except:
+    except Exception:
         cls = None
 
     # Quick escape

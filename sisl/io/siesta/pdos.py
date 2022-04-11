@@ -153,16 +153,16 @@ class pdosSileSiesta(SileSiesta):
             # Create the atomic orbital
             try:
                 Z = oi('Z')
-            except:
+            except Exception:
                 try:
                     Z = PeriodicTable().Z(species)
-                except:
+                except Exception:
                     # Unknown
                     Z = -1
 
             try:
                 P = orb.get('P') == 'true'
-            except:
+            except Exception:
                 P = False
 
             ensure_size(ia)
@@ -449,7 +449,7 @@ will store the spin x/y components of all atoms in spin_x_all.dat/spin_y_all.dat
                 try:
                     ranges = lstranges(strmap(int, value, 0, len(geom), sep.pop()))
                     failed = False
-                except:
+                except Exception:
                     pass
             if failed:
                 print(value)
@@ -529,7 +529,7 @@ Multiple options will create a new column/line in output, the --norm and --E sho
                             fh.write_geometry(ns._geometry)
                         return
                     raise NotImplementedError
-                except:
+                except Exception:
                     pass
 
                 if len(ns._data) == 0:

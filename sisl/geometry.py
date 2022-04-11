@@ -7,7 +7,6 @@ from numbers import Integral, Real
 from math import acos
 from itertools import product
 from collections import OrderedDict
-from collections.abc import Iterable
 from pathlib import Path
 import warnings
 
@@ -37,7 +36,7 @@ from .shape import Shape, Sphere, Cube
 from ._namedindex import NamedIndex
 from ._category import Category, GenericCategory
 from ._dispatcher import AbstractDispatch
-from ._dispatcher import ErrorDispatcher, ClassDispatcher, TypeDispatcher
+from ._dispatcher import ClassDispatcher, TypeDispatcher
 
 
 __all__ = ['Geometry', 'sgeom']
@@ -375,6 +374,7 @@ class Geometry(SuperCellChild):
         def m(cat):
             for ia, c in enumerate(cat):
                 if c == None:
+                    # we are using NullCategory == None
                     pass
                 else:
                     yield ia
@@ -1832,7 +1832,6 @@ class Geometry(SuperCellChild):
         #  1. we replace all atoms of a given specie
         #  2. we replace a subset of atoms of a given specie
         if len(atoms) == old_atom_count:
-            new_atom_specie = old_atom_specie
             # We catch the warning about reducing the number of orbitals!
             with warnings.catch_warnings():
                 warnings.filterwarnings('ignore')
@@ -1843,7 +1842,7 @@ class Geometry(SuperCellChild):
             # we have to add the new one (in case it does not exist)
             try:
                 new_atom_specie = geom.atoms.specie_index(new_atom)
-            except:
+            except Exception:
                 new_atom_specie = geom.atoms.nspecie
                 # the above checks that it is indeed a new atom
                 geom._atoms._atom.append(new_atom)
@@ -3153,12 +3152,9 @@ class Geometry(SuperCellChild):
             # Quick return if there are no entries...
 
             ret = [[np.empty([0], np.int32)] * nshapes]
-            rc = 0
             if ret_xyz:
-                rc = rc + 1
                 ret.append([np.empty([0, 3], np.float64)] * nshapes)
             if ret_rij:
-                rd = rc + 1
                 ret.append([np.empty([0], np.float64)] * nshapes)
 
             if nshapes == 1:
@@ -4271,7 +4267,7 @@ class Geometry(SuperCellChild):
             else:
                 try:
                     func = getattr(np, method)
-                except:
+                except Exception:
                     raise ValueError(f"{self.__class__.__name__}.distance `method` has wrong input value.")
         else:
             func = method
@@ -4805,7 +4801,7 @@ try:
     new_dispatch.register(ase_Atoms, GeometryNewAseDispatcher)
     # ensure we don't pollute name-space
     del ase_Atoms
-except:
+except Exception:
     pass
 
 
@@ -4841,7 +4837,7 @@ try:
     new_dispatch.register(pymatgen_Structure, GeometryNewpymatgenDispatcher)
     # ensure we don't pollute name-space
     del pymatgen_Molecule, pymatgen_Structure
-except:
+except Exception:
     pass
 
 
@@ -5062,7 +5058,7 @@ lattice vector.
     try:
         if not hasattr(ns, '_input_file'):
             setattr(ns, '_input_file', input_file)
-    except:
+    except Exception:
         pass
 
     # Now try and figure out the actual arguments

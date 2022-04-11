@@ -2206,11 +2206,11 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
             try:
                 bloch = self.bloch(elec)
-            except:
+            except Exception:
                 bloch = [1] * 3
             try:
                 n_btd = self.n_btd(elec)
-            except:
+            except Exception:
                 n_btd = 'unknown'
             prnt()
             prnt(f"Electrode: {elec}")
@@ -2324,7 +2324,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             def __call__(self, parser, ns, value, option_string=None):
                 try:
                     ns._krng = int(value)
-                except:
+                except Exception:
                     # Parse it as an array
                     if ',' in value:
                         k = map(float, value.split(','))
@@ -2387,7 +2387,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                     try:
                         ranges = lstranges(strmap(int, value, a_dev.min(), a_dev.max(), sep.pop()))
                         failed = False
-                    except:
+                    except Exception:
                         pass
                 if failed:
                     print(value)
@@ -2464,7 +2464,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                             if e2 != e1:
                                 try: # catches if T isn't calculated
                                     self(parser, ns, [e1, e2], option_string)
-                                except:
+                                except Exception:
                                     pass
                         return
                     raise ValueError(f"Electrode: '{e2}' cannot be found in the specified file.")
@@ -2490,7 +2490,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                         for e in ns._tbt.elecs:
                             try: # catches if B isn't calculated
                                 self(parser, ns, [e], option_string)
-                            except:
+                            except Exception:
                                 pass
                         return
                     raise ValueError(f"Electrode: '{e}' cannot be found in the specified file.")
@@ -2574,7 +2574,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                             if e1 != e2:
                                 try: # catches if T-eig isn't calculated
                                     self(parser, ns, [e1, e2], option_string)
-                                except:
+                                except Exception:
                                     pass
                         return
                     raise ValueError(f"Electrode: '{e2}' cannot be found in the specified file.")
@@ -2606,7 +2606,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                             if e2 != e1:
                                 try: # catches if T isn't calculated
                                     self(parser, ns, [e1, e2], option_string)
-                                except:
+                                except Exception:
                                     pass
                         return
                     raise ValueError(f"Electrode: '{e2}' cannot be found in the specified file.")
@@ -2638,7 +2638,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                             if e2 != e1:
                                 try: # catches if T isn't calculated
                                     self(parser, ns, [values[0], e1, e2], option_string)
-                                except:
+                                except Exception:
                                     pass
                         return
                     raise ValueError(f"Electrode: '{e2}' cannot be found in the specified file.")
@@ -2683,7 +2683,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                             fh.write_geometry(ns._geometry)
                         return
                     raise NotImplementedError
-                except:
+                except Exception:
                     pass
 
                 if len(ns._data) == 0:

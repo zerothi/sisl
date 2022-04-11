@@ -299,7 +299,7 @@ class PlotlyBackend(Backend):
                 f'{ax1}axis': self.layout[f'{ax2}axis'].to_plotly_json(),
                 f'{ax2}axis': self.layout[f'{ax1}axis'].to_plotly_json(),
             }, overwrite=True)
-        except:
+        except Exception:
             pass
 
         return self
