@@ -25,5 +25,3 @@ AtomLike = Union[
     Atom,
     Atoms,
 ]
-
-

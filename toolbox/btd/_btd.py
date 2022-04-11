@@ -643,6 +643,18 @@ class DeviceGreen:
             bloch = [int(b) for b in block_get(dic, "bloch", f"{bloch[0]} {bloch[1]} {bloch[2]}").split()]
 
             ret.eta = block_get(dic, "eta", eta, unit='eV')
+            # manual shift of the fermi-level
+            dEf = block_get(dic, "delta-Ef", 0., unit='eV')
+            # shift electronic structure here, we store it in the returned
+            # dictionary, for information, but it shouldn't be used.
+            Helec.shift(dEf)
+            ret.dEf = dEf
+            # add a fraction of the bias in the coupling elements of the
+            # E-C region, only meaningful for
+            ret.V_fraction = block_get(dic, "V-fraction", 0.)
+            if ret.V_fraction > 0.:
+                warn(f"{cls.__name__}.from_fdf(electrode={elec}) found a non-zero V-fraction value. "
+                     "This is currently not implemented here.")
             ret.Helec = Helec
             ret.bloch = bloch
             ret.semi_inf = semi_inf
@@ -710,6 +722,7 @@ class DeviceGreen:
 
             # shift according to potential
             data.Helec.shift(mu)
+            data.mu = mu
             se = si.RecursiveSI(data.Helec, data.semi_inf, eta=data.eta)
 
             # Limit connections of the device along the semi-inf directions

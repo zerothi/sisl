@@ -8,5 +8,3 @@ from sisl._typing import (
     CellOrGeometry,
     AtomLike,
 )
-
-
