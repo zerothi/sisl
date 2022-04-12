@@ -227,7 +227,6 @@ def solve_poisson(geometry, shape, radius="empirical",
 
         # Create slices
         sl = [slice(0, g) for g in grid.shape]
-        new_sl = sl[:]
 
         # One boundary at a time
         for i in (0, 1, 2):

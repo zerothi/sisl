@@ -4469,11 +4469,10 @@ class Geometry(SuperCellChild):
             g = self.copy()
         else:
             g = None
-        d = {
-            "_geometry": g,
-            "_stored_geometry": False,
-        }
-        namespace = default_namespace(**d)
+        namespace = default_namespace(
+            _geometry=g,
+            _stored_geometry=False,
+        )
 
         # Create actions
         class Format(argparse.Action):

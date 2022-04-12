@@ -1897,9 +1897,9 @@ class fdfSileSiesta(SileSiesta):
         _track_file(self._r_density_matrix_tsde, f)
         DM = None
         if f.is_file():
-            if 'geometry' not in kwargs:
+            if "geometry" not in kwargs:
                 # to ensure we get the correct orbital count
-                kwargs['geometry'] = self.read_geometry(True, order=['nc', 'TSHS', 'fdf'])
+                kwargs["geometry"] = self.read_geometry(True, order=['nc', 'TSHS', 'fdf'])
             DM = tsdeSileSiesta(f).read_density_matrix(*args, **kwargs)
             self._r_add_overlap('_r_density_matrix_tsde', DM)
         return DM
@@ -1910,9 +1910,9 @@ class fdfSileSiesta(SileSiesta):
         _track_file(self._r_density_matrix_dm, f)
         DM = None
         if f.is_file():
-            if 'geometry' not in kwargs:
+            if "geometry" not in kwargs:
                 # to ensure we get the correct orbital count
-                kwargs['geometry'] = self.read_geometry(True, order=['nc', 'TSHS', 'fdf'])
+                kwargs["geometry"] = self.read_geometry(True, order=['nc', 'TSHS', 'fdf'])
             DM = dmSileSiesta(f).read_density_matrix(*args, **kwargs)
             self._r_add_overlap('_r_density_matrix_dm', DM)
         return DM

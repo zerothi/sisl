@@ -6,7 +6,7 @@
 from __future__ import annotations
 
 from typing import Union
-from typing import TYPE_CHECKING, final
+#from typing import TYPE_CHECKING, final
 
 from sisl import (
     Geometry, SuperCell,

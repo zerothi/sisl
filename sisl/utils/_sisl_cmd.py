@@ -31,7 +31,7 @@ def argparse_patch(parser):
             arg_strings = values[1:]
 
             # set the parser name if requested
-            if self.dest is not argparse.SUPPRESS:
+            if self.dest != argparse.SUPPRESS:
                 setattr(namespace, self.dest, parser_name)
 
             # select the parser

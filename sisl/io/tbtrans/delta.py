@@ -4,11 +4,10 @@
 import numpy as np
 
 # Import sile objects
+from sisl._internal import set_module
+import sisl._array as _a
 from ..sile import add_sile, sile_raise_write, SileWarning, SileError
 from .sile import SileCDFTBtrans
-from sisl._internal import set_module
-from sisl.utils import *
-import sisl._array as _a
 
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
@@ -346,7 +345,8 @@ class deltancSileTBtrans(SileCDFTBtrans):
             # point, this warning will proceed...
             # I.e. even though the variable has not been set, it will WARN
             # Hence we out-comment this for now...
-            warn(f"Overwriting k-point {ik} and energy point {iE} correction.")
+            #warn(f"Overwriting k-point {ik} and energy point {iE} correction.")
+            pass
         elif ilvl == 3 and warn_E:
             warn(f"Overwriting energy point {iE} correction.")
         elif ilvl == 2 and warn_k:

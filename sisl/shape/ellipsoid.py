@@ -14,7 +14,7 @@ from sisl._indices import indices_in_sphere
 from .base import PureShape, ShapeToDispatcher
 
 
-__all__ = ['Ellipsoid', 'Sphere']
+__all__ = ["Ellipsoid", "Sphere"]
 
 
 @set_module("sisl.shape")

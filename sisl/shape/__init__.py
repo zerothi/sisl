@@ -39,3 +39,5 @@ Currently these mathematical/boolean operators are implemented:
 from .base import *
 from .ellipsoid import *
 from .prism4 import *
+
+__all__ = [s for s in dir() if not s.startswith('_')]

@@ -5,7 +5,7 @@ from numbers import Integral
 import numpy as np
 
 from sisl._internal import set_module
-from sisl import geom, Atom, Geometry
+from sisl import geom, Atom
 from ._common import geometry_define_nsc
 
 __all__ = ['nanoribbon', 'graphene_nanoribbon', 'agnr', 'zgnr']
@@ -92,7 +92,7 @@ def graphene_nanoribbon(width, bond=1.42, atoms=None, kind='armchair'):
     width : int
        number of atoms in the transverse direction
     bond : float, optional
-       C-C bond length. Defaults to 1.42
+       C-C bond length
     atoms : Atom, optional
        atom (or atoms) in the honeycomb lattice. Defaults to ``Atom(6)``
     kind : {'armchair', 'zigzag'}
@@ -120,7 +120,7 @@ def agnr(width, bond=1.42, atoms=None):
     width : int
        number of atoms in the transverse direction
     bond : float, optional
-       C-C bond length. Defaults to 1.42
+       C-C bond length
     atoms : Atom, optional
        atom (or atoms) in the honeycomb lattice. Defaults to ``Atom(6)``
 
@@ -144,7 +144,7 @@ def zgnr(width, bond=1.42, atoms=None):
     width : int
        number of atoms in the transverse direction
     bond : float, optional
-       C-C bond length. Defaults to 1.42
+       C-C bond length
     atoms : Atom, optional
        atom (or atoms) in the honeycomb lattice. Defaults to ``Atom(6)``
 

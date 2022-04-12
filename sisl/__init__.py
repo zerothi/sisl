@@ -45,7 +45,7 @@ Advanced classes
 __author__ = "Nick Papior"
 __license__ = "MPL-2.0"
 
-from . import _version
+import sisl._version as _version
 __version__ = _version.version
 __version_tuple__ = _version.version_tuple
 __bibtex__ = f"""# BibTeX information if people wish to cite
@@ -60,7 +60,7 @@ __bibtex__ = f"""# BibTeX information if people wish to cite
 # do not expose this helper package
 del _version
 
-from . import _environ
+import sisl._environ as _environ
 
 # import the common options used
 from ._common import *
@@ -85,21 +85,21 @@ from .messages import SislDeprecation
 # The unit contain the SI standard conversions using
 # all digits (not program specific)
 from .unit import unit_group, unit_convert, unit_default, units
-from . import unit
+import sisl.unit as unit
 
 # Import numerical constants (they required unit)
-from . import constant
+import sisl.constant as constant
 # To make it easier to type ;)
 C = constant
 
 # Specific linear algebra
-from . import linalg
+import sisl.linalg as linalg
 
 # Utilities
-from . import utils
+import sisl.utils as utils
 
 # Mixing
-from . import mixing
+import sisl.mixing as mixing
 
 # Below are sisl-specific imports
 from .quaternion import *
@@ -127,7 +127,7 @@ from .physics import *
 #  sisl.get_sile
 # This will reduce the cluttering of the separate entities
 # that sisl is made of.
-from . import io
+import sisl.io as io
 from .io.sile import (
     add_sile, get_sile_class, get_sile,
     get_siles, get_sile_rules, SileError,
@@ -145,7 +145,7 @@ Geometry.new.register(BaseSile, Geometry.new._dispatchs[str])
 # This enables:
 # import sisl
 # sisl.geom.graphene
-from . import geom
+import sisl.geom as geom
 
 if _environ.get_environ_variable("SISL_VIZ_AUTOLOAD"):
     from . import viz

@@ -108,8 +108,8 @@ def _mat_spin_convert(M, spin=None):
     the sparse matrix:
 
     H[:, [0, 1, 2, 3, 4, 5, 6, 7]]
-    H11 == H[:, 0] + H[:, 4]
-    H22 == H[:, 1] + H[:, 5]
+    H11 == H[:, 0] + 1j H[:, 4]
+    H22 == H[:, 1] + 1j H[:, 5]
     H12 == H[:, 2] + 1j H[:, 3] # spin-box Hermitian
     H21 == H[:, 6] + 1j H[:, 7]
     """

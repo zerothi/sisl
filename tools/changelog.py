@@ -132,7 +132,7 @@ def main(token, revision_range):
         if len(title) > 60:
             remainder = re.sub("\\s.*$", "...", title[60:])
             if len(remainder) > 20:
-                remainder = title[:80] + "..."
+                title = title[:80] + "..."
             else:
                 title = title[:60] + remainder
         print(pull_msg.format(pull.number, pull.html_url, title))

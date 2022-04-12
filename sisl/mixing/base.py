@@ -49,9 +49,9 @@ class Metric:
         a, b: object
         """
         try:
-            return a.dot(self._metric(b))
+            return a.conj().dot(self._metric(b)).real
         except Exception:
-            return (a * self._metric(b)).sum()
+            return (a.conj() * self._metric(b)).real.sum()
 
     __call__ = inner
 

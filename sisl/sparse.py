@@ -31,7 +31,7 @@ from scipy.sparse import (
 from ._internal import set_module
 from . import _array as _a
 from ._array import asarrayi, arrayi, fulli, array_arange
-from ._indices import indices, indices_only, sorted_unique
+from ._indices import indices, indices_only
 from .messages import warn, SislError
 from ._help import array_fill_repeat, get_dtype, isiterable
 from .utils.mathematics import intersect_and_diff_sets
@@ -1631,12 +1631,12 @@ class SparseCSR(NDArrayOperatorsMixin):
         # First extract the actual data
         ncol = self.ncol.view()
         if self.finalized:
-            ptr = self.ptr.view()
+            #ptr = self.ptr.view()
             col = self.col.copy()
             D = self._D.copy()
         else:
             idx = array_arange(self.ptr[:-1], n=ncol, dtype=int32)
-            ptr = _ncol_to_indptr(ncol)
+            #ptr = _ncol_to_indptr(ncol)
             col = self.col[idx]
             D = self._D[idx, :].copy()
             del idx

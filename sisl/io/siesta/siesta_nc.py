@@ -4,10 +4,9 @@
 from numbers import Integral
 import numpy as np
 from functools import lru_cache
-from os.path import isfile
 
 from .sile import SileCDFSiesta
-from ..sile import add_sile, sile_fh_open, sile_raise_write, SileError
+from ..sile import add_sile, sile_raise_write, SileError
 
 from sisl._internal import set_module
 from sisl._array import aranged, array_arange

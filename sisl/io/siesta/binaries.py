@@ -130,6 +130,25 @@ def _geometry_align(geom_b, geom_u, cls, method):
     return geom
 
 
+def _add_overlap(M, S, str_method):
+    """ Adds the overlap matrix to the matrix `M`
+
+    Handles different cases of `S`
+    """
+    if S is None:
+        return
+
+    if M.spsame(S):
+        if isinstance(S, Overlap):
+            M._csr._D[:, spin] = S._csr._D[:, 0]
+        elif isinstance(S, SparseOrbitalBZ):
+            if S.non_orthogonal:
+                M._csr._D[:, spin] = S._csr._D[:, S.S_idx]
+    else:
+        raise NotImplementedError(f"{str_method} could not paste overlap matrix into the "
+                                  "matrix due to non-conforming sparse elements.")
+
+
 @set_module("sisl.io.siesta")
 class onlysSileSiesta(SileBinSiesta):
     """ Geometry and overlap matrix """
@@ -365,8 +384,15 @@ class dmSileSiesta(SileBinSiesta):
     """ Density matrix file """
 
     def read_density_matrix(self, **kwargs):
-        """ Returns the density matrix from the siesta.DM file """
+        """ Returns the density matrix from the siesta.DM file
 
+        Parameters
+        ----------
+        geometry : Geometry, optional
+           attach a geometry object to the sparse matrix
+        overlap : SparseMatrix, optional
+           attach the overlap matrix to the sparse matrix
+        """
         # Now read the sizes used...
         spin, no, nsc, nnz = _siesta.read_dm_sizes(self.file)
         self._fortran_check('read_density_matrix', 'could not read density matrix sizes.')
@@ -415,7 +441,10 @@ class dmSileSiesta(SileBinSiesta):
         else:
             warn(f'{self!s}.read_density_matrix may result in a wrong sparse pattern!')
 
-        return DM.transpose(spin=False, sort=kwargs.get("sort", True))
+        DM = DM.transpose(spin=False, sort=kwargs.get("sort", True))
+        _add_overlap(DM, kwargs.get("overlap", None),
+                     f"{self.__class__.__name__}.read_density_matrix")
+        return DM
 
     def write_density_matrix(self, DM, **kwargs):
         """ Writes the density matrix to a siesta.DM file """
@@ -451,8 +480,15 @@ class tsdeSileSiesta(dmSileSiesta):
     """ Non-equilibrium density matrix and energy density matrix file """
 
     def read_energy_density_matrix(self, **kwargs):
-        """ Returns the energy density matrix from the siesta.DM file """
+        """ Returns the energy density matrix from the siesta.TSDE file
 
+        Parameters
+        ----------
+        geometry : Geometry, optional
+           attach a geometry object to the sparse matrix
+        overlap : SparseMatrix, optional
+           attach the overlap matrix to the sparse matrix
+        """
         # Now read the sizes used...
         spin, no, nsc, nnz = _siesta.read_tsde_sizes(self.file)
         self._fortran_check('read_energy_density_matrix', 'could not read energy density matrix sizes.')
@@ -500,7 +536,10 @@ class tsdeSileSiesta(dmSileSiesta):
         else:
             warn(f'{self!s}.read_energy_density_matrix may result in a wrong sparse pattern!')
 
-        return EDM.transpose(spin=False, sort=kwargs.get("sort", True))
+        EDM = EDM.transpose(spin=False, sort=kwargs.get("sort", True))
+        _add_overlap(EDM, kwargs.get("overlap", None),
+                     f"{self.__class__.__name__}.read_energy_density_matrix")
+        return EDM
 
     def read_fermi_level(self):
         r""" Query the Fermi-level contained in the file
@@ -1480,13 +1519,13 @@ class wfsxSileSiesta(SileBinSiesta):
         if self._state != 1:
             raise ValueError(f"We are not in a position to read eigenstate info in the file. State: {self._state}")
 
-        # Read all the information. Parse here the k values obtained.
-        # Store the information that should be returned under `returns`.
         if self._sizes.nspin == 2:
             nspin = 2
         else:
             nspin = 1
-        k, kw, nwf = _siesta.read_wfsx_next_all_info(self._iu, 1, self._sizes.nk)
+        # Read all the information. Parse here the k values obtained.
+        # Store the information that should be returned under `returns`.
+        k, kw, nwf = _siesta.read_wfsx_next_all_info(self._iu, nspin, self._sizes.nk)
 
         # Close the file unit
         self._close_wfsx()

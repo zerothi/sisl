@@ -2,7 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from functools import wraps
-from os.path import splitext, isfile, dirname, abspath, basename
+from os.path import splitext, basename
 import gzip
 from pathlib import Path
 

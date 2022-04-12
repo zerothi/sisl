@@ -19,14 +19,18 @@ from scipy.sparse import isspmatrix_csr
 from scipy.sparse import SparseEfficiencyWarning
 
 # Import sile objects
+from sisl.utils import (
+    default_ArgumentParser, default_namespace,
+    collect_action, run_actions,
+    lstranges, strmap, list2str,
+)
 from ..sile import add_sile, sile_raise_write, get_sile
 from ._cdf import _devncSileTBtrans
-from sisl.utils import *
 from sisl._internal import set_module
 import sisl._array as _a
 
 from sisl import Geometry, Atoms
-from sisl import units, constant
+from sisl import constant
 from sisl.sparse import _ncol_to_indptr
 from sisl.messages import warn, info, SislError
 from sisl._help import wrap_filterwarnings
@@ -493,9 +497,6 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         # We will return per-atom
         shp = list(DOS.shape[:-1])
         nDOS = np.empty(shp + [len(atoms)], DOS.dtype)
-
-        # Quicker than re-creating the geometry on every instance
-        geom = self.geometry
 
         # Sum for new return stuff
         for i, a in enumerate(atoms):
@@ -1065,8 +1066,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 all_col[i] = geom.sc_index([ix, iy, iz])
 
             # Transfer all_col to the range
-            all_col = array_arange(all_col * geom.no,
-                                   n=_a.fulli(len(all_col), geom.no))
+            all_col = _a.array_arangei(all_col * geom.no,
+                                       n=_a.fulli(len(all_col), geom.no))
 
             # get both row and column indices
             row_nonzero = (ncol > 0).nonzero()[0]
@@ -2381,17 +2382,15 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 # * will "only" fail if files are named accordingly, else
                 # it will be passed as-is.
                 #       {    [    *
-                sep = ['c', 'b', '*']
-                failed = True
-                while failed and len(sep) > 0:
+                for sep in ('b', 'c'):
                     try:
-                        ranges = lstranges(strmap(int, value, a_dev.min(), a_dev.max(), sep.pop()))
-                        failed = False
+                        ranges = lstranges(strmap(int, value, a_dev.min(), a_dev.max(), sep))
+                        break
                     except Exception:
                         pass
-                if failed:
-                    print(value)
-                    raise ValueError("Could not parse the atomic/orbital ranges")
+                else:
+                    # only if break was not encountered
+                    raise ValueError(f"Could not parse the atomic/orbital ranges: {value}")
 
                 # we have only a subset of the orbitals
                 orbs = []

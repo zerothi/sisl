@@ -15,7 +15,7 @@ from sisl.utils import (
     direction
 )
 from sisl.messages import warn, SislWarning
-from sisl._array import arrayd, arrayi, emptyd, asarrayi
+from sisl._array import arrayd, arrayi, asarrayi
 from sisl.atom import PeriodicTable, Atom, Atoms
 from sisl.geometry import Geometry
 from sisl.orbital import AtomicOrbital

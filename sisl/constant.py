@@ -79,6 +79,11 @@ class PhysicalConstant(float):
             return self
         return PhysicalConstant(self * units(self.unit, unit), unit)
 
+    def __eq__(self, other):
+        if isinstance(other, PhysicalConstant):
+            super().__eq__(self, other * units(other.unit, self.unit))
+        return super().__eq__(self, other)
+
 
 __all__ += ['q', 'c', 'h', 'hbar', 'm_e', 'm_p', 'G', 'G0']
 

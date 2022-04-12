@@ -44,10 +44,10 @@ def strmap(func, s, start=None, end=None, sep="b"):
     >>> strmap(int, "1-10[2-3]")
     [((1, 10), [(2, 3)])]
     """
-    if sep == "b":
+    if sep in ("b", "[", "]"):
         segment = re.compile(r"\[(.+)\]\[(.+)\]|(.+)\[(.+)\]|(.+)")
         sep1, sep2 = "[", "]"
-    elif sep == "c":
+    elif sep in ("c", "{", "}"):
         segment = re.compile(r"\{(.+)\}\{(.+)\}|(.+)\{(.+)\}|(.+)")
         sep1, sep2 = "{", "}"
     else:
