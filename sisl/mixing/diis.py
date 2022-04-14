@@ -9,8 +9,7 @@ import numpy as np
 from sisl._internal import set_module
 import sisl._array as _a
 from sisl.linalg import solve
-from .base import History, Metric
-from .linear import LinearMixer
+from .base import BaseHistoryMixer, History
 
 
 __all__ = ['DIISMixer', 'PulayMixer']
@@ -18,48 +17,54 @@ __all__ += ['AdaptiveDIISMixer', 'AdaptivePulayMixer']
 
 
 @set_module("sisl.mixing")
-class DIISMixer(History, LinearMixer, Metric):
+class DIISMixer(BaseHistoryMixer):
     r""" DIIS mixer """
+    __slots__ = ("_metric",)
 
     def __init__(self, weight=0.1, history=2, metric=None):
         # This will call History.__init__
-        super().__init__(history, 2)
-        LinearMixer.__init__(self, weight)
-        Metric.__init__(self, metric)
+        super().__init__(weight, history)
+        if metric is None:
+            def metric(a, b):
+                return a.ravel().conj().dot(b.ravel()).real
+        self._metric = metric
 
     def __str__(self):
         r""" String representation """
-        hist = History.__str__(self).replace(self.__class__.__name__, History.__name__)
-        return self.__class__.__name__ + f"{{weight: {self.weight:.4f},\n  {hist}\n}}"
+        hist = str(self.history).replace("\n", "\n  ")
+        return f"{self.__class__.__name__}{{weight: {self.weight:.4f},\n  {hist}\n}}"
 
     def solve_lagrange(self):
         r""" Calculate the coefficients according to Pulay's method, return everything + Lagrange multiplier """
-        n_h = len(self._hist[1])
+        hist = self.history
+        n_h = len(hist)
+        metric = self._metric
+
         if n_h == 0:
             # Externally the coefficients should reflect the weight per previous iteration.
             # The mixing weight is an additional parameter
             return _a.arrayd([1.]), 100.
         elif n_h == 1:
-            return _a.arrayd([1.]), self.inner(self._hist[1][0], self._hist[1][0])
+            return _a.arrayd([1.]), metric(hist[0][-1], hist[0][-1])
 
         # Initialize the matrix to be solved against
         B = _a.emptyd([n_h + 1, n_h + 1])
 
         # Fill matrix B
         for i in range(n_h):
-            ei = self._hist[1][i]
+            ei = hist[i][-1]
+            B[i, i] = metric(ei, ei)
             for j in range(i + 1, n_h):
-                ej = self._hist[1][j]
+                ej = hist[j][-1]
 
-                B[i, j] = self.inner(ei, ej)
+                B[i, j] = metric(ei, ej)
                 B[j, i] = B[i, j]
-            B[i, i] = self.inner(ei, ei)
         B[:, n_h] = 1.
         B[n_h, :] = 1.
         B[n_h, n_h] = 0.
 
         # Although B contains 1 and a number on the order of
-        # number of elements (self._hist[0].size), it seems very
+        # number of elements (self._hist.size), it seems very
         # numerically stable.
 
         # Create RHS
@@ -72,31 +77,37 @@ class DIISMixer(History, LinearMixer, Metric):
             # However, these are matrices of order ~30, so we don't care
             c = solve(B, RHS)
             return c[:-1], -c[-1]
-        except np.linalg.LinAlgError:
+        except np.linalg.LinAlgError as e:
             # We have a LinalgError
-            return _a.arrayd([1.]), self.inner(self._hist[1][-1], self._hist[1][-1])
+            return _a.arrayd([1.]), metric(hist[-1][-1], hist[-1][-1])
 
     def coefficients(self):
         r""" Calculate coefficients of the Lagrangian """
         c, lagrange = self.solve_lagrange()
         return c
 
-    def __call__(self, f, df):
-        # Add to history
-        self.append(f, df)
-        # Calculate new mixing quantity
-        return self.mix(self.coefficients())
-
-    def mix(self, coeff):
+    def mix(self, coefficients):
         r""" Calculate a new variable :math:`f'` using history and input coefficients
 
         Parameters
         ----------
-        coeff : numpy.ndarray
+        coefficients : numpy.ndarray
            coefficients used for extrapolation
         """
-        return reduce(add, map(mul, coeff, self._hist[0])) + \
-            reduce(add, map(mul, coeff * self.weight, self._hist[1]))
+        def frac_hist(coef, hist):
+            return coef * (hist[0] + self.weight * hist[1])
+        return reduce(add, map(frac_hist, coefficients, self.history))
+
+    def __call__(self, f, df, delta=None, append=True):
+        # Add to history
+        if append:
+            if delta is None:
+                self.history.append(f, df)
+            else:
+                self.history.append(f, df, delta)
+
+        # Calculate new mixing quantity
+        return self.mix(self.coefficients())
 
 
 PulayMixer = set_module("sisl.mixing")(type("PulayMixer", (DIISMixer, ), {}))
@@ -116,10 +127,11 @@ class AdaptiveDIISMixer(DIISMixer):
     be relatively far from the true saddle point, and for small values we
     will be close to the saddle point.
     """
+    __slots__ = ("_weight_min", "_weight_delta")
 
     def __init__(self, weight=(0.03, 0.5), history=2, metric=None):
         if isinstance(weight, Real):
-            weight = (max(0.001, weight - 0.1), min(1., weight + 0.1))
+            weight = (max(0.001, weight * 0.1), min(1., weight * 2))
         super().__init__(weight[0], history, metric)
         self._weight_min = weight[0]
         self._weight_delta = weight[1] - weight[0]

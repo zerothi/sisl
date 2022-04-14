@@ -3,57 +3,45 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from collections import deque
 from functools import lru_cache
+from numbers import Integral
 
 from sisl._internal import set_module
 
 
-__all__ = ['Mixer', 'History', 'Metric']
+__all__ = ["BaseMixer", "BaseHistoryMixer", "History"]
 
 
 @set_module("sisl.mixing")
-class Mixer:
+class BaseMixer:
     r""" Base class mixer """
+    __slots__ = ("_weight")
 
-    def clear(self):
-        r""" Dummy for history mixers such that all mixers can call `clear` """
-        pass
+    def __init__(self, weight=0.2):
+        self._weight = weight
+        assert weight > 0
+
+    @property
+    def weight(self):
+        return self._weight
 
 
 @set_module("sisl.mixing")
-class Metric:
-    r""" Perform inner products using a metric
+class BaseHistoryMixer(BaseMixer):
+    r""" Base class mixer with history """
+    __slots__ = ("_history")
 
-    An inner product can be defined as:
+    def __init__(self, weight=0.2, history=0):
+        super().__init__(weight)
+        self.set_history(history)
 
-    .. math::
+    def set_history(self, history):
+        if isinstance(history, Integral):
+            history = History(history)
+        self._history = history
 
-        s = \langle \mathbf a | \mathbf M | \mathbf b \rangle
-
-    where generally the metric :math:`\mathbf M = 1`.
-    """
-
-    def __init__(self, metric=None):
-        if metric is None:
-            class _dummy_dot:
-                def __call__(self, a):
-                    return a
-            self._metric = _dummy_dot()
-        else:
-            self._metric = metric
-
-    def inner(self, a, b):
-        r""" Perform the inner product between `a` and `b`
-
-        Parameters
-        ----------
-        a, b: object
-        """
-        try:
-            return a.conj().dot(self._metric(b)).real
-        except Exception:
-            return (a.conj() * self._metric(b)).real.sum()
-
-    __call__ = inner
+    @property
+    def history(self):
+        return self._history
 
 
 @set_module("sisl.mixing")
@@ -65,8 +53,6 @@ class History:
 
     Attributes
     ----------
-    variables : int
-       number of different variables stored as a history
     history_max : int or tuple of int
        maximum number of history elements
 
@@ -74,80 +60,61 @@ class History:
     ----------
     history : int, optional
        number of maximum history elements stored
-    variables : int, optional
-       number of different variables stored as a history.
     """
 
-    def __init__(self, history=2, variables=2):
+    def __init__(self, history=2):
         # Create a list of queues
-        self._hist = [deque(maxlen=history) for i in range(variables)]
+        self._hist = deque(maxlen=history)
 
     def __str__(self):
         """ str of the object """
-        return self.__class__.__name__ + f"{{history: {self.history}/{self.history_max}, variables={self.variables}}}"
+        return f"{self.__class__.__name__}{{history: {self.elements}/{self.max_elements}}}"
 
     @property
-    @lru_cache(maxsize=1)
-    def variables(self):
-        r""" Number of different variables that can be contained """
+    def max_elements(self):
+        r""" Maximum number of elements stored in the history for each variable """
+        return self._hist.maxlen
+
+    @property
+    def elements(self):
+        r""" Number of elements in the history """
         return len(self._hist)
 
-    @property
-    @lru_cache(maxsize=1)
-    def history_max(self):
-        r""" Maximum number of elements stored in the history for each variable """
-        return self._hist[0].maxlen
+    def __len__(self):
+        return self.elements
 
-    @property
-    def history(self):
-        r""" Number of elements in the history """
-        return len(self._hist[0])
+    def __getitem__(self, key):
+        return self._hist[key]
 
-    __len__ = history
+    def __setitem__(self, key, value):
+        self._hist[key] = value
 
-    def append(self, *args, variable=None):
+    def __delitem__(self, key):
+        self.clear(key)
+
+    def append(self, *args):
         r""" Add variables to the history
 
         Parameters
         ----------
         *args : tuple of object
             each variable will be added to the history of the mixer
-        variable : int or listlike of int
-            specify which variables the history should be added to, note:
-            ``len(args) == len(variable)``
         """
-        if variable is None:
-            variable = range(self.variables)
+        self._hist.append(args)
 
-        # Clarify a few things
-        variable = list(variable)
-        if len(args) != len(variable):
-            raise ValueError(f"{self.__class__.__name__}.append requires same length input")
-
-        for i, arg in zip(variable, args):
-            self._hist[i].append(arg)
-
-    def clear(self, index=None, variables=None):
+    def clear(self, index=None):
         r""" Clear variables to the history
 
         Parameters
         ----------
         index : int or array_like of int
             which indices of the history we should clear
-        variables : int or array_like of int
-            specify which variables should be cleared
         """
-        if variables is None:
-            variables = range(self.variables)
-        variables = list(variables)
-
         if index is None:
-            for v in variables:
-                self._hist[v].clear()
+            self._hist.clear()
         else:
             index = list(index)
             # We need to ensure we delete in the correct order
             index.sort(reverse=True)
-            for v in variables:
-                for i in index:
-                    del self._hist[v][i]
+            for i in index:
+                del self._hist[i]

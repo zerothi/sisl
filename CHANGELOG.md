@@ -19,6 +19,7 @@ we hit release version 1.0.0.
 - added `SparseGeometry.unrepeat` to reverse `repeat` calls
 
 ### Fixed
+- cleaned mixing methods and decoupled the History and Mixers
 - incorrect handling of `atoms` argument in `Geometry.center` calls
 
 ### Changed

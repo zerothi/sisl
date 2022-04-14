@@ -4,14 +4,14 @@
 from functools import reduce
 
 from sisl._internal import set_module
-from .base import Mixer
+from .base import BaseMixer
 
 
 __all__ = ['LinearMixer']
 
 
 @set_module("sisl.mixing")
-class LinearMixer(Mixer):
+class LinearMixer(BaseMixer):
     r""" Linear mixing
 
     The linear mixing is solely defined using a weight, and the resulting functional
@@ -26,21 +26,15 @@ class LinearMixer(Mixer):
     weight : float, optional
        mixing weight
     """
+    __slots__ = ()
 
-    def __init__(self, weight=0.1):
+    def __init__(self, weight=0.2):
         # No parameters passed
-        super().__init__()
-        assert weight > 0
-        self._weight = weight
+        super().__init__(weight)
 
     def __str__(self):
         r""" String representation """
-        return self.__class__.__name__ + f"{{weight: {self.weight:.4f}}}"
-
-    @property
-    def weight(self):
-        r""" Weight used for the linear mixing """
-        return self._weight
+        return f"{self.__class__.__name__}{{weight: {self.weight:.4f}}}"
 
     def __call__(self, f, df):
         r""" Calculate a new variable :math:`f'` using input and output of the functional
