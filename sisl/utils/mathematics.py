@@ -113,11 +113,12 @@ def spher2cart(r, theta, phi):
     phi : array_like
        polar angle from the :math:`z` axis
     """
-    rx = r * cos(theta) * sin(phi)
+    phi = sin(phi)
+    rx = r * cos(theta) * phi
     R = _a.emptyd(rx.shape + (3, ))
     R[..., 0] = rx
     del rx
-    R[..., 1] = r * sin(theta) * sin(phi)
+    R[..., 1] = r * sin(theta) * phi
     R[..., 2] = r * cos(phi)
     return R
 
