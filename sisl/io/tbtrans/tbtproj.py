@@ -8,8 +8,7 @@ except Exception:
 import numpy as np
 
 from sisl.utils import (
-    default_ArgumentParser, default_namespace,
-    collect_action, run_actions,
+    default_ArgumentParser, collect_action,
     list2str,
 )
 from sisl._internal import set_module

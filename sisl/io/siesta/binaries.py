@@ -140,10 +140,10 @@ def _add_overlap(M, S, str_method):
 
     if M.spsame(S):
         if isinstance(S, Overlap):
-            M._csr._D[:, spin] = S._csr._D[:, 0]
+            M._csr._D[:, M.S_idx] = S._csr._D[:, 0]
         elif isinstance(S, SparseOrbitalBZ):
             if S.non_orthogonal:
-                M._csr._D[:, spin] = S._csr._D[:, S.S_idx]
+                M._csr._D[:, M.S_idx] = S._csr._D[:, S.S_idx]
     else:
         raise NotImplementedError(f"{str_method} could not paste overlap matrix into the "
                                   "matrix due to non-conforming sparse elements.")
