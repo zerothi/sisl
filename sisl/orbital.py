@@ -600,7 +600,7 @@ class SphericalOrbital(Orbital):
         numpy.ndarray
              basis function value at point `r`
         """
-        r = _a.asarrayd(r)
+        r = _a.asarray(r)
         s = r.shape[:-1]
         # Convert to spherical coordinates
         n, idx, r, theta, phi = cart2spher(r, theta=m != 0, cos_phi=True, maxR=self.R)
