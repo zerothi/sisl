@@ -565,7 +565,7 @@ class SphericalOrbital(Orbital):
         numpy.ndarray
             radial orbital value at point `r`
         """
-        r = _a.asarrayd(r).ravel()
+        r = _a.asarray(r).ravel()
         if is_radius:
             s = r.shape
         else:
