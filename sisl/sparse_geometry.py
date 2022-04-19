@@ -772,23 +772,38 @@ class _SparseGeometry(NDArrayOperatorsMixin):
                 # we have something like
                 #  [0 1 - 3]
                 # meaning that there is a gab in the couplings
-                axis0 = (sub_lsc == 0).nonzero()[0][0]
-                total_nsc = 0
-                while True:
-                    try:
-                        if sub_lsc[axis0+total_nsc+1] == total_nsc + 1:
-                            total_nsc += 1
-                        else:
-                            break
-                    except Exception: pass
-                    try:
-                        if sub_lsc[axis0-total_nsc-1] == -total_nsc - 1:
-                            total_nsc += 1
-                        else:
-                            break
-                    except Exception: pass
 
-                nsc[axis] = total_nsc * 2 + 1
+                # remove duplicate neighbouring values
+                single_sel = np.ones(len(sub_lsc), dtype=bool)
+                single_sel[1:] = sub_lsc[1:] != sub_lsc[:-1]
+
+                single_sub_lsc = sub_lsc[single_sel]
+                axis0 = (single_sub_lsc == 0).nonzero()[0][0]
+
+                # initialize
+                pos_nsc = 0
+                found = True
+                while found:
+                    try:
+                        if single_sub_lsc[axis0+pos_nsc+1] == pos_nsc + 1:
+                            pos_nsc += 1
+                        else:
+                            found = False
+                    except Exception:
+                        found = False
+
+                neg_nsc = 0
+                found = True
+                while found:
+                    try:
+                        if single_sub_lsc[axis0+neg_nsc-1] == neg_nsc - 1:
+                            neg_nsc -= 1
+                        else:
+                            found = False
+                    except Exception:
+                        found = False
+
+                nsc[axis] = max(pos_nsc, -neg_nsc) * 2 + 1
 
             # correct the linear indices that are *too* high
             hnsc = nsc[axis] // 2
@@ -818,6 +833,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         #    to the cut structure
         # 3. geom, which is the cut structure
         def conv(dim):
+            nonlocal lsc
             csr = self.tocsr(dim)[orig_orbs, :]
             cols = csr.indices
 
