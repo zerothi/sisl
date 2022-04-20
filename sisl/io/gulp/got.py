@@ -7,13 +7,12 @@ Sile object for reading/writing GULP in/output
 
 import os.path as osp
 import numpy as np
-from numpy import abs as np_abs
 
 from sisl._internal import set_module
 from sisl.messages import info, warn
 from .sile import SileGULP
 from .fc import fcSileGULP
-from ..sile import *
+from ..sile import add_sile, sile_fh_open
 from sisl import Geometry, Atom, Orbital, SuperCell
 from sisl import constant, units
 from sisl.physics import DynamicalMatrix
@@ -263,7 +262,7 @@ class gotSileGULP(SileGULP):
         # Construct mass ** (-.5), so we can check cutoff correctly (in unit eV/Ang**2)
         mass_sqrt = geometry.atoms.mass.repeat(3) ** 0.5
         dyn.data[:] *= mass_sqrt[dyn.row] * mass_sqrt[dyn.col]
-        dyn.data[np_abs(dyn.data) < cutoff] = 0.
+        dyn.data[np.fabs(dyn.data) < cutoff] = 0.
         dyn.data[:] *= 1 / (mass_sqrt[dyn.row] * mass_sqrt[dyn.col])
         dyn.eliminate_zeros()
 
