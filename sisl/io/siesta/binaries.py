@@ -277,10 +277,41 @@ class onlysSileSiesta(SileBinSiesta):
 class tshsSileSiesta(onlysSileSiesta):
     """ Geometry, Hamiltonian and overlap matrix file """
 
-    def read_hamiltonian(self, **kwargs):
-        """ Returns the electronic structure from the siesta.TSHS file """
+    def read_hamiltonian(self, geometry=None, **kwargs):
+        """ Electronic structure from the siesta.TSHS file
+
+        The TSHS file format does *not* contain exact orbital information.
+        When reading the Hamiltonian directly using this class one will find
+        wrong orbital information. In such cases it may be beneficial to pass
+        the `geometry` argument to override the contained geometry.
+
+        The orbital order is unaltered but the atomic and orbital information
+        will be somewhat arbitrary.
+
+        Parameters
+        ----------
+        geometry : Geometry, optional
+           override the contained geometry in the returned Hamiltonian. Useful
+           when reading files directly using this class.
+
+        Examples
+        --------
+
+        Reading the Hamiltonian using the `tshsSileSiesta` backend through
+        the fdf sile. Since the fdf file will try and read the basis sets
+        using other files than the TSHS.
+
+        >>> H = sisl.get_sile("RUN.fdf").read_hamiltonian(order='TSHS')
+
+        An equivalent, but different way would be:
+
+        >>> geom = sisl.get_sile("RUN.fdf").read_geometry()
+        >>> H = sisl.get_sile("siesta.TSHS").read_hamiltonian(geometry=geom)
+        """
         tshs_g = self.read_geometry()
-        geom = _geometry_align(tshs_g, kwargs.get('geometry', tshs_g), self.__class__, 'read_hamiltonian')
+        if geometry is None:
+            geometry = tshs_g
+        geom = _geometry_align(tshs_g, geometry, self.__class__, 'read_hamiltonian')
 
         # read the sizes used...
         sizes = _siesta.read_tshs_sizes(self.file)
