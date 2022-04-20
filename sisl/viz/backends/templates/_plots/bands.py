@@ -58,7 +58,8 @@ class BandsBackend(Backend):
             filtered_bands = filtered_bands.expand_dims("spin")
 
         # Now loop through all bands to draw them
-        for ispin, spin_bands in enumerate(filtered_bands.transpose('spin', 'band', 'k')):
+        for spin_bands in filtered_bands.transpose('spin', 'band', 'k'):
+            ispin = int(spin_bands.spin)
             line_style = line
             if ispin == 1:
                 line_style.update(spindown_line)
