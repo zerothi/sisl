@@ -29,3 +29,31 @@ def test_zz_sc_geom(sisl_files):
     sc = si.read_supercell()
     geom = si.read_geometry()
     assert sc == geom.sc
+
+
+def test_graphene_8x8_untiling(sisl_files):
+    # Test untiling the graphene example 8 times
+    # thanks to Xabier de Cerio for this example
+    si = sisl.get_sile(sisl_files(_dir, "graphene_8x8.gout"))
+    dyn = si.read_dynamical_matrix()
+
+    # Now untile it for different segments
+    segs_y = [dyn.untile(8, 1, segment=seg) for seg in range(8)]
+    segs_x = [dyn.untile(8, 0, segment=seg) for dyn, seg in zip(segs_y, range(8))]
+    for dyn in segs_y:
+        dyn.finalize()
+    for dyn in segs_x:
+        dyn.finalize()
+
+    seg_y = segs_y.pop()
+    for seg in segs_y:
+        d = seg_y - seg
+        assert np.allclose(d._csr._D, 0, atol=1e-6)
+        # we can't assert that the sparsity patterns are the same
+        # The differences are tiny, 1e-7 but they are there
+        #assert seg_y.spsame(seg)
+
+    seg_x = segs_x.pop()
+    for seg in segs_x:
+        d = seg_x - seg
+        assert np.allclose(d._csr._D, 0, atol=1e-6)
