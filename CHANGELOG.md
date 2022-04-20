@@ -19,6 +19,7 @@ we hit release version 1.0.0.
 - added `SparseGeometry.unrepeat` to reverse `repeat` calls
 
 ### Fixed
+- major performance boost for reading GULP FC files
 - cleaned mixing methods and decoupled the History and Mixers
 - incorrect handling of `atoms` argument in `Geometry.center` calls
 
@@ -32,6 +33,7 @@ we hit release version 1.0.0.
 	- changed the --cut flag in `sgeom` to `--untile`, deprecated flag
 - enabled in/out arguments to tbt siles (easier to remember meaning)
 
+
 ## [0.12.1] - 2022-2-10
 
 ### Added
@@ -43,6 +45,7 @@ we hit release version 1.0.0.
 - `sdata` handling of siesta.PDOS* files, much more versatily now
 - masking import of xarray
 - Fixes to sisl.viz module related to 3.10 and other details
+
 
 ## [0.12.0] - 2022-1-28
 ### Added
@@ -208,6 +211,7 @@ we hit release version 1.0.0.
 
 - Many small bug-fixes and performance improvements
 
+
 ## [0.10.0] - 2020-6-9
 
 - Exposing sisl_toolbox as a module for external contributions
@@ -263,6 +267,7 @@ This release was helped by the following committers (THANKS):
 - Pol Febrer
 - Jonas Lundholm Bertelsen
 - Bernhard Kretz
+
 
 ## [0.9.8] - 2020-2-10
 
@@ -637,9 +642,11 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
 
 ## [0.9.3] - 2018-8-4
 
+
 ## [0.9.2] - 2017-10-25
 
 - Various minor bug-fixes
+
 
 ## [0.9.1] - 2017-10-23
 
@@ -651,6 +658,7 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
 
 - Updated defaults in vector_current to '+' such that only forward
   going electrons are captured.
+
 
 ## [0.9.0] - 2017-10-16
 
