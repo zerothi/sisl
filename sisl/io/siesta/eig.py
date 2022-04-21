@@ -6,7 +6,6 @@ import numpy as np
 from ..sile import add_sile, sile_fh_open, SileError
 from .sile import SileSiesta
 
-from sisl._array import arrayd
 from sisl._internal import set_module
 from sisl.physics import get_distribution
 from sisl.utils import strmap

@@ -16,7 +16,6 @@ from numpy import exp
 from sisl._internal import set_module
 from sisl._help import dtype_real_to_complex
 import sisl._array as _a
-from sisl._array import aranged
 from ._bloch import bloch_unfold
 
 
@@ -112,9 +111,9 @@ class Bloch:
         B = self._bloch
         unfold = _a.emptyd([B[2], B[1], B[0], 3])
         # Use B-casting rules (much simpler)
-        unfold[:, :, :, 0] = (aranged(B[0]).reshape(1, 1, -1) + k[0]) / B[0]
-        unfold[:, :, :, 1] = (aranged(B[1]).reshape(1, -1, 1) + k[1]) / B[1]
-        unfold[:, :, :, 2] = (aranged(B[2]).reshape(-1, 1, 1) + k[2]) / B[2]
+        unfold[:, :, :, 0] = (_a.aranged(B[0]).reshape(1, 1, -1) + k[0]) / B[0]
+        unfold[:, :, :, 1] = (_a.aranged(B[1]).reshape(1, -1, 1) + k[1]) / B[1]
+        unfold[:, :, :, 2] = (_a.aranged(B[2]).reshape(-1, 1, 1) + k[2]) / B[2]
         # Back-transform shape
         return unfold.reshape(-1, 3)
 

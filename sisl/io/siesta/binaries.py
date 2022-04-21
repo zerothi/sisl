@@ -5,7 +5,6 @@ from numbers import Integral
 from itertools import product
 from collections import deque, namedtuple
 import numpy as np
-from numpy import pi
 
 try:
     from . import _siesta
@@ -684,7 +683,7 @@ class hsxSileSiesta(SileBinSiesta):
             atoms = []
             for r in range(N):
                 idx0r = (row0 == r).nonzero()[0]
-                row0r = row0[idx0r]
+                #row0r = row0[idx0r]
                 # although xij == 0, we just do % to ensure unit-cell orbs
                 col0r = col[idx0[idx0r]] % N
                 if np.all(col0r >= r):
@@ -694,10 +693,6 @@ class hsxSileSiesta(SileBinSiesta):
                     atoms[-1].update(set(col0r))
 
             # convert list of orbitals to lists
-            def conv(a):
-                a = list(a)
-                a.sort()
-                return a
             atoms = [list(a) for a in atoms]
             if sum(map(len, atoms)) != len(xij):
                 raise ValueError(f"{self.__class__.__name__} could not determine correct "
@@ -829,7 +824,7 @@ class hsxSileSiesta(SileBinSiesta):
             # Note the first is always [0, 0, 0]
             # So our best chance is to *guess* the first nsc
             # then reshape, then guess, then reshape, then guess :)
-            sc_diff = np.diff(sc_off, axis=0)
+            #sc_diff = np.diff(sc_off, axis=0)
 
             def get_nsc(sc_off):
                 """ Determine nsc depending on the axis """
@@ -1007,7 +1002,7 @@ class hsxSileSiesta(SileBinSiesta):
         Gamma, spin, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
         self._fortran_check('read_geometry', 'could not read matrix sizes.')
         ncol, col, _, dxij = _siesta.read_hsx_sx(self.file, Gamma, spin, no, no_s, nnz)
-        dxij = dxij.T * _Bohr2Ang
+        #dxij = dxij.T * _Bohr2Ang
         col -= 1
         self._fortran_check('read_geometry', 'could not read xij matrix.')
 
@@ -1168,7 +1163,7 @@ class wfsxSileSiesta(SileBinSiesta):
                 return k / _Bohr2Ang
         else:
             def conv(k):
-                return (k @ sc.cell.T) / (2 * pi * _Bohr2Ang)
+                return (k @ sc.cell.T) / (2 * np.pi * _Bohr2Ang)
         self._convert_k = conv
 
     def _open_wfsx(self, mode, rewind=False):

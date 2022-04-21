@@ -4,8 +4,6 @@
 """
 Sile object for reading/writing GULP in/output
 """
-
-import os.path as osp
 import numpy as np
 
 from sisl._internal import set_module

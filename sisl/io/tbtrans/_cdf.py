@@ -4,8 +4,6 @@
 from numbers import Integral
 
 import numpy as np
-from numpy import in1d
-from numpy import sort as npsort
 from functools import lru_cache
 
 # Import sile objects
@@ -13,7 +11,6 @@ from ..sile import SileWarning
 from .sile import SileCDFTBtrans
 from sisl.messages import warn, info
 from sisl._internal import set_module
-from sisl.utils import *
 import sisl._array as _a
 from sisl._indices import indices
 
@@ -497,7 +494,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
                 subn[pvt] = 0
                 pvt -= _a.cumsumi(subn)[pvt]
             elif sort:
-                pvt = npsort(pvt)
+                pvt = np.sort(pvt)
             return pvt
 
         # Get electrode pivoting elements
@@ -507,12 +504,12 @@ class _devncSileTBtrans(_ncSileTBtrans):
             # Since we know that pvt is also sorted, then
             # the resulting in_device would also return sorted
             # indices
-            se_pvt = npsort(se_pvt)
+            se_pvt = np.sort(se_pvt)
 
         if in_device:
             pvt = self._value('pivot') - 1
             if sort:
-                pvt = npsort(pvt)
+                pvt = np.sort(pvt)
             # translate to the device indices
             se_pvt = indices(pvt, se_pvt, 0)
         return se_pvt
@@ -548,7 +545,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
         """
         # We need ravel(), otherwise taking len of an int will fail
         orbitals = self.geometry._sanitize_orbs(orbitals).ravel()
-        porb = in1d(self.pivot(elec), orbitals).nonzero()[0]
+        porb = np.in1d(self.pivot(elec), orbitals).nonzero()[0]
         d = len(orbitals) - len(porb)
         if d != 0:
             warn(f"{self.__class__.__name__}.o2p requesting an orbital outside the device region, "

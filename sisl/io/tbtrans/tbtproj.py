@@ -441,12 +441,6 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
             else:
                 print('{:70s}[{}]'.format(' '.join(args), ', '.join(option)), file=out)
 
-        def truefalse(bol, string, fdf=None, suf=2):
-            if bol:
-                true(string, fdf, suf)
-            else:
-                prnt("{}- {}: false".format(' ' * suf, string), option=fdf)
-
         def true(string, fdf=None, suf=2):
             prnt("{}+ {}: true".format(' ' * suf, string), option=fdf)
 

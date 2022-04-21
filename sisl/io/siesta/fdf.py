@@ -977,7 +977,7 @@ class fdfSileSiesta(SileSiesta):
         hermitian = kwargs.get("hermitian", True)
 
         # Figure out the "original" periodic directions
-        periodic = geom.nsc > 1
+        #periodic = geom.nsc > 1
 
         # Create conversion from eV/Ang^2 to correct units
         # Further down we are multiplying with [1 / amu]
@@ -1124,9 +1124,9 @@ class fdfSileSiesta(SileSiesta):
         # TODO check if ghost-atoms should be taken into account in _fc_correct
         idx = (geom.atoms.mass == 0.).nonzero()[0]
         if len(idx) > 0:
-            FC = np.delete(FC, idx, axis=5)
-            geom = geom.remove(idx)
-            geom.set_nsc([1] * 3)
+            #FC = np.delete(FC, idx, axis=5)
+            #geom = geom.remove(idx)
+            #geom.set_nsc([1] * 3)
             raise NotImplementedError(f"{self}.read_dynamical_matrix could not reduce geometry "
                                       "since there are atoms with 0 mass.")
 

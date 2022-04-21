@@ -4,7 +4,7 @@
 import numpy as np
 
 from .sile import SileCDFSiesta
-from ..sile import add_sile, sile_fh_open, sile_raise_write
+from ..sile import add_sile, sile_raise_write
 
 from sisl._internal import set_module
 from sisl import Grid

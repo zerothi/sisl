@@ -1,22 +1,20 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from functools import partial, wraps
+from functools import wraps
 import operator
-from numbers import Integral, Real
+from numbers import Integral
 
 import numpy as np
-from numpy import dot, fabs, where
 
 from sisl._category import CategoryMeta
-from sisl._internal import set_module, singledispatchmethod
-from sisl._help import isiterable
+from sisl._internal import set_module
 from sisl.utils.misc import direction
 from sisl.shape import *
 from sisl.supercell import SuperCell, SuperCellChild
 from sisl._supercell import cell_invert
 import sisl._array as _a
-from .base import AtomCategory, NullCategory, _sanitize_loop
+from .base import AtomCategory, NullCategory
 
 
 __all__ = ["AtomFracSite", "AtomXYZ"]
@@ -81,14 +79,14 @@ class AtomFracSite(AtomCategory):
     def categorize(self, geometry, atoms=None):
         # _sanitize_loop will ensure that atoms will always be an integer
         if atoms is None:
-            fxyz = dot(geometry.xyz + self._offset, self._icell.T) + self._foffset
+            fxyz = np.dot(geometry.xyz + self._offset, self._icell.T) + self._foffset
         else:
-            fxyz = dot(geometry.xyz[atoms].reshape(-1, 3) + self._offset,
-                       self._icell.T) + self._foffset
+            fxyz = np.dot(geometry.xyz[atoms].reshape(-1, 3) + self._offset,
+                          self._icell.T) + self._foffset
         # Find fractional indices that match to an integer of the passed cell
         # We multiply with the length of the cell to get an error in Ang
-        ret = where(np.fabs((fxyz - np.rint(fxyz))*self._length).max(1) <= self._atol,
-                    self, NullCategory()).tolist()
+        ret = np.where(np.fabs((fxyz - np.rint(fxyz))*self._length).max(1) <= self._atol,
+                       self, NullCategory()).tolist()
         if isinstance(atoms, Integral):
             ret = ret[0]
         return ret
@@ -233,8 +231,8 @@ class AtomXYZ(AtomCategory):
             return func(xyz[..., d], val)
 
         and_reduce = np.logical_and.reduce
-        ret = where(and_reduce([call(*four) for four in self._coord_check]),
-                    self, NullCategory()).tolist()
+        ret = np.where(and_reduce([call(*four) for four in self._coord_check]),
+                       self, NullCategory()).tolist()
         if isinstance(atoms, Integral):
             ret = ret[0]
         return ret

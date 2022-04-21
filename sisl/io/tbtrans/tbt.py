@@ -9,9 +9,7 @@ except Exception:
 import itertools
 
 import numpy as np
-from numpy import ndarray
-from numpy import in1d, sqrt
-from numpy import repeat, unique
+ndarray = np.ndarray
 
 # The sparse matrix for the orbital/bond currents
 from scipy.sparse import csr_matrix
@@ -379,7 +377,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 NORM = len(self.o2p(orbitals))
             elif norm == 'atom':
                 geom = self.geometry
-                a = unique(geom.o2a(orbitals))
+                a = np.unique(geom.o2a(orbitals))
                 # Now sum the orbitals per atom
                 NORM = geom.orbitals[a].sum()
             return NORM
@@ -1005,20 +1003,20 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             # get both row and column indices
             row_nonzero = (ncol > 0).nonzero()[0]
             # Now we have [0 0 0 0 1 1 1 1 2 2 ... no-1 no-1]
-            row = repeat(row_nonzero, ncol[row_nonzero])
+            row = np.repeat(row_nonzero, ncol[row_nonzero])
 
             # now figure out all places where we
             # have the corresponding values
             all_col = np.logical_and(
-                in1d(row, all_col),
-                in1d(col, all_col))
+                np.in1d(row, all_col),
+                np.in1d(col, all_col))
 
             # reduce space
             col = col[all_col]
             D = D[..., all_col]
 
             # now calculate new subset rows
-            row, nrow = unique(row[all_col], return_counts=True)
+            row, nrow = np.unique(row[all_col], return_counts=True)
             ncol = _a.zerosi(geom.no)
             ncol[row] = nrow
             del row, nrow
@@ -1072,15 +1070,15 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             # get both row and column indices
             row_nonzero = (ncol > 0).nonzero()[0]
             # Now we have [0 0 0 0 1 1 1 1 2 2 ... no-1 no-1]
-            row = repeat(row_nonzero, ncol[row_nonzero])
+            row = np.repeat(row_nonzero, ncol[row_nonzero])
 
             # Create a logical array for sub-indexing
-            all_col = in1d(col, all_col)
+            all_col = np.in1d(col, all_col)
             row = row[all_col]
             col = col[all_col]
 
             # now calculate new subset rows
-            row, nrow = unique(row, return_counts=True)
+            row, nrow = np.unique(row, return_counts=True)
             ncol = _a.zerosi(geom.no)
             ncol[row] = nrow
 
@@ -1413,7 +1411,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
             # Return the geometric mean of the atomic current X orbital
             # current.
-            Ja = sqrt(Ja * Jo)
+            Ja = np.sqrt(Ja * Jo)
 
         # Scale correctly
         Ja *= 0.5
@@ -1505,7 +1503,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             # Now calculate the vector elements
             # Remark that the vector goes from ia -> ja
             rv = Rij(ia, Jia.indices)
-            rv = rv / sqrt((rv ** 2).sum(1))[:, None]
+            rv = rv / np.sqrt((rv ** 2).sum(1))[:, None]
             Ja[ia, :] = (Jia.data[:, None] * rv).sum(0)
 
         return Ja
@@ -2172,9 +2170,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             # However, we still do not know whether TRS is
             # applied.
             kpt = self.k
-            nA = len(unique(kpt[:, 0]))
-            nB = len(unique(kpt[:, 1]))
-            nC = len(unique(kpt[:, 2]))
+            nA = len(np.unique(kpt[:, 0]))
+            nB = len(np.unique(kpt[:, 1]))
+            nC = len(np.unique(kpt[:, 2]))
             prnt(("  - number of kpoints: {} <- "
                    "[ A = {} , B = {} , C = {} ] (time-reversal unknown)").format(self.nk, nA, nB, nC))
         prnt("  - energy range:")
@@ -2312,7 +2310,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                     else:
                         E.append(range(ns._tbt.Eindex(begin), ns._tbt.Eindex(end)+1))
                 # Issuing unique also sorts the entries
-                ns._Erng = unique(_a.arrayi(E).flatten())
+                ns._Erng = np.unique(_a.arrayi(E).flatten())
         p.add_argument('--energy', '-E', action=ERange,
                        help="""Denote the sub-section of energies that are extracted: "-1:0,1:2" [eV]
 

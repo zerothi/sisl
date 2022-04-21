@@ -6,8 +6,6 @@ from os.path import splitext, basename
 import gzip
 from pathlib import Path
 
-import numpy as np
-
 from sisl._internal import set_module
 from sisl.messages import SislWarning, SislInfo
 from sisl.utils.misc import str_spec

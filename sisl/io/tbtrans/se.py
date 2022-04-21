@@ -7,13 +7,11 @@ except Exception:
     from io import StringIO
 
 import numpy as np
-from numpy import in1d, argsort
 
 from ..sile import add_sile
 from sisl._internal import set_module
 from sisl._indices import indices
-from sisl.utils import *
-import sisl._array as _a
+from sisl.utils import default_ArgumentParser, default_namespace
 from ._cdf import _devncSileTBtrans
 
 # Import the geometry object
@@ -98,7 +96,7 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         SE = self._E2eV * re + (1j * self._E2eV) * im
         if sort:
             pvt = self.pivot(elec)
-            idx = argsort(pvt).reshape(-1, 1)
+            idx = np.argsort(pvt).reshape(-1, 1)
 
             # pivot for sorted device region
             return SE[idx, idx.T]
@@ -141,7 +139,7 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         G = - self._E2eV * (im + im.T) + (1j * self._E2eV) * (re - re.T)
         if sort:
             pvt = self.pivot(elec)
-            idx = argsort(pvt)
+            idx = np.argsort(pvt)
             idx.shape = (-1, 1)
 
             # pivot for sorted device region
@@ -177,7 +175,7 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         SE = self._E2eV * re + (1j * self._E2eV) * im
         if sort:
             pvt = self.pivot(elec)
-            idx = argsort(pvt)
+            idx = np.argsort(pvt)
             idx.shape = (-1, 1)
 
             # pivot for sorted device region
@@ -205,12 +203,6 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
                 print(*args, file=out)
             else:
                 print('{:60s}[{}]'.format(' '.join(args), ', '.join(option)), file=out)
-
-        def truefalse(bol, string, fdf=None):
-            if bol:
-                prnt("  + " + string + ": true")
-            else:
-                prnt("  - " + string + ": false", option=fdf)
 
         # Retrieve the device atoms
         prnt("Device information:")
@@ -260,7 +252,6 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
             prnt(f"Electrode: {elec}")
             prnt(f"  - number of BTD blocks: {n_btd}")
             prnt("  - Bloch: [{}, {}, {}]".format(*bloch))
-            gelec = self.groups[elec]
             if 'TBT' in self._trans_type:
                 prnt("  - chemical potential: {:.4f} eV".format(self.chemical_potential(elec)))
                 prnt("  - electron temperature: {:.2f} K".format(self.electron_temperature(elec)))

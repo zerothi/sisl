@@ -6,7 +6,7 @@ import numpy as np
 # Import sile objects
 from sisl._internal import set_module
 import sisl._array as _a
-from ..sile import add_sile, sile_raise_write, SileWarning, SileError
+from ..sile import add_sile, sile_raise_write, SileError
 from .sile import SileCDFTBtrans
 
 # Import the geometry object

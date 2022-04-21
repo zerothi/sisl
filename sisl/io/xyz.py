@@ -82,7 +82,7 @@ class xyzSile(Sile):
     ):
         """ Read the geometry as though it was created with sisl """
         # Default version of the header is 1
-        v = int(header.get("sisl-version", 1))
+        #v = int(header.get("sisl-version", 1))
         nsc = list(map(int, header.pop("nsc").split()))
         cell = _a.fromiterd(header.pop("cell").split()).reshape(3, 3)
         if sc is None:

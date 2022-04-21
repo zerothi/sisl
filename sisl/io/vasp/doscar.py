@@ -51,8 +51,8 @@ class doscarSileVASP(SileVASP):
         self.readline()  # ' CAR '
         self.readline()  # name
         line = self.readline().split()
-        Emax = float(line[0])
-        Emin = float(line[1])
+        #Emax = float(line[0])
+        #Emin = float(line[1])
         NE = int(line[2])
         Ef = float(line[3])
 

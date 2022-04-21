@@ -81,7 +81,7 @@ class carSileVASP(SileVASP):
         ia = 0
         while ia < geometry.na:
             atom = geometry.atoms[ia]
-            specie = geometry.atoms.specie[ia]
+            #specie = geometry.atoms.specie[ia]
             ia_end = (np.diff(geometry.atoms.specie[ia:]) != 0).nonzero()[0]
             if len(ia_end) == 0:
                 # remaining atoms

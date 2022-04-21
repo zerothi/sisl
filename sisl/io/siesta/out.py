@@ -1039,7 +1039,7 @@ class outSileSiesta(SileSiesta):
                 # assert that this is a proper line
                 # this should catch cases where the following line of charge output
                 # is still parseable
-                atom_idx = int(atom_idx)
+                #atom_idx = int(atom_idx)
                 return list(map(float, vals))
 
             # first line is the header

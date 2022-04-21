@@ -2,7 +2,6 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
-from scipy.interpolate import CubicSpline
 
 from sisl._internal import set_module
 import sisl._array as _a
