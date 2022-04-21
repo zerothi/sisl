@@ -2,7 +2,6 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
-from numpy import dot
 
 import sisl._array as _a
 from sisl._internal import set_module
@@ -144,7 +143,7 @@ class Cuboid(PureShape):
         other = _a.asarrayd(other).reshape(-1, 3)
 
         # Offset origin
-        tmp = dot(other - self.origin[None, :], self._iv)
+        tmp = np.dot(other - self.origin[None, :], self._iv)
 
         # First reject those that are definitely not inside
         # The proximity is 1e-12 of the inverse cell.

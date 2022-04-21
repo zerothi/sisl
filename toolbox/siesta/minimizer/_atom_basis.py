@@ -8,7 +8,7 @@ import sisl as si
 from sisl.utils import NotNonePropertyDict
 
 from ._yaml_reader import read_yaml, parse_variable
-from ._variable import Variable, UpdateVariable
+from ._variable import Variable
 
 
 __all__ = ["AtomBasis"]
@@ -184,7 +184,6 @@ class AtomBasis:
         elif len(specie) == 2:
             # we have Symbol, nl
             symbol, nl = specie
-            type = None
 
         # now loop orbitals
         orbs = []
@@ -383,7 +382,6 @@ class AtomBasis:
 
     def _get_variables_dict(self, dic):
         """ Parse a dictionary adding potential variables to the minimize model """
-        symbol = self.atom.symbol
         tag = self.atom.tag
 
         # with respect to the basis
@@ -416,7 +414,6 @@ class AtomBasis:
                                     update_func=partial(update, d=self.opts, key="ion_charge")))
 
         # parse depending on shells in the atom
-        parsed_nl = []
         spdf = 'spdfg'
         for orb in self.atom:
             n, l = orb.n, orb.l

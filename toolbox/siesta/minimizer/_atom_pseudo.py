@@ -1,17 +1,12 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-import sys
-from pathlib import Path
 from functools import partial
 import logging
 
-import numpy as np
-import sisl as si
-
 from ..atom import AtomInput
 from ._yaml_reader import read_yaml, parse_variable
-from ._variable import Variable, UpdateVariable
+from ._variable import Variable
 
 
 __all__ = ["AtomPseudo"]
@@ -35,7 +30,6 @@ class AtomPseudo(AtomInput):
 
     def _get_variables_dict(self, dic):
         """ Parse a dictionary adding potential variables to the minimize model """
-        symbol = self.atom.symbol
         tag = self.atom.tag
 
         # with respect to the basis

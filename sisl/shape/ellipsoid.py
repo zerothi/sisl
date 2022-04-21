@@ -3,7 +3,6 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from math import pi
 import numpy as np
-from numpy import dot
 
 from sisl._internal import set_module
 from sisl.messages import warn
@@ -140,7 +139,7 @@ class Ellipsoid(PureShape):
         other.shape = (-1, 3)
 
         # First check
-        tmp = dot(other - self.center[None, :], self._iv)
+        tmp = np.dot(other - self.center[None, :], self._iv)
 
         # Get indices where we should do the more
         # expensive exact check of being inside shape

@@ -19,8 +19,7 @@ import multiprocessing
 import os
 
 # pkg_resources is part of setuptools
-import pkg_resources
-
+#import pkg_resources
 # We should *always* import setuptools prior to Cython/distutils
 import setuptools
 
@@ -94,8 +93,9 @@ if "--f2py-report-copy" in sys.argv:
 # We will *only* use setuptools
 # Although setuptools is not shipped with the standard library, I think
 # this is ok since it should get installed pretty easily.
-from setuptools import Command, Extension
-from setuptools import find_packages, find_namespace_packages
+Extension = setuptools.Extension
+find_packages = setuptools.find_packages
+find_namespace_packages = setuptools.find_namespace_packages
 
 # Patch to allow fortran sources in setup
 # build_ext requires numpy setup

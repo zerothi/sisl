@@ -9,7 +9,7 @@ from sisl.io import get_sile
 from sisl.utils import direction
 import sisl.io.siesta as io_siesta
 
-from ._path import path_abs, path_rel_or_abs
+from ._path import path_rel_or_abs
 from ._metric import Metric
 
 
@@ -73,7 +73,7 @@ class EigenvalueMetric(SiestaMetric):
             self.dist = dist(eig_ref)
         else:
             try:
-                a = eig_ref * dist
+                eig_ref * dist
             except Exception:
                 raise ValueError(f"{self.__class__.__name__} was passed `dist` which was not "
                                  "broadcastable to `eig_ref`. Please ensure compatibility.")

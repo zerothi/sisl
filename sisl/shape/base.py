@@ -4,7 +4,6 @@
 from math import sqrt as msqrt
 
 import numpy as np
-from numpy import union1d, intersect1d, setdiff1d, setxor1d
 
 from sisl._internal import set_module
 import sisl._array as _a
@@ -274,7 +273,7 @@ class OrShape(CompositeShape):
     def within_index(self, *args, **kwargs):
         A = self.A.within_index(*args, **kwargs)
         B = self.B.within_index(*args, **kwargs)
-        return union1d(A, B)
+        return np.union1d(A, B)
 
 
 @set_module("sisl.shape")
@@ -286,7 +285,7 @@ class XOrShape(CompositeShape):
     def within_index(self, *args, **kwargs):
         A = self.A.within_index(*args, **kwargs)
         B = self.B.within_index(*args, **kwargs)
-        return setxor1d(A, B, assume_unique=True)
+        return np.setxor1d(A, B, assume_unique=True)
 
 
 @set_module("sisl.shape")
@@ -298,7 +297,7 @@ class SubShape(CompositeShape):
     def within_index(self, *args, **kwargs):
         A = self.A.within_index(*args, **kwargs)
         B = self.B.within_index(*args, **kwargs)
-        return setdiff1d(A, B, assume_unique=True)
+        return np.setdiff1d(A, B, assume_unique=True)
 
 
 @set_module("sisl.shape")
@@ -368,7 +367,7 @@ class AndShape(CompositeShape):
     def within_index(self, *args, **kwargs):
         A = self.A.within_index(*args, **kwargs)
         B = self.B.within_index(*args, **kwargs)
-        return intersect1d(A, B, assume_unique=True)
+        return np.intersect1d(A, B, assume_unique=True)
 
 
 @set_module("sisl.shape")

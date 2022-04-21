@@ -28,7 +28,6 @@ from pathlib import Path
 import numpy as np
 from numpy import conjugate as conj
 import scipy.sparse as ssp
-from scipy.sparse import csr_matrix
 from scipy.sparse.linalg import svds
 
 import sisl as si
@@ -246,7 +245,7 @@ class DownfoldSelfEnergy(PivotSelfEnergy):
         self._data.H = PropertyDict()
         self._data.H.electrode = se.spgeom0
         self._data.H.device = Hdevice.sub(down_atoms)
-        geometry_down = self._data.H.device.geometry
+        #geometry_down = self._data.H.device.geometry
 
         # Now we retain the positions of the electrode orbitals in the
         # non pivoted structure for inserting the self-energy
@@ -417,7 +416,6 @@ class BlockMatrix:
         sBI = self.block_indexer
         rBI = ret.block_indexer
         nb = len(sBI)
-        nbm1 = nb - 1
         for i in range(nb):
             rBI[i, i] = sBI[i, i]
         return ret
@@ -838,7 +836,6 @@ class DeviceGreen:
 
         # Now we can calculate everything
         cbtd = self.btd_cum0
-        btd = self.btd
 
         sl0 = slice(cbtd[0], cbtd[1])
         slp = slice(cbtd[1], cbtd[2])
@@ -975,10 +972,6 @@ class DeviceGreen:
         tX = self._data.tX
         tY = self._data.tY
         for b, bs in enumerate(btd):
-            bsn = btd[b - 1]
-            if b < nbm1:
-                bsp = btd[b + 1]
-
             sl0 = slice(sumbs, sumbs + bs)
 
             # Calculate diagonal part
@@ -1085,8 +1078,6 @@ class DeviceGreen:
         return G
 
     def _green_sparse(self):
-        n = len(self.pvt)
-
         # create a sparse matrix
         G = self.H.Sk(format='csr', dtype=self._data.A[0].dtype)
         # pivot the matrix
@@ -1501,7 +1492,6 @@ class DeviceGreen:
         nblocks = len(blocks)
         A = A @ self._data.gamma[elec] @ dagger(A)
 
-        c = self.btd_cum0
         BI[blocks[0], blocks[0]] = A[:btd[blocks[0]], :btd[blocks[0]]]
         if len(blocks) > 1:
             BI[blocks[0], blocks[1]] = A[:btd[blocks[0]], btd[blocks[0]]:]
@@ -1592,7 +1582,6 @@ class DeviceGreen:
         blocks, A = self._green_diag_block(self.elecs_pvt_dev[elec].ravel())
         A = A @ self._data.gamma[elec] @ dagger(A)
 
-        c = self.btd_cum0
         BI[blocks[0], blocks[0]] = A[:btd[blocks[0]], :btd[blocks[0]]]
         if len(blocks) > 1:
             BI[blocks[0], blocks[1]] = A[:btd[blocks[0]], btd[blocks[0]]:]
