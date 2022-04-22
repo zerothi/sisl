@@ -16,7 +16,6 @@ import sisl._array as _a
 from sisl._indices import indices_le, indices_fabs_le
 from sisl._math_small import xyz_to_spherical_cos_phi
 from sisl.messages import warn, progressbar
-from sisl.utils.ranges import array_arange
 from .spin import Spin
 from sisl.sparse import SparseCSR, _ncol_to_indptr
 from sisl.sparse_geometry import SparseOrbital
@@ -446,7 +445,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
                 raise ValueError(f"{self.__class__.__name__}.density with NC/SO spin, requires a 2x2 matrix.")
 
             DM = _a.emptyz([self.nnz, 2, 2])
-            idx = array_arange(csr.ptr[:-1], n=csr.ncol)
+            idx = _a.array_arange(csr.ptr[:-1], n=csr.ncol)
             if self.spin.kind == Spin.NONCOLINEAR:
                 # non-collinear
                 DM[:, 0, 0] = csr._D[idx, 0]
@@ -479,11 +478,11 @@ class _densitymatrix(SparseOrbitalBZSpin):
                 raise ValueError(f"{self.__class__.__name__}.density with polarized spin, requires spinor "
                                  "argument as an integer, or a vector of length 2")
 
-            idx = array_arange(csr.ptr[:-1], n=csr.ncol)
+            idx = _a.array_arange(csr.ptr[:-1], n=csr.ncol)
             DM = csr._D[idx, 0] * spinor[0] + csr._D[idx, 1] * spinor[1]
 
         else:
-            idx = array_arange(csr.ptr[:-1], n=csr.ncol)
+            idx = _a.array_arange(csr.ptr[:-1], n=csr.ncol)
             DM = csr._D[idx, 0]
 
         # Create the DM csr matrix.
@@ -614,7 +613,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
         # The below complexity is because we are not finalizing spA
         csr = spA._csr
         a_ptr = _ncol_to_indptr(csr.ncol)
-        a_col = csr.col[array_arange(csr.ptr, n=csr.ncol)]
+        a_col = csr.col[_a.array_arange(csr.ptr, n=csr.ncol)]
         del spA, csr
 
         # Get offset in supercell in orbitals
@@ -891,7 +890,7 @@ class DensityMatrix(_densitymatrix):
         aidx = geom.o2a(idx)
 
         # Sparse matrix indices for data
-        sidx = array_arange(csr.ptr[:-1], n=csr.ncol, dtype=np.int32)
+        sidx = _a.array_arange(csr.ptr[:-1], n=csr.ncol, dtype=np.int32)
         jdx = csr.col[sidx]
         ajdx = geom.o2a(jdx)
 

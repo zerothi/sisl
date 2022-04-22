@@ -10,6 +10,7 @@ from scipy.special import sph_harm
 from sisl import _array as _a
 from sisl._indices import indices_le
 
+
 __all__ = ["fnorm", "fnorm2", "expand", "orthogonalize"]
 __all__ += ["spher2cart", "cart2spher", "spherical_harm"]
 __all__ += ["curl"]
@@ -113,11 +114,15 @@ def spher2cart(r, theta, phi):
     phi : array_like
        polar angle from the :math:`z` axis
     """
+    r = asarray(r)
+    theta = asarray(theta)
+    phi = asarray(phi)
+    shape = _a.broadcast_shapes(r.shape, theta.shape, phi.shape)
+    print(r.shape, theta.shape, phi.shape)
+    print(shape)
+    R = _a.empty(shape + (3,), dtype=r.dtype)
     sphi = sin(phi)
-    rx = r * cos(theta) * sphi
-    R = _a.empty(rx.shape + (3,), dtype=rx.dtype)
-    R[..., 0] = rx
-    del rx
+    R[..., 0] = r * cos(theta) * sphi
     R[..., 1] = r * sin(theta) * sphi
     del sphi
     R[..., 2] = r * cos(phi)

@@ -4,6 +4,9 @@
 from sisl_toolbox.models._base import BaseModel
 
 
+__all__ = ["GrapheneModel"]
+
+
 class GrapheneModel(BaseModel):
 
     # copy the dispatcher method

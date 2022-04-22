@@ -16,6 +16,9 @@ from ._runner import AndRunner
 from ._minimize import *
 
 
+__all__ = ["MinimizeSiesta", "LocalMinimizeSiesta", "DualAnnealingMinimizeSiesta"]
+
+
 _log = logging.getLogger("sisl_toolbox.siesta.minimize")
 
 

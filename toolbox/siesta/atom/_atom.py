@@ -614,7 +614,7 @@ class AtomInput:
             # and the pseudopotential valence charge
             if np.allclose(ae_r, ps_r):
                 # Determine dR
-                dr = ae_r[1] - ae_r[0]
+                #dr = ae_r[1] - ae_r[0]
 
                 # Integrate number of core-electrons and valence electrons
                 core_c = np.trapz(ae_cc, ae_r)

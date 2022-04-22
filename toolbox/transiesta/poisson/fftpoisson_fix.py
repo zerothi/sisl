@@ -49,7 +49,6 @@ Known problems:
 """
 import sys
 from pathlib import Path
-import warnings
 import argparse as argp
 import numpy as np
 import sisl as si

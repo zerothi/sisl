@@ -10,11 +10,21 @@ from numpy import float32, float64, complex64, complex128
 from numpy import asarray
 
 
-__all__ = []
+__all__ = ["broadcast_shapes"]
 
 
 def _append(name, suffix='ilfd'):
     return [name + s for s in suffix]
+
+
+def broadcast_shapes(*shapes):
+    """ Calculate the broad-casted shape of a list of shapes
+
+    This should be replaced by np.broadcast_shapes when 1.20 is the default.
+    """
+    # create all arrays using 0 memory
+    arrays = [np.empty(shape, dtype=[]) for shape in shapes]
+    return np.broadcast(*arrays).shape
 
 
 def array_arange(start, end=None, n=None, dtype=int64):

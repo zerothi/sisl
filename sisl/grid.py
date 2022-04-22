@@ -1,7 +1,6 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from functools import partial
 from numbers import Integral, Real
 from math import pi
 
@@ -1376,7 +1375,6 @@ class Grid(SuperCellChild):
         positional_out : bool, False
            If `True`, adds a positional argument which acts as --out. This may be handy if only the geometry is in the argument list.
         """
-        limit_args = kwargs.get('limit_arguments', True)
         short = kwargs.get('short', False)
 
         def opts(*args):
@@ -1413,7 +1411,6 @@ class Grid(SuperCellChild):
             def __call__(self, parser, ns, value, option_string=None):
                 grid = Grid.read(value)
                 ns._grid -= grid
-                del grid
         p.add_argument(*opts('--diff', '-d'), action=DiffGrid,
                        help='Subtract another grid (they must be commensurate).')
 

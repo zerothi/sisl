@@ -8,7 +8,7 @@ import math as m
 import numpy as np
 import scipy as sc
 
-from sisl.utils.ranges import array_arange
+from sisl._array import array_arange
 from sisl.sparse import *
 from sisl.sparse import indices
 

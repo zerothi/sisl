@@ -26,7 +26,6 @@ from numbers import Integral
 from pathlib import Path
 
 import numpy as np
-from numpy import conjugate as conj
 import scipy.sparse as ssp
 from scipy.sparse.linalg import svds
 
@@ -44,6 +43,7 @@ from sisl.utils.misc import PropertyDict
 arangei = _a.arangei
 indices_only = si._indices.indices_only
 indices = si._indices.indices
+conj = np.conj
 
 __all__ = ['PivotSelfEnergy', 'DownfoldSelfEnergy', 'DeviceGreen']
 

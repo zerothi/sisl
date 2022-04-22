@@ -273,11 +273,11 @@ class UnitParser:
         #        return op
         #    return T
 
-        def _fix_toks(op):
-            """ May be used in pow_op.setParseAction(_print_toks('pow', '^')) to debug """
-            def T(t):
-                return op
-            return T
+        #def _fix_toks(op):
+        #    """ May be used in pow_op.setParseAction(_print_toks('pow', '^')) to debug """
+        #    def T(t):
+        #        return op
+        #    return T
 
         pow_op = pp.oneOf('^ **').setParseAction(lambda t: '^')
         mul_op = pp.Literal('*')

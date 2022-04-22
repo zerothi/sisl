@@ -8,7 +8,8 @@ from ._base import GrapheneModel
 from sisl_toolbox.models._base import ReferenceDispatch
 
 
-# Class container for models to implement various models
+__all__ = ["GrapheneHamiltonian"]
+
 
 class GrapheneHamiltonian(GrapheneModel):
     # copy the dispatcher method
@@ -39,13 +40,13 @@ class Hancock2010Dispatch(ReferenceDispatch):
         distance = self._obj.distance
         da = 0.0005
         H_orthogonal = True
-        U = 2.0
+        #U = 2.0
 
         R = tuple(distance(i, a)+da for i in range(4))
         if set == 'A':
             # same as simple
             t = (0, -2.7)
-            U = 0.
+            #U = 0.
         elif set == 'B':
             # same as simple
             t = (0, -2.7)
@@ -63,7 +64,7 @@ class Hancock2010Dispatch(ReferenceDispatch):
         elif set == 'G':
             # same as D, but specific for GNR
             t = [(0, 1), (-2.97, 0.073), (-0.073, 0.018), (-0.33, 0.026)]
-            U = 0.
+            #U = 0.
             H_orthogonal = False
         else:
             raise ValueError(f"Set specification for {self.doi} does not exist, should be one of [A-G]")

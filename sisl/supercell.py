@@ -367,7 +367,6 @@ class SuperCell:
                               'due to insufficient accuracy (try increase the tolerance)')
 
         # Reduce problem to allowed values below the tolerance
-        x = x[idx, :]
         ix = ix[idx, :]
 
         # Reduce to total repetitions
@@ -379,7 +378,7 @@ class SuperCell:
 
         # Reduce the non-set axis
         if not axis is None:
-            for ax in [0, 1, 2]:
+            for ax in (0, 1, 2):
                 if ax not in axis:
                     ireps[ax] = 1
 

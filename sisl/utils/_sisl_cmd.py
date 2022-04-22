@@ -5,8 +5,6 @@
 """
 Easy conversion of data from different formats to other formats.
 """
-
-import sys
 import argparse
 
 __all__ = ["sisl_cmd"]

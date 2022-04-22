@@ -4,12 +4,8 @@
 import re
 from itertools import groupby
 
-from sisl._array import array_arange
-
 
 __all__ = ["strmap", "strseq", "lstranges", "erange", "list2str", "fileindex"]
-# this will be deprecated sooner or later
-__all__ += ["array_arange"]
 
 
 # Function to change a string to a range of integers
