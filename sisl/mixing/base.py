@@ -16,12 +16,23 @@ class BaseMixer:
     __slots__ = ("_weight")
 
     def __init__(self, weight=0.2):
-        self._weight = weight
-        assert weight > 0
+        self.set_weight(weight)
 
     @property
     def weight(self):
+        """ This mixers mixing weight, the weight is the fractional contribution of the derivative """
         return self._weight
+
+    def set_weight(self, weight):
+        """ Set a new weight for this mixer
+
+        Parameters
+        ----------
+        weight : float
+           the new weight for this mixer, it must be bigger than 0
+        """
+        assert weight > 0, "Weight must be larger than 0"
+        self._weight = weight
 
 
 @set_module("sisl.mixing")
@@ -33,14 +44,23 @@ class BaseHistoryMixer(BaseMixer):
         super().__init__(weight)
         self.set_history(history)
 
+    @property
+    def history(self):
+        """ History object tracked by this mixer """
+        return self._history
+
     def set_history(self, history):
+        """ Replace the current history in the mixer with a new one
+
+        Parameters
+        ----------
+        history : int or History
+           if an int a new History object will be created with that number of history elements
+           Otherwise the object will be directly attached to the mixer.
+        """
         if isinstance(history, Integral):
             history = History(history)
         self._history = history
-
-    @property
-    def history(self):
-        return self._history
 
 
 @set_module("sisl.mixing")
