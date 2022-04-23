@@ -10,7 +10,6 @@ Range routines
 .. autosummary::
    :toctree: generated/
 
-   array_arange - fast creation of sub-aranges
    strmap
    strseq
    lstranges

@@ -18,7 +18,44 @@ __all__ += ['AdaptiveDIISMixer', 'AdaptivePulayMixer']
 
 @set_module("sisl.mixing")
 class DIISMixer(BaseHistoryMixer):
-    r""" DIIS mixer """
+    r""" Direct inversion of the iterative subspace (DIIS mixing)
+
+    This mixing method (also known as Pulay mixing) estimates the next
+    trial function given a set of previously inputs and derivatives of
+    those inputs.
+
+    Its implementation is general in the sense that one can manually define
+    which values are used for the subspace. I.e. generally the subspace
+    metric is calculated using:
+
+    .. math::
+
+       \delta_i &= F_i^{\mathrm{out}} - F_i^{\mathrm{in}}
+       \\
+       m_{ij} &= \langle \delta_i | \delta_j\rangle
+
+    And then the mixing coefficients is calculated using the regular method
+    for a matrix :math:`\mathbf m`.
+    Generally the metric is calculated using :math:`\delta`, however, by
+    calling the object with an optional 3rd argument, the metric will use
+    that argument instead of :math:`\delta` but still use :math:`\delta` when
+    extrapolating the coefficients.
+    This may be useful for testing various metrics based on alternate values.
+
+    Alternatively one can pass a `metric` argument that can pre-process the
+    :math:`\delta` variable.
+
+    Parameters
+    ----------
+    weight : float, optional
+       weight used for the derivative of the functional.
+       The mixer will use a weight of :math:`1-w` for the *old* value
+    history : int or History, optional
+       how many history steps it will use in the estimation of the
+       new functional
+    metric : callable, optional
+       the metric used for the two values, defaults to ``lambda a, b: a.ravel().conj().dot(b.ravel).real``
+    """
     __slots__ = ("_metric",)
 
     def __init__(self, weight=0.1, history=2, metric=None):

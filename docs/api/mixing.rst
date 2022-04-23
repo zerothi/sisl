@@ -20,8 +20,9 @@ The basic classes that are used internally are
 .. autosummary::
    :toctree: generated/
 
-   Metric
    History
+   BaseMixer
+   BaseHistoryMixer
 
 
 Mixing algorithms
