@@ -11,7 +11,7 @@ by writing an email to `nickpapior AT gmail.com <mailto:nickpapior@gmail.com>`_.
 
 #. EA. Haidar, S.A. Tawfik, C. Stampfl,
    *Twist-Dependent Electron Charge Transfer and Transport in Phosphorene–Graphene Heterobilayers*,
-   Journal of Physical Chemistry C, `(2022) <https://doi.org/10.1021/acs.jpcc.1c08282>`_
+   Journal of Physical Chemistry C, **46**, `25886 (2021) <https://doi.org/10.1021/acs.jpcc.1c08282>`_
 
 #. M. Tenorio, *et al.*,
    *Atomically Sharp Lateral Superlattice Heterojunctions Built-in Nitrogen-doped Nanoporous Graphene*,
