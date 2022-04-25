@@ -17,9 +17,17 @@ __all__ = ['bandsSileSiesta']
 class bandsSileSiesta(SileSiesta):
     """ Bandstructure information """
 
+    @sile_fh_open(True)
+    def read_fermi_level(self):
+        """ Returns the Fermi level in the bands file """
+        # Luckily the data is in eV
+        return float(self.readline())
+
     @sile_fh_open()
     def read_data(self, as_dataarray=False):
         """ Returns data associated with the bands file
+
+        The energy levels are shifted with respect to the Fermi-level.
 
         Parameters
         --------
@@ -31,7 +39,8 @@ class bandsSileSiesta(SileSiesta):
         band_lines = False
 
         # Luckily the data is in eV
-        Ef = float(self.readline())
+        Ef = self.read_fermi_level()
+
         # Read the total length of the path (not used)
         _, _ = map(float, self.readline().split())
         l = self.readline()
@@ -43,26 +52,33 @@ class bandsSileSiesta(SileSiesta):
             pass
 
         # orbitals, n-spin, n-k
+        nk2 = 3
         if band_lines:
             l = self.readline()
+            nk2 = 1
         no, ns, nk = map(int, l.split())
 
         # Create the data to contain all band points
-        b = _a.emptyd([nk, ns, no])
+        eb = _a.emptyd([nk, ns, no])
+        k = _a.emptyd([nk, nk2])
+        for ik in range(nk):
+            l = [float(x) for x in self.readline().split()]
+            for i in range(nk2):
+                k[ik, i] = l[0]
+                del l[0]
+
+            # Now populate the eigenvalues
+            while len(l) < ns * no:
+                l.extend([float(x) for x in self.readline().split()])
+            l = _a.arrayd(l)
+            eb[ik, :, :] = l.reshape(ns, no) - Ef
+
+        vals = (k, eb)
 
         # for band-lines
         if band_lines:
-            k = _a.emptyd([nk])
-            for ik in range(nk):
-                l = [float(x) for x in self.readline().split()]
-                k[ik] = l[0]
-                del l[0]
-                # Now populate the eigenvalues
-                while len(l) < ns * no:
-                    l.extend([float(x) for x in self.readline().split()])
-                l = _a.arrayd(l)
-                l.shape = (ns, no)
-                b[ik, :, :] = l[:, :] - Ef
+            k.shape = (-1,)
+
             # Now we need to read the labels for the points
             xlabels = []
             labels = []
@@ -71,33 +87,17 @@ class bandsSileSiesta(SileSiesta):
                 l = self.readline().split()
                 xlabels.append(float(l[0]))
                 labels.append((' '.join(l[1:])).replace("'", ''))
-            vals = (xlabels, labels), k, b
-
-        else:
-            k = _a.emptyd([nk, 3])
-            for ik in range(nk):
-                l = [float(x) for x in self.readline().split()]
-                k[ik, :] = l[0:3]
-                del l[2]
-                del l[1]
-                del l[0]
-                # Now populate the eigenvalues
-                while len(l) < ns * no:
-                    l.extend([float(x) for x in self.readline().split()])
-                l = _a.arrayd(l)
-                l.shape = (ns, no)
-                b[ik, :, :] = l[:, :] - Ef
-            vals = k, b
+            vals = (xlabels, labels), *vals
 
         if as_dataarray:
             from xarray import DataArray
 
             ticks = {"ticks": xlabels, "ticklabels": labels} if band_lines else {}
 
-            return DataArray(b, name="Energy", attrs=ticks,
+            vals = DataArray(eb, name="Energy", attrs=ticks,
                              coords=[("k", k),
-                                     ("spin", _a.arangei(0, b.shape[1])),
-                                     ("band", _a.arangei(0, b.shape[2]))])
+                                     ("spin", _a.arangei(0, eb.shape[1])),
+                                     ("band", _a.arangei(0, eb.shape[2]))])
 
         return vals
 
@@ -119,11 +119,10 @@ class bandsSileSiesta(SileSiesta):
         # parser.
         # This will enable custom actions to interact with the geometry in a
         # straight forward manner.
-        d = {
-            "_bands": self.read_data(),
-            "_Emap": None,
-        }
-        namespace = default_namespace(**d)
+        namespace = default_namespace(
+            _bands= self.read_data(),
+            _Emap=None,
+        )
 
         # Energy grabs
         class ERange(argparse.Action):
