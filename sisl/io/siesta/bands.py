@@ -10,7 +10,7 @@ from sisl.utils import strmap
 from sisl.utils.cmd import default_ArgumentParser, default_namespace
 
 
-__all__ = ['bandsSileSiesta']
+__all__ = ["bandsSileSiesta"]
 
 
 @set_module("sisl.io.siesta")
@@ -104,8 +104,8 @@ class bandsSileSiesta(SileSiesta):
     @default_ArgumentParser(description="Manipulate bands file in sisl.")
     def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """
-        #limit_args = kwargs.get('limit_arguments', True)
-        short = kwargs.get('short', False)
+        #limit_args = kwargs.get("limit_arguments", True)
+        short = kwargs.get("short", False)
 
         def opts(*args):
             if short:
@@ -129,9 +129,9 @@ class bandsSileSiesta(SileSiesta):
 
             def __call__(self, parser, ns, value, option_string=None):
                 ns._Emap = strmap(float, value)[0]
-        p.add_argument('--energy', '-E',
+        p.add_argument("--energy", "-E",
                        action=ERange,
-                       help='Denote the sub-section of energies that are plotted: "-1:0,1:2" [eV]')
+                       help="Denote the sub-section of energies that are plotted: '-1:0,1:2' [eV]")
 
         class BandsPlot(argparse.Action):
 
@@ -150,7 +150,7 @@ class bandsSileSiesta(SileSiesta):
                     ax.set_title(title)
                     for ib in range(y.shape[0]):
                         ax.plot(x, y[ib, :])
-                    ax.set_ylabel('E-Ef [eV]')
+                    ax.set_ylabel("E-Ef [eV]")
                     ax.set_xlim(x.min(), x.max())
                     if not E is None:
                         ax.set_ylim(E[0], E[1])
@@ -158,26 +158,26 @@ class bandsSileSiesta(SileSiesta):
                 if b.shape[1] == 2:
                     _, ax = plt.subplots(2, 1)
                     ax[0].set_xticks(xlbls)
-                    ax[0].set_xticklabels([''] * len(xlbls))
+                    ax[0].set_xticklabels([""] * len(xlbls))
                     ax[1].set_xticks(xlbls)
                     ax[1].set_xticklabels(lbls, rotation=45)
                     # We must plot spin-up/down separately
-                    for i, ud in enumerate(['UP', 'DOWN']):
-                        myplot(ax[i], 'Bandstructure SPIN-'+ud, k, b[:, i, :], ns._Emap)
+                    for i, ud in enumerate(["UP", "DOWN"]):
+                        myplot(ax[i], f"Bandstructure SPIN-{ud}", k, b[:, i, :], ns._Emap)
                 else:
                     plt.figure()
                     ax = plt.gca()
                     ax.set_xticks(xlbls)
                     ax.set_xticklabels(lbls, rotation=45)
-                    myplot(ax, 'Bandstructure', k, b[:, 0, :], ns._Emap)
+                    myplot(ax, "Bandstructure", k, b[:, 0, :], ns._Emap)
                 if value is None:
                     plt.show()
                 else:
                     plt.savefig(value)
-        p.add_argument(*opts('--plot', '-p'), action=BandsPlot, nargs='?', metavar='FILE',
-                       help='Plot the bandstructure from the .bands file, possibly saving to a file.')
+        p.add_argument(*opts("--plot", "-p"), action=BandsPlot, nargs="?", metavar="FILE",
+                       help="Plot the bandstructure from the .bands file, possibly saving to a file.")
 
         return p, namespace
 
 
-add_sile('bands', bandsSileSiesta, gzip=True)
+add_sile("bands", bandsSileSiesta, gzip=True)

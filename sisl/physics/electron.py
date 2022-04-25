@@ -906,7 +906,7 @@ def _berry_curvature(v_M, energy):
 def conductivity(bz, distribution='fermi-dirac', method='ahc', degenerate=1.e-5, degenerate_dir=(1, 1, 1)):
     r""" Electronic conductivity for a given `BrillouinZone` integral
 
-    Currently the *only* implemented method is the anomalous Hall conductivity (AHC[1]_)
+    Currently the *only* implemented method is the anomalous Hall conductivity (AHC, see [1]_)
     which may be calculated as:
 
     .. math::
@@ -1030,6 +1030,8 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry', r
 
     The returned angles are _not_ placed in the interval :math:`]-\pi;\pi]` as what `numpy.angle` would do.
     This is to allow users to examine the quantities as is.
+
+    For more understanding of the Berry-phase and its calculation [3]_ is a good reference.
 
     Examples
     --------

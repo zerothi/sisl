@@ -15,7 +15,7 @@ by writing an email to `nickpapior AT gmail.com <mailto:nickpapior@gmail.com>`_.
 
 #. M. Tenorio, *et al.*,
    *Atomically Sharp Lateral Superlattice Heterojunctions Built-in Nitrogen-doped Nanoporous Graphene*,
-   Advanced Materials, `(2022) https://doi.org/10.1002/adma.202110099 >`_
+   Advanced Materials, `(2022) <https://doi.org/10.1002/adma.202110099>`_
 
 #. G. Yu, *et al.*,
    *Interlayer hybridization in graphene quasicrystal and other bilayer graphene systems*,
