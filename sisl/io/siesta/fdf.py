@@ -1443,11 +1443,11 @@ class fdfSileSiesta(SileSiesta):
                     origin[[0, 2]] = 0.
                 elif opt == "z":
                     origin[:2] = 0.
-                elif opt == "xy" or opt == "yx":
+                elif opt in ("xy", "yx"):
                     origin[2] = 0.
-                elif opt == "xz" or opt == "zx":
+                elif opt in ("xz", "zx"):
                     origin[1] = 0.
-                elif opt == "yz" or opt == "zy":
+                elif opt in ("yz", "zy"):
                     origin[0] = 0.
 
         # create geometry
