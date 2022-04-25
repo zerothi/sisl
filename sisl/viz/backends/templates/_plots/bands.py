@@ -59,7 +59,7 @@ class BandsBackend(Backend):
 
         # Now loop through all bands to draw them
         for spin_bands in filtered_bands.transpose('spin', 'band', 'k'):
-            ispin = int(spin_bands.spin)
+            ispin = int(spin_bands.spin) if "spin" in spin_bands.coords else 0
             line_style = line
             if ispin == 1:
                 line_style.update(spindown_line)
