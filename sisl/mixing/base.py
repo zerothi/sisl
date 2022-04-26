@@ -131,9 +131,13 @@ class History:
         """
         if index is None:
             self._hist.clear()
+            return
+
+        if isinstance(index, Integral):
+            index = [index]
         else:
             index = list(index)
-            # We need to ensure we delete in the correct order
-            index.sort(reverse=True)
-            for i in index:
-                del self._hist[i]
+        # We need to ensure we delete in the correct order
+        index.sort(reverse=True)
+        for i in index:
+            del self._hist[i]
