@@ -20,4 +20,4 @@ sphinx-gallery
 sphinx-rtd-theme
 tqdm
 ipywidgets
-
+kaleido
