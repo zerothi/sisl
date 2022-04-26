@@ -1694,7 +1694,7 @@ class MonkhorstPack(BrillouinZone):
         # Return values
         return k, w
 
-    def replace(self, k, mp, displacement=False, as_index=False):
+    def replace(self, k, mp, displacement=False, as_index=False, check_vol=True):
         r""" Replace a k-point with a new set of k-points from a Monkhorst-Pack grid
 
         This method tries to replace an area corresponding to `mp.size` around the k-point `k`
@@ -1716,6 +1716,12 @@ class MonkhorstPack(BrillouinZone):
            each k-point will be replaced my `mp` with k as the displacement.
         as_index : bool, optional
            whether `k` is input as reciprocal k-points, or as indices of k-points in this object.
+        check_vol : bool, optional
+           whether to check the volume of the replaced k-point(s); by default the volume of each k-point
+           is determined by the original ``size`` and ``nkpt`` values. However, when doing
+           replacements of k-points these values are not kept for the individual k-points
+           that were replaced, so subsequent replacements of these points will cause errors that
+           effectively are not valid.
 
         Examples
         --------
@@ -1753,20 +1759,25 @@ class MonkhorstPack(BrillouinZone):
         if not isinstance(mp, MonkhorstPack):
             raise ValueError("Object 'mp' is not a MonkhorstPack object")
 
-        # We can easily figure out the BZ that each k-point is averaging
-        k_vol = self._size / self._diag
-        # Compare against the size of this one
-        # Since we can remove more than one k-point, we require that the
-        # size of the replacement MP is an integer multiple of the
-        # k-point volumes.
-        k_int = mp._size / k_vol
-        if not np.allclose(np.rint(k_int), k_int):
-            raise SislError(f"{self.__class__.__name__}.reduce could not replace k-point, BZ "
-                            "volume replaced is not equivalent to the inherent k-point volume.")
-        k_int = np.rint(k_int)
+        if check_vol:
+            # We can easily figure out the BZ that each k-point is averaging
+            k_vol = self._size / self._diag
+            print(np.prod(k_vol), self.weight.min())
+
+            # Compare against the size of this one
+            # Since we can remove more than one k-point, we require that the
+            # size of the replacement MP is an integer multiple of the
+            # k-point volumes.
+            k_int = mp._size / k_vol
+            if not np.allclose(np.rint(k_int), k_int):
+                raise SislError(f"{self.__class__.__name__}.reduce could not replace k-point, BZ "
+                                "volume replaced is not equivalent to the inherent k-point volume.")
 
         # the size of the k-points that will be added
-        dk = (mp._size / 2).reshape(1, 3)
+        s_size2 = self._size / 2
+        mp_size2 = mp._size / 2
+        dk = np.where(mp_size2 < s_size2, mp_size2, s_size2)
+        dk.shape = (1, 3)
 
         # determine indices of k-point inputs
         k = np.asarray(k)
