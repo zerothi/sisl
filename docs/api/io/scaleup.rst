@@ -18,6 +18,5 @@ ScaleUP
    :hidden:
 
    SileScaleUp
-   SileCDFScaleUp
    SileBinScaleUp
 

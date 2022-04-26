@@ -16,6 +16,5 @@ BigDFT
    :hidden:
 
    SileBigDFT
-   SileCDFBigDFT
    SileBinBigDFT
 

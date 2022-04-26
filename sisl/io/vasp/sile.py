@@ -4,12 +4,12 @@
 """
 Define a common VASP Sile
 """
-from ..sile import Sile, SileCDF, SileBin
+from ..sile import Sile, SileBin
 from sisl._internal import set_module
 import sisl._array as _a
 
 
-__all__ = ['SileVASP', 'SileCDFVASP', 'SileBinVASP']
+__all__ = ["SileVASP", "SileBinVASP"]
 
 
 def _geometry_group(geometry, ret_index=False):
@@ -56,11 +56,6 @@ def _geometry_group(geometry, ret_index=False):
 
 @set_module("sisl.io.vasp")
 class SileVASP(Sile):
-    geometry_group = staticmethod(_geometry_group)
-
-
-@set_module("sisl.io.vasp")
-class SileCDFVASP(SileCDF):
     geometry_group = staticmethod(_geometry_group)
 
 

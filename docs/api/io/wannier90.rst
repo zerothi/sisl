@@ -16,5 +16,6 @@ Wannier90
    :hidden:
 
    SileWannier90
+   SileBinWannier90
 
 

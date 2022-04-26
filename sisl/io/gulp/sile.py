@@ -5,9 +5,9 @@
 Define a common GULP Sile
 """
 from sisl._internal import set_module
-from ..sile import Sile, SileCDF
+from ..sile import Sile, SileBin
 
-__all__ = ['SileGULP', 'SileCDFGULP']
+__all__ = ["SileGULP", "SileBinGULP"]
 
 
 @set_module("sisl.io.gulp")
@@ -16,5 +16,5 @@ class SileGULP(Sile):
 
 
 @set_module("sisl.io.gulp")
-class SileCDFGULP(SileCDF):
+class SileBinGULP(SileBin):
     pass

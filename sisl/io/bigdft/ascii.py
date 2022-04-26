@@ -14,7 +14,9 @@ from sisl.unit import unit_convert
 
 import numpy as np
 
-__all__ = ['asciiSileBigDFT']
+
+__all__ = ["asciiSileBigDFT"]
+
 
 Bohr2Ang = unit_convert('Bohr', 'Ang')
 
@@ -165,4 +167,4 @@ class asciiSileBigDFT(SileBigDFT):
         return self.read_geometry().ArgumentParser(p, *args, **newkw)
 
 
-add_sile('ascii', asciiSileBigDFT, case=False, gzip=True)
+add_sile("ascii", asciiSileBigDFT, case=False, gzip=True)

@@ -21,6 +21,5 @@ VASP
    :hidden:
 
    SileVASP
-   SileCDFVASP
    SileBinVASP
 

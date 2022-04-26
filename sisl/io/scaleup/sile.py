@@ -5,18 +5,13 @@
 Define a common ScaleUP Sile
 """
 from sisl._internal import set_module
-from ..sile import Sile, SileCDF, SileBin
+from ..sile import Sile, SileBin
 
-__all__ = ['SileScaleUp', 'SileCDFScaleUp', 'SileBinScaleUp']
+__all__ = ["SileScaleUp", "SileBinScaleUp"]
 
 
 @set_module("sisl.io.scaleup")
 class SileScaleUp(Sile):
-    pass
-
-
-@set_module("sisl.io.scaleup")
-class SileCDFScaleUp(SileCDF):
     pass
 
 
