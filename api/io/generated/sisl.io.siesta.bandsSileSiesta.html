@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.bandsSileSiesta &mdash; sisl 0.1.dev1+g9590202 documentation</title>
+  <title>sisl.io.siesta.bandsSileSiesta &mdash; sisl 0.1.dev1+gf854c96 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g9590202
+                0.1.dev1+gf854c96
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -192,13 +192,16 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.bandsSileSiesta.read_data" title="sisl.io.siesta.bandsSileSiesta.read_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_data</span></code></a>([as_dataarray])</p></td>
 <td><p>Returns data associated with the bands file</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.bandsSileSiesta.write" title="sisl.io.siesta.bandsSileSiesta.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.bandsSileSiesta.read_fermi_level" title="sisl.io.siesta.bandsSileSiesta.read_fermi_level"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_fermi_level</span></code></a>()</p></td>
+<td><p>Returns the Fermi level in the bands file</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.bandsSileSiesta.write" title="sisl.io.siesta.bandsSileSiesta.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Generic write method which should be overloaded in child-classes</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.bandsSileSiesta.base_file" title="sisl.io.siesta.bandsSileSiesta.base_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base_file</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.bandsSileSiesta.base_file" title="sisl.io.siesta.bandsSileSiesta.base_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base_file</span></code></a></p></td>
 <td><p>File of the current <em class="xref py py-obj">Sile</em></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.bandsSileSiesta.file" title="sisl.io.siesta.bandsSileSiesta.file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">file</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.bandsSileSiesta.file" title="sisl.io.siesta.bandsSileSiesta.file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">file</span></code></a></p></td>
 <td><p>File of the current <em class="xref py py-obj">Sile</em></p></td>
 </tr>
 </tbody>
@@ -248,6 +251,7 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 <dt class="sig sig-object py" id="sisl.io.siesta.bandsSileSiesta.read_data">
 <span class="sig-name descname"><span class="pre">read_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">as_dataarray</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/bands.html#bandsSileSiesta.read_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.bandsSileSiesta.read_data" title="Permalink to this definition"></a></dt>
 <dd><p>Returns data associated with the bands file</p>
+<p>The energy levels are shifted with respect to the Fermi-level.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>as_dataarray</strong> (<em>boolean</em><em>, </em><em>optional</em>) – if <em class="xref py py-obj">True</em>, the information is returned as an <a class="reference external" href="https://xarray.pydata.org/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2022.3.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a>
@@ -255,6 +259,12 @@ Ticks (if read) are stored as an attribute of the DataArray
 (under <em class="xref py py-obj">array.ticks</em> and <em class="xref py py-obj">array.ticklabels</em>)</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.bandsSileSiesta.read_fermi_level">
+<span class="sig-name descname"><span class="pre">read_fermi_level</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/bands.html#bandsSileSiesta.read_fermi_level"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.bandsSileSiesta.read_fermi_level" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the Fermi level in the bands file</p>
 </dd></dl>
 
 <dl class="py method">

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.mixing.History &mdash; sisl 0.1.dev1+g9590202 documentation</title>
+  <title>sisl.mixing.History &mdash; sisl 0.1.dev1+gf854c96 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -23,8 +23,8 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="sisl.mixing.LinearMixer" href="sisl.mixing.LinearMixer.html" />
-    <link rel="prev" title="sisl.mixing.Metric" href="sisl.mixing.Metric.html" /> 
+    <link rel="next" title="sisl.mixing.BaseMixer" href="sisl.mixing.BaseMixer.html" />
+    <link rel="prev" title="Mixing self-consistent quantities" href="../mixing.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -35,7 +35,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g9590202
+                0.1.dev1+gf854c96
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -75,8 +75,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../physics.html">Physical objects</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../mixing.html">Mixing self-consistent quantities</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="../mixing.html#container-classes">Container classes</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="sisl.mixing.Metric.html">sisl.mixing.Metric</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">sisl.mixing.History</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.mixing.BaseMixer.html">sisl.mixing.BaseMixer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.mixing.BaseHistoryMixer.html">sisl.mixing.BaseHistoryMixer</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../mixing.html#mixing-algorithms">Mixing algorithms</a></li>
@@ -144,22 +145,11 @@
 <h1>sisl.mixing.History<a class="headerlink" href="#sisl-mixing-history" title="Permalink to this headline"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="sisl.mixing.History">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.mixing.</span></span><span class="sig-name descname"><span class="pre">History</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">history</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.mixing.History" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.mixing.</span></span><span class="sig-name descname"><span class="pre">History</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">history</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.mixing.History" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>A history class for retaining a set of history elements</p>
 <p>A history class may contain several different variables in a <a class="reference external" href="https://docs.python.org/3/library/collections.html#collections.deque" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">collections.deque</span></code></a>
 list allowing easy managing of the length of the history.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="sisl.mixing.History.variables">
-<span class="sig-name descname"><span class="pre">variables</span></span><a class="headerlink" href="#sisl.mixing.History.variables" title="Permalink to this definition"></a></dt>
-<dd><p>number of different variables stored as a history</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a></p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sisl.mixing.History.history_max">
 <span class="sig-name descname"><span class="pre">history_max</span></span><a class="headerlink" href="#sisl.mixing.History.history_max" title="Permalink to this definition"></a></dt>
@@ -173,10 +163,7 @@ list allowing easy managing of the length of the history.</p>
 
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>history</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – number of maximum history elements stored</p></li>
-<li><p><strong>variables</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – number of different variables stored as a history.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>history</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – number of maximum history elements stored</p>
 </dd>
 </dl>
 <p class="rubric">Methods</p>
@@ -186,73 +173,57 @@ list allowing easy managing of the length of the history.</p>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.mixing.History.append" title="sisl.mixing.History.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code></a>(*args[, variable])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.mixing.History.append" title="sisl.mixing.History.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code></a>(*args)</p></td>
 <td><p>Add variables to the history</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.mixing.History.clear" title="sisl.mixing.History.clear"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear</span></code></a>([index, variables])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.mixing.History.clear" title="sisl.mixing.History.clear"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear</span></code></a>([index])</p></td>
 <td><p>Clear variables to the history</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.mixing.History.history" title="sisl.mixing.History.history"><code class="xref py py-obj docutils literal notranslate"><span class="pre">history</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.mixing.History.elements" title="sisl.mixing.History.elements"><code class="xref py py-obj docutils literal notranslate"><span class="pre">elements</span></code></a></p></td>
 <td><p>Number of elements in the history</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#id0" title="sisl.mixing.History.history_max"><code class="xref py py-obj docutils literal notranslate"><span class="pre">history_max</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.mixing.History.max_elements" title="sisl.mixing.History.max_elements"><code class="xref py py-obj docutils literal notranslate"><span class="pre">max_elements</span></code></a></p></td>
 <td><p>Maximum number of elements stored in the history for each variable</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#id1" title="sisl.mixing.History.variables"><code class="xref py py-obj docutils literal notranslate"><span class="pre">variables</span></code></a></p></td>
-<td><p>Number of different variables that can be contained</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.mixing.History.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">history</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/mixing/base.html#History.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.mixing.History.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">history</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/mixing/base.html#History.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.mixing.History.__init__" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.mixing.History.append">
-<span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/mixing/base.html#History.append"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.mixing.History.append" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/mixing/base.html#History.append"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.mixing.History.append" title="Permalink to this definition"></a></dt>
 <dd><p>Add variables to the history</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>*args</strong> (<em>tuple of object</em>) – each variable will be added to the history of the mixer</p></li>
-<li><p><strong>variable</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>listlike of int</em>) – specify which variables the history should be added to, note:
-<code class="docutils literal notranslate"><span class="pre">len(args)</span> <span class="pre">==</span> <span class="pre">len(variable)</span></code></p></li>
-</ul>
+<dd class="field-odd"><p><strong>*args</strong> (<em>tuple of object</em>) – each variable will be added to the history of the mixer</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.mixing.History.clear">
-<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/mixing/base.html#History.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.mixing.History.clear" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/mixing/base.html#History.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.mixing.History.clear" title="Permalink to this definition"></a></dt>
 <dd><p>Clear variables to the history</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>array_like of int</em>) – which indices of the history we should clear</p></li>
-<li><p><strong>variables</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>array_like of int</em>) – specify which variables should be cleared</p></li>
-</ul>
+<dd class="field-odd"><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>array_like of int</em>) – which indices of the history we should clear</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="sisl.mixing.History.history">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">history</span></span><a class="headerlink" href="#sisl.mixing.History.history" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="sisl.mixing.History.elements">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">elements</span></span><a class="headerlink" href="#sisl.mixing.History.elements" title="Permalink to this definition"></a></dt>
 <dd><p>Number of elements in the history</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="id0">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">history_max</span></span><a class="headerlink" href="#id0" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="sisl.mixing.History.max_elements">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_elements</span></span><a class="headerlink" href="#sisl.mixing.History.max_elements" title="Permalink to this definition"></a></dt>
 <dd><p>Maximum number of elements stored in the history for each variable</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="id1">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">variables</span></span><a class="headerlink" href="#id1" title="Permalink to this definition"></a></dt>
-<dd><p>Number of different variables that can be contained</p>
 </dd></dl>
 
 </dd></dl>
@@ -263,8 +234,8 @@ list allowing easy managing of the length of the history.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="sisl.mixing.Metric.html" class="btn btn-neutral float-left" title="sisl.mixing.Metric" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="sisl.mixing.LinearMixer.html" class="btn btn-neutral float-right" title="sisl.mixing.LinearMixer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../mixing.html" class="btn btn-neutral float-left" title="Mixing self-consistent quantities" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sisl.mixing.BaseMixer.html" class="btn btn-neutral float-right" title="sisl.mixing.BaseMixer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

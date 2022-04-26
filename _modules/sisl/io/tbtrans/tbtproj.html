@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.tbtrans.tbtproj &mdash; sisl 0.1.dev1+g9590202 documentation</title>
+  <title>sisl.io.tbtrans.tbtproj &mdash; sisl 0.1.dev1+gf854c96 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g9590202
+                0.1.dev1+gf854c96
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -103,11 +103,13 @@
     <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span>
-
+<span class="kn">from</span> <span class="nn">sisl.utils</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">default_ArgumentParser</span><span class="p">,</span> <span class="n">collect_action</span><span class="p">,</span>
+    <span class="n">list2str</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span>
 <span class="kn">from</span> <span class="nn">sisl.physics</span> <span class="kn">import</span> <span class="n">DensityMatrix</span>
-<span class="kn">from</span> <span class="nn">sisl.utils</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">sisl.unit.siesta</span> <span class="kn">import</span> <span class="n">unit_convert</span>
 
 <span class="kn">from</span> <span class="nn">.tbt</span> <span class="kn">import</span> <span class="n">tbtncSileTBtrans</span>
@@ -535,12 +537,6 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:70s}</span><span class="s1">[</span><span class="si">{}</span><span class="s1">]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="p">),</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">option</span><span class="p">)),</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="nf">truefalse</span><span class="p">(</span><span class="n">bol</span><span class="p">,</span> <span class="n">string</span><span class="p">,</span> <span class="n">fdf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">suf</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">bol</span><span class="p">:</span>
-                <span class="n">true</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">fdf</span><span class="p">,</span> <span class="n">suf</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">prnt</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">- </span><span class="si">{}</span><span class="s2">: false&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="n">suf</span><span class="p">,</span> <span class="n">string</span><span class="p">),</span> <span class="n">option</span><span class="o">=</span><span class="n">fdf</span><span class="p">)</span>
-
         <span class="k">def</span> <span class="nf">true</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">fdf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">suf</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
             <span class="n">prnt</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">+ </span><span class="si">{}</span><span class="s2">: true&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="n">suf</span><span class="p">,</span> <span class="n">string</span><span class="p">),</span> <span class="n">option</span><span class="o">=</span><span class="n">fdf</span><span class="p">)</span>
 
@@ -683,17 +679,16 @@
 
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">bloch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bloch</span><span class="p">(</span><span class="n">elec</span><span class="p">)</span>
-            <span class="k">except</span><span class="p">:</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="n">bloch</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">n_btd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_btd</span><span class="p">(</span><span class="n">elec</span><span class="p">)</span>
-            <span class="k">except</span><span class="p">:</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="n">n_btd</span> <span class="o">=</span> <span class="s1">&#39;unknown&#39;</span>
             <span class="n">prnt</span><span class="p">()</span>
             <span class="n">prnt</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Electrode: </span><span class="si">{</span><span class="n">elec</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">prnt</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - number of BTD blocks: </span><span class="si">{</span><span class="n">n_btd</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">prnt</span><span class="p">(</span><span class="s2">&quot;  - Bloch: [</span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">bloch</span><span class="p">))</span>
-            <span class="n">gelec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">elec</span><span class="p">]</span>
             <span class="k">if</span> <span class="s1">&#39;TBT&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trans_type</span><span class="p">:</span>
                 <span class="n">prnt</span><span class="p">(</span><span class="s2">&quot;  - chemical potential: </span><span class="si">{:.4f}</span><span class="s2"> eV&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chemical_potential</span><span class="p">(</span><span class="n">elec</span><span class="p">)))</span>
                 <span class="n">prnt</span><span class="p">(</span><span class="s2">&quot;  - electron temperature: </span><span class="si">{:.2f}</span><span class="s2"> K&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">electron_temperature</span><span class="p">(</span><span class="n">elec</span><span class="p">)))</span>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.electron &mdash; sisl 0.1.dev1+g9590202 documentation</title>
+  <title>sisl.physics.electron &mdash; sisl 0.1.dev1+gf854c96 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g9590202
+                0.1.dev1+gf854c96
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -159,7 +159,7 @@
 <span class="kn">from</span> <span class="nn">sisl.oplist</span> <span class="kn">import</span> <span class="n">oplist</span>
 <span class="kn">from</span> <span class="nn">sisl._math_small</span> <span class="kn">import</span> <span class="n">xyz_to_spherical_cos_phi</span>
 <span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
-<span class="kn">from</span> <span class="nn">sisl.linalg</span> <span class="kn">import</span> <span class="n">eigh</span><span class="p">,</span> <span class="n">det</span><span class="p">,</span> <span class="n">sqrth</span><span class="p">,</span> <span class="n">svd_destroy</span>
+<span class="kn">from</span> <span class="nn">sisl.linalg</span> <span class="kn">import</span> <span class="n">det</span><span class="p">,</span> <span class="n">sqrth</span><span class="p">,</span> <span class="n">svd_destroy</span>
 <span class="kn">from</span> <span class="nn">sisl.linalg</span> <span class="kn">import</span> <span class="n">eigvals</span> <span class="k">as</span> <span class="n">la_eigvals</span>
 <span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">info</span><span class="p">,</span> <span class="n">warn</span><span class="p">,</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">progressbar</span><span class="p">,</span> <span class="n">deprecate_method</span>
 <span class="kn">from</span> <span class="nn">sisl._help</span> <span class="kn">import</span> <span class="n">dtype_complex_to_real</span><span class="p">,</span> <span class="n">dtype_real_to_complex</span>
@@ -1002,7 +1002,7 @@
 <span class="k">def</span> <span class="nf">conductivity</span><span class="p">(</span><span class="n">bz</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s1">&#39;fermi-dirac&#39;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;ahc&#39;</span><span class="p">,</span> <span class="n">degenerate</span><span class="o">=</span><span class="mf">1.e-5</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Electronic conductivity for a given `BrillouinZone` integral</span>
 
-<span class="sd">    Currently the *only* implemented method is the anomalous Hall conductivity (AHC[1]_)</span>
+<span class="sd">    Currently the *only* implemented method is the anomalous Hall conductivity (AHC, see [1]_)</span>
 <span class="sd">    which may be calculated as:</span>
 
 <span class="sd">    .. math::</span>
@@ -1054,7 +1054,7 @@
         <span class="k">def</span> <span class="nf">_ahc</span><span class="p">(</span><span class="n">es</span><span class="p">):</span>
             <span class="n">occ</span> <span class="o">=</span> <span class="n">distribution</span><span class="p">(</span><span class="n">es</span><span class="o">.</span><span class="n">eig</span><span class="p">)</span>
             <span class="n">bc</span> <span class="o">=</span> <span class="n">es</span><span class="o">.</span><span class="n">berry_curvature</span><span class="p">(</span><span class="n">degenerate</span><span class="o">=</span><span class="n">degenerate</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="o">=</span><span class="n">degenerate_dir</span><span class="p">)</span>
-            <span class="k">return</span> <span class="p">(</span><span class="n">bc</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">distribution</span><span class="p">(</span><span class="n">es</span><span class="o">.</span><span class="n">eig</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">bc</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">occ</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
 
         <span class="n">vol</span><span class="p">,</span> <span class="n">dim</span> <span class="o">=</span> <span class="n">bz</span><span class="o">.</span><span class="n">volume</span><span class="p">(</span><span class="n">ret_dim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -1127,6 +1127,8 @@
 <span class="sd">    The returned angles are _not_ placed in the interval :math:`]-\pi;\pi]` as what `numpy.angle` would do.</span>
 <span class="sd">    This is to allow users to examine the quantities as is.</span>
 
+<span class="sd">    For more understanding of the Berry-phase and its calculation [3]_ is a good reference.</span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 
@@ -1159,7 +1161,6 @@
     <span class="c1"># Currently we require the Berry phase calculation to *only* accept Hamiltonians</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">contour</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">Hamiltonian</span><span class="p">):</span>
         <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span><span class="s2">&quot;berry_phase: requires the Brillouin zone object to contain a Hamiltonian!&quot;</span><span class="p">)</span>
-    <span class="n">spin</span> <span class="o">=</span> <span class="n">contour</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">spin</span>
 
     <span class="k">if</span> <span class="n">contour</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">:</span>
         <span class="k">def</span> <span class="nf">_lowdin</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
@@ -1611,7 +1612,7 @@
         <span class="sd">&quot;&quot;&quot; Internal routine to check whether this is a non-colinear calculation &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_diagonal</span>
-        <span class="k">except</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="nf">Sk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

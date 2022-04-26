@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.utils.ranges &mdash; sisl 0.1.dev1+g9590202 documentation</title>
+  <title>sisl.utils.ranges &mdash; sisl 0.1.dev1+gf854c96 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g9590202
+                0.1.dev1+gf854c96
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -100,12 +100,8 @@
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">groupby</span>
 
-<span class="kn">from</span> <span class="nn">sisl._array</span> <span class="kn">import</span> <span class="n">array_arange</span>
-
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;strmap&quot;</span><span class="p">,</span> <span class="s2">&quot;strseq&quot;</span><span class="p">,</span> <span class="s2">&quot;lstranges&quot;</span><span class="p">,</span> <span class="s2">&quot;erange&quot;</span><span class="p">,</span> <span class="s2">&quot;list2str&quot;</span><span class="p">,</span> <span class="s2">&quot;fileindex&quot;</span><span class="p">]</span>
-<span class="c1"># this will be deprecated sooner or later</span>
-<span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;array_arange&quot;</span><span class="p">]</span>
 
 
 <span class="c1"># Function to change a string to a range of integers</span>
@@ -140,10 +136,10 @@
 <span class="sd">    &gt;&gt;&gt; strmap(int, &quot;1-10[2-3]&quot;)</span>
 <span class="sd">    [((1, 10), [(2, 3)])]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">sep</span> <span class="o">==</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">sep</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;[&quot;</span><span class="p">,</span> <span class="s2">&quot;]&quot;</span><span class="p">):</span>
         <span class="n">segment</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\[(.+)\]\[(.+)\]|(.+)\[(.+)\]|(.+)&quot;</span><span class="p">)</span>
         <span class="n">sep1</span><span class="p">,</span> <span class="n">sep2</span> <span class="o">=</span> <span class="s2">&quot;[&quot;</span><span class="p">,</span> <span class="s2">&quot;]&quot;</span>
-    <span class="k">elif</span> <span class="n">sep</span> <span class="o">==</span> <span class="s2">&quot;c&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">sep</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;{&quot;</span><span class="p">,</span> <span class="s2">&quot;}&quot;</span><span class="p">):</span>
         <span class="n">segment</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\{(.+)\}\{(.+)\}|(.+)\{(.+)\}|(.+)&quot;</span><span class="p">)</span>
         <span class="n">sep1</span><span class="p">,</span> <span class="n">sep2</span> <span class="o">=</span> <span class="s2">&quot;{&quot;</span><span class="p">,</span> <span class="s2">&quot;}&quot;</span>
     <span class="k">else</span><span class="p">:</span>

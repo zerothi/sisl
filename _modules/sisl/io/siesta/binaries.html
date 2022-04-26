@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.binaries &mdash; sisl 0.1.dev1+g9590202 documentation</title>
+  <title>sisl.io.siesta.binaries &mdash; sisl 0.1.dev1+gf854c96 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g9590202
+                0.1.dev1+gf854c96
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -101,7 +101,6 @@
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span><span class="p">,</span> <span class="n">namedtuple</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">pi</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_siesta</span>
@@ -224,6 +223,25 @@
         <span class="n">geom</span><span class="o">.</span><span class="n">_atoms</span> <span class="o">=</span> <span class="n">atoms</span>
 
     <span class="k">return</span> <span class="n">geom</span>
+
+
+<span class="k">def</span> <span class="nf">_add_overlap</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">str_method</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Adds the overlap matrix to the matrix `M`</span>
+
+<span class="sd">    Handles different cases of `S`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">S</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="n">M</span><span class="o">.</span><span class="n">spsame</span><span class="p">(</span><span class="n">S</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">Overlap</span><span class="p">):</span>
+            <span class="n">M</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">M</span><span class="o">.</span><span class="n">S_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">S</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">SparseOrbitalBZ</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">S</span><span class="o">.</span><span class="n">non_orthogonal</span><span class="p">:</span>
+                <span class="n">M</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">M</span><span class="o">.</span><span class="n">S_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">S</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">S</span><span class="o">.</span><span class="n">S_idx</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">str_method</span><span class="si">}</span><span class="s2"> could not paste overlap matrix into the &quot;</span>
+                                  <span class="s2">&quot;matrix due to non-conforming sparse elements.&quot;</span><span class="p">)</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>
@@ -354,10 +372,41 @@
 <span class="k">class</span> <span class="nc">tshsSileSiesta</span><span class="p">(</span><span class="n">onlysSileSiesta</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Geometry, Hamiltonian and overlap matrix file &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="tshsSileSiesta.read_hamiltonian"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.tshsSileSiesta.html#sisl.io.siesta.tshsSileSiesta.read_hamiltonian">[docs]</a>    <span class="k">def</span> <span class="nf">read_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns the electronic structure from the siesta.TSHS file &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="tshsSileSiesta.read_hamiltonian"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.tshsSileSiesta.html#sisl.io.siesta.tshsSileSiesta.read_hamiltonian">[docs]</a>    <span class="k">def</span> <span class="nf">read_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Electronic structure from the siesta.TSHS file</span>
+
+<span class="sd">        The TSHS file format does *not* contain exact orbital information.</span>
+<span class="sd">        When reading the Hamiltonian directly using this class one will find</span>
+<span class="sd">        wrong orbital information. In such cases it may be beneficial to pass</span>
+<span class="sd">        the `geometry` argument to override the contained geometry.</span>
+
+<span class="sd">        The orbital order is unaltered but the atomic and orbital information</span>
+<span class="sd">        will be somewhat arbitrary.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        geometry : Geometry, optional</span>
+<span class="sd">           override the contained geometry in the returned Hamiltonian. Useful</span>
+<span class="sd">           when reading files directly using this class.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        Reading the Hamiltonian using the `tshsSileSiesta` backend through</span>
+<span class="sd">        the fdf sile. Since the fdf file will try and read the basis sets</span>
+<span class="sd">        using other files than the TSHS.</span>
+
+<span class="sd">        &gt;&gt;&gt; H = sisl.get_sile(&quot;RUN.fdf&quot;).read_hamiltonian(order=&#39;TSHS&#39;)</span>
+
+<span class="sd">        An equivalent, but different way would be:</span>
+
+<span class="sd">        &gt;&gt;&gt; geom = sisl.get_sile(&quot;RUN.fdf&quot;).read_geometry()</span>
+<span class="sd">        &gt;&gt;&gt; H = sisl.get_sile(&quot;siesta.TSHS&quot;).read_hamiltonian(geometry=geom)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">tshs_g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_geometry</span><span class="p">()</span>
-        <span class="n">geom</span> <span class="o">=</span> <span class="n">_geometry_align</span><span class="p">(</span><span class="n">tshs_g</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;geometry&#39;</span><span class="p">,</span> <span class="n">tshs_g</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="s1">&#39;read_hamiltonian&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">geometry</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">geometry</span> <span class="o">=</span> <span class="n">tshs_g</span>
+        <span class="n">geom</span> <span class="o">=</span> <span class="n">_geometry_align</span><span class="p">(</span><span class="n">tshs_g</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="s1">&#39;read_hamiltonian&#39;</span><span class="p">)</span>
 
         <span class="c1"># read the sizes used...</span>
         <span class="n">sizes</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_tshs_sizes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
@@ -461,8 +510,15 @@
     <span class="sd">&quot;&quot;&quot; Density matrix file &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="dmSileSiesta.read_density_matrix"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.dmSileSiesta.html#sisl.io.siesta.dmSileSiesta.read_density_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">read_density_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns the density matrix from the siesta.DM file &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Returns the density matrix from the siesta.DM file</span>
 
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        geometry : Geometry, optional</span>
+<span class="sd">           attach a geometry object to the sparse matrix</span>
+<span class="sd">        overlap : SparseMatrix, optional</span>
+<span class="sd">           attach the overlap matrix to the sparse matrix</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Now read the sizes used...</span>
         <span class="n">spin</span><span class="p">,</span> <span class="n">no</span><span class="p">,</span> <span class="n">nsc</span><span class="p">,</span> <span class="n">nnz</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_dm_sizes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_density_matrix&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read density matrix sizes.&#39;</span><span class="p">)</span>
@@ -511,7 +567,10 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="si">!s}</span><span class="s1">.read_density_matrix may result in a wrong sparse pattern!&#39;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">DM</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">spin</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sort&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span></div>
+        <span class="n">DM</span> <span class="o">=</span> <span class="n">DM</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">spin</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sort&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
+        <span class="n">_add_overlap</span><span class="p">(</span><span class="n">DM</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;overlap&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.read_density_matrix&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">DM</span></div>
 
 <div class="viewcode-block" id="dmSileSiesta.write_density_matrix"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.dmSileSiesta.html#sisl.io.siesta.dmSileSiesta.write_density_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">write_density_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">DM</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Writes the density matrix to a siesta.DM file &quot;&quot;&quot;</span>
@@ -547,8 +606,15 @@
     <span class="sd">&quot;&quot;&quot; Non-equilibrium density matrix and energy density matrix file &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="tsdeSileSiesta.read_energy_density_matrix"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.tsdeSileSiesta.html#sisl.io.siesta.tsdeSileSiesta.read_energy_density_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">read_energy_density_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns the energy density matrix from the siesta.DM file &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Returns the energy density matrix from the siesta.TSDE file</span>
 
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        geometry : Geometry, optional</span>
+<span class="sd">           attach a geometry object to the sparse matrix</span>
+<span class="sd">        overlap : SparseMatrix, optional</span>
+<span class="sd">           attach the overlap matrix to the sparse matrix</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Now read the sizes used...</span>
         <span class="n">spin</span><span class="p">,</span> <span class="n">no</span><span class="p">,</span> <span class="n">nsc</span><span class="p">,</span> <span class="n">nnz</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_tsde_sizes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_energy_density_matrix&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read energy density matrix sizes.&#39;</span><span class="p">)</span>
@@ -596,7 +662,10 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="si">!s}</span><span class="s1">.read_energy_density_matrix may result in a wrong sparse pattern!&#39;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">EDM</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">spin</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sort&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span></div>
+        <span class="n">EDM</span> <span class="o">=</span> <span class="n">EDM</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">spin</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sort&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
+        <span class="n">_add_overlap</span><span class="p">(</span><span class="n">EDM</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;overlap&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.read_energy_density_matrix&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">EDM</span></div>
 
 <div class="viewcode-block" id="tsdeSileSiesta.read_fermi_level"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.tsdeSileSiesta.html#sisl.io.siesta.tsdeSileSiesta.read_fermi_level">[docs]</a>    <span class="k">def</span> <span class="nf">read_fermi_level</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Query the Fermi-level contained in the file</span>
@@ -710,7 +779,7 @@
             <span class="n">atoms</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
                 <span class="n">idx0r</span> <span class="o">=</span> <span class="p">(</span><span class="n">row0</span> <span class="o">==</span> <span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="n">row0r</span> <span class="o">=</span> <span class="n">row0</span><span class="p">[</span><span class="n">idx0r</span><span class="p">]</span>
+                <span class="c1">#row0r = row0[idx0r]</span>
                 <span class="c1"># although xij == 0, we just do % to ensure unit-cell orbs</span>
                 <span class="n">col0r</span> <span class="o">=</span> <span class="n">col</span><span class="p">[</span><span class="n">idx0</span><span class="p">[</span><span class="n">idx0r</span><span class="p">]]</span> <span class="o">%</span> <span class="n">N</span>
                 <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">col0r</span> <span class="o">&gt;=</span> <span class="n">r</span><span class="p">):</span>
@@ -720,10 +789,6 @@
                     <span class="n">atoms</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">col0r</span><span class="p">))</span>
 
             <span class="c1"># convert list of orbitals to lists</span>
-            <span class="k">def</span> <span class="nf">conv</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
-                <span class="n">a</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-                <span class="n">a</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
-                <span class="k">return</span> <span class="n">a</span>
             <span class="n">atoms</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">]</span>
             <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">atoms</span><span class="p">))</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">xij</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> could not determine correct &quot;</span>
@@ -855,7 +920,7 @@
             <span class="c1"># Note the first is always [0, 0, 0]</span>
             <span class="c1"># So our best chance is to *guess* the first nsc</span>
             <span class="c1"># then reshape, then guess, then reshape, then guess :)</span>
-            <span class="n">sc_diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">sc_off</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="c1">#sc_diff = np.diff(sc_off, axis=0)</span>
 
             <span class="k">def</span> <span class="nf">get_nsc</span><span class="p">(</span><span class="n">sc_off</span><span class="p">):</span>
                 <span class="sd">&quot;&quot;&quot; Determine nsc depending on the axis &quot;&quot;&quot;</span>
@@ -994,19 +1059,19 @@
                 <span class="n">symbol</span> <span class="o">=</span> <span class="n">_ptbl</span><span class="o">.</span><span class="n">Z_label</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
                 <span class="n">symbols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">symbol</span><span class="p">)</span>
                 <span class="k">continue</span>
-            <span class="k">except</span><span class="p">:</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="k">pass</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">symbol</span> <span class="o">=</span> <span class="n">_ptbl</span><span class="o">.</span><span class="n">Z_label</span><span class="p">(</span><span class="n">label</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
                 <span class="n">symbols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">symbol</span><span class="p">)</span>
                 <span class="k">continue</span>
-            <span class="k">except</span><span class="p">:</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="k">pass</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">symbol</span> <span class="o">=</span> <span class="n">_ptbl</span><span class="o">.</span><span class="n">Z_label</span><span class="p">(</span><span class="n">label</span><span class="p">[:</span><span class="mi">1</span><span class="p">])</span>
                 <span class="n">symbols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">symbol</span><span class="p">)</span>
                 <span class="k">continue</span>
-            <span class="k">except</span><span class="p">:</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="c1"># we have no clue, assign -1</span>
                 <span class="n">symbols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
@@ -1033,7 +1098,7 @@
         <span class="n">Gamma</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">no</span><span class="p">,</span> <span class="n">no_s</span><span class="p">,</span> <span class="n">nnz</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_sizes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_geometry&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read matrix sizes.&#39;</span><span class="p">)</span>
         <span class="n">ncol</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">dxij</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_sx</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">Gamma</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">no</span><span class="p">,</span> <span class="n">no_s</span><span class="p">,</span> <span class="n">nnz</span><span class="p">)</span>
-        <span class="n">dxij</span> <span class="o">=</span> <span class="n">dxij</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">_Bohr2Ang</span>
+        <span class="c1">#dxij = dxij.T * _Bohr2Ang</span>
         <span class="n">col</span> <span class="o">-=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_geometry&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read xij matrix.&#39;</span><span class="p">)</span>
 
@@ -1194,7 +1259,7 @@
                 <span class="k">return</span> <span class="n">k</span> <span class="o">/</span> <span class="n">_Bohr2Ang</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">def</span> <span class="nf">conv</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
-                <span class="k">return</span> <span class="p">(</span><span class="n">k</span> <span class="o">@</span> <span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">*</span> <span class="n">_Bohr2Ang</span><span class="p">)</span>
+                <span class="k">return</span> <span class="p">(</span><span class="n">k</span> <span class="o">@</span> <span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">_Bohr2Ang</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_convert_k</span> <span class="o">=</span> <span class="n">conv</span>
 
     <span class="k">def</span> <span class="nf">_open_wfsx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">rewind</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -1231,15 +1296,15 @@
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ispin</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sizes</span>
-        <span class="k">except</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis</span>
-        <span class="k">except</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_funcs</span>
-        <span class="k">except</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">pass</span>
 
     <span class="k">def</span> <span class="nf">_setup_parsing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">close</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">skip_basis</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -1576,13 +1641,13 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;We are not in a position to read eigenstate info in the file. State: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Read all the information. Parse here the k values obtained.</span>
-        <span class="c1"># Store the information that should be returned under `returns`.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sizes</span><span class="o">.</span><span class="n">nspin</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="n">nspin</span> <span class="o">=</span> <span class="mi">2</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">nspin</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="n">k</span><span class="p">,</span> <span class="n">kw</span><span class="p">,</span> <span class="n">nwf</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_wfsx_next_all_info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iu</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sizes</span><span class="o">.</span><span class="n">nk</span><span class="p">)</span>
+        <span class="c1"># Read all the information. Parse here the k values obtained.</span>
+        <span class="c1"># Store the information that should be returned under `returns`.</span>
+        <span class="n">k</span><span class="p">,</span> <span class="n">kw</span><span class="p">,</span> <span class="n">nwf</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_wfsx_next_all_info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iu</span><span class="p">,</span> <span class="n">nspin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sizes</span><span class="o">.</span><span class="n">nk</span><span class="p">)</span>
 
         <span class="c1"># Close the file unit</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_close_wfsx</span><span class="p">()</span>
@@ -1744,11 +1809,11 @@
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ispin</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_no_u</span>
-        <span class="k">except</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nspin</span>
-        <span class="k">except</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">pass</span>
 
     <span class="k">def</span> <span class="nf">_step_counter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -2065,7 +2130,6 @@
         <span class="c1"># index makes firsto behave like fortran lasto</span>
         <span class="n">lasto</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">firsto</span>
         <span class="n">bloch</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">onesi</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-        <span class="n">mu</span> <span class="o">=</span> <span class="n">mu</span>
         <span class="n">NE</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">E</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">complex64</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">]:</span>
             <span class="n">E</span> <span class="o">=</span> <span class="n">E</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">obj</span><span class="o">.</span><span class="n">eta</span>
@@ -2180,7 +2244,7 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;__doc__&#39;</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;__doc__&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="vm">__doc__</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-        <span class="k">except</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">pass</span>
     <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">),</span> <span class="n">dic</span><span class="p">)</span>
 

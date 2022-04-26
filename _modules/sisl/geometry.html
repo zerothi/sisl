@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.geometry &mdash; sisl 0.1.dev1+g9590202 documentation</title>
+  <title>sisl.geometry &mdash; sisl 0.1.dev1+gf854c96 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g9590202
+                0.1.dev1+gf854c96
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -103,7 +103,6 @@
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">acos</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Iterable</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
@@ -133,7 +132,7 @@
 <span class="kn">from</span> <span class="nn">._namedindex</span> <span class="kn">import</span> <span class="n">NamedIndex</span>
 <span class="kn">from</span> <span class="nn">._category</span> <span class="kn">import</span> <span class="n">Category</span><span class="p">,</span> <span class="n">GenericCategory</span>
 <span class="kn">from</span> <span class="nn">._dispatcher</span> <span class="kn">import</span> <span class="n">AbstractDispatch</span>
-<span class="kn">from</span> <span class="nn">._dispatcher</span> <span class="kn">import</span> <span class="n">ErrorDispatcher</span><span class="p">,</span> <span class="n">ClassDispatcher</span><span class="p">,</span> <span class="n">TypeDispatcher</span>
+<span class="kn">from</span> <span class="nn">._dispatcher</span> <span class="kn">import</span> <span class="n">ClassDispatcher</span><span class="p">,</span> <span class="n">TypeDispatcher</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Geometry&#39;</span><span class="p">,</span> <span class="s1">&#39;sgeom&#39;</span><span class="p">]</span>
@@ -471,6 +470,7 @@
         <span class="k">def</span> <span class="nf">m</span><span class="p">(</span><span class="n">cat</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">ia</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cat</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># we are using NullCategory == None</span>
                     <span class="k">pass</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">yield</span> <span class="n">ia</span>
@@ -1928,7 +1928,6 @@
         <span class="c1">#  1. we replace all atoms of a given specie</span>
         <span class="c1">#  2. we replace a subset of atoms of a given specie</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="o">==</span> <span class="n">old_atom_count</span><span class="p">:</span>
-            <span class="n">new_atom_specie</span> <span class="o">=</span> <span class="n">old_atom_specie</span>
             <span class="c1"># We catch the warning about reducing the number of orbitals!</span>
             <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
@@ -1939,7 +1938,7 @@
             <span class="c1"># we have to add the new one (in case it does not exist)</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">new_atom_specie</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">specie_index</span><span class="p">(</span><span class="n">new_atom</span><span class="p">)</span>
-            <span class="k">except</span><span class="p">:</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="n">new_atom_specie</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">nspecie</span>
                 <span class="c1"># the above checks that it is indeed a new atom</span>
                 <span class="n">geom</span><span class="o">.</span><span class="n">_atoms</span><span class="o">.</span><span class="n">_atom</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_atom</span><span class="p">)</span>
@@ -3249,12 +3248,9 @@
             <span class="c1"># Quick return if there are no entries...</span>
 
             <span class="n">ret</span> <span class="o">=</span> <span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)]</span> <span class="o">*</span> <span class="n">nshapes</span><span class="p">]</span>
-            <span class="n">rc</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">if</span> <span class="n">ret_xyz</span><span class="p">:</span>
-                <span class="n">rc</span> <span class="o">=</span> <span class="n">rc</span> <span class="o">+</span> <span class="mi">1</span>
                 <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)]</span> <span class="o">*</span> <span class="n">nshapes</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">ret_rij</span><span class="p">:</span>
-                <span class="n">rd</span> <span class="o">=</span> <span class="n">rc</span> <span class="o">+</span> <span class="mi">1</span>
                 <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)]</span> <span class="o">*</span> <span class="n">nshapes</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">nshapes</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -4367,7 +4363,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">np</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span>
-                <span class="k">except</span><span class="p">:</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.distance `method` has wrong input value.&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">func</span> <span class="o">=</span> <span class="n">method</span>
@@ -4569,11 +4565,10 @@
             <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">g</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;_geometry&quot;</span><span class="p">:</span> <span class="n">g</span><span class="p">,</span>
-            <span class="s2">&quot;_stored_geometry&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="p">}</span>
-        <span class="n">namespace</span> <span class="o">=</span> <span class="n">default_namespace</span><span class="p">(</span><span class="o">**</span><span class="n">d</span><span class="p">)</span>
+        <span class="n">namespace</span> <span class="o">=</span> <span class="n">default_namespace</span><span class="p">(</span>
+            <span class="n">_geometry</span><span class="o">=</span><span class="n">g</span><span class="p">,</span>
+            <span class="n">_stored_geometry</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="c1"># Create actions</span>
         <span class="k">class</span> <span class="nc">Format</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
@@ -4901,7 +4896,7 @@
     <span class="n">new_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">ase_Atoms</span><span class="p">,</span> <span class="n">GeometryNewAseDispatcher</span><span class="p">)</span>
     <span class="c1"># ensure we don&#39;t pollute name-space</span>
     <span class="k">del</span> <span class="n">ase_Atoms</span>
-<span class="k">except</span><span class="p">:</span>
+<span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
     <span class="k">pass</span>
 
 
@@ -4937,7 +4932,7 @@
     <span class="n">new_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">pymatgen_Structure</span><span class="p">,</span> <span class="n">GeometryNewpymatgenDispatcher</span><span class="p">)</span>
     <span class="c1"># ensure we don&#39;t pollute name-space</span>
     <span class="k">del</span> <span class="n">pymatgen_Molecule</span><span class="p">,</span> <span class="n">pymatgen_Structure</span>
-<span class="k">except</span><span class="p">:</span>
+<span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
     <span class="k">pass</span>
 
 
@@ -5158,7 +5153,7 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="s1">&#39;_input_file&#39;</span><span class="p">):</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="s1">&#39;_input_file&#39;</span><span class="p">,</span> <span class="n">input_file</span><span class="p">)</span>
-    <span class="k">except</span><span class="p">:</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
         <span class="k">pass</span>
 
     <span class="c1"># Now try and figure out the actual arguments</span>

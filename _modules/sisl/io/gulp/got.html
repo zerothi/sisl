@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.gulp.got &mdash; sisl 0.1.dev1+g9590202 documentation</title>
+  <title>sisl.io.gulp.got &mdash; sisl 0.1.dev1+gf854c96 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g9590202
+                0.1.dev1+gf854c96
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -100,16 +100,13 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Sile object for reading/writing GULP in/output</span>
 <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="kn">import</span> <span class="nn">os.path</span> <span class="k">as</span> <span class="nn">osp</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="nb">abs</span> <span class="k">as</span> <span class="n">np_abs</span>
 
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">info</span><span class="p">,</span> <span class="n">warn</span>
 <span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileGULP</span>
 <span class="kn">from</span> <span class="nn">.fc</span> <span class="kn">import</span> <span class="n">fcSileGULP</span>
-<span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_fh_open</span>
 <span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">Orbital</span><span class="p">,</span> <span class="n">SuperCell</span>
 <span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">constant</span><span class="p">,</span> <span class="n">units</span>
 <span class="kn">from</span> <span class="nn">sisl.physics</span> <span class="kn">import</span> <span class="n">DynamicalMatrix</span>
@@ -359,7 +356,7 @@
         <span class="c1"># Construct mass ** (-.5), so we can check cutoff correctly (in unit eV/Ang**2)</span>
         <span class="n">mass_sqrt</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">mass</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
         <span class="n">dyn</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">*=</span> <span class="n">mass_sqrt</span><span class="p">[</span><span class="n">dyn</span><span class="o">.</span><span class="n">row</span><span class="p">]</span> <span class="o">*</span> <span class="n">mass_sqrt</span><span class="p">[</span><span class="n">dyn</span><span class="o">.</span><span class="n">col</span><span class="p">]</span>
-        <span class="n">dyn</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">np_abs</span><span class="p">(</span><span class="n">dyn</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">cutoff</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">dyn</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">dyn</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">cutoff</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.</span>
         <span class="n">dyn</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">*=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">mass_sqrt</span><span class="p">[</span><span class="n">dyn</span><span class="o">.</span><span class="n">row</span><span class="p">]</span> <span class="o">*</span> <span class="n">mass_sqrt</span><span class="p">[</span><span class="n">dyn</span><span class="o">.</span><span class="n">col</span><span class="p">])</span>
         <span class="n">dyn</span><span class="o">.</span><span class="n">eliminate_zeros</span><span class="p">()</span>
 

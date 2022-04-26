@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.tbtrans.delta &mdash; sisl 0.1.dev1+g9590202 documentation</title>
+  <title>sisl.io.tbtrans.delta &mdash; sisl 0.1.dev1+gf854c96 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g9590202
+                0.1.dev1+gf854c96
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -100,11 +100,10 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="c1"># Import sile objects</span>
-<span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_raise_write</span><span class="p">,</span> <span class="n">SileWarning</span><span class="p">,</span> <span class="n">SileError</span>
-<span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileCDFTBtrans</span>
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span> <span class="nn">sisl.utils</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
+<span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_raise_write</span><span class="p">,</span> <span class="n">SileError</span>
+<span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileCDFTBtrans</span>
 
 <span class="c1"># Import the geometry object</span>
 <span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">SuperCell</span>
@@ -167,7 +166,7 @@
         <span class="n">sc</span> <span class="o">=</span> <span class="n">SuperCell</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="n">nsc</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">sc</span><span class="o">.</span><span class="n">sc_off</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="s1">&#39;isc_off&#39;</span><span class="p">)</span>
-        <span class="k">except</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="c1"># This is ok, we simply do not have the supercell offsets</span>
             <span class="k">pass</span>
 
@@ -302,7 +301,7 @@
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">lvl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_lvl</span><span class="p">(</span><span class="n">ilvl</span><span class="p">)</span>
-        <span class="k">except</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">ilvl</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
 
         <span class="c1"># Now determine the energy and k-indices</span>
@@ -442,7 +441,8 @@
             <span class="c1"># point, this warning will proceed...</span>
             <span class="c1"># I.e. even though the variable has not been set, it will WARN</span>
             <span class="c1"># Hence we out-comment this for now...</span>
-            <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Overwriting k-point </span><span class="si">{</span><span class="n">ik</span><span class="si">}</span><span class="s2"> and energy point </span><span class="si">{</span><span class="n">iE</span><span class="si">}</span><span class="s2"> correction.&quot;</span><span class="p">)</span>
+            <span class="c1">#warn(f&quot;Overwriting k-point {ik} and energy point {iE} correction.&quot;)</span>
+            <span class="k">pass</span>
         <span class="k">elif</span> <span class="n">ilvl</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">warn_E</span><span class="p">:</span>
             <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Overwriting energy point </span><span class="si">{</span><span class="n">iE</span><span class="si">}</span><span class="s2"> correction.&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">ilvl</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">warn_k</span><span class="p">:</span>

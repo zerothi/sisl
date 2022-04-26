@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Range routines &mdash; sisl 0.1.dev1+g9590202 documentation</title>
+  <title>Range routines &mdash; sisl 0.1.dev1+gf854c96 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -23,7 +23,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="array_arange" href="generated/sisl.utils.array_arange.html" />
+    <link rel="next" title="strmap" href="generated/sisl.utils.strmap.html" />
     <link rel="prev" title="sisl.shape.NullShape" href="generated/sisl.shape.NullShape.html" /> 
 </head>
 
@@ -35,7 +35,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g9590202
+                0.1.dev1+gf854c96
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -79,7 +79,6 @@
 <li class="toctree-l2 current"><a class="reference internal" href="utilities.html">Utilities</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="utilities.shape.html">Shapes</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Range routines</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="generated/sisl.utils.array_arange.html">array_arange</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.utils.strmap.html">strmap</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.utils.strseq.html">strseq</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.utils.lstranges.html">lstranges</a></li>
@@ -162,25 +161,22 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.utils.array_arange.html#sisl.utils.array_arange" title="sisl.utils.array_arange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">array_arange</span></code></a>(start[, end, n, dtype])</p></td>
-<td><p>Creates a single array from a sequence of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.arange.html#numpy.arange" title="(in NumPy v1.22)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.arange</span></code></a></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.utils.strmap.html#sisl.utils.strmap" title="sisl.utils.strmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">strmap</span></code></a>(func, s[, start, end, sep])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.utils.strmap.html#sisl.utils.strmap" title="sisl.utils.strmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">strmap</span></code></a>(func, s[, start, end, sep])</p></td>
 <td><p>Parse a string as though it was a slice and map all entries using <code class="docutils literal notranslate"><span class="pre">func</span></code>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.utils.strseq.html#sisl.utils.strseq" title="sisl.utils.strseq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">strseq</span></code></a>(cast, s[, start, end])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.utils.strseq.html#sisl.utils.strseq" title="sisl.utils.strseq"><code class="xref py py-obj docutils literal notranslate"><span class="pre">strseq</span></code></a>(cast, s[, start, end])</p></td>
 <td><p>Accept a string and return the casted tuples of content based on ranges.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.utils.lstranges.html#sisl.utils.lstranges" title="sisl.utils.lstranges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lstranges</span></code></a>(lst[, cast, end])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.utils.lstranges.html#sisl.utils.lstranges" title="sisl.utils.lstranges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lstranges</span></code></a>(lst[, cast, end])</p></td>
 <td><p>Convert a <a class="reference internal" href="generated/sisl.utils.strmap.html#sisl.utils.strmap" title="sisl.utils.strmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">strmap</span></code></a> list into expanded ranges</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.utils.erange.html#sisl.utils.erange" title="sisl.utils.erange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">erange</span></code></a>(start, step[, end])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.utils.erange.html#sisl.utils.erange" title="sisl.utils.erange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">erange</span></code></a>(start, step[, end])</p></td>
 <td><p>Returns the range with both ends includede</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.utils.list2str.html#sisl.utils.list2str" title="sisl.utils.list2str"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list2str</span></code></a>(lst)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.utils.list2str.html#sisl.utils.list2str" title="sisl.utils.list2str"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list2str</span></code></a>(lst)</p></td>
 <td><p>Convert a list of elements into a string of ranges</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.utils.fileindex.html#sisl.utils.fileindex" title="sisl.utils.fileindex"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fileindex</span></code></a>(f[, cast])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.utils.fileindex.html#sisl.utils.fileindex" title="sisl.utils.fileindex"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fileindex</span></code></a>(f[, cast])</p></td>
 <td><p>Parses a filename string into the filename and the indices.</p></td>
 </tr>
 </tbody>
@@ -218,7 +214,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="generated/sisl.shape.NullShape.html" class="btn btn-neutral float-left" title="sisl.shape.NullShape" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="generated/sisl.utils.array_arange.html" class="btn btn-neutral float-right" title="array_arange" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="generated/sisl.utils.strmap.html" class="btn btn-neutral float-right" title="strmap" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

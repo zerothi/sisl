@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.tshsSileSiesta &mdash; sisl 0.1.dev1+g9590202 documentation</title>
+  <title>sisl.io.siesta.tshsSileSiesta &mdash; sisl 0.1.dev1+gf854c96 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g9590202
+                0.1.dev1+gf854c96
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -178,8 +178,8 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.tshsSileSiesta.read_geometry" title="sisl.io.siesta.tshsSileSiesta.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a>([geometry])</p></td>
 <td><p>Returns Geometry object from a TranSiesta file</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.tshsSileSiesta.read_hamiltonian" title="sisl.io.siesta.tshsSileSiesta.read_hamiltonian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_hamiltonian</span></code></a>(**kwargs)</p></td>
-<td><p>Returns the electronic structure from the siesta.TSHS file</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.tshsSileSiesta.read_hamiltonian" title="sisl.io.siesta.tshsSileSiesta.read_hamiltonian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_hamiltonian</span></code></a>([geometry])</p></td>
+<td><p>Electronic structure from the siesta.TSHS file</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.tshsSileSiesta.read_overlap" title="sisl.io.siesta.tshsSileSiesta.read_overlap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_overlap</span></code></a>(**kwargs)</p></td>
 <td><p>Returns the overlap matrix from the TranSiesta file</p></td>
@@ -264,8 +264,32 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.siesta.tshsSileSiesta.read_hamiltonian">
-<span class="sig-name descname"><span class="pre">read_hamiltonian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/binaries.html#tshsSileSiesta.read_hamiltonian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.tshsSileSiesta.read_hamiltonian" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the electronic structure from the siesta.TSHS file</p>
+<span class="sig-name descname"><span class="pre">read_hamiltonian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/binaries.html#tshsSileSiesta.read_hamiltonian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.tshsSileSiesta.read_hamiltonian" title="Permalink to this definition"></a></dt>
+<dd><p>Electronic structure from the siesta.TSHS file</p>
+<p>The TSHS file format does <em>not</em> contain exact orbital information.
+When reading the Hamiltonian directly using this class one will find
+wrong orbital information. In such cases it may be beneficial to pass
+the <em class="xref py py-obj">geometry</em> argument to override the contained geometry.</p>
+<p>The orbital order is unaltered but the atomic and orbital information
+will be somewhat arbitrary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>geometry</strong> (<a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a><em>, </em><em>optional</em>) – override the contained geometry in the returned Hamiltonian. Useful
+when reading files directly using this class.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Reading the Hamiltonian using the <a class="reference internal" href="#sisl.io.siesta.tshsSileSiesta" title="sisl.io.siesta.tshsSileSiesta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tshsSileSiesta</span></code></a> backend through
+the fdf sile. Since the fdf file will try and read the basis sets
+using other files than the TSHS.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">H</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">get_sile</span><span class="p">(</span><span class="s2">&quot;RUN.fdf&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read_hamiltonian</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s1">&#39;TSHS&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>An equivalent, but different way would be:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">geom</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">get_sile</span><span class="p">(</span><span class="s2">&quot;RUN.fdf&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read_geometry</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">get_sile</span><span class="p">(</span><span class="s2">&quot;siesta.TSHS&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read_hamiltonian</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="n">geom</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">

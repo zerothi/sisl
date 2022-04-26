@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.out &mdash; sisl 0.1.dev1+g9590202 documentation</title>
+  <title>sisl.io.siesta.out &mdash; sisl 0.1.dev1+gf854c96 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g9590202
+                0.1.dev1+gf854c96
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -888,12 +888,11 @@
                     <span class="n">data</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">d</span><span class="p">[</span><span class="s1">&#39;ts-q&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">data</span><span class="p">))</span>
-                    <span class="k">except</span><span class="p">:</span>
+                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                         <span class="c1"># We are probably reading a device list</span>
                         <span class="c1"># ensure that props are appended</span>
                         <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">props</span><span class="p">:</span>
                             <span class="n">props</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-                        <span class="k">pass</span>
                 <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;ts-scf:&#39;</span><span class="p">):</span>
                     <span class="n">d</span><span class="p">[</span><span class="s1">&#39;_found_iscf&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
                     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="mi">100</span><span class="p">:</span>
@@ -1136,7 +1135,7 @@
                 <span class="c1"># assert that this is a proper line</span>
                 <span class="c1"># this should catch cases where the following line of charge output</span>
                 <span class="c1"># is still parseable</span>
-                <span class="n">atom_idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">atom_idx</span><span class="p">)</span>
+                <span class="c1">#atom_idx = int(atom_idx)</span>
                 <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">vals</span><span class="p">))</span>
 
             <span class="c1"># first line is the header</span>
@@ -1154,7 +1153,7 @@
                     <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
                     <span class="n">charge_vals</span> <span class="o">=</span> <span class="n">_parse_charge</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
                     <span class="n">atom_charges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">charge_vals</span><span class="p">)</span>
-                <span class="k">except</span><span class="p">:</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                     <span class="c1"># We already have the charge values and we reached a line that can&#39;t be parsed,</span>
                     <span class="c1"># this means we have reached the end.</span>
                     <span class="k">break</span>
@@ -1334,7 +1333,7 @@
                 <span class="k">def</span> <span class="nf">get_md_scf_charge</span><span class="p">(</span><span class="n">scf_charge</span><span class="p">,</span> <span class="n">iscf</span><span class="p">):</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="k">return</span> <span class="n">scf_charge</span><span class="p">[</span><span class="n">iscf</span><span class="p">]</span>
-                    <span class="k">except</span><span class="p">:</span>
+                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                         <span class="k">return</span> <span class="n">nan_array</span>
             <span class="k">if</span> <span class="n">FOUND_MD</span><span class="p">:</span>
                 <span class="n">md_charge</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">md_charge</span><span class="p">)</span>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.sparse_geometry &mdash; sisl 0.1.dev1+g9590202 documentation</title>
+  <title>sisl.sparse_geometry &mdash; sisl 0.1.dev1+gf854c96 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g9590202
+                0.1.dev1+gf854c96
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -100,10 +100,7 @@
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Integral</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">functools</span> <span class="k">as</span> <span class="nn">ftool</span>
-<span class="kn">import</span> <span class="nn">itertools</span>
-<span class="kn">import</span> <span class="nn">operator</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Sequence</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numpy.lib.mixins</span> <span class="kn">import</span> <span class="n">NDArrayOperatorsMixin</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="p">(</span>
@@ -122,8 +119,6 @@
 <span class="kn">from</span> <span class="nn">.orbital</span> <span class="kn">import</span> <span class="n">Orbital</span>
 <span class="kn">from</span> <span class="nn">.geometry</span> <span class="kn">import</span> <span class="n">Geometry</span>
 <span class="kn">from</span> <span class="nn">.messages</span> <span class="kn">import</span> <span class="n">warn</span><span class="p">,</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">SislWarning</span><span class="p">,</span> <span class="n">progressbar</span><span class="p">,</span> <span class="n">deprecate_method</span>
-<span class="kn">from</span> <span class="nn">._indices</span> <span class="kn">import</span> <span class="n">indices_only</span>
-<span class="kn">from</span> <span class="nn">._help</span> <span class="kn">import</span> <span class="n">get_dtype</span>
 <span class="kn">from</span> <span class="nn">.utils.ranges</span> <span class="kn">import</span> <span class="n">list2str</span>
 <span class="kn">from</span> <span class="nn">.sparse</span> <span class="kn">import</span> <span class="n">SparseCSR</span><span class="p">,</span> <span class="n">isspmatrix</span><span class="p">,</span> <span class="n">_ncol_to_indptr</span>
 
@@ -486,12 +481,12 @@
         <span class="c1"># First extract the actual data</span>
         <span class="n">ncol</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">ncol</span><span class="o">.</span><span class="n">view</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">csr</span><span class="o">.</span><span class="n">finalized</span><span class="p">:</span>
-            <span class="n">ptr</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">ptr</span><span class="o">.</span><span class="n">view</span><span class="p">()</span>
+            <span class="c1">#ptr = csr.ptr.view()</span>
             <span class="n">col</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
             <span class="n">D</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">_D</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">idx</span> <span class="o">=</span> <span class="n">array_arange</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">ptr</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="n">ncol</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span>
-            <span class="n">ptr</span> <span class="o">=</span> <span class="n">_ncol_to_indptr</span><span class="p">(</span><span class="n">ncol</span><span class="p">)</span>
+            <span class="c1">#ptr = _ncol_to_indptr(ncol)</span>
             <span class="n">col</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
             <span class="n">D</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
             <span class="k">del</span> <span class="n">idx</span>
@@ -764,7 +759,6 @@
 
     <span class="k">def</span> <span class="nf">untile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">segment</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">sym</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Cuts the sparse model into different parts. &quot;&quot;&quot;</span>
-        <span class="n">new_w</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="c1"># Create new geometry</span>
         <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">(</span><span class="n">record</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">w</span><span class="p">:</span>
             <span class="c1"># Cause all warnings to always be triggered.</span>
@@ -874,23 +868,38 @@
                 <span class="c1"># we have something like</span>
                 <span class="c1">#  [0 1 - 3]</span>
                 <span class="c1"># meaning that there is a gab in the couplings</span>
-                <span class="n">axis0</span> <span class="o">=</span> <span class="p">(</span><span class="n">sub_lsc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-                <span class="n">total_nsc</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-                    <span class="k">try</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">sub_lsc</span><span class="p">[</span><span class="n">axis0</span><span class="o">+</span><span class="n">total_nsc</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">total_nsc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
-                            <span class="n">total_nsc</span> <span class="o">+=</span> <span class="mi">1</span>
-                        <span class="k">else</span><span class="p">:</span>
-                            <span class="k">break</span>
-                    <span class="k">except</span><span class="p">:</span> <span class="k">pass</span>
-                    <span class="k">try</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">sub_lsc</span><span class="p">[</span><span class="n">axis0</span><span class="o">-</span><span class="n">total_nsc</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="n">total_nsc</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
-                            <span class="n">total_nsc</span> <span class="o">+=</span> <span class="mi">1</span>
-                        <span class="k">else</span><span class="p">:</span>
-                            <span class="k">break</span>
-                    <span class="k">except</span><span class="p">:</span> <span class="k">pass</span>
 
-                <span class="n">nsc</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">total_nsc</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="c1"># remove duplicate neighbouring values</span>
+                <span class="n">single_sel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sub_lsc</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+                <span class="n">single_sel</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">sub_lsc</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">!=</span> <span class="n">sub_lsc</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+                <span class="n">single_sub_lsc</span> <span class="o">=</span> <span class="n">sub_lsc</span><span class="p">[</span><span class="n">single_sel</span><span class="p">]</span>
+                <span class="n">axis0</span> <span class="o">=</span> <span class="p">(</span><span class="n">single_sub_lsc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="c1"># initialize</span>
+                <span class="n">pos_nsc</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">while</span> <span class="n">found</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">single_sub_lsc</span><span class="p">[</span><span class="n">axis0</span><span class="o">+</span><span class="n">pos_nsc</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">pos_nsc</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+                            <span class="n">pos_nsc</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                        <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="n">neg_nsc</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">while</span> <span class="n">found</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">single_sub_lsc</span><span class="p">[</span><span class="n">axis0</span><span class="o">+</span><span class="n">neg_nsc</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">neg_nsc</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                            <span class="n">neg_nsc</span> <span class="o">-=</span> <span class="mi">1</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                        <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
+
+                <span class="n">nsc</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">pos_nsc</span><span class="p">,</span> <span class="o">-</span><span class="n">neg_nsc</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span>
 
             <span class="c1"># correct the linear indices that are *too* high</span>
             <span class="n">hnsc</span> <span class="o">=</span> <span class="n">nsc</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
@@ -920,6 +929,7 @@
         <span class="c1">#    to the cut structure</span>
         <span class="c1"># 3. geom, which is the cut structure</span>
         <span class="k">def</span> <span class="nf">conv</span><span class="p">(</span><span class="n">dim</span><span class="p">):</span>
+            <span class="k">nonlocal</span> <span class="n">lsc</span>
             <span class="n">csr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tocsr</span><span class="p">(</span><span class="n">dim</span><span class="p">)[</span><span class="n">orig_orbs</span><span class="p">,</span> <span class="p">:]</span>
             <span class="n">cols</span> <span class="o">=</span> <span class="n">csr</span><span class="o">.</span><span class="n">indices</span>
 
@@ -2264,8 +2274,9 @@
 
         <span class="c1"># Now figure out if the supercells can be kept, at all...</span>
         <span class="c1"># find SC indices in other corresponding to self</span>
-        <span class="n">o_idx_uc</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">sc_index</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span>
-        <span class="n">o_idx_sc</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">n_s</span><span class="p">)</span>
+        <span class="c1">#o_idx_uc = other.geometry.sc.sc_index([0] * 3)</span>
+        <span class="c1">#o_idx_sc = _a.arangei(other.geometry.sc.n_s)</span>
+
         <span class="c1"># Remove couplings along axis</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">axis</span><span class="p">:</span>
@@ -2695,7 +2706,7 @@
             <span class="k">if</span> <span class="n">unique</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.replace requires a unique set of atoms&quot;</span><span class="p">)</span>
             <span class="n">orbs</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="n">other_orbs</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">ouc2sc</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">no</span><span class="p">),</span> <span class="n">orbs</span><span class="p">))</span>
+            <span class="c1">#other_orbs = geom.ouc2sc(np.delete(_a.arangei(geom.no), orbs))</span>
 
             <span class="c1"># Find the orbitals that these atoms connect to such that we can compare</span>
             <span class="c1"># atomic coordinates</span>
@@ -2911,7 +2922,7 @@
         <span class="n">ainsert_idx</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
         <span class="n">oinsert_idx</span> <span class="o">=</span> <span class="n">sgeom</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">ainsert_idx</span><span class="p">)</span>
         <span class="c1"># this is the indices of the new atoms in the new geometry</span>
-        <span class="n">self_other_atoms</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="n">ainsert_idx</span><span class="p">,</span> <span class="n">ainsert_idx</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">other_atoms</span><span class="p">))</span>
+        <span class="c1">#self_other_atoms = _a.arangei(ainsert_idx, ainsert_idx + len(other_atoms))</span>
 
         <span class="c1"># We need to do the replacement in two steps</span>
         <span class="c1"># A. the geometry</span>

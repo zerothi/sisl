@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.tbtrans.tbt &mdash; sisl 0.1.dev1+g9590202 documentation</title>
+  <title>sisl.io.tbtrans.tbt &mdash; sisl 0.1.dev1+gf854c96 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g9590202
+                0.1.dev1+gf854c96
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -105,9 +105,7 @@
 <span class="kn">import</span> <span class="nn">itertools</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">ndarray</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">in1d</span><span class="p">,</span> <span class="n">sqrt</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">repeat</span><span class="p">,</span> <span class="n">unique</span>
+<span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
 
 <span class="c1"># The sparse matrix for the orbital/bond currents</span>
 <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">csr_matrix</span>
@@ -115,14 +113,18 @@
 <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">SparseEfficiencyWarning</span>
 
 <span class="c1"># Import sile objects</span>
+<span class="kn">from</span> <span class="nn">sisl.utils</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">default_ArgumentParser</span><span class="p">,</span> <span class="n">default_namespace</span><span class="p">,</span>
+    <span class="n">collect_action</span><span class="p">,</span> <span class="n">run_actions</span><span class="p">,</span>
+    <span class="n">lstranges</span><span class="p">,</span> <span class="n">strmap</span><span class="p">,</span> <span class="n">list2str</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_raise_write</span><span class="p">,</span> <span class="n">get_sile</span>
 <span class="kn">from</span> <span class="nn">._cdf</span> <span class="kn">import</span> <span class="n">_devncSileTBtrans</span>
-<span class="kn">from</span> <span class="nn">sisl.utils</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
 
 <span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Atoms</span>
-<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">units</span><span class="p">,</span> <span class="n">constant</span>
+<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">constant</span>
 <span class="kn">from</span> <span class="nn">sisl.sparse</span> <span class="kn">import</span> <span class="n">_ncol_to_indptr</span>
 <span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">warn</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">SislError</span>
 <span class="kn">from</span> <span class="nn">sisl._help</span> <span class="kn">import</span> <span class="n">wrap_filterwarnings</span>
@@ -471,7 +473,7 @@
                 <span class="n">NORM</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">o2p</span><span class="p">(</span><span class="n">orbitals</span><span class="p">))</span>
             <span class="k">elif</span> <span class="n">norm</span> <span class="o">==</span> <span class="s1">&#39;atom&#39;</span><span class="p">:</span>
                 <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span>
-                <span class="n">a</span> <span class="o">=</span> <span class="n">unique</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">orbitals</span><span class="p">))</span>
+                <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">orbitals</span><span class="p">))</span>
                 <span class="c1"># Now sum the orbitals per atom</span>
                 <span class="n">NORM</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">orbitals</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
             <span class="k">return</span> <span class="n">NORM</span>
@@ -589,9 +591,6 @@
         <span class="c1"># We will return per-atom</span>
         <span class="n">shp</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">DOS</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">nDOS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shp</span> <span class="o">+</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">)],</span> <span class="n">DOS</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-
-        <span class="c1"># Quicker than re-creating the geometry on every instance</span>
-        <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span>
 
         <span class="c1"># Sum for new return stuff</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">atoms</span><span class="p">):</span>
@@ -1100,20 +1099,20 @@
             <span class="c1"># get both row and column indices</span>
             <span class="n">row_nonzero</span> <span class="o">=</span> <span class="p">(</span><span class="n">ncol</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
             <span class="c1"># Now we have [0 0 0 0 1 1 1 1 2 2 ... no-1 no-1]</span>
-            <span class="n">row</span> <span class="o">=</span> <span class="n">repeat</span><span class="p">(</span><span class="n">row_nonzero</span><span class="p">,</span> <span class="n">ncol</span><span class="p">[</span><span class="n">row_nonzero</span><span class="p">])</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">row_nonzero</span><span class="p">,</span> <span class="n">ncol</span><span class="p">[</span><span class="n">row_nonzero</span><span class="p">])</span>
 
             <span class="c1"># now figure out all places where we</span>
             <span class="c1"># have the corresponding values</span>
             <span class="n">all_col</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
-                <span class="n">in1d</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">all_col</span><span class="p">),</span>
-                <span class="n">in1d</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">all_col</span><span class="p">))</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">all_col</span><span class="p">),</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">all_col</span><span class="p">))</span>
 
             <span class="c1"># reduce space</span>
             <span class="n">col</span> <span class="o">=</span> <span class="n">col</span><span class="p">[</span><span class="n">all_col</span><span class="p">]</span>
             <span class="n">D</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">all_col</span><span class="p">]</span>
 
             <span class="c1"># now calculate new subset rows</span>
-            <span class="n">row</span><span class="p">,</span> <span class="n">nrow</span> <span class="o">=</span> <span class="n">unique</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">all_col</span><span class="p">],</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">row</span><span class="p">,</span> <span class="n">nrow</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">all_col</span><span class="p">],</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">ncol</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">zerosi</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">no</span><span class="p">)</span>
             <span class="n">ncol</span><span class="p">[</span><span class="n">row</span><span class="p">]</span> <span class="o">=</span> <span class="n">nrow</span>
             <span class="k">del</span> <span class="n">row</span><span class="p">,</span> <span class="n">nrow</span>
@@ -1161,21 +1160,21 @@
                 <span class="n">all_col</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">sc_index</span><span class="p">([</span><span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">,</span> <span class="n">iz</span><span class="p">])</span>
 
             <span class="c1"># Transfer all_col to the range</span>
-            <span class="n">all_col</span> <span class="o">=</span> <span class="n">array_arange</span><span class="p">(</span><span class="n">all_col</span> <span class="o">*</span> <span class="n">geom</span><span class="o">.</span><span class="n">no</span><span class="p">,</span>
-                                   <span class="n">n</span><span class="o">=</span><span class="n">_a</span><span class="o">.</span><span class="n">fulli</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">all_col</span><span class="p">),</span> <span class="n">geom</span><span class="o">.</span><span class="n">no</span><span class="p">))</span>
+            <span class="n">all_col</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">array_arangei</span><span class="p">(</span><span class="n">all_col</span> <span class="o">*</span> <span class="n">geom</span><span class="o">.</span><span class="n">no</span><span class="p">,</span>
+                                       <span class="n">n</span><span class="o">=</span><span class="n">_a</span><span class="o">.</span><span class="n">fulli</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">all_col</span><span class="p">),</span> <span class="n">geom</span><span class="o">.</span><span class="n">no</span><span class="p">))</span>
 
             <span class="c1"># get both row and column indices</span>
             <span class="n">row_nonzero</span> <span class="o">=</span> <span class="p">(</span><span class="n">ncol</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
             <span class="c1"># Now we have [0 0 0 0 1 1 1 1 2 2 ... no-1 no-1]</span>
-            <span class="n">row</span> <span class="o">=</span> <span class="n">repeat</span><span class="p">(</span><span class="n">row_nonzero</span><span class="p">,</span> <span class="n">ncol</span><span class="p">[</span><span class="n">row_nonzero</span><span class="p">])</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">row_nonzero</span><span class="p">,</span> <span class="n">ncol</span><span class="p">[</span><span class="n">row_nonzero</span><span class="p">])</span>
 
             <span class="c1"># Create a logical array for sub-indexing</span>
-            <span class="n">all_col</span> <span class="o">=</span> <span class="n">in1d</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">all_col</span><span class="p">)</span>
+            <span class="n">all_col</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">all_col</span><span class="p">)</span>
             <span class="n">row</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">all_col</span><span class="p">]</span>
             <span class="n">col</span> <span class="o">=</span> <span class="n">col</span><span class="p">[</span><span class="n">all_col</span><span class="p">]</span>
 
             <span class="c1"># now calculate new subset rows</span>
-            <span class="n">row</span><span class="p">,</span> <span class="n">nrow</span> <span class="o">=</span> <span class="n">unique</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">row</span><span class="p">,</span> <span class="n">nrow</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">ncol</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">zerosi</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">no</span><span class="p">)</span>
             <span class="n">ncol</span><span class="p">[</span><span class="n">row</span><span class="p">]</span> <span class="o">=</span> <span class="n">nrow</span>
 
@@ -1508,7 +1507,7 @@
 
             <span class="c1"># Return the geometric mean of the atomic current X orbital</span>
             <span class="c1"># current.</span>
-            <span class="n">Ja</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">Ja</span> <span class="o">*</span> <span class="n">Jo</span><span class="p">)</span>
+            <span class="n">Ja</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">Ja</span> <span class="o">*</span> <span class="n">Jo</span><span class="p">)</span>
 
         <span class="c1"># Scale correctly</span>
         <span class="n">Ja</span> <span class="o">*=</span> <span class="mf">0.5</span>
@@ -1600,7 +1599,7 @@
             <span class="c1"># Now calculate the vector elements</span>
             <span class="c1"># Remark that the vector goes from ia -&gt; ja</span>
             <span class="n">rv</span> <span class="o">=</span> <span class="n">Rij</span><span class="p">(</span><span class="n">ia</span><span class="p">,</span> <span class="n">Jia</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
-            <span class="n">rv</span> <span class="o">=</span> <span class="n">rv</span> <span class="o">/</span> <span class="n">sqrt</span><span class="p">((</span><span class="n">rv</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">))[:,</span> <span class="kc">None</span><span class="p">]</span>
+            <span class="n">rv</span> <span class="o">=</span> <span class="n">rv</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">rv</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">))[:,</span> <span class="kc">None</span><span class="p">]</span>
             <span class="n">Ja</span><span class="p">[</span><span class="n">ia</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">(</span><span class="n">Jia</span><span class="o">.</span><span class="n">data</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">rv</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">Ja</span></div>
@@ -2267,9 +2266,9 @@
             <span class="c1"># However, we still do not know whether TRS is</span>
             <span class="c1"># applied.</span>
             <span class="n">kpt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">k</span>
-            <span class="n">nA</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique</span><span class="p">(</span><span class="n">kpt</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]))</span>
-            <span class="n">nB</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique</span><span class="p">(</span><span class="n">kpt</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]))</span>
-            <span class="n">nC</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique</span><span class="p">(</span><span class="n">kpt</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]))</span>
+            <span class="n">nA</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">kpt</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]))</span>
+            <span class="n">nB</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">kpt</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]))</span>
+            <span class="n">nC</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">kpt</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]))</span>
             <span class="n">prnt</span><span class="p">((</span><span class="s2">&quot;  - number of kpoints: </span><span class="si">{}</span><span class="s2"> &lt;- &quot;</span>
                    <span class="s2">&quot;[ A = </span><span class="si">{}</span><span class="s2"> , B = </span><span class="si">{}</span><span class="s2"> , C = </span><span class="si">{}</span><span class="s2"> ] (time-reversal unknown)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nk</span><span class="p">,</span> <span class="n">nA</span><span class="p">,</span> <span class="n">nB</span><span class="p">,</span> <span class="n">nC</span><span class="p">))</span>
         <span class="n">prnt</span><span class="p">(</span><span class="s2">&quot;  - energy range:&quot;</span><span class="p">)</span>
@@ -2302,11 +2301,11 @@
 
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">bloch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bloch</span><span class="p">(</span><span class="n">elec</span><span class="p">)</span>
-            <span class="k">except</span><span class="p">:</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="n">bloch</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">n_btd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_btd</span><span class="p">(</span><span class="n">elec</span><span class="p">)</span>
-            <span class="k">except</span><span class="p">:</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="n">n_btd</span> <span class="o">=</span> <span class="s1">&#39;unknown&#39;</span>
             <span class="n">prnt</span><span class="p">()</span>
             <span class="n">prnt</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Electrode: </span><span class="si">{</span><span class="n">elec</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -2407,7 +2406,7 @@
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">E</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_tbt</span><span class="o">.</span><span class="n">Eindex</span><span class="p">(</span><span class="n">begin</span><span class="p">),</span> <span class="n">ns</span><span class="o">.</span><span class="n">_tbt</span><span class="o">.</span><span class="n">Eindex</span><span class="p">(</span><span class="n">end</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
                 <span class="c1"># Issuing unique also sorts the entries</span>
-                <span class="n">ns</span><span class="o">.</span><span class="n">_Erng</span> <span class="o">=</span> <span class="n">unique</span><span class="p">(</span><span class="n">_a</span><span class="o">.</span><span class="n">arrayi</span><span class="p">(</span><span class="n">E</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
+                <span class="n">ns</span><span class="o">.</span><span class="n">_Erng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">_a</span><span class="o">.</span><span class="n">arrayi</span><span class="p">(</span><span class="n">E</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
         <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--energy&#39;</span><span class="p">,</span> <span class="s1">&#39;-E&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">ERange</span><span class="p">,</span>
                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Denote the sub-section of energies that are extracted: &quot;-1:0,1:2&quot; [eV]</span>
 
@@ -2420,7 +2419,7 @@
             <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">ns</span><span class="o">.</span><span class="n">_krng</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-                <span class="k">except</span><span class="p">:</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                     <span class="c1"># Parse it as an array</span>
                     <span class="k">if</span> <span class="s1">&#39;,&#39;</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
                         <span class="n">k</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
@@ -2477,17 +2476,15 @@
                 <span class="c1"># * will &quot;only&quot; fail if files are named accordingly, else</span>
                 <span class="c1"># it will be passed as-is.</span>
                 <span class="c1">#       {    [    *</span>
-                <span class="n">sep</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">]</span>
-                <span class="n">failed</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="k">while</span> <span class="n">failed</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">sep</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">sep</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">):</span>
                     <span class="k">try</span><span class="p">:</span>
-                        <span class="n">ranges</span> <span class="o">=</span> <span class="n">lstranges</span><span class="p">(</span><span class="n">strmap</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">a_dev</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">a_dev</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">sep</span><span class="o">.</span><span class="n">pop</span><span class="p">()))</span>
-                        <span class="n">failed</span> <span class="o">=</span> <span class="kc">False</span>
-                    <span class="k">except</span><span class="p">:</span>
+                        <span class="n">ranges</span> <span class="o">=</span> <span class="n">lstranges</span><span class="p">(</span><span class="n">strmap</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">a_dev</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">a_dev</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">sep</span><span class="p">))</span>
+                        <span class="k">break</span>
+                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                         <span class="k">pass</span>
-                <span class="k">if</span> <span class="n">failed</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Could not parse the atomic/orbital ranges&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># only if break was not encountered</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not parse the atomic/orbital ranges: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
                 <span class="c1"># we have only a subset of the orbitals</span>
                 <span class="n">orbs</span> <span class="o">=</span> <span class="p">[]</span>
@@ -2560,7 +2557,7 @@
                             <span class="k">if</span> <span class="n">e2</span> <span class="o">!=</span> <span class="n">e1</span><span class="p">:</span>
                                 <span class="k">try</span><span class="p">:</span> <span class="c1"># catches if T isn&#39;t calculated</span>
                                     <span class="bp">self</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="p">[</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">],</span> <span class="n">option_string</span><span class="p">)</span>
-                                <span class="k">except</span><span class="p">:</span>
+                                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                                     <span class="k">pass</span>
                         <span class="k">return</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Electrode: &#39;</span><span class="si">{</span><span class="n">e2</span><span class="si">}</span><span class="s2">&#39; cannot be found in the specified file.&quot;</span><span class="p">)</span>
@@ -2586,7 +2583,7 @@
                         <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">ns</span><span class="o">.</span><span class="n">_tbt</span><span class="o">.</span><span class="n">elecs</span><span class="p">:</span>
                             <span class="k">try</span><span class="p">:</span> <span class="c1"># catches if B isn&#39;t calculated</span>
                                 <span class="bp">self</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="p">[</span><span class="n">e</span><span class="p">],</span> <span class="n">option_string</span><span class="p">)</span>
-                            <span class="k">except</span><span class="p">:</span>
+                            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                                 <span class="k">pass</span>
                         <span class="k">return</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Electrode: &#39;</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&#39; cannot be found in the specified file.&quot;</span><span class="p">)</span>
@@ -2670,7 +2667,7 @@
                             <span class="k">if</span> <span class="n">e1</span> <span class="o">!=</span> <span class="n">e2</span><span class="p">:</span>
                                 <span class="k">try</span><span class="p">:</span> <span class="c1"># catches if T-eig isn&#39;t calculated</span>
                                     <span class="bp">self</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="p">[</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">],</span> <span class="n">option_string</span><span class="p">)</span>
-                                <span class="k">except</span><span class="p">:</span>
+                                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                                     <span class="k">pass</span>
                         <span class="k">return</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Electrode: &#39;</span><span class="si">{</span><span class="n">e2</span><span class="si">}</span><span class="s2">&#39; cannot be found in the specified file.&quot;</span><span class="p">)</span>
@@ -2702,7 +2699,7 @@
                             <span class="k">if</span> <span class="n">e2</span> <span class="o">!=</span> <span class="n">e1</span><span class="p">:</span>
                                 <span class="k">try</span><span class="p">:</span> <span class="c1"># catches if T isn&#39;t calculated</span>
                                     <span class="bp">self</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="p">[</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">],</span> <span class="n">option_string</span><span class="p">)</span>
-                                <span class="k">except</span><span class="p">:</span>
+                                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                                     <span class="k">pass</span>
                         <span class="k">return</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Electrode: &#39;</span><span class="si">{</span><span class="n">e2</span><span class="si">}</span><span class="s2">&#39; cannot be found in the specified file.&quot;</span><span class="p">)</span>
@@ -2734,7 +2731,7 @@
                             <span class="k">if</span> <span class="n">e2</span> <span class="o">!=</span> <span class="n">e1</span><span class="p">:</span>
                                 <span class="k">try</span><span class="p">:</span> <span class="c1"># catches if T isn&#39;t calculated</span>
                                     <span class="bp">self</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="p">[</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">],</span> <span class="n">option_string</span><span class="p">)</span>
-                                <span class="k">except</span><span class="p">:</span>
+                                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                                     <span class="k">pass</span>
                         <span class="k">return</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Electrode: &#39;</span><span class="si">{</span><span class="n">e2</span><span class="si">}</span><span class="s2">&#39; cannot be found in the specified file.&quot;</span><span class="p">)</span>
@@ -2779,7 +2776,7 @@
                             <span class="n">fh</span><span class="o">.</span><span class="n">write_geometry</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_geometry</span><span class="p">)</span>
                         <span class="k">return</span>
                     <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-                <span class="k">except</span><span class="p">:</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                     <span class="k">pass</span>
 
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>

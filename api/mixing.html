@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mixing self-consistent quantities &mdash; sisl 0.1.dev1+g9590202 documentation</title>
+  <title>Mixing self-consistent quantities &mdash; sisl 0.1.dev1+gf854c96 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -23,7 +23,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="sisl.mixing.Metric" href="generated/sisl.mixing.Metric.html" />
+    <link rel="next" title="sisl.mixing.History" href="generated/sisl.mixing.History.html" />
     <link rel="prev" title="sisl.physics.SparseOrbitalBZSpin" href="generated/sisl.physics.SparseOrbitalBZSpin.html" /> 
 </head>
 
@@ -35,7 +35,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g9590202
+                0.1.dev1+gf854c96
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -75,8 +75,9 @@
 <li class="toctree-l2"><a class="reference internal" href="physics.html">Physical objects</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Mixing self-consistent quantities</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#container-classes">Container classes</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="generated/sisl.mixing.Metric.html">sisl.mixing.Metric</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.mixing.History.html">sisl.mixing.History</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.mixing.BaseMixer.html">sisl.mixing.BaseMixer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.mixing.BaseHistoryMixer.html">sisl.mixing.BaseHistoryMixer</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#mixing-algorithms">Mixing algorithms</a><ul>
@@ -162,11 +163,14 @@ stored in <em>history</em>.</p>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.mixing.Metric.html#sisl.mixing.Metric" title="sisl.mixing.Metric"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Metric</span></code></a>([metric])</p></td>
-<td><p>Perform inner products using a metric</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.mixing.History.html#sisl.mixing.History" title="sisl.mixing.History"><code class="xref py py-obj docutils literal notranslate"><span class="pre">History</span></code></a>([history, variables])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.mixing.History.html#sisl.mixing.History" title="sisl.mixing.History"><code class="xref py py-obj docutils literal notranslate"><span class="pre">History</span></code></a>([history])</p></td>
 <td><p>A history class for retaining a set of history elements</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.mixing.BaseMixer.html#sisl.mixing.BaseMixer" title="sisl.mixing.BaseMixer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BaseMixer</span></code></a>([weight])</p></td>
+<td><p>Base class mixer</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.mixing.BaseHistoryMixer.html#sisl.mixing.BaseHistoryMixer" title="sisl.mixing.BaseHistoryMixer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BaseHistoryMixer</span></code></a>([weight, history])</p></td>
+<td><p>Base class mixer with history</p></td>
 </tr>
 </tbody>
 </table>
@@ -183,7 +187,7 @@ stored in <em>history</em>.</p>
 <td><p>Linear mixing</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.mixing.DIISMixer.html#sisl.mixing.DIISMixer" title="sisl.mixing.DIISMixer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DIISMixer</span></code></a>([weight, history, metric])</p></td>
-<td><p>DIIS mixer</p></td>
+<td><p>Direct inversion of the iterative subspace (DIIS mixing)</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.mixing.PulayMixer.html#sisl.mixing.PulayMixer" title="sisl.mixing.PulayMixer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PulayMixer</span></code></a>([weight, history, metric])</p></td>
 <td><p></p></td>
@@ -204,7 +208,7 @@ stored in <em>history</em>.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="generated/sisl.physics.SparseOrbitalBZSpin.html" class="btn btn-neutral float-left" title="sisl.physics.SparseOrbitalBZSpin" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="generated/sisl.mixing.Metric.html" class="btn btn-neutral float-right" title="sisl.mixing.Metric" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="generated/sisl.mixing.History.html" class="btn btn-neutral float-right" title="sisl.mixing.History" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

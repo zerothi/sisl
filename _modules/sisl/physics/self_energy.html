@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.self_energy &mdash; sisl 0.1.dev1+g9590202 documentation</title>
+  <title>sisl.physics.self_energy &mdash; sisl 0.1.dev1+gf854c96 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g9590202
+                0.1.dev1+gf854c96
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -108,7 +108,6 @@
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">warn</span><span class="p">,</span> <span class="n">info</span>
 <span class="kn">from</span> <span class="nn">sisl.utils.mathematics</span> <span class="kn">import</span> <span class="n">fnorm</span>
-<span class="kn">from</span> <span class="nn">sisl.utils.ranges</span> <span class="kn">import</span> <span class="n">array_arange</span>
 <span class="kn">from</span> <span class="nn">sisl._help</span> <span class="kn">import</span> <span class="n">array_replace</span>
 <span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
 <span class="kn">from</span> <span class="nn">sisl.linalg</span> <span class="kn">import</span> <span class="n">linalg_info</span><span class="p">,</span> <span class="n">solve</span><span class="p">,</span> <span class="n">inv</span>
@@ -351,7 +350,7 @@
         <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="n">n_s</span><span class="p">),</span>
                         <span class="n">_a</span><span class="o">.</span><span class="n">arrayi</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spgeom1</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">sc_index</span><span class="p">(</span><span class="n">nsc</span><span class="p">)))</span> <span class="o">*</span> <span class="n">n</span>
 
-        <span class="n">cols</span> <span class="o">=</span> <span class="n">array_arange</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">idx</span> <span class="o">+</span> <span class="n">n</span><span class="p">)</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">array_arange</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">idx</span> <span class="o">+</span> <span class="n">n</span><span class="p">)</span>
         <span class="c1"># Delete all values in columns, but keep them to retain the supercell information</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spgeom1</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">delete_columns</span><span class="p">(</span><span class="n">cols</span><span class="p">,</span> <span class="n">keep_shape</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -455,7 +454,7 @@
                 <span class="k">del</span> <span class="n">ab</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">ab2</span><span class="p">,</span> <span class="n">tab</span>
                 <span class="k">return</span> <span class="n">inv</span><span class="p">(</span><span class="n">GB</span><span class="p">)</span>
 
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="o">+</span><span class="s2">&quot;.green could not converge Green function calculation&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.green could not converge Green function calculation&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="RecursiveSI.self_energy"><a class="viewcode-back" href="../../../api/generated/sisl.physics.RecursiveSI.html#sisl.physics.RecursiveSI.self_energy">[docs]</a>    <span class="k">def</span> <span class="nf">self_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-14</span><span class="p">,</span> <span class="n">bulk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Return a dense matrix with the self-energy at energy `E` and k-point `k` (default Gamma).</span>
@@ -883,7 +882,7 @@
         <span class="n">csr</span><span class="o">.</span><span class="n">delete_columns</span><span class="p">(</span><span class="n">cols</span><span class="p">,</span> <span class="n">keep_shape</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="c1"># Now PC only contains couplings along the k and semi-inf directions</span>
         <span class="c1"># Extract the connecting orbitals and reduce them to unique atomic indices</span>
-        <span class="n">orbs</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">osc2uc</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">[</span><span class="n">array_arange</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">ptr</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="n">csr</span><span class="o">.</span><span class="n">ncol</span><span class="p">)],</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">orbs</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">osc2uc</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">[</span><span class="n">_a</span><span class="o">.</span><span class="n">array_arange</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">ptr</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="n">csr</span><span class="o">.</span><span class="n">ncol</span><span class="p">)],</span> <span class="kc">True</span><span class="p">)</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">orbs</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># Only retain coupling atoms</span>
@@ -1034,7 +1033,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># If the BZ implements TRS (MonkhorstPack) then force it</span>
             <span class="n">trs</span> <span class="o">=</span> <span class="n">bz</span><span class="o">.</span><span class="n">_trs</span> <span class="o">&gt;=</span> <span class="mi">0</span>
-        <span class="k">except</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="n">trs</span> <span class="o">=</span> <span class="n">opt</span><span class="p">[</span><span class="s2">&quot;trs&quot;</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1460,7 +1459,7 @@
             <span class="n">csr</span><span class="o">.</span><span class="n">delete_columns</span><span class="p">(</span><span class="n">cols</span><span class="p">,</span> <span class="n">keep_shape</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="c1"># Now PC only contains couplings along the k and semi-inf directions</span>
             <span class="c1"># Extract the connecting orbitals and reduce them to unique atomic indices</span>
-            <span class="n">orbs</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">osc2uc</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">[</span><span class="n">array_arange</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">ptr</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="n">csr</span><span class="o">.</span><span class="n">ncol</span><span class="p">)],</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="n">orbs</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">osc2uc</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">col</span><span class="p">[</span><span class="n">_a</span><span class="o">.</span><span class="n">array_arange</span><span class="p">(</span><span class="n">csr</span><span class="o">.</span><span class="n">ptr</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="n">csr</span><span class="o">.</span><span class="n">ncol</span><span class="p">)],</span> <span class="kc">True</span><span class="p">)</span>
             <span class="n">atom</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">orbs</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
             <span class="n">expand</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">nrep</span><span class="p">,</span> <span class="n">na</span><span class="p">,</span> <span class="n">na_off</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">atom</span>
@@ -1627,7 +1626,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># If the BZ implements TRS (MonkhorstPack) then force it</span>
             <span class="n">trs</span> <span class="o">=</span> <span class="n">bz</span><span class="o">.</span><span class="n">_trs</span> <span class="o">&gt;=</span> <span class="mi">0</span>
-        <span class="k">except</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="n">trs</span> <span class="o">=</span> <span class="n">opt</span><span class="p">[</span><span class="s2">&quot;trs&quot;</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>

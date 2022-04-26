@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.eig &mdash; sisl 0.1.dev1+g9590202 documentation</title>
+  <title>sisl.io.siesta.eig &mdash; sisl 0.1.dev1+gf854c96 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g9590202
+                0.1.dev1+gf854c96
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -102,7 +102,6 @@
 <span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_fh_open</span><span class="p">,</span> <span class="n">SileError</span>
 <span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileSiesta</span>
 
-<span class="kn">from</span> <span class="nn">sisl._array</span> <span class="kn">import</span> <span class="n">arrayd</span>
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span> <span class="nn">sisl.physics</span> <span class="kn">import</span> <span class="n">get_distribution</span>
 <span class="kn">from</span> <span class="nn">sisl.utils</span> <span class="kn">import</span> <span class="n">strmap</span>
@@ -317,18 +316,18 @@
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">dE</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
                         <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-                    <span class="k">except</span><span class="p">:</span> <span class="k">pass</span>
+                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span> <span class="k">pass</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">kT</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
                         <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-                    <span class="k">except</span><span class="p">:</span> <span class="k">pass</span>
+                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span> <span class="k">pass</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">distr</span> <span class="o">=</span> <span class="n">get_distribution</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">smearing</span><span class="o">=</span><span class="n">kT</span><span class="p">)</span>
                         <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-                    <span class="k">except</span><span class="p">:</span> <span class="k">pass</span>
+                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span> <span class="k">pass</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">out</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-                    <span class="k">except</span><span class="p">:</span> <span class="k">pass</span>
+                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span> <span class="k">pass</span>
 
                 <span class="c1"># Now we are ready to process</span>
                 <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_Emap</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">kT</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span> <span class="n">ns</span><span class="o">.</span><span class="n">_Emap</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">kT</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span> <span class="n">dE</span><span class="p">)</span>

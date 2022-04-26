@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; sisl 0.1.dev1+g9590202 documentation</title>
+  <title>Index &mdash; sisl 0.1.dev1+gf854c96 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g9590202
+                0.1.dev1+gf854c96
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -137,8 +137,6 @@
         <li><a href="api/generated/sisl.mixing.DIISMixer.html#sisl.mixing.DIISMixer.__call__">(sisl.mixing.DIISMixer method)</a>
 </li>
         <li><a href="api/generated/sisl.mixing.LinearMixer.html#sisl.mixing.LinearMixer.__call__">(sisl.mixing.LinearMixer method)</a>
-</li>
-        <li><a href="api/generated/sisl.mixing.Metric.html#sisl.mixing.Metric.__call__">(sisl.mixing.Metric method)</a>
 </li>
         <li><a href="api/generated/sisl.mixing.PulayMixer.html#sisl.mixing.PulayMixer.__call__">(sisl.mixing.PulayMixer method)</a>
 </li>
@@ -334,13 +332,15 @@
 </li>
         <li><a href="api/generated/sisl.mixing.AdaptivePulayMixer.html#sisl.mixing.AdaptivePulayMixer.__init__">(sisl.mixing.AdaptivePulayMixer method)</a>
 </li>
+        <li><a href="api/generated/sisl.mixing.BaseHistoryMixer.html#sisl.mixing.BaseHistoryMixer.__init__">(sisl.mixing.BaseHistoryMixer method)</a>
+</li>
+        <li><a href="api/generated/sisl.mixing.BaseMixer.html#sisl.mixing.BaseMixer.__init__">(sisl.mixing.BaseMixer method)</a>
+</li>
         <li><a href="api/generated/sisl.mixing.DIISMixer.html#sisl.mixing.DIISMixer.__init__">(sisl.mixing.DIISMixer method)</a>
 </li>
         <li><a href="api/generated/sisl.mixing.History.html#sisl.mixing.History.__init__">(sisl.mixing.History method)</a>
 </li>
         <li><a href="api/generated/sisl.mixing.LinearMixer.html#sisl.mixing.LinearMixer.__init__">(sisl.mixing.LinearMixer method)</a>
-</li>
-        <li><a href="api/generated/sisl.mixing.Metric.html#sisl.mixing.Metric.__init__">(sisl.mixing.Metric method)</a>
 </li>
         <li><a href="api/generated/sisl.mixing.PulayMixer.html#sisl.mixing.PulayMixer.__init__">(sisl.mixing.PulayMixer method)</a>
 </li>
@@ -722,15 +722,7 @@
 </li>
         <li><a href="api/generated/sisl.Grid.html#sisl.Grid.append">(sisl.Grid method)</a>
 </li>
-        <li><a href="api/generated/sisl.mixing.AdaptiveDIISMixer.html#sisl.mixing.AdaptiveDIISMixer.append">(sisl.mixing.AdaptiveDIISMixer method)</a>
-</li>
-        <li><a href="api/generated/sisl.mixing.AdaptivePulayMixer.html#sisl.mixing.AdaptivePulayMixer.append">(sisl.mixing.AdaptivePulayMixer method)</a>
-</li>
-        <li><a href="api/generated/sisl.mixing.DIISMixer.html#sisl.mixing.DIISMixer.append">(sisl.mixing.DIISMixer method)</a>
-</li>
         <li><a href="api/generated/sisl.mixing.History.html#sisl.mixing.History.append">(sisl.mixing.History method)</a>
-</li>
-        <li><a href="api/generated/sisl.mixing.PulayMixer.html#sisl.mixing.PulayMixer.append">(sisl.mixing.PulayMixer method)</a>
 </li>
         <li><a href="api/generated/sisl.oplist.oplist.html#sisl.oplist.oplist.append">(sisl.oplist.oplist method)</a>
 </li>
@@ -783,8 +775,6 @@
         <li><a href="api/io/generated/sisl.io.SileWarning.html#sisl.io.SileWarning.args">(sisl.io.SileWarning attribute)</a>
 </li>
       </ul></li>
-      <li><a href="api/generated/sisl.utils.array_arange.html#sisl.utils.array_arange">array_arange() (in module sisl.utils)</a>
-</li>
       <li><a href="api/generated/sisl.constant.PhysicalConstant.html#sisl.constant.PhysicalConstant.as_integer_ratio">as_integer_ratio() (sisl.constant.PhysicalConstant method)</a>
 </li>
       <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.as_primary">as_primary() (sisl.Geometry method)</a>
@@ -1203,6 +1193,10 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/generated/sisl.mixing.BaseHistoryMixer.html#sisl.mixing.BaseHistoryMixer">BaseHistoryMixer (class in sisl.mixing)</a>
+</li>
+      <li><a href="api/generated/sisl.mixing.BaseMixer.html#sisl.mixing.BaseMixer">BaseMixer (class in sisl.mixing)</a>
+</li>
       <li><a href="api/io/generated/sisl.io.BaseSile.html#sisl.io.BaseSile">BaseSile (class in sisl.io)</a>
 </li>
       <li><a href="api/basic.html#index-0">basic</a>
@@ -1459,19 +1453,9 @@
       </ul></li>
       <li><a href="api/io/generated/sisl.io.vasp.chgSileVASP.html#sisl.io.vasp.chgSileVASP">chgSileVASP (class in sisl.io.vasp)</a>
 </li>
-      <li><a href="api/generated/sisl.mixing.AdaptiveDIISMixer.html#sisl.mixing.AdaptiveDIISMixer.clear">clear() (sisl.mixing.AdaptiveDIISMixer method)</a>
+      <li><a href="api/generated/sisl.mixing.History.html#sisl.mixing.History.clear">clear() (sisl.mixing.History method)</a>
 
       <ul>
-        <li><a href="api/generated/sisl.mixing.AdaptivePulayMixer.html#sisl.mixing.AdaptivePulayMixer.clear">(sisl.mixing.AdaptivePulayMixer method)</a>
-</li>
-        <li><a href="api/generated/sisl.mixing.DIISMixer.html#sisl.mixing.DIISMixer.clear">(sisl.mixing.DIISMixer method)</a>
-</li>
-        <li><a href="api/generated/sisl.mixing.History.html#sisl.mixing.History.clear">(sisl.mixing.History method)</a>
-</li>
-        <li><a href="api/generated/sisl.mixing.LinearMixer.html#sisl.mixing.LinearMixer.clear">(sisl.mixing.LinearMixer method)</a>
-</li>
-        <li><a href="api/generated/sisl.mixing.PulayMixer.html#sisl.mixing.PulayMixer.clear">(sisl.mixing.PulayMixer method)</a>
-</li>
         <li><a href="api/generated/sisl.oplist.oplist.html#sisl.oplist.oplist.clear">(sisl.oplist.oplist method)</a>
 </li>
         <li><a href="api/generated/sisl.physics.RealSpaceSE.html#sisl.physics.RealSpaceSE.clear">(sisl.physics.RealSpaceSE method)</a>
@@ -1555,12 +1539,12 @@
         <li><a href="api/generated/sisl.mixing.PulayMixer.html#sisl.mixing.PulayMixer.coefficients">(sisl.mixing.PulayMixer method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron.COHP">COHP() (sisl.physics.electron.EigenstateElectron method)</a>
 </li>
       <li><a href="api/generated/sisl.SparseCSR.html#id0">col (sisl.SparseCSR attribute)</a>, <a href="api/generated/sisl.SparseCSR.html#sisl.SparseCSR.col">[1]</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/sisl.physics.cold.html#sisl.physics.cold">cold() (in module sisl.physics)</a>
 </li>
       <li><a href="api/io/generated/sisl.io.siesta.outSileSiesta.html#sisl.io.siesta.outSileSiesta.completed">completed() (sisl.io.siesta.outSileSiesta method)</a>
@@ -2513,6 +2497,8 @@
         <li><a href="api/io/generated/sisl.io.tbtrans.tbtsencSileTBtrans.html#sisl.io.tbtrans.tbtsencSileTBtrans.electron_temperature">(sisl.io.tbtrans.tbtsencSileTBtrans method)</a>
 </li>
       </ul></li>
+      <li><a href="api/generated/sisl.mixing.History.html#sisl.mixing.History.elements">elements (sisl.mixing.History property)</a>
+</li>
       <li><a href="api/generated/sisl.physics.DensityMatrix.html#sisl.physics.DensityMatrix.eliminate_zeros">eliminate_zeros() (sisl.physics.DensityMatrix method)</a>
 
       <ul>
@@ -3217,40 +3203,28 @@
 </li>
       <li><a href="api/generated/sisl.geom.hcp.html#sisl.geom.hcp">hcp() (in module sisl.geom)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/sisl.physics.heaviside.html#sisl.physics.heaviside">heaviside() (in module sisl.physics)</a>
 </li>
       <li><a href="api/generated/sisl.constant.PhysicalConstant.html#sisl.constant.PhysicalConstant.hex">hex() (sisl.constant.PhysicalConstant method)</a>
 </li>
       <li><a href="api/generated/sisl.mixing.History.html#sisl.mixing.History">History (class in sisl.mixing)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/sisl.mixing.AdaptiveDIISMixer.html#sisl.mixing.AdaptiveDIISMixer.history">history (sisl.mixing.AdaptiveDIISMixer property)</a>
 
       <ul>
         <li><a href="api/generated/sisl.mixing.AdaptivePulayMixer.html#sisl.mixing.AdaptivePulayMixer.history">(sisl.mixing.AdaptivePulayMixer property)</a>
 </li>
-        <li><a href="api/generated/sisl.mixing.DIISMixer.html#sisl.mixing.DIISMixer.history">(sisl.mixing.DIISMixer property)</a>
+        <li><a href="api/generated/sisl.mixing.BaseHistoryMixer.html#sisl.mixing.BaseHistoryMixer.history">(sisl.mixing.BaseHistoryMixer property)</a>
 </li>
-        <li><a href="api/generated/sisl.mixing.History.html#sisl.mixing.History.history">(sisl.mixing.History property)</a>
+        <li><a href="api/generated/sisl.mixing.DIISMixer.html#sisl.mixing.DIISMixer.history">(sisl.mixing.DIISMixer property)</a>
 </li>
         <li><a href="api/generated/sisl.mixing.PulayMixer.html#sisl.mixing.PulayMixer.history">(sisl.mixing.PulayMixer property)</a>
 </li>
       </ul></li>
-      <li><a href="api/generated/sisl.mixing.AdaptiveDIISMixer.html#sisl.mixing.AdaptiveDIISMixer.history_max">history_max (sisl.mixing.AdaptiveDIISMixer property)</a>
-
-      <ul>
-        <li><a href="api/generated/sisl.mixing.AdaptivePulayMixer.html#sisl.mixing.AdaptivePulayMixer.history_max">(sisl.mixing.AdaptivePulayMixer property)</a>
+      <li><a href="api/generated/sisl.mixing.History.html#sisl.mixing.History.history_max">history_max (sisl.mixing.History attribute)</a>
 </li>
-        <li><a href="api/generated/sisl.mixing.DIISMixer.html#sisl.mixing.DIISMixer.history_max">(sisl.mixing.DIISMixer property)</a>
-</li>
-        <li><a href="api/generated/sisl.mixing.History.html#sisl.mixing.History.history_max">(sisl.mixing.History attribute)</a>
-</li>
-        <li><a href="api/generated/sisl.mixing.History.html#id0">(sisl.mixing.History property)</a>
-</li>
-        <li><a href="api/generated/sisl.mixing.PulayMixer.html#sisl.mixing.PulayMixer.history_max">(sisl.mixing.PulayMixer property)</a>
-</li>
-      </ul></li>
       <li><a href="api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.Hk">Hk() (sisl.physics.Hamiltonian method)</a>
 </li>
       <li><a href="api/io/generated/sisl.io.siesta.tsgfSileSiesta.html#sisl.io.siesta.tsgfSileSiesta.HkSk">HkSk() (sisl.io.siesta.tsgfSileSiesta method)</a>
@@ -3385,19 +3359,9 @@
         <li><a href="api/generated/sisl.physics.RealSpaceSI.html#sisl.physics.RealSpaceSI.initialize">(sisl.physics.RealSpaceSI method)</a>
 </li>
       </ul></li>
-      <li><a href="api/generated/sisl.mixing.AdaptiveDIISMixer.html#sisl.mixing.AdaptiveDIISMixer.inner">inner() (sisl.mixing.AdaptiveDIISMixer method)</a>
+      <li><a href="api/generated/sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron.inner">inner() (sisl.physics.electron.EigenstateElectron method)</a>
 
       <ul>
-        <li><a href="api/generated/sisl.mixing.AdaptivePulayMixer.html#sisl.mixing.AdaptivePulayMixer.inner">(sisl.mixing.AdaptivePulayMixer method)</a>
-</li>
-        <li><a href="api/generated/sisl.mixing.DIISMixer.html#sisl.mixing.DIISMixer.inner">(sisl.mixing.DIISMixer method)</a>
-</li>
-        <li><a href="api/generated/sisl.mixing.Metric.html#sisl.mixing.Metric.inner">(sisl.mixing.Metric method)</a>
-</li>
-        <li><a href="api/generated/sisl.mixing.PulayMixer.html#sisl.mixing.PulayMixer.inner">(sisl.mixing.PulayMixer method)</a>
-</li>
-        <li><a href="api/generated/sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron.inner">(sisl.physics.electron.EigenstateElectron method)</a>
-</li>
         <li><a href="api/generated/sisl.physics.electron.EigenvectorElectron.html#sisl.physics.electron.EigenvectorElectron.inner">(sisl.physics.electron.EigenvectorElectron method)</a>
 </li>
         <li><a href="api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron.inner">(sisl.physics.electron.StateCElectron method)</a>
@@ -3463,12 +3427,12 @@
         <li><a href="api/generated/sisl.physics.StateC.html#sisl.physics.StateC.ipr">(sisl.physics.StateC method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.iR">iR() (sisl.Geometry method)</a>
 </li>
       <li><a href="api/generated/sisl.SuperCell.html#sisl.SuperCell.is_cartesian">is_cartesian() (sisl.SuperCell method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/sisl.physics.Spin.html#sisl.physics.Spin.is_colinear">is_colinear (sisl.physics.Spin property)</a>
 </li>
       <li><a href="api/generated/sisl.physics.Spin.html#sisl.physics.Spin.is_diagonal">is_diagonal (sisl.physics.Spin property)</a>
@@ -3829,6 +3793,8 @@
 </li>
       <li><a href="api/basic.html#index-1">matrix</a>
 </li>
+      <li><a href="api/generated/sisl.mixing.History.html#sisl.mixing.History.max_elements">max_elements (sisl.mixing.History property)</a>
+</li>
       <li><a href="api/generated/sisl.Atom.html#sisl.Atom.maxR">maxR() (sisl.Atom method)</a>
 
       <ul>
@@ -3849,8 +3815,6 @@
         <li><a href="api/viz/generated/sisl.viz.SubPlots.html#sisl.viz.SubPlots.merge">(sisl.viz.SubPlots method)</a>
 </li>
       </ul></li>
-      <li><a href="api/generated/sisl.mixing.Metric.html#sisl.mixing.Metric">Metric (class in sisl.mixing)</a>
-</li>
       <li><a href="api/generated/sisl.Grid.html#sisl.Grid.mgrid">mgrid() (sisl.Grid class method)</a>
 </li>
       <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.mirror">mirror() (sisl.Geometry method)</a>
@@ -5464,9 +5428,11 @@
         <li><a href="api/io/generated/sisl.io.siesta.tsdeSileSiesta.html#sisl.io.siesta.tsdeSileSiesta.read_energy_density_matrix">(sisl.io.siesta.tsdeSileSiesta method)</a>
 </li>
       </ul></li>
-      <li><a href="api/io/generated/sisl.io.siesta.eigSileSiesta.html#sisl.io.siesta.eigSileSiesta.read_fermi_level">read_fermi_level() (sisl.io.siesta.eigSileSiesta method)</a>
+      <li><a href="api/io/generated/sisl.io.siesta.bandsSileSiesta.html#sisl.io.siesta.bandsSileSiesta.read_fermi_level">read_fermi_level() (sisl.io.siesta.bandsSileSiesta method)</a>
 
       <ul>
+        <li><a href="api/io/generated/sisl.io.siesta.eigSileSiesta.html#sisl.io.siesta.eigSileSiesta.read_fermi_level">(sisl.io.siesta.eigSileSiesta method)</a>
+</li>
         <li><a href="api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.read_fermi_level">(sisl.io.siesta.fdfSileSiesta method)</a>
 </li>
         <li><a href="api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.read_fermi_level">(sisl.io.siesta.ncSileSiesta method)</a>
@@ -6204,6 +6170,18 @@
 </li>
       <li><a href="api/generated/sisl.Grid.html#sisl.Grid.set_grid">set_grid() (sisl.Grid method)</a>
 </li>
+      <li><a href="api/generated/sisl.mixing.AdaptiveDIISMixer.html#sisl.mixing.AdaptiveDIISMixer.set_history">set_history() (sisl.mixing.AdaptiveDIISMixer method)</a>
+
+      <ul>
+        <li><a href="api/generated/sisl.mixing.AdaptivePulayMixer.html#sisl.mixing.AdaptivePulayMixer.set_history">(sisl.mixing.AdaptivePulayMixer method)</a>
+</li>
+        <li><a href="api/generated/sisl.mixing.BaseHistoryMixer.html#sisl.mixing.BaseHistoryMixer.set_history">(sisl.mixing.BaseHistoryMixer method)</a>
+</li>
+        <li><a href="api/generated/sisl.mixing.DIISMixer.html#sisl.mixing.DIISMixer.set_history">(sisl.mixing.DIISMixer method)</a>
+</li>
+        <li><a href="api/generated/sisl.mixing.PulayMixer.html#sisl.mixing.PulayMixer.set_history">(sisl.mixing.PulayMixer method)</a>
+</li>
+      </ul></li>
       <li><a href="api/io/generated/sisl.io.gulp.gotSileGULP.html#sisl.io.gulp.gotSileGULP.set_key">set_key() (sisl.io.gulp.gotSileGULP method)</a>
 </li>
       <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.set_nsc">set_nsc() (sisl.Geometry method)</a>
@@ -6274,6 +6252,22 @@
       </ul></li>
       <li><a href="api/io/generated/sisl.io.gulp.gotSileGULP.html#sisl.io.gulp.gotSileGULP.set_supercell_key">set_supercell_key() (sisl.io.gulp.gotSileGULP method)</a>
 </li>
+      <li><a href="api/generated/sisl.mixing.AdaptiveDIISMixer.html#sisl.mixing.AdaptiveDIISMixer.set_weight">set_weight() (sisl.mixing.AdaptiveDIISMixer method)</a>
+
+      <ul>
+        <li><a href="api/generated/sisl.mixing.AdaptivePulayMixer.html#sisl.mixing.AdaptivePulayMixer.set_weight">(sisl.mixing.AdaptivePulayMixer method)</a>
+</li>
+        <li><a href="api/generated/sisl.mixing.BaseHistoryMixer.html#sisl.mixing.BaseHistoryMixer.set_weight">(sisl.mixing.BaseHistoryMixer method)</a>
+</li>
+        <li><a href="api/generated/sisl.mixing.BaseMixer.html#sisl.mixing.BaseMixer.set_weight">(sisl.mixing.BaseMixer method)</a>
+</li>
+        <li><a href="api/generated/sisl.mixing.DIISMixer.html#sisl.mixing.DIISMixer.set_weight">(sisl.mixing.DIISMixer method)</a>
+</li>
+        <li><a href="api/generated/sisl.mixing.LinearMixer.html#sisl.mixing.LinearMixer.set_weight">(sisl.mixing.LinearMixer method)</a>
+</li>
+        <li><a href="api/generated/sisl.mixing.PulayMixer.html#sisl.mixing.PulayMixer.set_weight">(sisl.mixing.PulayMixer method)</a>
+</li>
+      </ul></li>
       <li><a href="api/generated/sisl.utils.PropertyDict.html#sisl.utils.PropertyDict.setdefault">setdefault() (sisl.utils.PropertyDict method)</a>
 </li>
       <li><a href="api/viz/generated/sisl.viz.Animation.html#sisl.viz.Animation.settings">settings (sisl.viz.Animation property)</a>
@@ -6472,6 +6466,8 @@
 </li>
       <li><a href="api/io/generated/sisl.io.vasp.SileVASP.html#sisl.io.vasp.SileVASP">SileVASP (class in sisl.io.vasp)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/io/generated/sisl.io.wannier90.SileWannier90.html#sisl.io.wannier90.SileWannier90">SileWannier90 (class in sisl.io.wannier90)</a>
 </li>
       <li><a href="api/io/generated/sisl.io.SileWarning.html#sisl.io.SileWarning">SileWarning</a>
@@ -6490,8 +6486,6 @@
         <li><a href="api/unit_constant.constant.html#module-sisl.constant">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     sisl.geom
 
@@ -7656,20 +7650,6 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/sisl.utils.PropertyDict.html#sisl.utils.PropertyDict.values">values() (sisl.utils.PropertyDict method)</a>
 </li>
-      <li><a href="api/generated/sisl.mixing.AdaptiveDIISMixer.html#sisl.mixing.AdaptiveDIISMixer.variables">variables (sisl.mixing.AdaptiveDIISMixer property)</a>
-
-      <ul>
-        <li><a href="api/generated/sisl.mixing.AdaptivePulayMixer.html#sisl.mixing.AdaptivePulayMixer.variables">(sisl.mixing.AdaptivePulayMixer property)</a>
-</li>
-        <li><a href="api/generated/sisl.mixing.DIISMixer.html#sisl.mixing.DIISMixer.variables">(sisl.mixing.DIISMixer property)</a>
-</li>
-        <li><a href="api/generated/sisl.mixing.History.html#sisl.mixing.History.variables">(sisl.mixing.History attribute)</a>
-</li>
-        <li><a href="api/generated/sisl.mixing.History.html#id1">(sisl.mixing.History property)</a>
-</li>
-        <li><a href="api/generated/sisl.mixing.PulayMixer.html#sisl.mixing.PulayMixer.variables">(sisl.mixing.PulayMixer property)</a>
-</li>
-      </ul></li>
       <li><a href="api/io/generated/sisl.io.tbtrans.phtavncSilePHtrans.html#sisl.io.tbtrans.phtavncSilePHtrans.vector_current">vector_current() (sisl.io.tbtrans.phtavncSilePHtrans method)</a>
 
       <ul>
@@ -7770,6 +7750,10 @@
 
       <ul>
         <li><a href="api/generated/sisl.mixing.AdaptivePulayMixer.html#sisl.mixing.AdaptivePulayMixer.weight">(sisl.mixing.AdaptivePulayMixer property)</a>
+</li>
+        <li><a href="api/generated/sisl.mixing.BaseHistoryMixer.html#sisl.mixing.BaseHistoryMixer.weight">(sisl.mixing.BaseHistoryMixer property)</a>
+</li>
+        <li><a href="api/generated/sisl.mixing.BaseMixer.html#sisl.mixing.BaseMixer.weight">(sisl.mixing.BaseMixer property)</a>
 </li>
         <li><a href="api/generated/sisl.mixing.DIISMixer.html#sisl.mixing.DIISMixer.weight">(sisl.mixing.DIISMixer property)</a>
 </li>
