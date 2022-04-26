@@ -21,6 +21,7 @@ to distinguish them from files from other packages.
    basic
    generic
    bigdft
+   fhiaims
    gulp
    openmx
    scaleup
