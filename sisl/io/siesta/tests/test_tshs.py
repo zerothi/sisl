@@ -15,6 +15,7 @@ _dir = osp.join('sisl', 'io', 'siesta')
 
 def test_tshs_si_pdos_kgrid(sisl_files, sisl_tmp):
     si = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.TSHS'))
+    assert si.version == 1
     HS1 = si.read_hamiltonian()
     f = sisl_tmp('tmp.TSHS', _dir)
     HS1.write(f)

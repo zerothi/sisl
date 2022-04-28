@@ -41,10 +41,15 @@ class SileBinSiesta(SileBin):
         super()._setup(*args, **kwargs)
         self._iu = -1
 
-    def _fortran_check(self, method, message):
+    def _fortran_check(self, method, message, ret_msg=False):
         ierr = _siesta.io_m.iostat_query()
+        msg = ''
         if ierr != 0:
-            raise SileError(f'{self!s}.{method} {message} (ierr={ierr})')
+            msg = f'{self!s}.{method} {message} (ierr={ierr})'
+            if not ret_msg:
+                raise SileError(msg)
+        if ret_msg:
+            return msg
 
     def _fortran_is_open(self):
         return self._iu != -1

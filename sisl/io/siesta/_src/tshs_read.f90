@@ -20,13 +20,25 @@ subroutine read_tshs_version(fname, version)
 
   call open_file(fname, 'read', 'old', 'unformatted', iu)
 
+  ! Set a default version in case it won't be found
+  version = -1
+
   read(iu, iostat=ierr) tmp
-  if ( ierr /= 0 ) then
+  if ( ierr == 0 ) then
+    ! Valid original version
+    version = 0
+
+  else ! ierr /= 0
+
     ! we have a version
     rewind(iu)
     read(iu, iostat=ierr) version
-  else
-    version = 0
+
+    if ( version /= 1 ) then
+      ! Signal we do not know about this file
+      call iostat_update(-3)
+    end if
+
   end if
   call iostat_update(ierr)
 

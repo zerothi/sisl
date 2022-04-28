@@ -152,6 +152,11 @@ def _add_overlap(M, S, str_method):
 class onlysSileSiesta(SileBinSiesta):
     """ Geometry and overlap matrix """
 
+    @property
+    def version(self) -> int:
+        """ The version of the file """
+        return _siesta.read_tshs_version(self.file)
+
     def read_supercell(self):
         """ Returns a SuperCell object from a TranSiesta file """
         n_s = _siesta.read_tshs_sizes(self.file)[3]
@@ -652,6 +657,11 @@ class hsxSileSiesta(SileBinSiesta):
     all information.
     """
 
+    @property
+    def version(self) -> int:
+        """ The version of the file """
+        return _siesta.read_hsx_version(self.file)
+
     def _xij2system(self, xij, geometry=None):
         """ Create a new geometry with *correct* nsc and somewhat correct xyz
 
@@ -998,26 +1008,61 @@ class hsxSileSiesta(SileBinSiesta):
             # now create atom
             atoms.append(Atom(symbols[ispecie], orbs, tag=lbls[ispecie]))
 
-        # now read in xij to retrieve atomic positions
-        Gamma, spin, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
-        self._fortran_check("read_geometry", "could not read matrix sizes.")
-        ncol, col, _, dxij = _siesta.read_hsx_sx(self.file, Gamma, spin, no, no_s, nnz)
-        #dxij = dxij.T * _Bohr2Ang
-        col -= 1
-        self._fortran_check("read_geometry", "could not read xij matrix.")
-
         # now create atoms object
         atoms = Atoms([atoms[ia] for ia in isa])
 
         return atoms
 
-    def read_hamiltonian(self, **kwargs):
-        """ Returns the electronic structure from the siesta.TSHS file """
-
-        # Now read the sizes used...
-        Gamma, spin, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
+    def _r_geometry_v0(self, **kwargs):
+        """ Read the geometry from the old file version """
+        Gamma, spin, _, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
         self._fortran_check("read_hamiltonian", "could not read Hamiltonian sizes.")
-        ncol, col, dH, dS, dxij = _siesta.read_hsx_hsx(self.file, Gamma, spin, no, no_s, nnz)
+        ncol, col, _, _, dxij = _siesta.read_hsx_hsx0(self.file, Gamma, spin, no, no_s, nnz)
+        dxij = dxij.T * _Bohr2Ang
+        col -= 1
+        self._fortran_check("read_hamiltonian", "could not read Hamiltonian.")
+        ptr = _ncol_to_indptr(ncol)
+        xij = SparseCSR((dxij, col, ptr), shape=(no, no_s))
+        geom = self._xij2system(xij, kwargs.get("geometry", kwargs.get("geom", None)))
+        return geom
+
+    def _r_geometry_v1(self, **kwargs):
+        # first read the atoms object
+        atoms = self._read_atoms(**kwargs)
+
+        # now read coordinates and cell sizes
+        _, _, na, _, _, _ = _siesta.read_hsx_sizes(self.file)
+
+        cell, nsc, xa, _ = _siesta.read_hsx_geom1(self.file, na)
+
+        sc = SuperCell(cell, nsc=nsc)
+        return Geometry(xa, atoms, sc=sc)
+
+    def read_geometry(self, **kwargs):
+        """ Read the geometry from the file
+
+        This will always work on new files Siesta >=5, but only sometimes on older
+        versions of the HSX file format.
+        """
+        version = _siesta.read_hsx_version(self.file)
+        return getattr(self, f"_r_geometry_v{version}")(**kwargs)
+
+    def read_fermi_level(self, **kwargs):
+        """ Reads the fermi level in the file
+
+        Only valid for files created by Siesta >=5.
+        """
+        Ef = _siesta.read_hsx_ef(self.file)
+        msg = self._fortran_check("read_fermi_level", "could not read Fermi-level", ret_msg=True)
+        if msg:
+            warn(msg)
+        return Ef * _Ry2eV
+
+    def _r_hamiltonian_v0(self, **kwargs):
+        # Now read the sizes used...
+        Gamma, spin, _, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
+        self._fortran_check("read_hamiltonian", "could not read Hamiltonian sizes.")
+        ncol, col, dH, dS, dxij = _siesta.read_hsx_hsx0(self.file, Gamma, spin, no, no_s, nnz)
         dxij = dxij.T * _Bohr2Ang
         col -= 1
         self._fortran_check("read_hamiltonian", "could not read Hamiltonian.")
@@ -1053,19 +1098,56 @@ class hsxSileSiesta(SileBinSiesta):
 
         return H.transpose(spin=False, sort=kwargs.get("sort", True))
 
-    def read_overlap(self, **kwargs):
-        """ Returns the overlap matrix from the siesta.HSX file """
+    def _r_hamiltonian_v1(self, **kwargs):
         # Now read the sizes used...
-        Gamma, spin, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
+        _, spin, _, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
+        self._fortran_check("read_hamiltonian", "could not read Hamiltonian sizes.")
+        ncol, col, dH, dS, isc = _siesta.read_hsx_hsx1(self.file, spin, no, no_s, nnz)
+        col -= 1
+        self._fortran_check("read_hamiltonian", "could not read Hamiltonian.")
+
+        if geom.no != no or geom.no_s != no_s:
+            raise SileError(f"{str(self)}.read_hamiltonian could not use the "
+                            "passed geometry as the number of atoms or orbitals is "
+                            "inconsistent with HSX file.")
+
+        # Create the Hamiltonian container
+        H = Hamiltonian(geom, spin, nnzpr=1, dtype=np.float32, orthogonal=False)
+
+        # Create the new sparse matrix
+        H._csr.ncol = ncol.astype(np.int32, copy=False)
+        H._csr.ptr = ptr
+        # Correct fortran indices
+        H._csr.col = col.astype(np.int32, copy=False)
+        H._csr._nnz = len(col)
+
+        H._csr._D = _a.emptyf([nnz, spin+1])
+        H._csr._D[:, :spin] = dH[:, :] * _Ry2eV
+        H._csr._D[:, spin] = dS[:]
+
+        _mat_spin_convert(H)
+
+        # Convert the supercells to sisl supercells
+        _csr_from_sc_off(H.geometry, isc.T, H._csr)
+
+        return H.transpose(spin=False, sort=kwargs.get("sort", True))
+
+    def read_hamiltonian(self, **kwargs):
+        """ Returns the electronic structure from the siesta.TSHS file """
+        version = _siesta.read_hsx_version(self.file)
+        return getattr(self, f"_r_hamiltonian_v{version}")(**kwargs)
+
+    def _r_overlap_v0(self, **kwargs):
+        """ Returns the overlap matrix from the siesta.HSX file """
+        geom = self.read_geometry(**kwargs)
+
+        # Now read the sizes used...
+        Gamma, spin, _, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
         self._fortran_check("read_overlap", "could not read overlap matrix sizes.")
-        ncol, col, dS, dxij = _siesta.read_hsx_sx(self.file, Gamma, spin, no, no_s, nnz)
+        ncol, col, dS, dxij = _siesta.read_hsx_sx0(self.file, Gamma, spin, no, no_s, nnz)
         dxij = dxij.T * _Bohr2Ang
         col -= 1
         self._fortran_check("read_overlap", "could not read overlap matrix.")
-
-        ptr = _ncol_to_indptr(ncol)
-        xij = SparseCSR((dxij, col, ptr), shape=(no, no_s))
-        geom = self._xij2system(xij, kwargs.get("geometry", kwargs.get("geom", None)))
 
         if geom.no != no or geom.no_s != no_s:
             raise SileError(f"{str(self)}.read_overlap could not use the "
@@ -1091,6 +1173,45 @@ class hsxSileSiesta(SileBinSiesta):
 
         # not really necessary with Hermitian transposing, but for consistency
         return S.transpose(sort=kwargs.get("sort", True))
+
+    def _r_overlap_v1(self, **kwargs):
+        """ Returns the overlap matrix from the siesta.HSX file """
+        geom = self.read_geometry(**kwargs)
+
+        # Now read the sizes used...
+        _, spin, _, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
+        self._fortran_check("read_overlap", "could not read overlap matrix sizes.")
+        ncol, col, dS, isc = _siesta.read_hsx_sx1(self.file, spin, no, no_s, nnz)
+        col -= 1
+        self._fortran_check("read_overlap", "could not read overlap matrix.")
+
+        if geom.no != no or geom.no_s != no_s:
+            raise SileError(f"{str(self)}.read_overlap could not use the "
+                            "passed geometry as the number of atoms or orbitals is "
+                            "inconsistent with HSX file.")
+
+        # Create the Hamiltonian container
+        S = Overlap(geom, nnzpr=1)
+
+        # Create the new sparse matrix
+        S._csr.ncol = ncol.astype(np.int32, copy=False)
+        S._csr.ptr = _ncol_to_indptr(ncol)
+        # Correct fortran indices
+        S._csr.col = col.astype(np.int32, copy=False)
+        S._csr._nnz = len(col)
+
+        S._csr._D = _a.emptyf([nnz, 1])
+        S._csr._D[:, 0] = dS[:]
+
+        _csr_from_sc_off(S.geometry, isc.T, S._csr)
+
+        # not really necessary with Hermitian transposing, but for consistency
+        return S.transpose(sort=kwargs.get("sort", True))
+
+    def read_overlap(self, **kwargs):
+        """ Returns the electronic structure from the siesta.TSHS file """
+        version = _siesta.read_hsx_version(self.file)
+        return getattr(self, f"_r_overlap_v{version}")(**kwargs)
 
 
 @set_module("sisl.io.siesta")
