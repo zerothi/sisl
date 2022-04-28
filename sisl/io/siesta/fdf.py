@@ -1258,7 +1258,7 @@ class fdfSileSiesta(SileSiesta):
             the fdf file).
         order: list of str, optional
             the order of which to try and read the geometry.
-            By default this is ``["XV", "nc", "fdf", "TSHS", "STRUCT"]`` if `output` is true
+            By default this is ``["XV", "nc", "fdf", "TSHS", "HSX", "STRUCT"]`` if `output` is true
             If `order` is present `output` is disregarded.
 
         Examples
@@ -1275,7 +1275,7 @@ class fdfSileSiesta(SileSiesta):
         # code to correct.
         ##
         if output:
-            order = _listify_str(kwargs.pop("order", ["XV", "nc", "fdf", "TSHS", "STRUCT"]))
+            order = _listify_str(kwargs.pop("order", ["XV", "nc", "fdf", "TSHS", "HSX", "STRUCT"]))
         else:
             order = _listify_str(kwargs.pop("order", ["fdf"]))
         for f in order:
@@ -1343,6 +1343,15 @@ class fdfSileSiesta(SileSiesta):
         if f.is_file():
             # Default to a geometry with the correct atomic numbers etc.
             return tshsSileSiesta(f).read_geometry(geometry=self.read_geometry(False))
+        return None
+
+    def _r_geometry_hsx(self):
+        # Read geometry from <>.TSHS file
+        f = self.dir_file(self.get("SystemLabel", default="siesta") + ".HSX")
+        _track_file(self._r_geometry_hsx, f)
+        if f.is_file():
+            # Default to a geometry with the correct atomic numbers etc.
+            return hsxSileSiesta(f).read_geometry(geometry=self.read_geometry(False))
         return None
 
     def _r_geometry_fdf(self, *args, **kwargs):
@@ -2066,7 +2075,7 @@ class fdfSileSiesta(SileSiesta):
         if f.is_file():
             if "geometry" not in kwargs:
                 # to ensure we get the correct orbital count
-                kwargs["geometry"] = self.read_geometry(True, order=["nc", "TSHS"])
+                kwargs["geometry"] = self.read_geometry(True, order=["nc", "TSHS", "HSX"])
             H = tshsSileSiesta(f).read_hamiltonian(*args, **kwargs)
         return H
 
@@ -2076,9 +2085,10 @@ class fdfSileSiesta(SileSiesta):
         _track_file(self._r_hamiltonian_hsx, f)
         H = None
         if f.is_file():
-            if "geometry" not in kwargs:
-                # to ensure we get the correct orbital count
-                kwargs["geometry"] = self.read_geometry(True, order=["nc", "TSHS", "fdf"])
+            if hsxSileSiesta(f).version == 0:
+                if "geometry" not in kwargs:
+                    # to ensure we get the correct orbital count
+                    kwargs["geometry"] = self.read_geometry(True, order=["nc", "TSHS", "fdf"])
             H = hsxSileSiesta(f).read_hamiltonian(*args, **kwargs)
             Ef = self.read_fermi_level()
             if Ef is None:
@@ -2110,12 +2120,7 @@ class fdfSileSiesta(SileSiesta):
             return self.dir_file(f_label).with_suffix(suffix)
 
         # The default on all sub-parsers are the retrieval and setting
-
-        d = {
-            "_fdf": self,
-            "_fdf_first": True,
-        }
-        namespace = default_namespace(**d)
+        namespace = default_namespace(_fdf=self, _fdf_first=True)
 
         ep = sp.add_parser("edit",
                            help="Change or read and print data from the fdf file")

@@ -274,7 +274,7 @@ subroutine read_hsx_ef1(fname, Ef)
 
   ! Internal variables and arrays
   integer :: version
-  real(dp) :: ucell(3,3), qtot, temp
+  real(dp) :: ucell(3,3)
   integer :: iu, ierr
 
   call open_file(fname, 'read', 'old', 'unformatted', iu)
@@ -290,7 +290,7 @@ subroutine read_hsx_ef1(fname, Ef)
   read(iu, iostat=ierr) !na_u, no_u, nspin, nspecies, nsc
   call iostat_update(ierr)
 
-  read(iu, iostat=ierr) ucell, Ef, qtot, temp
+  read(iu, iostat=ierr) ucell, Ef! , qtot, temp
   call iostat_update(ierr)
 
   call close_file(iu)
@@ -750,11 +750,9 @@ subroutine read_hsx_sx1(fname, nspin, no_u, no_s, maxnh, &
   end do
 
   ! Read Hamiltonian
-  do is = 1 , nspin
-    do ih = 1 , no_u
-      read(iu, iostat=ierr) !
-      call iostat_update(ierr)
-    end do
+  do is = 1 , nspin * no_u
+    read(iu, iostat=ierr) !
+    call iostat_update(ierr)
   end do
 
   if ( is_dp ) then
@@ -807,7 +805,7 @@ subroutine read_hsx_geom1(fname, na_u, cell, nsc, xa, lasto)
 !f2py intent(out) :: cell, nsc, isa, xa, lasto
 
   integer :: iu, ierr, version
-  integer :: lna_u, lno_u, lnspin, nspecies
+  integer :: lna_u, no_u, nspin, nspecies
   integer, allocatable :: isc(:,:), isa(:)
 
   call open_file(fname, 'read', 'old', 'unformatted', iu)
@@ -820,7 +818,10 @@ subroutine read_hsx_geom1(fname, na_u, cell, nsc, xa, lasto)
     return
   end if
 
-  read(iu, iostat=ierr) lna_u, lno_u, lnspin, nspecies, nsc
+  read(iu, iostat=ierr) ! is_dp
+  call iostat_update(ierr)
+
+  read(iu, iostat=ierr) lna_u, no_u, nspin, nspecies, nsc
   call iostat_update(ierr)
   if ( lna_u /= na_u ) call iostat_update(-6)
 

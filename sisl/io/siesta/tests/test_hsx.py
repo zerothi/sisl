@@ -111,5 +111,19 @@ def test_si_pdos_kgrid_hsx_versions_s(sisl_files, sisl_tmp):
     assert HS0._csr.spsame(S1._csr)
     assert S0._csr.spsame(HS1._csr)
 
-    assert np.allclose(HS0._csr._D[:, HS0.S_idx], S0._csr._D)
-    assert np.allclose(HS1._csr._D[:, HS1.S_idx], S1._csr._D)
+    assert np.allclose(HS0._csr._D[:, HS0.S_idx], S0._csr._D[:, 0])
+    assert np.allclose(HS1._csr._D[:, HS1.S_idx], S1._csr._D[:, 0])
+
+
+def test_si_pdos_kgrid_hsx_1_same_tshs(sisl_files, sisl_tmp):
+    HSX = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.1.HSX"))
+    TSHS = sisl.get_sile(sisl_files(_dir, "si_pdos_kgrid.TSHS"))
+
+    HSX = HSX.read_hamiltonian()
+    TSHS = TSHS.read_hamiltonian()
+
+    gx = HSX.geometry
+    gt = TSHS.geometry
+    assert np.allclose(gx.sc.cell, gt.sc.cell)
+    assert np.allclose(gx.xyz, gt.xyz)
+    assert np.allclose(gx.nsc, gt.nsc)

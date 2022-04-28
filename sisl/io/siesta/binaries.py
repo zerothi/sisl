@@ -1035,8 +1035,8 @@ class hsxSileSiesta(SileBinSiesta):
 
         cell, nsc, xa, _ = _siesta.read_hsx_geom1(self.file, na)
 
-        sc = SuperCell(cell, nsc=nsc)
-        return Geometry(xa, atoms, sc=sc)
+        sc = SuperCell(cell.T * _Bohr2Ang, nsc=nsc)
+        return Geometry(xa.T * _Bohr2Ang, atoms, sc=sc)
 
     def read_geometry(self, **kwargs):
         """ Read the geometry from the file
@@ -1072,7 +1072,7 @@ class hsxSileSiesta(SileBinSiesta):
         geom = self._xij2system(xij, kwargs.get("geometry", kwargs.get("geom", None)))
 
         if geom.no != no or geom.no_s != no_s:
-            raise SileError(f"{str(self)}.read_hamiltonian could not use the "
+            raise SileError(f"{self!s}.read_hamiltonian could not use the "
                             "passed geometry as the number of atoms or orbitals is "
                             "inconsistent with HSX file.")
 
@@ -1100,6 +1100,8 @@ class hsxSileSiesta(SileBinSiesta):
 
     def _r_hamiltonian_v1(self, **kwargs):
         # Now read the sizes used...
+        geom = self.read_geometry(**kwargs)
+
         _, spin, _, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
         self._fortran_check("read_hamiltonian", "could not read Hamiltonian sizes.")
         ncol, col, dH, dS, isc = _siesta.read_hsx_hsx1(self.file, spin, no, no_s, nnz)
@@ -1107,7 +1109,7 @@ class hsxSileSiesta(SileBinSiesta):
         self._fortran_check("read_hamiltonian", "could not read Hamiltonian.")
 
         if geom.no != no or geom.no_s != no_s:
-            raise SileError(f"{str(self)}.read_hamiltonian could not use the "
+            raise SileError(f"{self!s}.read_hamiltonian could not use the "
                             "passed geometry as the number of atoms or orbitals is "
                             "inconsistent with HSX file.")
 
@@ -1116,7 +1118,8 @@ class hsxSileSiesta(SileBinSiesta):
 
         # Create the new sparse matrix
         H._csr.ncol = ncol.astype(np.int32, copy=False)
-        H._csr.ptr = ptr
+        H._csr.ptr = _ncol_to_indptr(ncol).astype(np.int32, copy=False)
+
         # Correct fortran indices
         H._csr.col = col.astype(np.int32, copy=False)
         H._csr._nnz = len(col)
@@ -1150,7 +1153,7 @@ class hsxSileSiesta(SileBinSiesta):
         self._fortran_check("read_overlap", "could not read overlap matrix.")
 
         if geom.no != no or geom.no_s != no_s:
-            raise SileError(f"{str(self)}.read_overlap could not use the "
+            raise SileError(f"{self!s}.read_overlap could not use the "
                             "passed geometry as the number of atoms or orbitals is "
                             "inconsistent with HSX file.")
 
@@ -1186,7 +1189,7 @@ class hsxSileSiesta(SileBinSiesta):
         self._fortran_check("read_overlap", "could not read overlap matrix.")
 
         if geom.no != no or geom.no_s != no_s:
-            raise SileError(f"{str(self)}.read_overlap could not use the "
+            raise SileError(f"{self!s}.read_overlap could not use the "
                             "passed geometry as the number of atoms or orbitals is "
                             "inconsistent with HSX file.")
 
