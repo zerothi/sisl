@@ -109,11 +109,11 @@ class fdfSileSiesta(SileSiesta):
         if self.dir_file(f).is_file():
             self._parent_fh.append(self.fh)
             self.fh = self.dir_file(f).open(self._mode)
-        elif self.dir_file(f + '.gz').is_file():
+        elif self.dir_file(f + ".gz").is_file():
             self._parent_fh.append(self.fh)
-            self.fh = gzip.open(self.dir_file(f + '.gz'), mode='rt')
+            self.fh = gzip.open(self.dir_file(f + ".gz"), mode="rt")
         else:
-            warn(str(self) + f' is trying to include file: {f} but the file seems not to exist? Will disregard file!')
+            warn(f"{self!s} is trying to include file: {f} but the file seems not to exist? Will disregard file!")
 
     def _popfile(self):
         if len(self._parent_fh) > 0:
@@ -610,8 +610,8 @@ class fdfSileSiesta(SileSiesta):
             if v is not None:
                 _track(self.read_supercell_nsc, f"found file {f}")
                 return v
-        warn('number of supercells could not be read from output files. Assuming molecule cell '
-             '(no supercell connections)')
+        warn("number of supercells could not be read from output files. Assuming molecule cell "
+             "(no supercell connections)")
         return _a.onesi(3)
 
     def _r_supercell_nsc_nc(self, *args, **kwargs):
@@ -1876,7 +1876,7 @@ class fdfSileSiesta(SileSiesta):
             else:
                 raise ValueError
         except Exception:
-            warn(str(self) + f" could not succesfully read the overlap matrix in {parent_call}.")
+            warn(f"{self!s} could not succesfully read the overlap matrix in {parent_call}.")
 
     def read_density_matrix(self, *args, **kwargs):
         """ Try and read density matrix by reading the <>.nc, <>.TSDE files, <>.DM (in that order)
