@@ -7,6 +7,12 @@ we hit release version 1.0.0.
 
 ## [UNRELEASED] - YYYY-MM-DD
 
+### Added
+- added `kwargs` passed to eigenstate functions in `berry_phase`
+	and `conductivity`
+- ensured that non-orthogonal `transform` will copy over overlap matrix
+	in case the matrix is only touching the non-overlap elements
+
 
 ## [0.12.2] - 2022-5-2
 

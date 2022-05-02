@@ -809,6 +809,17 @@ class TestHamiltonian:
         bz = BandStructure.param_circle(H, 20, 0.01, [0, 0, 1], [1/3] * 3)
         berry_phase(bz)
 
+    def test_berry_phase_orthogonal_spin_down(self, setup):
+        R, param = [0.1, 1.5], [(1., 1.), (0.1, 0.2)]
+        g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
+        H = Hamiltonian(g, spin=Spin.POLARIZED)
+        H.construct((R, param))
+
+        bz = BandStructure.param_circle(H, 20, 0.01, [0, 0, 1], [1/3] * 3)
+        bp1 = berry_phase(bz)
+        bp2 = berry_phase(bz, eigenstate_kwargs={"spin": 1})
+        assert bp1 != bp2
+
     def test_berry_phase_zak_x_topological(self):
         # SSH model, topological cell
         # |t2| < |t1|
@@ -908,6 +919,16 @@ class TestHamiltonian:
         R, param = [0.1, 1.5], [1., 0.1]
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
         H = Hamiltonian(g)
+        H.construct((R, param))
+
+        mp = MonkhorstPack(H, [11, 11, 1])
+        cond = conductivity(mp)
+
+    @pytest.mark.filterwarnings('ignore', category=np.ComplexWarning)
+    def test_conductivity_spin(self, setup):
+        R, param = [0.1, 1.5], [[1., 2.], [0.1, 0.2]]
+        g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
+        H = Hamiltonian(g, spin=Spin.POLARIZED)
         H.construct((R, param))
 
         mp = MonkhorstPack(H, [11, 11, 1])
@@ -1201,6 +1222,11 @@ class TestHamiltonian:
         assert np.abs(Hcsr[0] - Ht.tocsr(0)).sum() == 0
         assert np.abs(Hcsr[0] - Ht.tocsr(1)).sum() == 0
         assert np.abs(Hcsr[-1] - Ht.tocsr(-1)).sum() == 0
+
+        Ht2 = H.transform([[1], [1]], spin=Spin.POLARIZED) - Ht
+        assert np.abs(Ht2.tocsr(0)).sum() == 0
+        assert np.abs(Ht2.tocsr(1)).sum() == 0
+        assert np.abs(Ht2.tocsr(-1)).sum() == 0
 
         Ht = H.transform(spin=Spin.NONCOLINEAR)
         assert np.abs(Hcsr[0] - Ht.tocsr(0)).sum() == 0

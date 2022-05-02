@@ -1223,6 +1223,10 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         The `spin` and `orthogonal` flags are optional but need to be consistent with the creation of an
         `m`-dimensional matrix.
 
+        This method will copy over the overlap matrix in case the `matrix` argument
+        only acts on the non-overlap matrix elements and both input and output
+        matrices are non-orthogonal.
+
         2. Spin conversion:
         If `spin` is provided (without `matrix`), the spin class
         is changed according to the following conversions:
@@ -1296,6 +1300,18 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             elif spin.size > 1 and self.spin.is_unpolarized:
                 # set up and down components to unpolarized value
                 matrix[[0, 1], 0] = 1.
+
+        else:
+            # convert to numpy array
+            matrix = np.asarray(matrix)
+
+            if (M != m and matrix.shape[0] == m and
+                N != n and matrix.shape[1] == n):
+                # this means that the user wants to preserve the overlap
+                matrix_full = np.zeros([M, N], dtype=dtype)
+                matrix_full[:m, :n] = matrix
+                matrix_full[-1, -1] = 1.
+                matrix = matrix_full
 
         if matrix.shape[0] != M or matrix.shape[1] != N:
             # while this check also occurs in the SparseCSR.transform

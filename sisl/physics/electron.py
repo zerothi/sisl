@@ -810,7 +810,8 @@ def _velocity_matrix_ortho(state, dHk, degenerate, degenerate_dir, dtype):
 
 
 @set_module("sisl.physics.electron")
-def berry_curvature(state, energy, dHk, dSk=None, degenerate=None, degenerate_dir=(1, 1, 1)):
+def berry_curvature(state, energy, dHk, dSk=None,
+                    degenerate=None, degenerate_dir=(1, 1, 1)):
     r""" Calculate the Berry curvature matrix for a set of states (using Kubo)
 
     The Berry curvature is calculated using the following expression
@@ -903,7 +904,10 @@ def _berry_curvature(v_M, energy):
 
 
 @set_module("sisl.physics.electron")
-def conductivity(bz, distribution='fermi-dirac', method='ahc', degenerate=1.e-5, degenerate_dir=(1, 1, 1)):
+def conductivity(bz, distribution='fermi-dirac', method='ahc',
+                 degenerate=1.e-5, degenerate_dir=(1, 1, 1),
+                 *,
+                 eigenstate_kwargs=None):
     r""" Electronic conductivity for a given `BrillouinZone` integral
 
     Currently the *only* implemented method is the anomalous Hall conductivity (AHC, see [1]_)
@@ -930,6 +934,10 @@ def conductivity(bz, distribution='fermi-dirac', method='ahc', degenerate=1.e-5,
        de-couple degenerate states within the given tolerance (in eV)
     degenerate_dir : (3,), optional
        along which direction degenerate states are decoupled.
+    eigenstate_kwargs : dict, optional
+       keyword arguments passed directly to the ``contour.eigenstate`` method.
+       One should *not* pass a ``k`` or a ``wrap`` keyword argument as they are
+       already used.
 
     References
     ----------
@@ -953,6 +961,9 @@ def conductivity(bz, distribution='fermi-dirac', method='ahc', degenerate=1.e-5,
     if isinstance(distribution, str):
         distribution = get_distribution(distribution)
 
+    if eigenstate_kwargs is None:
+        eigenstate_kwargs = {}
+
     method = method.lower()
     if method == 'ahc':
         def _ahc(es):
@@ -965,7 +976,8 @@ def conductivity(bz, distribution='fermi-dirac', method='ahc', degenerate=1.e-5,
         if dim == 0:
             raise SislError(f"conductivity: found a dimensionality of 0 which is non-physical")
 
-        cond = bz.apply.average.eigenstate(wrap=_ahc) * (-constant.G0 / (4*np.pi))
+        cond = bz.apply.average.eigenstate(**eigenstate_kwargs,
+                                           wrap=_ahc) * (-constant.G0 / (4*np.pi))
 
         # Convert the dimensions from S/m^D to S/cm^D
         cond /= vol * units(f"Ang^{dim}", f"cm^{dim}")
@@ -978,7 +990,9 @@ def conductivity(bz, distribution='fermi-dirac', method='ahc', degenerate=1.e-5,
 
 
 @set_module("sisl.physics.electron")
-def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry', ret_overlap=False):
+def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry',
+                *,
+                eigenstate_kwargs=None, ret_overlap=False):
     r""" Calculate the Berry-phase on a loop using a predefined path
 
     The Berry phase for a single Bloch state is calculated using the discretized formula:
@@ -1009,6 +1023,9 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry', r
        a closed loop integration, see [1]_.
        Additionally, one may do the Berry-phase calculation using the SVD method of the
        overlap matrices. Simply append ":svd" to the chosen method, e.g. "berry:svd".
+    eigenstate_kwargs : dict, optional
+       keyword arguments passed directly to the ``contour.eigenstate`` method.
+       One should *not* pass a ``k`` as that is already used.
     ret_overlap: bool, optional
        optionally return the overlap matrix :math:`\mathbf S`
 
@@ -1065,6 +1082,9 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry', r
     # Currently we require the Berry phase calculation to *only* accept Hamiltonians
     if not isinstance(contour.parent, Hamiltonian):
         raise SislError("berry_phase: requires the Brillouin zone object to contain a Hamiltonian!")
+
+    if eigenstate_kwargs is None:
+        eigenstate_kwargs = {}
 
     if contour.parent.orthogonal:
         def _lowdin(state):
@@ -1138,7 +1158,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry', r
             return prd
 
     # Do the actual calculation of the final matrix
-    S = _berry(contour.apply.iter.eigenstate())
+    S = _berry(contour.apply.iter.eigenstate(**eigenstate_kwargs))
 
     # Get the angle of the berry-phase
     # When using np.angle the returned value is in ]-pi; pi]
