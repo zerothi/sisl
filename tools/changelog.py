@@ -16,7 +16,7 @@ see it.
 
 Usage::
 
-    $ ./tools/announce.py <token> <revision range>
+    $ ./tools/changelog.py <token> <revision range>
 
 The output is utf8 rst.
 
@@ -33,7 +33,7 @@ Examples
 
 From the bash command line with $GITHUB token::
 
-    $ ./tools/announce $GITHUB v1.13.0..v1.14.0 > 1.14.0-changelog.rst
+    $ ./tools/changelog.py $GITHUB v1.13.0..v1.14.0 > 1.14.0-changelog.rst
 
 """
 import os

@@ -7,6 +7,9 @@ we hit release version 1.0.0.
 
 ## [UNRELEASED] - YYYY-MM-DD
 
+
+## [0.12.2] - 2022-5-2
+
 ### Added
 - enabled parsing geometry.in files from FHIaims
 - added `batched_indices` for memory-reduced location of array values
