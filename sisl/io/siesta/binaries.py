@@ -1059,17 +1059,14 @@ class hsxSileSiesta(SileBinSiesta):
         return Ef * _Ry2eV
 
     def _r_hamiltonian_v0(self, **kwargs):
+        geom = self.read_geometry(**kwargs)
+
         # Now read the sizes used...
         Gamma, spin, _, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
         self._fortran_check("read_hamiltonian", "could not read Hamiltonian sizes.")
-        ncol, col, dH, dS, dxij = _siesta.read_hsx_hsx0(self.file, Gamma, spin, no, no_s, nnz)
-        dxij = dxij.T * _Bohr2Ang
+        ncol, col, dH, dS, _ = _siesta.read_hsx_hsx0(self.file, Gamma, spin, no, no_s, nnz)
         col -= 1
         self._fortran_check("read_hamiltonian", "could not read Hamiltonian.")
-
-        ptr = _ncol_to_indptr(ncol)
-        xij = SparseCSR((dxij, col, ptr), shape=(no, no_s))
-        geom = self._xij2system(xij, kwargs.get("geometry", kwargs.get("geom", None)))
 
         if geom.no != no or geom.no_s != no_s:
             raise SileError(f"{self!s}.read_hamiltonian could not use the "
@@ -1081,12 +1078,12 @@ class hsxSileSiesta(SileBinSiesta):
 
         # Create the new sparse matrix
         H._csr.ncol = ncol.astype(np.int32, copy=False)
-        H._csr.ptr = ptr
+        H._csr.ptr = _ncol_to_indptr(ncol)
         # Correct fortran indices
         H._csr.col = col.astype(np.int32, copy=False)
         H._csr._nnz = len(col)
 
-        H._csr._D = _a.emptyf([nnz, spin+1])
+        H._csr._D = _a.empty([nnz, spin+1], dtype=dH.dtype)
         H._csr._D[:, :spin] = dH[:, :] * _Ry2eV
         H._csr._D[:, spin] = dS[:]
 
@@ -1124,7 +1121,7 @@ class hsxSileSiesta(SileBinSiesta):
         H._csr.col = col.astype(np.int32, copy=False)
         H._csr._nnz = len(col)
 
-        H._csr._D = _a.emptyf([nnz, spin+1])
+        H._csr._D = _a.empty([nnz, spin+1], dtype=dH.dtype)
         H._csr._D[:, :spin] = dH[:, :] * _Ry2eV
         H._csr._D[:, spin] = dS[:]
 
@@ -1147,8 +1144,7 @@ class hsxSileSiesta(SileBinSiesta):
         # Now read the sizes used...
         Gamma, spin, _, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
         self._fortran_check("read_overlap", "could not read overlap matrix sizes.")
-        ncol, col, dS, dxij = _siesta.read_hsx_sx0(self.file, Gamma, spin, no, no_s, nnz)
-        dxij = dxij.T * _Bohr2Ang
+        ncol, col, dS, _ = _siesta.read_hsx_sx0(self.file, Gamma, spin, no, no_s, nnz)
         col -= 1
         self._fortran_check("read_overlap", "could not read overlap matrix.")
 
@@ -1158,7 +1154,7 @@ class hsxSileSiesta(SileBinSiesta):
                             "inconsistent with HSX file.")
 
         # Create the Hamiltonian container
-        S = Overlap(geom, nnzpr=1)
+        S = Overlap(geom, nnzpr=1, dtype=np.float32)
 
         # Create the new sparse matrix
         S._csr.ncol = ncol.astype(np.int32, copy=False)
@@ -1167,7 +1163,7 @@ class hsxSileSiesta(SileBinSiesta):
         S._csr.col = col.astype(np.int32, copy=False)
         S._csr._nnz = len(col)
 
-        S._csr._D = _a.emptyf([nnz, 1])
+        S._csr._D = _a.empty([nnz, 1], dtype=dS.dtype)
         S._csr._D[:, 0] = dS[:]
 
         # Convert the supercells to sisl supercells
@@ -1203,7 +1199,7 @@ class hsxSileSiesta(SileBinSiesta):
         S._csr.col = col.astype(np.int32, copy=False)
         S._csr._nnz = len(col)
 
-        S._csr._D = _a.emptyf([nnz, 1])
+        S._csr._D = _a.empty([nnz, 1], dtype=dS.dtype)
         S._csr._D[:, 0] = dS[:]
 
         _csr_from_sc_off(S.geometry, isc.T, S._csr)
