@@ -62,9 +62,9 @@ class fcSileGULP(SileGULP):
                 assert int(lsplit[1]) == ja + 1, "Inconsistent 2ND file data"
 
                 # Read 3x3 data
-                tmp[0, ja, :] = [float(x) for x in rl().split()]
-                tmp[1, ja, :] = [float(x) for x in rl().split()]
-                tmp[2, ja, :] = [float(x) for x in rl().split()]
+                tmp[0, ja, :] = rl().split()
+                tmp[1, ja, :] = rl().split()
+                tmp[2, ja, :] = rl().split()
 
             # much faster assignment
             fc[i, :] = tmp[0].ravel()
