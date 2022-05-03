@@ -1354,7 +1354,7 @@ subroutine read_hsx_specie1(fname, ispecie, no_specie, n_specie, l_specie, zeta_
 
 ! Internal variables and arrays
   integer :: iu, ierr, version
-  integer :: is
+  integer :: is, io
 
   ! Local readables
   integer :: nspecies, lna_u, lno_u, lnspin, nsc(3)
@@ -1388,7 +1388,7 @@ subroutine read_hsx_specie1(fname, ispecie, no_specie, n_specie, l_specie, zeta_
 
   do is = 1, nspecies
     if ( is == ispecie ) then
-      read(iu, iostat=ierr) n_specie, l_specie, zeta_specie
+      read(iu, iostat=ierr) (n_specie(io), l_specie(io), zeta_specie(io), io=1,no_specie)
       call iostat_update(ierr)
     else
       read(iu, iostat=ierr) !nfio(is,io), lfio(is,io), zetafio(is,io)
