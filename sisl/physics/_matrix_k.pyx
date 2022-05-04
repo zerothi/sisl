@@ -33,6 +33,13 @@ def matrix_k(gauge, M, const int idx, sc,
     else:
         raise ValueError("matrix_k: gauge must be in [r, R]")
 
+    # Check that the dimension *works*
+    if idx < 0:
+        idx += M.shape[-1]
+    if idx < 0 or M.shape[-1] <= idx:
+        d = M.shape[-1]
+        raise ValueError(f"matrix_k: unknown index specification {idx} must be in 0:{d}")
+
     if format.startswith("sc:") or format == "sc":
         if format == "sc":
             format = "csr"
@@ -125,7 +132,7 @@ def matrix_k_nc(gauge, M, sc,
 @cython.initializedcheck(False)
 def _matrix_k_nc(csr, phases, dtype, format, p_opt):
 
-    if csr._D.shape[1] < 4:
+    if csr.shape[2] < 4:
         raise ValueError("matrix_k_nc requires input matrix to have 4 components")
 
     if dtype == np.complex128:
@@ -145,7 +152,7 @@ def _matrix_k_nc(csr, phases, dtype, format, p_opt):
 @cython.initializedcheck(False)
 def _matrix_sc_k_nc(csr, nc, phases, dtype, format, p_opt):
 
-    if csr._D.shape[1] < 4:
+    if csr.shape[2] < 4:
         raise ValueError("matrix_k_nc: (supercell format) requires input matrix to have 4 components")
 
     if dtype == np.complex128:
@@ -187,7 +194,7 @@ def matrix_k_so(gauge, M, sc,
 @cython.initializedcheck(False)
 def _matrix_k_so(csr, phases, dtype, format, p_opt):
 
-    if csr._D.shape[1] < 8:
+    if csr.shape[2] < 8:
         raise ValueError("matrix_k_so requires input matrix to have 8 components")
 
     if dtype == np.complex128:
@@ -207,7 +214,7 @@ def _matrix_k_so(csr, phases, dtype, format, p_opt):
 @cython.initializedcheck(False)
 def _matrix_sc_k_so(csr, nc, phases, dtype, format, p_opt):
 
-    if csr._D.shape[1] < 8:
+    if csr.shape[2] < 8:
         raise ValueError("matrix_k_so: (supercell format) requires input matrix to have 8 components")
 
     if dtype == np.complex128:
