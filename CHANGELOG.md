@@ -13,6 +13,9 @@ we hit release version 1.0.0.
 - ensured that non-orthogonal `transform` will copy over overlap matrix
 	in case the matrix is only touching the non-overlap elements
 
+### Fixed
+- orbital quantum numbers from HSX file was wrong in v1 #462
+
 
 ## [0.12.2] - 2022-5-2
 

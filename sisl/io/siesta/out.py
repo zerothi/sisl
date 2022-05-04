@@ -712,6 +712,7 @@ class outSileSiesta(SileSiesta):
                 d['_final_iscf'] = 0
 
         def common_parse(line, d):
+            nonlocal props
             if line.startswith('ts-Vha:'):
                 d['ts-Vha'] = [float(line.split()[1])]
                 if 'ts-Vha' not in props:
