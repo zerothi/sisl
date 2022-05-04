@@ -51,11 +51,6 @@ class Test_orbital:
         assert orb == orb.copy()
         assert orb != 1.
 
-    def test_radial1(self):
-        # Orbital does not have radial part
-        with pytest.raises(NotImplementedError):
-            Orbital(1.).radial(np.arange(10))
-
     def test_psi1(self):
         # Orbital does not have radial part
         with pytest.raises(NotImplementedError):
@@ -129,7 +124,7 @@ class Test_sphericalorbital:
         r0 = orb0.radial(r)
         r1 = orb1.radial(r)
         rr = np.stack((r, np.zeros(len(r)), np.zeros(len(r))), axis=1)
-        r2 = orb1.radial(rr, is_radius=False)
+        r2 = orb1.radial((rr ** 2).sum(-1) ** 0.5)
         assert np.allclose(r0, r1)
         assert np.allclose(r0, r2)
         r[r >= rf[0].max()] = 0.
@@ -172,19 +167,19 @@ class Test_sphericalorbital:
         # Interpolation radius
         R = np.linspace(0, 5, 400)
 
-        assert np.allclose(o.f(r), f)
-        f_default = o.f(R)
+        assert np.allclose(o.radial(r), f)
+        f_default = o.radial(R)
 
         o.set_radial(r, f, interp=i_univariate)
-        assert np.allclose(o.f(r), f)
-        f_univariate = o.f(R)
+        assert np.allclose(o.radial(r), f)
+        f_univariate = o.radial(R)
         o.set_radial(r, f, interp=i_interp1d)
-        assert np.allclose(o.f(r), f)
-        f_interp1d = o.f(R)
+        assert np.allclose(o.radial(r), f)
+        f_interp1d = o.radial(R)
 
         o.set_radial(r, f, interp=i_spline)
-        assert np.allclose(o.f(r), f)
-        f_spline = o.f(R)
+        assert np.allclose(o.radial(r), f)
+        f_spline = o.radial(R)
 
         # Checks that they are equal
         assert np.allclose(f_univariate, f_interp1d)
