@@ -9,6 +9,7 @@ from scipy import interpolate as interp
 
 from sisl.utils.mathematics import cart2spher, spher2cart
 from sisl.orbital import Orbital, SphericalOrbital, AtomicOrbital, HydrogenicOrbital
+from sisl.orbital import GTOrbital, STOrbital
 from sisl.orbital import _rspher_harm_fact
 
 pytestmark = [pytest.mark.orbital]
@@ -398,3 +399,49 @@ class Test_hydrogenicorbital:
         assert o1 == l1
         assert o0 != l1
         assert o1 != l0
+
+
+class Test_GTO:
+
+    def test_init(self):
+        alpha = [1, 2]
+        coeff = [0.1, 0.44]
+        orb = GTOrbital(2, 1, 0, alpha, coeff)
+
+    def test_gto_funcs(self):
+        alpha = [0.1688, 0.6239, 3.425]
+        coeff = [0.4, 0.7, 1.3]
+        x = np.linspace(0, 10, 1000)
+        orb = GTOrbital(2, 1, 0, alpha, coeff, R=x[-1])
+        Rnl = orb.radial(x)
+
+        R = np.random.rand(10, 3)
+        orb.psi(R)
+
+        theta, phi = np.random.rand(2, 10)
+        orb.spher(theta, phi)
+
+        orb.psi_spher((R**2).sum(-1) ** 0.5, theta, phi)
+
+
+class Test_STO:
+
+    def test_init(self):
+        alpha = [1, 2]
+        coeff = [0.1, 0.44]
+        orb = STOrbital(2, 1, 0, alpha, coeff)
+
+    def test_sto_funcs(self):
+        alpha = [0.1688, 0.6239, 3.425]
+        coeff = [0.4, 0.7, 1.3]
+        x = np.linspace(0, 10, 1000)
+        orb = STOrbital(2, 1, 0, alpha, coeff, R=x[-1])
+        Rnl = orb.radial(x)
+
+        R = np.random.rand(10, 3)
+        orb.psi(R)
+
+        theta, phi = np.random.rand(2, 10)
+        orb.spher(theta, phi)
+
+        orb.psi_spher((R**2).sum(-1) ** 0.5, theta, phi)

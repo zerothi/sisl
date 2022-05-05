@@ -2,7 +2,8 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from functools import partial
-from numbers import Integral
+from collections.abc import Iterable
+from numbers import Integral, Real
 from math import pi
 from math import sqrt as msqrt
 from math import factorial as fact
@@ -21,7 +22,10 @@ from .utils.mathematics import cart2spher
 from sisl.constant import a0
 
 
-__all__ = ["Orbital", "SphericalOrbital", "AtomicOrbital", "HydrogenicOrbital"]
+__all__ = ["Orbital", "SphericalOrbital", "AtomicOrbital",
+           "HydrogenicOrbital",
+           "GTOrbital", "STOrbital"
+]
 
 
 # Create the factor table for the real spherical harmonics
@@ -553,7 +557,7 @@ def _psi_spher(self, r, theta, phi, m=0, cos_phi=False):
 
 @set_module("sisl")
 class SphericalOrbital(Orbital):
-    r""" An *arbitrary* orbital class where :math:`\phi(\mathbf r)=f(|\mathbf r|)Y_l^m(\theta,\varphi)`
+    r""" An *arbitrary* orbital class which only contains the harmonical part of the wavefunction  where :math:`\phi(\mathbf r)=f(|\mathbf r|)Y_l^m(\theta,\varphi)`
 
     Note that in this case the used spherical harmonics is:
 
@@ -724,6 +728,17 @@ class AtomicOrbital(Orbital):
     `AtomicOrbital` should always be preferred over the
     `SphericalOrbital` because it explicitly contains *all* quantum numbers.
 
+    The atomic orbital has a radial part defined by an external function; this
+    is then expanded using spherical harmonics
+
+    .. math::
+        Y^m_l(\theta,\varphi) &= (-1)^m\sqrt{\frac{2l+1}{4\pi} \frac{(l-m)!}{(l+m)!}}
+             e^{i m \theta} P^m_l(\cos(\varphi))
+        \\
+        \phi_{lmn}(\mathbf r) &= R(|\mathbf r|) Y^m_l(\theta, \varphi)
+
+    where the function :math:`R(|\mathbf r|)` is user-defined.
+
     Parameters
     ----------
     *args : list of arguments
@@ -882,6 +897,9 @@ class AtomicOrbital(Orbital):
         self._m = m
         self._zeta = zeta
         self._P = P
+
+        if n <= 0:
+            raise ValueError(f"{self.__class__.__name__} n must be >= 1")
 
         if self.l >= len(_rspher_harm_fact):
             raise ValueError(f"{self.__class__.__name__} does not implement shells l>={len(_rspher_harm_fact)}!")
@@ -1128,6 +1146,21 @@ class HydrogenicOrbital(AtomicOrbital):
 
     The returned orbital is properly normalized, see [1]_ for details.
 
+    The orbital has the familiar spherical shape
+
+    .. math::
+        Y^m_l(\theta,\varphi) &= (-1)^m\sqrt{\frac{2l+1}{4\pi} \frac{(l-m)!}{(l+m)!}}
+             e^{i m \theta} P^m_l(\cos(\varphi))
+        \\
+        \phi_{lmn}(\mathbf r) &= R_{nl}(|\mathbf r|) Y^m_l(\theta, \varphi)
+        \\
+        R_{nl}(|\mathbf r|) &= -\sqrt{\big(\frac{2Z}{na_0}\big)^3 \frac{(n-l-1)!}{2n(n+l)!}
+           e^{-Zr/(na_0)} \big( \frac{2Zr}{na_0} \big)^l L_{n-l-1}^{(2l+1)}
+           \big( \frac{2Zr}{na_0} \big)
+
+    With :math:`L_{n-l-1}^{(2l+1)}` is the generalized Laguerre polynomials.
+
+
     References
     ----------
     .. [1] : https://en.wikipedia.org/wiki/Hydrogen-like_atom
@@ -1144,7 +1177,7 @@ class HydrogenicOrbital(AtomicOrbital):
     Z : float
         effective atomic number
     R : float, optional
-        max range of the constructed orbital
+        max range of the constructed orbital, defaults to 10 Ang
 
     Examples
     --------
@@ -1177,3 +1210,329 @@ class HydrogenicOrbital(AtomicOrbital):
     def __setstate__(self, d):
         """ Re-create the state of this object """
         self.__init__(d["n"], d["l"], d["m"], d["Z"], R=d["R"], q0=d["q0"], tag=d["tag"])
+
+
+class _ExponentialOrbital(Orbital):
+    r""" Inheritable class for different exponential spherical orbitals
+
+    All exponential spherical orbitals are defined using:
+
+    .. math::
+        Y^m_l(\theta,\varphi) = (-1)^m\sqrt{\frac{2l+1}{4\pi} \frac{(l-m)!}{(l+m)!}}
+             e^{i m \theta} P^m_l(\cos(\varphi))
+
+    The resulting orbital is
+
+    .. math::
+        \phi_{lmn}(\mathbf r) = R_l(|\mathbf r|) Y^m_l(\theta, \varphi)
+
+    And :math:`R_l` is some exponential function with suitable parameters
+    that are to be defined in the subclass.
+    """
+
+    __slots__ = ("_n", "_l", "_m", "_alpha", "_coeff")
+
+    def __init__(self, *args, **kwargs):
+
+        # Ensure args is a list (to be able to pop)
+        args = list(args)
+
+        # Extract shell information
+        n = kwargs.get("n", None)
+        l = kwargs.pop("l", None)
+        m = kwargs.pop("m", None)
+        alpha = kwargs.pop("alpha", None)
+        coeff = kwargs.pop("coeff", None)
+
+        # Arguments *have* to be
+        # n, l, [m (only for l>0)], alpha, coeff
+
+        if n is None and len(args) > 0:
+            n = args.pop(0)
+
+        if l is None and len(args) > 0:
+            l = args.pop(0)
+        if l is None:
+            raise ValueError(f"{self.__class__.__name__} l is not defined")
+
+        if m is None and len(args) > 0 and l > 0:
+            m = args.pop(0)
+        if alpha is None and len(args) > 0:
+            alpha = args.pop(0)
+        if coeff is None and len(args) > 0:
+            coeff = args.pop(0)
+
+        if m is None:
+            # default to 0
+            m = 0
+
+        if n is None:
+            n = l + 1
+
+        if n <= 0:
+            raise ValueError(f"{self.__class__.__name__} n must be >= 1")
+
+        if coeff is None:
+            raise ValueError(f"{self.__class__.__name__} coeff is not defined")
+
+        if alpha is None:
+            raise ValueError(f"{self.__class__.__name__} alpha is not defined")
+
+        # Copy over information
+        self._n = n
+        self._l = l
+        self._m = m
+        if isinstance(alpha, Real):
+            alpha = (alpha,)
+        self._alpha = tuple(alpha)
+
+        if isinstance(coeff, Real):
+            coeff = (coeff,)
+        self._coeff = tuple(coeff)
+
+        assert len(self.alpha) == len(self.coeff), "Contraction factors and exponents needs to have same length"
+
+        if self.l >= len(_rspher_harm_fact):
+            raise ValueError(f"{self.__class__.__name__} does not implement shells l>={len(_rspher_harm_fact)}!")
+        if abs(self.m) > self.l:
+            raise ValueError(f"{self.__class__.__name__} requires |m| <= l.")
+
+        if len(args) == 0 and "R" not in kwargs:
+            # ensure R is present
+            kwargs["R"] = -1.
+
+        super().__init__(*args, **kwargs)
+
+    def copy(self):
+        """ Create an exact copy of this object """
+        return self.__class__(n=self.n, l=self.l, m=self.m, R=self.R, alpha=self.alpha, coeff=self.coeff, q0=self.q0, tag=self.tag)
+
+    def __str__(self):
+        """ A string representation of the object """
+        if len(self.tag) > 0:
+            s = f"{self.__class__.__name__}{{n: {self.n}, l: {self.l}, m: {self.m}, R: {self.R}, q0: {self.q0}, tag: {self.tag}"
+        else:
+            s = f"{self.__class__.__name__}{{n: {self.n}, l: {self.l}, m: {self.m}, R: {self.R}, q0: {self.q0}"
+        orbs = ",\n c, a:".join([f"{c:.4f} , {a:.5f}" for c, a in zip(self.alpha, self.coeff)])
+        return f"{s}{orbs}\n}}"
+
+    def __repr__(self):
+        if self.tag:
+            return f"<{self.__module__}.{self.__class__.__name__} n={self.n}, l={self.l}, m={self.m}, no={len(self.alpha)}, R={self.R:.3f}, q0={self.q0}, tag={self.tag}>"
+        return f"<{self.__module__}.{self.__class__.__name__} n={self.n}, l={self.l}, m={self.m}, no={len(self.alpha)}, R={self.R:.3f}, q0={self.q0}, >"
+
+    def __hash__(self):
+        return hash((super(Orbital, self), self.n, self.l, self.m, self.coeff, self.alpha))
+
+    @property
+    def n(self):
+        r""" :math:`n` quantum number """
+        return self._n
+
+    @property
+    def l(self):
+        r""" :math:`l` quantum number """
+        return self._l
+
+    @property
+    def m(self):
+        r""" :math:`m` quantum number """
+        return self._m
+
+    @property
+    def alpha(self):
+        r""" :math:`\alpha` factors """
+        return self._alpha
+
+    @property
+    def coeff(self):
+        r""" :math:`c` contraction factors """
+        return self._coeff
+
+    def psi(self, r):
+        r""" Calculate :math:`\phi(\mathbf r)` at a given point (or more points)
+
+        The position `r` is a vector from the origin of this orbital.
+
+        Parameters
+        -----------
+        r : array_like
+           the vector from the orbital origin
+
+        Returns
+        -------
+        numpy.ndarray
+             basis function value at point `r`
+        """
+        r = _a.asarray(r)
+        s = r.shape[:-1]
+        # Convert to spherical coordinates
+        n, idx, r, theta, phi = cart2spher(r, theta=self.m != 0, cos_phi=True, maxR=self.R)
+        p = _a.zerosd(n)
+        if len(idx) > 0:
+            p[idx] = self.psi_spher(r, theta, phi, cos_phi=True)
+            # Reduce memory immediately
+            del idx, r, theta, phi
+        p.shape = s
+        return p
+
+    def spher(self, theta, phi, cos_phi=False):
+        r""" Calculate the spherical harmonics of this orbital at a given point (in spherical coordinates)
+
+        Parameters
+        -----------
+        theta : array_like
+           azimuthal angle in the :math:`x-y` plane (from :math:`x`)
+        phi : array_like
+           polar angle from :math:`z` axis
+        cos_phi : bool, optional
+           whether `phi` is actually :math:`cos(\phi)` which will be faster because
+           `cos` is not necessary to call.
+
+        Returns
+        -------
+        numpy.ndarray
+            spherical harmonics at angles :math:`\theta` and :math:`\phi`
+        """
+        if cos_phi:
+            return _rspherical_harm(self.m, self.l, theta, phi)
+        return _rspherical_harm(self.m, self.l, theta, cos(phi))
+
+    def psi_spher(self, r, theta, phi, cos_phi=False):
+        r""" Calculate :math:`\phi(|\mathbf R|, \theta, \phi)` at a given point (in spherical coordinates)
+
+        This is equivalent to `psi` however, the input is given in spherical coordinates.
+
+        Parameters
+        -----------
+        r : array_like
+           the radius from the orbital origin
+        theta : array_like
+           azimuthal angle in the :math:`x-y` plane (from :math:`x`)
+        phi : array_like
+           polar angle from :math:`z` axis
+        cos_phi : bool, optional
+           whether `phi` is actually :math:`cos(\phi)` which will be faster because
+           `cos` is not necessary to call.
+
+        Returns
+        -------
+        numpy.ndarray
+             basis function value at point `r`
+        """
+        return self.radial(r) * self.spher(theta, phi, cos_phi)
+
+
+class GTOrbital(_ExponentialOrbital):
+    r""" Gaussian type orbital
+
+    The `GTOrbital` uses contraction factors and coefficients.
+
+    The Gaussian type orbital consists of a gaussian radial part and a spherical
+    harmonic part that only depends on angles.
+
+    .. math::
+        Y^m_l(\theta,\varphi) &= (-1)^m\sqrt{\frac{2l+1}{4\pi} \frac{(l-m)!}{(l+m)!}}
+             e^{i m \theta} P^m_l(\cos(\varphi))
+        \\
+        \phi_{lmn}(\mathbf r) &= R_l(|\mathbf r|) Y^m_l(\theta, \varphi)
+        \\
+        R_l(|\mathbf r|) &= \sum c_i e^{-\alpha_i r^2}
+
+    Notes
+    -----
+    This class is opted for significant changes based on user feedback. If you use it,
+    please give feedback.
+
+    Parameters
+    ----------
+    n : int, optional
+       principal quantum number, default to ``l + 1``
+    l : int
+       azimuthal quantum number
+    m : int, optional for l == 0
+       magnetic quantum number
+    alpha : float or array_like
+       coefficients for the exponential (in 1/Ang^2)
+       Generally the coefficients are given in atomic units, so
+       a conversion from online tables is necessary.
+    coeff : float or array_like
+       contraction factors
+    q0 : float, optional
+        initial charge
+    tag : str, optional
+        user defined tag
+    """
+
+    __slots__ = tuple()
+
+    radial = _radial
+
+    def _radial(self, r):
+        r""" Radial function """
+        r2 = np.square(r)
+        coeff = self.coeff
+        alpha = self.alpha
+        v = coeff[0] * np.exp(-alpha[0]*r2)
+        for c, a in zip(coeff[1:], alpha[1:]):
+            v += c * np.exp(-a*r2)
+        if self.l == 0:
+            return v
+        return r ** self.l * v
+
+
+class STOrbital(_ExponentialOrbital):
+    r""" Slater type orbital
+
+    The `STOrbital` uses contraction factors and coefficients.
+
+    The Slater type orbital consists of an exponential radial part and a spherical
+    harmonic part that only depends on angles.
+
+    .. math::
+        Y^m_l(\theta,\varphi) &= (-1)^m\sqrt{\frac{2l+1}{4\pi} \frac{(l-m)!}{(l+m)!}}
+             e^{i m \theta} P^m_l(\cos(\varphi))
+        \\
+        \phi_{lmn}(\mathbf r) &= R_n(|\mathbf r|) Y^m_l(\theta, \varphi)
+        \\
+        R_n(|\mathbf r|) &= r^{n-1} \sum c_i e^{-\alpha_i r}
+
+    Notes
+    -----
+    This class is opted for significant changes based on user feedback. If you use it,
+    please give feedback.
+
+    Parameters
+    ----------
+    n : int
+       principal quantum number
+    l : int
+       azimuthal quantum number
+    m : int, optional for l == 0
+       magnetic quantum number
+    alpha : float or array_like
+       coefficients for the exponential (in 1/Ang)
+       Generally the coefficients are given in atomic units, so
+       a conversion from online tables is necessary.
+    coeff : float or array_like
+       contraction factors
+    q0 : float, optional
+        initial charge
+    tag : str, optional
+        user defined tag
+    """
+
+    __slots__ = tuple()
+
+    radial = _radial
+
+    def _radial(self, r):
+        r""" Radial function """
+        coeff = self.coeff
+        alpha = self.alpha
+        v = coeff[0] * np.exp(-alpha[0]*r)
+        for c, a in zip(coeff[1:], alpha[1:]):
+            v += c * np.exp(-a*r)
+        if self.n == 1:
+            return v
+        return r ** (self.n - 1) * v
