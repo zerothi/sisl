@@ -73,18 +73,18 @@ from .sparse import SparseOrbitalBZSpin
 from .state import degenerate_decouple, Coefficient, State, StateC, _FakeMatrix
 
 
-__all__ = ['DOS', 'PDOS', 'COP']
-__all__ += ['velocity', 'velocity_matrix']
-__all__ += ['spin_moment', 'spin_squared']
-__all__ += ['berry_phase', 'berry_curvature']
-__all__ += ['conductivity']
-__all__ += ['wavefunction']
-__all__ += ['CoefficientElectron', 'StateElectron', 'StateCElectron']
-__all__ += ['EigenvalueElectron', 'EigenvectorElectron', 'EigenstateElectron']
+__all__ = ["DOS", "PDOS", "COP"]
+__all__ += ["velocity", "velocity_matrix"]
+__all__ += ["spin_moment", "spin_squared"]
+__all__ += ["berry_phase", "berry_curvature"]
+__all__ += ["conductivity"]
+__all__ += ["wavefunction"]
+__all__ += ["CoefficientElectron", "StateElectron", "StateCElectron"]
+__all__ += ["EigenvalueElectron", "EigenvectorElectron", "EigenstateElectron"]
 
 
 @set_module("sisl.physics.electron")
-def DOS(E, eig, distribution='gaussian'):
+def DOS(E, eig, distribution="gaussian"):
     r""" Calculate the density of states (DOS) for a set of energies, `E`, with a distribution function
 
     The :math:`\mathrm{DOS}(E)` is calculated as:
@@ -125,7 +125,7 @@ def DOS(E, eig, distribution='gaussian'):
 
 
 @set_module("sisl.physics.electron")
-def PDOS(E, eig, state, S=None, distribution='gaussian', spin=None):
+def PDOS(E, eig, state, S=None, distribution="gaussian", spin=None):
     r""" Calculate the projected density of states (PDOS) for a set of energies, `E`, with a distribution function
 
     The :math:`\mathrm{PDOS}(E)` is calculated as:
@@ -213,7 +213,7 @@ def PDOS(E, eig, state, S=None, distribution='gaussian', spin=None):
 
     if spin is None:
         if S.shape[1] == state.shape[1] // 2:
-            spin = Spin('nc')
+            spin = Spin("nc")
             S = S[::2, ::2]
         else:
             spin = Spin()
@@ -262,7 +262,7 @@ def PDOS(E, eig, state, S=None, distribution='gaussian', spin=None):
 
 
 @set_module("sisl.physics.electron")
-def COP(E, eig, state, M, distribution='gaussian'):
+def COP(E, eig, state, M, distribution="gaussian"):
     r""" Calculate the Crystal Orbital Population for a set of energies, `E`, with a distribution function
 
     The :math:`\mathrm{COP}(E)` is calculated as:
@@ -597,7 +597,7 @@ def velocity(state, dHk, energy=None, dSk=None, degenerate=None, degenerate_dir=
 
 # dHk is in [Ang eV]
 # velocity units in [Ang/ps]
-_velocity_const = 1 / constant.hbar('eV ps')
+_velocity_const = 1 / constant.hbar("eV ps")
 
 
 def _velocity_non_ortho(state, dHk, energy, dSk, degenerate, degenerate_dir, project):
@@ -665,9 +665,9 @@ def _velocity_ortho(state, dHk, degenerate, degenerate_dir, project):
     else:
         v = np.empty([state.shape[0], 3], dtype=dtype_complex_to_real(state.dtype))
 
-        v[:, 0] = einsum('ij,ji->i', cs, dHk[0].dot(state.T)).real
-        v[:, 1] = einsum('ij,ji->i', cs, dHk[1].dot(state.T)).real
-        v[:, 2] = einsum('ij,ji->i', cs, dHk[2].dot(state.T)).real
+        v[:, 0] = einsum("ij,ji->i", cs, dHk[0].dot(state.T)).real
+        v[:, 1] = einsum("ij,ji->i", cs, dHk[1].dot(state.T)).real
+        v[:, 2] = einsum("ij,ji->i", cs, dHk[2].dot(state.T)).real
 
     return v * _velocity_const
 
@@ -904,7 +904,7 @@ def _berry_curvature(v_M, energy):
 
 
 @set_module("sisl.physics.electron")
-def conductivity(bz, distribution='fermi-dirac', method='ahc',
+def conductivity(bz, distribution="fermi-dirac", method="ahc",
                  degenerate=1.e-5, degenerate_dir=(1, 1, 1),
                  *,
                  eigenstate_kwargs=None):
@@ -928,8 +928,8 @@ def conductivity(bz, distribution='fermi-dirac', method='ahc',
         containing the integration grid and has the ``bz.parent`` as an instance of Hamiltonian.
     distribution : str or func, optional
         distribution used to find occupations
-    method : {'ahc'}
-       'ahc' calculates the dc anomalous Hall conductivity
+    method : {"ahc"}
+       "ahc" calculates the dc anomalous Hall conductivity
     degenerate : float, optional
        de-couple degenerate states within the given tolerance (in eV)
     degenerate_dir : (3,), optional
@@ -965,7 +965,7 @@ def conductivity(bz, distribution='fermi-dirac', method='ahc',
         eigenstate_kwargs = {}
 
     method = method.lower()
-    if method == 'ahc':
+    if method == "ahc":
         def _ahc(es):
             occ = distribution(es.eig)
             bc = es.berry_curvature(degenerate=degenerate, degenerate_dir=degenerate_dir)
@@ -990,7 +990,7 @@ def conductivity(bz, distribution='fermi-dirac', method='ahc',
 
 
 @set_module("sisl.physics.electron")
-def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry',
+def berry_phase(contour, sub=None, eigvals=False, closed=True, method="berry",
                 *,
                 eigenstate_kwargs=None, ret_overlap=False):
     r""" Calculate the Berry-phase on a loop using a predefined path
@@ -1017,9 +1017,9 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry',
     closed : bool, optional
        whether or not to include the connection of the last and first points in the loop
        Forced true for Zak-phase calculations.
-    method : {'berry', 'zak'}
-       'berry' will return the usual integral of the Berry connection over the specified contour
-       'zak' will compute the Zak phase for 1D systems by performing
+    method : {"berry", "zak"}
+       "berry" will return the usual integral of the Berry connection over the specified contour
+       "zak" will compute the Zak phase for 1D systems by performing
        a closed loop integration, see [1]_.
        Additionally, one may do the Berry-phase calculation using the SVD method of the
        overlap matrices. Simply append ":svd" to the chosen method, e.g. "berry:svd".
@@ -1093,11 +1093,11 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry',
         def _lowdin(state):
             """ change state to the lowdin state, assuming everything is in R gauge
             So needs to be done before changing gauge """
-            S12 = sqrth(state.parent.Sk(state.info["k"], format='array'),
+            S12 = sqrth(state.parent.Sk(state.info["k"], format="array"),
                         overwrite_a=True)
             state.state[:, :] = (S12 @ state.state.T).T
 
-    method, *opts = method.lower().split(':')
+    method, *opts = method.lower().split(":")
     if method == "berry":
         pass
     elif method == "zak":
@@ -1210,7 +1210,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
 
     Notes
     -----
-    Currently this method only works for `v` being coefficients of the gauge='R' method. In case
+    Currently this method only works for `v` being coefficients of the gauge="R" method. In case
     you are passing a `v` with the incorrect gauge you will find a phase-shift according to:
 
     .. math::
@@ -1288,7 +1288,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
     kl = k.dot(k) ** 0.5
     has_k = kl > 0.000001
     if has_k:
-        info('wavefunction: k != Gamma is currently untested!')
+        info("wavefunction: k != Gamma is currently untested!")
 
     # Check that input/grid makes sense.
     # If the coefficients are complex valued, then the grid *has* to be
@@ -1315,7 +1315,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
 
     # In the following we don't care about division
     # So 1) save error state, 2) turn off divide by 0, 3) calculate, 4) turn on old error state
-    old_err = np.seterr(divide='ignore', invalid='ignore')
+    old_err = np.seterr(divide="ignore", invalid="ignore")
 
     addouter = add.outer
     def idx2spherical(ix, iy, iz, offset, dc, R):
@@ -1560,7 +1560,7 @@ class _electron_State:
         if isinstance(self.parent, SparseOrbitalBZSpin):
             # Calculate the overlap matrix
             if not self.parent.orthogonal:
-                opt = {'k': self.info.get('k', (0, 0, 0)),
+                opt = {"k": self.info.get("k", (0, 0, 0)),
                        "dtype": self.dtype,
                        "format": format}
                 for key in ("gauge",):
@@ -1573,7 +1573,7 @@ class _electron_State:
             n = self.shape[1] // 2
         else:
             n = self.shape[1]
-        if 'sc:' in format:
+        if "sc:" in format:
             m = n * self.parent.n_s
         else:
             m = n
@@ -1633,10 +1633,10 @@ class _electron_State:
             geometry = getattr(self.parent, "geometry", None)
 
         # Ensure we are dealing with the R gauge
-        self.change_gauge('R')
+        self.change_gauge("R")
 
         # Retrieve k
-        k = self.info.get('k', _a.zerosd(3))
+        k = self.info.get("k", _a.zerosd(3))
 
         wavefunction(self.state, grid, geometry=geometry, k=k, spinor=spinor, spin=spin, eta=eta)
 
@@ -1842,7 +1842,7 @@ class EigenstateElectron(StateCElectron):
         This routine calls `~sisl.physics.electron.COP` with appropriate arguments.
         """
         # Get Sk in full format
-        Sk = self.Sk(format='sc:csr')
+        Sk = self.Sk(format="sc:csr")
         return COP(E, self.c, self.state, Sk, distribution)
 
     def COHP(self, E, distribution="gaussian"):
@@ -1851,5 +1851,5 @@ class EigenstateElectron(StateCElectron):
         This routine calls `~sisl.physics.electron.COP` with appropriate arguments.
         """
         # Get Hk in full format
-        Hk = self.parent.Hk(format='sc:csr')
+        Hk = self.parent.Hk(format="sc:csr")
         return COP(E, self.c, self.state, Hk, distribution)
