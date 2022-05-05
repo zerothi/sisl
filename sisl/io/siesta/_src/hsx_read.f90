@@ -133,7 +133,7 @@ subroutine read_hsx_sizes0(fname, Gamma, nspin, na_u, no_u, no_s, maxnh)
 
   do is = 1, nspecies
     do io = 1 , no(is)
-      read(iu, iostat=ierr) !nfio(is,io), lfio(is,io), zetafio(is,io)
+      read(iu, iostat=ierr) !n(is,io), l(is,io), zeta(is,io)
       call iostat_update(ierr)
     end do
   end do
@@ -938,7 +938,7 @@ subroutine read_hsx_specie_sizes0(fname, no_u, na_u, nspecies)
 
   do is = 1, nspecies
     do io = 1 , no(is)
-      read(iu, iostat=ierr) !nfio(is,io), lfio(is,io), zetafio(is,io)
+      read(iu, iostat=ierr) !n(is,io), l(is,io), zeta(is,io)
       call iostat_update(ierr)
     end do
   end do
@@ -1117,7 +1117,7 @@ subroutine read_hsx_species0(fname, nspecies, no_u, na_u, label, zval, no, isa)
   call iostat_update(ierr)
   do is = 1, nspecies
     do io = 1 , no(is)
-      read(iu, iostat=ierr) !nfio(is,io), lfio(is,io), zetafio(is,io)
+      read(iu, iostat=ierr) !n(is,io), l(is,io), zeta(is,io)
       call iostat_update(ierr)
     end do
   end do
@@ -1188,6 +1188,7 @@ subroutine read_hsx_species1(fname, nspecies, no_u, na_u, label, zval, no, isa)
 
   read(iu, iostat=ierr) isc, xa, isa!, lasto
   call iostat_update(ierr)
+  deallocate(isc, xa)
 
   read(iu, iostat=ierr) (label(1:20,is), zval(is),no(is),is=1,nspecies)
   call iostat_update(ierr)
@@ -1306,7 +1307,8 @@ subroutine read_hsx_specie0(fname, ispecie, no_specie, n_specie, l_specie, zeta_
 
   ! Now read in the geometry information
   read(iu, iostat=ierr) lnspecies
-  if ( lnspecies < ispecie ) stop 'Error in reading data, not allocated, nspecies<ispecie'
+  if ( ispecie < 1 ) call iostat_update(-6)
+  if ( lnspecies < ispecie ) call iostat_update(-6)
   call iostat_update(ierr)
   allocate(label(lnspecies))
   allocate(zval(lnspecies))
@@ -1322,7 +1324,7 @@ subroutine read_hsx_specie0(fname, ispecie, no_specie, n_specie, l_specie, zeta_
       end do
     else
       do io = 1 , no(is)
-        read(iu, iostat=ierr) !nfio(is,io), lfio(is,io), zetafio(is,io)
+        read(iu, iostat=ierr) !n(is,io), l(is,io), zeta(is,io)
         call iostat_update(ierr)
       end do
     end if
@@ -1374,7 +1376,9 @@ subroutine read_hsx_specie1(fname, ispecie, no_specie, n_specie, l_specie, zeta_
 
   ! Read overall data
   read(iu, iostat=ierr) lna_u, lno_u, lnspin, nspecies, nsc
+  if ( ispecie < 1 ) call iostat_update(-6)
   if ( nspecies < ispecie ) call iostat_update(-6)
+
   call iostat_update(ierr)
 
   read(iu, iostat=ierr) !ucell, Ef, qtot, temp
@@ -1391,7 +1395,7 @@ subroutine read_hsx_specie1(fname, ispecie, no_specie, n_specie, l_specie, zeta_
       read(iu, iostat=ierr) (n_specie(io), l_specie(io), zeta_specie(io), io=1,no_specie)
       call iostat_update(ierr)
     else
-      read(iu, iostat=ierr) !nfio(is,io), lfio(is,io), zetafio(is,io)
+      read(iu, iostat=ierr) !n(is,io), l(is,io), zeta(is,io)
       call iostat_update(ierr)
     end if
   end do
