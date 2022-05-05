@@ -1005,6 +1005,11 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method="berry",
     where :math:`\langle \psi_{k_i} | \psi_{k_{i+1}} \rangle` may be exchanged with an overlap matrix
     of the investigated bands.
 
+    For polarized calculations the overlap matrix will be constructed as
+    :math:`\mathbf S=\mathbf S_\alpha \mathbf S_\beta` where greek letters represent the two spin indices.
+    If passing ``spin`` in the `eigenstate_kwargs` one will only get the data for that :math:`\alpha`
+    spin.
+
     Parameters
     ----------
     contour : BrillouinZone
@@ -1158,7 +1163,11 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method="berry",
             return prd
 
     # Do the actual calculation of the final matrix
-    S = _berry(contour.apply.iter.eigenstate(**eigenstate_kwargs))
+    if contour.parent.spin.is_polarized and "spin" not in eigenstate_kwargs:
+        S = (_berry(contour.apply.iter.eigenstate(spin=0, **eigenstate_kwargs)) @
+             _berry(contour.apply.iter.eigenstate(spin=1, **eigenstate_kwargs)))
+    else:
+        S = _berry(contour.apply.iter.eigenstate(**eigenstate_kwargs))
 
     # Get the angle of the berry-phase
     # When using np.angle the returned value is in ]-pi; pi]
