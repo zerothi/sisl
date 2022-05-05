@@ -1005,11 +1005,6 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method="berry",
     where :math:`\langle \psi_{k_i} | \psi_{k_{i+1}} \rangle` may be exchanged with an overlap matrix
     of the investigated bands.
 
-    For polarized calculations the overlap matrix will be constructed as
-    :math:`\mathbf S=\mathbf S_\alpha \mathbf S_\beta` where greek letters represent the two spin indices.
-    If passing ``spin`` in the `eigenstate_kwargs` one will only get the data for that :math:`\alpha`
-    spin.
-
     Parameters
     ----------
     contour : BrillouinZone
@@ -1095,10 +1090,12 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method="berry",
         def _lowdin(state):
             pass
     else:
+        gauge = eigenstate_kwargs.get("gauge", "R")
         def _lowdin(state):
             """ change state to the lowdin state, assuming everything is in R gauge
             So needs to be done before changing gauge """
-            S12 = sqrth(state.parent.Sk(state.info["k"], format="array"),
+            S12 = sqrth(state.parent.Sk(state.info["k"],
+                                        gauge=gauge, format="array"),
                         overwrite_a=True)
             state.state[:, :] = (S12 @ state.state.T).T
 
@@ -1148,6 +1145,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method="berry",
 
     else:
         def _berry(eigenstates):
+            nonlocal sub
             first = next(eigenstates)
             _lowdin(first)
             first.sub(sub, inplace=True)
@@ -1162,12 +1160,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method="berry",
                 prd = _process(prd, prev.inner(first, diag=False))
             return prd
 
-    # Do the actual calculation of the final matrix
-    if contour.parent.spin.is_polarized and "spin" not in eigenstate_kwargs:
-        S = (_berry(contour.apply.iter.eigenstate(spin=0, **eigenstate_kwargs)) @
-             _berry(contour.apply.iter.eigenstate(spin=1, **eigenstate_kwargs)))
-    else:
-        S = _berry(contour.apply.iter.eigenstate(**eigenstate_kwargs))
+    S = _berry(contour.apply.iter.eigenstate(**eigenstate_kwargs))
 
     # Get the angle of the berry-phase
     # When using np.angle the returned value is in ]-pi; pi]
