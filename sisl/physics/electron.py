@@ -1147,13 +1147,13 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method="berry",
         def _berry(eigenstates):
             nonlocal sub
             first = next(eigenstates)
-            _lowdin(first)
             first.sub(sub, inplace=True)
+            _lowdin(first)
             prev = first
             prd = 1
             for second in eigenstates:
-                _lowdin(second)
                 second.sub(sub, inplace=True)
+                _lowdin(second)
                 prd = _process(prd, prev.inner(second, diag=False))
                 prev = second
             if closed:
