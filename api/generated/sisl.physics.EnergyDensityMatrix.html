@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.EnergyDensityMatrix &mdash; sisl 0.1.dev1+gf26d171 documentation</title>
+  <title>sisl.physics.EnergyDensityMatrix &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gf26d171
+                0.1.dev1+g619c2d5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -1882,6 +1882,9 @@ dimension is the overlap matrix)</p></li>
 to the <span class="math notranslate nohighlight">\(n\)</span>-dimensional elements of the original sparse matrix.
 The <a class="reference internal" href="#sisl.physics.EnergyDensityMatrix.spin" title="sisl.physics.EnergyDensityMatrix.spin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spin</span></code></a> and <a class="reference internal" href="#sisl.physics.EnergyDensityMatrix.orthogonal" title="sisl.physics.EnergyDensityMatrix.orthogonal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orthogonal</span></code></a> flags are optional but need to be consistent with the creation of an
 <em class="xref py py-obj">m</em>-dimensional matrix.</p>
+<p>This method will copy over the overlap matrix in case the <em class="xref py py-obj">matrix</em> argument
+only acts on the non-overlap matrix elements and both input and output
+matrices are non-orthogonal.</p>
 <p>2. Spin conversion:
 If <a class="reference internal" href="#sisl.physics.EnergyDensityMatrix.spin" title="sisl.physics.EnergyDensityMatrix.spin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spin</span></code></a> is provided (without <em class="xref py py-obj">matrix</em>), the spin class
 is changed according to the following conversions:</p>

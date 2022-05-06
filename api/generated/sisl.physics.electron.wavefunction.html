@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>wavefunction &mdash; sisl 0.1.dev1+gf26d171 documentation</title>
+  <title>wavefunction &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gf26d171
+                0.1.dev1+g619c2d5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -80,6 +80,7 @@
 <li class="toctree-l3 current"><a class="reference internal" href="../physics.electron.html">Electron related functions</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.DOS.html">DOS</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.PDOS.html">PDOS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.COP.html">COP</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.velocity.html">velocity</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.velocity_matrix.html">velocity_matrix</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.berry_phase.html">berry_phase</a></li>
@@ -183,7 +184,7 @@ spinor component (<em class="xref py py-obj">spinor</em>)</p>
 \[\psi_{\alpha/\beta}(\mathbf r) = \sum_i\phi_i(\mathbf r) |\psi_{\alpha/\beta}\rangle_i \exp(i\mathbf k \mathbf R)\]</div>
 <p>where <code class="docutils literal notranslate"><span class="pre">spinor</span> <span class="pre">in</span> <span class="pre">[0,</span> <span class="pre">1]</span></code> determines <span class="math notranslate nohighlight">\(\alpha\)</span> or <span class="math notranslate nohighlight">\(\beta\)</span>, respectively.</p>
 <p class="rubric">Notes</p>
-<p>Currently this method only works for <em class="xref py py-obj">v</em> being coefficients of the gauge=’R’ method. In case
+<p>Currently this method only works for <em class="xref py py-obj">v</em> being coefficients of the gauge=”R” method. In case
 you are passing a <em class="xref py py-obj">v</em> with the incorrect gauge you will find a phase-shift according to:</p>
 <div class="math notranslate nohighlight">
 \[\tilde v_j = e^{i\mathbf k\mathbf r_j} v_j\]</div>

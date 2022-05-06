@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.AtomicOrbital &mdash; sisl 0.1.dev1+gf26d171 documentation</title>
+  <title>sisl.AtomicOrbital &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gf26d171
+                0.1.dev1+g619c2d5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -176,9 +176,9 @@ assigning the magnetic quantum number <span class="math notranslate nohighlight"
 <span class="gp">&gt;&gt;&gt; </span><span class="c1">#                    n, l, m, [zeta, [P]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">orb1</span> <span class="o">=</span> <span class="n">AtomicOrbital</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">orb2</span> <span class="o">=</span> <span class="n">AtomicOrbital</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">zeta</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">orb3</span> <span class="o">=</span> <span class="n">AtomicOrbital</span><span class="p">(</span><span class="s1">&#39;2pzZ&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">orb4</span> <span class="o">=</span> <span class="n">AtomicOrbital</span><span class="p">(</span><span class="s1">&#39;2pzZ1&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">orb5</span> <span class="o">=</span> <span class="n">AtomicOrbital</span><span class="p">(</span><span class="s1">&#39;pz&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">orb3</span> <span class="o">=</span> <span class="n">AtomicOrbital</span><span class="p">(</span><span class="s2">&quot;2pzZ&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">orb4</span> <span class="o">=</span> <span class="n">AtomicOrbital</span><span class="p">(</span><span class="s2">&quot;2pzZ1&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">orb5</span> <span class="o">=</span> <span class="n">AtomicOrbital</span><span class="p">(</span><span class="s2">&quot;pz&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">orb2</span> <span class="o">==</span> <span class="n">orb3</span>
 <span class="go">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">orb2</span> <span class="o">==</span> <span class="n">orb4</span>
@@ -209,13 +209,13 @@ assigning the magnetic quantum number <span class="math notranslate nohighlight"
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.AtomicOrbital.psi_spher" title="sisl.AtomicOrbital.psi_spher"><code class="xref py py-obj docutils literal notranslate"><span class="pre">psi_spher</span></code></a>(r, theta, phi[, cos_phi])</p></td>
 <td><p>Calculate <span class="math notranslate nohighlight">\(\phi(|\mathbf R|, \theta, \phi)\)</span> at a given point (in spherical coordinates)</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.AtomicOrbital.radial" title="sisl.AtomicOrbital.radial"><code class="xref py py-obj docutils literal notranslate"><span class="pre">radial</span></code></a>(r[, is_radius])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.AtomicOrbital.radial" title="sisl.AtomicOrbital.radial"><code class="xref py py-obj docutils literal notranslate"><span class="pre">radial</span></code></a>(r, *args, **kwargs)</p></td>
 <td><p>Calculate the radial part of the wavefunction <span class="math notranslate nohighlight">\(f(\mathbf R)\)</span></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.AtomicOrbital.scale" title="sisl.AtomicOrbital.scale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale</span></code></a>(scale)</p></td>
 <td><p>Scale the orbital by extending R by <a class="reference internal" href="#sisl.AtomicOrbital.scale" title="sisl.AtomicOrbital.scale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale</span></code></a></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.AtomicOrbital.set_radial" title="sisl.AtomicOrbital.set_radial"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_radial</span></code></a>(*args)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.AtomicOrbital.set_radial" title="sisl.AtomicOrbital.set_radial"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_radial</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Update the internal radial function used as a <span class="math notranslate nohighlight">\(f(|\mathbf r|)\)</span></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.AtomicOrbital.spher" title="sisl.AtomicOrbital.spher"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spher</span></code></a>(theta, phi[, cos_phi])</p></td>
@@ -236,28 +236,25 @@ assigning the magnetic quantum number <span class="math notranslate nohighlight"
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.AtomicOrbital.Z" title="sisl.AtomicOrbital.Z"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Z</span></code></a></p></td>
 <td><p><span class="math notranslate nohighlight">\(\zeta\)</span> shell</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.AtomicOrbital.f" title="sisl.AtomicOrbital.f"><code class="xref py py-obj docutils literal notranslate"><span class="pre">f</span></code></a></p></td>
-<td><p>Radial function</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.AtomicOrbital.l" title="sisl.AtomicOrbital.l"><code class="xref py py-obj docutils literal notranslate"><span class="pre">l</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.AtomicOrbital.l" title="sisl.AtomicOrbital.l"><code class="xref py py-obj docutils literal notranslate"><span class="pre">l</span></code></a></p></td>
 <td><p><span class="math notranslate nohighlight">\(l\)</span> quantum number</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.AtomicOrbital.m" title="sisl.AtomicOrbital.m"><code class="xref py py-obj docutils literal notranslate"><span class="pre">m</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.AtomicOrbital.m" title="sisl.AtomicOrbital.m"><code class="xref py py-obj docutils literal notranslate"><span class="pre">m</span></code></a></p></td>
 <td><p><span class="math notranslate nohighlight">\(m\)</span> quantum number</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.AtomicOrbital.n" title="sisl.AtomicOrbital.n"><code class="xref py py-obj docutils literal notranslate"><span class="pre">n</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.AtomicOrbital.n" title="sisl.AtomicOrbital.n"><code class="xref py py-obj docutils literal notranslate"><span class="pre">n</span></code></a></p></td>
 <td><p><span class="math notranslate nohighlight">\(n\)</span> shell</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.AtomicOrbital.orb" title="sisl.AtomicOrbital.orb"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orb</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.AtomicOrbital.orb" title="sisl.AtomicOrbital.orb"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orb</span></code></a></p></td>
 <td><p>Orbital with radial part</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.AtomicOrbital.q0" title="sisl.AtomicOrbital.q0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">q0</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.AtomicOrbital.q0" title="sisl.AtomicOrbital.q0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">q0</span></code></a></p></td>
 <td><p>Initial charge</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.AtomicOrbital.tag" title="sisl.AtomicOrbital.tag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tag</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.AtomicOrbital.tag" title="sisl.AtomicOrbital.tag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tag</span></code></a></p></td>
 <td><p>Named tag of orbital</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.AtomicOrbital.zeta" title="sisl.AtomicOrbital.zeta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zeta</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.AtomicOrbital.zeta" title="sisl.AtomicOrbital.zeta"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zeta</span></code></a></p></td>
 <td><p><span class="math notranslate nohighlight">\(\zeta\)</span> shell</p></td>
 </tr>
 </tbody>
@@ -305,12 +302,6 @@ assigning the magnetic quantum number <span class="math notranslate nohighlight"
 </ul>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="sisl.AtomicOrbital.f">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">f</span></span><a class="headerlink" href="#sisl.AtomicOrbital.f" title="Permalink to this definition"></a></dt>
-<dd><p>Radial function</p>
 </dd></dl>
 
 <dl class="py property">
@@ -393,15 +384,12 @@ assigning the magnetic quantum number <span class="math notranslate nohighlight"
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.AtomicOrbital.radial">
-<span class="sig-name descname"><span class="pre">radial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/orbital.html#AtomicOrbital.radial"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.AtomicOrbital.radial" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">radial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/orbital.html#AtomicOrbital.radial"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.AtomicOrbital.radial" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate the radial part of the wavefunction <span class="math notranslate nohighlight">\(f(\mathbf R)\)</span></p>
 <p>The position <em class="xref py py-obj">r</em> is a vector from the origin of this orbital.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>r</strong> (<em>array_like</em>) – radius from the orbital origin, for <code class="docutils literal notranslate"><span class="pre">is_radius=False</span></code> <em class="xref py py-obj">r</em> must be vectors</p></li>
-<li><p><strong>is_radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – whether <em class="xref py py-obj">r</em> is a vector or the radius</p></li>
-</ul>
+<dd class="field-odd"><p><strong>r</strong> (<em>array_like</em>) – radius from the orbital origin</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>radial orbital value at point <em class="xref py py-obj">r</em></p>
@@ -420,7 +408,7 @@ assigning the magnetic quantum number <span class="math notranslate nohighlight"
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.AtomicOrbital.set_radial">
-<span class="sig-name descname"><span class="pre">set_radial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/orbital.html#AtomicOrbital.set_radial"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.AtomicOrbital.set_radial" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set_radial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/orbital.html#AtomicOrbital.set_radial"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.AtomicOrbital.set_radial" title="Permalink to this definition"></a></dt>
 <dd><p>Update the internal radial function used as a <span class="math notranslate nohighlight">\(f(|\mathbf r|)\)</span></p>
 <p>See <a class="reference internal" href="sisl.SphericalOrbital.html#sisl.SphericalOrbital.set_radial" title="sisl.SphericalOrbital.set_radial"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SphericalOrbital.set_radial</span></code></a> where these arguments are passed to.</p>
 </dd></dl>

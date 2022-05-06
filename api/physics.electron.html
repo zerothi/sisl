@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Electron related functions &mdash; sisl 0.1.dev1+gf26d171 documentation</title>
+  <title>Electron related functions &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gf26d171
+                0.1.dev1+g619c2d5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -80,6 +80,7 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Electron related functions</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.physics.electron.DOS.html">DOS</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.physics.electron.PDOS.html">PDOS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.physics.electron.COP.html">COP</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.physics.electron.velocity.html">velocity</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.physics.electron.velocity_matrix.html">velocity_matrix</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.physics.electron.berry_phase.html">berry_phase</a></li>
@@ -175,28 +176,31 @@ One may also plot real-space wavefunctions.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.physics.electron.PDOS.html#sisl.physics.electron.PDOS" title="sisl.physics.electron.PDOS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PDOS</span></code></a>(E, eig, state[, S, distribution, spin])</p></td>
 <td><p>Calculate the projected density of states (PDOS) for a set of energies, <em class="xref py py-obj">E</em>, with a distribution function</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.physics.electron.velocity.html#sisl.physics.electron.velocity" title="sisl.physics.electron.velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">velocity</span></code></a>(state, dHk[, energy, dSk, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.physics.electron.COP.html#sisl.physics.electron.COP" title="sisl.physics.electron.COP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">COP</span></code></a>(E, eig, state, M[, distribution])</p></td>
+<td><p>Calculate the Crystal Orbital Population for a set of energies, <em class="xref py py-obj">E</em>, with a distribution function</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.physics.electron.velocity.html#sisl.physics.electron.velocity" title="sisl.physics.electron.velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">velocity</span></code></a>(state, dHk[, energy, dSk, ...])</p></td>
 <td><p>Calculate the velocity of a set of states</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.physics.electron.velocity_matrix.html#sisl.physics.electron.velocity_matrix" title="sisl.physics.electron.velocity_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">velocity_matrix</span></code></a>(state, dHk[, energy, dSk, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.physics.electron.velocity_matrix.html#sisl.physics.electron.velocity_matrix" title="sisl.physics.electron.velocity_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">velocity_matrix</span></code></a>(state, dHk[, energy, dSk, ...])</p></td>
 <td><p>Calculate the velocity matrix of a set of states</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.physics.electron.berry_phase.html#sisl.physics.electron.berry_phase" title="sisl.physics.electron.berry_phase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">berry_phase</span></code></a>(contour[, sub, eigvals, closed, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.physics.electron.berry_phase.html#sisl.physics.electron.berry_phase" title="sisl.physics.electron.berry_phase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">berry_phase</span></code></a>(contour[, sub, eigvals, closed, ...])</p></td>
 <td><p>Calculate the Berry-phase on a loop using a predefined path</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.physics.electron.berry_curvature.html#sisl.physics.electron.berry_curvature" title="sisl.physics.electron.berry_curvature"><code class="xref py py-obj docutils literal notranslate"><span class="pre">berry_curvature</span></code></a>(state, energy, dHk[, dSk, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.physics.electron.berry_curvature.html#sisl.physics.electron.berry_curvature" title="sisl.physics.electron.berry_curvature"><code class="xref py py-obj docutils literal notranslate"><span class="pre">berry_curvature</span></code></a>(state, energy, dHk[, dSk, ...])</p></td>
 <td><p>Calculate the Berry curvature matrix for a set of states (using Kubo)</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.physics.electron.conductivity.html#sisl.physics.electron.conductivity" title="sisl.physics.electron.conductivity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">conductivity</span></code></a>(bz[, distribution, method, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.physics.electron.conductivity.html#sisl.physics.electron.conductivity" title="sisl.physics.electron.conductivity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">conductivity</span></code></a>(bz[, distribution, method, ...])</p></td>
 <td><p>Electronic conductivity for a given <em class="xref py py-obj">BrillouinZone</em> integral</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.physics.electron.wavefunction.html#sisl.physics.electron.wavefunction" title="sisl.physics.electron.wavefunction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">wavefunction</span></code></a>(v, grid[, geometry, k, spinor, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.physics.electron.wavefunction.html#sisl.physics.electron.wavefunction" title="sisl.physics.electron.wavefunction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">wavefunction</span></code></a>(v, grid[, geometry, k, spinor, ...])</p></td>
 <td><p>Add the wave-function (<em class="xref py py-obj">Orbital.psi</em>) component of each orbital to the grid</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.physics.electron.spin_moment.html#sisl.physics.electron.spin_moment" title="sisl.physics.electron.spin_moment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spin_moment</span></code></a>(state[, S, project])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.physics.electron.spin_moment.html#sisl.physics.electron.spin_moment" title="sisl.physics.electron.spin_moment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spin_moment</span></code></a>(state[, S, project])</p></td>
 <td><p>Spin magnetic moment (spin texture) and optionally orbitally resolved moments</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.physics.electron.spin_squared.html#sisl.physics.electron.spin_squared" title="sisl.physics.electron.spin_squared"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spin_squared</span></code></a>(state_alpha, state_beta[, S])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.physics.electron.spin_squared.html#sisl.physics.electron.spin_squared" title="sisl.physics.electron.spin_squared"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spin_squared</span></code></a>(state_alpha, state_beta[, S])</p></td>
 <td><p>Calculate the spin squared expectation value between two spin states</p></td>
 </tr>
 </tbody>

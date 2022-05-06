@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.brillouinzone &mdash; sisl 0.1.dev1+gf26d171 documentation</title>
+  <title>sisl.physics.brillouinzone &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gf26d171
+                0.1.dev1+g619c2d5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -236,6 +236,7 @@
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Integral</span><span class="p">,</span> <span class="n">Real</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
 
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">pi</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -247,6 +248,7 @@
 <span class="kn">from</span> <span class="nn">sisl.quaternion</span> <span class="kn">import</span> <span class="n">Quaternion</span>
 <span class="kn">from</span> <span class="nn">sisl.utils.mathematics</span> <span class="kn">import</span> <span class="n">cart2spher</span><span class="p">,</span> <span class="n">fnorm</span>
 <span class="kn">from</span> <span class="nn">sisl.utils.misc</span> <span class="kn">import</span> <span class="n">allow_kwargs</span>
+<span class="kn">from</span> <span class="nn">sisl.utils</span> <span class="kn">import</span> <span class="n">batched_indices</span>
 <span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
 <span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">info</span><span class="p">,</span> <span class="n">warn</span><span class="p">,</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">progressbar</span><span class="p">,</span> <span class="n">deprecate_method</span><span class="p">,</span> <span class="n">deprecate</span>
 <span class="kn">from</span> <span class="nn">sisl.supercell</span> <span class="kn">import</span> <span class="n">SuperCell</span>
@@ -710,15 +712,7 @@
         <span class="n">k</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">%</span> <span class="mf">1.</span>
 
         <span class="c1"># Ensure that we are in the interval ]-0.5; 0.5]</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">k</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">k</span><span class="o">.</span><span class="n">shape</span><span class="p">)]</span> <span class="o">-=</span> <span class="mf">1.</span>
-            <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-
-        <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">k</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">k</span><span class="o">.</span><span class="n">shape</span><span class="p">)]</span> <span class="o">+=</span> <span class="mf">1.</span>
-            <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">k</span><span class="p">[</span><span class="n">k</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
 
         <span class="k">return</span> <span class="n">k</span></div>
 
@@ -1796,7 +1790,7 @@
         <span class="c1"># Return values</span>
         <span class="k">return</span> <span class="n">k</span><span class="p">,</span> <span class="n">w</span></div>
 
-<div class="viewcode-block" id="MonkhorstPack.replace"><a class="viewcode-back" href="../../../api/generated/sisl.physics.MonkhorstPack.html#sisl.physics.MonkhorstPack.replace">[docs]</a>    <span class="k">def</span> <span class="nf">replace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">mp</span><span class="p">):</span>
+<div class="viewcode-block" id="MonkhorstPack.replace"><a class="viewcode-back" href="../../../api/generated/sisl.physics.MonkhorstPack.html#sisl.physics.MonkhorstPack.replace">[docs]</a>    <span class="k">def</span> <span class="nf">replace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">mp</span><span class="p">,</span> <span class="n">displacement</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">as_index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check_vol</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Replace a k-point with a new set of k-points from a Monkhorst-Pack grid</span>
 
 <span class="sd">        This method tries to replace an area corresponding to `mp.size` around the k-point `k`</span>
@@ -1806,9 +1800,24 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        k : array_like</span>
-<span class="sd">           k-point in this object to replace</span>
+<span class="sd">           k-point in this object to replace, if `as_index` is true, it will be regarded as integer</span>
+<span class="sd">           positions of the k-points to replace, otherwise the indices of the k-points will be located</span>
+<span class="sd">           individually (in chunks of 200 MB).</span>
 <span class="sd">        mp : MonkhorstPack</span>
 <span class="sd">           object containing the replacement k-points.</span>
+<span class="sd">        displacement : array_like or bool, optional</span>
+<span class="sd">           the displacment of the `mp` k-points. Needed for doing *lots* of replacements due to efficiency.</span>
+<span class="sd">           Defaults to not displace anything. The inserted k-points will be `mp.k + displacement`.</span>
+<span class="sd">           If True, it will use `k` as the displacement vector. For multiple k-point replacements</span>
+<span class="sd">           each k-point will be replaced my `mp` with k as the displacement.</span>
+<span class="sd">        as_index : bool, optional</span>
+<span class="sd">           whether `k` is input as reciprocal k-points, or as indices of k-points in this object.</span>
+<span class="sd">        check_vol : bool, optional</span>
+<span class="sd">           whether to check the volume of the replaced k-point(s); by default the volume of each k-point</span>
+<span class="sd">           is determined by the original ``size`` and ``nkpt`` values. However, when doing</span>
+<span class="sd">           replacements of k-points these values are not kept for the individual k-points</span>
+<span class="sd">           that were replaced, so subsequent replacements of these points will cause errors that</span>
+<span class="sd">           effectively are not valid.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -1844,57 +1853,95 @@
         <span class="c1"># Secondly we need to ensure that the k-points we remove are occupying *exactly*</span>
         <span class="c1"># the Brillouin zone we wish to replace.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mp</span><span class="p">,</span> <span class="n">MonkhorstPack</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Object `mp` is not a MonkhorstPack object&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Object &#39;mp&#39; is not a MonkhorstPack object&quot;</span><span class="p">)</span>
 
-        <span class="c1"># We can easily figure out the BZ that each k-point is averaging</span>
-        <span class="n">k_vol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_diag</span>
-        <span class="c1"># Compare against the size of this one</span>
-        <span class="c1"># Since we can remove more than one k-point, we require that the</span>
-        <span class="c1"># size of the replacement MP is an integer multiple of the</span>
-        <span class="c1"># k-point volumes.</span>
-        <span class="n">k_int</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">_size</span> <span class="o">/</span> <span class="n">k_vol</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">rint</span><span class="p">(</span><span class="n">k_int</span><span class="p">),</span> <span class="n">k_int</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">.reduce could not replace k-point, BZ &#39;</span>
-                            <span class="s1">&#39;volume replaced is not equivalent to the inherent k-point volume.&#39;</span><span class="p">)</span>
-        <span class="n">k_int</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rint</span><span class="p">(</span><span class="n">k_int</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">check_vol</span><span class="p">:</span>
+            <span class="c1"># We can easily figure out the BZ that each k-point is averaging</span>
+            <span class="n">k_vol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_diag</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">k_vol</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
 
-        <span class="c1"># 1. find all k-points</span>
-        <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_primitive</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-        <span class="n">dk</span> <span class="o">=</span> <span class="p">(</span><span class="n">mp</span><span class="o">.</span><span class="n">_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-        <span class="c1"># Find all points within [k - dk; k + dk]</span>
-        <span class="c1"># Since the volume of each k-point is non-zero we know that no k-points will be located</span>
-        <span class="c1"># on the boundary.</span>
-        <span class="c1"># This does remove boundary points because we shift everything into the positive</span>
-        <span class="c1"># plane.</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_primitive</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span> <span class="o">%</span> <span class="mf">1.</span> <span class="o">-</span> <span class="n">k</span> <span class="o">%</span> <span class="mf">1.</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="n">dk</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">.reduce could not find any points to replace.&#39;</span><span class="p">)</span>
+            <span class="c1"># Compare against the size of this one</span>
+            <span class="c1"># Since we can remove more than one k-point, we require that the</span>
+            <span class="c1"># size of the replacement MP is an integer multiple of the</span>
+            <span class="c1"># k-point volumes.</span>
+            <span class="n">k_int</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">_size</span> <span class="o">/</span> <span class="n">k_vol</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">rint</span><span class="p">(</span><span class="n">k_int</span><span class="p">),</span> <span class="n">k_int</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.reduce could not replace k-point, BZ &quot;</span>
+                                <span class="s2">&quot;volume replaced is not equivalent to the inherent k-point volume.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># the size of the k-points that will be added</span>
+        <span class="n">s_size2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">mp_size2</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">_size</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">dk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">mp_size2</span> <span class="o">&lt;</span> <span class="n">s_size2</span><span class="p">,</span> <span class="n">mp_size2</span><span class="p">,</span> <span class="n">s_size2</span><span class="p">)</span>
+        <span class="n">dk</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+        <span class="c1"># determine indices of k-point inputs</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">as_index</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">k</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># find k-points in batches of 200 MB</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">k</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">batched_indices</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">dk</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+                                  <span class="n">diff_func</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">in_primitive</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Idea of fast replacements is attributed @ahkole in #454, but the resulting code needed some</span>
+        <span class="c1"># changes since that code was not stable againts *wrong input*, i.e. k=[0, 0, 0]</span>
+        <span class="c1"># replacements.</span>
+
+        <span class="c1"># determine the displacement vector</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">displacement</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">displacement</span><span class="p">:</span>
+                <span class="n">displacement</span> <span class="o">=</span> <span class="n">k</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">displacement</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">elif</span> <span class="n">displacement</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># convert to array</span>
+            <span class="n">displacement</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">displacement</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">displacement</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">displ_nk</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">displ_nk</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">displacement</span><span class="p">)</span>
 
         <span class="c1"># Now we have the k-points we need to remove</span>
         <span class="c1"># Figure out if the total weight is consistent</span>
         <span class="n">total_weight</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-        <span class="n">replace_weight</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">total_weight</span> <span class="o">-</span> <span class="n">replace_weight</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-8</span><span class="p">:</span>
+        <span class="n">replace_weight</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="n">displ_nk</span>
+        <span class="n">atol</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">total_weight</span><span class="p">,</span> <span class="n">replace_weight</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e-4</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">total_weight</span> <span class="o">-</span> <span class="n">replace_weight</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">atol</span><span class="p">:</span>
             <span class="n">weight_factor</span> <span class="o">=</span> <span class="mf">1.</span>
-        <span class="k">elif</span> <span class="nb">abs</span><span class="p">(</span><span class="n">total_weight</span> <span class="o">-</span> <span class="n">replace_weight</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-8</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="nb">abs</span><span class="p">(</span><span class="n">total_weight</span> <span class="o">-</span> <span class="n">replace_weight</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">atol</span><span class="p">:</span>
             <span class="n">weight_factor</span> <span class="o">=</span> <span class="mf">2.</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trs</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">.reduce assumes that the replaced k-point has double weights.&#39;</span><span class="p">)</span>
+                <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.reduce assumes that the replaced k-point has double weights.&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;k-point to replace:&#39;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">k</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;delta-k:&#39;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">dk</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Found k-indices that will be replaced:&#39;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;k-points replaced:&#39;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:])</span>
-            <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">.reduce could not assert the weights are consistent during replacement.&#39;</span><span class="p">)</span>
+            <span class="c1">#print(&quot;k-point to replace: &quot;, k.ravel())</span>
+            <span class="c1">#print(&quot;delta-k: &quot;, dk.ravel())</span>
+            <span class="c1">#print(&quot;Found k-indices that will be replaced:&quot;)</span>
+            <span class="c1">#print(idx)</span>
+            <span class="c1">#print(&quot;k-points replaced:&quot;)</span>
+            <span class="c1">#print(self.k[idx, :])</span>
+            <span class="c1">#print(&quot;weights replaced:&quot;)</span>
+            <span class="c1">#print(self.weight[idx])</span>
+            <span class="c1">#print(self.weight.min(), self.weight.max())</span>
+            <span class="c1">#print(mp.weight.min(), mp.weight.max())</span>
+            <span class="c1">#print(&quot;Summed weights vs. replaced summed weights: &quot;)</span>
+            <span class="c1">#print(total_weight, replace_weight)</span>
+            <span class="c1">#print(mp)</span>
+            <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.reduce found inconsistent replacement weights &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;self=</span><span class="si">{</span><span class="n">total_weight</span><span class="si">}</span><span class="s2"> vs. mp=</span><span class="si">{</span><span class="n">replace_weight</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
         <span class="c1"># delete and append new k-points and weights</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_k</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">mp</span><span class="o">.</span><span class="n">_k</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_w</span><span class="p">,</span> <span class="n">idx</span><span class="p">),</span> <span class="n">mp</span><span class="o">.</span><span class="n">_w</span> <span class="o">*</span> <span class="n">weight_factor</span><span class="p">))</span></div>
+        <span class="k">if</span> <span class="n">displacement</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_k</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">mp</span><span class="o">.</span><span class="n">_k</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_k</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">in_primitive</span><span class="p">(</span><span class="n">mp</span><span class="o">.</span><span class="n">k</span> <span class="o">+</span> <span class="n">displacement</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_w</span><span class="p">,</span> <span class="n">idx</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">mp</span><span class="o">.</span><span class="n">_w</span> <span class="o">*</span> <span class="n">weight_factor</span><span class="p">,</span> <span class="n">displ_nk</span><span class="p">)))</span></div>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics&quot;</span><span class="p">)</span>

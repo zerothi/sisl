@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.Orbital &mdash; sisl 0.1.dev1+gf26d171 documentation</title>
+  <title>sisl.Orbital &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gf26d171
+                0.1.dev1+g619c2d5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -169,7 +169,7 @@
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">orb</span> <span class="o">=</span> <span class="n">Orbital</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">orb_tag</span> <span class="o">=</span> <span class="n">Orbital</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s1">&#39;range=2&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">orb_tag</span> <span class="o">=</span> <span class="n">Orbital</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s2">&quot;range=2&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">orb</span><span class="o">.</span><span class="n">R</span> <span class="o">==</span> <span class="n">orb_tag</span><span class="o">.</span><span class="n">R</span> <span class="o">/</span> <span class="mi">2</span>
 <span class="go">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">orbq</span> <span class="o">=</span> <span class="n">Orbital</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -196,31 +196,22 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Orbital.psi" title="sisl.Orbital.psi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">psi</span></code></a>(r, *args, **kwargs)</p></td>
 <td><p>Calculate <span class="math notranslate nohighlight">\(\phi(\mathbf R)\)</span> for Cartesian coordinates</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Orbital.psi_spher" title="sisl.Orbital.psi_spher"><code class="xref py py-obj docutils literal notranslate"><span class="pre">psi_spher</span></code></a>(r, theta, phi, *args, **kwargs)</p></td>
-<td><p>Calculate <span class="math notranslate nohighlight">\(\phi(|\mathbf R|, \theta, \phi)\)</span> for spherical coordinates</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Orbital.radial" title="sisl.Orbital.radial"><code class="xref py py-obj docutils literal notranslate"><span class="pre">radial</span></code></a>(r, *args, **kwargs)</p></td>
-<td><p>Calculate the radial part of the wavefunction <span class="math notranslate nohighlight">\(f(\mathbf R)\)</span></p></td>
-</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Orbital.scale" title="sisl.Orbital.scale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale</span></code></a>(scale)</p></td>
 <td><p>Scale the orbital by extending R by <a class="reference internal" href="#sisl.Orbital.scale" title="sisl.Orbital.scale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale</span></code></a></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Orbital.spher" title="sisl.Orbital.spher"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spher</span></code></a>(theta, phi, *args, **kwargs)</p></td>
-<td><p>Calculate the spherical harmonics of this orbital at a given point (in spherical coordinates)</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Orbital.toGrid" title="sisl.Orbital.toGrid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toGrid</span></code></a>([precision, c, R, dtype, atom])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Orbital.toGrid" title="sisl.Orbital.toGrid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toGrid</span></code></a>([precision, c, R, dtype, atom])</p></td>
 <td><p>Create a Grid with <em>only</em> this orbital wavefunction on it</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Orbital.toSphere" title="sisl.Orbital.toSphere"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toSphere</span></code></a>([center])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Orbital.toSphere" title="sisl.Orbital.toSphere"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toSphere</span></code></a>([center])</p></td>
 <td><p>Return a sphere with radius equal to the orbital size</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Orbital.R" title="sisl.Orbital.R"><code class="xref py py-obj docutils literal notranslate"><span class="pre">R</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Orbital.R" title="sisl.Orbital.R"><code class="xref py py-obj docutils literal notranslate"><span class="pre">R</span></code></a></p></td>
 <td><p>Maxmimum radius of orbital</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Orbital.q0" title="sisl.Orbital.q0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">q0</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Orbital.q0" title="sisl.Orbital.q0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">q0</span></code></a></p></td>
 <td><p>Initial charge</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Orbital.tag" title="sisl.Orbital.tag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tag</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Orbital.tag" title="sisl.Orbital.tag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tag</span></code></a></p></td>
 <td><p>Named tag of orbital</p></td>
 </tr>
 </tbody>
@@ -271,12 +262,6 @@
 <dd><p>Calculate <span class="math notranslate nohighlight">\(\phi(\mathbf R)\)</span> for Cartesian coordinates</p>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="sisl.Orbital.psi_spher">
-<span class="sig-name descname"><span class="pre">psi_spher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/orbital.html#Orbital.psi_spher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Orbital.psi_spher" title="Permalink to this definition"></a></dt>
-<dd><p>Calculate <span class="math notranslate nohighlight">\(\phi(|\mathbf R|, \theta, \phi)\)</span> for spherical coordinates</p>
-</dd></dl>
-
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Orbital.q0">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">q0</span></span><a class="headerlink" href="#sisl.Orbital.q0" title="Permalink to this definition"></a></dt>
@@ -284,21 +269,9 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="sisl.Orbital.radial">
-<span class="sig-name descname"><span class="pre">radial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/orbital.html#Orbital.radial"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Orbital.radial" title="Permalink to this definition"></a></dt>
-<dd><p>Calculate the radial part of the wavefunction <span class="math notranslate nohighlight">\(f(\mathbf R)\)</span></p>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="sisl.Orbital.scale">
 <span class="sig-name descname"><span class="pre">scale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scale</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/orbital.html#Orbital.scale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Orbital.scale" title="Permalink to this definition"></a></dt>
 <dd><p>Scale the orbital by extending R by <a class="reference internal" href="#sisl.Orbital.scale" title="sisl.Orbital.scale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale</span></code></a></p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="sisl.Orbital.spher">
-<span class="sig-name descname"><span class="pre">spher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/orbital.html#Orbital.spher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Orbital.spher" title="Permalink to this definition"></a></dt>
-<dd><p>Calculate the spherical harmonics of this orbital at a given point (in spherical coordinates)</p>
 </dd></dl>
 
 <dl class="py property">

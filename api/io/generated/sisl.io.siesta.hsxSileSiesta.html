@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.hsxSileSiesta &mdash; sisl 0.1.dev1+gf26d171 documentation</title>
+  <title>sisl.io.siesta.hsxSileSiesta &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gf26d171
+                0.1.dev1+g619c2d5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -201,11 +201,17 @@ all information.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.hsxSileSiesta.read" title="sisl.io.siesta.hsxSileSiesta.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Generic read method which should be overloaded in child-classes</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.hsxSileSiesta.read_fermi_level" title="sisl.io.siesta.hsxSileSiesta.read_fermi_level"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_fermi_level</span></code></a>(**kwargs)</p></td>
+<td><p>Reads the fermi level in the file</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.hsxSileSiesta.read_geometry" title="sisl.io.siesta.hsxSileSiesta.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a>(**kwargs)</p></td>
+<td><p>Read the geometry from the file</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.hsxSileSiesta.read_hamiltonian" title="sisl.io.siesta.hsxSileSiesta.read_hamiltonian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_hamiltonian</span></code></a>(**kwargs)</p></td>
 <td><p>Returns the electronic structure from the siesta.TSHS file</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.hsxSileSiesta.read_overlap" title="sisl.io.siesta.hsxSileSiesta.read_overlap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_overlap</span></code></a>(**kwargs)</p></td>
-<td><p>Returns the overlap matrix from the siesta.HSX file</p></td>
+<td><p>Returns the electronic structure from the siesta.TSHS file</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.hsxSileSiesta.write" title="sisl.io.siesta.hsxSileSiesta.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Generic write method which should be overloaded in child-classes</p></td>
@@ -215,6 +221,9 @@ all information.</p>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.hsxSileSiesta.file" title="sisl.io.siesta.hsxSileSiesta.file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">file</span></code></a></p></td>
 <td><p>File of the current <em class="xref py py-obj">Sile</em></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.hsxSileSiesta.version" title="sisl.io.siesta.hsxSileSiesta.version"><code class="xref py py-obj docutils literal notranslate"><span class="pre">version</span></code></a></p></td>
+<td><p>The version of the file</p></td>
 </tr>
 </tbody>
 </table>
@@ -260,6 +269,21 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.hsxSileSiesta.read_fermi_level">
+<span class="sig-name descname"><span class="pre">read_fermi_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/binaries.html#hsxSileSiesta.read_fermi_level"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.hsxSileSiesta.read_fermi_level" title="Permalink to this definition"></a></dt>
+<dd><p>Reads the fermi level in the file</p>
+<p>Only valid for files created by Siesta &gt;=5.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.hsxSileSiesta.read_geometry">
+<span class="sig-name descname"><span class="pre">read_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/binaries.html#hsxSileSiesta.read_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.hsxSileSiesta.read_geometry" title="Permalink to this definition"></a></dt>
+<dd><p>Read the geometry from the file</p>
+<p>This will always work on new files Siesta &gt;=5, but only sometimes on older
+versions of the HSX file format.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.siesta.hsxSileSiesta.read_hamiltonian">
 <span class="sig-name descname"><span class="pre">read_hamiltonian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/binaries.html#hsxSileSiesta.read_hamiltonian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.hsxSileSiesta.read_hamiltonian" title="Permalink to this definition"></a></dt>
 <dd><p>Returns the electronic structure from the siesta.TSHS file</p>
@@ -268,13 +292,19 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.siesta.hsxSileSiesta.read_overlap">
 <span class="sig-name descname"><span class="pre">read_overlap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/binaries.html#hsxSileSiesta.read_overlap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.hsxSileSiesta.read_overlap" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the overlap matrix from the siesta.HSX file</p>
+<dd><p>Returns the electronic structure from the siesta.TSHS file</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.siesta.hsxSileSiesta.to_json">
 <span class="sig-name descname"><span class="pre">to_json</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.siesta.hsxSileSiesta.to_json" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.io.siesta.hsxSileSiesta.version">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">version</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></em><a class="headerlink" href="#sisl.io.siesta.hsxSileSiesta.version" title="Permalink to this definition"></a></dt>
+<dd><p>The version of the file</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.siesta.hsxSileSiesta.write">

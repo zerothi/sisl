@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.tsgfSileSiesta &mdash; sisl 0.1.dev1+gf26d171 documentation</title>
+  <title>sisl.io.siesta.tsgfSileSiesta &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gf26d171
+                0.1.dev1+g619c2d5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -167,7 +167,7 @@ before doing the other thing. Fortran does not allow the same file opened twice,
 is needed you are recommended to make a symlink to the file and thus open two different
 files.</p>
 <p>This small snippet reads/writes the GF file</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">sisl</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">tsgfSileSiesta</span><span class="p">(</span><span class="s1">&#39;hello.GF&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">sisl</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">tsgfSileSiesta</span><span class="p">(</span><span class="s2">&quot;hello.GF&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
 <span class="gp">... </span>   <span class="n">nspin</span><span class="p">,</span> <span class="n">no</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">E</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read_header</span><span class="p">()</span>
 <span class="gp">... </span>   <span class="k">for</span> <span class="n">ispin</span><span class="p">,</span> <span class="n">new_k</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">E</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
 <span class="gp">... </span>       <span class="k">if</span> <span class="n">new_k</span><span class="p">:</span>
@@ -176,7 +176,7 @@ files.</p>
 </pre></div>
 </div>
 <p>To write a file do:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">sisl</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">tsgfSileSiesta</span><span class="p">(</span><span class="s1">&#39;hello.GF&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">sisl</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">tsgfSileSiesta</span><span class="p">(</span><span class="s2">&quot;hello.GF&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
 <span class="gp">... </span>   <span class="n">f</span><span class="o">.</span><span class="n">write_header</span><span class="p">(</span><span class="n">sisl</span><span class="o">.</span><span class="n">MonkhorstPack</span><span class="p">(</span><span class="o">...</span><span class="p">),</span> <span class="n">E</span><span class="p">)</span>
 <span class="gp">... </span>   <span class="k">for</span> <span class="n">ispin</span><span class="p">,</span> <span class="n">new_k</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">E</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
 <span class="gp">... </span>       <span class="k">if</span> <span class="n">new_k</span><span class="p">:</span>

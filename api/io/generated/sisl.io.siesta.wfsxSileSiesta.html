@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.wfsxSileSiesta &mdash; sisl 0.1.dev1+gf26d171 documentation</title>
+  <title>sisl.io.siesta.wfsxSileSiesta &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -35,7 +35,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gf26d171
+                0.1.dev1+g619c2d5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -299,7 +299,7 @@ complete in every sense.</p>
 <dt class="sig sig-object py" id="sisl.io.siesta.wfsxSileSiesta.read_eigenstate">
 <span class="sig-name descname"><span class="pre">read_eigenstate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ktol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/binaries.html#wfsxSileSiesta.read_eigenstate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.wfsxSileSiesta.read_eigenstate" title="Permalink to this definition"></a></dt>
 <dd><p>Reads a specific eigenstate from the file.</p>
-<p>This method iterates over the states until it finds a match. Don’t call
+<p>This method iterates over the states until it finds a match. Do not call
 this method repeatedly. If you want to loop eigenstates, use <a class="reference internal" href="#sisl.io.siesta.wfsxSileSiesta.yield_eigenstate" title="sisl.io.siesta.wfsxSileSiesta.yield_eigenstate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">yield_eigenstate</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -308,7 +308,7 @@ this method repeatedly. If you want to loop eigenstates, use <a class="reference
 <li><p><strong>spin</strong> (<em>integer</em><em>, </em><em>optional</em>) – The spin index of the state you want to find. Only meaningful for polarized
 calculations.</p></li>
 <li><p><strong>ktol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – The threshold value for considering two k-points the same (i.e. to match
-the query k point with the state’s k point).</p></li>
+the query k point with the states k point).</p></li>
 </ul>
 </dd>
 </dl>

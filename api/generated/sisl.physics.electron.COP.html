@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>displacement &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
+  <title>COP &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -25,8 +25,8 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="sisl.physics.phonon.CoefficientPhonon" href="sisl.physics.phonon.CoefficientPhonon.html" />
-    <link rel="prev" title="velocity" href="sisl.physics.phonon.velocity.html" /> 
+    <link rel="next" title="velocity" href="sisl.physics.electron.velocity.html" />
+    <link rel="prev" title="PDOS" href="sisl.physics.electron.PDOS.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -77,15 +77,22 @@
 <li class="toctree-l2 current"><a class="reference internal" href="../physics.html">Physical objects</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../physics.brillouinzone.html">Brillouin zone</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../physics.matrix.html">Physical quantites</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../physics.electron.html">Electron related functions</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="../physics.phonon.html">Phonon related functions</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="sisl.physics.phonon.DOS.html">DOS</a></li>
-<li class="toctree-l4"><a class="reference internal" href="sisl.physics.phonon.PDOS.html">PDOS</a></li>
-<li class="toctree-l4"><a class="reference internal" href="sisl.physics.phonon.velocity.html">velocity</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">displacement</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../physics.phonon.html#supporting-classes">Supporting classes</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../physics.electron.html">Electron related functions</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.DOS.html">DOS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.PDOS.html">PDOS</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">COP</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.velocity.html">velocity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.velocity_matrix.html">velocity_matrix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.berry_phase.html">berry_phase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.berry_curvature.html">berry_curvature</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.conductivity.html">conductivity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.wavefunction.html">wavefunction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.spin_moment.html">spin_moment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.spin_squared.html">spin_squared</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../physics.electron.html#supporting-classes">Supporting classes</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../physics.phonon.html">Phonon related functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../physics.distribution.html">Distribution functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../physics.html#low-level-objects">Low level objects</a></li>
 </ul>
@@ -115,10 +122,10 @@
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../index.html">API documentation</a> &raquo;</li>
           <li><a href="../physics.html">Physical objects</a> &raquo;</li>
-          <li><a href="../physics.phonon.html">Phonon related functions</a> &raquo;</li>
-      <li>displacement</li>
+          <li><a href="../physics.electron.html">Electron related functions</a> &raquo;</li>
+      <li>COP</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../_sources/api/generated/sisl.physics.phonon.displacement.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/api/generated/sisl.physics.electron.COP.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -150,32 +157,56 @@
     text-align: unset;
 }
 </style>
-<section id="displacement">
-<h1>displacement<a class="headerlink" href="#displacement" title="Permalink to this headline"></a></h1>
+<section id="cop">
+<h1>COP<a class="headerlink" href="#cop" title="Permalink to this headline"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="sisl.physics.phonon.displacement">
-<span class="sig-prename descclassname"><span class="pre">sisl.physics.phonon.</span></span><span class="sig-name descname"><span class="pre">displacement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/phonon.html#displacement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.phonon.displacement" title="Permalink to this definition"></a></dt>
-<dd><p>Calculate real-space displacements for a given mode (in units of the characteristic length)</p>
-<p>The displacements per mode may be written as:</p>
+<dt class="sig sig-object py" id="sisl.physics.electron.COP">
+<span class="sig-prename descclassname"><span class="pre">sisl.physics.electron.</span></span><span class="sig-name descname"><span class="pre">COP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distribution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gaussian'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/electron.html#COP"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.electron.COP" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the Crystal Orbital Population for a set of energies, <em class="xref py py-obj">E</em>, with a distribution function</p>
+<p>The <span class="math notranslate nohighlight">\(\mathrm{COP}(E)\)</span> is calculated as:</p>
 <div class="math notranslate nohighlight">
-\[\mathbf{u}_{i\alpha} = \epsilon_{i\alpha}\sqrt{\frac{\hbar}{m_i \omega}}\]</div>
-<p>where <span class="math notranslate nohighlight">\(i\)</span> is the atomic index.</p>
-<p>Even for negative frequencies the characteristic length is calculated for use of non-equilibrium
-modes.</p>
+\[\mathrm{COP}_{\nu,\mu}(E) = \sum_i \psi^*_{i,\nu}\psi_{i,\mu} \mathbf M e^{i\mathbf k\cdot \mathbf R} D(E-\epsilon_i)\]</div>
+<p>where <span class="math notranslate nohighlight">\(D(\Delta E)\)</span> is the distribution function used. Note that the distribution function
+used may be a user-defined function. Alternatively a distribution function may
+be aquired from <code class="xref py py-obj docutils literal notranslate"><span class="pre">distribution</span></code>.</p>
+<p>The COP curves generally refers to COOP or COHP curves.
+COOP is the Crystal Orbital Overlap Population with <em class="xref py py-obj">M</em> being the overlap matrix.
+COHP is the Crystal Orbital Hamiltonian Population with <em class="xref py py-obj">M</em> being the Hamiltonian.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>mode</strong> (<em>array_like</em>) – vectors describing the phonon modes, 2nd dimension contains the modes. In case of degenerate
-modes the vectors <em>may</em> be rotated upon return.</p></li>
-<li><p><strong>hw</strong> (<em>array_like</em>) – frequencies of the modes, for any negative frequency the returned displacement will be 0.</p></li>
-<li><p><strong>mass</strong> (<em>array_like</em>) – masses for the atoms (has to have length <code class="docutils literal notranslate"><span class="pre">mode.shape[1]</span> <span class="pre">//</span> <span class="pre">3</span></code></p></li>
+<li><p><strong>E</strong> (<em>array_like</em>) – energies to calculate the COP from</p></li>
+<li><p><strong>eig</strong> (<em>array_like</em>) – eigenvalues</p></li>
+<li><p><strong>state</strong> (<em>array_like</em>) – eigenvectors</p></li>
+<li><p><strong>M</strong> (<em>array_like</em>) – matrix used in the COP curve.</p></li>
+<li><p><strong>distribution</strong> (<em>func</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – a function that accepts <span class="math notranslate nohighlight">\(E-\epsilon\)</span> as argument and calculates the
+distribution function.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>displacements per mode with final dimension <code class="docutils literal notranslate"><span class="pre">(mode.shape[0],</span> <span class="pre">3)</span></code>, displacements are in Ang</p>
+</dl>
+<p class="rubric">Notes</p>
+<p>This is not tested for non-collinear states.
+This requires substantial amounts of memory for big systems with lots of energy points.</p>
+<p>This method is considered experimental and implementation may change in the future.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.physics.distribution</span></code></dt><dd><p>a selected set of implemented distribution functions</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
+<dt><a class="reference internal" href="sisl.physics.electron.DOS.html#sisl.physics.electron.DOS" title="sisl.physics.electron.DOS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DOS</span></code></a></dt><dd><p>total DOS</p>
+</dd>
+<dt><a class="reference internal" href="sisl.physics.electron.PDOS.html#sisl.physics.electron.PDOS" title="sisl.physics.electron.PDOS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PDOS</span></code></a></dt><dd><p>projected DOS over all orbitals</p>
+</dd>
+<dt><a class="reference internal" href="sisl.physics.electron.spin_moment.html#sisl.physics.electron.spin_moment" title="sisl.physics.electron.spin_moment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spin_moment</span></code></a></dt><dd><p>spin moment</p>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>COP calculated at energies, has dimension <code class="docutils literal notranslate"><span class="pre">(len(E),</span> <span class="pre">*M.shape)</span></code>.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="sisl.oplist.oplist.html#sisl.oplist.oplist" title="sisl.oplist.oplist"><em>oplist</em></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -186,8 +217,8 @@ modes the vectors <em>may</em> be rotated upon return.</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="sisl.physics.phonon.velocity.html" class="btn btn-neutral float-left" title="velocity" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="sisl.physics.phonon.CoefficientPhonon.html" class="btn btn-neutral float-right" title="sisl.physics.phonon.CoefficientPhonon" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="sisl.physics.electron.PDOS.html" class="btn btn-neutral float-left" title="PDOS" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sisl.physics.electron.velocity.html" class="btn btn-neutral float-right" title="velocity" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

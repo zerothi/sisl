@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.MonkhorstPack &mdash; sisl 0.1.dev1+gf26d171 documentation</title>
+  <title>sisl.physics.MonkhorstPack &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gf26d171
+                0.1.dev1+g619c2d5
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -232,7 +232,7 @@ are normalized to the entire BZ.</p></li>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.parametrize" title="sisl.physics.MonkhorstPack.parametrize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parametrize</span></code></a>(parent, func, N, *args, **kwargs)</p></td>
 <td><p>Generate a new <a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BrillouinZone</span></code></a> object with k-points parameterized via the function <em class="xref py py-obj">func</em> in <em class="xref py py-obj">N</em> separations</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.replace" title="sisl.physics.MonkhorstPack.replace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">replace</span></code></a>(k, mp)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.replace" title="sisl.physics.MonkhorstPack.replace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">replace</span></code></a>(k, mp[, displacement, as_index, ...])</p></td>
 <td><p>Replace a k-point with a new set of k-points from a Monkhorst-Pack grid</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.set_parent" title="sisl.physics.MonkhorstPack.set_parent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_parent</span></code></a>(parent)</p></td>
@@ -875,7 +875,7 @@ lists accordingly.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.MonkhorstPack.replace">
-<span class="sig-name descname"><span class="pre">replace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/brillouinzone.html#MonkhorstPack.replace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.MonkhorstPack.replace" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">replace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">displacement</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_vol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/brillouinzone.html#MonkhorstPack.replace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.MonkhorstPack.replace" title="Permalink to this definition"></a></dt>
 <dd><p>Replace a k-point with a new set of k-points from a Monkhorst-Pack grid</p>
 <p>This method tries to replace an area corresponding to <em class="xref py py-obj">mp.size</em> around the k-point <a class="reference internal" href="#sisl.physics.MonkhorstPack.k" title="sisl.physics.MonkhorstPack.k"><code class="xref py py-obj docutils literal notranslate"><span class="pre">k</span></code></a>
 such that the k-points are replaced.
@@ -883,8 +883,20 @@ This enables one to zoom in on specific points in the Brillouin zone for detaile
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>k</strong> (<em>array_like</em>) – k-point in this object to replace</p></li>
+<li><p><strong>k</strong> (<em>array_like</em>) – k-point in this object to replace, if <em class="xref py py-obj">as_index</em> is true, it will be regarded as integer
+positions of the k-points to replace, otherwise the indices of the k-points will be located
+individually (in chunks of 200 MB).</p></li>
 <li><p><strong>mp</strong> (<a class="reference internal" href="#sisl.physics.MonkhorstPack" title="sisl.physics.MonkhorstPack"><em>MonkhorstPack</em></a>) – object containing the replacement k-points.</p></li>
+<li><p><strong>displacement</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – the displacment of the <em class="xref py py-obj">mp</em> k-points. Needed for doing <em>lots</em> of replacements due to efficiency.
+Defaults to not displace anything. The inserted k-points will be <em class="xref py py-obj">mp.k + displacement</em>.
+If True, it will use <a class="reference internal" href="#sisl.physics.MonkhorstPack.k" title="sisl.physics.MonkhorstPack.k"><code class="xref py py-obj docutils literal notranslate"><span class="pre">k</span></code></a> as the displacement vector. For multiple k-point replacements
+each k-point will be replaced my <em class="xref py py-obj">mp</em> with k as the displacement.</p></li>
+<li><p><strong>as_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – whether <a class="reference internal" href="#sisl.physics.MonkhorstPack.k" title="sisl.physics.MonkhorstPack.k"><code class="xref py py-obj docutils literal notranslate"><span class="pre">k</span></code></a> is input as reciprocal k-points, or as indices of k-points in this object.</p></li>
+<li><p><strong>check_vol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – whether to check the volume of the replaced k-point(s); by default the volume of each k-point
+is determined by the original <code class="docutils literal notranslate"><span class="pre">size</span></code> and <code class="docutils literal notranslate"><span class="pre">nkpt</span></code> values. However, when doing
+replacements of k-points these values are not kept for the individual k-points
+that were replaced, so subsequent replacements of these points will cause errors that
+effectively are not valid.</p></li>
 </ul>
 </dd>
 </dl>
