@@ -609,7 +609,7 @@ class DeviceGreen:
             dic = {key: val for key, val in map(get_line, block)}
 
             # Retrieve data
-            for key in ("hs", "tshs"):
+            for key in ("hs", "hs-file", "tshs", "tshs-file"):
                 Helec = block_get(dic, key, Helec)
             if Helec:
                 Helec = si.get_sile(Helec).read_hamiltonian()
@@ -652,7 +652,7 @@ class DeviceGreen:
             ret.V_fraction = block_get(dic, "V-fraction", 0.)
             if ret.V_fraction > 0.:
                 warn(f"{cls.__name__}.from_fdf(electrode={elec}) found a non-zero V-fraction value. "
-                     "This is currently not implemented here.")
+                     "This is currently not implemented.")
             ret.Helec = Helec
             ret.bloch = bloch
             ret.semi_inf = semi_inf
