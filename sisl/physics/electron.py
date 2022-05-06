@@ -1107,10 +1107,6 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method="berry",
     else:
         raise ValueError("berry_phase: requires the method to be [berry, zak]")
 
-    if np.allclose(contour.k[0, :], contour.k[-1, :]):
-        # When the user has the contour points closed, we don't need to do this in the below loop
-        closed = False
-
     # We calculate the final angle from the determinant
     _process = dot
 
