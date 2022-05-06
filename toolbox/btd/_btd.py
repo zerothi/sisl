@@ -45,7 +45,7 @@ indices_only = si._indices.indices_only
 indices = si._indices.indices
 conj = np.conj
 
-__all__ = ['PivotSelfEnergy', 'DownfoldSelfEnergy', 'DeviceGreen']
+__all__ = ["PivotSelfEnergy", "DownfoldSelfEnergy", "DeviceGreen"]
 
 
 def dagger(M):
@@ -81,21 +81,21 @@ def _scat_state_svd(A, **kwargs):
     # This may be an error in the D&C algorithm.
     # Here we resort to precision over time, but user may decide.
     driver = kwargs.get("driver", "gesvd").lower()
-    if driver in ('arpack', 'lobpcg', 'sparse'):
-        if driver == 'sparse':
-            driver = 'arpack' # scipy default
+    if driver in ("arpack", "lobpcg", "sparse"):
+        if driver == "sparse":
+            driver = "arpack" # scipy default
 
         # filter out keys for scipy.sparse.svds
-        svds_kwargs = {key: kwargs[key] for key in ('k', 'ncv', 'tol', 'v0')
+        svds_kwargs = {key: kwargs[key] for key in ("k", "ncv", "tol", "v0")
                        if key in kwargs}
         # do not calculate vt
-        svds_kwargs['return_singular_vectors'] = 'u'
-        svds_kwargs['solver'] = driver
-        if 'k' not in svds_kwargs:
+        svds_kwargs["return_singular_vectors"] = "u"
+        svds_kwargs["solver"] = driver
+        if "k" not in svds_kwargs:
             k = A.shape[1] // 2
             if k < 3:
                 k = A.shape[1] - 1
-            svds_kwargs['k'] = k
+            svds_kwargs["k"] = k
 
         A, DOS, _ = svds(A, **svds_kwargs)
 
@@ -266,7 +266,7 @@ class DownfoldSelfEnergy(PivotSelfEnergy):
         try:
             eta = self._se.eta
         except Exception: pass
-        se = str(self._se).replace('\n', '\n ')
+        se = str(self._se).replace("\n", "\n ")
         return f"{self.__class__.__name__}{{no: {len(self)}, blocks: {len(self.btd)}, eta: {eta}, eta_device: {self._eta_device},\n {se}\n}}"
 
     def __len__(self):
@@ -306,7 +306,7 @@ class DownfoldSelfEnergy(PivotSelfEnergy):
             def hsk(k, **kwargs):
                 # constructor for the H and S part
                 return H.electrode.Sk(k, **kwargs) * Eb - H.electrode.Hk(k, **kwargs)
-            data.SeH[data.elec, data.elec.T] = self._bloch(hsk, k, format='array', dtype=np.complex128)
+            data.SeH[data.elec, data.elec.T] = self._bloch(hsk, k, format="array", dtype=np.complex128)
 
     def self_energy(self, E, k=(0, 0, 0), *args, **kwargs):
         self._prepare(E, k)
@@ -467,10 +467,10 @@ class DeviceGreen:
        # self-energies into the device region.
        # Since a downfolding will be done it requires the device Hamiltonian.
        H_elec.shift(tbt.mu("Left"))
-       left = DownfoldSelfEnergy("Left", s.RecursiveSI(H_elec, '-C', eta=tbt.eta("Left"),
+       left = DownfoldSelfEnergy("Left", s.RecursiveSI(H_elec, "-C", eta=tbt.eta("Left"),
                                  tbt, H)
        H_elec.shift(tbt.mu("Right") - tbt.mu("Left"))
-       left = DownfoldSelfEnergy("Right", s.RecursiveSI(H_elec, '+C', eta=tbt.eta("Right"),
+       left = DownfoldSelfEnergy("Right", s.RecursiveSI(H_elec, "+C", eta=tbt.eta("Right"),
                                  tbt, H)
 
        G = DeviceGreen(H, [left, right], tbt)
@@ -523,19 +523,19 @@ class DeviceGreen:
     def __str__(self):
         ret = f"{self.__class__.__name__}{{no: {len(self)}, blocks: {len(self.btd)}, eta: {self.eta:.3e}"
         for elec in self.elecs:
-            e = str(elec).replace('\n', '\n  ')
+            e = str(elec).replace("\n", "\n  ")
             ret = f"{ret},\n {elec.name}:\n  {e}"
         return f"{ret}\n}}"
 
     @classmethod
-    def from_fdf(cls, fdf, prefix='TBT', use_tbt_se=False):
+    def from_fdf(cls, fdf, prefix="TBT", use_tbt_se=False):
         """ Return a new `DeviceGreen` using information gathered from the fdf
 
         Parameters
         ----------
         fdf : str or fdfSileSiesta
            fdf file to read the parameters from
-        prefix : {'TBT', 'TS'}
+        prefix : {"TBT", "TS"}
            which prefix to use, if TBT it will prefer TBT prefix, but fall back
            to TS prefixes.
            If TS, only these prefixes will be used.
@@ -565,7 +565,7 @@ class DeviceGreen:
         def get_line(line):
             """ Parse lines in the %block constructs of fdf's """
             key, val = line.split(" ", 1)
-            return key.lower().strip(), val.split('#', 1)[0].strip()
+            return key.lower().strip(), val.split("#", 1)[0].strip()
 
         def read_electrode(elec_prefix):
             """ Parse the electrode information and return a dictionary with content """
@@ -593,7 +593,7 @@ class DeviceGreen:
             block = fdf.get(f"{ts_prefix}")
             Helec = fdf.get(f"{ts_prefix}.HS")
             bulk = fdf.get(f"TS.Elecs.Bulk", True)
-            eta = fdf.get(f"TS.Elecs.Eta", 1e-3, unit='eV')
+            eta = fdf.get(f"TS.Elecs.Eta", 1e-3, unit="eV")
             bloch = [1, 1, 1]
             for i in range(3):
                 bloch[i] = fdf.get(f"{ts_prefix}.Bloch.A{i+1}", 1)
@@ -601,7 +601,7 @@ class DeviceGreen:
                 block = fdf.get(f"{tbt_prefix}", block)
                 Helec = fdf.get(f"{tbt_prefix}.HS", Helec)
                 bulk = fdf.get(f"TBT.Elecs.Bulk", bulk)
-                eta = fdf.get(f"TBT.Elecs.Eta", eta, unit='eV')
+                eta = fdf.get(f"TBT.Elecs.Eta", eta, unit="eV")
                 for i in range(3):
                     bloch[i] = fdf.get(f"{tbt_prefix}.Bloch.A{i+1}", bloch[i])
 
@@ -626,9 +626,9 @@ class DeviceGreen:
                                  f"electrode semi-inf-direction in block: {prefix} ??")
             # convert to sisl infinite
             semi_inf = semi_inf.lower()
-            semi_inf = semi_inf[0] + {'a1': 'a', 'a2': 'b', 'a3': 'c'}.get(semi_inf[1:], semi_inf[1:])
+            semi_inf = semi_inf[0] + {"a1": "a", "a2": "b", "a3": "c"}.get(semi_inf[1:], semi_inf[1:])
             # Check that semi_inf is a recursive one!
-            if not semi_inf in ['-a', '+a', '-b', '+b', '-c', '+c']:
+            if not semi_inf in ["-a", "+a", "-b", "+b", "-c", "+c"]:
                 raise NotImplementedError(f"{self.__class__.__name__} does not implement other "
                                           "self energies than the recursive one.")
 
@@ -640,9 +640,9 @@ class DeviceGreen:
 
             bloch = [int(b) for b in block_get(dic, "bloch", f"{bloch[0]} {bloch[1]} {bloch[2]}").split()]
 
-            ret.eta = block_get(dic, "eta", eta, unit='eV')
+            ret.eta = block_get(dic, "eta", eta, unit="eV")
             # manual shift of the fermi-level
-            dEf = block_get(dic, "delta-Ef", 0., unit='eV')
+            dEf = block_get(dic, "delta-Ef", 0., unit="eV")
             # shift electronic structure here, we store it in the returned
             # dictionary, for information, but it shouldn't be used.
             Helec.shift(dEf)
@@ -697,9 +697,9 @@ class DeviceGreen:
         # It is based on the electrode values
         eta_dev_tbt = tbt.eta()
         if is_tbtrans:
-            eta_dev = fdf.get("TBT.Contours.Eta", eta_dev, unit='eV')
+            eta_dev = fdf.get("TBT.Contours.Eta", eta_dev, unit="eV")
         else:
-            eta_dev = fdf.get("TS.Contours.nEq.Eta", eta_dev, unit='eV')
+            eta_dev = fdf.get("TS.Contours.nEq.Eta", eta_dev, unit="eV")
         if not np.allclose(eta_dev, eta_dev_tbt):
             warn(f"{cls.__name__}.from_fdf found inconsistent "
                  f"imaginary eta from the fdf vs. TBT output, will use fdf value.\n"
@@ -726,7 +726,7 @@ class DeviceGreen:
             # Limit connections of the device along the semi-inf directions
             # TODO check whether there are systems where it is important
             # we do all set_nsc before passing it for each electrode.
-            kw = {'abc'[se.semi_inf]: 1}
+            kw = {"abc"[se.semi_inf]: 1}
             Hdev.set_nsc(**kw)
 
             if elec in use_tbt_se:
@@ -899,10 +899,10 @@ class DeviceGreen:
 
     def Sk(self, *args, **kwargs):
         is_btd = False
-        if 'format' in kwargs:
-            if kwargs['format'].lower() == 'btd':
+        if "format" in kwargs:
+            if kwargs["format"].lower() == "btd":
                 is_btd = True
-                del kwargs['format']
+                del kwargs["format"]
 
         pvt = self.pvt.reshape(-1, 1)
         M = self.H.Sk(*args, **kwargs)[pvt, pvt.T]
@@ -912,10 +912,10 @@ class DeviceGreen:
 
     def Hk(self, *args, **kwargs):
         is_btd = False
-        if 'format' in kwargs:
-            if kwargs['format'].lower() == 'btd':
+        if "format" in kwargs:
+            if kwargs["format"].lower() == "btd":
                 is_btd = True
-                del kwargs['format']
+                del kwargs["format"]
 
         pvt = self.pvt.reshape(-1, 1)
         M = self.H.Hk(*args, **kwargs)[pvt, pvt.T]
@@ -933,7 +933,7 @@ class DeviceGreen:
             blocks = [b for b in range(block1, block2+1)]
         return blocks
 
-    def green(self, E, k=(0, 0, 0), format='array'):
+    def green(self, E, k=(0, 0, 0), format="array"):
         r""" Calculate the Green function for a given `E` and `k` point
 
         The Green function is calculated as:
@@ -951,11 +951,11 @@ class DeviceGreen:
         """
         self._prepare(E, k)
         format = format.lower()
-        if format == 'dense':
-            format = 'array'
+        if format == "dense":
+            format = "array"
         func = getattr(self, f"_green_{format}", None)
         if func is None:
-            raise ValueError(f"{self.__class__.__name__}.green 'format' not valid input [array|sparse|bm|btd|bd]")
+            raise ValueError(f"{self.__class__.__name__}.green format not valid input [array|sparse|bm|btd|bd]")
         return func()
 
     def _green_array(self):
@@ -1079,7 +1079,7 @@ class DeviceGreen:
 
     def _green_sparse(self):
         # create a sparse matrix
-        G = self.H.Sk(format='csr', dtype=self._data.A[0].dtype)
+        G = self.H.Sk(format="csr", dtype=self._data.A[0].dtype)
         # pivot the matrix
         G = G[self.pvt, :][:, self.pvt]
 
@@ -1275,7 +1275,7 @@ class DeviceGreen:
 
         return G
 
-    def spectral(self, elec, E, k=(0, 0, 0), format='array', method='column', herm=True):
+    def spectral(self, elec, E, k=(0, 0, 0), format="array", method="column", herm=True):
         r""" Calculate the spectral function for a given `E` and `k` point from a given electrode
 
         The spectral function is calculated as:
@@ -1292,7 +1292,7 @@ class DeviceGreen:
            the energy to calculate at, may be a complex value.
         k : array_like, optional
            k-point to calculate the spectral function at
-        method : {'column', 'propagate'}
+        method : {"column", "propagate"}
            which method to use for calculating the spectral function.
            Depending on the size of the BTD blocks one may be faster than the
            other. For large systems you are recommended to time the different methods
@@ -1305,12 +1305,12 @@ class DeviceGreen:
         self._prepare(E, k)
         format = format.lower()
         method = method.lower()
-        if format == 'dense':
-            format = 'array'
-        elif format == 'bd':
+        if format == "dense":
+            format = "array"
+        elif format == "bd":
             # the bd also returns the off-diagonal ones since
             # they are needed to calculate the diagonal terms anyway.
-            format = 'btd'
+            format = "btd"
         func = getattr(self, f"_spectral_{method}_{format}", None)
         if func is None:
             raise ValueError(f"{self.__class__.__name__}.spectral combination of format+method not recognized {format}+{method}.")
@@ -1645,7 +1645,7 @@ class DeviceGreen:
 
         return DOS[idx], U[:, idx]
 
-    def scattering_state(self, elec, E, k=(0, 0, 0), cutoff=0., method='svd:gamma', *args, **kwargs):
+    def scattering_state(self, elec, E, k=(0, 0, 0), cutoff=0., method="svd:gamma", *args, **kwargs):
         r""" Calculate the scattering states for a given `E` and `k` point from a given electrode
 
         The scattering states are the eigen states of the spectral function:
@@ -1671,12 +1671,12 @@ class DeviceGreen:
            in the device region. This normalization ensures the same cutoff value has roughly
            the same meaning for different size devices.
            Values above or close to 1e-5 should be used with care.
-        method : {'svd:gamma', 'svd:A', 'full'}
+        method : {"svd:gamma", "svd:A", "full"}
            which method to use for calculating the scattering states.
-           Use only the 'full' method for testing purposes as it is extremely slow
+           Use only the ``full`` method for testing purposes as it is extremely slow
            and requires a substantial amount of memory.
-           The 'svd:gamma' is the fastests while retaining complete precision.
-           The 'svd:A' may be even faster for very large systems with
+           The ``svd:gamma`` is the fastests while retaining complete precision.
+           The ``svd:A`` may be even faster for very large systems with
            very little loss of precision, since it diagonalizes :math:`\mathbf A` in
            the subspace of the electrode `elec` and reduces the propagated part of the spectral
            matrix.
@@ -1697,7 +1697,7 @@ class DeviceGreen:
         """
         elec = self._elec(elec)
         self._prepare(E, k)
-        method = method.lower().replace(':', '_')
+        method = method.lower().replace(":", "_")
         func = getattr(self, f"_scattering_state_{method}", None)
         if func is None:
             raise ValueError(f"{self.__class__.__name__}.scattering_state method is not [full,svd,propagate]")
@@ -1720,7 +1720,7 @@ class DeviceGreen:
 
         data = self._data
         info = dict(
-            method='full',
+            method="full",
             elec=self._elec_name(elec),
             E=data.E,
             k=data.k,
@@ -1743,7 +1743,7 @@ class DeviceGreen:
 
         data = self._data
         info = dict(
-            method='svd:Gamma',
+            method="svd:Gamma",
             elec=self._elec_name(elec),
             E=data.E,
             k=data.k,
@@ -1832,7 +1832,7 @@ class DeviceGreen:
         # Now we have the full u, create it and transpose to get it in C indexing
         data = self._data
         info = dict(
-            method='svd:A',
+            method="svd:A",
             elec=self._elec_name(elec),
             E=data.E,
             k=data.k,
