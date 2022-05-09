@@ -1004,6 +1004,8 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method="berry",
 
     where :math:`\langle \psi_{k_i} | \psi_{k_{i+1}} \rangle` may be exchanged with an overlap matrix
     of the investigated bands.
+    The overlap matrix :math:`\mathbf S` is also known as the global unitary
+    rotation matrix corresponding to the maximally localized Wannier centers.
 
     Parameters
     ----------
@@ -1053,7 +1055,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method="berry",
     Examples
     --------
 
-    Calculate Berry-phase for first band but using the SVD me
+    Calculate Berry-phase for first band but using the SVD method
 
     >>> N = 30
     >>> kR = 0.01
@@ -1063,7 +1065,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method="berry",
     >>> phase = berry_phase(bz, sub=0)
 
     Calculate the multi-band Berry-phase using the SVD method, thus
-    ensuring singular vectors are removed.
+    ensuring removal of singular vectors.
 
     >>> N = 30
     >>> kR = 0.01
