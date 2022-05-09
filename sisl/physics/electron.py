@@ -993,19 +993,25 @@ def conductivity(bz, distribution="fermi-dirac", method="ahc",
 def berry_phase(contour, sub=None, eigvals=False, closed=True, method="berry",
                 *,
                 eigenstate_kwargs=None, ret_overlap=False):
-    r""" Calculate the Berry-phase on a loop using a predefined path
+    r""" Calculate the Berry-phase on a loop path
 
     The Berry phase for a single Bloch state is calculated using the discretized formula:
 
     .. math::
        \mathbf S = \prod_i^{N-1} \langle \psi_{k_i} | \psi_{k_{i+1}} \rangle
        \\
-       \phi = - \Im\ln \mathrm{det} \mathbf S \rangle
+       \phi = - \Im\ln \mathrm{det} \mathbf S
 
     where :math:`\langle \psi_{k_i} | \psi_{k_{i+1}} \rangle` may be exchanged with an overlap matrix
-    of the investigated bands.
+    of the investigated bands. I.e. :math:`\psi` is a manifold set of wavefunctions.
     The overlap matrix :math:`\mathbf S` is also known as the global unitary
     rotation matrix corresponding to the maximally localized Wannier centers.
+
+    If `closed` is true the overlap matrix will also include the circular inner product:
+
+    .. math::
+       \mathbf S^{\mathcal C} = \mathbf S \langle \psi_{k_N} | \psi_{k_1} \rangle
+
 
     Parameters
     ----------
@@ -1027,7 +1033,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method="berry",
        overlap matrices. Simply append ":svd" to the chosen method, e.g. "berry:svd".
     eigenstate_kwargs : dict, optional
        keyword arguments passed directly to the ``contour.eigenstate`` method.
-       One should *not* pass a ``k`` as that is already used.
+       One should *not* pass ``k`` as that is already used.
     ret_overlap: bool, optional
        optionally return the overlap matrix :math:`\mathbf S`
 
