@@ -138,6 +138,8 @@ class eigSileSiesta(SileSiesta):
         d = {
             "_eigs": self.read_data(),
             "_Emap": None,
+            "_data": [], 
+            "_data_header" : [],
         }
         namespace = default_namespace(**d)
 
@@ -199,9 +201,8 @@ class eigSileSiesta(SileSiesta):
                        help='Plot the eigenvalues from the .EIG file, possibly saving plot to a file.')
 
         # Energy grabs
-        class DOSPlot(argparse.Action):
+        class DOS(argparse.Action):
             def __call__(dos_self, parser, ns, value, option_string=None): # pylint: disable=E0213
-                import matplotlib.pyplot as plt
                 if not hasattr(ns, '_weight'):
                     # Try and read in the k-point-weights
                     ns._weight = kpSileSiesta(str(self.file).replace('EIG', 'KP')).read_data()[1]
@@ -239,74 +240,8 @@ class eigSileSiesta(SileSiesta):
 
                 # Now we are ready to process
                 E = np.arange(ns._Emap[0] - kT * 4, ns._Emap[1] + kT * 4, dE)
-
-                def myplot(ax, legend, E, eig, w):
-                    DOS = np.zeros(len(E))
-                    for ib in range(eig.shape[0]):
-                        for e in eig[ib, :]:
-                            DOS += distr(E - e) * w[ib]
-                    ax.plot(E, DOS, label=legend)
-                    ax.set_ylim(0, None)
-
-                plt.figure()
-                ax = plt.gca()
-                ax.set_title('DOS kT={:.1f} K'.format(kT * units('eV', 'K')))
-                ax.set_xlabel('E - Ef [eV]')
-                ax.set_xlim(E.min(), E.max())
-                ax.set_ylabel('DOS [1/eV]')
-                if ns._eigs.shape[0] == 2:
-                    for i, ud in enumerate(['up', 'down']):
-                        myplot(ax, ud, E, ns._eigs[i, :, :], ns._weight)
-                    plt.legend()
-                else:
-                    myplot(ax, '', E, ns._eigs[0, :, :], ns._weight)
-                if out is None:
-                    plt.show()
-                else:
-                    plt.savefig(out)
-        p.add_argument('--dos', action=DOSPlot, nargs='*', metavar='dE,kT,DIST,FILE',
-                       help='Plot the density of states from the .EIG file, '
-                       'dE = energy separation, kT = smearing, DIST = distribution function (Gaussian) possibly saving plot to a file.')
-
-        class DOSWrite(argparse.Action):
-            def __call__(dos_self, parser, ns, value, option_string=None):
-                if not hasattr(ns, '_weight'):
-                    # Try and read in the k-point-weights
-                    ns._weight = kpSileSiesta(str(self.file).replace('EIG', 'KP')).read_data()[1]
-
-                if ns._Emap is None:
-                    # We will plot the DOS in the entire energy window
-                    ns._Emap = [ns._eigs.min(), ns._eigs.max()]
-
-                if len(ns._weight) != ns._eigs.shape[1]:
-                    raise SileError(str(self) + ' --dos the number of k-points for the eigenvalues and k-point weights '
-                                    'are different, please use --weight correctly.')
-
-                # Specify default settings
-                dE = 0.005 # 5 meV
-                kT = units('K', 'eV') * 300
-                distr = get_distribution('gaussian', smearing=kT)
-                out = None
-                if len(value) > 0:
-                    i = 0
-                    try:
-                        dE = float(value[i])
-                        i += 1
-                    except: pass
-                    try:
-                        kT = float(value[i])
-                        i += 1
-                    except: pass
-                    try:
-                        distr = get_distribution(value[i], smearing=kT)
-                        i += 1
-                    except: pass
-                    try:
-                        out = value[i]
-                    except: pass
-
-                # Now we are ready to process
-                E = np.arange(ns._Emap[0] - kT * 4, ns._Emap[1] + kT * 4, dE)
+                ns._data_header.append('Energy')
+                ns._data.append(E)
 
                 def calc_dos(E, eig, w):
                     DOS = np.zeros(len(E))
@@ -316,24 +251,58 @@ class eigSileSiesta(SileSiesta):
                     return DOS
 
                 if ns._eigs.shape[0] == 2:
-                    data = np.empty((len(E),3))
-                    data[:,0] = E
-                    for i in [0,1]:
-                        data[:,i+1] = calc_dos(E, ns._eigs[i, :, :], ns._weight)
+                    for i, ud in enumerate(['up', 'down']):
+                        ns._data_header.append(f'DOS-{ud}')
+                        ns._data.append(calc_dos(E, ns._eigs[i, :, :], ns._weight))
                 else:
-                    data = np.empty((len(E),2))
-                    data[:,0] = E
-                    data[:,1] = calc_dos(E, ns._eigs[0, :, :], ns._weight)
+                    ns._data_header.append('DOS')
+                    ns._data.append(calc_dos(E, ns._eigs[0, :, :], ns._weight))
+        p.add_argument('--dos', action=DOS, nargs='*', metavar='dE,kT,DIST,FILE',
+                       help='Plot the density of states from the .EIG file, '
+                       'dE = energy separation, kT = smearing, DIST = distribution function (Gaussian) possibly saving plot to a file.')
 
-                if out is None:
-                    import sys
-                    np.savetxt(sys.stdout.buffer, data)
+        class Plot(argparse.Action):
+
+            def __call__(self, parser, ns, value, option_string=None):
+
+                if len(ns._data) == 0:
+                    # do nothing if data has not been collected
+                    print("No data has been collected in the arguments, nothing will be plotted, have you forgotten arguments?")
+                    return
+
+                from matplotlib import pyplot as plt
+                plt.figure()
+                
+                is_DOS = True
+                for i in range(1, len(ns._data)):
+                    plt.plot(ns._data[0], ns._data[i], label=ns._data_header[i])
+                    is_DOS &= 'DOS' in ns._data_header[i]
+
+                if is_DOS:
+                    plt.ylabel('DOS [1/eV]')
+
+                if value is None:
+                    plt.show()
                 else:
-                    np.savetxt(out, data)
+                    plt.savefig(value)
+        p.add_argument('--plot', '-p', action=Plot, nargs='?', metavar='FILE',
+                       help='Plot the currently collected information (at its current invocation).')
 
-        p.add_argument('--dos-write', action=DOSWrite, nargs='*', metavar='dE,kT,DIST,FILE',
-                       help='Extract the density of states from the .EIG file, '
-                       'dE = energy separation, kT = smearing, DIST = distribution function (Gaussian) possibly saving dos to a file.')
+        class Out(argparse.Action):
+            def __call__(self, parser, ns, value, option_string=None):
+
+                out = value[0]
+
+                if len(ns._data) == 0:
+                    # do nothing if data has not been collected
+                    print("No data has been collected in the arguments, nothing will be written, have you forgotten arguments?")
+                    return
+
+                from sisl.io import tableSile
+                tableSile(out, mode='w').write(*ns._data,
+                                               header=ns._data_header)
+        p.add_argument('--out', '-o', nargs=1, action=Out,
+                       help='Store currently collected information (at its current invocation) to the out file.')
 
         return p, namespace
 
