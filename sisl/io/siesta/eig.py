@@ -32,13 +32,17 @@ class eigSileSiesta(SileSiesta):
         sdata siesta.EIG --plot eig_spread.png
 
 
-    One may also plot the DOS using the eigenvalues and the k-point weights:
+    One may also extract/plot the DOS using the eigenvalues and the k-point weights:
 
     .. code:: bash
 
         sdata siesta.EIG --dos
         # or to save to png file
         sdata siesta.EIG --dos dos.png
+	# or to write DOS to stdout
+        sdata siesta.EIG --dos-write
+	# or to write DOS to file
+        sdata siesta.EIG --dos-write dos.dat
 
     This will default to plot the DOS using these parameters:
     dE = 5 meV, kT = 300 K (25 meV), Gaussian distribution and in the full energy-range of the eigenvalue spectrum.
@@ -263,6 +267,73 @@ class eigSileSiesta(SileSiesta):
         p.add_argument('--dos', action=DOSPlot, nargs='*', metavar='dE,kT,DIST,FILE',
                        help='Plot the density of states from the .EIG file, '
                        'dE = energy separation, kT = smearing, DIST = distribution function (Gaussian) possibly saving plot to a file.')
+
+        class DOSWrite(argparse.Action):
+            def __call__(dos_self, parser, ns, value, option_string=None):
+                if not hasattr(ns, '_weight'):
+                    # Try and read in the k-point-weights
+                    ns._weight = kpSileSiesta(str(self.file).replace('EIG', 'KP')).read_data()[1]
+
+                if ns._Emap is None:
+                    # We will plot the DOS in the entire energy window
+                    ns._Emap = [ns._eigs.min(), ns._eigs.max()]
+
+                if len(ns._weight) != ns._eigs.shape[1]:
+                    raise SileError(str(self) + ' --dos the number of k-points for the eigenvalues and k-point weights '
+                                    'are different, please use --weight correctly.')
+
+                # Specify default settings
+                dE = 0.005 # 5 meV
+                kT = units('K', 'eV') * 300
+                distr = get_distribution('gaussian', smearing=kT)
+                out = None
+                if len(value) > 0:
+                    i = 0
+                    try:
+                        dE = float(value[i])
+                        i += 1
+                    except: pass
+                    try:
+                        kT = float(value[i])
+                        i += 1
+                    except: pass
+                    try:
+                        distr = get_distribution(value[i], smearing=kT)
+                        i += 1
+                    except: pass
+                    try:
+                        out = value[i]
+                    except: pass
+
+                # Now we are ready to process
+                E = np.arange(ns._Emap[0] - kT * 4, ns._Emap[1] + kT * 4, dE)
+
+                def calc_dos(E, eig, w):
+                    DOS = np.zeros(len(E))
+                    for ib in range(eig.shape[0]):
+                        for e in eig[ib, :]:
+                            DOS += distr(E - e) * w[ib]
+                    return DOS
+
+                if ns._eigs.shape[0] == 2:
+                    data = np.empty((len(E),3))
+                    data[:,0] = E
+                    for i in [0,1]:
+                        data[:,i+1] = calc_dos(E, ns._eigs[i, :, :], ns._weight)
+                else:
+                    data = np.empty((len(E),2))
+                    data[:,0] = E
+                    data[:,1] = calc_dos(E, ns._eigs[0, :, :], ns._weight)
+
+                if out is None:
+                    import sys
+                    np.savetxt(sys.stdout.buffer, data)
+                else:
+                    np.savetxt(out, data)
+
+        p.add_argument('--dos-write', action=DOSWrite, nargs='*', metavar='dE,kT,DIST,FILE',
+                       help='Extract the density of states from the .EIG file, '
+                       'dE = energy separation, kT = smearing, DIST = distribution function (Gaussian) possibly saving dos to a file.')
 
         return p, namespace
 
