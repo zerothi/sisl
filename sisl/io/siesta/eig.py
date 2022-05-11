@@ -125,12 +125,7 @@ class eigSileSiesta(SileSiesta):
     def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """
         #limit_args = kwargs.get("limit_arguments", True)
-        short = kwargs.get("short", False)
-
-        def opts(*args):
-            if short:
-                return args
-            return [args[0]]
+        #short = kwargs.get("short", False)
 
         # We limit the import to occur here
         import argparse
@@ -155,7 +150,7 @@ class eigSileSiesta(SileSiesta):
         }
         try:
             d["_weights"] = kpSileSiesta(str(self.file).replace("EIG", "KP")).read_data()[1]
-        except:
+        except Exception:
             d["_weights"] = None
         namespace = default_namespace(**d)
 
@@ -222,10 +217,7 @@ class eigSileSiesta(SileSiesta):
                             # *must* be a str?
                             distribution = value
                     elif i == 2:
-                        try:
-                            distribution = value
-                        except Exception:
-                            raise ValueError(f"Unknown value for distribution: {value}")
+                        distribution = value
                     else:
                         raise ValueError(f"Too many values passed? Unknown value {value}?")
 
