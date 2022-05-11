@@ -5,7 +5,7 @@ import pyparsing as pp
 
 from sisl._internal import set_module
 
-__all__ = ['unit_group', 'unit_convert', 'unit_default', 'units']
+__all__ = ["unit_group", "unit_convert", "unit_default", "units"]
 
 
 # We do not import anything as it depends on the package.
@@ -14,49 +14,49 @@ __all__ = ['unit_group', 'unit_convert', 'unit_default', 'units']
 # please with non-standard conversion factors.
 
 unit_table = {
-    'mass': {
-        'DEFAULT': 'amu',
-        'kg': 1.,
-        'g': 1.e-3,
-        'amu': 1.66054e-27,
+    "mass": {
+        "DEFAULT": "amu",
+        "kg": 1.,
+        "g": 1.e-3,
+        "amu": 1.66054e-27,
     },
-    'length': {
-        'DEFAULT': 'Ang',
-        'm': 1.,
-        'cm': 0.01,
-        'nm': 1.e-9,
-        'pm': 1.e-12,
-        'fm': 1.e-15,
-        'Ang': 1.e-10,
-        'Bohr': 5.29177249e-11,
+    "length": {
+        "DEFAULT": "Ang",
+        "m": 1.,
+        "cm": 0.01,
+        "nm": 1.e-9,
+        "pm": 1.e-12,
+        "fm": 1.e-15,
+        "Ang": 1.e-10,
+        "Bohr": 5.29177249e-11,
     },
-    'time': {
-        'DEFAULT': 'fs',
-        's': 1.,
-        'ns': 1.e-9,
-        'ps': 1.e-12,
-        'fs': 1.e-15,
-        'min': 60.,
-        'hour': 3600.,
-        'day': 86400.,
+    "time": {
+        "DEFAULT": "fs",
+        "s": 1.,
+        "ns": 1.e-9,
+        "ps": 1.e-12,
+        "fs": 1.e-15,
+        "min": 60.,
+        "hour": 3600.,
+        "day": 86400.,
     },
-    'energy': {
-        'DEFAULT': 'eV',
-        'J': 1.,
-        'erg': 1.e-7,
-        'meV': 1.60217733e-22,
-        'eV': 1.60217733e-19,
-        'mRy': 2.1798741e-21,
-        'Ry': 2.1798741e-18,
-        'mHa': 4.3597482e-21,
-        'Ha': 4.3597482e-18,
-        'Hartree': 4.3597482e-18,
-        'K': 1.380648780669e-23,
+    "energy": {
+        "DEFAULT": "eV",
+        "J": 1.,
+        "erg": 1.e-7,
+        "meV": 1.60217733e-22,
+        "eV": 1.60217733e-19,
+        "mRy": 2.1798741e-21,
+        "Ry": 2.1798741e-18,
+        "mHa": 4.3597482e-21,
+        "Ha": 4.3597482e-18,
+        "Hartree": 4.3597482e-18,
+        "K": 1.380648780669e-23,
     },
-    'force': {
-        'DEFAULT': 'eV/Ang',
-        'N': 1.,
-        'eV/Ang': 1.60217733e-9,
+    "force": {
+        "DEFAULT": "eV/Ang",
+        "N": 1.,
+        "eV/Ang": 1.60217733e-9,
     }
 }
 
@@ -74,10 +74,10 @@ def unit_group(unit, tbl=None):
 
     Examples
     --------
-    >>> unit_group('kg')
-    'mass'
-    >>> unit_group('eV')
-    'energy'
+    >>> unit_group("kg")
+    "mass"
+    >>> unit_group("eV")
+    "energy"
     """
     if tbl is None:
         global unit_table
@@ -86,7 +86,7 @@ def unit_group(unit, tbl=None):
     for k in tbl:
         if unit in tbl[k]:
             return k
-    raise ValueError('The unit "' + str(unit) + '" could not be located in the table.')
+    raise ValueError(f"The unit ""{unit!s}"" could not be located in the table.")
 
 
 @set_module("sisl.unit")
@@ -102,8 +102,8 @@ def unit_default(group, tbl=None):
 
     Examples
     --------
-    >>> unit_default('energy')
-    'eV'
+    >>> unit_default("energy")
+    "eV"
     """
     if tbl is None:
         global unit_table
@@ -111,14 +111,14 @@ def unit_default(group, tbl=None):
 
     for k in tbl:
         if group == k:
-            return tbl[k]['DEFAULT']
+            return tbl[k]["DEFAULT"]
 
-    raise ValueError('The unit-group does not exist!')
+    raise ValueError("The unit-group does not exist!")
 
 
 @set_module("sisl.unit")
 def unit_convert(fr, to, opts=None, tbl=None):
-    """ Factor that takes 'fr' to the units of 'to'.
+    """ Factor that takes `fr` to the units of `to`
 
     Parameters
     ----------
@@ -133,9 +133,9 @@ def unit_convert(fr, to, opts=None, tbl=None):
 
     Examples
     --------
-    >>> unit_convert('kg','g')
+    >>> unit_convert("kg","g")
     1000.0
-    >>> unit_convert('eV','J')
+    >>> unit_convert("eV","J")
     1.60217733e-19
     """
     if tbl is None:
@@ -145,9 +145,9 @@ def unit_convert(fr, to, opts=None, tbl=None):
         opts = dict()
 
     # In the case that the conversion to is None, we should do nothing.
-    frU = 'FromNotFound'
+    frU = "FromNotFound"
     frV = None
-    toU = 'ToNotFound'
+    toU = "ToNotFound"
     toV = None
 
     # Check that the unit types live in the same
@@ -163,17 +163,17 @@ def unit_convert(fr, to, opts=None, tbl=None):
             toU = k
             toV = tbl[k][to]
     if frU != toU:
-        raise ValueError('The unit conversion is not from the same group: ' + frU + ' to ' + toU)
+        raise ValueError(f"The unit conversion is not from the same group: {frU} to {toU}")
 
     # Calculate conversion factor
     val = frV / toV
-    for opt in ['^', 'power', 'p']:
+    for opt in ("^", "power", "p"):
         if opt in opts:
             val = val ** opts[opt]
-    for opt in ['*', 'factor', 'fac']:
+    for opt in ("*", "factor", "fac"):
         if opt in opts:
             val = val * opts[opt]
-    for opt in ['/', 'divide', 'div']:
+    for opt in ("/", "divide", "div"):
         if opt in opts:
             val = val / opts[opt]
 
@@ -193,7 +193,7 @@ class UnitParser:
     unit_table : dict
        a table with the units parsable by the class
     """
-    __slots__ = ['_table', '_p_left', '_left', '_p_right', '_right']
+    __slots__ = ["_table", "_p_left", "_left", "_p_right", "_right"]
 
     def __init__(self, table):
         self._table = table
@@ -205,21 +205,21 @@ class UnitParser:
                     if to in tbl[k]:
                         return tbl[k][fr] / tbl[k][to]
                     break
-            raise ValueError(f'The unit conversion is not from the same group: {fr} to {to}!')
+            raise ValueError(f"The unit conversion is not from the same group: {fr} to {to}!")
 
         def group(unit):
             tbl = self._table
             for k in tbl:
                 if unit in tbl[k]:
                     return k
-            raise ValueError('The unit "' + str(unit) + '" could not be located in the table.')
+            raise ValueError(f"The unit ""{unit!s}"" could not be located in the table.")
 
         def default(group):
             tbl = self._table
             k = tbl.get(group, None)
             if k is None:
-                raise ValueError(f'The unit-group {group} does not exist!')
-            return k['DEFAULT']
+                raise ValueError(f"The unit-group {group} does not exist!")
+            return k["DEFAULT"]
 
         self._left = []
         self._p_left = self.create_parser(convert, default, group, self._left)
@@ -257,9 +257,9 @@ class UnitParser:
         unit = pp.Word(pp.alphas).setParseAction(_convert)
 
         integer = pp.Word(pp.nums)
-        plusorminus = pp.oneOf('+ -')
-        point = pp.Literal('.')
-        e = pp.CaselessLiteral('E')
+        plusorminus = pp.oneOf("+ -")
+        point = pp.Literal(".")
+        e = pp.CaselessLiteral("E")
         sign_integer = pp.Combine(pp.Optional(plusorminus) + integer)
         exponent = pp.Combine(e + sign_integer)
         number = pp.Or([pp.Combine(point + integer + pp.Optional(exponent)),  # .[0-9][E+-[0-9]]
@@ -267,21 +267,21 @@ class UnitParser:
         ).setParseAction(_float)
 
         #def _print_toks(name, op):
-        #    """ May be used in pow_op.setParseAction(_print_toks('pow', '^')) to debug """
+        #    """ May be used in pow_op.setParseAction(_print_toks("pow", "^")) to debug """
         #    def T(t):
-        #        print('{}: {}'.format(name, t))
+        #        print("{}: {}".format(name, t))
         #        return op
         #    return T
 
         #def _fix_toks(op):
-        #    """ May be used in pow_op.setParseAction(_print_toks('pow', '^')) to debug """
+        #    """ May be used in pow_op.setParseAction(_print_toks("pow", "^")) to debug """
         #    def T(t):
         #        return op
         #    return T
 
-        pow_op = pp.oneOf('^ **').setParseAction(lambda t: '^')
-        mul_op = pp.Literal('*')
-        div_op = pp.Literal('/')
+        pow_op = pp.oneOf("^ **").setParseAction(lambda t: "^")
+        mul_op = pp.Literal("*")
+        div_op = pp.Literal("/")
         # Since any space in units are regarded as multiplication this will catch
         # those instances.
         base_op = pp.Empty()
@@ -302,9 +302,9 @@ class UnitParser:
         else:
             def pow_action(toks):
                 # Fix table of units
-                group = '{}^{}'.format(group_table[-2], group_table.pop())
+                group = "{}^{}".format(group_table[-2], group_table.pop())
                 group_table[-1] = group
-                #print('^', toks[0], group_table)
+                #print("^", toks[0], group_table)
                 return toks[0][0] ** toks[0][2]
 
             def mul_action(toks):
@@ -312,7 +312,7 @@ class UnitParser:
                     group_table.pop(-2)
                 if isinstance(group_table[-1], float):
                     group_table.pop()
-                #print('*', toks[0], group_table)
+                #print("*", toks[0], group_table)
                 return toks[0][0] * toks[0][2]
 
             def div_action(toks):
@@ -321,8 +321,8 @@ class UnitParser:
                 if isinstance(group_table[-1], float):
                     group_table.pop()
                 else:
-                    group_table[-1] = '/{}'.format(group_table[-1])
-                #print('/', toks[0])
+                    group_table[-1] = "/{}".format(group_table[-1])
+                #print("/", toks[0])
                 return toks[0][0] / toks[0][2]
 
             def base_action(toks):
@@ -360,7 +360,7 @@ class UnitParser:
             right = list(self._right)
             self._empty_list(self._left)
             self._empty_list(self._right)
-            raise ValueError(f'The unit conversion is not from the same group: {left} to {right}!')
+            raise ValueError(f"The unit conversion is not from the same group: {left} to {right}!")
         self._empty_list(self._left)
         self._empty_list(self._right)
         return conv_A / conv_B
