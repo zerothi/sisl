@@ -63,7 +63,10 @@ class eigSileSiesta(SileSiesta):
 
     .. code:: bash
 
+        # position dependent values
         sdata siesta.EIG -E -10:10 --dos 0.01 0.1 lorentzian
+        # key based values
+        sdata siesta.EIG -E -10:10 --dos dE=0.01 kT=0.1 dist=lorentzian
 
     which will calculate the DOS in steps of 10 meV, the temperature smearing is 0.1 eV and
     the used distribution is a Lorentzian.
@@ -185,41 +188,44 @@ class eigSileSiesta(SileSiesta):
                 dE = ns._dos_args[0]
                 kT = ns._dos_args[1]
                 distribution = ns._dos_args[2]
-                for i, value in enumerate(values):
-                    if "=" in value:
+
+                # check that all or non have "="
+                n_eq = sum(("=" in v for v in values))
+                if n_eq == 0:
+                    for i, value in enumerate(values):
+                        if i == 0:
+                            dE = value
+                        elif i == 1:
+                            kT = value
+                        elif i == 2:
+                            distribution = value
+                        else:
+                            raise ValueError(f"Too many values passed? Unknown value {value}?")
+
+                elif n_eq == len(values):
+                    for key, val in map(lambda x: x.split("="), values):
                         # it is a direct parseable thing
-                        key, val = value.split("=")
                         if key.lower() in ("de", "e"):
-                            try:
-                                dE = units(val, "eV")
-                            except Exception:
-                                dE = float(val)
+                            dE = val
                         elif key.lower() in ("kt", "t"):
-                            try:
-                                kT = units(val, "eV")
-                            except Exception:
-                                kT = float(val)
+                            kT = val
                         elif key.lower().startswith("dist"):
                             distribution = val
                         else:
                             raise ValueError(f"Unknown key: {key}, should be one of [dE, kT, dist]")
 
-                    elif i == 0:
-                        try:
-                            dE = float(value)
-                        except Exception:
-                            # *must* be a str?
-                            distribution = value
-                    elif i == 1:
-                        try:
-                            kT = float(value)
-                        except Exception:
-                            # *must* be a str?
-                            distribution = value
-                    elif i == 2:
-                        distribution = value
-                    else:
-                        raise ValueError(f"Too many values passed? Unknown value {value}?")
+                else:
+                    raise ValueError("Mixing position arguments and keyword arguments is not allowed, either key=val or val, only")
+
+
+                try:
+                    dE = units(dE, "eV")
+                except Exception:
+                    dE = float(dE)
+                try:
+                    kT = units(kT, "eV")
+                except Exception:
+                    kT = float(kT)
 
                 # store for next invocation
                 ns._dos_args[0] = dE
