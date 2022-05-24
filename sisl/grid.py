@@ -397,7 +397,7 @@ class Grid(SuperCellChild):
             d['dtype'] = dtype
         grid = self.__class__([1] * 3, bc=np.copy(self.bc), **d)
         # This also ensures the shape is copied!
-        grid.grid = self.grid.copy()
+        grid.grid = self.grid.astype(dtype=d['dtype'])
         return grid
 
     def swapaxes(self, a, b):

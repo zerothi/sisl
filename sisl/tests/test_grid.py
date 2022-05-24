@@ -72,6 +72,8 @@ class TestGrid:
     def test_copy(self, setup):
         assert setup.g.copy() == setup.g
         assert not setup.g.copy() != setup.g
+        gc = setup.g.copy(dtype=np.complex128)
+        assert gc.dtype == np.complex128
 
     def test_add1(self, setup):
         g = setup.g + setup.g
