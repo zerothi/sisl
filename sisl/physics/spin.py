@@ -56,9 +56,9 @@ class Spin:
     #: The :math:`\boldsymbol\sigma_z` Pauli matrix
     Z = np.array([[1, 0], [0, -1]], np.complex128)
 
-    __slots__ = ('_size', '_kind', '_dtype')
+    __slots__ = ("_size", "_kind", "_dtype")
 
-    def __init__(self, kind='', dtype=None):
+    def __init__(self, kind="", dtype=None):
 
         if isinstance(kind, Spin):
             if dtype is None:
@@ -77,16 +77,19 @@ class Spin:
         if isinstance(kind, str):
             kind = kind.lower()
 
-        kind = {'unpolarized': Spin.UNPOLARIZED, '': Spin.UNPOLARIZED,
+        kind = {"unpolarized": Spin.UNPOLARIZED, "": Spin.UNPOLARIZED,
                 Spin.UNPOLARIZED: Spin.UNPOLARIZED,
-                'polarized': Spin.POLARIZED, 'p': Spin.POLARIZED,
-                'pol': Spin.POLARIZED,
+                "polarized": Spin.POLARIZED, "p": Spin.POLARIZED,
+                "pol": Spin.POLARIZED,
                 Spin.POLARIZED: Spin.POLARIZED,
-                'non-colinear': Spin.NONCOLINEAR,
-                'non-collinear': Spin.NONCOLINEAR, 'nc': Spin.NONCOLINEAR,
+                "noncolinear": Spin.NONCOLINEAR,
+                "noncollinear": Spin.NONCOLINEAR,
+                "non-colinear": Spin.NONCOLINEAR,
+                "non-collinear": Spin.NONCOLINEAR, "nc": Spin.NONCOLINEAR,
                 Spin.NONCOLINEAR: Spin.NONCOLINEAR,
-                'spin-orbit': Spin.SPINORBIT, 'so': Spin.SPINORBIT,
-                'soc': Spin.SPINORBIT, Spin.SPINORBIT: Spin.SPINORBIT}.get(kind)
+                "spinorbit": Spin.SPINORBIT,
+                "spin-orbit": Spin.SPINORBIT, "so": Spin.SPINORBIT,
+                "soc": Spin.SPINORBIT, Spin.SPINORBIT: Spin.SPINORBIT}.get(kind)
         if kind is None:
             raise ValueError(f"{self.__class__.__name__} initialization went wrong because of wrong "
                              "kind specification. Could not determine the kind of spin!")
@@ -94,7 +97,7 @@ class Spin:
         # Now assert the checks
         self._kind = kind
 
-        if np.dtype(dtype).kind == 'c':
+        if np.dtype(dtype).kind == "c":
             size = {self.UNPOLARIZED: 1,
                      self.POLARIZED: 2,
                      self.NONCOLINEAR: 4,
@@ -110,12 +113,12 @@ class Spin:
 
     def __str__(self):
         if self.is_unpolarized:
-            return f'{self.__class__.__name__}{{unpolarized, kind={self.dkind}}}'
+            return f"{self.__class__.__name__}{{unpolarized, kind={self.dkind}}}"
         if self.is_polarized:
-            return f'{self.__class__.__name__}{{polarized, kind={self.dkind}}}'
+            return f"{self.__class__.__name__}{{polarized, kind={self.dkind}}}"
         if self.is_noncolinear:
-            return f'{self.__class__.__name__}{{non-colinear, kind={self.dkind}}}'
-        return f'{self.__class__.__name__}{{spin-orbit, kind={self.dkind}}}'
+            return f"{self.__class__.__name__}{{non-colinear, kind={self.dkind}}}"
+        return f"{self.__class__.__name__}{{spin-orbit, kind={self.dkind}}}"
 
     def copy(self):
         """ Create a copy of the spin-object """
@@ -214,12 +217,12 @@ class Spin:
 
     def __getstate__(self):
         return {
-            'size': self.size,
-            'kind': self.kind,
-            'dtype': self.dtype
+            "size": self.size,
+            "kind": self.kind,
+            "dtype": self.dtype
         }
 
     def __setstate__(self, state):
-        self._size = state['size']
-        self._kind = state['kind']
-        self._dtype = state['dtype']
+        self._size = state["size"]
+        self._kind = state["kind"]
+        self._dtype = state["dtype"]
