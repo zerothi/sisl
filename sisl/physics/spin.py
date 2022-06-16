@@ -37,7 +37,7 @@ class Spin:
     kind : str or int, Spin, optional
        specify the spin kind
     dtype : numpy.dtype, optional
-       the data-type used for the spin-component.
+       the data-type used for the spin-component. Default is ``np.float64``
     """
 
     #: Constant for an un-polarized spin configuration
@@ -58,13 +58,18 @@ class Spin:
 
     __slots__ = ('_size', '_kind', '_dtype')
 
-    def __init__(self, kind='', dtype=np.float64):
+    def __init__(self, kind='', dtype=None):
 
         if isinstance(kind, Spin):
+            if dtype is None:
+                dtype = kind._dtype
             self._kind = kind._kind
-            self._dtype = kind._dtype
+            self._dtype = dtype
             self._size = kind._size
             return
+
+        if dtype is None:
+            dtype = np.float64
 
         # Copy data-type
         self._dtype = dtype

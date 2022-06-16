@@ -500,3 +500,22 @@ def test_sparse_orbital_transform_fail():
 
     with pytest.raises(ValueError):
         M.transform(np.zeros([2, 2]), spin='unpolarized')
+
+
+@pytest.mark.parametrize("dtype", [np.float32, np.float64, np.complex64, np.complex128])
+@pytest.mark.only
+def test_sparseorbital_spin_dtypes(dtype):
+    gr = geom.graphene()
+
+    M = SparseOrbitalBZSpin(gr, spin=Spin("unpolarized", dtype))
+    assert M.dtype == dtype
+
+    M = SparseOrbitalBZSpin(gr, spin=Spin("polarized", dtype))
+    assert M.dtype == dtype
+
+    if dtype not in (np.complex64, np.complex128):
+        M = SparseOrbitalBZSpin(gr, spin=Spin("non-colinear", dtype))
+        assert M.dtype == dtype
+
+        M = SparseOrbitalBZSpin(gr, spin=Spin("spin-orbit", dtype))
+        assert M.dtype == dtype
