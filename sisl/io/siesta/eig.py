@@ -140,8 +140,8 @@ class eigSileSiesta(SileSiesta):
         d = {
             "_eigs": self.read_data(),
             "_Emap": None,
-            "_data": [], 
-            "_data_header" : [],
+            "_data": [],
+            "_data_header": [],
             "_dos_args": [
                 # default dE 5 meV
                 0.005,
@@ -217,7 +217,6 @@ class eigSileSiesta(SileSiesta):
                 else:
                     raise ValueError("Mixing position arguments and keyword arguments is not allowed, either key=val or val, only")
 
-
                 try:
                     dE = units(dE, "eV")
                 except Exception:
@@ -229,12 +228,12 @@ class eigSileSiesta(SileSiesta):
 
                 # store for next invocation
                 ns._dos_args[0] = dE
-                ns._dos_args[1] = kT 
+                ns._dos_args[1] = kT
                 ns._dos_args[2] = distribution
 
                 # Now create the final distribution
                 distribution = get_distribution(distribution, smearing=kT)
-                
+
                 if ns._Emap is None:
                     # We will plot the DOS in the entire energy window
                     ns._Emap = [ns._eigs.min() - kT * 4, ns._eigs.max() + kT * 4]
@@ -266,7 +265,7 @@ class eigSileSiesta(SileSiesta):
 
                 T = kT * units(f"eV", "K")
                 str_T = f"{T:.2f}K"
-                
+
                 if ns._eigs.shape[0] == 2:
                     for eigs, ud in zip(ns._eigs, ("up", "down")):
                         ns._data_header.append(f"DOS-{ud} T={str_T}")
@@ -300,7 +299,7 @@ class eigSileSiesta(SileSiesta):
                 Emap = ns._Emap
                 if Emap is not None:
                     plt.xlim(Emap[0], Emap[1])
-                
+
                 if is_DOS:
                     plt.ylabel("DOS [1/eV]")
                 plt.legend()

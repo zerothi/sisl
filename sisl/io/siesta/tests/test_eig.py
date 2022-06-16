@@ -39,7 +39,7 @@ def test_si_pdos_kgrid_eig_ArgumentParser_de(sisl_files, sisl_tmp):
     assert ns._dos_args[2] == "gaussian"
     assert ns._weights is not None
     ns._weights = None
-    p.parse_args(["-kp" , str(kp)], namespace=ns)
+    p.parse_args(["-kp", str(kp)], namespace=ns)
     assert ns._weights is not None
     p.parse_args(["--dos", "dE=1meV", "kT=20meV"], namespace=ns)
     assert ns._weights is not None

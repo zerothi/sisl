@@ -429,6 +429,7 @@ def _set_radial(self, *args, **kwargs):
         raise ValueError("Arguments for set_radial are in-correct, please see the documentation of SphericalOrbital.set_radial")
     return R
 
+
 def _radial(self, r, *args, **kwargs) -> np.ndarray:
     r""" Calculate the radial part of spherical orbital :math:`R(\mathbf r)`
 
@@ -462,6 +463,7 @@ def _radial(self, r, *args, **kwargs) -> np.ndarray:
 
     return p
 
+
 def _psi(self, r, m=0):
     r""" Calculate :math:`\phi(\mathbf R)` at a given point (or more points)
 
@@ -491,6 +493,7 @@ def _psi(self, r, m=0):
     p.shape = s
     return p
 
+
 def _spher(self, theta, phi, m=0, cos_phi=False):
     r""" Calculate the spherical harmonics of this orbital at a given point (in spherical coordinates)
 
@@ -514,6 +517,7 @@ def _spher(self, theta, phi, m=0, cos_phi=False):
     if cos_phi:
         return _rspherical_harm(m, self.l, theta, phi)
     return _rspherical_harm(m, self.l, theta, cos(phi))
+
 
 def _psi_spher(self, r, theta, phi, m=0, cos_phi=False):
     r""" Calculate :math:`\phi(|\mathbf R|, \theta, \phi)` at a given point (in spherical coordinates)
@@ -541,7 +545,7 @@ def _psi_spher(self, r, theta, phi, m=0, cos_phi=False):
     """
     return self.radial(r) * self.spher(theta, phi, m, cos_phi)
 
-    
+
 @set_module("sisl")
 class SphericalOrbital(Orbital):
     r""" An *arbitrary* orbital class where :math:`\phi(\mathbf r)=f(|\mathbf r|)Y_l^m(\theta,\varphi)`
@@ -879,7 +883,6 @@ class AtomicOrbital(Orbital):
         self._m = m
         self._zeta = zeta
         self._P = P
-
 
         if self.l > 4:
             raise ValueError(f"{self.__class__.__name__} does not implement shell h and above!")
