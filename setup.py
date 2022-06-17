@@ -184,6 +184,7 @@ ext_cython = {
     },
     "sisl._supercell": {},
     "sisl.physics._bloch": {},
+    "sisl.physics._compute_dm": {},
     "sisl.physics._phase": {},
     "sisl.physics._matrix_utils": {},
     "sisl.physics._matrix_k": {},
@@ -219,12 +220,22 @@ ext_cython = {
 # List of extensions for setup(...)
 extensions = []
 for name, data in ext_cython.items():
+    file_suffix = suffix
     # Create pyx-file name
     # Default to module name + .pyx
-    pyxfile = data.get("pyxfile", f"{name}.pyx").replace(".", os.path.sep)
+    pyxfile = f"{data.get('pyxfile', name).replace('.', os.path.sep)}.pyx"
+    file_no_suffix = pyxfile[:-4]
+    # If a pyx file does not exist, look for a pure python file
+    if not os.path.isfile(pyxfile):
+        pyfile = f"{data.get('pyxfile', name).replace('.', os.path.sep)}.py"
+        if os.path.isfile(pyfile):
+            file_no_suffix = pyfile[:-3]
+            if suffix == ".pyx":
+                file_suffix = ".py"
+
     extensions.append(
         Extension(name,
-                  sources=[f"{pyxfile[:-4]}{suffix}"] + data.get("sources", []),
+                  sources=[f"{file_no_suffix}{file_suffix}"] + data.get("sources", []),
                   depends=data.get("depends", []),
                   include_dirs=data.get("include", []),
                   language=data.get("language", "c"),
