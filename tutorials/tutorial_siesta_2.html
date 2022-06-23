@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Siesta — graphene &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
+  <title>Siesta — graphene &mdash; sisl 0.1.dev1+g64bdde7 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -17,6 +17,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
@@ -37,7 +38,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g619c2d5
+                0.1.dev1+g64bdde7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -330,6 +331,7 @@ div.nboutput.container div.output_area > div[class^='highlight']{
 }
 
 /* Some additional styling taken form the Jupyter notebook CSS */
+.jp-RenderedHTMLCommon table,
 div.rendered_html table {
   border: none;
   border-collapse: collapse;
@@ -338,10 +340,14 @@ div.rendered_html table {
   font-size: 12px;
   table-layout: fixed;
 }
+.jp-RenderedHTMLCommon thead,
 div.rendered_html thead {
   border-bottom: 1px solid black;
   vertical-align: bottom;
 }
+.jp-RenderedHTMLCommon tr,
+.jp-RenderedHTMLCommon th,
+.jp-RenderedHTMLCommon td,
 div.rendered_html tr,
 div.rendered_html th,
 div.rendered_html td {
@@ -353,12 +359,15 @@ div.rendered_html td {
   max-width: none;
   border: none;
 }
+.jp-RenderedHTMLCommon th,
 div.rendered_html th {
   font-weight: bold;
 }
+.jp-RenderedHTMLCommon tbody tr:nth-child(odd),
 div.rendered_html tbody tr:nth-child(odd) {
   background: #f5f5f5;
 }
+.jp-RenderedHTMLCommon tbody tr:hover,
 div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
@@ -402,11 +411,11 @@ Download IPython notebook <a href="https://raw.githubusercontent.com/zerothi/sis
 </div>
 </div>
 <section id="Siesta-—-graphene">
-<h1>Siesta — graphene<a class="headerlink" href="#Siesta-—-graphene" title="Permalink to this headline"></a></h1>
+<h1>Siesta — graphene<a class="headerlink" href="#Siesta-—-graphene" title="Permalink to this heading"></a></h1>
 <p>This tutorial will describe a complete walk-through of a large fraction of the <code class="docutils literal notranslate"><span class="pre">sisl</span></code> functionalities that may be related to the <a class="reference external" href="https://gitlab.com/siesta-project/siesta">Siesta code</a>.</p>
 <p>Contrary to the <span class="math notranslate nohighlight">\(\mathrm H_2\mathrm O\)</span> system this tutorial will emphasize the usefulness of performing bandstructures etc. directly in Python using sisl.</p>
 <section id="Creating-the-geometry">
-<h2>Creating the geometry<a class="headerlink" href="#Creating-the-geometry" title="Permalink to this headline"></a></h2>
+<h2>Creating the geometry<a class="headerlink" href="#Creating-the-geometry" title="Permalink to this heading"></a></h2>
 <p>Our system of interest will be the smallest graphene cell. Instead of defining the atomic positions, the carbon atoms and supercell for graphene, we use a default implementation of graphene in <code class="docutils literal notranslate"><span class="pre">sisl</span></code>. There are a small selection of the typical geometries, including graphene.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
@@ -466,7 +475,7 @@ Download IPython notebook <a href="https://raw.githubusercontent.com/zerothi/sis
 </div>
 </section>
 <section id="Creating-the-electronic-structure">
-<h2>Creating the electronic structure<a class="headerlink" href="#Creating-the-electronic-structure" title="Permalink to this headline"></a></h2>
+<h2>Creating the electronic structure<a class="headerlink" href="#Creating-the-electronic-structure" title="Permalink to this heading"></a></h2>
 <p>Before proceeding, run Siesta to calculate the ground state electronic structure.</p>
 <p>After having completed the Siesta run we may read the Hamiltonian to manipulate and extract different information. After reading the Hamiltonian it is obvious that a great deal of new data has been associated with the Hamiltonian.</p>
 <div class="nbinput docutils container">
@@ -512,7 +521,7 @@ Hamiltonian{non-zero: 5994, orthogonal: False,
 </div>
 </section>
 <section id="Calculating-DOS-and-PDOS">
-<h2>Calculating DOS and PDOS<a class="headerlink" href="#Calculating-DOS-and-PDOS" title="Permalink to this headline"></a></h2>
+<h2>Calculating DOS and PDOS<a class="headerlink" href="#Calculating-DOS-and-PDOS" title="Permalink to this heading"></a></h2>
 <p>When we are dealing with periodic structures (such as graphene) it is imperative to calculate the density of states in a simple and efficient manner. Below we will calculate the DOS for a variety of Monkhorst-Pack grids to check the convergence of the DOS (it shouldn’t take more than a minute):</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
@@ -674,7 +683,7 @@ Orbital index of p_z: [2]
 </ul>
 </section>
 <section id="Hamiltonian-eigenstates">
-<h2>Hamiltonian eigenstates<a class="headerlink" href="#Hamiltonian-eigenstates" title="Permalink to this headline"></a></h2>
+<h2>Hamiltonian eigenstates<a class="headerlink" href="#Hamiltonian-eigenstates" title="Permalink to this heading"></a></h2>
 <p>At this point we have plotted the <span class="math notranslate nohighlight">\(k\)</span>-averaged DOS, PDOS. We have also plotted the fat-bands (and thus the band-structure).</p>
 <p>In addition to these things we can plot the real-space eigenstates. We first plot the <span class="math notranslate nohighlight">\(\Gamma\)</span>-point for the first 2x2 unit-cell. This <span class="math notranslate nohighlight">\(k\)</span>-point has complete unit-cell periodicity and thus the plotted wavefunction should be fully periodic along all directions.</p>
 <div class="nbinput docutils container">

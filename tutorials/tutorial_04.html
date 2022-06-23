@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Specifying super-cell information &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
+  <title>Specifying super-cell information &mdash; sisl 0.1.dev1+g64bdde7 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -17,6 +17,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
@@ -37,7 +38,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g619c2d5
+                0.1.dev1+g64bdde7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -141,7 +142,7 @@
 }
 </style>
 <section id="specifying-super-cell-information">
-<span id="tutorial-04"></span><h1>Specifying super-cell information<a class="headerlink" href="#specifying-super-cell-information" title="Permalink to this headline"></a></h1>
+<span id="tutorial-04"></span><h1>Specifying super-cell information<a class="headerlink" href="#specifying-super-cell-information" title="Permalink to this heading"></a></h1>
 <p>An important thing when dealing with geometries in how the <em>super-cell</em> is
 used. First, recall that the number of supercells can be retrieved by:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">geometry</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
@@ -176,7 +177,7 @@ along the third lattice vector (<code class="docutils literal notranslate"><span
 is <em>always</em> an uneven number because if it connects in the positive direction it also connects
 in the negative, hence the primary unit-cell plus 2 per neighbouring cell.</p>
 <section id="example-square">
-<h2>Example – square<a class="headerlink" href="#example-square" title="Permalink to this headline"></a></h2>
+<h2>Example – square<a class="headerlink" href="#example-square" title="Permalink to this heading"></a></h2>
 <p>Here we show a square 2D lattice with one atom in the unit-cell and a supercell
 which extends 2 cells along the Cartesian <span class="math notranslate nohighlight">\(x\)</span> lattice vector (5 in total) and 1
 cell along the Cartesian <span class="math notranslate nohighlight">\(y\)</span> lattice vector (3 in total):</p>
@@ -193,7 +194,7 @@ red, dashed arrow.</p>
 dimension. For 2D cases the non-used direction should <em>always</em> have a supercell of 1.</p>
 </section>
 <section id="example-graphene">
-<h2>Example – graphene<a class="headerlink" href="#example-graphene" title="Permalink to this headline"></a></h2>
+<h2>Example – graphene<a class="headerlink" href="#example-graphene" title="Permalink to this heading"></a></h2>
 <p>A commonly encountered example is the graphene unit-cell. In a tight-binding picture
 one may suffice with a nearest-neighbour coupling.</p>
 <p>Here we create the simple graphene 2D lattice with 2 atoms per unit-cell and

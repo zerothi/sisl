@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TranSiesta Hartree correction for FFT Poisson solver &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
+  <title>TranSiesta Hartree correction for FFT Poisson solver &mdash; sisl 0.1.dev1+g64bdde7 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -17,6 +17,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
@@ -37,7 +38,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g619c2d5
+                0.1.dev1+g64bdde7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -135,7 +136,7 @@
 }
 </style>
 <section id="transiesta-hartree-correction-for-fft-poisson-solver">
-<span id="toc-tool-ts-fft"></span><h1>TranSiesta Hartree correction for FFT Poisson solver<a class="headerlink" href="#transiesta-hartree-correction-for-fft-poisson-solver" title="Permalink to this headline"></a></h1>
+<span id="toc-tool-ts-fft"></span><h1>TranSiesta Hartree correction for FFT Poisson solver<a class="headerlink" href="#transiesta-hartree-correction-for-fft-poisson-solver" title="Permalink to this heading"></a></h1>
 <p><a class="reference external" href="https://siesta-project.org">TranSiesta</a> calculations based on the NEGF formalism is based on solving the
 Poisson equation for an open-boundary condition.
 For 2 electrodes (left/right) a potential drop between the electrodes.</p>
@@ -153,7 +154,7 @@ is not trivial.</p>
 <p>This tool tries to remedy this by solving the Poisson equation with fixed boundaries
 as defined by the user.</p>
 <section id="command-line-tool">
-<h2>Command line tool<a class="headerlink" href="#command-line-tool" title="Permalink to this headline"></a></h2>
+<h2>Command line tool<a class="headerlink" href="#command-line-tool" title="Permalink to this heading"></a></h2>
 <p>It may be called using</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>stoolbox ts-fft --help
 </pre></div>
@@ -190,7 +191,7 @@ one would do:</p>
 </div>
 <p>Which uses Dirichlet for transport direction, otherwise Neumann.</p>
 <section id="better-performance">
-<h3>Better performance<a class="headerlink" href="#better-performance" title="Permalink to this headline"></a></h3>
+<h3>Better performance<a class="headerlink" href="#better-performance" title="Permalink to this heading"></a></h3>
 <p>Sometimes the grid used is very large <code class="docutils literal notranslate"><span class="pre">--shape</span></code>. In these case it may be beneficial
 to solve the Poisson equation for a smaller shape, and then interpolate.
 This is accomblished using both <code class="docutils literal notranslate"><span class="pre">--pyamg-shape</span></code> (Poisson solution) and <code class="docutils literal notranslate"><span class="pre">--shape</span></code>
@@ -198,7 +199,7 @@ This is accomblished using both <code class="docutils literal notranslate"><span
 </section>
 </section>
 <section id="method">
-<h2>Method<a class="headerlink" href="#method" title="Permalink to this headline"></a></h2>
+<h2>Method<a class="headerlink" href="#method" title="Permalink to this heading"></a></h2>
 <p>The internal method solves the Poisson equation <em>twice</em> using a multigrid solver (<em class="xref py py-obj">pyamg</em>).
 First it fixes the potentials on all grid points touching the electrode atoms
 (atomic radius controlled with <code class="docutils literal notranslate"><span class="pre">--radius</span></code>). Then uses the solution to find

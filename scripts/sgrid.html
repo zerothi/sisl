@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sgrid &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
+  <title>sgrid &mdash; sisl 0.1.dev1+g64bdde7 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -17,6 +17,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
@@ -37,7 +38,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g619c2d5
+                0.1.dev1+g64bdde7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -137,7 +138,7 @@
 }
 </style>
 <section id="sgrid">
-<span id="script-sgrid"></span><h1><em class="xref py py-obj">sgrid</em><a class="headerlink" href="#sgrid" title="Permalink to this headline"></a></h1>
+<span id="script-sgrid"></span><h1><em class="xref py py-obj">sgrid</em><a class="headerlink" href="#sgrid" title="Permalink to this heading"></a></h1>
 <p>The <em class="xref py py-obj">sgrid</em> executable is a tool for manipulating a simulation grid and transforming
 it into CUBE format for plotting 3D data in, <em>e.g.</em> VMD or XCrySDen.</p>
 <p>Any <em class="xref py py-obj">Sile</em> which implements a <code class="docutils literal notranslate"><span class="pre">read_grid</span></code> method can be used to post-process data.</p>
@@ -148,7 +149,7 @@ it into CUBE format for plotting 3D data in, <em>e.g.</em> VMD or XCrySDen.</p>
 <p>Here we list a few of the most frequent used commands.
 Note that all commands are available via Python scripts and the <em class="xref py py-obj">Grid</em> class.</p>
 <section id="creating-cube-files">
-<h2>Creating CUBE files<a class="headerlink" href="#creating-cube-files" title="Permalink to this headline"></a></h2>
+<h2>Creating CUBE files<a class="headerlink" href="#creating-cube-files" title="Permalink to this heading"></a></h2>
 <p>The simplest usage is converting a grid file to CUBE file using</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid Rho.grid.nc Rho.cube
 </pre></div>
@@ -164,7 +165,7 @@ implemented in <a class="reference internal" href="../api/index.html#module-sisl
 <p>the shorthand flag for <code class="docutils literal notranslate"><span class="pre">-geometry</span></code> is <code class="docutils literal notranslate"><span class="pre">-G</span></code>.</p>
 </section>
 <section id="grid-differences">
-<h2>Grid differences<a class="headerlink" href="#grid-differences" title="Permalink to this headline"></a></h2>
+<h2>Grid differences<a class="headerlink" href="#grid-differences" title="Permalink to this heading"></a></h2>
 <p>To easily obtain differences between two grids one may use the <code class="docutils literal notranslate"><span class="pre">--diff</span></code> flag which
 takes one additional grid file for the difference. I.e.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid Rho.grid.nc<span class="o">{</span><span class="m">0</span><span class="o">}</span> -G RUN.fdf --diff Rho.grid.nc<span class="o">{</span><span class="m">1</span><span class="o">}</span> diff_up-down.cube
@@ -189,7 +190,7 @@ diff.write<span class="o">(</span><span class="s1">&#39;diff_up-down.cube&#39;</
 </div>
 </section>
 <section id="reducing-grid-sizes">
-<h2>Reducing grid sizes<a class="headerlink" href="#reducing-grid-sizes" title="Permalink to this headline"></a></h2>
+<h2>Reducing grid sizes<a class="headerlink" href="#reducing-grid-sizes" title="Permalink to this heading"></a></h2>
 <p>Often grids are far too large in that only a small part of the full cell is needed to be studied.
 One can remove certain parts of the grid after reading, before writing. This will greatly decrease
 the output file <em>and</em> greatly speed-up the process as writing huge ASCII files is <em>extremely</em> time
@@ -227,7 +228,7 @@ been reduced to 5 Ång along the <span class="math notranslate nohighlight">\(x\
 shape, then the reduction will be performed on the grid difference.</p>
 </section>
 <section id="averaging-and-summing">
-<h2>Averaging and summing<a class="headerlink" href="#averaging-and-summing" title="Permalink to this headline"></a></h2>
+<h2>Averaging and summing<a class="headerlink" href="#averaging-and-summing" title="Permalink to this heading"></a></h2>
 <p>Sometimes it is convenient to average or sum grids along cell directions:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid Rho.grid.nc --average x meanx.cube
 sgrid Rho.grid.nc --sum x sumx.cube
@@ -244,7 +245,7 @@ with the first column being the remaining dimensions position (in Ång).</p>
 <p>will create a two-column data file with <span class="math notranslate nohighlight">\(z\)</span> coordinate and the plane-averaged charge-density.</p>
 </section>
 <section id="advanced-features">
-<h2>Advanced features<a class="headerlink" href="#advanced-features" title="Permalink to this headline"></a></h2>
+<h2>Advanced features<a class="headerlink" href="#advanced-features" title="Permalink to this heading"></a></h2>
 <p>The above operations are not the limited use of the <a class="reference internal" href="../api/index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> library. However, to accomblish more complex
 things you need to manually script the actions using the <em class="xref py py-obj">Grid</em> class and the methods available for that method.
 For inspiration you can check the <em class="xref py py-obj">sgrid</em> executable to see how the commands are used in the script.</p>

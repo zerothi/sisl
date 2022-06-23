@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Basic classes &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
+  <title>Basic classes &mdash; sisl 0.1.dev1+g64bdde7 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -17,6 +17,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
@@ -37,7 +38,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g619c2d5
+                0.1.dev1+g64bdde7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -160,11 +161,11 @@
 }
 </style>
 <section id="basic-classes">
-<span id="basic"></span><h1>Basic classes<a class="headerlink" href="#basic-classes" title="Permalink to this headline"></a></h1>
+<span id="basic"></span><h1>Basic classes<a class="headerlink" href="#basic-classes" title="Permalink to this heading"></a></h1>
 <p>sisl provides basic functionality for interacting with orbitals, atoms, geometries,
 unit cells and grid functions.</p>
 <section id="simple-objects">
-<h2>Simple objects<a class="headerlink" href="#simple-objects" title="Permalink to this headline"></a></h2>
+<h2>Simple objects<a class="headerlink" href="#simple-objects" title="Permalink to this heading"></a></h2>
 <table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -202,7 +203,7 @@ unit cells and grid functions.</p>
 </table>
 </section>
 <section id="advanced-classes">
-<h2>Advanced classes<a class="headerlink" href="#advanced-classes" title="Permalink to this headline"></a></h2>
+<h2>Advanced classes<a class="headerlink" href="#advanced-classes" title="Permalink to this heading"></a></h2>
 <p>The physical matrices used internally in <a class="reference internal" href="index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> are constructed
 based on these base classes.
 However, it may be beneficial to read the specific matrix
@@ -217,7 +218,7 @@ in <a class="reference internal" href="physics.matrix.html#physics-matrix"><span
 <td><p>Quaternion object to enable easy rotational quantities.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.SparseCSR.html#sisl.SparseCSR" title="sisl.SparseCSR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SparseCSR</span></code></a>(arg1[, dim, dtype, nnzpr, nnz])</p></td>
-<td><p>A compressed sparse row matrix, slightly different than <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.8.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a>.</p></td>
+<td><p>A compressed sparse row matrix, slightly different than <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.8.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.SparseAtom.html#sisl.SparseAtom" title="sisl.SparseAtom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SparseAtom</span></code></a>(geometry[, dim, dtype, nnzpr])</p></td>
 <td><p>Sparse object with number of rows equal to the total number of atoms in the <a class="reference internal" href="generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code></a></p></td>
@@ -229,7 +230,7 @@ in <a class="reference internal" href="physics.matrix.html#physics-matrix"><span
 </table>
 </section>
 <section id="utility-classes">
-<h2>Utility classes<a class="headerlink" href="#utility-classes" title="Permalink to this headline"></a></h2>
+<h2>Utility classes<a class="headerlink" href="#utility-classes" title="Permalink to this heading"></a></h2>
 <p>A set of classes are utility classes that are used throughout the <a class="reference internal" href="index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> code
 and using them will be encouraged in combination with sisl.</p>
 <p>In particular <a class="reference internal" href="generated/sisl.oplist.oplist.html#sisl.oplist.oplist" title="sisl.oplist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">oplist</span></code></a> is useful when calculating averages in Brillouin zones (see

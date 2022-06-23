@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>berry_phase &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
+  <title>berry_phase &mdash; sisl 0.1.dev1+g64bdde7 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -17,6 +17,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
@@ -37,7 +38,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g619c2d5
+                0.1.dev1+g64bdde7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -158,18 +159,23 @@
 }
 </style>
 <section id="berry-phase">
-<h1>berry_phase<a class="headerlink" href="#berry-phase" title="Permalink to this headline"></a></h1>
+<h1>berry_phase<a class="headerlink" href="#berry-phase" title="Permalink to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="sisl.physics.electron.berry_phase">
 <span class="sig-prename descclassname"><span class="pre">sisl.physics.electron.</span></span><span class="sig-name descname"><span class="pre">berry_phase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contour</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sub</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eigvals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">closed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'berry'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eigenstate_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret_overlap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/electron.html#berry_phase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.electron.berry_phase" title="Permalink to this definition"></a></dt>
-<dd><p>Calculate the Berry-phase on a loop using a predefined path</p>
+<dd><p>Calculate the Berry-phase on a loop path</p>
 <p>The Berry phase for a single Bloch state is calculated using the discretized formula:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\mathbf S = \prod_i^{N-1} \langle \psi_{k_i} | \psi_{k_{i+1}} \rangle
 \\
-\phi = - \Im\ln \mathrm{det} \mathbf S \rangle\end{split}\]</div>
+\phi = - \Im\ln \mathrm{det} \mathbf S\end{split}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\langle \psi_{k_i} | \psi_{k_{i+1}} \rangle\)</span> may be exchanged with an overlap matrix
-of the investigated bands.</p>
+of the investigated bands. I.e. <span class="math notranslate nohighlight">\(\psi\)</span> is a manifold set of wavefunctions.
+The overlap matrix <span class="math notranslate nohighlight">\(\mathbf S\)</span> is also known as the global unitary
+rotation matrix corresponding to the maximally localized Wannier centers.</p>
+<p>If <em class="xref py py-obj">closed</em> is true the overlap matrix will also include the circular inner product:</p>
+<div class="math notranslate nohighlight">
+\[\mathbf S^{\mathcal C} = \mathbf S \langle \psi_{k_N} | \psi_{k_1} \rangle\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -185,7 +191,7 @@ a closed loop integration, see <a class="footnote-reference brackets" href="#id4
 Additionally, one may do the Berry-phase calculation using the SVD method of the
 overlap matrices. Simply append “:svd” to the chosen method, e.g. “berry:svd”.</p></li>
 <li><p><strong>eigenstate_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a><em>, </em><em>optional</em>) – keyword arguments passed directly to the <code class="docutils literal notranslate"><span class="pre">contour.eigenstate</span></code> method.
-One should <em>not</em> pass a <code class="docutils literal notranslate"><span class="pre">k</span></code> as that is already used.</p></li>
+One should <em>not</em> pass <code class="docutils literal notranslate"><span class="pre">k</span></code> as that is already used.</p></li>
 <li><p><strong>ret_overlap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – optionally return the overlap matrix <span class="math notranslate nohighlight">\(\mathbf S\)</span></p></li>
 </ul>
 </dd>
@@ -201,11 +207,11 @@ see <a class="footnote-reference brackets" href="#id5" id="id2">2</a>.</p>
 <p>For non-orthogonal basis sets it is not fully known how important the <span class="math notranslate nohighlight">\(\delta\mathbf k\)</span> spacing is since
 it relies on the Lowdin transformation of the states. However, one should be careful about choosing
 the correct bands for examination.</p>
-<p>The returned angles are _not_ placed in the interval <span class="math notranslate nohighlight">\(]-\pi;\pi]\)</span> as what <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.angle.html#numpy.angle" title="(in NumPy v1.22)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.angle</span></code></a> would do.
+<p>The returned angles are _not_ placed in the interval <span class="math notranslate nohighlight">\(]-\pi;\pi]\)</span> as what <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.angle.html#numpy.angle" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.angle</span></code></a> would do.
 This is to allow users to examine the quantities as is.</p>
 <p>For more understanding of the Berry-phase and its calculation <a class="footnote-reference brackets" href="#id6" id="id3">3</a> is a good reference.</p>
 <p class="rubric">Examples</p>
-<p>Calculate Berry-phase for first band but using the SVD me</p>
+<p>Calculate Berry-phase for first band but using the SVD method</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">N</span> <span class="o">=</span> <span class="mi">30</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">kR</span> <span class="o">=</span> <span class="mf">0.01</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">normal</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
@@ -215,7 +221,7 @@ This is to allow users to examine the quantities as is.</p>
 </pre></div>
 </div>
 <p>Calculate the multi-band Berry-phase using the SVD method, thus
-ensuring singular vectors are removed.</p>
+ensuring removal of singular vectors.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">N</span> <span class="o">=</span> <span class="mi">30</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">kR</span> <span class="o">=</span> <span class="mf">0.01</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">normal</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>

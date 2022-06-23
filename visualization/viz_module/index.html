@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The sisl.viz module &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
+  <title>The sisl.viz module &mdash; sisl 0.1.dev1+g64bdde7 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -17,6 +17,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
@@ -35,7 +36,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g619c2d5
+                0.1.dev1+g64bdde7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -148,7 +149,7 @@
 }
 </style>
 <section id="the-sisl-viz-module">
-<h1>The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module<a class="headerlink" href="#the-sisl-viz-module" title="Permalink to this headline"></a></h1>
+<h1>The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module<a class="headerlink" href="#the-sisl-viz-module" title="Permalink to this heading"></a></h1>
 <p>This is a full visualization framework developed specifically for <code class="docutils literal notranslate"><span class="pre">sisl</span></code> to visualize
 all the processing that you can do with the package. The aim is to provide a <strong>high-level API</strong>
 to generate plots through sisl, so that you can avoid <strong>boilerplate code</strong> and the iteration loop
@@ -161,7 +162,7 @@ allows for the user to <strong>extend the visualizing options</strong> quite sim
 it can serve as a very robust (highly tested) and featureful <strong>backend to integrate visualizations into graphical interfaces</strong>.
 An example of this is <a class="reference external" href="https://pypi.org/project/sisl-gui/">the sisl-gui package</a>.</p>
 <section id="basic-tutorials">
-<h2>Basic Tutorials<a class="headerlink" href="#basic-tutorials" title="Permalink to this headline"></a></h2>
+<h2>Basic Tutorials<a class="headerlink" href="#basic-tutorials" title="Permalink to this heading"></a></h2>
 <p>Following, you will find some tutorials that will introduce you to the framework.</p>
 <div class="toctree-wrapper compound" id="viz-tutorials-gallery">
 </div>
@@ -179,7 +180,7 @@ An example of this is <a class="reference external" href="https://pypi.org/proje
 </div>
 <div class="sphx-glr-clear"></div></section>
 <section id="showcase-of-plot-classes">
-<h2>Showcase of plot classes<a class="headerlink" href="#showcase-of-plot-classes" title="Permalink to this headline"></a></h2>
+<h2>Showcase of plot classes<a class="headerlink" href="#showcase-of-plot-classes" title="Permalink to this heading"></a></h2>
 <p>The following notebooks will help you develop a deeper understanding of what each plot class is capable of.</p>
 <div class="toctree-wrapper compound" id="viz-plotly-showcase-gallery">
 </div>
@@ -257,7 +258,7 @@ An example of this is <a class="reference external" href="https://pypi.org/proje
 </div>
 <div class="sphx-glr-clear"></div></section>
 <section id="using-it-with-blender">
-<h2>Using it with blender<a class="headerlink" href="#using-it-with-blender" title="Permalink to this headline"></a></h2>
+<h2>Using it with blender<a class="headerlink" href="#using-it-with-blender" title="Permalink to this heading"></a></h2>
 <p>The sisl visualization framework is independent of the plotting backend used, but <a class="reference external" href="https://www.blender.org/">blender</a> is a special one. Therefore
 we dedicate this section to it with the hope of making the usage of it less confusing.</p>
 <div class="toctree-wrapper compound" id="viz-plotly-blender">
@@ -276,7 +277,7 @@ we dedicate this section to it with the hope of making the usage of it less conf
 </div>
 <div class="sphx-glr-clear"></div></section>
 <section id="combining-plots">
-<h2>Combining plots<a class="headerlink" href="#combining-plots" title="Permalink to this headline"></a></h2>
+<h2>Combining plots<a class="headerlink" href="#combining-plots" title="Permalink to this heading"></a></h2>
 <p>Have two plots that you would like to see displayed together, maybe as an animation or subplots? You’ve come
 to the right place!</p>
 <div class="toctree-wrapper compound" id="viz-plotly-combining-plots-gallery">
@@ -295,7 +296,7 @@ to the right place!</p>
 </div>
 <div class="sphx-glr-clear"></div></section>
 <section id="do-it-yourself">
-<h2>Do it yourself<a class="headerlink" href="#do-it-yourself" title="Permalink to this headline"></a></h2>
+<h2>Do it yourself<a class="headerlink" href="#do-it-yourself" title="Permalink to this heading"></a></h2>
 <p>Whether you feel like you would like to customize the framework a bit to fit your needs, you are a <a class="reference internal" href="../../api/index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a>
 developer or you are building a framework (e.g. GUI) around <code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.viz</span></code>, this is your section!</p>
 <div class="toctree-wrapper compound" id="viz-plotly-diy-gallery">

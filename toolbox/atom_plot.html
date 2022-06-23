@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Plotting atom output &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
+  <title>Plotting atom output &mdash; sisl 0.1.dev1+g64bdde7 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -17,6 +17,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
@@ -37,7 +38,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g619c2d5
+                0.1.dev1+g64bdde7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -132,14 +133,14 @@
 }
 </style>
 <section id="plotting-atom-output">
-<span id="toc-tool-atom-plot"></span><h1>Plotting <em class="xref py py-obj">atom</em> output<a class="headerlink" href="#plotting-atom-output" title="Permalink to this headline"></a></h1>
+<span id="toc-tool-atom-plot"></span><h1>Plotting <em class="xref py py-obj">atom</em> output<a class="headerlink" href="#plotting-atom-output" title="Permalink to this heading"></a></h1>
 <p>Suggestions and improvements to this utility is most welcome!</p>
 <p>Creating pseudopotentials using <a class="reference external" href="https://siesta-project.org/SIESTA_MATERIAL/Pseudos/atom_licence.html">atom</a> will often require users to
 post-analyze the output of the program.</p>
 <p>Here we aid this visualization process by adding a command line interface
 for plotting details of the output via a simple command.</p>
 <section id="command-line-tool">
-<h2>Command line tool<a class="headerlink" href="#command-line-tool" title="Permalink to this headline"></a></h2>
+<h2>Command line tool<a class="headerlink" href="#command-line-tool" title="Permalink to this heading"></a></h2>
 <p>It may be called using</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>stoolbox atom-plot &lt;atom-output-directory&gt;
 </pre></div>
@@ -164,7 +165,7 @@ the pseudo potential valence charge. In this case it prints the radii <span clas
 \[\mathcal O = \int \mathrm{min}(\rho_{\mathrm{core}}(r), \rho_{\mathrm{valence}}(r)) \mathrm dr\]</div>
 </section>
 <section id="input-generation">
-<h2>Input generation<a class="headerlink" href="#input-generation" title="Permalink to this headline"></a></h2>
+<h2>Input generation<a class="headerlink" href="#input-generation" title="Permalink to this heading"></a></h2>
 <p>The tool can also be used to generate the input files for <a class="reference external" href="https://siesta-project.org/SIESTA_MATERIAL/Pseudos/atom_licence.html">atom</a>. While it is possible to read
 input files from <code class="docutils literal notranslate"><span class="pre">INP</span></code> files, one may also define a specific <em class="xref py py-obj">Atom</em> object which
 will be used to generate the input file.</p>

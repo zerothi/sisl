@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.Grid &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
+  <title>sisl.Grid &mdash; sisl 0.1.dev1+g64bdde7 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -17,6 +17,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
@@ -37,7 +38,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g619c2d5
+                0.1.dev1+g64bdde7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -151,11 +152,11 @@
 }
 </style>
 <section id="sisl-grid">
-<h1>sisl.Grid<a class="headerlink" href="#sisl-grid" title="Permalink to this headline"></a></h1>
+<h1>sisl.Grid<a class="headerlink" href="#sisl-grid" title="Permalink to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="sisl.Grid">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.</span></span><span class="sig-name descname"><span class="pre">Grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Grid" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sisl.supercell.SuperCellChild</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">SuperCellChild</span></code></p>
 <p>Real-space grid information with associated geometry.</p>
 <p>This grid object handles cell vectors and divisions of said grid.</p>
 <dl class="field-list simple">
@@ -166,7 +167,7 @@ a list of integers specifies the exact grid size.</p></li>
 <li><p><strong>bc</strong> (<em>list of int</em><em> (</em><em>3</em><em>, </em><em>2</em><em>) or </em><em>(</em><em>3</em><em>, </em><em>)</em><em>, </em><em>optional</em>) – the boundary conditions for each of the cell’s planes. Default to periodic BC.</p></li>
 <li><p><strong>sc</strong> (<a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><em>SuperCell</em></a><em>, </em><em>optional</em>) – the supercell that this grid represents. <em class="xref py py-obj">sc</em> has precedence if both <code class="xref py py-obj docutils literal notranslate"><span class="pre">geometry</span></code> and <em class="xref py py-obj">sc</em>
 has been specified. Default to <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">1,</span> <span class="pre">1]</span></code>.</p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.22)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the data-type of the grid, default to <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="(in NumPy v1.22)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.float64</span></code></a>.</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the data-type of the grid, default to <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.float64</span></code></a>.</p></li>
 <li><p><strong>geometry</strong> (<a class="reference internal" href="sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a><em>, </em><em>optional</em>) – associated geometry with the grid. If <em class="xref py py-obj">sc</em> has not been passed the supercell will
 be taken from this geometry.</p></li>
 </ul>
@@ -471,7 +472,7 @@ for false/true.</p></li>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.average.html#numpy.average" title="(in NumPy v1.22)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.average</span></code></a></dt><dd><p>for details regarding the <em class="xref py py-obj">weights</em> argument</p>
+<dt><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.average.html#numpy.average" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.average</span></code></a></dt><dd><p>for details regarding the <em class="xref py py-obj">weights</em> argument</p>
 </dd>
 </dl>
 </div>
@@ -527,7 +528,7 @@ cuts via rotation of the axis</p>
 <dd><p>Fill the grid with this value</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>val</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.22)"><em>numpy.dtype</em></a>) – all grid-points will have this value after execution</p>
+<dd class="field-odd"><p><strong>val</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)"><em>numpy.dtype</em></a>) – all grid-points will have this value after execution</p>
 </dd>
 </dl>
 </dd></dl>
@@ -574,7 +575,7 @@ are returned (all internal points also).</p></li>
 <dd class="field-even"><p>coordinates of the indices with respect to this grid spacing</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -599,7 +600,7 @@ are returned (all internal points also).</p></li>
 <dd class="field-even"><p>all indices are then within the shape of the grid</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">numpy.ndarray</a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -628,7 +629,7 @@ are returned (all internal points also).</p></li>
 <dd class="field-even"><p>all indices are then within the shape of the grid (others have been removed</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">numpy.ndarray</a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -644,7 +645,7 @@ are returned (all internal points also).</p></li>
 <dt class="sig sig-object py" id="sisl.Grid.interp">
 <span class="sig-name descname"><span class="pre">interp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wrap'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.interp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.interp" title="Permalink to this definition"></a></dt>
 <dd><p>Interpolate grid values to a new grid of a different shape</p>
-<p>It uses the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.zoom.html#scipy.ndimage.zoom" title="(in SciPy v1.8.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.ndimage.zoom</span></code></a>, which creates a finer or
+<p>It uses the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.zoom.html#scipy.ndimage.zoom" title="(in SciPy v1.8.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.ndimage.zoom</span></code></a>, which creates a finer or
 more spaced grid using spline interpolation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -655,14 +656,14 @@ more spaced grid using spline interpolation.</p>
 <li><p><strong>mode</strong> (<em>{'wrap'</em><em>, </em><em>'mirror'</em><em>, </em><em>'constant'</em><em>, </em><em>'reflect'</em><em>, </em><em>'nearest'}</em>) – determines how to compute the borders of the grid.
 The default is <code class="docutils literal notranslate"><span class="pre">'wrap'</span></code>, which accounts for periodic conditions.</p></li>
 <li><p><strong>**kwargs</strong> – optional arguments passed to the interpolation algorithm
-The interpolation routine is <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.zoom.html#scipy.ndimage.zoom" title="(in SciPy v1.8.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.ndimage.zoom</span></code></a></p></li>
+The interpolation routine is <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.zoom.html#scipy.ndimage.zoom" title="(in SciPy v1.8.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.ndimage.zoom</span></code></a></p></li>
 </ul>
 </dd>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.zoom.html#scipy.ndimage.zoom" title="(in SciPy v1.8.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.ndimage.zoom</span></code></a></dt><dd><p>method used for interpolation</p>
+<dt><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.zoom.html#scipy.ndimage.zoom" title="(in SciPy v1.8.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.ndimage.zoom</span></code></a></dt><dd><p>method used for interpolation</p>
 </dd>
 </dl>
 </div>
@@ -739,7 +740,7 @@ for false/true.</p></li>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.average.html#numpy.average" title="(in NumPy v1.22)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.average</span></code></a></dt><dd><p>for details regarding the <em class="xref py py-obj">weights</em> argument</p>
+<dt><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.average.html#numpy.average" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.average</span></code></a></dt><dd><p>for details regarding the <em class="xref py py-obj">weights</em> argument</p>
 </dd>
 </dl>
 </div>
@@ -749,7 +750,7 @@ for false/true.</p></li>
 <dt class="sig sig-object py" id="sisl.Grid.mgrid">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mgrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">slices</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.mgrid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.mgrid" title="Permalink to this definition"></a></dt>
 <dd><p>Return a list of indices corresponding to the slices</p>
-<p>The returned values are equivalent to <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.mgrid.html#numpy.mgrid" title="(in NumPy v1.22)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.mgrid</span></code></a> but they are returned
+<p>The returned values are equivalent to <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.mgrid.html#numpy.mgrid" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.mgrid</span></code></a> but they are returned
 in a (:, 3) array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -760,7 +761,7 @@ made by the passed arguments</p>
 <dd class="field-even"><p>linear indices for each of the sliced values, shape <code class="docutils literal notranslate"><span class="pre">(*,</span> <span class="pre">3)</span></code></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -802,8 +803,8 @@ made by the passed arguments</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>A</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.8.0)"><em>scipy.sparse.csr_matrix</em></a>) – sparse matrix describing the grid</p></li>
-<li><p><strong>b</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>numpy.ndarray</em></a>) – a vector containing RHS of <span class="math notranslate nohighlight">\(A x = b\)</span> for the solution of the grid stencil</p></li>
+<li><p><strong>A</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.8.1)"><em>scipy.sparse.csr_matrix</em></a>) – sparse matrix describing the grid</p></li>
+<li><p><strong>b</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>numpy.ndarray</em></a>) – a vector containing RHS of <span class="math notranslate nohighlight">\(A x = b\)</span> for the solution of the grid stencil</p></li>
 <li><p><strong>bc</strong> (<em>list of BC</em><em>, </em><em>optional</em>) – the specified boundary conditions.
 Default to the grid’s boundary conditions, else <em class="xref py py-obj">bc</em> <em>must</em> be a list of elements
 with elements corresponding to <a class="reference internal" href="#sisl.Grid.PERIODIC" title="sisl.Grid.PERIODIC"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Grid.PERIODIC</span></code></a>/<a class="reference internal" href="#sisl.Grid.NEUMANN" title="sisl.Grid.NEUMANN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Grid.NEUMANN</span></code></a>…</p></li>
@@ -819,8 +820,8 @@ with elements corresponding to <a class="reference internal" href="#sisl.Grid.PE
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>A</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.8.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">csr_matrix</span></code></a>/<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_matrix.html#scipy.sparse.csc_matrix" title="(in SciPy v1.8.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">csc_matrix</span></code></a>) – sparse matrix describing the LHS for the linear system of equations</p></li>
-<li><p><strong>b</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>numpy.ndarray</em></a>) – a vector containing RHS of <span class="math notranslate nohighlight">\(A x = b\)</span> for the solution of the grid stencil</p></li>
+<li><p><strong>A</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.8.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">csr_matrix</span></code></a>/<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_matrix.html#scipy.sparse.csc_matrix" title="(in SciPy v1.8.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">csc_matrix</span></code></a>) – sparse matrix describing the LHS for the linear system of equations</p></li>
+<li><p><strong>b</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>numpy.ndarray</em></a>) – a vector containing RHS of <span class="math notranslate nohighlight">\(A x = b\)</span> for the solution of the grid stencil</p></li>
 <li><p><strong>pyamg_indices</strong> (<em>list of int</em>) – the linear pyamg matrix indices where the value of the grid is fixed. I.e. the indices should
 correspond to returned quantities from <em class="xref py py-obj">pyamg_indices</em>.</p></li>
 <li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – the value of the grid to fix the value at</p></li>
@@ -841,7 +842,7 @@ correspond to returned quantities from <em class="xref py py-obj">pyamg_indices<
 <dd class="field-even"><p>linear indices for the matrix</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">numpy.ndarray</a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -849,7 +850,7 @@ correspond to returned quantities from <em class="xref py py-obj">pyamg_indices<
 <dl class="simple">
 <dt><a class="reference internal" href="#sisl.Grid.index" title="sisl.Grid.index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code></a></dt><dd><p>query indices from coordinates (directly passable to this method)</p>
 </dd>
-<dt><a class="reference internal" href="#sisl.Grid.mgrid" title="sisl.Grid.mgrid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mgrid</span></code></a></dt><dd><p>Grid equivalent to <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.mgrid.html#numpy.mgrid" title="(in NumPy v1.22)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.mgrid</span></code></a>. Grid.mgrid returns indices in shapes (:, 3), contrary to numpy’s <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.mgrid.html#numpy.mgrid" title="(in NumPy v1.22)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.mgrid</span></code></a></p>
+<dt><a class="reference internal" href="#sisl.Grid.mgrid" title="sisl.Grid.mgrid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mgrid</span></code></a></dt><dd><p>Grid equivalent to <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.mgrid.html#numpy.mgrid" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.mgrid</span></code></a>. Grid.mgrid returns indices in shapes (:, 3), contrary to numpy’s <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.mgrid.html#numpy.mgrid" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.mgrid</span></code></a></p>
 </dd>
 </dl>
 </div>
@@ -867,7 +868,7 @@ correspond to returned quantities from <em class="xref py py-obj">pyamg_indices<
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>b</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>numpy.ndarray</em></a>) – a vector containing RHS of <span class="math notranslate nohighlight">\(A x = b\)</span> for the solution of the grid stencil</p></li>
+<li><p><strong>b</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><em>numpy.ndarray</em></a>) – a vector containing RHS of <span class="math notranslate nohighlight">\(A x = b\)</span> for the solution of the grid stencil</p></li>
 <li><p><strong>pyamg_indices</strong> (<em>list of int</em>) – the linear pyamg matrix indices where the value of the grid is fixed. I.e. the indices should
 correspond to returned quantities from <em class="xref py py-obj">pyamg_indices</em>.</p></li>
 </ul>
@@ -1082,7 +1083,7 @@ The default is wrap, which accounts for periodic conditions.</p></li>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.gaussian_filter.html#scipy.ndimage.gaussian_filter" title="(in SciPy v1.8.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.ndimage.gaussian_filter</span></code></a></p>
+<p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.gaussian_filter.html#scipy.ndimage.gaussian_filter" title="(in SciPy v1.8.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.ndimage.gaussian_filter</span></code></a></p>
 </div>
 </dd></dl>
 
@@ -1183,7 +1184,7 @@ Subsequently the returned matrix may be used in pyamg for solutions etc.</p>
 For details we refer to <a class="reference external" href="pyamghttps://github.com/pyamg/pyamg/">pyamg</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.22)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – data-type used for the sparse matrix, default to use the grid data-type</p>
+<dd class="field-odd"><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – data-type used for the sparse matrix, default to use the grid data-type</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">

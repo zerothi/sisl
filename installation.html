@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installation &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
+  <title>Installation &mdash; sisl 0.1.dev1+g64bdde7 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/plot_directive.css" type="text/css" />
@@ -17,6 +17,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
@@ -35,7 +36,7 @@
             <a href="index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g619c2d5
+                0.1.dev1+g64bdde7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -136,10 +137,10 @@
 }
 </style>
 <section id="installation">
-<span id="id1"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline"></a></h1>
+<span id="id1"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h1>
 <p>sisl is easy to install using any of your preferred methods.</p>
 <section id="required-dependencies">
-<h2>Required dependencies<a class="headerlink" href="#required-dependencies" title="Permalink to this headline"></a></h2>
+<h2>Required dependencies<a class="headerlink" href="#required-dependencies" title="Permalink to this heading"></a></h2>
 <p>Running sisl requires these versions:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.python.org/">Python</a> 3.7 or above</p></li>
@@ -163,7 +164,7 @@ Cython version. Note that this is not a necessary step and should typically only
 be considered by developers of Cython modules.</p>
 </section>
 <section id="pip">
-<span id="installation-pip"></span><h2>pip<a class="headerlink" href="#pip" title="Permalink to this headline"></a></h2>
+<span id="installation-pip"></span><h2>pip<a class="headerlink" href="#pip" title="Permalink to this heading"></a></h2>
 <p>Installing sisl using PyPi can be done using</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 -m pip install sisl
 <span class="c1"># for better analysis</span>
@@ -184,7 +185,7 @@ is desired.</p>
 <p>note that options are accummulated.</p>
 </section>
 <section id="conda">
-<span id="installation-conda"></span><h2>conda<a class="headerlink" href="#conda" title="Permalink to this headline"></a></h2>
+<span id="installation-conda"></span><h2>conda<a class="headerlink" href="#conda" title="Permalink to this heading"></a></h2>
 <p>It is recommended to install sisl in a separate environment to decouple its dependencies
 from other packages that may be installed.
 To find more information about the conda-forge enabled versions please see
@@ -196,7 +197,7 @@ installed packages are not limiting the upgrading of other packages.</p>
 <p>For sisl there are two options, whether one wants to use a stable sisl release, or be
 able to install the latest development version from <a class="reference external" href="https://github.com/zerothi/sisl/">here</a>.</p>
 <section id="stable">
-<h3>Stable<a class="headerlink" href="#stable" title="Permalink to this headline"></a></h3>
+<h3>Stable<a class="headerlink" href="#stable" title="Permalink to this heading"></a></h3>
 <p>Installing the stable sisl release in conda all that is needed is:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda create -n sisl
 conda activate sisl
@@ -208,7 +209,7 @@ conda install -c conda-forge <span class="nv">python</span><span class="o">=</sp
 capabilities of sisl.</p>
 </section>
 <section id="development">
-<h3>Development<a class="headerlink" href="#development" title="Permalink to this headline"></a></h3>
+<h3>Development<a class="headerlink" href="#development" title="Permalink to this heading"></a></h3>
 <p>Installing the development version of sisl requires some other basic packages
 while also using <code class="code docutils literal notranslate"><span class="pre">pip</span></code> to install sisl, the procedure would be:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda create -n sisl-dev
@@ -222,7 +223,7 @@ conda install -c conda-forge scipy netcdf4 cftime plotly matplotlib
 </section>
 </section>
 <section id="manual-installation">
-<h2>Manual installation<a class="headerlink" href="#manual-installation" title="Permalink to this headline"></a></h2>
+<h2>Manual installation<a class="headerlink" href="#manual-installation" title="Permalink to this heading"></a></h2>
 <p>The regular <code class="code docutils literal notranslate"><span class="pre">pip</span></code> codes may be used to install git clones or downloaded
 tarballs.</p>
 <p>Simply download the release tar from <a class="reference external" href="https://github.com/zerothi/sisl/releases">this page</a>, or clone
@@ -231,7 +232,7 @@ the <a class="reference external" href="https://github.com/zerothi/sisl/">git re
 </pre></div>
 </div>
 <section id="windows">
-<h3>Windows<a class="headerlink" href="#windows" title="Permalink to this headline"></a></h3>
+<h3>Windows<a class="headerlink" href="#windows" title="Permalink to this heading"></a></h3>
 <p>To install <a class="reference internal" href="api/index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> on Windows one will require a specification of
 the compilers used. Typically one may do</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 -m pip install . --prefix<span class="o">=</span>&lt;prefix&gt; --install-option<span class="o">=</span><span class="s1">&#39;--fcompiler=gfortran&#39;</span> --install-option<span class="o">=</span><span class="s1">&#39;--compiler=mingw32&#39;</span>
@@ -249,7 +250,7 @@ or the <a class="reference external" href="https://github.com/zerothi/sisl/issue
 </section>
 </section>
 <section id="testing-your-installation">
-<h2>Testing your installation<a class="headerlink" href="#testing-your-installation" title="Permalink to this headline"></a></h2>
+<h2>Testing your installation<a class="headerlink" href="#testing-your-installation" title="Permalink to this heading"></a></h2>
 <p>After installation (by either of the above listed methods) you are encouraged
 to perform the shipped tests to ensure everything got installed correctly.</p>
 <p>Note that <a class="reference external" href="https://docs.pytest.org/en/stable/">pytest</a> needs to be installed to run the tests.
@@ -267,7 +268,7 @@ and setting the environment variable <em class="xref py py-obj">SISL_FILES_TESTS
 </div>
 </section>
 <section id="development-version">
-<span id="installation-development"></span><h2>Development version<a class="headerlink" href="#development-version" title="Permalink to this headline"></a></h2>
+<span id="installation-development"></span><h2>Development version<a class="headerlink" href="#development-version" title="Permalink to this heading"></a></h2>
 <p>For source/development installations some basic packages are required:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://cython.org/">Cython</a></p></li>

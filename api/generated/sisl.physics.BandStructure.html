@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.BandStructure &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
+  <title>sisl.physics.BandStructure &mdash; sisl 0.1.dev1+g64bdde7 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -17,6 +17,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
@@ -37,7 +38,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g619c2d5
+                0.1.dev1+g64bdde7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -148,11 +149,11 @@
 }
 </style>
 <section id="sisl-physics-bandstructure">
-<h1>sisl.physics.BandStructure<a class="headerlink" href="#sisl-physics-bandstructure" title="Permalink to this headline"></a></h1>
+<h1>sisl.physics.BandStructure<a class="headerlink" href="#sisl-physics-bandstructure" title="Permalink to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="sisl.physics.BandStructure">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.physics.</span></span><span class="sig-name descname"><span class="pre">BandStructure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.BandStructure" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><code class="xref py py-class docutils literal notranslate"><span class="pre">sisl.physics.BrillouinZone</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><code class="xref py py-class docutils literal notranslate"><span class="pre">BrillouinZone</span></code></a></p>
 <p>Create a path in the Brillouin zone for plotting band-structures etc.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -198,7 +199,7 @@ Such a band-structure may be useful when one is not interested in a fully connec
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.BandStructure.asarray" title="sisl.physics.BandStructure.asarray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asarray</span></code></a>()</p></td>
-<td><p>Return <em class="xref py py-obj">self</em> with <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> returned quantities</p></td>
+<td><p>Return <em class="xref py py-obj">self</em> with <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> returned quantities</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.BandStructure.asaverage" title="sisl.physics.BandStructure.asaverage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asaverage</span></code></a>()</p></td>
 <td><p>Return <em class="xref py py-obj">self</em> with k-averaged quantities</p></td>
@@ -339,7 +340,7 @@ and passing <a class="reference internal" href="#sisl.physics.BandStructure.k" t
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.BandStructure.asarray">
 <span class="sig-name descname"><span class="pre">asarray</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.BandStructure.asarray" title="Permalink to this definition"></a></dt>
-<dd><p>Return <em class="xref py py-obj">self</em> with <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> returned quantities</p>
+<dd><p>Return <em class="xref py py-obj">self</em> with <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> returned quantities</p>
 <p>This forces the <a class="reference internal" href="#sisl.physics.BandStructure.__call__" title="sisl.physics.BandStructure.__call__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code></a> routine to return a single array.</p>
 <p class="rubric">Notes</p>
 <p>This method will be deprecated &gt;0.9.9.
@@ -697,7 +698,7 @@ object.</p>
 <dd class="field-even"><p>all k-points moved into the primitive cell</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -811,7 +812,7 @@ distances in the reciprocal lattice.</p>
 <dd class="field-odd"><p>the positions in reciprocal space determined by the distance between points</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">numpy.ndarray</a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -945,7 +946,7 @@ lists accordingly.</p></li>
 <dd class="field-even"><p>in units of 1/Ang</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -982,7 +983,7 @@ The tolerance is in units 1/Ang.</p></li>
 <dd class="field-even"><p>in units of reciprocal lattice vectors ]-0.5 ; 0.5] (if k is in the primitive cell)</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>

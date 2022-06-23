@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Brillouin zone &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
+  <title>Brillouin zone &mdash; sisl 0.1.dev1+g64bdde7 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -17,6 +17,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
@@ -37,7 +38,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g619c2d5
+                0.1.dev1+g64bdde7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -147,7 +148,7 @@
 }
 </style>
 <section id="brillouin-zone">
-<span id="physics-brillouinzone"></span><h1>Brillouin zone<a class="headerlink" href="#brillouin-zone" title="Permalink to this headline"></a></h1>
+<span id="physics-brillouinzone"></span><h1>Brillouin zone<a class="headerlink" href="#brillouin-zone" title="Permalink to this heading"></a></h1>
 <p>The Brillouin zone objects are all special classes enabling easy manipulation
 of an underlying physical quantity.</p>
 <p>Quite often a physical quantity will be required to be averaged, or calculated individually
@@ -172,7 +173,7 @@ the <a class="reference internal" href="generated/sisl.physics.BrillouinZone.htm
 </div>
 <p>and then you have all eigenvalues for all the k-points along the path.</p>
 <section id="multiple-quantities">
-<h2>Multiple quantities<a class="headerlink" href="#multiple-quantities" title="Permalink to this headline"></a></h2>
+<h2>Multiple quantities<a class="headerlink" href="#multiple-quantities" title="Permalink to this heading"></a></h2>
 <p>Sometimes one may want to post-process the data for each k-point.
 As an example lets post-process the DOS on a per k-point basis while
 calculating the average:</p>
@@ -230,8 +231,8 @@ full quantity:</p>
 </pre></div>
 </div>
 <p>This will raise an error since <code class="docutils literal notranslate"><span class="pre">wrap_multiple</span></code> returns an <em class="xref py py-obj">oplist</em> (same as a <em class="xref py py-obj">list</em>)
-and thus is unable to convert this into an equivalent <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>. Additionally
-this can not be merged together in a single <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> since the shapes of the returned
+and thus is unable to convert this into an equivalent <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>. Additionally
+this can not be merged together in a single <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> since the shapes of the returned
 quantities are not commensurate. One cannot concatenate the 3 different quantities.</p>
 <p>To accomblish this one may use an <code class="docutils literal notranslate"><span class="pre">zip</span></code> flag where the two lines are equivalent:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">DOS</span><span class="p">,</span> <span class="n">PDOS</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">apply</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">renew</span><span class="p">(</span><span class="nb">zip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">(</span><span class="n">wrap</span><span class="o">=</span><span class="n">wrap_multiple</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -241,7 +242,7 @@ quantities are not commensurate. One cannot concatenate the 3 different quantiti
 <p>and the data is unpacked as wanted.</p>
 </section>
 <section id="parallel-calculations">
-<h2>Parallel calculations<a class="headerlink" href="#parallel-calculations" title="Permalink to this headline"></a></h2>
+<h2>Parallel calculations<a class="headerlink" href="#parallel-calculations" title="Permalink to this heading"></a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">apply</span></code> method looping k-points may be explicitly parallelized.
 To run parallel do:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">H</span> <span class="o">=</span> <span class="n">Hamiltonian</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>

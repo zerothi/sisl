@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Basic IO methods/classes &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
+  <title>Basic IO methods/classes &mdash; sisl 0.1.dev1+g64bdde7 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -17,6 +17,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
@@ -35,7 +36,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g619c2d5
+                0.1.dev1+g64bdde7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -151,11 +152,11 @@
 }
 </style>
 <section id="basic-io-methods-classes">
-<span id="io-basic"></span><h1>Basic IO methods/classes<a class="headerlink" href="#basic-io-methods-classes" title="Permalink to this headline"></a></h1>
+<span id="io-basic"></span><h1>Basic IO methods/classes<a class="headerlink" href="#basic-io-methods-classes" title="Permalink to this heading"></a></h1>
 <p>Regular users may only need <a class="reference internal" href="generated/sisl.io.get_sile.html#sisl.io.get_sile" title="sisl.io.get_sile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sile</span></code></a> which retrieves the correct <em>sile</em>
 based on parsing the filename.</p>
 <section id="retrieval-methods-and-warnings">
-<h2>Retrieval methods and warnings<a class="headerlink" href="#retrieval-methods-and-warnings" title="Permalink to this headline"></a></h2>
+<h2>Retrieval methods and warnings<a class="headerlink" href="#retrieval-methods-and-warnings" title="Permalink to this heading"></a></h2>
 <table class="autosummary longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -187,7 +188,7 @@ based on parsing the filename.</p>
 </table>
 </section>
 <section id="base-classes">
-<h2>Base classes<a class="headerlink" href="#base-classes" title="Permalink to this headline"></a></h2>
+<h2>Base classes<a class="headerlink" href="#base-classes" title="Permalink to this heading"></a></h2>
 <p>All <a class="reference internal" href="../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> files inherit from the <a class="reference internal" href="generated/sisl.io.BaseSile.html#sisl.io.BaseSile" title="sisl.io.BaseSile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BaseSile</span></code></a> class.
 While ASCII files are based on the <a class="reference internal" href="generated/sisl.io.Sile.html#sisl.io.Sile" title="sisl.io.Sile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Sile</span></code></a> class, NetCDF files are based on the
 <a class="reference internal" href="generated/sisl.io.SileCDF.html#sisl.io.SileCDF" title="sisl.io.SileCDF"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SileCDF</span></code></a> and finally binary files inherit from <a class="reference internal" href="generated/sisl.io.SileBin.html#sisl.io.SileBin" title="sisl.io.SileBin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SileBin</span></code></a>.</p>

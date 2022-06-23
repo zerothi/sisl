@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Electron related functions &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
+  <title>Electron related functions &mdash; sisl 0.1.dev1+g64bdde7 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -17,6 +17,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
@@ -37,7 +38,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g619c2d5
+                0.1.dev1+g64bdde7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -157,7 +158,7 @@
 }
 </style>
 <section id="module-sisl.physics.electron">
-<span id="electron-related-functions"></span><span id="physics-electron"></span><h1>Electron related functions<a class="headerlink" href="#module-sisl.physics.electron" title="Permalink to this headline"></a></h1>
+<span id="electron-related-functions"></span><span id="physics-electron"></span><h1>Electron related functions<a class="headerlink" href="#module-sisl.physics.electron" title="Permalink to this heading"></a></h1>
 <p>In sisl electronic structure calculations are relying on routines
 specific for electrons. For instance density of states calculations from
 electronic eigenvalues and other quantities.</p>
@@ -186,7 +187,7 @@ One may also plot real-space wavefunctions.</p>
 <td><p>Calculate the velocity matrix of a set of states</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.physics.electron.berry_phase.html#sisl.physics.electron.berry_phase" title="sisl.physics.electron.berry_phase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">berry_phase</span></code></a>(contour[, sub, eigvals, closed, ...])</p></td>
-<td><p>Calculate the Berry-phase on a loop using a predefined path</p></td>
+<td><p>Calculate the Berry-phase on a loop path</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.physics.electron.berry_curvature.html#sisl.physics.electron.berry_curvature" title="sisl.physics.electron.berry_curvature"><code class="xref py py-obj docutils literal notranslate"><span class="pre">berry_curvature</span></code></a>(state, energy, dHk[, dSk, ...])</p></td>
 <td><p>Calculate the Berry curvature matrix for a set of states (using Kubo)</p></td>
@@ -206,7 +207,7 @@ One may also plot real-space wavefunctions.</p>
 </tbody>
 </table>
 <section id="supporting-classes">
-<h2>Supporting classes<a class="headerlink" href="#supporting-classes" title="Permalink to this headline"></a></h2>
+<h2>Supporting classes<a class="headerlink" href="#supporting-classes" title="Permalink to this heading"></a></h2>
 <p>Certain classes aid in the usage of the above methods by implementing them
 using automatic arguments.</p>
 <p>For instance, the PDOS method requires the overlap matrix in non-orthogonal

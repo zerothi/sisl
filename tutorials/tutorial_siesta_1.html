@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Siesta — the H2O molecule &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
+  <title>Siesta — the H2O molecule &mdash; sisl 0.1.dev1+g64bdde7 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -17,6 +17,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
@@ -37,7 +38,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g619c2d5
+                0.1.dev1+g64bdde7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -330,6 +331,7 @@ div.nboutput.container div.output_area > div[class^='highlight']{
 }
 
 /* Some additional styling taken form the Jupyter notebook CSS */
+.jp-RenderedHTMLCommon table,
 div.rendered_html table {
   border: none;
   border-collapse: collapse;
@@ -338,10 +340,14 @@ div.rendered_html table {
   font-size: 12px;
   table-layout: fixed;
 }
+.jp-RenderedHTMLCommon thead,
 div.rendered_html thead {
   border-bottom: 1px solid black;
   vertical-align: bottom;
 }
+.jp-RenderedHTMLCommon tr,
+.jp-RenderedHTMLCommon th,
+.jp-RenderedHTMLCommon td,
 div.rendered_html tr,
 div.rendered_html th,
 div.rendered_html td {
@@ -353,12 +359,15 @@ div.rendered_html td {
   max-width: none;
   border: none;
 }
+.jp-RenderedHTMLCommon th,
 div.rendered_html th {
   font-weight: bold;
 }
+.jp-RenderedHTMLCommon tbody tr:nth-child(odd),
 div.rendered_html tbody tr:nth-child(odd) {
   background: #f5f5f5;
 }
+.jp-RenderedHTMLCommon tbody tr:hover,
 div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
@@ -402,10 +411,10 @@ Download IPython notebook <a href="https://raw.githubusercontent.com/zerothi/sis
 </div>
 </div>
 <section id="Siesta-—-the-H2O-molecule">
-<h1>Siesta — the H2O molecule<a class="headerlink" href="#Siesta-—-the-H2O-molecule" title="Permalink to this headline"></a></h1>
+<h1>Siesta — the H2O molecule<a class="headerlink" href="#Siesta-—-the-H2O-molecule" title="Permalink to this heading"></a></h1>
 <p>This tutorial will describe a complete walk-through of some of the <code class="docutils literal notranslate"><span class="pre">sisl</span></code> functionalities that may be related to the <a class="reference external" href="https://gitlab.com/siesta-project/siesta">Siesta code</a>.</p>
 <section id="Creating-the-geometry">
-<h2>Creating the geometry<a class="headerlink" href="#Creating-the-geometry" title="Permalink to this headline"></a></h2>
+<h2>Creating the geometry<a class="headerlink" href="#Creating-the-geometry" title="Permalink to this heading"></a></h2>
 <p>Our system of interest will be the <span class="math notranslate nohighlight">\(\mathrm H_2\mathrm O\)</span> system. The first task will be to create the molecule geometry. This is done using lists of atomic coordinates and atomic species. Additionally one needs to define the supercell (or if you prefer: unit-cell) where the molecule resides in. Siesta is a periodic DFT code and thus all directions are periodic. I.e. when simulating molecules it is vital to have a large vacuum gap between periodic images. In this case we use a supercell of
 side-lengths <span class="math notranslate nohighlight">\(10\mathrm{Ang}\)</span>.</p>
 <div class="nbinput nblast docutils container">
@@ -504,7 +513,7 @@ Geometry{na: 3, no: 3,
 </div>
 </section>
 <section id="Creating-the-electronic-structure">
-<h2>Creating the electronic structure<a class="headerlink" href="#Creating-the-electronic-structure" title="Permalink to this headline"></a></h2>
+<h2>Creating the electronic structure<a class="headerlink" href="#Creating-the-electronic-structure" title="Permalink to this heading"></a></h2>
 <p>Before continuing we need to run Siesta to calculate the electronic structure.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>siesta RUN.fdf
 </pre></div>
@@ -565,7 +574,7 @@ Hamiltonian{non-zero: 289, orthogonal: False,
 single-<span class="math notranslate nohighlight">\(\zeta\)</span> calculation <code class="docutils literal notranslate"><span class="pre">Z1</span></code> (for double-<span class="math notranslate nohighlight">\(\zeta\)</span> <code class="docutils literal notranslate"><span class="pre">Z2</span></code> would also appear in the list). The hydrogens only has 4 orbitals <span class="math notranslate nohighlight">\(s+p\)</span>. For each orbital one can see its maximal radial part and how initial charges are distributed.</div>
 </div>
 <section id="Plotting-orbitals">
-<h3>Plotting orbitals<a class="headerlink" href="#Plotting-orbitals" title="Permalink to this headline"></a></h3>
+<h3>Plotting orbitals<a class="headerlink" href="#Plotting-orbitals" title="Permalink to this heading"></a></h3>
 <p>Often it may be educational (and fun) to plot the orbital wavefunctions. To do this we use the intrinsic method in the <code class="docutils literal notranslate"><span class="pre">Orbital</span></code> class named <code class="docutils literal notranslate"><span class="pre">toGrid</span></code>. The below code is rather complicated, but the complexity is simply because we want to show the orbitals in a rectangular grid of plots.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
@@ -628,7 +637,7 @@ single-<span class="math notranslate nohighlight">\(\zeta\)</span> calculation <
 </section>
 </section>
 <section id="Hamiltonian-eigenstates">
-<h2>Hamiltonian eigenstates<a class="headerlink" href="#Hamiltonian-eigenstates" title="Permalink to this headline"></a></h2>
+<h2>Hamiltonian eigenstates<a class="headerlink" href="#Hamiltonian-eigenstates" title="Permalink to this heading"></a></h2>
 <p>At this point we have the full Hamiltonian as well as the basis functions used in the Siesta calculation. This completes what is needed to calculate a great deal of physical quantities, e.g. eigenstates, density of states, projected density of states and wavefunctions.</p>
 <p>To begin with we calculate the <span class="math notranslate nohighlight">\(\Gamma\)</span>-point eigenstates and plot a subset of the eigenstates’ norm on the geometry. An important aspect of the electronic structure handled by Siesta is that it is shifted to <span class="math notranslate nohighlight">\(E_F=0\)</span> meaning that the HOMO level is the smallest negative eigenvalue, while the LUMO is the smallest positive eigenvalue:</p>
 <div class="nbinput docutils container">
@@ -688,7 +697,7 @@ Real space integrated wavefunction: 1.0000
 </div>
 </section>
 <section id="Real-space-charge">
-<h2>Real space charge<a class="headerlink" href="#Real-space-charge" title="Permalink to this headline"></a></h2>
+<h2>Real space charge<a class="headerlink" href="#Real-space-charge" title="Permalink to this heading"></a></h2>
 <p>Since we have the basis functions we can also plot the charge in the grid. We can do this via either reading the density matrix or read in the charge output directly from Siesta. Since both should yield the same value we can compare the output from Siesta with that calculated in <code class="docutils literal notranslate"><span class="pre">sisl</span></code>.</p>
 <p>You will notice that re-creating the density on a real space grid in sisl is much slower than creating the wavefunction. This is because we need <em>orbital multiplications</em>.</p>
 <div class="nbinput nblast docutils container">

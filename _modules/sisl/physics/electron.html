@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.electron &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
+  <title>sisl.physics.electron &mdash; sisl 0.1.dev1+g64bdde7 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -16,6 +16,7 @@
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
@@ -32,7 +33,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g619c2d5
+                0.1.dev1+g64bdde7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -1089,17 +1090,25 @@
 <span class="k">def</span> <span class="nf">berry_phase</span><span class="p">(</span><span class="n">contour</span><span class="p">,</span> <span class="n">sub</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">eigvals</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">closed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;berry&quot;</span><span class="p">,</span>
                 <span class="o">*</span><span class="p">,</span>
                 <span class="n">eigenstate_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ret_overlap</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the Berry-phase on a loop using a predefined path</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the Berry-phase on a loop path</span>
 
 <span class="sd">    The Berry phase for a single Bloch state is calculated using the discretized formula:</span>
 
 <span class="sd">    .. math::</span>
 <span class="sd">       \mathbf S = \prod_i^{N-1} \langle \psi_{k_i} | \psi_{k_{i+1}} \rangle</span>
 <span class="sd">       \\</span>
-<span class="sd">       \phi = - \Im\ln \mathrm{det} \mathbf S \rangle</span>
+<span class="sd">       \phi = - \Im\ln \mathrm{det} \mathbf S</span>
 
 <span class="sd">    where :math:`\langle \psi_{k_i} | \psi_{k_{i+1}} \rangle` may be exchanged with an overlap matrix</span>
-<span class="sd">    of the investigated bands.</span>
+<span class="sd">    of the investigated bands. I.e. :math:`\psi` is a manifold set of wavefunctions.</span>
+<span class="sd">    The overlap matrix :math:`\mathbf S` is also known as the global unitary</span>
+<span class="sd">    rotation matrix corresponding to the maximally localized Wannier centers.</span>
+
+<span class="sd">    If `closed` is true the overlap matrix will also include the circular inner product:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">       \mathbf S^{\mathcal C} = \mathbf S \langle \psi_{k_N} | \psi_{k_1} \rangle</span>
+
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1121,7 +1130,7 @@
 <span class="sd">       overlap matrices. Simply append &quot;:svd&quot; to the chosen method, e.g. &quot;berry:svd&quot;.</span>
 <span class="sd">    eigenstate_kwargs : dict, optional</span>
 <span class="sd">       keyword arguments passed directly to the ``contour.eigenstate`` method.</span>
-<span class="sd">       One should *not* pass a ``k`` as that is already used.</span>
+<span class="sd">       One should *not* pass ``k`` as that is already used.</span>
 <span class="sd">    ret_overlap: bool, optional</span>
 <span class="sd">       optionally return the overlap matrix :math:`\mathbf S`</span>
 
@@ -1149,7 +1158,7 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 
-<span class="sd">    Calculate Berry-phase for first band but using the SVD me</span>
+<span class="sd">    Calculate Berry-phase for first band but using the SVD method</span>
 
 <span class="sd">    &gt;&gt;&gt; N = 30</span>
 <span class="sd">    &gt;&gt;&gt; kR = 0.01</span>
@@ -1159,7 +1168,7 @@
 <span class="sd">    &gt;&gt;&gt; phase = berry_phase(bz, sub=0)</span>
 
 <span class="sd">    Calculate the multi-band Berry-phase using the SVD method, thus</span>
-<span class="sd">    ensuring singular vectors are removed.</span>
+<span class="sd">    ensuring removal of singular vectors.</span>
 
 <span class="sd">    &gt;&gt;&gt; N = 30</span>
 <span class="sd">    &gt;&gt;&gt; kR = 0.01</span>
@@ -1203,10 +1212,6 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;berry_phase: requires the method to be [berry, zak]&quot;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">contour</span><span class="o">.</span><span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span> <span class="n">contour</span><span class="o">.</span><span class="n">k</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]):</span>
-        <span class="c1"># When the user has the contour points closed, we don&#39;t need to do this in the below loop</span>
-        <span class="n">closed</span> <span class="o">=</span> <span class="kc">False</span>
-
     <span class="c1"># We calculate the final angle from the determinant</span>
     <span class="n">_process</span> <span class="o">=</span> <span class="n">dot</span>
 
@@ -1243,13 +1248,13 @@
         <span class="k">def</span> <span class="nf">_berry</span><span class="p">(</span><span class="n">eigenstates</span><span class="p">):</span>
             <span class="k">nonlocal</span> <span class="n">sub</span>
             <span class="n">first</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">eigenstates</span><span class="p">)</span>
-            <span class="n">_lowdin</span><span class="p">(</span><span class="n">first</span><span class="p">)</span>
             <span class="n">first</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">sub</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">_lowdin</span><span class="p">(</span><span class="n">first</span><span class="p">)</span>
             <span class="n">prev</span> <span class="o">=</span> <span class="n">first</span>
             <span class="n">prd</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="k">for</span> <span class="n">second</span> <span class="ow">in</span> <span class="n">eigenstates</span><span class="p">:</span>
-                <span class="n">_lowdin</span><span class="p">(</span><span class="n">second</span><span class="p">)</span>
                 <span class="n">second</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">sub</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">_lowdin</span><span class="p">(</span><span class="n">second</span><span class="p">)</span>
                 <span class="n">prd</span> <span class="o">=</span> <span class="n">_process</span><span class="p">(</span><span class="n">prd</span><span class="p">,</span> <span class="n">prev</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="n">second</span><span class="p">,</span> <span class="n">diag</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
                 <span class="n">prev</span> <span class="o">=</span> <span class="n">second</span>
             <span class="k">if</span> <span class="n">closed</span><span class="p">:</span>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Electronic structure setup – part 1 &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
+  <title>Electronic structure setup – part 1 &mdash; sisl 0.1.dev1+g64bdde7 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -17,6 +17,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
@@ -37,7 +38,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g619c2d5
+                0.1.dev1+g64bdde7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -141,7 +142,7 @@
 }
 </style>
 <section id="electronic-structure-setup-part-1">
-<span id="tutorial-05"></span><h1>Electronic structure setup – part 1<a class="headerlink" href="#electronic-structure-setup-part-1" title="Permalink to this headline"></a></h1>
+<span id="tutorial-05"></span><h1>Electronic structure setup – part 1<a class="headerlink" href="#electronic-structure-setup-part-1" title="Permalink to this heading"></a></h1>
 <p>A <em class="xref py py-obj">Hamiltonian</em> is an extension of a <em class="xref py py-obj">Geometry</em>. From the <em class="xref py py-obj">Geometry</em> it
 reads the number of orbitals, the supercell information.</p>
 <p>Hamiltonians are matrices, and in sisl all Hamiltonians are treated
@@ -171,7 +172,7 @@ on-site energy, a rather un-interesting case.</p>
 <p>The examples here will be re-performed in <a class="reference internal" href="tutorial_06.html#tutorial-06"><span class="std std-ref">Electronic structure setup – part 2</span></a> by highlighting
 how the Hamiltonian can be setup in a more easy way.</p>
 <section id="example-square">
-<h2>Example – square<a class="headerlink" href="#example-square" title="Permalink to this headline"></a></h2>
+<h2>Example – square<a class="headerlink" href="#example-square" title="Permalink to this heading"></a></h2>
 <p>Let us try and continue from <a class="reference internal" href="tutorial_01.html#tutorial-01"><span class="std std-ref">Geometry creation – part 1</span></a> and create a square
 2D lattice with one atom in the unit-cell and a supercell which couples only
 to nearest neighbour atoms.</p>
@@ -224,7 +225,7 @@ calculation of the band-structure of the system.</p>
 <p>The complete code for this example (plus the band-structure) can be found <a class="reference download internal" download="" href="../_downloads/632b6216e5aedaa9480f9670d4e566a0/tutorial_05_square.py"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a>.</p>
 </section>
 <section id="example-graphene">
-<h2>Example – graphene<a class="headerlink" href="#example-graphene" title="Permalink to this headline"></a></h2>
+<h2>Example – graphene<a class="headerlink" href="#example-graphene" title="Permalink to this heading"></a></h2>
 <p>A commonly encountered example is the graphene unit-cell. In a tight-binding picture
 one may suffice with a nearest-neighbour coupling.</p>
 <p>Here we create the simple graphene 2D lattice with 2 atoms per unit-cell and

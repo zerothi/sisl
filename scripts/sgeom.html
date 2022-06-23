@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sgeom &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
+  <title>sgeom &mdash; sisl 0.1.dev1+g64bdde7 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -17,6 +17,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
@@ -35,7 +36,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g619c2d5
+                0.1.dev1+g64bdde7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -140,7 +141,7 @@
 }
 </style>
 <section id="sgeom">
-<span id="script-sgeom"></span><h1><em class="xref py py-obj">sgeom</em><a class="headerlink" href="#sgeom" title="Permalink to this headline"></a></h1>
+<span id="script-sgeom"></span><h1><em class="xref py py-obj">sgeom</em><a class="headerlink" href="#sgeom" title="Permalink to this heading"></a></h1>
 <p>The <em class="xref py py-obj">sgeom</em> executable is a tool for reading and transforming general
 coordinate formats to other formats, or alter them.</p>
 <p>For a short help description of the possible uses do:</p>
@@ -149,7 +150,7 @@ coordinate formats to other formats, or alter them.</p>
 </div>
 <p>Here we list a few of the most frequent used commands.</p>
 <section id="conversion">
-<h2>Conversion<a class="headerlink" href="#conversion" title="Permalink to this headline"></a></h2>
+<h2>Conversion<a class="headerlink" href="#conversion" title="Permalink to this heading"></a></h2>
 <p>The simplest usage is transforming from one format to another format.
 <em class="xref py py-obj">sgeom</em> takes at least two mandatory arguments, the first being the
 input file format, and the second (and any third + argumets) the output
@@ -165,14 +166,14 @@ for plotting in a GUI program one can do this:</p>
 <p>and the <code class="docutils literal notranslate"><span class="pre">RUN.xyz</span></code> file will be created.</p>
 <p>Remark that the input file <em>must</em> be the first argument of <em class="xref py py-obj">sgeom</em>.</p>
 <section id="available-formats">
-<h3>Available formats<a class="headerlink" href="#available-formats" title="Permalink to this headline"></a></h3>
+<h3>Available formats<a class="headerlink" href="#available-formats" title="Permalink to this heading"></a></h3>
 <p>A great deal of different file formats are available. For details please see
 <a class="reference internal" href="../api/io/index.html#module-sisl.io" title="sisl.io"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.io</span></code></a> for a list of all implemented data-files. <em>Any</em> file that implements
 the <code class="docutils literal notranslate"><span class="pre">read_geometry</span></code>/<code class="docutils literal notranslate"><span class="pre">write_geometry</span></code> methods will be usable by <em class="xref py py-obj">sgeom</em>.</p>
 </section>
 </section>
 <section id="advanced-features">
-<h2>Advanced Features<a class="headerlink" href="#advanced-features" title="Permalink to this headline"></a></h2>
+<h2>Advanced Features<a class="headerlink" href="#advanced-features" title="Permalink to this heading"></a></h2>
 <p>More advanced features are represented here.</p>
 <p>The <em class="xref py py-obj">sgeom</em> utility enables highly advanced creation of several geometry
 structures by invocing the arguments <em>in order</em>.</p>
@@ -185,7 +186,7 @@ vector, store the resulting geometry in <code class="docutils literal notranslat
 the already repeated structure 3 times along the second unit-cell vector and store
 the now <code class="docutils literal notranslate"><span class="pre">3x3</span></code> repeated structure as <code class="docutils literal notranslate"><span class="pre">repx3_repy3.xyz</span></code>.</p>
 <section id="repeating-tiling-structures">
-<h3>Repeating/Tiling structures<a class="headerlink" href="#repeating-tiling-structures" title="Permalink to this headline"></a></h3>
+<h3>Repeating/Tiling structures<a class="headerlink" href="#repeating-tiling-structures" title="Permalink to this heading"></a></h3>
 <p>One may use periodicity to create larger structures from a simpler structure.
 This is useful for creating larger bulk structures.
 To repeat a structure do</p>
@@ -214,7 +215,7 @@ sgeom RUN.fdf --tile-x <span class="m">4</span> RUN4x.fdf
 <p>where all the above yields the same structure, albeit with different orderings.</p>
 </section>
 <section id="rotating-structure">
-<h3>Rotating structure<a class="headerlink" href="#rotating-structure" title="Permalink to this headline"></a></h3>
+<h3>Rotating structure<a class="headerlink" href="#rotating-structure" title="Permalink to this heading"></a></h3>
 <p>To rotate the structure around certain cell directions one can do:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom &lt;<span class="k">in</span>&gt; --rotate &lt;angle&gt; <span class="o">[</span>ax<span class="p">|</span>yb<span class="p">|</span>zc<span class="o">]</span> &lt;out&gt;
 </pre></div>
@@ -228,7 +229,7 @@ If one wish to use radians append an <code class="docutils literal notranslate">
 </div>
 </section>
 <section id="combining-command-line-arguments">
-<h3>Combining command line arguments<a class="headerlink" href="#combining-command-line-arguments" title="Permalink to this headline"></a></h3>
+<h3>Combining command line arguments<a class="headerlink" href="#combining-command-line-arguments" title="Permalink to this heading"></a></h3>
 <p>All command line options may be used together. However, one should be aware that
 the order of the command lines determine the order of operations.</p>
 <p>If one starts by repeating the structure, then rotate it, then shift the structure,

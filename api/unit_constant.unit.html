@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Unit conversion &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
+  <title>Unit conversion &mdash; sisl 0.1.dev1+g64bdde7 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -17,6 +17,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
@@ -35,7 +36,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g619c2d5
+                0.1.dev1+g64bdde7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -144,7 +145,7 @@
 }
 </style>
 <section id="module-sisl.unit">
-<span id="unit-conversion"></span><span id="unit"></span><h1>Unit conversion<a class="headerlink" href="#module-sisl.unit" title="Permalink to this headline"></a></h1>
+<span id="unit-conversion"></span><span id="unit"></span><h1>Unit conversion<a class="headerlink" href="#module-sisl.unit" title="Permalink to this heading"></a></h1>
 <p>Generic conversion utility between different units.</p>
 <p>All different codes unit conversion routines
 should adhere to the same routine names for consistency and
@@ -161,7 +162,7 @@ the codes unit conversion are not the same as the sisl defaults.</p>
 <td><p>The group of units that <em class="xref py py-obj">unit</em> belong to</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.unit.unit_convert.html#sisl.unit.unit_convert" title="sisl.unit.unit_convert"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unit_convert</span></code></a>(fr, to[, opts, tbl])</p></td>
-<td><p>Factor that takes 'fr' to the units of 'to'.</p></td>
+<td><p>Factor that takes <em class="xref py py-obj">fr</em> to the units of <em class="xref py py-obj">to</em></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.unit.unit_default.html#sisl.unit.unit_default" title="sisl.unit.unit_default"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unit_default</span></code></a>(group[, tbl])</p></td>
 <td><p>The default unit of the unit group <em class="xref py py-obj">group</em>.</p></td>
@@ -178,7 +179,7 @@ the units defined in the respective code.</p>
 complex units (Ry/kg/Bohr N) while <a class="reference internal" href="generated/sisl.unit.unit_convert.html#sisl.unit.unit_convert" title="sisl.unit.unit_convert"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unit_convert</span></code></a> is the basic unit-conversion
 table that only converts simple units. E.g. Ry to eV etc.</p>
 <section id="module-sisl.unit.siesta">
-<span id="siesta-units"></span><h2>Siesta units<a class="headerlink" href="#module-sisl.unit.siesta" title="Permalink to this headline"></a></h2>
+<span id="siesta-units"></span><h2>Siesta units<a class="headerlink" href="#module-sisl.unit.siesta" title="Permalink to this heading"></a></h2>
 <p>This subpackage implements the unit conversions used in <a class="reference external" href="https://siesta-project.org">Siesta</a>.</p>
 <p>To use the unit conversion from <a class="reference external" href="https://siesta-project.org">Siesta</a>, simply import <code class="xref py py-obj docutils literal notranslate"><span class="pre">units</span></code> as:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sisl.unit</span> <span class="kn">import</span> <span class="n">units</span>

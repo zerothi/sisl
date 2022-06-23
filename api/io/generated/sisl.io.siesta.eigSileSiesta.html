@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.eigSileSiesta &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
+  <title>sisl.io.siesta.eigSileSiesta &mdash; sisl 0.1.dev1+g64bdde7 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -17,6 +17,7 @@
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
@@ -37,7 +38,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g619c2d5
+                0.1.dev1+g64bdde7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -173,29 +174,36 @@
 }
 </style>
 <section id="sisl-io-siesta-eigsilesiesta">
-<h1>sisl.io.siesta.eigSileSiesta<a class="headerlink" href="#sisl-io-siesta-eigsilesiesta" title="Permalink to this headline"></a></h1>
+<h1>sisl.io.siesta.eigSileSiesta<a class="headerlink" href="#sisl-io-siesta-eigsilesiesta" title="Permalink to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="sisl.io.siesta.eigSileSiesta">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.io.siesta.</span></span><span class="sig-name descname"><span class="pre">eigSileSiesta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.siesta.eigSileSiesta" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="sisl.io.siesta.SileSiesta.html#sisl.io.siesta.SileSiesta" title="sisl.io.siesta.SileSiesta"><code class="xref py py-class docutils literal notranslate"><span class="pre">sisl.io.siesta.SileSiesta</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="sisl.io.siesta.SileSiesta.html#sisl.io.siesta.SileSiesta" title="sisl.io.siesta.SileSiesta"><code class="xref py py-class docutils literal notranslate"><span class="pre">SileSiesta</span></code></a></p>
 <p>Eigenvalues as calculated in the SCF loop, easy plots using <em class="xref py py-obj">sdata</em></p>
 <p>The .EIG file from Siesta contains the eigenvalues for k-points used during the SCF.
 Using the command-line utility <em class="xref py py-obj">sdata</em> one may plot the eigenvalue spectrum to visualize the
 spread of eigenvalues.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sdata siesta.EIG --plot
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot the eigenspectrum</span>
+sdata siesta.EIG --plot
 <span class="c1"># or to save to png file</span>
 sdata siesta.EIG --plot eig_spread.png
 </pre></div>
 </div>
-<p>One may also plot the DOS using the eigenvalues and the k-point weights:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sdata siesta.EIG --dos
-<span class="c1"># or to save to png file</span>
-sdata siesta.EIG --dos dos.png
+<p>One may also extract/plot the DOS using the eigenvalues and the k-point weights:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># plot the DOS using default values</span>
+sdata siesta.EIG --dos --plot
+<span class="c1"># change the energy spacing and plot it</span>
+sdata siesta.EIG --dos <span class="nv">dE</span><span class="o">=</span>1meV --plot
+<span class="c1"># change the energy spacing;</span>
+<span class="c1"># plot two different temperatures</span>
+sdata siesta.EIG --dos <span class="nv">dE</span><span class="o">=</span>1meV <span class="nv">kT</span><span class="o">=</span>5K --dos <span class="nv">kT</span><span class="o">=</span>25K --plot
+<span class="c1"># store the data in a dos.dat (3 columns, E, kT=5, kT=25K)</span>
+sdata siesta.EIG --dos <span class="nv">dE</span><span class="o">=</span>1meV <span class="nv">kT</span><span class="o">=</span>5K --dos <span class="nv">kT</span><span class="o">=</span>25K --out dos.dat
 </pre></div>
 </div>
 <p>This will default to plot the DOS using these parameters:
 dE = 5 meV, kT = 300 K (25 meV), Gaussian distribution and in the full energy-range of the eigenvalue spectrum.
-By default the k-point weights will be read in the <code class="docutils literal notranslate"><span class="pre">siesta.KP</span></code> file, however if the file does not
+By default the k-point weights will be read in the <code class="docutils literal notranslate"><span class="pre">*.KP</span></code> file, however if the file does not
 exist one may use the option <code class="docutils literal notranslate"><span class="pre">--kp-file</span> <span class="pre">FILE</span></code> to read in the weights from <code class="docutils literal notranslate"><span class="pre">FILE</span></code>.</p>
 <p>To limit the shown energy region, simply use:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sdata siesta.EIG -E -10:10 --dos
@@ -203,11 +211,16 @@ exist one may use the option <code class="docutils literal notranslate"><span cl
 </div>
 <p>to reduce to the -10 eV to 10 eV energy range.</p>
 <p>One may optionally choose the temperature smearing and the used distribution function:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sdata siesta.EIG -E -10:10 --dos <span class="m">0</span>.01 <span class="m">0</span>.1 lorentzian
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># position dependent values</span>
+sdata siesta.EIG -E -10:10 --dos <span class="m">0</span>.01 <span class="m">0</span>.1 lorentzian
+<span class="c1"># key based values</span>
+sdata siesta.EIG -E -10:10 --dos <span class="nv">dE</span><span class="o">=</span><span class="m">0</span>.01 <span class="nv">kT</span><span class="o">=</span><span class="m">0</span>.1 <span class="nv">dist</span><span class="o">=</span>lorentzian
 </pre></div>
 </div>
 <p>which will calculate the DOS in steps of 10 meV, the temperature smearing is 0.1 eV and
-the used distribution is a Lorentzian.</p>
+the used distribution is a Lorentzian.
+Several invocations of <code class="docutils literal notranslate"><span class="pre">--dos</span></code> will collect the data until either a <code class="docutils literal notranslate"><span class="pre">--plot</span></code> or <code class="docutils literal notranslate"><span class="pre">--out</span></code>
+is found on the command line.</p>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <colgroup>

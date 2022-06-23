@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Electronic structure calculation – a walk-through &mdash; sisl 0.1.dev1+g619c2d5 documentation</title>
+  <title>Electronic structure calculation – a walk-through &mdash; sisl 0.1.dev1+g64bdde7 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -17,6 +17,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
@@ -37,7 +38,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g619c2d5
+                0.1.dev1+g64bdde7
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -331,6 +332,7 @@ div.nboutput.container div.output_area > div[class^='highlight']{
 }
 
 /* Some additional styling taken form the Jupyter notebook CSS */
+.jp-RenderedHTMLCommon table,
 div.rendered_html table {
   border: none;
   border-collapse: collapse;
@@ -339,10 +341,14 @@ div.rendered_html table {
   font-size: 12px;
   table-layout: fixed;
 }
+.jp-RenderedHTMLCommon thead,
 div.rendered_html thead {
   border-bottom: 1px solid black;
   vertical-align: bottom;
 }
+.jp-RenderedHTMLCommon tr,
+.jp-RenderedHTMLCommon th,
+.jp-RenderedHTMLCommon td,
 div.rendered_html tr,
 div.rendered_html th,
 div.rendered_html td {
@@ -354,12 +360,15 @@ div.rendered_html td {
   max-width: none;
   border: none;
 }
+.jp-RenderedHTMLCommon th,
 div.rendered_html th {
   font-weight: bold;
 }
+.jp-RenderedHTMLCommon tbody tr:nth-child(odd),
 div.rendered_html tbody tr:nth-child(odd) {
   background: #f5f5f5;
 }
+.jp-RenderedHTMLCommon tbody tr:hover,
 div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
@@ -401,10 +410,10 @@ Download IPython notebook <a href="https://raw.githubusercontent.com/zerothi/sis
 </div>
 </div>
 <section id="Electronic-structure-calculation-–-a-walk-through">
-<h1>Electronic structure calculation – a walk-through<a class="headerlink" href="#Electronic-structure-calculation-–-a-walk-through" title="Permalink to this headline"></a></h1>
+<h1>Electronic structure calculation – a walk-through<a class="headerlink" href="#Electronic-structure-calculation-–-a-walk-through" title="Permalink to this heading"></a></h1>
 <p>This tutorial will describe a complete walk-through of a large fraction of the <code class="docutils literal notranslate"><span class="pre">sisl</span></code> functionalities. It will show you how to generated default geometries, constructing Hamiltonians, calculating eigenstates and plotting various physical quantities.</p>
 <section id="Creating-the-geometry-to-investigate">
-<h2>Creating the geometry to investigate<a class="headerlink" href="#Creating-the-geometry-to-investigate" title="Permalink to this headline"></a></h2>
+<h2>Creating the geometry to investigate<a class="headerlink" href="#Creating-the-geometry-to-investigate" title="Permalink to this heading"></a></h2>
 <p>Our system of interest will be graphene. Instead of creating a graphene flake, or the primary unit-cell of graphene, we will create a vacancy in graphene. We will start by creating a graphene flake</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
@@ -521,7 +530,7 @@ Geometry{na: 72, no: 72,
 </div>
 </section>
 <section id="Creating-the-electronic-structure">
-<h2>Creating the electronic structure<a class="headerlink" href="#Creating-the-electronic-structure" title="Permalink to this headline"></a></h2>
+<h2>Creating the electronic structure<a class="headerlink" href="#Creating-the-electronic-structure" title="Permalink to this heading"></a></h2>
 <p>To calculate eigenstates, DOS and other physical quantities from the Hamiltonian we need to setup the Hamiltonian. Tthis is done by passing a <code class="docutils literal notranslate"><span class="pre">Geometry</span></code> to a <code class="docutils literal notranslate"><span class="pre">Hamiltonian</span></code> class</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
@@ -601,7 +610,7 @@ Hamiltonian{non-zero: 281, orthogonal: True,
 <p>Now the Hamiltonian has <span class="math notranslate nohighlight">\(281=71\cdot4-3\)</span> non-zero elements (as expected).</p>
 </section>
 <section id="Hamiltonian-eigenstates">
-<h2>Hamiltonian eigenstates<a class="headerlink" href="#Hamiltonian-eigenstates" title="Permalink to this headline"></a></h2>
+<h2>Hamiltonian eigenstates<a class="headerlink" href="#Hamiltonian-eigenstates" title="Permalink to this heading"></a></h2>
 <div class="line-block">
 <div class="line">At this point we have 1) a complete geometry describing a supercell structure with nearest cell neighbour interactions, 2) a Hamiltonian with nearest neighbour interactions describing the electronic structure.</div>
 <div class="line">This completes what is needed to calculate a great deal of physical quantities, e.g. eigenstates, density of states, projected density of states and bandstructures.</div>
@@ -675,11 +684,11 @@ Hamiltonian{non-zero: 281, orthogonal: True,
 <p>This highlights a somewhat <em>localized</em> state around the missing atom.</p>
 </section>
 <section id="Brillouin-zone-calculations">
-<h2>Brillouin-zone calculations<a class="headerlink" href="#Brillouin-zone-calculations" title="Permalink to this headline"></a></h2>
+<h2>Brillouin-zone calculations<a class="headerlink" href="#Brillouin-zone-calculations" title="Permalink to this heading"></a></h2>
 <p>The above DOS and PDOS analysis are useful for investigating a single <span class="math notranslate nohighlight">\(k\)</span>-point at a time. However, they are incomplete in the sense of the full Brillouin zone. To leverage this <code class="docutils literal notranslate"><span class="pre">sisl</span></code>, implements several classes to handle Brillouin-zones.</p>
 <p>In the following we will show how to perform band structure calculations as well as performing <span class="math notranslate nohighlight">\(k\)</span>-averaged quantities in the Brillouin zone.</p>
 <section id="Bandstructure">
-<h3>Bandstructure<a class="headerlink" href="#Bandstructure" title="Permalink to this headline"></a></h3>
+<h3>Bandstructure<a class="headerlink" href="#Bandstructure" title="Permalink to this heading"></a></h3>
 <div class="line-block">
 <div class="line">An easy and useful analysis is the <em>band structure</em>. In <code class="docutils literal notranslate"><span class="pre">sisl</span></code> calculating the band-structure is as easy as anything else.</div>
 <div class="line">Begin by defining the path in the Brillouin zone.</div>
@@ -743,7 +752,7 @@ as_list = b_list.a()
 </div>
 </section>
 <section id="Calculating-k-averaged-quantities">
-<h3>Calculating <span class="math notranslate nohighlight">\(k\)</span>-averaged quantities<a class="headerlink" href="#Calculating-k-averaged-quantities" title="Permalink to this headline"></a></h3>
+<h3>Calculating <span class="math notranslate nohighlight">\(k\)</span>-averaged quantities<a class="headerlink" href="#Calculating-k-averaged-quantities" title="Permalink to this heading"></a></h3>
 <p>Now we are in a position to calculate a subset of quantities from the Hamiltonian. Before proceeding we will note that the Hamiltonian also implements the <code class="docutils literal notranslate"><span class="pre">DOS</span></code> and <code class="docutils literal notranslate"><span class="pre">PDOS</span></code> methods (equivalent to <code class="docutils literal notranslate"><span class="pre">Hamiltonian.eigenvalue().DOS()</span></code>), hence to calculate these as <span class="math notranslate nohighlight">\(k\)</span>-averaged quantities we can create a Brillouin zone object with proper weights, say a Monkhorst-Pack grid, and calculate the averaged quantities.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
@@ -802,7 +811,7 @@ as_list = b_list.a()
 </section>
 </section>
 <section id="Plotting-eigenstates-on-a-real-space-grid">
-<h2>Plotting eigenstates on a real space grid<a class="headerlink" href="#Plotting-eigenstates-on-a-real-space-grid" title="Permalink to this headline"></a></h2>
+<h2>Plotting eigenstates on a real space grid<a class="headerlink" href="#Plotting-eigenstates-on-a-real-space-grid" title="Permalink to this heading"></a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">sisl</span></code> also implements methods to plot orbitals on grids. Often it may also be advantageous to plot simple orbitals to check their appearence. <code class="docutils literal notranslate"><span class="pre">sisl</span></code> implements a simple variation of spherical atomic orbitals. Other orbitals may easily be added, if so desired.</p>
 <p>Since we require orbitals to be zero at some maximum cut-off <span class="math notranslate nohighlight">\(r_\mathrm{max}\)</span> a radial function is used to cutoff the spherical harmonics. In this case we will simply use an exponential function with a cutoff radius of <span class="math notranslate nohighlight">\(1.6\,\mathrm{Å}\)</span></p>
 <div class="nbinput docutils container">
