@@ -11,7 +11,7 @@ from .car import carSileVASP
 from sisl._internal import set_module
 from sisl import Grid
 
-__all__ = ['chgSileVASP']
+__all__ = ["chgSileVASP"]
 
 
 @set_module("sisl.io.vasp")
@@ -43,10 +43,12 @@ class chgSileVASP(carSileVASP):
         geom = self.read_geometry()
         V = geom.sc.volume
 
+        rl = self.readline
+
         # Now we are past the cell and geometry
         # We can now read the size of CHGCAR
-        self.readline()
-        nx, ny, nz = list(map(int, self.readline().split()))
+        rl()
+        nx, ny, nz = list(map(int, rl().split()))
         n = nx * ny * nz
 
         is_index = True
@@ -56,15 +58,13 @@ class chgSileVASP(carSileVASP):
             is_index = False
             max_index = len(index)
 
-        rl = self.readline
         vals = []
-        vapp = vals.append
+        vext = vals.extend
 
         i = 0
         while i < n * max_index:
-            dat = [l for l in rl().split()]
-            vapp(dat)
-            i += len(dat)
+            vext(rl().split())
+            i = len(vals)
 
             if i % n == 0 and i < n * max_index:
                 # Each time a new spin-index is present, we need to read the coordinates
@@ -76,7 +76,7 @@ class chgSileVASP(carSileVASP):
                 rl()
 
         # Cut size before proceeding (otherwise it *may* fail)
-        vals = np.array(vals).astype(dtype).ravel()
+        vals = np.array(vals).astype(dtype, copy=False)
         if is_index:
             val = vals[n * index:n * (index+1)].reshape(nz, ny, nx)
         else:
@@ -99,5 +99,5 @@ class chgSileVASP(carSileVASP):
 
 
 # CHG has low-precision, so the user should prefer CHGCAR
-add_sile('CHG', chgSileVASP, gzip=True)
-add_sile('CHGCAR', chgSileVASP, gzip=True)
+add_sile("CHG", chgSileVASP, gzip=True)
+add_sile("CHGCAR", chgSileVASP, gzip=True)

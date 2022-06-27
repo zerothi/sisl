@@ -10,9 +10,9 @@ from sisl._internal import set_module
 from sisl import Geometry, Atom, SuperCell, Grid, SislError
 from sisl.unit import unit_convert
 
-__all__ = ['cubeSile']
+__all__ = ["cubeSile"]
 
-Ang2Bohr = unit_convert('Ang', 'Bohr')
+Ang2Bohr = unit_convert("Ang", "Bohr")
 
 
 @set_module("sisl.io")
@@ -20,7 +20,7 @@ class cubeSile(Sile):
     """ CUBE file object """
 
     @sile_fh_open()
-    def write_supercell(self, sc, fmt='15.10e', size=None, origin=None,
+    def write_supercell(self, sc, fmt="15.10e", size=None, origin=None,
                         *args, **kwargs):
         """ Writes `SuperCell` object attached to this grid
 
@@ -38,15 +38,15 @@ class cubeSile(Sile):
         sile_raise_write(self)
 
         # Write header
-        self._write('\n')
-        self._write('sisl --- CUBE file\n')
+        self._write("\n")
+        self._write("sisl --- CUBE file\n")
 
         if size is None:
             size = np.ones([3], np.int32)
         if origin is None:
             origin = sc.origin[:]
 
-        _fmt = '{:d} {:15.10e} {:15.10e} {:15.10e}\n'
+        _fmt = "{:d} {:15.10e} {:15.10e} {:15.10e}\n"
 
         # Add #-of atoms and origin
         self._write(_fmt.format(1, *(origin * Ang2Bohr)))
@@ -56,10 +56,10 @@ class cubeSile(Sile):
             dcell = sc.cell[ix, :] / size[ix] * Ang2Bohr
             self._write(_fmt.format(size[ix], *dcell))
 
-        self._write('1 0. 0. 0. 0.\n')
+        self._write("1 0. 0. 0. 0.\n")
 
     @sile_fh_open()
-    def write_geometry(self, geometry, fmt='15.10e', size=None, origin=None,
+    def write_geometry(self, geometry, fmt="15.10e", size=None, origin=None,
             *args, **kwargs):
         """ Writes `Geometry` object attached to this grid
 
@@ -77,15 +77,15 @@ class cubeSile(Sile):
         sile_raise_write(self)
 
         # Write header
-        self._write('\n')
-        self._write('sisl --- CUBE file\n')
+        self._write("\n")
+        self._write("sisl --- CUBE file\n")
 
         if size is None:
             size = np.ones([3], np.int32)
         if origin is None:
             origin = geometry.origin[:]
 
-        _fmt = '{:d} {:15.10e} {:15.10e} {:15.10e}\n'
+        _fmt = "{:d} {:15.10e} {:15.10e} {:15.10e}\n"
 
         valid_Z = (geometry.atoms.Z > 0).nonzero()[0]
         geometry = geometry.sub(valid_Z)
@@ -98,13 +98,13 @@ class cubeSile(Sile):
             dcell = geometry.cell[ix, :] / size[ix] * Ang2Bohr
             self._write(_fmt.format(size[ix], *dcell))
 
-        tmp = ' {:' + fmt + '}'
-        _fmt = '{:d} 0.0' + tmp + tmp + tmp + '\n'
+        tmp = " {:" + fmt + "}"
+        _fmt = "{:d} 0.0" + tmp + tmp + tmp + "\n"
         for ia in geometry:
             self._write(_fmt.format(geometry.atoms[ia].Z, *geometry.xyz[ia, :] * Ang2Bohr))
 
     @sile_fh_open()
-    def write_grid(self, grid, fmt='.5e', imag=False, *args, **kwargs):
+    def write_grid(self, grid, fmt=".5e", imag=False, *args, **kwargs):
         """ Write `Grid` to the contained file
 
         Parameters
@@ -127,7 +127,7 @@ class cubeSile(Sile):
         else:
             self.write_geometry(grid.geometry, size=grid.shape, *args, **kwargs)
 
-        buffersize = kwargs.get('buffersize', min(6144, grid.grid.size))
+        buffersize = kwargs.get("buffersize", min(6144, grid.grid.size))
         buffersize += buffersize % 6 # ensure multiple of 6
 
         # A CUBE file contains grid-points aligned like this:
@@ -135,27 +135,27 @@ class cubeSile(Sile):
         #   for y
         #     for z
         #       write...
-        _fmt1 = '{:' + fmt + '} '
-        _fmt6 = (_fmt1 * 6)[:-1] + '\n'
+        _fmt1 = "{:" + fmt + "} "
+        _fmt6 = (_fmt1 * 6)[:-1] + "\n"
         __fmt = _fmt6 * (buffersize // 6)
 
         if imag:
-            for z in np.nditer(np.asarray(grid.grid.imag, order='C').reshape(-1), flags=['external_loop', 'buffered'],
-                               op_flags=[['readonly']], order='C', buffersize=buffersize):
+            for z in np.nditer(np.asarray(grid.grid.imag, order="C").reshape(-1), flags=["external_loop", "buffered"],
+                               op_flags=[["readonly"]], order="C", buffersize=buffersize):
                 if z.shape[0] != buffersize:
                     s = z.shape[0]
-                    __fmt = _fmt6 * (s // 6) + _fmt1 * (s % 6) + '\n'
+                    __fmt = _fmt6 * (s // 6) + _fmt1 * (s % 6) + "\n"
                 self._write(__fmt.format(*z.tolist()))
         else:
-            for z in np.nditer(np.asarray(grid.grid.real, order='C').reshape(-1), flags=['external_loop', 'buffered'],
-                               op_flags=[['readonly']], order='C', buffersize=buffersize):
+            for z in np.nditer(np.asarray(grid.grid.real, order="C").reshape(-1), flags=["external_loop", "buffered"],
+                               op_flags=[["readonly"]], order="C", buffersize=buffersize):
                 if z.shape[0] != buffersize:
                     s = z.shape[0]
-                    __fmt = _fmt6 * (s // 6) + _fmt1 * (s % 6) + '\n'
+                    __fmt = _fmt6 * (s // 6) + _fmt1 * (s % 6) + "\n"
                 self._write(__fmt.format(*z.tolist()))
 
         # Add a finishing line to ensure empty ending
-        self._write('\n')
+        self._write("\n")
 
     @sile_fh_open()
     def read_supercell(self, na=False):
@@ -220,6 +220,7 @@ class cubeSile(Sile):
         if not imag is None:
             if not isinstance(imag, Grid):
                 imag = Grid.read(imag)
+
         geom = self.read_geometry()
         if geom is None:
             self.fh.seek(0)
@@ -236,7 +237,7 @@ class cubeSile(Sile):
         na = int(self.readline().split()[0])
 
         ngrid = [0] * 3
-        for i in [0, 1, 2]:
+        for i in (0, 1, 2):
             tmp = self.readline().split()
             ngrid[i] = int(tmp[0])
 
@@ -254,7 +255,7 @@ class cubeSile(Sile):
         # We are currently doing this to enable reading
         #  1-column data and 6-column data.
         lines = [item for sublist in self.fh.readlines() for item in sublist.split()]
-        grid.grid[:] = np.array(lines).astype(grid.dtype)
+        grid.grid[:] = np.array(lines).astype(grid.dtype, copy=False)
         grid.grid.shape = ngrid
 
         if imag is None:
@@ -262,11 +263,11 @@ class cubeSile(Sile):
 
         # We are expecting an imaginary part
         if not grid.geometry.equal(imag.geometry):
-            raise SislError(str(self) + ' and its imaginary part does not have the same '
-                            'geometry. Hence a combined complex Grid cannot be formed.')
+            raise SislError(f"{self!s} and its imaginary part does not have the same "
+                            "geometry. Hence a combined complex Grid cannot be formed.")
         if grid != imag:
-            raise SislError(str(self) + ' and its imaginary part does not have the same '
-                            'shape. Hence a combined complex Grid cannot be formed.')
+            raise SislError(f"{self!s} and its imaginary part does not have the same "
+                            "shape. Hence a combined complex Grid cannot be formed.")
 
         # Now we have a complex grid
         grid.grid = grid.grid + 1j * imag.grid
@@ -274,4 +275,4 @@ class cubeSile(Sile):
         return grid
 
 
-add_sile('cube', cubeSile, case=False, gzip=True)
+add_sile("cube", cubeSile, case=False, gzip=True)
