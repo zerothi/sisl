@@ -610,8 +610,8 @@ class Geometry(SuperCellChild):
 
         return xj - xi[None, :]
 
-    def orij(self, io, jo) -> ndarray:
-        r""" Distance between orbital `io` and `jo`, orbitals can be in super-cell indices
+    def orij(self, orbitals1, orbitals2) -> ndarray:
+        r""" Distance between orbital `orbitals1` and `orbitals2`, orbitals can be in super-cell indices
 
         Returns the distance between two orbitals:
 
@@ -620,15 +620,15 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        io : int or array_like
+        orbitals1 : int or array_like
            orbital index of first orbital
-        jo : int or array_like
+        orbitals2 : int or array_like
            orbital indices
         """
-        return self.rij(self.o2a(io), self.o2a(jo))
+        return self.rij(self.o2a(orbitals1), self.o2a(orbitals2))
 
-    def oRij(self, io, jo) -> ndarray:
-        r""" Vector between orbital `io` and `jo`, orbitals can be in super-cell indices
+    def oRij(self, orbitals1, orbitals2) -> ndarray:
+        r""" Vector between orbital `orbitals1` and `orbitals2`, orbitals can be in super-cell indices
 
         Returns the vector between two orbitals:
 
@@ -637,12 +637,12 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        io : int or array_like
+        orbitals1 : int or array_like
            orbital index of first orbital
-        jo : int or array_like
+        orbitals2 : int or array_like
            orbital indices
         """
-        return self.Rij(self.o2a(io), self.o2a(jo))
+        return self.Rij(self.o2a(orbitals1), self.o2a(orbitals2))
 
     @staticmethod
     def read(sile, *args, **kwargs) -> Geometry:
@@ -3836,43 +3836,42 @@ class Geometry(SuperCellChild):
              Atomic indices
         all : bool, optional
              ``False``, return only the first orbital corresponding to the atom,
-             ``True``, returns list of the full atom
+             ``True``, returns list of the full atom(s), will always return a 1D array.
         """
         # we must not alter `atoms` as it may come from outside
         off, atoms = np.divmod(self._sanitize_atoms(atoms), self.na)
+        is_integral = isinstance(atoms, Integral)
         off *= self.no
         if not all:
             return self.firsto[atoms] + off
-        ob = self.firsto[atoms] + off
-        oe = self.lasto[atoms] + off + 1
+        ob = (self.firsto[atoms] + off).ravel()
+        oe = (self.lasto[atoms] + off + 1).ravel()
 
         # Create ranges
-        if isinstance(ob, Integral):
+        if is_integral:
             return _a.arangei(ob, oe)
 
         return _a.array_arange(ob, oe)
 
-    def o2a(self, io, unique=False) -> ndarray:
+    def o2a(self, orbitals, unique=False) -> ndarray:
         """ Atomic index corresponding to the orbital indicies.
-
-        This is a particurlaly slow algorithm due to for-loops.
 
         Note that this will preserve the super-cell offsets.
 
         Parameters
         ----------
-        io : array_like
-             List of indices to return the atoms for
+        orbitals : array_like
+             List of orbital indices to return the atoms for
         unique : bool, optional
              If True only return the unique atoms.
         """
-        if isinstance(io, Integral):
-            if unique:
-                return np.unique(np.argmax(io % self.no <= self.lasto) + (io // self.no) * self.na)
-            return np.argmax(io % self.no <= self.lasto) + (io // self.no) * self.na
+        orbitals = self._sanitize_orbs(orbitals)
+        if orbitals.ndim == 0:
+            # must only be 1 number (an Integral)
+            return np.argmax(orbitals % self.no <= self.lasto) + (orbitals // self.no) * self.na
 
-        isc, io = np.divmod(_a.asarrayi(io).ravel(), self.no)
-        a = list_index_le(io, self.lasto)
+        isc, orbitals = np.divmod(_a.asarrayi(orbitals.ravel()), self.no)
+        a = list_index_le(orbitals, self.lasto)
         if unique:
             return np.unique(a + isc * self.na)
         return a + isc * self.na
@@ -3911,7 +3910,7 @@ class Geometry(SuperCellChild):
     asc2uc = sc2uc
 
     def osc2uc(self, orbitals, unique=False) -> ndarray:
-        """ Returns orbitals from supercell indices to unit-cell indices, possibly removing dublicates
+        """ Orbitals from supercell indices to unit-cell indices, possibly removing dublicates
 
         Parameters
         ----------
@@ -3920,13 +3919,13 @@ class Geometry(SuperCellChild):
         unique : bool, optional
            If True the returned indices are unique and sorted.
         """
-        orbitals = _a.asarray(orbitals) % self.no
+        orbitals = self._sanitize_orbs(orbitals) % self.no
         if unique:
             return np.unique(orbitals)
         return orbitals
 
     def ouc2sc(self, orbitals, unique=False) -> ndarray:
-        """ Returns orbitals from unit-cell indices to supercell indices, possibly removing dublicates
+        """ Orbitals from unit-cell indices to supercell indices, possibly removing dublicates
 
         Parameters
         ----------
@@ -3935,19 +3934,25 @@ class Geometry(SuperCellChild):
         unique : bool, optional
            If True the returned indices are unique and sorted.
         """
-        orbitals = _a.asarray(orbitals) % self.no
-        orbitals = (orbitals.reshape(1, -1) +
-                    _a.arangei(self.n_s).reshape(-1, 1) * self.no).ravel()
+        orbitals = self._sanitize_orbs(orbitals) % self.no
+        orbitals = (orbitals.reshape(1, *orbitals.shape) +
+                    _a.arangei(self.n_s)
+                    .reshape(-1, *([1] * orbitals.ndim)) * self.no).ravel()
         if unique:
             return np.unique(orbitals)
         return orbitals
 
     def a2isc(self, atoms) -> ndarray:
-        """ Returns super-cell index for a specific/list atom
+        """ Super-cell indices for a specific/list atom
 
         Returns a vector of 3 numbers with integers.
+        Any multi-dimensional input will be flattened before return.
+
+        The returned indices will thus always be a 2D matrix or a 1D vector.
         """
         atoms = self._sanitize_atoms(atoms) // self.na
+        if atoms.ndim > 1:
+            atoms = atoms.ravel()
         return self.sc.sc_off[atoms, :]
 
     # This function is a bit weird, it returns a real array,
@@ -3965,7 +3970,9 @@ class Geometry(SuperCellChild):
 
         Returns a vector of 3 numbers with integers.
         """
-        orbitals = _a.asarray(orbitals) // self.no
+        orbitals = self._sanitize_orbs(orbitals) // self.no
+        if orbitals.ndim > 1:
+            orbitals = orbitals.ravel()
         return self.sc.sc_off[orbitals, :]
 
     def o2sc(self, orbitals) -> ndarray:
