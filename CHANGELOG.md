@@ -8,6 +8,7 @@ we hit release version 1.0.0.
 ## [UNRELEASED] - YYYY-MM-DD
 
 ### Added
+- enabled unit specification for lengths in cube-files
 - added `kwargs` passed to eigenstate functions in `berry_phase`
 	and `conductivity`
 - ensured that non-orthogonal `transform` will copy over overlap matrix

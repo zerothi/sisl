@@ -4,11 +4,10 @@
 """
 Sile object for reading/writing XYZ files
 """
-
-from re import compile as re_compile
 import numpy as np
 
 # Import sile objects
+from ._help import header_to_dict
 from .sile import *
 
 from sisl._internal import set_module
@@ -17,27 +16,7 @@ from sisl.messages import warn
 import sisl._array as _a
 
 
-__all__ = ['xyzSile']
-
-
-def _header_to_dict(header):
-    """ Convert a header line with 'key=val key1=val1' sequences to a single dictionary """
-    e = re_compile(r"(\S+)=")
-
-    # 1. Remove *any* entry with 0 length
-    # 2. Ensure it is a list
-    # 3. Reverse the list order (for popping)
-    kv = list(filter(lambda x: len(x.strip()) > 0, e.split(header)))[::-1]
-
-    # Now create the dictionary
-    d = {}
-    while len(kv) >= 2:
-        # We have reversed the list
-        key = kv.pop().strip(' =') # remove white-space *and* =
-        val = kv.pop().strip() # remove outer whitespace
-        d[key] = val
-
-    return d
+__all__ = ["xyzSile"]
 
 
 @set_module("sisl.io")
@@ -45,12 +24,12 @@ class xyzSile(Sile):
     """ XYZ file object """
 
     @sile_fh_open()
-    def write_geometry(self, geom, fmt='.8f', comment=None):
+    def write_geometry(self, geometry, fmt='.8f', comment=None):
         """ Writes the geometry to the contained file
 
         Parameters
         ----------
-        geom : Geometry
+        geometry : Geometry
            the geometry to be written
         fmt : str, optional
            used format for the precision of the data
@@ -62,24 +41,23 @@ class xyzSile(Sile):
         sile_raise_write(self)
 
         # Write the number of atoms in the geometry
-        self._write('   {}\n'.format(len(geom)))
+        self._write('   {}\n'.format(len(geometry)))
 
         # Write out the cell information in the comment field
         # This contains the cell vectors in a single vector (3 + 3 + 3)
         # quantities, plus the number of supercells (3 ints)
         if comment is None:
-            fmt_str = 'sisl-version=1 cell= ' + f'{{:{fmt}}} ' * 9 + ' nsc= {} {} {}\n'.format(*geom.nsc[:])
-            self._write(fmt_str.format(*geom.cell.flatten()))
+            fmt_str = 'sisl-version=1 cell= ' + f'{{:{fmt}}} ' * 9 + ' nsc= {} {} {}\n'.format(*geometry.nsc[:])
+            self._write(fmt_str.format(*geometry.cell.flatten()))
         else:
             self._write(f"{comment}\n")
 
         fmt_str = '{{0:2s}}  {{1:{0}}}  {{2:{0}}}  {{3:{0}}}\n'.format(fmt)
-        for ia, a, _ in geom.iter_species():
+        for ia, a, _ in geometry.iter_species():
             s = {'fa': 'Ds'}.get(a.symbol, a.symbol)
-            self._write(fmt_str.format(s, *geom.xyz[ia, :]))
+            self._write(fmt_str.format(s, *geometry.xyz[ia, :]))
 
-    def _r_geometry_sisl(self, na, header, sp, xyz, sc
-    ):
+    def _r_geometry_sisl(self, na, header, sp, xyz, sc):
         """ Read the geometry as though it was created with sisl """
         # Default version of the header is 1
         #v = int(header.get("sisl-version", 1))
@@ -125,7 +103,7 @@ class xyzSile(Sile):
 
         # Read header, and try and convert to dictionary
         header = self.readline()
-        kv = _header_to_dict(header)
+        kv = header_to_dict(header)
 
         # Read atoms and coordinates
         sp = [None] * na

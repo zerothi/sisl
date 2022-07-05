@@ -46,6 +46,14 @@ def test_geometry(sisl_tmp):
     assert not read.geometry is None
     assert grid.geometry == read.geometry
 
+    # write in another unit
+    grid.write(f, unit="nm")
+    read = grid.read(f)
+    assert np.allclose(grid.grid, read.grid)
+    assert not grid.geometry is None
+    assert not read.geometry is None
+    assert grid.geometry == read.geometry
+
 
 def test_imaginary(sisl_tmp):
     fr = sisl_tmp('GRID_real.cube', _dir)
