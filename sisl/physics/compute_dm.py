@@ -1,12 +1,15 @@
+from __future__ import annotations
+
 import numpy as np
 import tqdm
-from typing import Callable, Optional
+from typing import Callable, Optional, Sequence
 
-from sisl import BrillouinZone, DensityMatrix, get_distribution, unit_convert
+from sisl import BrillouinZone, DensityMatrix, Hamiltonian, EigenstateElectron, get_distribution, unit_convert
 from ._compute_dm import add_cnc_diag_spin, add_cnc_nc
 
-def compute_dm(bz: BrillouinZone, occ_distribution: Optional[Callable] = None, 
-            occtol: float = 1e-9, fermi_dirac_T: float = 300., eta: bool = True):
+def compute_dm(bz: BrillouinZone, eigenstates: Optional[Sequence[EigenstateElectron | Sequence[EigenstateElectron]]] = None, 
+    occ_distribution: Optional[Callable] = None, occtol: float = 1e-9, 
+    fermi_dirac_T: float = 300., eta: bool = True):
     """Computes the DM from the eigenstates of a Hamiltonian along a BZ.
     
     Parameters
@@ -14,6 +17,11 @@ def compute_dm(bz: BrillouinZone, occ_distribution: Optional[Callable] = None,
     bz: BrillouinZone
         The brillouin zone object containing the Hamiltonian of the system
         and the k-points to be sampled.
+    eigenstates: list of EigenstateElectron, optional
+        The already calculated eigenstates for the bz. If not given, they will
+        be calculated from the Hamiltonian associated with the bz. If the calculation
+        is spin polarized a list with one list of eigenstates for each spin component
+        should be passed.
     occ_distribution: function, optional
         The distribution that will determine the occupations of states. It will
         receive an array of energies (in eV, referenced to fermi level) and it should
@@ -29,8 +37,10 @@ def compute_dm(bz: BrillouinZone, occ_distribution: Optional[Callable] = None,
     eta: bool, optional
         Whether a progress bar should be displayed or not.
     """
+    provided_eigenstates = eigenstates
+
     # Get the hamiltonian
-    H = bz.parent
+    H: Hamiltonian = bz.parent
 
     # Geometry
     geom = H.geometry
@@ -76,7 +86,12 @@ def compute_dm(bz: BrillouinZone, occ_distribution: Optional[Callable] = None,
     # Loop over spins
     for ispin in spin_iterator:
         # Create the eigenstates generator
-        eigenstates = bz.apply.eigenstate(spin=ispin)
+        if provided_eigenstates is None:
+            eigenstates = bz.apply.eigenstate(spin=ispin)
+        else:
+            eigenstates = provided_eigenstates
+            if DM.spin.is_polarized:
+                eigenstates = eigenstates[ispin]
         
         # Zip it with the weights so that we can scale the contribution of each k point.
         k_it = zip(bz.weight, eigenstates)
