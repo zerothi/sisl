@@ -2884,7 +2884,7 @@ class tbtavncSileTBtrans(tbtncSileTBtrans):
             # It *must* be a variable now
 
             # Quickly skip the k-point variable and the weights
-            if dvg.name in ['kpt', 'wkpt']:
+            if dvg.name in ('kpt', 'wkpt'):
                 continue
 
             # Down-scale the k-point dimension
@@ -2901,9 +2901,10 @@ class tbtavncSileTBtrans(tbtncSileTBtrans):
                 dims = dvg.dimensions[:]
                 has_kpt = False
 
+            # We can't use dvg.filters() since it doesn't always
+            # work...
             v = grp.createVariable(dvg.name, dvg.dtype,
-                                   dimensions=dims,
-                                   **dvg.filters())
+                                   dimensions=dims)
 
             # Copy attributes
             copy_attr(dvg, v)
