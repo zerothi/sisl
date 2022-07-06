@@ -276,6 +276,10 @@ def get_sile(file, *args, **kwargs):
 
     Internally this is roughly equivalent to ``get_sile_class(...)()``.
 
+    When the file suffix is not recognized and you know which file-type it is
+    it is recommended to get the file class from the known suffixes and use that
+    class to construct the file object, see examples.
+
     Parameters
     ----------
     file : str or pathlib.Path
@@ -289,6 +293,21 @@ def get_sile(file, *args, **kwargs):
        you may query the exact base-class that should be chosen.
        If there are several files with similar file-endings this
        function returns a random one.
+
+    Examples
+    --------
+    A file named ``water.dat`` contains the xyz-coordinates as the `xyzSile`.
+    One can forcefully get the sile by:
+
+    >>> obj = get_sile("water.dat{xyzSile}")
+
+    Alternatively one can query the xyz file and use that class reference
+    in future instantiations. This ensures a future proof method without
+    explicitly typing the Sile object.
+
+    >>> cls = get_sile_class("anyfile.xyz")
+    >>> obj = cls("water.dat")
+    >>> another_xyz = cls("water2.dat")
     """
     cls = kwargs.pop('cls', None)
     sile = get_sile_class(file, *args, cls=cls, **kwargs)
