@@ -674,7 +674,7 @@ class Configurable(metaclass=ConfigurableMeta):
 
         return self
 
-    def get_param(self, key, as_dict=False, params_extractor=False):
+    def get_param(self, key, as_dict=False, params_extractor=False, copy=False):
         """ Gets the parameter for a given setting
 
         Arguments
@@ -688,6 +688,8 @@ class Configurable(metaclass=ConfigurableMeta):
             This will only be used in case this method is used outside the class, where objects
             have a different structure (e.g. QueriesInput inputField) or if there is some nested params
             field that the class is not aware of (although this second case is probably not advisable).
+        copy: bool, optional
+            Whether to return a (deep)copy of the parameter or not.
 
         Returns
         -------
@@ -696,14 +698,15 @@ class Configurable(metaclass=ConfigurableMeta):
         """
         for param in self.params if not params_extractor else params_extractor(self):
             if param.key == key:
-                return param.__dict__ if as_dict else param
+                return_param = param.__dict__ if as_dict else param
+                return deepcopy(return_param) if copy else return_param
         else:
             raise KeyError(f"There is no parameter '{key}' in {self.__class__.__name__}")
 
     @classmethod
-    def get_class_param(cls, key, as_dict=False):
+    def get_class_param(cls, key, as_dict=False, copy=False):
         try:
-            return cls.get_param(cls, key, as_dict=as_dict, params_extractor=lambda cls: cls._parameters)
+            return cls.get_param(cls, key, as_dict=as_dict, params_extractor=lambda cls: cls._parameters, copy=copy)
         except KeyError:
             raise KeyError(f"There is no parameter '{key}' in {cls.__name__}")
 

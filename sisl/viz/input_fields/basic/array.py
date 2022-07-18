@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
 
-from ..._input_field import InputField
+from .._input_field import InputField
 
 
 class ArrayNDInput(InputField):

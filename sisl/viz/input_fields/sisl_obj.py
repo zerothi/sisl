@@ -8,7 +8,7 @@ import sisl
 from sisl import BaseSile
 from sisl.physics import distribution
 
-from .._input_field import InputField
+from ._input_field import InputField
 from .basic import FloatInput, IntegerInput, OptionsInput, TextInput, DictInput, BoolInput
 
 from .file import FilePathInput

@@ -1,11 +1,18 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-import numpy as np
-from sisl._help import isiterable
+from dataclasses import dataclass
+from typing import Optional, Union
 
-from ..._input_field import InputField
+from .._input_field import InputField, InputParams
 
+
+@dataclass
+class NumericInputParams(InputParams):
+    """Parameters for the NumericInput class."""
+    min: Optional[Union[int, float]] = None
+    max: Optional[Union[int, float]] = None
+    step: Union[int,float] = 1
 
 class NumericInput(InputField):
     """Simple input for a number.
@@ -20,15 +27,9 @@ class NumericInput(InputField):
     your input field needs to make sure that the value is always contained between
     0 and 1 and can be increased/decreased in steps of 0.1.
     """
+    params: NumericInputParams
 
-    _type = 'number'
-
-    _default = {
-        "default": 0,
-        "params": {
-            "min": 0,
-        }
-    }
+    _type = "number"
 
 
 class IntegerInput(NumericInput):
@@ -36,28 +37,11 @@ class IntegerInput(NumericInput):
 
     GUI indications
     ----------------
-    No implementation needed for this input field, if your `NumericInput`
+    No special implementation needed for this input field, if your `NumericInput`
     implementation supports "min", "max" and "step" correctly, you already
     have an `IntegerInput`. 
     """
-
-    dtype = int
-
-    _default = {
-        **NumericInput._default,
-        "params": {
-            **NumericInput._default["params"],
-            "step": 1
-        }
-    }
-
-    def parse(self, val):
-        if val is None:
-            return val
-        if isiterable(val):
-            return np.array(val, dtype=int)
-        return int(val)
-
+    params = NumericInputParams(min=None, max=None, step=1)
 
 class FloatInput(NumericInput):
     """Simple input for an integer.
@@ -68,20 +52,4 @@ class FloatInput(NumericInput):
     implementation supports "min", "max" and "step" correctly, you already
     have a `FloatInput`. 
     """
-
-    dtype = float
-
-    _default = {
-        **NumericInput._default,
-        "params": {
-            **NumericInput._default["params"],
-            "step": 0.1
-        }
-    }
-
-    def parse(self, val):
-        if val is None:
-            return val
-        if isiterable(val):
-            return np.array(val, dtype=float)
-        return float(val)
+    params = NumericInputParams(min=None, max=None, step=0.1)

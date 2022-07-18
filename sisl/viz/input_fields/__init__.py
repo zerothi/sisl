@@ -7,17 +7,21 @@ We have the basic input fields, that need a GUI implementation,
 and the rest of input fields, which are just extensions of the
 basic input fields.
 """
+from ._input_field import InputField
+
 from .basic import *
 
-from .aiida_node import AiidaNodeInput
-from .programatic import ProgramaticInput, FunctionInput
-from .sisl_obj import SislObjectInput, GeometryInput, BandStructureInput, PlotableInput, SileInput, DistributionInput
+#from .aiida_node import AiidaNodeInput
+#from .programatic import ProgramaticInput, FunctionInput
+#from .sisl_obj import SislObjectInput, GeometryInput, BandStructureInput, PlotableInput, SileInput, DistributionInput
 from .queries import QueriesInput
-from .file import FilePathInput
+#from .file import FilePathInput
 
 from .atoms import AtomSelect, SpeciesSelect
-from .axes import GeomAxisSelect
+from .axes import GeomAxis
 from .orbital import OrbitalsNameSelect, OrbitalQueries
-from .spin import SpinSelect
+from .spin import SpinIndexSelect
 
-from .energy import ErangeInput
+from .parsers import *
+
+#from .energy import ErangeInput

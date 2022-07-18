@@ -1,8 +1,9 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from ..._input_field import InputField
+from __future__ import annotations
 
+from .._input_field import InputField
 
 class ColorInput(InputField):
     """Input field to pick a color.
@@ -16,6 +17,5 @@ class ColorInput(InputField):
     a color in hex, rgb, rgba or any other named color supported in html.  
     """
 
-    dtype = str
-
-    _type = 'color'
+    def parse(self, val: str | None) -> str | None:
+        return val

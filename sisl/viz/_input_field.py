@@ -11,7 +11,6 @@ from .plotutils import modify_nested_dict, get_nested_key
 
 __all__ = ["InputField"]
 
-
 class InputField:
     """ This class is meant to help a smooth interface between python and the GUI.
 
@@ -244,6 +243,10 @@ class InputField:
         return json.loads(
             json.dumps(self, default=default)
         )
+
+    def __call__(self, val):
+        """Parses the value, therefore mimicking the behavior of built-in types."""
+        return self.parse(val)
 
     def parse(self, val):
         """ Parses the user input to the actual values that will be used

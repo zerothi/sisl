@@ -2,51 +2,45 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from collections import defaultdict
+from dataclasses import dataclass, field
+from typing import Sequence
+import typing
 import numpy as np
+from sisl.physics.spin import Spin
+
+from sisl.viz.types import OrbitalStyleQuery
 
 from .basic import OptionsInput
+from .basic.options import Option, OptionsParams
 
 from .queries import QueriesInput
-from .atoms import AtomSelect, SpeciesSelect
-from .spin import SpinSelect
 
+@dataclass
+class OrbitalsNameParams(OptionsParams):
+    placeholder: str = "Select orbitals..."
+    options: Sequence[Option] = field(default_factory=list)
+    multiple_choices: bool = True
+    clearable: bool = True
 
 class OrbitalsNameSelect(OptionsInput):
+    params: OrbitalsNameParams
 
-    _default = {
-        "default": None,
-        "params": {
-            "placeholder": "Select orbitals...",
-            "options": [],
-            "isMulti": True,
-            "isClearable": True,
-            "isSearchable": True,
-        }
-    }
+    @classmethod
+    def from_typehint(cls, type_):
+        return cls()
 
     def update_options(self, geom):
 
         orbs = set([orb.name()
                     for unique_at in geom.atoms.atom for orb in unique_at])
 
-        self.modify("inputField.params.options",
-                    [{"label": orb, "value": orb}
-                     for orb in orbs])
-
-        return self
-
+        return self.set_options(list(orbs), infer_labels=True)
 
 class OrbitalQueries(QueriesInput):
     """
     This class implements an input field that allows you to select orbitals by atom, species, etc...
     """
-
-    _fields = {
-        "species": {"field": SpeciesSelect, "name": "Species"},
-        "atoms": {"field": AtomSelect, "name": "Atoms"},
-        "orbitals": {"field": OrbitalsNameSelect, "name": "Orbitals"},
-        "spin": {"field": SpinSelect, "name": "Spin"},
-    }
+    _item_input_type = OrbitalStyleQuery
 
     _keys_to_cols = {
         "atoms": "atom",
@@ -80,7 +74,7 @@ class OrbitalQueries(QueriesInput):
 
         self.orb_filtering_df = pd.DataFrame(orb_props)
 
-    def update_options(self, geometry, spin=""):
+    def update_options(self, geometry, spin: typing.Union[str, Spin] =""):
         """
         Updates the options of the orbital queries.
 
@@ -99,7 +93,7 @@ class OrbitalQueries(QueriesInput):
         """
         self.geometry = geometry
 
-        for key in ("species", "atoms", "orbitals"):
+        for key in ("species", "orbitals", ): #"atoms", "orbitals"):
             try:
                 self.get_query_param(key).update_options(geometry)
             except KeyError:
@@ -175,7 +169,7 @@ class OrbitalQueries(QueriesInput):
         if spin_in_keys:
             spin_key_i = keys.index("spin")
             keys.remove("spin")
-            spin_options = self.get_param("spin").options
+            spin_options = self.get_param("spin").get_options()
 
             # We might have some constraints on what the spin value can be
             if "spin" in kwargs:
@@ -297,7 +291,7 @@ class OrbitalQueries(QueriesInput):
         # Define the name that we will give to the new queries, using templating
         # If a splitting parameter is not used by the name, we are going to
         # append it, in order to make names unique and self-explanatory.
-        base_name = kwargs.pop("name", query.get("name", ""))
+        base_name = kwargs.pop("name", query.get("name", "")) or ""
         first_added = True
         for key in on:
             kwargs.pop(key, None)
@@ -315,7 +309,7 @@ class OrbitalQueries(QueriesInput):
                 name = base_name
                 for key, val in zip(on, value):
                     name = name.replace(f"${key}", str(val))
-
+                
                 # And append the new query to the queries
                 queries.append(
                     query_gen(**{

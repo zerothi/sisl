@@ -4,22 +4,22 @@
 import re
 import numpy as np
 
-from .basic import OptionsInput
+from .basic.options import OptionsInput, OptionsParams
 
+class GeomAxis(OptionsInput):
 
-class GeomAxisSelect(OptionsInput):
+    params = OptionsParams(
+        placeholder="Choose axis...",
+        options=[
+            {'label': ax, 'value': ax} for ax in ["x", "y", "z", "-x", "-y", "-z", "a", "b", "c", "-a", "-b", "-c"]
+        ],
+        multiple_choices=True,
+        clearable=False,
+    )
 
-    _default = {
-        "params": {
-            "placeholder": "Choose axis...",
-            "options": [
-                {'label': ax, 'value': ax} for ax in ["x", "y", "z", "-x", "-y", "-z", "a", "b", "c", "-a", "-b", "-c"]
-            ],
-            "isMulti": True,
-            "isClearable": False,
-            "isSearchable": True,
-        }
-    }
+    @classmethod
+    def from_typehint(cls, type_):
+        return cls()
 
     def _sanitize_axis(self, ax):
         if isinstance(ax, str):
@@ -45,6 +45,8 @@ class GeomAxisSelect(OptionsInput):
         return ax
 
     def parse(self, val):
+        print(val)
         if isinstance(val, str):
             val = re.findall("[+-]?[xyzabc012]", val)
         return [self._sanitize_axis(ax) for ax in val]
+

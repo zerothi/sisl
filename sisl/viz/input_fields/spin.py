@@ -1,14 +1,22 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-import numpy as np
-
-from .basic import OptionsInput
+from dataclasses import dataclass, field
+import typing
+from .basic.options import OptionsInput, OptionsParams
 from sisl import Spin
 from sisl._help import isiterable
 
+@dataclass
+class SpinIndexSelectParams(OptionsParams):
+    placeholder: str = "Select spin..."
+    options: list = field(default_factory=list)
+    multiple_choices: bool = True
+    clearable: bool = True
+    spin: Spin = field(default_factory=Spin)
+    only_if_polarized: bool = False
 
-class SpinSelect(OptionsInput):
+class SpinIndexSelect(OptionsInput):
     """ Input field that helps selecting and managing the desired spin.
 
     It has a method to update the options according to spin class.
@@ -22,20 +30,7 @@ class SpinSelect(OptionsInput):
 
         Defaults to False.
     """
-
-    _default = {
-        "default": None,
-        "params": {
-            "placeholder": "Select spin...",
-            "options": [],
-            "isMulti": True,
-            "isClearable": True,
-            "isSearchable": True,
-        },
-        "style": {
-            "width": 200
-        }
-    }
+    params: SpinIndexSelectParams
 
     _options = {
         Spin.UNPOLARIZED: [],
@@ -45,11 +40,15 @@ class SpinSelect(OptionsInput):
                          for val in ("total", "x", "y", "z")]
     }
 
-    def __init__(self, *args, only_if_polarized=False, **kwargs):
+    @classmethod
+    def from_typehint(cls, type_):
+        return cls()
 
-        super().__init__(*args, **kwargs)
-
-        self._only_if_polarized = only_if_polarized
+    @classmethod
+    def get_spin_options(cls, spin: typing.Union[Spin, str]) -> typing.List[typing.Literal[0, 1, "total", "x", "y", "z"]]:
+        """Returns the options for a given spin class."""
+        spin = Spin(spin)
+        return [option['value'] for option in cls._options[spin.kind]]
 
     def update_options(self, spin, only_if_polarized=None):
         """
@@ -75,9 +74,11 @@ class SpinSelect(OptionsInput):
         if not isinstance(spin, Spin):
             spin = Spin(spin)
 
+        self.params.spin = spin
+
         # Use the default for this input field if only_if_polarized is not provided.
         if only_if_polarized is None:
-            only_if_polarized = self._only_if_polarized
+            only_if_polarized = self.params.only_if_polarized
 
         # Determine what are the new options
         if only_if_polarized:
@@ -89,7 +90,7 @@ class SpinSelect(OptionsInput):
             options = self._options[spin.kind]
 
         # Update them
-        self.modify("inputField.params.options", options)
+        self.set_options(options=options, infer_labels=False)
 
         return self
 

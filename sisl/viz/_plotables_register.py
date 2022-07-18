@@ -30,7 +30,6 @@ for GridSile in get_siles(attrs=["read_grid"]):
 
 for GeomSile in get_siles(attrs=["read_geometry"]):
     register(GeomSile, GeometryPlot, 'geom_file', default=True)
-    register(GeomSile, BondLengthMap, 'geom_file')
 
 for HSile in get_siles(attrs=["read_hamiltonian"]):
     register(HSile, WavefunctionPlot, 'H', default=HSile != siesta.fdfSileSiesta)
@@ -55,7 +54,6 @@ register(tbtrans.tbtncSileTBtrans, PdosPlot, 'tbt_out', default=True)
 
 # Geometry
 register(sisl.Geometry, GeometryPlot, 'geometry', default=True)
-register(sisl.Geometry, BondLengthMap, 'geometry')
 
 # Grid
 register(sisl.Grid, GridPlot, 'grid', default=True)

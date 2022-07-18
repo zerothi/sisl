@@ -28,13 +28,15 @@ register_environ_variable("SISL_VIZ_NUM_PROCS", min(1, _nprocs),
                           description="Maximum number of processors used for parallel plotting",
                           process=int)
 
-from .plot import Plot, Animation, MultiplePlot, SubPlots
-from .plots import *
-from .session import Session
-from .sessions import *
-from .plotutils import load
-from ._plotables import register_plotable
-from ._plotables_register import *
+#from .plot import Plot, Animation, MultiplePlot, SubPlots
+#from .plots import *
+#from .session import Session
+#from .sessions import *
+#from .plotutils import load
+#from ._plotables import register_plotable
+#from ._plotables_register import *
 
-from .backends import load_backends
-load_backends()
+from . import _xarray_accessor
+
+#from .backends import load_backends
+#load_backends()

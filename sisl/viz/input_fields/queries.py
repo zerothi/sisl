@@ -1,10 +1,24 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from dataclasses import dataclass, field
+from typing import TypedDict
 import numpy as np
 
-from .basic import ListInput, DictInput
+from .basic.list import ListInputParams
 
+from .basic import ListInput, DictInput
+from ._input_field import InputField
+
+@dataclass
+class QueriesInputParams(ListInputParams):
+    """These are the parameters that any implementation of QueriesInput should use.
+    
+    Parameters
+    ----------
+    """
+    item_input: DictInput = field(default_factory=DictInput)
+    sortable: bool = True
 
 class QueriesInput(ListInput):
     """
@@ -13,36 +27,13 @@ class QueriesInput(ListInput):
     queryForm: list of InputField
         The list of input fields that conform a query.
     """
+    params: QueriesInputParams
 
-    dtype = "array-like of dict"
-
-    _dict_input = DictInput
-
-    _default = {}
-
-    def __init__(self, *args, queryForm=[], help="", params={}, **kwargs):
-
-        query_form = self._sanitize_queryform(queryForm)
-
-        self._dict_param = self._dict_input(key="", name="", fields=query_form)
-
-        params = {
-            "sortable": True,
-            "itemInput": self._dict_param,
-            **params,
-        }
-
-        input_field_attrs = {
-            **kwargs.get("input_field_attrs", {}),
-        }
-
-        help += f"\n\n Each item is a dict. {self._dict_param.help}"
-
-        super().__init__(*args, **kwargs, help=help, params=params, input_field_attrs=input_field_attrs)
+    _item_input_field = DictInput
 
     def get_query_param(self, key, **kwargs):
         """Gets the parameter info for a given key."""
-        return self._dict_param.get_param(key, **kwargs)
+        return self.params.item_input.params.fields[key]
 
     def get_param(self, *args, **kwargs):
         """
@@ -69,10 +60,7 @@ class QueriesInput(ListInput):
         **kwargs:
             other keys that need to be added to the query IN CASE THEY DON'T ALREADY EXIST
         """
-        return {
-            "active": True,
-            **self._dict_param.complete_dict(query, **kwargs),
-        }
+        return self.params.item_input.complete_dict(query, **kwargs)
 
     def filter_df(self, df, query, key_to_cols, raise_not_active=False):
         """
@@ -90,7 +78,7 @@ class QueriesInput(ListInput):
             where key is the key of the parameter in the query and col the corresponding
             column in the dataframe.
         """
-        query = self.complete_query(query)
+        query = self.complete_query(query, as_dict=True)
 
         if raise_not_active:
             if not query["active"]:

@@ -2,6 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from sisl._help import isiterable
+from sisl.viz.input_fields.basic.options import OptionsParams
 
 from .category import CategoryInput
 
@@ -141,22 +142,21 @@ class AtomSelect(CreatableDictInput):
 
 class SpeciesSelect(OptionsInput):
 
-    _default = {
-        "default": None,
-        "params": {
-            "placeholder": "Select species...",
-            "options": [],
-            "isMulti": True,
-            "isClearable": True,
-            "isSearchable": True,
-        }
-    }
+    @classmethod
+    def from_typehint(cls, type_):
+
+        return cls(params=OptionsParams(
+            placeholder="Select species...",
+            options=[],
+            multiple_choices=True,
+            clearable=True,
+        ))
 
     def update_options(self, geom):
-
-        self.modify("inputField.params.options",
-                    [{"label": unique_at.symbol, "value": unique_at.symbol}
-                     for unique_at in geom.atoms.atom])
+        self.set_options(
+            options=[{"label": unique_at.symbol, "value": unique_at.symbol}
+            for unique_at in geom.atoms.atom], infer_labels=False
+        )
 
         return self
 
