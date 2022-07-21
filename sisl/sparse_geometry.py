@@ -1468,7 +1468,7 @@ class SparseOrbital(_SparseGeometry):
         SparseCSR.edges: the underlying routine used for extracting the edges
         """
         if atoms is None and orbitals is None:
-            raise ValueError(f"{self.__class__.__name__}.edges must have either 'atom' or 'orbital' keyword defined.")
+            raise ValueError(f"{self.__class__.__name__}.edges must have either 'atoms' or 'orbitals' keyword defined.")
         if orbitals is None:
             return unique(self.geometry.o2a(self._csr.edges(self.geometry.a2o(atoms, True), exclude)))
         return self._csr.edges(orbitals, exclude)

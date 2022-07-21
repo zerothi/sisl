@@ -201,6 +201,7 @@ def array_replace(array, *replace, **kwargs):
        array in which to replace values from `replace`
     *replace : list of tuple arguments
        replacement values, interpreted as ``array[replace[0]] = replace[1]``.
+       If ``replace[0]`` is None, it will not be replaced, nor changed by `other`
     other : val
        value replaced in `array` for all indices not in ``replace[0]``
 
@@ -209,7 +210,7 @@ def array_replace(array, *replace, **kwargs):
     >>> ar = [1, 2, 3]
     >>> array_replace(ar, (1, 1), (2, 1), other=2)
     [2, 1, 1]
-    >>> array_replace(ar, (1, 1), (2, 1))
+    >>> array_replace(ar, ([1, 2], 1))
     [1, 1, 1]
     >>> array_replace(ar, (1, 1), (0, 3))
     [3, 1, 3]

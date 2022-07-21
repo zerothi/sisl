@@ -15,8 +15,8 @@ we hit release version 1.0.0.
 	in case the matrix is only touching the non-overlap elements
 
 ### Fixed
-- orbital quantum numbers from HSX file was wrong in v1 #462
-
+- orbital quantum numbers from HSX file was wrong in v1, #462
+- RealSpaceSI for right semi-infinite directions, #475
 
 ## [0.12.2] - 2022-5-2
 

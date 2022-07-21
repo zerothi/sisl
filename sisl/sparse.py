@@ -515,7 +515,7 @@ class SparseCSR(NDArrayOperatorsMixin):
         return edges
 
     def delete_columns(self, columns, keep_shape=False):
-        """ Delete all columns in `columns`
+        """ Delete all columns in `columns` (in-place action)
 
         Parameters
         ----------

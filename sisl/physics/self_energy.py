@@ -1210,9 +1210,8 @@ class RealSpaceSI(SelfEnergy):
             atoms = np.arange(semi_na)
 
         # Semi-infinite atoms in surface
-        surf_min = self.surface.geometry.xyz[atoms, :].min(0)
-
-        g_surf = self.surface.geometry.xyz[atoms, :] - (surf_min - semi_min)
+        g_surf = self.surface.geometry.xyz[atoms, :]
+        g_surf -= g_surf.min(0) - semi_min
 
         # Check atomic coordinates are the same
         # Precision is 0.001 Ang
@@ -1302,7 +1301,7 @@ class RealSpaceSI(SelfEnergy):
         return P0
 
     def real_space_coupling(self, ret_indices=False):
-        r""" Real-space coupling surafec where the outside fold into the surface real-space unit cell
+        r""" Real-space coupling surface where the outside fold into the surface real-space unit cell
 
         The resulting parent object only contains the inner-cell couplings for the elements that couple
         out of the real-space matrix.
@@ -1331,12 +1330,11 @@ class RealSpaceSI(SelfEnergy):
             PC = self.surface.copy()
         else:
             PC = self.surface
-        for ax in range(3):
-            if self._unfold[ax] == 1:
-                continue
-            PC_k = PC_k.tile(self._unfold[ax], ax)
-            PC_semi = PC_semi.tile(self._unfold[ax], ax)
-            PC = PC.tile(self._unfold[ax], ax)
+        for ax, unfold in enumerate(self._unfold):
+            if unfold > 1:
+                PC_k = PC_k.tile(unfold, ax)
+                PC_semi = PC_semi.tile(unfold, ax)
+                PC = PC.tile(unfold, ax)
 
         # If there are any axes that still has k-point sampling (for e.g. circles)
         # we should remove that periodicity before figuring out which atoms that connect out.
@@ -1385,6 +1383,11 @@ class RealSpaceSI(SelfEnergy):
         atom_semi = _a.arrayi(atom_semi)
         expand(atom_semi, n_unfold, self.semi.spgeom1.geometry.na, self.surface.geometry.na)
         atom_k = get_connections(PC_k, n_unfold, self.semi.spgeom0.geometry.na, self.surface.geometry.na)
+        if self.semi.semi_inf_dir == 1:
+            # we are dealing with *right* scheme, so last atoms.
+            # Shift coordinates by the offset
+            atom_semi += self.surface.geometry.na - self.semi.geometry.na
+            atom_k += self.surface.geometry.na - self.semi.geometry.na
         atom = get_connections(PC)
         del PC_k, PC_semi, PC
 
@@ -1396,10 +1399,9 @@ class RealSpaceSI(SelfEnergy):
         # Or, if we retain periodicity along a given direction, we will retain those
         # as well.
         PC = self.surface
-        for ax in range(3):
-            if self._unfold[ax] == 1:
-                continue
-            PC = PC.tile(self._unfold[ax], ax)
+        for ax, unfold in enumerate(self._unfold):
+            if unfold > 1:
+                PC = PC.tile(unfold, ax)
         PC = PC.sub(atom_idx)
 
         # Remove all out-of-cell couplings such that we only have inner-cell couplings.
