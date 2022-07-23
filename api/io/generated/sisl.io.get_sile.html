@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>get_sile &mdash; sisl 0.1.dev1+g64bdde7 documentation</title>
+  <title>get_sile &mdash; sisl 0.1.dev1+g7f1f979 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -36,7 +36,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g64bdde7
+                0.1.dev1+g7f1f979
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -159,6 +159,9 @@
 <span class="sig-prename descclassname"><span class="pre">sisl.io.</span></span><span class="sig-name descname"><span class="pre">get_sile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.get_sile" title="Permalink to this definition"></a></dt>
 <dd><p>Retrieve an object from the global lookup table via filename and the extension</p>
 <p>Internally this is roughly equivalent to <code class="docutils literal notranslate"><span class="pre">get_sile_class(...)()</span></code>.</p>
+<p>When the file suffix is not recognized and you know which file-type it is
+it is recommended to get the file class from the known suffixes and use that
+class to construct the file object, see examples.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -174,6 +177,20 @@ function returns a random one.</p></li>
 </ul>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>A file named <code class="docutils literal notranslate"><span class="pre">water.dat</span></code> contains the xyz-coordinates as the <a class="reference internal" href="sisl.io.xyzSile.html#sisl.io.xyzSile" title="sisl.io.xyzSile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xyzSile</span></code></a>.
+One can forcefully get the sile by:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span> <span class="o">=</span> <span class="n">get_sile</span><span class="p">(</span><span class="s2">&quot;water.dat</span><span class="si">{xyzSile}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Alternatively one can query the xyz file and use that class reference
+in future instantiations. This ensures a future proof method without
+explicitly typing the Sile object.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="bp">cls</span> <span class="o">=</span> <span class="n">get_sile_class</span><span class="p">(</span><span class="s2">&quot;anyfile.xyz&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="s2">&quot;water.dat&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">another_xyz</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="s2">&quot;water2.dat&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>

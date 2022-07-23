@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.geometry &mdash; sisl 0.1.dev1+g64bdde7 documentation</title>
+  <title>sisl.geometry &mdash; sisl 0.1.dev1+g7f1f979 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -33,7 +33,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g64bdde7
+                0.1.dev1+g7f1f979
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -707,8 +707,8 @@
 
         <span class="k">return</span> <span class="n">xj</span> <span class="o">-</span> <span class="n">xi</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span></div>
 
-<div class="viewcode-block" id="Geometry.orij"><a class="viewcode-back" href="../../api/generated/sisl.Geometry.html#sisl.Geometry.orij">[docs]</a>    <span class="k">def</span> <span class="nf">orij</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">io</span><span class="p">,</span> <span class="n">jo</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Distance between orbital `io` and `jo`, orbitals can be in super-cell indices</span>
+<div class="viewcode-block" id="Geometry.orij"><a class="viewcode-back" href="../../api/generated/sisl.Geometry.html#sisl.Geometry.orij">[docs]</a>    <span class="k">def</span> <span class="nf">orij</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orbitals1</span><span class="p">,</span> <span class="n">orbitals2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Distance between orbital `orbitals1` and `orbitals2`, orbitals can be in super-cell indices</span>
 
 <span class="sd">        Returns the distance between two orbitals:</span>
 
@@ -717,15 +717,15 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        io : int or array_like</span>
+<span class="sd">        orbitals1 : int or array_like</span>
 <span class="sd">           orbital index of first orbital</span>
-<span class="sd">        jo : int or array_like</span>
+<span class="sd">        orbitals2 : int or array_like</span>
 <span class="sd">           orbital indices</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rij</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">io</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">jo</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rij</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">orbitals1</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">orbitals2</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="Geometry.oRij"><a class="viewcode-back" href="../../api/generated/sisl.Geometry.html#sisl.Geometry.oRij">[docs]</a>    <span class="k">def</span> <span class="nf">oRij</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">io</span><span class="p">,</span> <span class="n">jo</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Vector between orbital `io` and `jo`, orbitals can be in super-cell indices</span>
+<div class="viewcode-block" id="Geometry.oRij"><a class="viewcode-back" href="../../api/generated/sisl.Geometry.html#sisl.Geometry.oRij">[docs]</a>    <span class="k">def</span> <span class="nf">oRij</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orbitals1</span><span class="p">,</span> <span class="n">orbitals2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Vector between orbital `orbitals1` and `orbitals2`, orbitals can be in super-cell indices</span>
 
 <span class="sd">        Returns the vector between two orbitals:</span>
 
@@ -734,12 +734,12 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        io : int or array_like</span>
+<span class="sd">        orbitals1 : int or array_like</span>
 <span class="sd">           orbital index of first orbital</span>
-<span class="sd">        jo : int or array_like</span>
+<span class="sd">        orbitals2 : int or array_like</span>
 <span class="sd">           orbital indices</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rij</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">io</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">jo</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Rij</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">orbitals1</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">orbitals2</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Geometry.read"><a class="viewcode-back" href="../../api/generated/sisl.Geometry.html#sisl.Geometry.read">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
@@ -3933,43 +3933,42 @@
 <span class="sd">             Atomic indices</span>
 <span class="sd">        all : bool, optional</span>
 <span class="sd">             ``False``, return only the first orbital corresponding to the atom,</span>
-<span class="sd">             ``True``, returns list of the full atom</span>
+<span class="sd">             ``True``, returns list of the full atom(s), will always return a 1D array.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># we must not alter `atoms` as it may come from outside</span>
         <span class="n">off</span><span class="p">,</span> <span class="n">atoms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divmod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">na</span><span class="p">)</span>
+        <span class="n">is_integral</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">Integral</span><span class="p">)</span>
         <span class="n">off</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">firsto</span><span class="p">[</span><span class="n">atoms</span><span class="p">]</span> <span class="o">+</span> <span class="n">off</span>
-        <span class="n">ob</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">firsto</span><span class="p">[</span><span class="n">atoms</span><span class="p">]</span> <span class="o">+</span> <span class="n">off</span>
-        <span class="n">oe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lasto</span><span class="p">[</span><span class="n">atoms</span><span class="p">]</span> <span class="o">+</span> <span class="n">off</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">ob</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">firsto</span><span class="p">[</span><span class="n">atoms</span><span class="p">]</span> <span class="o">+</span> <span class="n">off</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="n">oe</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lasto</span><span class="p">[</span><span class="n">atoms</span><span class="p">]</span> <span class="o">+</span> <span class="n">off</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
 
         <span class="c1"># Create ranges</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ob</span><span class="p">,</span> <span class="n">Integral</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">is_integral</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="n">ob</span><span class="p">,</span> <span class="n">oe</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">_a</span><span class="o">.</span><span class="n">array_arange</span><span class="p">(</span><span class="n">ob</span><span class="p">,</span> <span class="n">oe</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Geometry.o2a"><a class="viewcode-back" href="../../api/generated/sisl.Geometry.html#sisl.Geometry.o2a">[docs]</a>    <span class="k">def</span> <span class="nf">o2a</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">io</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+<div class="viewcode-block" id="Geometry.o2a"><a class="viewcode-back" href="../../api/generated/sisl.Geometry.html#sisl.Geometry.o2a">[docs]</a>    <span class="k">def</span> <span class="nf">o2a</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot; Atomic index corresponding to the orbital indicies.</span>
-
-<span class="sd">        This is a particurlaly slow algorithm due to for-loops.</span>
 
 <span class="sd">        Note that this will preserve the super-cell offsets.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        io : array_like</span>
-<span class="sd">             List of indices to return the atoms for</span>
+<span class="sd">        orbitals : array_like</span>
+<span class="sd">             List of orbital indices to return the atoms for</span>
 <span class="sd">        unique : bool, optional</span>
 <span class="sd">             If True only return the unique atoms.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">io</span><span class="p">,</span> <span class="n">Integral</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">unique</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">io</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lasto</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">io</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">na</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">io</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lasto</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">io</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">na</span>
+        <span class="n">orbitals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_orbs</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">orbitals</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># must only be 1 number (an Integral)</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">orbitals</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lasto</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">orbitals</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">na</span>
 
-        <span class="n">isc</span><span class="p">,</span> <span class="n">io</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divmod</span><span class="p">(</span><span class="n">_a</span><span class="o">.</span><span class="n">asarrayi</span><span class="p">(</span><span class="n">io</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span><span class="p">)</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="n">list_index_le</span><span class="p">(</span><span class="n">io</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lasto</span><span class="p">)</span>
+        <span class="n">isc</span><span class="p">,</span> <span class="n">orbitals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divmod</span><span class="p">(</span><span class="n">_a</span><span class="o">.</span><span class="n">asarrayi</span><span class="p">(</span><span class="n">orbitals</span><span class="o">.</span><span class="n">ravel</span><span class="p">()),</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">list_index_le</span><span class="p">(</span><span class="n">orbitals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lasto</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">unique</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">isc</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">na</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">isc</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">na</span></div>
@@ -4008,7 +4007,7 @@
     <span class="n">asc2uc</span> <span class="o">=</span> <span class="n">sc2uc</span>
 
 <div class="viewcode-block" id="Geometry.osc2uc"><a class="viewcode-back" href="../../api/generated/sisl.Geometry.html#sisl.Geometry.osc2uc">[docs]</a>    <span class="k">def</span> <span class="nf">osc2uc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot; Returns orbitals from supercell indices to unit-cell indices, possibly removing dublicates</span>
+        <span class="sd">&quot;&quot;&quot; Orbitals from supercell indices to unit-cell indices, possibly removing dublicates</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -4017,13 +4016,13 @@
 <span class="sd">        unique : bool, optional</span>
 <span class="sd">           If True the returned indices are unique and sorted.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">orbitals</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span>
+        <span class="n">orbitals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_orbs</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span>
         <span class="k">if</span> <span class="n">unique</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">orbitals</span></div>
 
 <div class="viewcode-block" id="Geometry.ouc2sc"><a class="viewcode-back" href="../../api/generated/sisl.Geometry.html#sisl.Geometry.ouc2sc">[docs]</a>    <span class="k">def</span> <span class="nf">ouc2sc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot; Returns orbitals from unit-cell indices to supercell indices, possibly removing dublicates</span>
+        <span class="sd">&quot;&quot;&quot; Orbitals from unit-cell indices to supercell indices, possibly removing dublicates</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -4032,19 +4031,25 @@
 <span class="sd">        unique : bool, optional</span>
 <span class="sd">           If True the returned indices are unique and sorted.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">orbitals</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span>
-        <span class="n">orbitals</span> <span class="o">=</span> <span class="p">(</span><span class="n">orbitals</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span>
-                    <span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_s</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="n">orbitals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_orbs</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span>
+        <span class="n">orbitals</span> <span class="o">=</span> <span class="p">(</span><span class="n">orbitals</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">orbitals</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">+</span>
+                    <span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_s</span><span class="p">)</span>
+                    <span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="p">([</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">orbitals</span><span class="o">.</span><span class="n">ndim</span><span class="p">))</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">unique</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">orbitals</span></div>
 
 <div class="viewcode-block" id="Geometry.a2isc"><a class="viewcode-back" href="../../api/generated/sisl.Geometry.html#sisl.Geometry.a2isc">[docs]</a>    <span class="k">def</span> <span class="nf">a2isc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot; Returns super-cell index for a specific/list atom</span>
+        <span class="sd">&quot;&quot;&quot; Super-cell indices for a specific/list atom</span>
 
 <span class="sd">        Returns a vector of 3 numbers with integers.</span>
+<span class="sd">        Any multi-dimensional input will be flattened before return.</span>
+
+<span class="sd">        The returned indices will thus always be a 2D matrix or a 1D vector.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">na</span>
+        <span class="k">if</span> <span class="n">atoms</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">atoms</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">sc_off</span><span class="p">[</span><span class="n">atoms</span><span class="p">,</span> <span class="p">:]</span></div>
 
     <span class="c1"># This function is a bit weird, it returns a real array,</span>
@@ -4062,7 +4067,9 @@
 
 <span class="sd">        Returns a vector of 3 numbers with integers.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">orbitals</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span>
+        <span class="n">orbitals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sanitize_orbs</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span> <span class="o">//</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span>
+        <span class="k">if</span> <span class="n">orbitals</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">orbitals</span> <span class="o">=</span> <span class="n">orbitals</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">sc_off</span><span class="p">[</span><span class="n">orbitals</span><span class="p">,</span> <span class="p">:]</span></div>
 
 <div class="viewcode-block" id="Geometry.o2sc"><a class="viewcode-back" href="../../api/generated/sisl.Geometry.html#sisl.Geometry.o2sc">[docs]</a>    <span class="k">def</span> <span class="nf">o2sc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>

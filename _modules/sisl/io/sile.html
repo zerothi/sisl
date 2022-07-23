@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.sile &mdash; sisl 0.1.dev1+g64bdde7 documentation</title>
+  <title>sisl.io.sile &mdash; sisl 0.1.dev1+g7f1f979 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -33,7 +33,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g64bdde7
+                0.1.dev1+g7f1f979
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -373,6 +373,10 @@
 
 <span class="sd">    Internally this is roughly equivalent to ``get_sile_class(...)()``.</span>
 
+<span class="sd">    When the file suffix is not recognized and you know which file-type it is</span>
+<span class="sd">    it is recommended to get the file class from the known suffixes and use that</span>
+<span class="sd">    class to construct the file object, see examples.</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    file : str or pathlib.Path</span>
@@ -386,6 +390,21 @@
 <span class="sd">       you may query the exact base-class that should be chosen.</span>
 <span class="sd">       If there are several files with similar file-endings this</span>
 <span class="sd">       function returns a random one.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    A file named ``water.dat`` contains the xyz-coordinates as the `xyzSile`.</span>
+<span class="sd">    One can forcefully get the sile by:</span>
+
+<span class="sd">    &gt;&gt;&gt; obj = get_sile(&quot;water.dat{xyzSile}&quot;)</span>
+
+<span class="sd">    Alternatively one can query the xyz file and use that class reference</span>
+<span class="sd">    in future instantiations. This ensures a future proof method without</span>
+<span class="sd">    explicitly typing the Sile object.</span>
+
+<span class="sd">    &gt;&gt;&gt; cls = get_sile_class(&quot;anyfile.xyz&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; obj = cls(&quot;water.dat&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; another_xyz = cls(&quot;water2.dat&quot;)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="bp">cls</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;cls&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
     <span class="n">sile</span> <span class="o">=</span> <span class="n">get_sile_class</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>

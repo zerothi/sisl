@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.xyzSile &mdash; sisl 0.1.dev1+g64bdde7 documentation</title>
+  <title>sisl.io.xyzSile &mdash; sisl 0.1.dev1+g7f1f979 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -36,7 +36,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g64bdde7
+                0.1.dev1+g7f1f979
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -183,7 +183,7 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.xyzSile.write" title="sisl.io.xyzSile.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Generic write method which should be overloaded in child-classes</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.xyzSile.write_geometry" title="sisl.io.xyzSile.write_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_geometry</span></code></a>(geom[, fmt, comment])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.xyzSile.write_geometry" title="sisl.io.xyzSile.write_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_geometry</span></code></a>(geometry[, fmt, comment])</p></td>
 <td><p>Writes the geometry to the contained file</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.xyzSile.base_file" title="sisl.io.xyzSile.base_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base_file</span></code></a></p></td>
@@ -268,12 +268,12 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.xyzSile.write_geometry">
-<span class="sig-name descname"><span class="pre">write_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.8f'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/xyz.html#xyzSile.write_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.xyzSile.write_geometry" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">write_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.8f'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/xyz.html#xyzSile.write_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.xyzSile.write_geometry" title="Permalink to this definition"></a></dt>
 <dd><p>Writes the geometry to the contained file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>geom</strong> (<a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a>) – the geometry to be written</p></li>
+<li><p><strong>geometry</strong> (<a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a>) – the geometry to be written</p></li>
 <li><p><strong>fmt</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – used format for the precision of the data</p></li>
 <li><p><strong>comment</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – if None, a sisl made comment that can be used for parsing the unit-cell is used
 else this comment will be written at the 2nd line.</p></li>

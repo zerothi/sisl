@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.self_energy &mdash; sisl 0.1.dev1+g64bdde7 documentation</title>
+  <title>sisl.physics.self_energy &mdash; sisl 0.1.dev1+g7f1f979 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -33,7 +33,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g64bdde7
+                0.1.dev1+g7f1f979
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -1307,9 +1307,8 @@
             <span class="n">atoms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">semi_na</span><span class="p">)</span>
 
         <span class="c1"># Semi-infinite atoms in surface</span>
-        <span class="n">surf_min</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">atoms</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-
-        <span class="n">g_surf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">atoms</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-</span> <span class="p">(</span><span class="n">surf_min</span> <span class="o">-</span> <span class="n">semi_min</span><span class="p">)</span>
+        <span class="n">g_surf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">atoms</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">g_surf</span> <span class="o">-=</span> <span class="n">g_surf</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">semi_min</span>
 
         <span class="c1"># Check atomic coordinates are the same</span>
         <span class="c1"># Precision is 0.001 Ang</span>
@@ -1399,7 +1398,7 @@
         <span class="k">return</span> <span class="n">P0</span></div>
 
 <div class="viewcode-block" id="RealSpaceSI.real_space_coupling"><a class="viewcode-back" href="../../../api/generated/sisl.physics.RealSpaceSI.html#sisl.physics.RealSpaceSI.real_space_coupling">[docs]</a>    <span class="k">def</span> <span class="nf">real_space_coupling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ret_indices</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Real-space coupling surafec where the outside fold into the surface real-space unit cell</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Real-space coupling surface where the outside fold into the surface real-space unit cell</span>
 
 <span class="sd">        The resulting parent object only contains the inner-cell couplings for the elements that couple</span>
 <span class="sd">        out of the real-space matrix.</span>
@@ -1428,12 +1427,11 @@
             <span class="n">PC</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">PC</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface</span>
-        <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unfold</span><span class="p">[</span><span class="n">ax</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="k">continue</span>
-            <span class="n">PC_k</span> <span class="o">=</span> <span class="n">PC_k</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unfold</span><span class="p">[</span><span class="n">ax</span><span class="p">],</span> <span class="n">ax</span><span class="p">)</span>
-            <span class="n">PC_semi</span> <span class="o">=</span> <span class="n">PC_semi</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unfold</span><span class="p">[</span><span class="n">ax</span><span class="p">],</span> <span class="n">ax</span><span class="p">)</span>
-            <span class="n">PC</span> <span class="o">=</span> <span class="n">PC</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unfold</span><span class="p">[</span><span class="n">ax</span><span class="p">],</span> <span class="n">ax</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">unfold</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unfold</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">unfold</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">PC_k</span> <span class="o">=</span> <span class="n">PC_k</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">unfold</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
+                <span class="n">PC_semi</span> <span class="o">=</span> <span class="n">PC_semi</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">unfold</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
+                <span class="n">PC</span> <span class="o">=</span> <span class="n">PC</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">unfold</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
 
         <span class="c1"># If there are any axes that still has k-point sampling (for e.g. circles)</span>
         <span class="c1"># we should remove that periodicity before figuring out which atoms that connect out.</span>
@@ -1482,6 +1480,11 @@
         <span class="n">atom_semi</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayi</span><span class="p">(</span><span class="n">atom_semi</span><span class="p">)</span>
         <span class="n">expand</span><span class="p">(</span><span class="n">atom_semi</span><span class="p">,</span> <span class="n">n_unfold</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">semi</span><span class="o">.</span><span class="n">spgeom1</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">na</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">na</span><span class="p">)</span>
         <span class="n">atom_k</span> <span class="o">=</span> <span class="n">get_connections</span><span class="p">(</span><span class="n">PC_k</span><span class="p">,</span> <span class="n">n_unfold</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">semi</span><span class="o">.</span><span class="n">spgeom0</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">na</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">na</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">semi</span><span class="o">.</span><span class="n">semi_inf_dir</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># we are dealing with *right* scheme, so last atoms.</span>
+            <span class="c1"># Shift coordinates by the offset</span>
+            <span class="n">atom_semi</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">na</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">semi</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">na</span>
+            <span class="n">atom_k</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">na</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">semi</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">na</span>
         <span class="n">atom</span> <span class="o">=</span> <span class="n">get_connections</span><span class="p">(</span><span class="n">PC</span><span class="p">)</span>
         <span class="k">del</span> <span class="n">PC_k</span><span class="p">,</span> <span class="n">PC_semi</span><span class="p">,</span> <span class="n">PC</span>
 
@@ -1493,10 +1496,9 @@
         <span class="c1"># Or, if we retain periodicity along a given direction, we will retain those</span>
         <span class="c1"># as well.</span>
         <span class="n">PC</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface</span>
-        <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unfold</span><span class="p">[</span><span class="n">ax</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="k">continue</span>
-            <span class="n">PC</span> <span class="o">=</span> <span class="n">PC</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unfold</span><span class="p">[</span><span class="n">ax</span><span class="p">],</span> <span class="n">ax</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">unfold</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unfold</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">unfold</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">PC</span> <span class="o">=</span> <span class="n">PC</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">unfold</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
         <span class="n">PC</span> <span class="o">=</span> <span class="n">PC</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">atom_idx</span><span class="p">)</span>
 
         <span class="c1"># Remove all out-of-cell couplings such that we only have inner-cell couplings.</span>

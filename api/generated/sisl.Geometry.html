@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.Geometry &mdash; sisl 0.1.dev1+g64bdde7 documentation</title>
+  <title>sisl.Geometry &mdash; sisl 0.1.dev1+g7f1f979 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -38,7 +38,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g64bdde7
+                0.1.dev1+g7f1f979
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -233,7 +233,7 @@ on how to add more conversion methods.</p>
 <td><p>Vector between atom <em class="xref py py-obj">ia</em> and <em class="xref py py-obj">ja</em>, atoms can be in super-cell indices</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.a2isc" title="sisl.Geometry.a2isc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a2isc</span></code></a>(atoms)</p></td>
-<td><p>Returns super-cell index for a specific/list atom</p></td>
+<td><p>Super-cell indices for a specific/list atom</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.a2o" title="sisl.Geometry.a2o"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a2o</span></code></a>(atoms[, all])</p></td>
 <td><p>Returns an orbital index of the first orbital of said atom.</p></td>
@@ -337,7 +337,7 @@ on how to add more conversion methods.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.move" title="sisl.Geometry.move"><code class="xref py py-obj docutils literal notranslate"><span class="pre">move</span></code></a>(v[, atoms, cell])</p></td>
 <td><p>Translates the geometry by <em class="xref py py-obj">v</em></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.o2a" title="sisl.Geometry.o2a"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2a</span></code></a>(io[, unique])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.o2a" title="sisl.Geometry.o2a"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2a</span></code></a>(orbitals[, unique])</p></td>
 <td><p>Atomic index corresponding to the orbital indicies.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.o2isc" title="sisl.Geometry.o2isc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2isc</span></code></a>(orbitals)</p></td>
@@ -349,20 +349,20 @@ on how to add more conversion methods.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.o2transpose" title="sisl.Geometry.o2transpose"><code class="xref py py-obj docutils literal notranslate"><span class="pre">o2transpose</span></code></a>(orb1[, orb2])</p></td>
 <td><p>Transposes connections from <em class="xref py py-obj">orb1</em> to <em class="xref py py-obj">orb2</em> such that supercell connections are transposed</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.oRij" title="sisl.Geometry.oRij"><code class="xref py py-obj docutils literal notranslate"><span class="pre">oRij</span></code></a>(io, jo)</p></td>
-<td><p>Vector between orbital <a class="reference internal" href="../io/index.html#module-sisl.io" title="sisl.io"><code class="xref py py-obj docutils literal notranslate"><span class="pre">io</span></code></a> and <em class="xref py py-obj">jo</em>, orbitals can be in super-cell indices</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.oRij" title="sisl.Geometry.oRij"><code class="xref py py-obj docutils literal notranslate"><span class="pre">oRij</span></code></a>(orbitals1, orbitals2)</p></td>
+<td><p>Vector between orbital <em class="xref py py-obj">orbitals1</em> and <em class="xref py py-obj">orbitals2</em>, orbitals can be in super-cell indices</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.optimize_nsc" title="sisl.Geometry.optimize_nsc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">optimize_nsc</span></code></a>([axis, R])</p></td>
 <td><p>Optimize the number of supercell connections based on <code class="docutils literal notranslate"><span class="pre">self.maxR()</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.orij" title="sisl.Geometry.orij"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orij</span></code></a>(io, jo)</p></td>
-<td><p>Distance between orbital <a class="reference internal" href="../io/index.html#module-sisl.io" title="sisl.io"><code class="xref py py-obj docutils literal notranslate"><span class="pre">io</span></code></a> and <em class="xref py py-obj">jo</em>, orbitals can be in super-cell indices</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.orij" title="sisl.Geometry.orij"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orij</span></code></a>(orbitals1, orbitals2)</p></td>
+<td><p>Distance between orbital <em class="xref py py-obj">orbitals1</em> and <em class="xref py py-obj">orbitals2</em>, orbitals can be in super-cell indices</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.osc2uc" title="sisl.Geometry.osc2uc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">osc2uc</span></code></a>(orbitals[, unique])</p></td>
-<td><p>Returns orbitals from supercell indices to unit-cell indices, possibly removing dublicates</p></td>
+<td><p>Orbitals from supercell indices to unit-cell indices, possibly removing dublicates</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Geometry.ouc2sc" title="sisl.Geometry.ouc2sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ouc2sc</span></code></a>(orbitals[, unique])</p></td>
-<td><p>Returns orbitals from unit-cell indices to supercell indices, possibly removing dublicates</p></td>
+<td><p>Orbitals from unit-cell indices to supercell indices, possibly removing dublicates</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Geometry.overlap" title="sisl.Geometry.overlap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">overlap</span></code></a>(other[, eps, offset, offset_other])</p></td>
 <td><p>Calculate the overlapping indices between two geometries</p></td>
@@ -577,8 +577,10 @@ on how to add more conversion methods.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Geometry.a2isc">
 <span class="sig-name descname"><span class="pre">a2isc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../../_modules/sisl/geometry.html#Geometry.a2isc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Geometry.a2isc" title="Permalink to this definition"></a></dt>
-<dd><p>Returns super-cell index for a specific/list atom</p>
-<p>Returns a vector of 3 numbers with integers.</p>
+<dd><p>Super-cell indices for a specific/list atom</p>
+<p>Returns a vector of 3 numbers with integers.
+Any multi-dimensional input will be flattened before return.</p>
+<p>The returned indices will thus always be a 2D matrix or a 1D vector.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -593,7 +595,7 @@ TB models with more than one orbital per atom.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atoms</strong> (<em>array_like</em>) – Atomic indices</p></li>
 <li><p><strong>all</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">False</span></code>, return only the first orbital corresponding to the atom,
-<code class="docutils literal notranslate"><span class="pre">True</span></code>, returns list of the full atom</p></li>
+<code class="docutils literal notranslate"><span class="pre">True</span></code>, returns list of the full atom(s), will always return a 1D array.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1509,14 +1511,13 @@ atoms will be displaced</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Geometry.o2a">
-<span class="sig-name descname"><span class="pre">o2a</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">io</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unique</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../../_modules/sisl/geometry.html#Geometry.o2a"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Geometry.o2a" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">o2a</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orbitals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unique</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../../_modules/sisl/geometry.html#Geometry.o2a"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Geometry.o2a" title="Permalink to this definition"></a></dt>
 <dd><p>Atomic index corresponding to the orbital indicies.</p>
-<p>This is a particurlaly slow algorithm due to for-loops.</p>
 <p>Note that this will preserve the super-cell offsets.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>io</strong> (<em>array_like</em>) – List of indices to return the atoms for</p></li>
+<li><p><strong>orbitals</strong> (<em>array_like</em>) – List of orbital indices to return the atoms for</p></li>
 <li><p><strong>unique</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If True only return the unique atoms.</p></li>
 </ul>
 </dd>
@@ -1575,16 +1576,16 @@ If not present then only <em class="xref py py-obj">orb1</em> will be returned i
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Geometry.oRij">
-<span class="sig-name descname"><span class="pre">oRij</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">io</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jo</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../../_modules/sisl/geometry.html#Geometry.oRij"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Geometry.oRij" title="Permalink to this definition"></a></dt>
-<dd><p>Vector between orbital <a class="reference internal" href="../io/index.html#module-sisl.io" title="sisl.io"><code class="xref py py-obj docutils literal notranslate"><span class="pre">io</span></code></a> and <em class="xref py py-obj">jo</em>, orbitals can be in super-cell indices</p>
+<span class="sig-name descname"><span class="pre">oRij</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orbitals1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../../_modules/sisl/geometry.html#Geometry.oRij"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Geometry.oRij" title="Permalink to this definition"></a></dt>
+<dd><p>Vector between orbital <em class="xref py py-obj">orbitals1</em> and <em class="xref py py-obj">orbitals2</em>, orbitals can be in super-cell indices</p>
 <p>Returns the vector between two orbitals:</p>
 <div class="math notranslate nohighlight">
 \[R_{ij} = r_j - r_i\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>io</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>array_like</em>) – orbital index of first orbital</p></li>
-<li><p><strong>jo</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>array_like</em>) – orbital indices</p></li>
+<li><p><strong>orbitals1</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>array_like</em>) – orbital index of first orbital</p></li>
+<li><p><strong>orbitals2</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>array_like</em>) – orbital indices</p></li>
 </ul>
 </dd>
 </dl>
@@ -1626,16 +1627,16 @@ If not present then only <em class="xref py py-obj">orb1</em> will be returned i
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Geometry.orij">
-<span class="sig-name descname"><span class="pre">orij</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">io</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jo</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../../_modules/sisl/geometry.html#Geometry.orij"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Geometry.orij" title="Permalink to this definition"></a></dt>
-<dd><p>Distance between orbital <a class="reference internal" href="../io/index.html#module-sisl.io" title="sisl.io"><code class="xref py py-obj docutils literal notranslate"><span class="pre">io</span></code></a> and <em class="xref py py-obj">jo</em>, orbitals can be in super-cell indices</p>
+<span class="sig-name descname"><span class="pre">orij</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orbitals1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../../_modules/sisl/geometry.html#Geometry.orij"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Geometry.orij" title="Permalink to this definition"></a></dt>
+<dd><p>Distance between orbital <em class="xref py py-obj">orbitals1</em> and <em class="xref py py-obj">orbitals2</em>, orbitals can be in super-cell indices</p>
 <p>Returns the distance between two orbitals:</p>
 <div class="math notranslate nohighlight">
 \[r_{ij} = |r_j - r_i|\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>io</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>array_like</em>) – orbital index of first orbital</p></li>
-<li><p><strong>jo</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>array_like</em>) – orbital indices</p></li>
+<li><p><strong>orbitals1</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>array_like</em>) – orbital index of first orbital</p></li>
+<li><p><strong>orbitals2</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>array_like</em>) – orbital indices</p></li>
 </ul>
 </dd>
 </dl>
@@ -1644,7 +1645,7 @@ If not present then only <em class="xref py py-obj">orb1</em> will be returned i
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Geometry.osc2uc">
 <span class="sig-name descname"><span class="pre">osc2uc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orbitals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unique</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../../_modules/sisl/geometry.html#Geometry.osc2uc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Geometry.osc2uc" title="Permalink to this definition"></a></dt>
-<dd><p>Returns orbitals from supercell indices to unit-cell indices, possibly removing dublicates</p>
+<dd><p>Orbitals from supercell indices to unit-cell indices, possibly removing dublicates</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1658,7 +1659,7 @@ If not present then only <em class="xref py py-obj">orb1</em> will be returned i
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Geometry.ouc2sc">
 <span class="sig-name descname"><span class="pre">ouc2sc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orbitals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unique</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../../_modules/sisl/geometry.html#Geometry.ouc2sc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Geometry.ouc2sc" title="Permalink to this definition"></a></dt>
-<dd><p>Returns orbitals from unit-cell indices to supercell indices, possibly removing dublicates</p>
+<dd><p>Orbitals from unit-cell indices to supercell indices, possibly removing dublicates</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">

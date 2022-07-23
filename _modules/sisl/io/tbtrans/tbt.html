@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.tbtrans.tbt &mdash; sisl 0.1.dev1+g64bdde7 documentation</title>
+  <title>sisl.io.tbtrans.tbt &mdash; sisl 0.1.dev1+g7f1f979 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -33,7 +33,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g64bdde7
+                0.1.dev1+g7f1f979
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -2981,7 +2981,7 @@
             <span class="c1"># It *must* be a variable now</span>
 
             <span class="c1"># Quickly skip the k-point variable and the weights</span>
-            <span class="k">if</span> <span class="n">dvg</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;kpt&#39;</span><span class="p">,</span> <span class="s1">&#39;wkpt&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">dvg</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;kpt&#39;</span><span class="p">,</span> <span class="s1">&#39;wkpt&#39;</span><span class="p">):</span>
                 <span class="k">continue</span>
 
             <span class="c1"># Down-scale the k-point dimension</span>
@@ -2998,9 +2998,10 @@
                 <span class="n">dims</span> <span class="o">=</span> <span class="n">dvg</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[:]</span>
                 <span class="n">has_kpt</span> <span class="o">=</span> <span class="kc">False</span>
 
+            <span class="c1"># We can&#39;t use dvg.filters() since it doesn&#39;t always</span>
+            <span class="c1"># work...</span>
             <span class="n">v</span> <span class="o">=</span> <span class="n">grp</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="n">dvg</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">dvg</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
-                                   <span class="n">dimensions</span><span class="o">=</span><span class="n">dims</span><span class="p">,</span>
-                                   <span class="o">**</span><span class="n">dvg</span><span class="o">.</span><span class="n">filters</span><span class="p">())</span>
+                                   <span class="n">dimensions</span><span class="o">=</span><span class="n">dims</span><span class="p">)</span>
 
             <span class="c1"># Copy attributes</span>
             <span class="n">copy_attr</span><span class="p">(</span><span class="n">dvg</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>

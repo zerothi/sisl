@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.xyz &mdash; sisl 0.1.dev1+g64bdde7 documentation</title>
+  <title>sisl.io.xyz &mdash; sisl 0.1.dev1+g7f1f979 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -33,7 +33,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g64bdde7
+                0.1.dev1+g7f1f979
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -101,11 +101,10 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Sile object for reading/writing XYZ files</span>
 <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="kn">from</span> <span class="nn">re</span> <span class="kn">import</span> <span class="nb">compile</span> <span class="k">as</span> <span class="n">re_compile</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="c1"># Import sile objects</span>
+<span class="kn">from</span> <span class="nn">._help</span> <span class="kn">import</span> <span class="n">header_to_dict</span>
 <span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="o">*</span>
 
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
@@ -114,27 +113,7 @@
 <span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
 
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;xyzSile&#39;</span><span class="p">]</span>
-
-
-<span class="k">def</span> <span class="nf">_header_to_dict</span><span class="p">(</span><span class="n">header</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Convert a header line with &#39;key=val key1=val1&#39; sequences to a single dictionary &quot;&quot;&quot;</span>
-    <span class="n">e</span> <span class="o">=</span> <span class="n">re_compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(\S+)=&quot;</span><span class="p">)</span>
-
-    <span class="c1"># 1. Remove *any* entry with 0 length</span>
-    <span class="c1"># 2. Ensure it is a list</span>
-    <span class="c1"># 3. Reverse the list order (for popping)</span>
-    <span class="n">kv</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">header</span><span class="p">)))[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-    <span class="c1"># Now create the dictionary</span>
-    <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">kv</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="c1"># We have reversed the list</span>
-        <span class="n">key</span> <span class="o">=</span> <span class="n">kv</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39; =&#39;</span><span class="p">)</span> <span class="c1"># remove white-space *and* =</span>
-        <span class="n">val</span> <span class="o">=</span> <span class="n">kv</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="c1"># remove outer whitespace</span>
-        <span class="n">d</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
-
-    <span class="k">return</span> <span class="n">d</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;xyzSile&quot;</span><span class="p">]</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io&quot;</span><span class="p">)</span>
@@ -142,12 +121,12 @@
     <span class="sd">&quot;&quot;&quot; XYZ file object &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="xyzSile.write_geometry"><a class="viewcode-back" href="../../../api/io/generated/sisl.io.xyzSile.html#sisl.io.xyzSile.write_geometry">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">write_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geom</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;.8f&#39;</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">write_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;.8f&#39;</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Writes the geometry to the contained file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        geom : Geometry</span>
+<span class="sd">        geometry : Geometry</span>
 <span class="sd">           the geometry to be written</span>
 <span class="sd">        fmt : str, optional</span>
 <span class="sd">           used format for the precision of the data</span>
@@ -159,24 +138,23 @@
         <span class="n">sile_raise_write</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
         <span class="c1"># Write the number of atoms in the geometry</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s1">&#39;   </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">geom</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s1">&#39;   </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">geometry</span><span class="p">)))</span>
 
         <span class="c1"># Write out the cell information in the comment field</span>
         <span class="c1"># This contains the cell vectors in a single vector (3 + 3 + 3)</span>
         <span class="c1"># quantities, plus the number of supercells (3 ints)</span>
         <span class="k">if</span> <span class="n">comment</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">fmt_str</span> <span class="o">=</span> <span class="s1">&#39;sisl-version=1 cell= &#39;</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">{{</span><span class="s1">:</span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="se">}}</span><span class="s1"> &#39;</span> <span class="o">*</span> <span class="mi">9</span> <span class="o">+</span> <span class="s1">&#39; nsc= </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">geom</span><span class="o">.</span><span class="n">nsc</span><span class="p">[:])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">fmt_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">geom</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">flatten</span><span class="p">()))</span>
+            <span class="n">fmt_str</span> <span class="o">=</span> <span class="s1">&#39;sisl-version=1 cell= &#39;</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">{{</span><span class="s1">:</span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="se">}}</span><span class="s1"> &#39;</span> <span class="o">*</span> <span class="mi">9</span> <span class="o">+</span> <span class="s1">&#39; nsc= </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">geometry</span><span class="o">.</span><span class="n">nsc</span><span class="p">[:])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">fmt_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">geometry</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">flatten</span><span class="p">()))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">comment</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="n">fmt_str</span> <span class="o">=</span> <span class="s1">&#39;{{0:2s}}  {{1:</span><span class="si">{0}</span><span class="s1">}}  {{2:</span><span class="si">{0}</span><span class="s1">}}  {{3:</span><span class="si">{0}</span><span class="s1">}}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fmt</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">ia</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">geom</span><span class="o">.</span><span class="n">iter_species</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">ia</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">geometry</span><span class="o">.</span><span class="n">iter_species</span><span class="p">():</span>
             <span class="n">s</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;fa&#39;</span><span class="p">:</span> <span class="s1">&#39;Ds&#39;</span><span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">symbol</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">symbol</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">fmt_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="o">*</span><span class="n">geom</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">ia</span><span class="p">,</span> <span class="p">:]))</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">fmt_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="o">*</span><span class="n">geometry</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">ia</span><span class="p">,</span> <span class="p">:]))</span></div>
 
-    <span class="k">def</span> <span class="nf">_r_geometry_sisl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">na</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">sp</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">sc</span>
-    <span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_r_geometry_sisl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">na</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">sp</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">sc</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Read the geometry as though it was created with sisl &quot;&quot;&quot;</span>
         <span class="c1"># Default version of the header is 1</span>
         <span class="c1">#v = int(header.get(&quot;sisl-version&quot;, 1))</span>
@@ -222,7 +200,7 @@
 
         <span class="c1"># Read header, and try and convert to dictionary</span>
         <span class="n">header</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-        <span class="n">kv</span> <span class="o">=</span> <span class="n">_header_to_dict</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+        <span class="n">kv</span> <span class="o">=</span> <span class="n">header_to_dict</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
 
         <span class="c1"># Read atoms and coordinates</span>
         <span class="n">sp</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">na</span>
