@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) once
 we hit release version 1.0.0.
 
-## [UNRELEASED] - YYYY-MM-DD
+## [0.13.0] - YYYY-MM-DD
 
 ### Added
 - enabled unit specification for lengths in cube-files
@@ -21,6 +21,19 @@ we hit release version 1.0.0.
 
 ### Changed
 - changed DIIS solver to assume the matrix is symmetric (it is)
+
+### Changed
+- tbtncSileTBtrans and its derivates has changed, drastically.
+	This will accommodate changes related to #477 and #478.
+	Now `*_transmission` refers to energy resolved transmissions
+  and `*_current` reflects bias-window integrated quantities.
+	The defaults and argument order has changed drastically, so
+  users should adapt their scripts depending on `sisl` version.
+	A check can be made, `if sisl.__version_tuple__[:3] >= (0, 13, 0):`
+- To streamline argument order the `*_ACO[OH]P` routines have changed
+	`elec` and `E` argument order. This makes them compatible with
+	`orbital_transmission` etc.
+
 
 ## [0.12.2] - 2022-5-2
 

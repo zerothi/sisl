@@ -17,6 +17,8 @@ from sisl._indices import indices
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
 from sisl.unit.siesta import unit_convert
+from sisl.physics.distribution import fermi_dirac
+
 
 __all__ = ['_ncSileTBtrans', '_devncSileTBtrans']
 
@@ -176,6 +178,41 @@ class _ncSileTBtrans(SileCDFTBtrans):
             info(f"{self.__class__.__name__} requesting energy "
                  f"{E:.5f} eV, found {ret_E:.5f} eV as the closest energy!")
         return idxE
+
+    def _bias_window_integrator(self, elec_from=0, elec_to=1):
+        r""" An integrator for the bias window between two electrodes
+
+        Given two chemical potentials this returns an integrator (function) which
+        returns weights for an input energy-point roughly equivalent to:
+
+        .. math::
+           dI = \mathrm dE\,[n_F(\mu_t, k_B T_t) - n_F(\mu_f, k_B T_f)]
+
+        In this case :mathrm:`\mathrm dE` is the distance between two consecutive
+        energy points in this file.
+
+        Parameters
+        ----------
+        elec_from: str, int
+           the originating electrode
+        elec_to: str, int
+           the absorbing electrode (different from `elec_from`)
+
+        """
+        elec_from = self._elec(elec_from)
+        kt_from = self.kT(elec_from)
+        mu_from = self.chemical_potential(elec_from)
+        elec_to = self._elec(elec_to)
+        kt_to = self.kT(elec_to)
+        mu_to = self.chemical_potential(elec_to)
+        # Get energies
+        E = self._E_T_sorted(elec_from, elec_to)[0]
+        dE = E[1] - E[0]
+
+        def integrator(E):
+            return dE * (fermi_dirac(E, kt_from, mu_from) - fermi_dirac(E, kt_to, mu_to))
+
+        return integrator
 
     def kindex(self, k):
         """ Return the index of the k-point that is closests to the queried k-point (in reduced coordinates)

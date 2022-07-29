@@ -248,8 +248,8 @@ def test_1_graphene_all_content(sisl_files):
     # Check orbital currents
     E = 201
     # Sum of orbital current should be 0 (in == out)
-    orb_left = tbt.orbital_current(left, E)
-    orb_right = tbt.orbital_current(right, E)
+    orb_left = tbt.orbital_transmission(E, left)
+    orb_right = tbt.orbital_transmission(E, right)
     assert orb_left.sum() == pytest.approx(0., abs=1e-7)
     assert orb_right.sum() == pytest.approx(0., abs=1e-7)
 
@@ -261,26 +261,26 @@ def test_1_graphene_all_content(sisl_files):
     assert orb_right[d2, d1.T].sum() == pytest.approx(-orb_right[d1, d2.T].sum())
 
     orb_left.sort_indices()
-    atom_left = tbt.bond_current(left, E, only='all')
+    atom_left = tbt.bond_transmission(E, left, only='all')
     atom_left.sort_indices()
     assert np.allclose(orb_left.data, atom_left.data)
-    assert np.allclose(orb_left.data, tbt.bond_current_from_orbital(orb_left, only='all').data)
+    assert np.allclose(orb_left.data, tbt.sparse_orbital_to_atom(orb_left).data)
     orb_right.sort_indices()
-    atom_right = tbt.bond_current(right, E, only='all')
+    atom_right = tbt.bond_transmission(E, right, only='all')
     atom_right.sort_indices()
     assert np.allclose(orb_right.data, atom_right.data)
-    assert np.allclose(orb_right.data, tbt.bond_current_from_orbital(orb_right, only='all').data)
+    assert np.allclose(orb_right.data, tbt.sparse_orbital_to_atom(orb_right).data)
 
     # Calculate the atom current
     # For 1-orbital systems the activity and non-activity are equivalent
-    assert np.allclose(tbt.atom_current(left, E), tbt.atom_current(left, E, activity=False))
-    tbt.vector_current(left, E)
-    assert np.allclose(tbt.vector_current_from_bond(atom_left) / 2, tbt.vector_current(left, E, only='all'))
+    assert np.allclose(tbt.atom_transmission(E, left), tbt.atom_transmission(E, left, activity=False))
+    tbt.vector_transmission(E, left)
+    assert np.allclose(tbt.sparse_atom_to_vector(atom_left) / 2, tbt.vector_transmission(E, left, only='all'))
 
     # Check COOP curves
     coop = tbt.orbital_COOP(E)
-    coop_l = tbt.orbital_ACOOP(left, E)
-    coop_r = tbt.orbital_ACOOP(right, E)
+    coop_l = tbt.orbital_ACOOP(E, left)
+    coop_r = tbt.orbital_ACOOP(E, right)
     coop_lr = coop_l + coop_r
 
     # Ensure aligment
@@ -291,8 +291,8 @@ def test_1_graphene_all_content(sisl_files):
     assert np.allclose(coop.data, coop_lr.data)
 
     coop = tbt.orbital_COOP(E, isc=[0, 0, 0])
-    coop_l = tbt.orbital_ACOOP(left, E, isc=[0, 0, 0])
-    coop_r = tbt.orbital_ACOOP(right, E, isc=[0, 0, 0])
+    coop_l = tbt.orbital_ACOOP(E, left, isc=[0, 0, 0])
+    coop_r = tbt.orbital_ACOOP(E, right, isc=[0, 0, 0])
     coop_lr = coop_l + coop_r
 
     coop.eliminate_zeros()
@@ -302,8 +302,8 @@ def test_1_graphene_all_content(sisl_files):
     assert np.allclose(coop.data, coop_lr.data)
 
     coop = tbt.atom_COOP(E)
-    coop_l = tbt.atom_ACOOP(left, E)
-    coop_r = tbt.atom_ACOOP(right, E)
+    coop_l = tbt.atom_ACOOP(E, left)
+    coop_r = tbt.atom_ACOOP(E, right)
     coop_lr = coop_l + coop_r
 
     coop.eliminate_zeros()
@@ -313,8 +313,8 @@ def test_1_graphene_all_content(sisl_files):
     assert np.allclose(coop.data, coop_lr.data)
 
     coop = tbt.atom_COOP(E, isc=[0, 0, 0])
-    coop_l = tbt.atom_ACOOP(left, E, isc=[0, 0, 0])
-    coop_r = tbt.atom_ACOOP(right, E, isc=[0, 0, 0])
+    coop_l = tbt.atom_ACOOP(E, left, isc=[0, 0, 0])
+    coop_r = tbt.atom_ACOOP(E, right, isc=[0, 0, 0])
     coop_lr = coop_l + coop_r
 
     coop.eliminate_zeros()
@@ -325,8 +325,8 @@ def test_1_graphene_all_content(sisl_files):
 
     # Check COHP curves
     coop = tbt.orbital_COHP(E)
-    coop_l = tbt.orbital_ACOHP(left, E)
-    coop_r = tbt.orbital_ACOHP(right, E)
+    coop_l = tbt.orbital_ACOHP(E, left)
+    coop_r = tbt.orbital_ACOHP(E, right)
     coop_lr = coop_l + coop_r
 
     coop.eliminate_zeros()
@@ -336,8 +336,8 @@ def test_1_graphene_all_content(sisl_files):
     assert np.allclose(coop.data, coop_lr.data)
 
     coop = tbt.atom_COHP(E)
-    coop_l = tbt.atom_ACOHP(left, E)
-    coop_r = tbt.atom_ACOHP(right, E)
+    coop_l = tbt.atom_ACOHP(E, left)
+    coop_r = tbt.atom_ACOHP(E, right)
     coop_lr = coop_l + coop_r
 
     coop.eliminate_zeros()
@@ -363,6 +363,19 @@ def test_1_graphene_all_fail_kavg(sisl_files, sisl_tmp):
     tbt = sisl.get_sile(sisl_files(_dir, '1_graphene_all.TBT.nc'))
     with pytest.raises(ValueError):
         tbt.transmission(kavg=[0, 1])
+
+
+@pytest.mark.only
+def test_1_graphene_sparse_current(sisl_files, sisl_tmp):
+    tbt = sisl.get_sile(sisl_files(_dir, '1_graphene_all.TBT.nc'))
+    J = tbt.orbital_current()
+    assert np.allclose(J.data, 0)
+    J = tbt.bond_current()
+    assert np.allclose(J.data, 0)
+    J = tbt.vector_current()
+    assert np.allclose(J, 0)
+    J = tbt.atom_current()
+    assert np.allclose(J, 0)
 
 
 @pytest.mark.filterwarnings("ignore:.*requesting energy")
@@ -523,7 +536,7 @@ def test_1_graphene_all_sparse_data_isc_request(sisl_files):
 
     # request the full matrix
     for elec in [0, 1]:
-        J_all = tbt.orbital_current(elec, 204)
+        J_all = tbt.orbital_transmission(204, elec)
         J_all.eliminate_zeros()
 
         # Ensure we actually have something
@@ -531,7 +544,7 @@ def test_1_graphene_all_sparse_data_isc_request(sisl_files):
 
         # partial summed isc
         # Test that the full matrix and individual access is the same
-        J_sum = sum(tbt.orbital_current(elec, 204, isc=isc)
+        J_sum = sum(tbt.orbital_transmission(204, elec, isc=isc)
                     for isc in sc.sc_off)
         assert J_sum.nnz == J_all.nnz
         assert (J_sum - J_all).nnz == 0
@@ -541,7 +554,7 @@ def test_1_graphene_all_sparse_data_orbitals(sisl_files):
     tbt = sisl.get_sile(sisl_files(_dir, '1_graphene_all.TBT.nc'))
 
     # request the full matrix
-    J_all = tbt.orbital_current(0, 204)
-    J_12 = tbt.orbital_current(0, 204, orbitals=[2, 3])
+    J_all = tbt.orbital_transmission(204, 0)
+    J_12 = tbt.orbital_transmission(204, 0, orbitals=[2, 3])
 
     assert J_12.nnz < J_all.nnz // 2
