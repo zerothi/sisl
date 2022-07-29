@@ -1197,6 +1197,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         return Dab
 
+    @wrap_filterwarnings("ignore", category=SparseEfficiencyWarning)
     def sparse_atom_to_vector(self, Dab) -> ndarray:
         """ Reduce an atomic sparse matrix to a vector contribution of each atom
 
