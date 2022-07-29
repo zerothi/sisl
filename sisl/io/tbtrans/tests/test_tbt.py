@@ -365,10 +365,13 @@ def test_1_graphene_all_fail_kavg(sisl_files, sisl_tmp):
         tbt.transmission(kavg=[0, 1])
 
 
-@pytest.mark.only
 def test_1_graphene_sparse_current(sisl_files, sisl_tmp):
     tbt = sisl.get_sile(sisl_files(_dir, '1_graphene_all.TBT.nc'))
     J = tbt.orbital_current()
+    assert np.allclose(J.data, 0)
+    J = tbt.orbital_current(only="+")
+    assert np.allclose(J.data, 0)
+    J = tbt.orbital_current(only="-")
     assert np.allclose(J.data, 0)
     J = tbt.bond_current()
     assert np.allclose(J.data, 0)

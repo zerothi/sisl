@@ -2436,17 +2436,21 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Parameters
         ----------
-        geom: bool, optional
+        geometry: bool, optional
            return the geometry
+        vector_transmission: bool, optional
+           return the bond transmissions as vectors
+        vector_current: bool, optional
+           return the bond currents as vectors
+        atom_transmission: bool, optional
+           return the atomic transmission flowing through an atom (the *activity* current)
         atom_current: bool, optional
            return the atomic current flowing through an atom (the *activity* current)
-        vector_current: bool, optional
-           return the orbital currents as vectors
         """
         val = []
         for kw in kwargs:
 
-            if kw in ['geom', 'geometry']:
+            if kw in ("geom", "geometry"):
                 if kwargs[kw]:
                     val.append(self.geometry)
 
