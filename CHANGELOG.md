@@ -17,6 +17,8 @@ we hit release version 1.0.0.
 ### Fixed
 - orbital quantum numbers from HSX file was wrong in v1, #462
 - RealSpaceSI for right semi-infinite directions, #475
+- tbtrans files now have a separate entry in the documentation
+
 
 ## [0.12.2] - 2022-5-2
 

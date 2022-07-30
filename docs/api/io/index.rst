@@ -26,5 +26,6 @@ to distinguish them from files from other packages.
    openmx
    scaleup
    siesta
+   tbtrans
    vasp
    wannier90
