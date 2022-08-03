@@ -216,7 +216,7 @@ we hit release version 1.0.0.
 
 - Bugfix for periodic directions for ASE conversion, #231
 
-- Fixed tuples for _sanitize_atoms, #233
+- Fixed tuples for `_sanitize_atoms`, #233
 
 - Fixed reading correct unit from deltanc files, #234
 
@@ -241,8 +241,8 @@ we hit release version 1.0.0.
 	Now we have a dispatch class which enables one
 	to store the behaviour as variables and then post-process
 
-- Using *.geom or geometry.atom is now deprecated, use
-	*.geometry and geometry.atoms instead (respectively)
+- Using `*.geom` or `geometry.atom` is now deprecated, use
+	`*.geometry` and `geometry.atoms` instead (respectively)
 
 - Added spin-rotation for density matrices, this will
 	enable sisl to manipulate DM and write them for
@@ -250,7 +250,7 @@ we hit release version 1.0.0.
 
 - Enabled all numpy.ufuncs (np.exp(H))
 
-- Added nanoribbons construction (Thomas)
+- Added nanoribbons construction (@tfrederiksen)
 
 - Internal change to pathlib for files and paths
 
@@ -264,9 +264,9 @@ we hit release version 1.0.0.
 
 - Added a bilayer geometry which can create twisted bilayers #181, #186
 
-- Enabled VASP *CAR files to write/read dynamic specifications #185
+- Enabled VASP `*CAR` files to write/read dynamic specifications #185
 
-- Enabled xarray.DataArray returning from BrillouinZone objects #182
+- Enabled `xarray.DataArray` returning from BrillouinZone objects #182
 
 - Several improvements to outSileSiesta.read_scf #174, #180
 

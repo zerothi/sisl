@@ -100,7 +100,7 @@ def get_pull_requests(repo, revision_range):
     return prs
 
 
-def main(token, revision_range):
+def main(token, revision_range, format="md"):
     lst_release, cur_release = [r.strip() for r in revision_range.split("..")]
 
     github = Github(token)
@@ -150,6 +150,9 @@ def main(token, revision_range):
     else:
         versions.append(cur_release)
 
+    # rst search for item
+    md_item = re.compile(r"^\s*-")
+
     print_out = False
     out = []
     for line in open("../CHANGELOG.md", 'r'):
@@ -160,19 +163,41 @@ def main(token, revision_range):
             break
 
         if print_out:
+            header = 0
+            if format == "md":
+                # no change in header lines
+                pass
+            elif format == "rst":
+                if line.startswith("###"):
+                    header = 3
+                elif line.startswith("##"):
+                    header = 2
+                elif line.startswith("#"):
+                    header = 1
+                elif md_item.search(line):
+                    line = line.replace("-", "*", 1)
+
+                if header > 0:
+                    line = line[header:].lstrip()
             out.append(line)
+
+            if header > 0:
+                # this will only happen for rst
+                n = len(line)
+                out.append((" =-~"[header]) * n + "\n")
 
     if len(out) > 0:
         # new-line
         print()
-        print(''.join(out).strip())
+        print("".join(out).strip())
 
 
 if __name__ == "__main__":
     from argparse import ArgumentParser
 
     parser = ArgumentParser(description="Generate author/pr lists for release")
+    parser.add_argument("--format", choices=("md", "rst"), help="which format to write out in")
     parser.add_argument("token", help="github access token")
     parser.add_argument("revision_range", help="<revision>..<revision>")
     args = parser.parse_args()
-    main(args.token, args.revision_range)
+    main(args.token, args.revision_range, format=args.format)
