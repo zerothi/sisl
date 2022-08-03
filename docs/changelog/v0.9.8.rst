@@ -1,0 +1,48 @@
+*****
+0.9.8
+*****
+
+Contributors
+============
+
+A total of 3 people contributed to this release.  People with a "+" by their
+names contributed a patch for the first time.
+
+* Jonas Lundholm Bertelsen
+* Nick Papior
+* Sofia Sanz Wuhl
+
+Pull requests merged
+====================
+
+A total of 2 pull requests were merged for this release.
+
+* #145: Dynamical matrix from gulp works for norbs%12!=0
+* #149: Take into account double occupancy in fermi_level
+
+* fixed #160 by removing all(?) TRS k-points in a Monkhorst Pack grid
+
+* fixed repeat for SparseGeometryOrbital #161
+
+* changed lots of places for einsum in electron.py for increased performance
+
+* added AHC conductivity calculations `conductivity` (not tested)
+
+* added Berry curvature calculations `berry_flux` (not tested)
+
+* added Overlap class to directly use overlap matrices (without having a
+	second matrix).
+
+* fixed geometry align issue when reading geometries from Siesta output #153
+
+* fixed pickling a sparse matrix #150
+
+* Fixed TSV.nc write-out for grid files (see poisson_explicit.py)
+
+* Fixed fermi level calculation for non-polarized calculations
+
+* Reverted Fermi calculation routine for more stable implementation
+
+* fixed DynamiclMatrix reading for number of atoms not divisable by 4 #145
+
+A huge thanks to Jonas L. B. for fixes, suggestions etc.

@@ -103,6 +103,13 @@ def get_pull_requests(repo, revision_range):
 def main(token, revision_range, format="md"):
     lst_release, cur_release = [r.strip() for r in revision_range.split("..")]
 
+    if cur_release.startswith("v"):
+        cur_release_v = cur_release[1:]
+        if format == "rst":
+            print("*" * len(cur_release_v))
+            print(cur_release_v)
+            print("*" * len(cur_release_v))
+
     github = Github(token)
     github_repo = github.get_repo("zerothi/sisl")
 
@@ -184,7 +191,7 @@ def main(token, revision_range, format="md"):
             if header > 0:
                 # this will only happen for rst
                 n = len(line)
-                out.append((" =-~"[header]) * n + "\n")
+                out.append((" =-^"[header]) * n + "\n")
 
     if len(out) > 0:
         # new-line

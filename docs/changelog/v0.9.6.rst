@@ -1,0 +1,12 @@
+*****
+0.9.6
+*****
+
+Contributors
+============
+
+A total of 2 people contributed to this release.  People with a "+" by their
+names contributed a patch for the first time.
+
+* Jonas Lundholm Bertelsen +
+* Nick Papior

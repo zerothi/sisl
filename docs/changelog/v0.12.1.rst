@@ -1,0 +1,30 @@
+******
+0.12.1
+******
+
+Contributors
+============
+
+A total of 2 people contributed to this release.  People with a "+" by their
+names contributed a patch for the first time.
+
+* Nick Papior
+* Pol Febrer
+
+Pull requests merged
+====================
+
+A total of 0 pull requests were merged for this release.
+
+
+Added
+^^^^^^
+* return spin moment from SCF output files of Siesta
+* read_fermi_level to siesta.PDOS files
+
+Fixed
+^^^^^^
+* MacOS builds
+* `sdata` handling of siesta.PDOS* files, much more versatily now
+* masking import of xarray
+* Fixes to sisl.viz module related to 3.10 and other details

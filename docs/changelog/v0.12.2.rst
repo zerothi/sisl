@@ -1,0 +1,54 @@
+******
+0.12.2
+******
+
+Contributors
+============
+
+A total of 3 people contributed to this release.  People with a "+" by their
+names contributed a patch for the first time.
+
+* Nick Papior
+* Pol Febrer
+* Thomas Frederiksen
+
+Pull requests merged
+====================
+
+A total of 4 pull requests were merged for this release.
+
+* #444: Function to translate atoms in geometry into the unit cell
+* #445: Suggestions to docs
+* #447: Minor things
+* #451: enh: enabled PBC center of mass calculations
+
+Added
+^^^^^^
+* enabled parsing geometry.in files from FHIaims
+* added `batched_indices` for memory-reduced location of array values
+* enabled manifold extractions `sisl.physics.yield_manifolds`
+* enabled center of mass for periodic systems (chooses *best* COM)
+* enabled returning the overlap matrix from `berry_phase`
+* added `rocksalt` @tfrederiksen
+* slab geometry creations, `fcc_slab`, `bcc_slab` and `rocksalt_slab` @tfrederiksen
+* added `Geometry.translate2uc` to shift everything into the unit-cell @tfrederiksen
+* added `Geometry.unrepeat` to reverse `repeat` calls (and to `sgeom`)
+* added `SparseGeometry.unrepeat` to reverse `repeat` calls
+
+Fixed
+^^^^^^
+* enabled reading HSX file version 1, #432
+* major performance boost for reading GULP FC files
+* cleaned mixing methods and decoupled the History and Mixers
+* incorrect handling of `atoms` argument in `Geometry.center` calls
+
+Changed
+^^^^^^^^
+* State*.outer corrected to the same interface as State*.inner
+* all `sisl.geom` geometries are now calling `optimize_nsc` if needed
+* `SparseGeometry.cut` -> `SparseGeometry.untile`
+  * much faster
+  * many more checks to warn about wrong usage
+	* `cut` is now deprecated (removed in 0.13)
+	* changed the --cut flag in `sgeom` to `--untile`, deprecated flag
+* enabled in/out arguments to tbt siles (easier to remember meaning)

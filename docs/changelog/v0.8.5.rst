@@ -1,0 +1,80 @@
+*****
+0.8.5
+*****
+
+Contributors
+============
+
+A total of 1 people contributed to this release.  People with a "+" by their
+names contributed a patch for the first time.
+
+* Nick Papior
+
+Pull requests merged
+====================
+
+A total of 0 pull requests were merged for this release.
+
+
+* Added the following routines:
+  * `SuperCell.fit` routine to determine a new supercell object
+    such that a given set of coordinates are all within AND
+    periodic in the new supercell.
+  * `SuperCell.parallel` to check whether two objects have parallel
+    latticevectors.
+  * `Geometry.distance` returns a list of distances from a given
+    set of atoms. I.e. to determine a set of distances required for
+    a subsequent close call. This routine can also be used to group
+    neighbouring atoms in a common fashion.
+  * `Geometry.optimize_nsc` loops all atoms and minimizes `nsc` in case
+    one is not sure of the interaction range.
+  * `Hamiltonian.shift` enables the shift of the entire electronic structure
+    Fermi-level.
+  * Added new flag to `Hamiltonian.Hk` routines
+     ``format={'csr', 'array', 'dense', ...}``
+    to ensure a consistent return of the data-type.
+
+* Bug fix for dHncSileSiesta for multiple levels.
+
+* Performance boost for the sub and remove functions for the
+  Hamiltonian objects. Instead of creating the geometry first,
+  it may now be much faster to generate the small Hamiltonian,
+  tile -> repeat -> sub -> remove.
+
+* Performance boost for the tile and repeat functions for the
+  Hamiltonian objects. They are now the preferred method for creating
+  large systems.
+
+* Bug fixed when having extremely long atomic ranges and using tile/repeat.
+  The number of supercells was too large.
+  It did not affect anything, but it was inconsistent.
+
+* Enabled reading the density matrix and energy density matrix from siesta.
+
+* Addition of a PerformanceSelector class which enables a dynamic
+  selection of the best routine.
+
+  Currently this is enabled in the SparseOrbitalBZ class where
+  constructing a matrix @ k can be done in numerous ways.
+
+* Bug fixed in supercell specification of the Hamiltonian:
+
+      >>> H[io, jo, (-1, 0, 0)]
+
+  now works in all cases.
+
+* Spin-orbit H(k) has been enabled
+
+* Fixed reading the <>.nc file from SIESTA, the non-zero elements count was
+  wrong.
+
+* Now H(k) has been tested for non-colinear and spin-orbit coupling and
+  one can now use sisl to perform non-colinear and spin-orbit coupling
+  calculations.
+
+* API change, all dR keywords has been changed to R for consistency and
+  reduction of ambiguity.
+  Also the `Atoms.dR` is now referred to as `Atoms.maxR()` to indicate
+  its meaning.
+
+  This may break old scripts if one use the `dR` keyword in arguments.

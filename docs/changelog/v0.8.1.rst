@@ -1,0 +1,54 @@
+*****
+0.8.1
+*****
+
+Contributors
+============
+
+A total of 1 people contributed to this release.  People with a "+" by their
+names contributed a patch for the first time.
+
+* Nick Papior
+
+Pull requests merged
+====================
+
+A total of 0 pull requests were merged for this release.
+
+
+* Fix a bug when reading non-Gamma TSHS files, now the
+  supercell information is correct.
+
+* tbtncSileSiesta now distinguishes between:
+    electronic_temperature [K]
+  and
+    kT [eV]
+  where the units are not the same.
+
+* Fixed TBT_DN.nc TBT_UP.nc detection as a `Sile`
+
+* Added information printout for the TBT.nc files
+
+       sdata siesta.TBT.nc --info
+
+  will print out what information is contained in the file.
+
+* `Atoms` overhauled with a lot of the utility routines
+  inherent to the `Geometry` object.
+  It is now much faster to perform operations on this
+  object.
+
+* The FDF sile now allows setting and retrieving variables
+  from the fdf file. Hence one may now set specific
+  fdf flags via:
+
+       sdata RUN.fdf --set SolutionMethod Transiesta
+
+* Changed default output precision for TXT files to .8f.
+  Additionally one may use flag `--format` in `sgeom` to
+  define the precision.
+
+* `Shape`s have been added. There are now several Shapes
+  which may be used to easily find atoms within a given Shape.
+  This should in principle allow construction of very complex Shapes
+  and easier construction of complex Hamiltonians

@@ -1,0 +1,109 @@
+******
+0.12.0
+******
+
+Contributors
+============
+
+A total of 4 people contributed to this release.  People with a "+" by their
+names contributed a patch for the first time.
+
+* A.H. Kole +
+* Nick Papior
+* Pol Febrer
+* Thomas Frederiksen
+
+Pull requests merged
+====================
+
+A total of 14 pull requests were merged for this release.
+
+* #307: Reading net charges from outSileSiesta
+* #313: doc: added description of dictionary keys and fixed a typo
+* #365: mnt: changed all origo references to origin
+* #367: Parallel calculation of PDOS and (fat)bands
+* #368: Allow per-category atom styles in GeometryPlot
+* #371: bug: fixed some errors in tutorial notebooks
+* #374: bug: geometry plot tests were failing
+* #376: tests: removed plotly requirement to test sisl.viz
+* #378: mnt: fixed matplotlib tests in <=3.4
+* #382: bug: 2D geometry plots didn't take perspective into account.
+* #395: Quick bug fix. Plot was not callable.
+* #397: tests: avoid too many matplotlib figures
+* #402: Use PeriodicTable to convert atomic labels to atomic numbers...
+* #403: Fixed construction of non-orthogonal (2-atom) hcp cell
+
+Added
+^^^^^^
+* Geometry.sub_orbital is added
+* BrillouinZone.volume enables easy calculation of volumes for BZ integrals
+* State.sub|remove are now allowed to be done inplace
+* State.derivative can now correctly calculate 1st and 2nd order derivatives #406
+* Enabled discontinuity jumps in band-structures (pass points as None)
+* COOP and COHP calculations for eigenstates
+* inverse participation ration calculations (with arbitrary q)
+* origin point for mirror functionality (Geometry)
+* degenerate_dir for `velocity` directions
+* `State.remove` complementary to `State.sub`
+* copying Dispatchers for subclasses.
+* dispatchers to `Shape`
+* `Spin.spinor` to get number of spinor components
+* `sc` argument to `xyzSile.read_geometry` for user defined cells
+* tiling a State object, #354 and #355
+* replacing atoms in SparseOrbital geometries #139
+* direction now accepts `abc` and `xyz` keywords to retrieve vectors depending on direction input.
+* replacing atoms in SparseOrbital geometries #139
+* reading from STRUCT_* files (Siesta input/output) #308
+* reading the SuperCell block from fdf
+* reading PAO.Basis blocks from both out and fdf files, almost complete functionality #90
+* generic `transform` method for matrix transformations
+* doing ufunc.reduce on SparseCSR matrices; *wrong* values for e.g. np.prod, generally be **CAUTIOUS** with reduction operations
+* transposing a SparseCSR matrix
+* added pymatgen conversion (Geometry.to/from.pymatgen)
+* atom indexing by shapes #337
+
+Fixed
+^^^^^^
+* `sub_orbital` allows lists of orbitals
+* `berry_phase` now works for non-orthogonal basis sets (uses Lowdin transformation)
+	This may require sufficiently small dk for accurateness.
+* `degenerate` argument for `conductivity` to enable decoupling of states
+* BandStructure.lineark now always starts from 0
+* reading coordinates from siesta.out when bands are calculated #362
+* complex warning for spin_moment #360 and #363
+* partially fixed #102 (`wavefunction` for `fxyz` outside box, related to #365 and how origin is interpreted in the code
+* non-collinear PDOS plotting
+* improvement for BandStructure setup, arguments more stringent
+* several fixes for `sisl.viz`; #368, #376 and #382
+* empty array handlings in `_sanitize_*` #370
+* ensured AtomicOrbital can be instantiated without specifying m (default to 0)
+* fixed bug when copying orbitals
+* fixed reading atomic labels in xsf files #402
+* fixed hpc parameters #403
+
+Changed
+^^^^^^^^
+* order of arguments for `nanoribbon` it was not consistent with the others
+* removed cell argument in `Geometry.sub`
+* removed `Sile.exist`, refer to `Sile.file` which always will be a `pathlib.Path` instance
+* `berry_phase` now uses the gauge=R convention, the code became much simpler
+* `BrillouinZone.parametrize` function changed interface to allow more dimensions
+* `EigenStateElectron.inner` does not use the overlap matrix by default, norm2 is for
+	exactly this behaviour
+* changed license to MPLv2 makes toolboxes easier to contribute under different license
+* renamed origo to origin, see #365
+* default parallel calculations are disabled
+* changed `State.align_*` routines to align `self` rather than `other`
+* doc fixes for recommending `python -m pip`
+
+Removed
+^^^^^^^^
+* removed keywords align for State.inner|outer, manually use `align` if required
+* removed method `State.expectation`
+
+toolbox.btd
+^^^^^^^^^^^^
+# Added
+^^^^^^^^
+* calculation of scattering states and eigenchannels
+* multiple variants of scattering state methods

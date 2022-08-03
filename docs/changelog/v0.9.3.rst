@@ -1,0 +1,25 @@
+*****
+0.9.3
+*****
+
+Contributors
+============
+
+A total of 2 people contributed to this release.  People with a "+" by their
+names contributed a patch for the first time.
+
+* Nick Papior
+* Thomas Frederiksen +
+
+Pull requests merged
+====================
+
+A total of 5 pull requests were merged for this release.
+
+* #49: Fixed some typos
+* #52: Enabled sub-directory travis coverage tests with .coveragerc...
+* #54: WIP updated states, first progress
+* #57: Updated RTD to Py-3
+* #63: Implementation of charge density on grids
+
+

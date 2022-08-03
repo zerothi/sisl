@@ -94,6 +94,7 @@ of places to search/ask for answers:
    :maxdepth: 2
 
    introduction
+   changelog/index
    contribute
    other
    cite

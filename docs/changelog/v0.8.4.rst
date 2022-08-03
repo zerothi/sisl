@@ -1,0 +1,53 @@
+*****
+0.8.4
+*****
+
+Contributors
+============
+
+A total of 1 people contributed to this release.  People with a "+" by their
+names contributed a patch for the first time.
+
+* Nick Papior
+
+Pull requests merged
+====================
+
+A total of 0 pull requests were merged for this release.
+
+
+* Added BrillouinZone class to easily create BrillouinZone plots etc.
+  When calculating the eigenspectrum of a Hamiltonian one may pass
+  the BrillouinZone object instead of the k-point to retrieve all
+  eigenvalues for the k-points in the BrillouinZone object.
+  Say for a PathBZ one can now easily retrieve the band-structure.
+
+* Enabled specification of Hamiltonian connections across supercells via
+  a tuple index (as the last index):
+
+      >>> H[io, jo, (-1, 0, 0)]
+
+  Thus connecting orbital `io` and `jo` across the -1 first lattice vector
+
+* Enabled tbtrans files to attach a geometry (to get correct species).
+
+* API change of:
+
+      read/write_geom => read/write_geometry
+      read/write_sc => read/write_supercell
+      read/write_es => read/write_hamiltonian
+
+  Moved `quantity` to `physics`.
+
+* Enabled slice deletion in `SparseCSR`
+
+  Enabled eliminate_zeros() to remove unneeded values.
+
+* Added ScaleUp compatibility. sisl now acceps ScaleUp files which is
+  a 2nd principles code for large scale calculations using Wannier
+  functions.
+
+* Added Hamiltonian.sub/remove/tile for easy extension of Hamiltonian
+  without having to construct the larger geometries.
+  This should speed up the creation of really large structures
+  as one may then simply "update" the Hamiltonian elements subsequently.

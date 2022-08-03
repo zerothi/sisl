@@ -1,0 +1,86 @@
+*****
+0.9.7
+*****
+
+Contributors
+============
+
+A total of 4 people contributed to this release.  People with a "+" by their
+names contributed a patch for the first time.
+
+* Jonas Lundholm Bertelsen
+* Nick Papior
+* Sofia Sanz Wuhl +
+* Thomas Frederiksen
+
+Pull requests merged
+====================
+
+A total of 3 pull requests were merged for this release.
+
+* #131: bugfix: inner product in berry phase
+* #135: Fixed typo in 'onlysSileSiesta': Led to NameError when loading...
+* #143: bug: ignore geometry constraints in POSCAR/CONTCAR
+
+* Bug-fix for reading geometries in outSiesta
+
+* Enabled reading the fermi level from the output, fixes #126
+
+* Enabled Siesta STM and STS output
+
+* Fixed an inheritance issue in `axsfSile` which meant it was unusable until
+	now
+
+* Maintenance fix for looping sparse matrices.
+	Now the default is to loop the sparse non-zero elements.
+  If one wishes to loop all atoms/orbitals one should use `iter_orbitals()`
+  NOTE: This *may* break some codes if they used loops on sparse matrices
+
+* Fixed reading VASP CAR files with constraints (thanks to T. Frederiksen)
+
+* Added `overlap` method to `Geometry` to find overlapping atoms
+	between two geometries.
+
+* Added Siesta LDOS charge handling
+
+* Changed edges method to not exclude it-self by default.
+	This is because it is not intuitive given the default exclude=None
+
+	Note: this may break compatibility with other software/scripts.
+
+* Added mulliken charge calculations and orbital angular momentum
+	for SO DM, fixes #136
+
+* Fixed reading overlap matrix in conjunction with DM from fdf-sile
+
+* Performance increase for the real-space self-energy calculations
+
+* Fixed transposing of the spin-box for NC and SO matrices
+
+* Enabled TRS handler for SO matrices, fixes #125
+
+* Enabled better b-casting assignments for sparse-matrices, fixes #134
+
+* Upgraded documentation to a layout that obeys numpydoc
+
+* Fixed reading ASE xyz outputs, thanksto JL. Bertelsen,
+
+* Fixed a typo in fdf reading onlyS, thanks to JL. Bertelsen, #135
+
+* Enabled reading arbitrary self-energy by requesting an energy and k-point
+	from TSGF files.
+
+* Upgraded handling of TBT.*.nc files to conform with the >=Siesta-4.1-b5
+	releases where all files contain the same device + electrode meta-data.
+
+* Deprecated TBTGFSileTBtrans (use tbtgfSileTBtrans instead)
+
+* Forced align=False in inner such that users should take care of this
+
+* Added align_norm to swap states such that they more or less
+	correspond to the same band (which should have a closer residual
+  for on-site coefficients).
+
+* Removed norm2 and made norm equal to norm2 for states. This is
+	the more natural thing, besides. Doing norm() ** 0.5 shouldn't be
+  too much of a problem.

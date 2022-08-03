@@ -1,0 +1,50 @@
+*****
+0.9.5
+*****
+
+Contributors
+============
+
+A total of 2 people contributed to this release.  People with a "+" by their
+names contributed a patch for the first time.
+
+* Nick Papior
+* Thomas Frederiksen
+
+Pull requests merged
+====================
+
+A total of 2 pull requests were merged for this release.
+
+* #82: Introduced option for berry_phase(...) to not close the integration...
+* #84: Zak phase from closed-loop integration
+
+* Fixed temperature for phonon output pht*nc files
+
+* Added tbtprojncSileTBtrans sile for analyzing projected transmissions
+
+* Removed deprecated dhSileTBtrans
+
+* Bug fix for binary grid files with Siesta and also reads using fdf-files
+
+* Changed default self-energy eta values to 1e-4 eV
+
+* Added Zak-phase calculations (thanks to T. Frederiksen)
+
+* Updated lots of State methods
+
+* added Bloch expansion class which can expand any method
+
+* self-energy calculations:
+  * Much faster
+	* enabled left/right self-energies in one method
+
+* fixed AtomicOrbital copies
+
+* enabled TSGF reads
+
+* Added noise-power calculations for TBT.nc files
+
+* Fixed TBT.SE.nc files, units and scattering matrix retrieval
+
+* added more VASP files

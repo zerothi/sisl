@@ -1,0 +1,144 @@
+*****
+0.8.2
+*****
+
+Contributors
+============
+
+A total of 1 people contributed to this release.  People with a "+" by their
+names contributed a patch for the first time.
+
+* Nick Papior
+
+Pull requests merged
+====================
+
+A total of 0 pull requests were merged for this release.
+
+
+* Fixed reading _hr.dat from Wannier90, now the band-structure of
+  SrTiO3 (Junquera's test example) is correct.
+
+* Speeded up tbtrans.py analyzing methods enourmously by introducing
+  faster sparse iterators. Now one can easily perform data-analysis on
+  systems in excess of 10.000 atoms very fast.
+
+* Added the TBT.AV.nc file which is meant to be created by `sisl` from
+  the TBT.nc files (i.e. create the k-averaged output).
+  This enables users to run tbtrans, create the k-averaged output, and
+  then delete the old file to heavily reduce disk-usage.
+
+  An example:
+
+      tbtrans RUN.fdf > TBT.out
+      sdata siesta.TBT.nc --tbt-av
+      rm siesta.TBT.nc
+
+  after this `siesta.TBT.AV.nc` exists will all k-averaged quantites.
+  If one is not interested in k-resolved quantities this may be very interesting.
+
+* Updated the TBT.nc sile for improved readability.
+
+* Easier script data-extraction from TBT.nc files due to easier conversion
+  between atomic indices and pivoting orbitals.
+
+  For this:
+  * a2p
+    returns the pivoting indices for the given atoms (complete set)
+  * o2p
+    returns the pivoting indices for the given orbitals
+
+  * Added `atom` keyword for retrieving DOS for a given set of atoms
+
+  * `sdata` and `TBT.nc` files now enable the creation of the TBT.AV.nc file
+    which is the k-averaged file of TBT.nc
+
+* Faster bond-current algorithms (faster iterator)
+
+* Initial template for TBT.Proj files for sdata processing
+
+* Geometry:
+
+  * Enabled multiplying geometries with integers to emulate `repeat` or
+    `tile` functions:
+
+        >>> geometry * 2 == geometry.tile(2, 0).tile(2, 1).tile(2, 2)
+        >>> geometry * [2, 1, 2] == geometry.tile(2, 0).tile(2, 2)
+        >>> geometry * [2, 2] == geometry.tile(2, 2)
+        >>> geometry * ([2, 1, 2], 'repeat') == geometry.repeat(2, 0).repeat(2, 2)
+        >>> geometry * ([2, 1, 2], 'r') == geometry.repeat(2, 0).repeat(2, 2)
+        >>> geometry * ([2, 0], 'r') == geometry.repeat(2, 0)
+        >>> geometry * ([2, 2], 'r') == geometry.repeat(2, 2)
+
+    This may be considered an advanced feature but useful nonetheless.
+
+  * Enabled "adding" geometries in a similar way as multiplication
+    I.e. the following applies:
+
+        >>> A + B == A.add(B)
+        >>> A + (B, 1) == A.append(B, 1)
+        >>> A + (B, 2) == A.append(B, 2)
+        >>> (A, 1) + B == A.prepend(B, 1)
+
+  * Added `origo` and `atom` argument to rotation functions. Previously this could be
+    accomblished by:
+
+        rotated = geometry.move(-origo).rotate(...).move(origo)
+
+    while now it is:
+
+        rotated = geometry.rotate(..., origo=origo)
+
+    The origo argument may also be a single integer in which case the rotation
+    is around atom `origo`.
+
+    Lastly the `atom` argument enables only rotating a sub-set of atoms.
+
+  * Geometry[..] is now calling axyz if `..` is pure indices, if it is
+    a `slice` it does not work with super-cell indices
+
+  * Added `rij` functions to the Geometry for retrieving distances
+    between two atoms (`orij` for orbitals)
+
+  * Renamed iter_linear to iter
+
+  * Added argument to iter_species for only looping certain atomic indices
+
+  * Added iter_orbitals which returns an iterator with atomic _and_ associated
+    orbitals.
+    The orbitals are with respect to the local orbital indices on the given atom
+
+    ```
+    >>> for ia, io in Geometry.iter_orbitals():
+    >>>     Geometry.atom[ia].R[io]
+    ```
+
+    works, while
+
+    ```
+    >>> for ia, io in Geometry.iter_orbitals(local=False):
+    >>>     Geometry.atom[ia].R[io]
+    ```
+
+    does not work because `io` is globally defined.
+
+  * Changed argument name for `coords`, `atom` instead of the
+    old `idx`.
+
+  * Renamed function `axyzsc` to `axyz`
+
+* SparseCSR:
+
+  * Added `iter_nnz(i=None)` which loops on sparse elements connecting to
+    row `i` (or default to loop on all rows and columns).
+
+  * `ispmatrix` to iterate through a `scipy.sparse.*_matrix` (and the `SparseCSR`
+    matrix).
+
+* Hamiltonian:
+
+  * Added `iter_nnz` which is the `Hamiltonian` equivalent of `SparseCSR.iter_nnz`.
+    It enables explicit looping on atomic couplings, or orbital couplings.
+    I.e. one may specify a subset of atoms or orbitals to loop over.
+
+  * Preliminary implementation of the non-collinear spin-case. Needs testing.

@@ -1,0 +1,93 @@
+*****
+0.9.0
+*****
+
+Contributors
+============
+
+A total of 1 people contributed to this release.  People with a "+" by their
+names contributed a patch for the first time.
+
+* Nick Papior
+
+Pull requests merged
+====================
+
+A total of 0 pull requests were merged for this release.
+
+
+* Enabled reading a tabular data-file
+
+* Lots of updates to the spin-class. It should now be more coherent.
+
+* Added rij and Rij to the sparse_geometry classes to extract orbital or
+  atomic distance matrices (returing the same sparsity pattern).
+
+* Renamed `which` keyword in `Geometry.center` to `what`
+
+* Added uniq keyword to o2a for better handling of orbitals -> atoms.
+
+* Fixed a performance bottleneck issue related to the `scipy.linalg.solve`
+  routine which was changed since 0.19.0.
+
+* Changed internal testing scheme to `pytest`
+
+* Lots of bug-fixes here and there
+
+* Geometry files used in the command-line has updated these arguments:
+
+   * tile
+   * repeat
+   * rotate
+
+  The order of the arguments are interchanged to be similar to the
+  scripting capabilities.
+
+  Also fixed an issue related to moving atoms into the unit-cell.
+
+* Enabled deleting supercell elements of a sparse Geometry. This
+  will come in handy when calculating the self-energies and Green
+  functions. I.e. Hamiltonian.set_nsc(...) will truncate entries
+  based on the new supercell.
+
+* Preliminary testing of reading Siesta binary output (.RHO, .VT, etc.)
+
+* Added parsing the Siesta EIG file (easy plotting, reading in Python)
+
+* Changed interface for BrillouinZone objects.
+  Now a BrillouinZone accepts any object which has cell/rcell entries.
+  Any function call on the BrillouinZone object will transfer the call to the
+  passed object and evaluate that function for all k-points in the BrillouinZone.
+
+* sisl.io.siesta.tbtrans
+
+  * Added current calculator to TBT.nc sile to calculate the current as TBtrans
+    does it (this requires the latest commit in SIESTA which defines the
+    chemical potential and electronic structure of *all* electrodes).
+
+  * Bug-fixes for TBT.nc sile, the bond-currents for multi-orbital systems
+    were in some cases wrong.
+
+  * Huge performance increase for TBT.nc data processing. Now the majority
+    of routines are based on array-indexing, rather than sparse loops.
+
+  * Changed the DOS retrieval functions to be more flexible. The default is
+    now to return the summed DOS across the selected atoms.
+
+  * Added a TBTGFSileSiesta which enables one to create _external_ self-energies
+    to be read in by TBtrans (complete electrode control).
+
+  * Added `deltancSileSiesta` as a replacement for `dHncSileSiesta`, TBtrans 4.1b4
+    will have two delta terms, dH (adds to bond-currents) and dSigma (does not
+    add to bond-currents).
+
+  * BEWARE, lots of defaults has changed in this release.
+
+* Hamiltonian.tile is now even faster, only utilizing
+  intrinsic numpy array functionality.
+
+* Greatly speeded up Hamiltonian.remove/sub functions.
+  Now there are no for-loops in the remove/sub routines which
+  will greatly increase performance.
+  It will now be much faster to generate the Hamiltonian for
+  a small reference cell, tile/repeat it, remove atoms.

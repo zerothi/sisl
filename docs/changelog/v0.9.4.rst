@@ -1,0 +1,163 @@
+*****
+0.9.4
+*****
+
+Contributors
+============
+
+A total of 1 people contributed to this release.  People with a "+" by their
+names contributed a patch for the first time.
+
+* Nick Papior
+
+Pull requests merged
+====================
+
+A total of 0 pull requests were merged for this release.
+
+
+* Fixes for the GULP dynamical matrix reads
+
+* Enabled preliminary reads of OpenMX input file
+
+* Enabled DOS calculation for the eigenvalue files
+
+* Added Berry-phase calculation for orthogonal basis sets
+
+* Added velocity calculation of electronic eigenstates
+
+* Enabled effective mass tensor in electronic eigenstates (un-tested)
+
+* High performance increase by moving stuff to Cython.
+
+* Added Siesta interaction tutorials
+
+* Added orthogonality checks when reading sparse matrices
+
+* Lots of fixes for the fdf-file
+
+* Added Mulliken calculation in DensityMatrix/EnergyDensityMatrix
+
+* Enabled reading phonons from FC files
+
+* Added named-groups which enables accessing groups of atoms by names.
+
+      Geometry['Hello'] = [2, 3, 4]
+
+* Changed Hessian to DynamicalMatrix to clarify the units
+
+* Added new units class to handle complex units.
+
+* Enabled a Phonon class to calculate group velocities of phonons, DOS and PDOS,
+	displacements
+
+* Bug-fixes for Siesta binary writes, now the supercell format is *always*
+	Siesta compliant.
+
+* Enabled replacing k-points in MonkhorstPack grids.
+
+* Enabled calculation of band-velocities from eigenstates
+
+* Made better progress-bars. Using eta= now relies on tqdm
+  It is however still an optional dependency.
+
+* Fixed Gamma-point periodic wavefunction storage.
+	Creating grids with wave-functions is fully functional
+	for arbitrarily big supercells.
+
+* BrillouinZone objects:
+
+  * Renamed PathBZ to BandStructure
+
+  * Renamed MonkhorstPackBZ to MonkhorstPack
+
+  * Enabled MonkhorstPack symmetry. This will reduce the number of
+    k-points to roughly half (note symmetry is by default *on*)
+
+  * Forced MonkhorstPack to create a k-grid which is Gamma centered
+
+* Shapes (backwards compatibility broken)
+
+  * Complete re-write of Shapes
+
+  * Skewed Cuboids, Ellipsoids
+
+  * Set combinations of Shapes (unions, difference sets, etc.)
+
+* Grid
+
+  * Enabled Grid.index for shapes.
+
+  * Fixed grid initialization to create grid spacings fixed by a real.
+    I.e. the voxel spacing.
+
+
+        >>> Grid([10, 10, 10]) # 10 points per lattice vector
+        >>> Grid(0.1) # 0.1 Angstrom spacing
+
+  * Enabled plotting wavefunctions on grids.
+
+  * Enabled plotting charge density on grids.
+
+* Enabled tqdm usage for progressbar. It is fast and easy to use
+	and a small requirement. (still optional)
+
+* Added intrinsic Sisl exceptions which will be used throughout
+  (at some point)
+
+* Removed deprecated TightBinding class (use Hamiltonian instead)
+
+* Added many SislWarning raises which are used to notify the user of
+	potentially important things (say if sisl knows there should be a unit
+	associated but it couldn't find it).
+
+* Added TSDE file reading in sisl.
+
+* Siesta reading of grid-related data is now much *smarter*. It will
+	try and recognize the units of the data so the units become sisl
+	intrinsics (Ry -> eV, Bohr -> Ang, etc.).
+	This means that typically one does not need to do manual unit-conversion.
+	There are however a few cases where sisl cannot figure out the
+	units. Particularly if the files are renamed.
+
+* Added a new class EigenSystem which holds information regarding
+  eigenvalues and eigenvectors.
+
+  * Currently an EigenState class is also enabled which can currently
+    be used to calculate wavefunctions, DOS, PDOS and more to come.
+
+* Fixed lots of bugs in fdf-reading quantities.
+	Now one is also able to read Hamiltonian and other physical
+	quantities from the fdf-object directly. There is pre-defined
+	orders of which files to read from if there are multiple files
+	eligeble.
+
+	Reading the geometry now defaults to the fdf file, but one can query
+	the output files by a boolean.
+
+* Enabled PDOS calculations for the Hamiltonian. Together
+	with the MonkhorstPack class one can easily calculate
+	k-averaged PDOS quantities.
+
+* Fixed cube reading/writing of multi-column data.
+
+* Added siesta PDOS xml parsing, currently this is only scriptable
+  but it manages easy extraction of quantities without the PDOSXML utility.
+	This also enables retrieving the PDOS as an xarray.DataArray.
+
+* Fixed a bug in writing XV files (only for -100/-200 species)
+
+* TBtrans / TBT.nc file:
+
+  * Added TBT.SE.nc file to enable easy extraction of self-energies
+    from TBtrans
+
+  * Added COOP and COHP extraction to the TBT.nc files.
+
+  * Added DM and ADM extraction to the TBT.nc files.
+
+  * Reorganized the TBtrans netcdf files (internal changes only)
+
+  * Added shot-noise calculation (and Fano factor). Currently un-tested!
+
+* Several added files

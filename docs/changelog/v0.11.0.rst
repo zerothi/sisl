@@ -1,0 +1,124 @@
+******
+0.11.0
+******
+
+Contributors
+============
+
+A total of 5 people contributed to this release.  People with a "+" by their
+names contributed a patch for the first time.
+
+* Jonas Lundholm Bertelsen
+* Nick Papior
+* Pol Febrer
+* Sofia Sanz Wuhl
+* Thomas Frederiksen
+
+Pull requests merged
+====================
+
+A total of 12 pull requests were merged for this release.
+
+* #231: Transmitting pbc to ASE
+* #246: Method to calculate grid isosurfaces
+* #253: Geometry._sanitize_atoms did not accept generic categories
+* #254: f-string was not printing variable value due to missing f
+* #255: Make parent categories callable and avoid their instantiation
+* #258: Making coordinate categories more accessible
+* #263: Supporting the creation of Binder docker images
+* #267: bug: skewed isosurfaces were not properly calculated
+* #270: Fixed reading geometries in .AXSF-files
+* #277: maint: remove ending blank line when writing xyz-files
+* #298: All plotly tests passing now
+* #300: Make plotly docs work
+
+* **Major addition**: plotly backend for plotting and interaction with
+	output. This is still a work in progress made by Pol Febrer.
+	Many thanks to @pfebrer!
+
+* Added unzip argument to BZ.apply methods to unzip multiple
+	return values, also added documentation to reflect this
+
+* Fixed reading data-arrays from Siesta-PDOS files
+
+* Enabled minimization method for basis information and pseudo generation
+
+* Enabled plotting grids using the command-line
+
+* Bug in how non-colinear matrices are dealt with, now fixed
+	Thanks to Xe Hu for discovering this.
+
+* Allowed reading the geometry for supercell HSX files
+	Atomic coordinates and nsc are determined from xij arrays
+
+* Basic implementation of Hermitian construct.
+	It now ensures a correct Hermitian matrix for simple cases
+
+* Added more return from close/within, supercell offsets
+	may be queried (ret_isc)
+
+* Added more transposing functionality for spin matrices
+
+* Fixed wfsxSileSiesta returning proper k-points if a geometry
+	is passed (i.e. reduced k-points). Otherwise warns users
+
+* Huge performance increase for finalizing very large structures
+
+* Fixed writing %block in fdf files
+
+* Enabled reading Fermi level from VASP DOSCAR files
+
+* Cleaned siesta and VASP reading of completed jobs, #287
+
+* added Geometry.new allowing easy type-lookups to convert to Geometry
+	e.g. Geometry.new("RUN.fdf") and Geometry.new(ase_atoms) automatically
+	figures out which method to call and how to interpret the objects.
+  added Geometry.to allowing easy type-lookups to convert to other objects
+	#282
+
+* enabled calculating supercell matrices with phases, format=sc:<format>
+  returns in supercell matrix form (no, no_s)
+
+* removed support for int and long as matrix types, only float/complex
+
+* Enabled `sgrid` to write tables of data
+
+* Merged spin_orbital_moment(deleted) and spin_moment with
+	optional argument project
+
+* Enabled orbital resolved velocities
+
+* Added outSileSiesta.read_energy to read final energies in a property-dict
+  (works both as a property (`energy.fermi`) and a dictionary (`energy["fermi"]`)
+
+* Ensured ghost atoms in Siesta are handled with separate
+	class, AtomGhost, #249
+
+* Using `si.RealspaceSI` with `unfold=(1,1,1)` no longer results in `nsc` on
+    the given surface hamiltonian being set to `(1,1,1)`.
+
+* Added calculation of isosurfaces, #246
+
+* Added `sisl.WideBandSE` for self-energies with constant
+	diagonals
+
+* Enabled more user control over categories, #242
+
+* Improved interpolation function for Grid's, and also
+	added filters
+
+* Bugfix for periodic directions for ASE conversion, #231
+
+* Fixed tuples for `_sanitize_atoms`, #233
+
+* Fixed reading correct unit from deltanc files, #234
+
+* Enabled berry-phase calculations for NC+SOC, #235
+
+* Added tiling to Grid, #238
+
+* Added Atoms.group_data which nicely splits an array holding
+	orbital information into atomic contributions (a list since
+	each sub-list may be unequal in length)
+
+* Many small bug-fixes and performance improvements

@@ -1,0 +1,37 @@
+*****
+0.8.3
+*****
+
+Contributors
+============
+
+A total of 1 people contributed to this release.  People with a "+" by their
+names contributed a patch for the first time.
+
+* Nick Papior
+
+Pull requests merged
+====================
+
+A total of 0 pull requests were merged for this release.
+
+
+* Fixed bug in __write_default (should have been _write_default)
+
+* API change in `close` functions, now ret_coord => ret_xyz,
+  ret_dist => ret_rij
+
+* Added `SparseCSR` math operations work on other `SparseCSR` matrices
+  Thus one may now do:
+
+      >>> a, b = SparseCSR(...), SparseCSR(...)
+      >>> aMb, aPb = a * b, a + b
+
+  Which makes many things much easier.
+  If this is used, you are encouraged to assert that the math is correct.
+  Currently are the routines largely untested. _Assistance is greatly appreciated
+  in creating `nosetests`_.
+
+* Geometries now _always_ create a supercell. This was not the case when
+  an atom with no defined orbital radius was used. Now this returns a
+  supercell with 10 A of vacuum along each Cartesian direction.

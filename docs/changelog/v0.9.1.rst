@@ -1,0 +1,26 @@
+*****
+0.9.1
+*****
+
+Contributors
+============
+
+A total of 1 people contributed to this release.  People with a "+" by their
+names contributed a patch for the first time.
+
+* Nick Papior
+
+Pull requests merged
+====================
+
+A total of 0 pull requests were merged for this release.
+
+
+* Fixed scaling of bond-currents in case 'all' is used, makes comparison
+  with '+' and '-' easier.
+
+* Updated defaults in bond_current to '+' such that only forward
+  going electrons are captured.
+
+* Updated defaults in vector_current to '+' such that only forward
+  going electrons are captured.
