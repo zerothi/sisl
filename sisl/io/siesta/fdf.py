@@ -109,9 +109,9 @@ class fdfSileSiesta(SileSiesta):
         if self.dir_file(f).is_file():
             self._parent_fh.append(self.fh)
             self.fh = self.dir_file(f).open(self._mode)
-        elif self.dir_file(f + ".gz").is_file():
+        elif self.dir_file(f"{f}.gz").is_file():
             self._parent_fh.append(self.fh)
-            self.fh = gzip.open(self.dir_file(f + ".gz"), mode="rt")
+            self.fh = gzip.open(self.dir_file(f"{f}.gz"), mode="rt")
         else:
             warn(f"{self!s} is trying to include file: {f} but the file seems not to exist? Will disregard file!")
 
@@ -127,7 +127,7 @@ class fdfSileSiesta(SileSiesta):
         try:
             while self._popfile():
                 pass
-            self.fh.seek(0)
+            self._open()
         except Exception:
             pass
 
@@ -424,16 +424,18 @@ class fdfSileSiesta(SileSiesta):
         top_file = str(self.file)
 
         # 1. find the old value, and thus the file in which it is found
-        with self:
+        if isfile(top_file):
+            same_fdf = self.__class__(top_file, 'r')
             try:
-                self.get(key)
+                same_fdf.get(key)
                 # Get the file of the containing data
-                top_file = str(self.fh.name)
+                top_file = str(same_fdf.fh.name)
             except Exception:
                 pass
 
         # Ensure that all files are closed
         self._seek()
+        self._open()
 
         # Now we should re-read and edit the file
         lines = open(top_file, 'r').readlines()
@@ -461,28 +463,32 @@ class fdfSileSiesta(SileSiesta):
             if do_write:
                 write(fh, value)
 
+        # ensure the file is-reopened
+        self._open()
+
     @staticmethod
     def print(key, value):
         """ Return a string which is pretty-printing the key+value """
         if isinstance(value, list):
-            s = f'%block {key}'
+            s = f"%block {key}"
             # if the value has any new-values
             has_nl = False
             for v in value:
-                if '\n' in v:
+                if "\n" in v:
                     has_nl = True
                     break
             if has_nl:
                 # copy list, we are going to change it
                 value = value[:]
                 # do not skip to next line in next segment
-                value[-1] = value[-1].replace('\n', '')
-                s += '\n{}\n'.format(''.join(value))
+                value[-1] = value[-1].replace("\n", "")
+                s = f"{s}\n{''.join(value)}\n"
             else:
-                s += '\n{}\n'.format('\n'.join(value))
-            s += f'%endblock {key}'
+                s = "{s}\n{v}\n".format(s=s, v="\n".join(value))
+            # We add an extra line after blocks
+            s = f"{s}%endblock {key}\n"
         else:
-            s = f'{key} {value}'
+            s = f"{key} {value}"
         return s
 
     @sile_fh_open()
@@ -535,16 +541,15 @@ class fdfSileSiesta(SileSiesta):
 
         self.write_supercell(geometry.sc, fmt, *args, **kwargs)
 
-        self._write('\n')
-        self._write(f'NumberOfAtoms {geometry.na}\n')
-        unit = kwargs.get('unit', 'Ang').capitalize()
-        is_fractional = unit in ('Frac', 'Fractional')
+        self._write(f"\nNumberOfAtoms {geometry.na}\n")
+        unit = kwargs.get("unit", "Ang").capitalize()
+        is_fractional = unit in ("Frac", "Fractional")
         if is_fractional:
-            self._write('AtomicCoordinatesFormat Fractional\n')
+            self._write("AtomicCoordinatesFormat Fractional\n")
         else:
-            conv = unit_convert('Ang', unit)
-            self._write(f'AtomicCoordinatesFormat {unit}\n')
-        self._write('%block AtomicCoordinatesAndAtomicSpecies\n')
+            conv = unit_convert("Ang", unit)
+            self._write(f"AtomicCoordinatesFormat {unit}\n")
+        self._write("%block AtomicCoordinatesAndAtomicSpecies\n")
 
         n_species = len(geometry.atoms.atom)
 
@@ -562,39 +567,39 @@ class fdfSileSiesta(SileSiesta):
 
         for ia, a, isp in geometry.iter_species():
             self._write(fmt_str.format(isp + 1, ia + 1, a.tag, *xyz[ia, :]))
-        self._write('%endblock AtomicCoordinatesAndAtomicSpecies\n\n')
+        self._write("%endblock AtomicCoordinatesAndAtomicSpecies\n\n")
 
         # Write out species
         # First swap key and value
-        self._write(f'NumberOfSpecies {n_species}\n')
-        self._write('%block ChemicalSpeciesLabel\n')
+        self._write(f"NumberOfSpecies {n_species}\n")
+        self._write("%block ChemicalSpeciesLabel\n")
         for i, a in enumerate(geometry.atoms.atom):
             if isinstance(a, AtomGhost):
-                self._write(' {} {} {}\n'.format(i + 1, -a.Z, a.tag))
+                self._write(f" {i+1} {-a.Z} {a.tag}\n")
             else:
-                self._write(' {} {} {}\n'.format(i + 1, a.Z, a.tag))
-        self._write('%endblock ChemicalSpeciesLabel\n')
+                self._write(f" {i+1} {a.Z} {a.tag}\n")
+        self._write("%endblock ChemicalSpeciesLabel\n")
 
         _write_block = True
         def write_block(atoms, append, write_block):
             if write_block:
-                self._write('\n# Constraints\n%block Geometry.Constraints\n')
+                self._write("\n# Constraints\n%block Geometry.Constraints\n")
                 write_block = False
-            self._write(f' atom [{atoms}]{append}\n')
+            self._write(f" atom [{atoms}]{append}\n")
             return write_block
 
         for d in range(4):
-            append = {0: '', 1: ' 1. 0. 0.', 2: ' 0. 1. 0.', 3: ' 0. 0. 1.'}.get(d)
-            n = 'CONSTRAIN' + {0: '', 1: '-x', 2: '-y', 3: '-z'}.get(d)
+            append = {0: "", 1: " 1. 0. 0.", 2: " 0. 1. 0.", 3: " 0. 0. 1."}.get(d)
+            n = "CONSTRAIN" + {0: "", 1: "-x", 2: "-y", 3: "-z"}.get(d)
             if n in geometry.names:
-                idx = list2str(geometry.names[n] + 1).replace('-', ' -- ')
+                idx = list2str(geometry.names[n] + 1).replace("-", " -- ")
                 if len(idx) > 200:
                     info(f"{self!s}.write_geometry will not write the constraints for {n} (too long line).")
                 else:
                     _write_block = write_block(idx, append, _write_block)
 
         if not _write_block:
-            self._write('%endblock\n')
+            self._write("%endblock\n")
 
     def read_supercell_nsc(self, *args, **kwargs):
         """ Read supercell size using any method available

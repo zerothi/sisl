@@ -491,3 +491,22 @@ def test_fdf_gz(sisl_files):
     # read from included gzipped file
     assert fdf.get("Lvl3.Foo") == "world3"
     assert fdf.get("Lvl3.Bar") == "hello3"
+
+
+@pytest.mark.xfail(reason="wrong set handling for blocks etc")
+def test_fdf_block_write_print(sisl_tmp):
+    f = sisl_tmp("block_write_print.fdf", _dir)
+    fdf = fdfSileSiesta(f, 'w')
+
+    block_value = ["this is my life"]
+    fdf.set("hello", block_value)
+    fdf.set("goodbye", "hello")
+
+    fdf = fdfSileSiesta(f)
+
+    assert "hello" == fdf.get("goodbye")
+    assert block_value == fdf.get("hello")
+    assert f"""%block hello
+ {block_value[0]}
+%endblock hello
+""" == fdf.print("hello")
