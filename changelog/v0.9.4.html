@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>0.9.4 &mdash; sisl 0.1.dev1+g29b81cf documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="0.9.3" href="v0.9.3.html" />
+    <link rel="prev" title="0.9.5" href="v0.9.5.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                0.1.dev1+g29b81cf
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Changelog</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="v0.12.2.html">0.12.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.12.1.html">0.12.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.12.0.html">0.12.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.11.0.html">0.11.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.10.0.html">0.10.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.9.8.html">0.9.8</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.9.7.html">0.9.7</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.9.6.html">0.9.6</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.9.5.html">0.9.5</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">0.9.4</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#contributors">Contributors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pull-requests-merged">Pull requests merged</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="v0.9.3.html">0.9.3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.9.2.html">0.9.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.9.1.html">0.9.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.9.0.html">0.9.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.8.5.html">0.8.5</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.8.4.html">0.8.4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.8.3.html">0.8.3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.8.2.html">0.8.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.8.1.html">0.8.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.8.0.html">0.8.0</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cite.html">Citing sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../publications.html">Publications using sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Changelog</a> &raquo;</li>
+      <li>0.9.4</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/changelog/v0.9.4.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="id1">
+<h1>0.9.4<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h1>
+<section id="contributors">
+<h2>Contributors<a class="headerlink" href="#contributors" title="Permalink to this heading"></a></h2>
+<p>A total of 1 people contributed to this release.  People with a “+” by their
+names contributed a patch for the first time.</p>
+<ul class="simple">
+<li><p>Nick Papior</p></li>
+</ul>
+</section>
+<section id="pull-requests-merged">
+<h2>Pull requests merged<a class="headerlink" href="#pull-requests-merged" title="Permalink to this heading"></a></h2>
+<p>A total of 0 pull requests were merged for this release.</p>
+<ul>
+<li><p>Fixes for the GULP dynamical matrix reads</p></li>
+<li><p>Enabled preliminary reads of OpenMX input file</p></li>
+<li><p>Enabled DOS calculation for the eigenvalue files</p></li>
+<li><p>Added Berry-phase calculation for orthogonal basis sets</p></li>
+<li><p>Added velocity calculation of electronic eigenstates</p></li>
+<li><p>Enabled effective mass tensor in electronic eigenstates (un-tested)</p></li>
+<li><p>High performance increase by moving stuff to Cython.</p></li>
+<li><p>Added Siesta interaction tutorials</p></li>
+<li><p>Added orthogonality checks when reading sparse matrices</p></li>
+<li><p>Lots of fixes for the fdf-file</p></li>
+<li><p>Added Mulliken calculation in DensityMatrix/EnergyDensityMatrix</p></li>
+<li><p>Enabled reading phonons from FC files</p></li>
+<li><p>Added named-groups which enables accessing groups of atoms by names.</p>
+<blockquote>
+<div><p>Geometry[‘Hello’] = [2, 3, 4]</p>
+</div></blockquote>
+</li>
+<li><p>Changed Hessian to DynamicalMatrix to clarify the units</p></li>
+<li><p>Added new units class to handle complex units.</p></li>
+<li><dl class="simple">
+<dt>Enabled a Phonon class to calculate group velocities of phonons, DOS and PDOS,</dt><dd><p>displacements</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Bug-fixes for Siesta binary writes, now the supercell format is <em>always</em></dt><dd><p>Siesta compliant.</p>
+</dd>
+</dl>
+</li>
+<li><p>Enabled replacing k-points in MonkhorstPack grids.</p></li>
+<li><p>Enabled calculation of band-velocities from eigenstates</p></li>
+<li><p>Made better progress-bars. Using eta= now relies on tqdm
+It is however still an optional dependency.</p></li>
+<li><dl class="simple">
+<dt>Fixed Gamma-point periodic wavefunction storage.</dt><dd><p>Creating grids with wave-functions is fully functional
+for arbitrarily big supercells.</p>
+</dd>
+</dl>
+</li>
+<li><p>BrillouinZone objects:</p>
+<ul class="simple">
+<li><p>Renamed PathBZ to BandStructure</p></li>
+<li><p>Renamed MonkhorstPackBZ to MonkhorstPack</p></li>
+<li><p>Enabled MonkhorstPack symmetry. This will reduce the number of
+k-points to roughly half (note symmetry is by default <em>on</em>)</p></li>
+<li><p>Forced MonkhorstPack to create a k-grid which is Gamma centered</p></li>
+</ul>
+</li>
+<li><p>Shapes (backwards compatibility broken)</p>
+<ul class="simple">
+<li><p>Complete re-write of Shapes</p></li>
+<li><p>Skewed Cuboids, Ellipsoids</p></li>
+<li><p>Set combinations of Shapes (unions, difference sets, etc.)</p></li>
+</ul>
+</li>
+<li><p>Grid</p>
+<ul>
+<li><p>Enabled Grid.index for shapes.</p></li>
+<li><p>Fixed grid initialization to create grid spacings fixed by a real.
+I.e. the voxel spacing.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Grid</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span> <span class="c1"># 10 points per lattice vector</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Grid</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span> <span class="c1"># 0.1 Angstrom spacing</span>
+</pre></div>
+</div>
+</li>
+<li><p>Enabled plotting wavefunctions on grids.</p></li>
+<li><p>Enabled plotting charge density on grids.</p></li>
+</ul>
+</li>
+<li><dl class="simple">
+<dt>Enabled tqdm usage for progressbar. It is fast and easy to use</dt><dd><p>and a small requirement. (still optional)</p>
+</dd>
+</dl>
+</li>
+<li><p>Added intrinsic Sisl exceptions which will be used throughout
+(at some point)</p></li>
+<li><p>Removed deprecated TightBinding class (use Hamiltonian instead)</p></li>
+<li><dl class="simple">
+<dt>Added many SislWarning raises which are used to notify the user of</dt><dd><p>potentially important things (say if sisl knows there should be a unit
+associated but it couldn’t find it).</p>
+</dd>
+</dl>
+</li>
+<li><p>Added TSDE file reading in sisl.</p></li>
+<li><dl class="simple">
+<dt>Siesta reading of grid-related data is now much <em>smarter</em>. It will</dt><dd><p>try and recognize the units of the data so the units become sisl
+intrinsics (Ry -&gt; eV, Bohr -&gt; Ang, etc.).
+This means that typically one does not need to do manual unit-conversion.
+There are however a few cases where sisl cannot figure out the
+units. Particularly if the files are renamed.</p>
+</dd>
+</dl>
+</li>
+<li><p>Added a new class EigenSystem which holds information regarding
+eigenvalues and eigenvectors.</p>
+<ul class="simple">
+<li><p>Currently an EigenState class is also enabled which can currently
+be used to calculate wavefunctions, DOS, PDOS and more to come.</p></li>
+</ul>
+</li>
+<li><dl>
+<dt>Fixed lots of bugs in fdf-reading quantities.</dt><dd><p>Now one is also able to read Hamiltonian and other physical
+quantities from the fdf-object directly. There is pre-defined
+orders of which files to read from if there are multiple files
+eligeble.</p>
+<p>Reading the geometry now defaults to the fdf file, but one can query
+the output files by a boolean.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Enabled PDOS calculations for the Hamiltonian. Together</dt><dd><p>with the MonkhorstPack class one can easily calculate
+k-averaged PDOS quantities.</p>
+</dd>
+</dl>
+</li>
+<li><p>Fixed cube reading/writing of multi-column data.</p></li>
+<li><p>Added siesta PDOS xml parsing, currently this is only scriptable
+but it manages easy extraction of quantities without the PDOSXML utility.</p>
+<blockquote>
+<div><p>This also enables retrieving the PDOS as an xarray.DataArray.</p>
+</div></blockquote>
+</li>
+<li><p>Fixed a bug in writing XV files (only for -100/-200 species)</p></li>
+<li><p>TBtrans / TBT.nc file:</p>
+<ul class="simple">
+<li><p>Added TBT.SE.nc file to enable easy extraction of self-energies
+from TBtrans</p></li>
+<li><p>Added COOP and COHP extraction to the TBT.nc files.</p></li>
+<li><p>Added DM and ADM extraction to the TBT.nc files.</p></li>
+<li><p>Reorganized the TBtrans netcdf files (internal changes only)</p></li>
+<li><p>Added shot-noise calculation (and Fano factor). Currently un-tested!</p></li>
+</ul>
+</li>
+<li><p>Several added files</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="v0.9.5.html" class="btn btn-neutral float-left" title="0.9.5" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="v0.9.3.html" class="btn btn-neutral float-right" title="0.9.3" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
