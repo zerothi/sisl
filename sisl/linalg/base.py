@@ -162,7 +162,7 @@ def inv(a, overwrite_a=False):
 
 
 @set_module("sisl.linalg")
-def solve(a, b, overwrite_a=False, overwrite_b=False):
+def solve(a, b, overwrite_a=False, overwrite_b=False, assume_a="gen"):
     """
     Solve a linear system ``a x = b``
 
@@ -208,8 +208,20 @@ def solve(a, b, overwrite_a=False, overwrite_b=False):
     else:
         b_is_1D = False
 
-    gesv = get_lapack_funcs('gesv', (a1, b1))
-    _, _, x, info = gesv(a1, b1, overwrite_a=overwrite_a, overwrite_b=overwrite_b)
+    if assume_a == "sym":
+        lower = False
+        sysv, sysv_lw = get_lapack_funcs(("sysv",
+                                          "sysv_lwork"), (a1, b1))
+        lwork = _compute_lwork(sysv_lw, n, lower)
+        _, _, x, info = sysv(a1, b1, lwork=lwork,
+                             lower=lower,
+                             overwrite_a=overwrite_a,
+                             overwrite_b=overwrite_b)
+    elif assume_a == "gen":
+        gesv = get_lapack_funcs('gesv', (a1, b1))
+        _, _, x, info = gesv(a1, b1, overwrite_a=overwrite_a, overwrite_b=overwrite_b)
+    else:
+        raise ValueError("Input assume_a is not one of gen/sym")
     if info > 0:
         raise LinAlgError("Singular matrix")
     elif info < 0:

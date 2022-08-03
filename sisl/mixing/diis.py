@@ -8,7 +8,7 @@ import numpy as np
 
 from sisl._internal import set_module
 import sisl._array as _a
-from sisl.linalg import solve
+from sisl.linalg import solve_destroy
 from .base import BaseHistoryMixer, History
 
 
@@ -59,7 +59,7 @@ class DIISMixer(BaseHistoryMixer):
     __slots__ = ("_metric",)
 
     def __init__(self, weight=0.1, history=2, metric=None):
-        # This will call History.__init__
+        # This will call self.set_history(history)
         super().__init__(weight, history)
         if metric is None:
             def metric(a, b):
@@ -103,6 +103,7 @@ class DIISMixer(BaseHistoryMixer):
         # Although B contains 1 and a number on the order of
         # number of elements (self._hist.size), it seems very
         # numerically stable.
+        last_metric = B[n_h-1, n_h-1]
 
         # Create RHS
         RHS = _a.zerosd(n_h + 1)
@@ -112,11 +113,11 @@ class DIISMixer(BaseHistoryMixer):
             # Apparently we cannot use assume_a='sym'
             # Is this because sym also implies positive definitiness?
             # However, these are matrices of order ~30, so we don't care
-            c = solve(B, RHS)
+            c = solve_destroy(B, RHS, assume_a="sym")
             return c[:-1], -c[-1]
         except np.linalg.LinAlgError as e:
             # We have a LinalgError
-            return _a.arrayd([1.]), metric(hist[-1][-1], hist[-1][-1])
+            return _a.arrayd([1.]), last_metric
 
     def coefficients(self):
         r""" Calculate coefficients of the Lagrangian """

@@ -19,6 +19,8 @@ we hit release version 1.0.0.
 - RealSpaceSI for right semi-infinite directions, #475
 - tbtrans files now have a separate entry in the documentation
 
+### Changed
+- changed DIIS solver to assume the matrix is symmetric (it is)
 
 ## [0.12.2] - 2022-5-2
 
