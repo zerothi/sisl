@@ -618,7 +618,7 @@ class outSileSiesta(SileSiesta):
             try:
                 val = float(val)
             except ValueError:
-                warn(f"Couldn't convert energy '{key}' ({val}) to a float, asigning np.nan.")
+                warn(f"Could not convert energy '{key}' ({val}) to a float, assigning nan.")
                 val = np.nan
 
             if key.startswith("ion."):
