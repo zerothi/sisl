@@ -15,6 +15,7 @@ from sisl import Geometry, Atom, SuperCell
 from sisl.utils import PropertyDict
 from sisl.utils.cmd import *
 from sisl.unit.siesta import unit_convert
+from sisl.messages import warn
 
 __all__ = ['outSileSiesta']
 
@@ -614,11 +615,17 @@ class outSileSiesta(SileSiesta):
             key, val = line.split("=")
             key = key.split(":")[1].strip()
             key = name_conv.get(key, key)
+            try:
+                val = float(val)
+            except ValueError:
+                warn(f"Couldn't convert energy '{key}' ({val}) to a float, asigning np.nan.")
+                val = np.nan
+
             if key.startswith("ion."):
                 # sub-nest
-                out.ion[key[4:]] = float(val)
+                out.ion[key[4:]] = val
             else:
-                out[key] = float(val)
+                out[key] = val
             line = next(itt)
 
         return out
