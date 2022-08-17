@@ -88,7 +88,7 @@ class xyzSile(Sile):
         return Geometry(xyz, atoms=sp, sc=sc)
 
     @sile_fh_open()
-    def read_geometry(self, atoms=None, sc=None):
+    def read_geometry(self, atoms=None, sc=None, ret_xyz=False):
         """ Returns Geometry object from the XYZ file
 
         Parameters
@@ -97,13 +97,17 @@ class xyzSile(Sile):
             the atoms to be associated with the Geometry
         sc : SuperCell, optional
             the supercell to be associated with the geometry
+        ret_xyz : bool, optional
+            if True, the raw xyz coordinates are returned in a numpy array,
+            instead of a Geometry object.
         """
         # Read number of atoms
         na = int(self.readline())
 
         # Read header, and try and convert to dictionary
         header = self.readline()
-        kv = header_to_dict(header)
+        if not ret_xyz:
+            kv = header_to_dict(header)
 
         # Read atoms and coordinates
         sp = [None] * na
@@ -113,6 +117,9 @@ class xyzSile(Sile):
             l = line().split(maxsplit=5)
             sp[ia] = l[0]
             xyz[ia, :] = l[1:4]
+
+        if ret_xyz:
+            return xyz
 
         if atoms is not None:
             sp = atoms
