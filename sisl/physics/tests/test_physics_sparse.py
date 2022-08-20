@@ -503,7 +503,6 @@ def test_sparse_orbital_transform_fail():
 
 
 @pytest.mark.parametrize("dtype", [np.float32, np.float64, np.complex64, np.complex128])
-@pytest.mark.only
 def test_sparseorbital_spin_dtypes(dtype):
     gr = geom.graphene()
 

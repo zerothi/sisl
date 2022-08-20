@@ -231,21 +231,10 @@ class pdbSile(Sile):
                 l = self.readline()
 
         # First sort all atoms according to the idx array
-        idx = np.array(idx)
         idx = np.argsort(idx)
         xyz = np.array(xyz)[idx, :]
-        tags = [tags[i] for i in idx]
-        Z = [Z[i] for i in idx]
-
         # Create the atom list
-        atoms = Atoms(Atom(Z[0], tag=tags[0]), na=len(Z))
-        for i, a in enumerate((Atom(z, tag=tag) for z, tag in zip(Z, tags))):
-            try:
-                s = atoms.specie_index(a)
-            except Exception:
-                s = len(atoms.atom)
-                atoms._atom.append(a)
-            atoms._specie[i] = s
+        atoms = [dict(Z=Z[i], tag=tags[i]) for i in idx]
 
         return Geometry(xyz, atoms, sc=sc)
 

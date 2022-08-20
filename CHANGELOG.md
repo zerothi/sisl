@@ -13,6 +13,9 @@ we hit release version 1.0.0.
 	and `conductivity`
 - ensured that non-orthogonal `transform` will copy over overlap matrix
 	in case the matrix is only touching the non-overlap elements
+- enabled dictionary entries for the `Atoms` initialization
+	in place of `atoms` argument. Both in the list-like entry, or
+	as the only argument.
 
 ### Fixed
 - orbital quantum numbers from HSX file was wrong in v1, #462

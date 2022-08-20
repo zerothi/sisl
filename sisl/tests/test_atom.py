@@ -270,6 +270,20 @@ def test_atom_getattr_orbs():
     assert all(map(lambda x: len(x) == 0, a.name()))
 
 
+def test_atoms_init_tags():
+    a = Atoms([dict(Z="H", tag="hello"), "B", "H"])
+    assert len(a) == 3
+    assert len(a.atom) == 3
+    assert a.atom[0].tag == "hello"
+    assert a.atom[1].tag == "B"
+    assert a.atom[2].tag == "H"
+
+    a = Atoms(dict(Z="H", tag="hello"))
+    assert len(a) == 1
+    assert len(a.atom) == 1
+    assert a.atom[0].tag == "hello"
+
+
 def test_atom_orbitals():
     a = Atom(5, ["x", "y"])
     assert len(a) == 2

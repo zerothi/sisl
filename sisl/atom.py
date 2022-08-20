@@ -1355,21 +1355,43 @@ class Atoms:
 
     Parameters
     ----------
-    atoms : list of Atom
+    atoms : str, Atom or list-like
        atoms to be contained in this list of atoms
+       If a str, or a single `Atom` it will be the only atom in the resulting
+       class repeated `na` times.
+       If a list, it will create all unique atoms and retain these, each item in
+       the list may a single argument passed to the `Atom` or a dictionary
+       that is passed to `Atom`, see examples.
     na : int or None
        total number of atoms, if ``len(atom)`` is smaller than `na` it will
        be repeated to match `na`.
+
+    Examples
+    --------
+    Creating an atoms object consisting of 5 atoms, all the same.
+
+    >>> atoms = Atoms("H", na=5)
+
+    Creating a set of 4 atoms, 2 Hydrogen, 2 Helium, in an alternate
+    ordere
+    
+    >>> Z = [1, 2, 1, 2]
+    >>> atoms = Atoms(Z)
+
+    Creating individual atoms using dictionary entries, two
+    Hydrogen atoms, one with a tag H_ghost.
+
+    >>> Atoms([dict(Z=1, tag="H_ghost"), 1])
     """
 
     # Using the slots should make this class slightly faster.
-    __slots__ = ['_atom', '_specie', '_firsto']
+    __slots__ = ("_atom", "_specie", "_firsto")
 
-    def __init__(self, atoms='H', na=None):
+    def __init__(self, atoms="H", na=None):
 
         # Default value of the atom object
         if atoms is None:
-            atoms = Atom('H')
+            atoms = Atom("H")
 
         # Correct the atoms input to Atom
         if isinstance(atoms, Atom):
@@ -1387,12 +1409,18 @@ class Atoms:
             uatoms = [Atom(atoms)]
             specie = [0]
 
+        elif isinstance(atoms, dict):
+            uatoms = [Atom(**atoms)]
+            specie = [0]
+
         elif isinstance(atoms, Iterable):
             # TODO this is very inefficient for large MD files
             uatoms = []
             specie = []
             for a in atoms:
-                if not isinstance(a, Atom):
+                if isinstance(a, dict):
+                    a = Atom(**a)
+                elif not isinstance(a, Atom):
                     a = Atom(a)
                 try:
                     s = uatoms.index(a)
