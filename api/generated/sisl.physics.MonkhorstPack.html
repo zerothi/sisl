@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.MonkhorstPack &mdash; sisl 0.1.dev1+g29b81cf documentation</title>
+  <title>sisl.physics.MonkhorstPack &mdash; sisl 0.1.dev1+g593498d documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -20,7 +20,7 @@
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -38,7 +38,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g29b81cf
+                0.1.dev1+g593498d
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -50,7 +50,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../changelog/index.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog/index.html">Release notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contribute.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../other.html">Other resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../cite.html">Citing sisl</a></li>
@@ -196,7 +196,7 @@ are normalized to the entire BZ.</p></li>
 <td><p>Return <em class="xref py py-obj">self</em> with k-averaged quantities</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.asdataarray" title="sisl.physics.MonkhorstPack.asdataarray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asdataarray</span></code></a>()</p></td>
-<td><p>Return <em class="xref py py-obj">self</em> with <a class="reference external" href="https://xarray.pydata.org/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2022.6.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a> returned quantities</p></td>
+<td><p>Return <em class="xref py py-obj">self</em> with <a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2022.6.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a> returned quantities</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.asgrid" title="sisl.physics.MonkhorstPack.asgrid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asgrid</span></code></a>()</p></td>
 <td><p>Return <em class="xref py py-obj">self</em> with Grid quantities</p></td>
@@ -320,7 +320,7 @@ and passing <a class="reference internal" href="#sisl.physics.MonkhorstPack.k" t
 <li><p><em class="xref py py-obj">apply.none</em>, specialized method that is mainly useful when wrapping methods</p></li>
 <li><p><em class="xref py py-obj">apply.list</em> same as <em class="xref py py-obj">apply.array</em> but using Python list as return value</p></li>
 <li><p><em class="xref py py-obj">apply.oplist</em> using <a class="reference internal" href="sisl.oplist.oplist.html#sisl.oplist.oplist" title="sisl.oplist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.oplist</span></code></a> allows greater flexibility for mathematical operations element wise</p></li>
-<li><p><em class="xref py py-obj">apply.datarray</em> if <a class="reference external" href="https://xarray.pydata.org/en/stable/index.html#module-xarray" title="(in xarray v2022.6.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray</span></code></a> is available one can retrieve an <a class="reference external" href="https://xarray.pydata.org/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2022.6.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a> instance</p></li>
+<li><p><em class="xref py py-obj">apply.datarray</em> if <a class="reference external" href="https://docs.xarray.dev/en/stable/index.html#module-xarray" title="(in xarray v2022.6.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray</span></code></a> is available one can retrieve an <a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2022.6.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a> instance</p></li>
 </ul>
 <p>Please see <a class="reference internal" href="../physics.brillouinzone.html#physics-brillouinzone"><span class="std std-ref">Brillouin zone</span></a> for further examples.</p>
 </dd></dl>
@@ -428,13 +428,13 @@ it. Defaults to <code class="docutils literal notranslate"><span class="pre">lam
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.MonkhorstPack.asdataarray">
 <span class="sig-name descname"><span class="pre">asdataarray</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.MonkhorstPack.asdataarray" title="Permalink to this definition"></a></dt>
-<dd><p>Return <em class="xref py py-obj">self</em> with <a class="reference external" href="https://xarray.pydata.org/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2022.6.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a> returned quantities</p>
-<p>This forces the <a class="reference internal" href="#sisl.physics.MonkhorstPack.__call__" title="sisl.physics.MonkhorstPack.__call__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code></a> routine to return a single <a class="reference external" href="https://xarray.pydata.org/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2022.6.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a>.</p>
+<dd><p>Return <em class="xref py py-obj">self</em> with <a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2022.6.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a> returned quantities</p>
+<p>This forces the <a class="reference internal" href="#sisl.physics.MonkhorstPack.__call__" title="sisl.physics.MonkhorstPack.__call__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code></a> routine to return a single <a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2022.6.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a>.</p>
 <p class="rubric">Notes</p>
 <p>This method will be deprecated &gt;0.9.9.
 Please use <code class="docutils literal notranslate"><span class="pre">self.apply.dataarray</span></code> instead.</p>
 <p>If you wrap the sub-method to return multiple data-sets, you should use <em class="xref py py-obj">asdataset</em>
-instead which returns a combination of data-arrays (so-called <a class="reference external" href="https://xarray.pydata.org/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2022.6.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.Dataset</span></code></a>).</p>
+instead which returns a combination of data-arrays (so-called <a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2022.6.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.Dataset</span></code></a>).</p>
 <p>All invocations of sub-methods are added these keyword-only arguments:</p>
 <dl class="simple">
 <dt>eta<span class="classifier">bool, optional</span></dt><dd><p>if true a progress-bar is created, default false.</p>
