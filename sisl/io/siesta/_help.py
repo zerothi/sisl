@@ -26,9 +26,12 @@ def _ensure_diagonal(csr):
     # Create index arrays
     row = (csr.ncol > 0).nonzero()[0]
     row = np.repeat(row, csr.ncol[row])
+    # Ensure we only take those elements that are in play (i.e. this
+    # will work regardless of the csr being finalized or not)
+    col = csr.col[_a.array_arange(csr.ptr[:-1], n=csr.ncol, dtype=np.int32)]
 
     # figure out where they are the same (diagonals)
-    present_diags = row[row == csr.col]
+    present_diags = row[row == col]
 
     # Now figure out which elements are missing
     missing_diags = np.delete(np.arange(csr.shape[0]), present_diags)
