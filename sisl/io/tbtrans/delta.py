@@ -280,7 +280,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
             raise SileError(f"{self!s}.write_overlap cannot write a zero element sparse matrix!")
 
         # convert to siesta thing and store
-        _csr_to_siesta(delta.geometry, csr)
+        _csr_to_siesta(delta.geometry, csr, diag=False)
         # delta should always write sorted matrices
         csr.finalize(sort=True)
         _mat_spin_convert(csr, delta.spin)

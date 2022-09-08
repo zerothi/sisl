@@ -18,6 +18,11 @@ we hit release version 1.0.0.
 	as the only argument.
 
 ### Fixed
+- delta-files (netCDF) would always have diagonal components,
+  this has now been removed since it only needs the elements with
+	values
+- Siesta sparse matrices could in some cases set wrong diagonal
+  components
 - orbital quantum numbers from HSX file was wrong in v1, #462
 - RealSpaceSI for right semi-infinite directions, #475
 - tbtrans files now have a separate entry in the documentation
