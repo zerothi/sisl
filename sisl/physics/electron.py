@@ -414,7 +414,7 @@ def spin_moment(state, S=None, project=False):
             D1 = cs[:, 1] * Sstate[:, 0]
             D2 = cs[:, 0] * Sstate[:, 1]
             s[i, :, 0] = D1.real + D2.real
-            s[i, :, 1] = D1.imag - D2.imag
+            s[i, :, 1] = D2.imag - D1.imag
 
     else:
         s = np.empty([state.shape[0], 3], dtype=dtype_complex_to_real(state.dtype))
@@ -429,7 +429,7 @@ def spin_moment(state, S=None, project=False):
             D = cs.T @ Sstate
             s[i, 2] = (D[0, 0] - D[1, 1]).real
             s[i, 0] = (D[1, 0] + D[0, 1]).real
-            s[i, 1] = (D[1, 0] - D[0, 1]).imag
+            s[i, 1] = (D[0, 1] - D[1, 0]).imag
 
     return s
 
