@@ -229,16 +229,22 @@ def PDOS(E, eig, state, S=None, distribution="gaussian", spin=None):
         # Initialize data
         PDOS = np.empty([4, state.shape[1] // 2, len(E)], dtype=dtype_complex_to_real(state.dtype))
 
+        # Do spin-box calculations:
+        #  PDOS[0] = total DOS (diagonal)
+        #  PDOS[1] = x == < psi | \sigma_x S | psi >
+        #  PDOS[2] = y == < psi | \sigma_y S | psi >
+        #  PDOS[3] = z == < psi | \sigma_z S | psi >
+
         d = distribution(E - eig[0]).reshape(1, -1)
         cs = conj(state[0]).reshape(-1, 2)
         v = S.dot(state[0].reshape(-1, 2))
         D1 = (cs * v).real # uu,dd PDOS
         PDOS[0, :, :] = D1.sum(1).reshape(-1, 1) * d # total DOS
         PDOS[3, :, :] = (D1[:, 0] - D1[:, 1]).reshape(-1, 1) * d # z-dos
-        D1 = (cs[:, 1] * v[:, 0]).reshape(-1, 1)
-        D2 = (cs[:, 0] * v[:, 1]).reshape(-1, 1)
+        D1 = (cs[:, 1] * v[:, 0]).reshape(-1, 1) # d,u
+        D2 = (cs[:, 0] * v[:, 1]).reshape(-1, 1) # u,d
         PDOS[1, :, :] = (D1.real + D2.real) * d # x-dos
-        PDOS[2, :, :] = (D1.imag - D2.imag) * d # y-dos
+        PDOS[2, :, :] = (D2.imag - D1.imag) * d # y-dos
         for i in range(1, len(eig)):
             d = distribution(E - eig[i]).reshape(1, -1)
             cs = conj(state[i]).reshape(-1, 2)
@@ -249,7 +255,7 @@ def PDOS(E, eig, state, S=None, distribution="gaussian", spin=None):
             D1 = (cs[:, 1] * v[:, 0]).reshape(-1, 1)
             D2 = (cs[:, 0] * v[:, 1]).reshape(-1, 1)
             PDOS[1, :, :] += (D1.real + D2.real) * d
-            PDOS[2, :, :] += (D1.imag - D2.imag) * d
+            PDOS[2, :, :] += (D2.imag - D1.imag) * d
 
     else:
         PDOS = (conj(state[0]) * S.dot(state[0])).real.reshape(-1, 1) \
@@ -403,6 +409,8 @@ def spin_moment(state, S=None, project=False):
     if S.shape[1] == state.shape[1]:
         S = S[::2, ::2]
 
+    # see PDOS for details related to the spin-box calculations
+
     if project:
         s = np.empty([state.shape[0], state.shape[1] // 2, 3], dtype=dtype_complex_to_real(state.dtype))
 
@@ -427,9 +435,9 @@ def spin_moment(state, S=None, project=False):
             cs = conj(state[i]).reshape(-1, 2)
             Sstate = S.dot(state[i].reshape(-1, 2))
             D = cs.T @ Sstate
-            s[i, 2] = (D[0, 0] - D[1, 1]).real
-            s[i, 0] = (D[1, 0] + D[0, 1]).real
-            s[i, 1] = (D[0, 1] - D[1, 0]).imag
+            s[i, 2] = D[0, 0].real - D[1, 1].real
+            s[i, 0] = D[1, 0].real + D[0, 1].real
+            s[i, 1] = D[0, 1].imag - D[1, 0].imag
 
     return s
 
