@@ -24,13 +24,12 @@ we hit release version 1.0.0.
 - Siesta sparse matrices could in some cases set wrong diagonal
   components
 - orbital quantum numbers from HSX file was wrong in v1, #462
+- corrected sign for spin-Y direction, PDOS, spin_moment, #486
 - RealSpaceSI for right semi-infinite directions, #475
 - tbtrans files now have a separate entry in the documentation
 
 ### Changed
 - changed DIIS solver to assume the matrix is symmetric (it is)
-
-### Changed
 - tbtncSileTBtrans and its derivates has changed, drastically.
 	This will accommodate changes related to #477 and #478.
 	Now `*_transmission` refers to energy resolved transmissions

@@ -1116,6 +1116,76 @@ class TestHamiltonian:
         assert PDOS.dtype.kind == 'f'
         assert np.allclose(PDOS.sum(0), DOS)
 
+    def test_pdos_nc(self):
+        geom = Geometry([0] * 3)
+        H = Hamiltonian(geom, spin="nc")
+        spin = H.spin
+        # this should be Hermitian
+        H[0, 0] = np.array([1, 2, 3, 4])
+        E = [0]
+        def dist(E, *args):
+            return np.ones(len(E))
+
+        # just get a fictional PDOS
+        es = H.eigenstate()
+        PDOS = es.PDOS(E, dist)[..., 0]
+        SM = es.spin_moment()
+        SMp = es.spin_moment(project=True)
+
+        # now check with spin stuff
+        pdos = es.inner().real
+        assert np.allclose(PDOS[0, 0], pdos.sum())
+
+        pdos = es.inner(matrix=spin.X).real
+        assert np.allclose(PDOS[1, 0], pdos.sum())
+        assert np.allclose(SM[:, 0], pdos)
+        assert np.allclose(SMp[:, :, 0].sum(-1), pdos)
+
+        pdos = es.inner(matrix=spin.Y).real
+        assert np.allclose(PDOS[2, 0], pdos.sum())
+        assert np.allclose(SM[:, 1], pdos)
+        assert np.allclose(SMp[:, :, 1].sum(-1), pdos)
+
+        pdos = es.inner(matrix=spin.Z).real
+        assert np.allclose(PDOS[3, 0], pdos.sum())
+        assert np.allclose(SM[:, 2], pdos)
+        assert np.allclose(SMp[:, :, 2].sum(-1), pdos)
+
+    def test_pdos_so(self):
+        geom = Geometry([0] * 3)
+        H = Hamiltonian(geom, spin="soc")
+        spin = H.spin
+        # this should be Hermitian
+        H[0, 0] = np.array([1, 2, 3, 4, 0, 0, 3, -4])
+        E = [0]
+        def dist(E, *args):
+            return np.ones(len(E))
+
+        # just get a fictional PDOS
+        es = H.eigenstate()
+        PDOS = es.PDOS(E, dist)[..., 0]
+        SM = es.spin_moment()
+        SMp = es.spin_moment(project=True)
+
+        # now check with spin stuff
+        pdos = es.inner().real
+        assert np.allclose(PDOS[0, 0], pdos.sum())
+
+        pdos = es.inner(matrix=spin.X).real
+        assert np.allclose(PDOS[1, 0], pdos.sum())
+        assert np.allclose(SM[:, 0], pdos)
+        assert np.allclose(SMp[:, :, 0].sum(-1), pdos)
+
+        pdos = es.inner(matrix=spin.Y).real
+        assert np.allclose(PDOS[2, 0], pdos.sum())
+        assert np.allclose(SM[:, 1], pdos)
+        assert np.allclose(SMp[:, :, 1].sum(-1), pdos)
+
+        pdos = es.inner(matrix=spin.Z).real
+        assert np.allclose(PDOS[3, 0], pdos.sum())
+        assert np.allclose(SM[:, 2], pdos)
+        assert np.allclose(SMp[:, :, 2].sum(-1), pdos)
+
     def test_coop_against_pdos_nonortho(self, setup):
         HS = setup.HS.copy()
         HS.construct([(0.1, 1.5), ((0., 1.), (1., 0.1))])
