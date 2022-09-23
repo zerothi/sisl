@@ -41,8 +41,8 @@ def honeycomb(bond, atoms, orthogonal=False):
                                [2., 0., 0.]], np.float64) * bond,
                      atoms, sc=sc)
     else:
-        sc = SuperCell(np.array([[1.5, sq3h, 0.],
-                                 [1.5, -sq3h, 0.],
+        sc = SuperCell(np.array([[1.5, -sq3h, 0.],
+                                 [1.5, sq3h, 0.],
                                  [0., 0., 10.]], np.float64) * bond)
         g = Geometry(np.array([[0., 0., 0.],
                                [1., 0., 0.]], np.float64) * bond,

@@ -29,6 +29,8 @@ we hit release version 1.0.0.
 - tbtrans files now have a separate entry in the documentation
 
 ### Changed
+- swapped order of `honeycomb` (`graphene` derivatives)
+  lattice vectors, to ensure the vectors are following right-hand-rule, #488
 - changed DIIS solver to assume the matrix is symmetric (it is)
 - tbtncSileTBtrans and its derivates has changed, drastically.
 	This will accommodate changes related to #477 and #478.

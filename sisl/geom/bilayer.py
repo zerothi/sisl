@@ -75,13 +75,13 @@ def bilayer(bond=1.42, bottom_atoms=None, top_atoms=None, stacking='AB',
 
     # Compute twist angle
     m, n = twist
-    m, n = abs(m), abs(n)
-    if m > n:
-        # Set m as the smaller integer
-        m, n = n, m
-
     if not (isinstance(n, Integral) and isinstance(m, Integral)):
         raise ValueError("bilayer: twist coordinates need to be integers!")
+
+    m, n = abs(m), abs(n)
+    # Set n as the smaller integer
+    if n > m:
+        n, m = m, n
 
     if m == n:
         # No twisting
@@ -152,7 +152,7 @@ def bilayer(bond=1.42, bottom_atoms=None, top_atoms=None, stacking='AB',
         offset = fxyz_min.dot(bilayer.cell)
         vec = bilayer.cell[0] + bilayer.cell[1]
         vec_costh = vec[0] / vec.dot(vec) ** 0.5
-        vec_th = acos(vec_costh) * 180 / pi
+        vec_th = -acos(vec_costh) * 180 / pi
         bilayer = bilayer.move(-offset).rotate(vec_th, [0, 0, 1])
 
     # Sanity check
