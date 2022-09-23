@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.tbtrans.delta &mdash; sisl 0.1.dev1+g593498d documentation</title>
+  <title>sisl.io.tbtrans.delta &mdash; sisl 0.1.dev1+ga14a79d documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -33,7 +33,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g593498d
+                0.1.dev1+ga14a79d
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -378,7 +378,7 @@
             <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!s}</span><span class="s2">.write_overlap cannot write a zero element sparse matrix!&quot;</span><span class="p">)</span>
 
         <span class="c1"># convert to siesta thing and store</span>
-        <span class="n">_csr_to_siesta</span><span class="p">(</span><span class="n">delta</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">csr</span><span class="p">)</span>
+        <span class="n">_csr_to_siesta</span><span class="p">(</span><span class="n">delta</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">csr</span><span class="p">,</span> <span class="n">diag</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="c1"># delta should always write sorted matrices</span>
         <span class="n">csr</span><span class="o">.</span><span class="n">finalize</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">_mat_spin_convert</span><span class="p">(</span><span class="n">csr</span><span class="p">,</span> <span class="n">delta</span><span class="o">.</span><span class="n">spin</span><span class="p">)</span>
