@@ -3,8 +3,9 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import pytest
 
-from sisl import Atom
+from sisl import Atom, SuperCell
 from sisl.geom import *
+from sisl._math_small import cross3, dot3
 
 import math as m
 import numpy as np
@@ -13,36 +14,59 @@ import numpy as np
 pytestmark = [pytest.mark.geom]
 
 
+class CellDirect(SuperCell):
+
+    @property
+    def volume(self):
+        return dot3(self.cell[0, :], cross3(self.cell[1, :], self.cell[2, :]))
+
+
+def is_right_handed(geometry):
+    sc = CellDirect(geometry.sc.cell)
+    return sc.volume > 0.
+
+
 def test_basic():
     a = sc(2.52, Atom['Fe'])
+    assert is_right_handed(a)
     a = bcc(2.52, Atom['Fe'])
+    assert is_right_handed(a)
     a = bcc(2.52, Atom['Fe'], orthogonal=True)
     a = fcc(2.52, Atom['Au'])
+    assert is_right_handed(a)
     a = fcc(2.52, Atom['Au'], orthogonal=True)
     a = hcp(2.52, Atom['Au'])
+    assert is_right_handed(a)
     a = hcp(2.52, Atom['Au'], orthogonal=True)
     a = rocksalt(5.64, ['Na', 'Cl'])
+    assert is_right_handed(a)
     a = rocksalt(5.64, [Atom('Na', R=3), Atom('Cl', R=4)], orthogonal=True)
 
 
 def test_flat():
     a = graphene()
+    assert is_right_handed(a)
     a = graphene(atoms='C')
     a = graphene(orthogonal=True)
-
+    assert is_right_handed(a)
 
 def test_nanotube():
     a = nanotube(1.42)
+    assert is_right_handed(a)
     a = nanotube(1.42, chirality=(3, 5))
+    assert is_right_handed(a)
     a = nanotube(1.42, chirality=(6, -3))
+    assert is_right_handed(a)
 
 
 def test_diamond():
     a = diamond()
+    assert is_right_handed(a)
 
 
 def test_bilayer():
     a = bilayer(1.42)
+    assert is_right_handed(a)
     a = bilayer(1.42, stacking='AA')
     a = bilayer(1.42, stacking='BA')
     a = bilayer(1.42, stacking='AB')
@@ -70,6 +94,7 @@ def test_nanoribbon():
         a = nanoribbon(w, 1.42, Atom(6), kind='zigzag')
         a = nanoribbon(w, 1.42, (Atom(5), Atom(7)), kind='armchair')
         a = nanoribbon(w, 1.42, (Atom(5), Atom(7)), kind='zigzag')
+    assert is_right_handed(a)
 
     with pytest.raises(ValueError):
         nanoribbon(6, 1.42, (Atom(5), Atom(7)), kind='undefined')
@@ -80,14 +105,17 @@ def test_nanoribbon():
 
 def test_graphene_nanoribbon():
     a = graphene_nanoribbon(5)
+    assert is_right_handed(a)
 
 
 def test_agnr():
     a = agnr(5)
+    assert is_right_handed(a)
 
 
 def test_zgnr():
     a = zgnr(5)
+    assert is_right_handed(a)
 
 
 def test_fcc_slab():
@@ -101,7 +129,9 @@ def test_fcc_slab():
         fcc_slab(4.08, 79, '111', layers=5, start=1, orthogonal=o)
         fcc_slab(4.08, 79, '111', layers=5, start='C', orthogonal=o)
         fcc_slab(4.08, 79, '111', layers=5, end=2, orthogonal=o)
-        fcc_slab(4.08, 79, '111', layers=5, end='B', orthogonal=o)
+        a = fcc_slab(4.08, 79, '111', layers=5, end='B', orthogonal=o)
+        assert is_right_handed(a)
+
     with pytest.raises(ValueError):
         fcc_slab(4.08, 'Au', 100, start=0, end=0)
     with pytest.raises(ValueError):
@@ -144,7 +174,9 @@ def test_bcc_slab():
         bcc_slab(4.08, 79, '111', layers="BCABC", start=1, orthogonal=o)
         bcc_slab(4.08, 79, '111', layers=5, start='C', orthogonal=o)
         bcc_slab(4.08, 79, '111', layers=5, end=2, orthogonal=o)
-        bcc_slab(4.08, 79, '111', layers=5, end='B', orthogonal=o)
+        a = bcc_slab(4.08, 79, '111', layers=5, end='B', orthogonal=o)
+        assert is_right_handed(a)
+
     with pytest.raises(ValueError):
         bcc_slab(4.08, 'Au', 100, start=0, end=0)
     with pytest.raises(ValueError):
@@ -165,7 +197,9 @@ def test_rocksalt_slab():
     rocksalt_slab(5.64, ['Na', 'Cl'], 110, vacuum=None)
     rocksalt_slab(5.64, ['Na', 'Cl'], 111, orthogonal=False)
     rocksalt_slab(5.64, ['Na', 'Cl'], 111, orthogonal=True)
-    rocksalt_slab(5.64, 'Na', 100)
+    a = rocksalt_slab(5.64, 'Na', 100)
+    assert is_right_handed(a)
+
     with pytest.raises(ValueError):
         rocksalt_slab(5.64, ['Na', 'Cl'], 100, start=0, end=0)
     with pytest.raises(ValueError):
