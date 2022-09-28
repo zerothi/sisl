@@ -223,7 +223,7 @@ disable = [
 legacy_tox_ini = """
 [tox]
 minversion = 3.3.0
-envlist = py36,py38,py39
+envlist = py37,py38,py39
 isolated_build = True
 
 [testenv]
