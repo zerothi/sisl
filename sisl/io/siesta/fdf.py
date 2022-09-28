@@ -41,14 +41,14 @@ from sisl.utils.cmd import default_ArgumentParser, default_namespace
 from sisl.utils.misc import merge_instances
 from sisl.unit.siesta import unit_convert, unit_default, unit_group
 
-__all__ = ['fdfSileSiesta']
+__all__ = ["fdfSileSiesta"]
 
 
-_LOGICAL_TRUE  = ['.true.', 'true', 'yes', 'y', 't']
-_LOGICAL_FALSE = ['.false.', 'false', 'no', 'n', 'f']
+_LOGICAL_TRUE  = [".true.", "true", "yes", "y", "t"]
+_LOGICAL_FALSE = [".false.", "false", "no", "n", "f"]
 _LOGICAL = _LOGICAL_FALSE + _LOGICAL_TRUE
 
-Bohr2Ang = unit_convert('Bohr', 'Ang')
+Bohr2Ang = unit_convert("Bohr", "Ang")
 
 
 def _listify_str(arg):
@@ -90,8 +90,8 @@ class fdfSileSiesta(SileSiesta):
 
     Examples
     --------
-    >>> fdf = fdfSileSiesta('tmp/RUN.fdf') # reads output files in 'tmp/' folder
-    >>> fdf = fdfSileSiesta('tmp/RUN.fdf', base='.') # reads output files in './' folder
+    >>> fdf = fdfSileSiesta("tmp/RUN.fdf") # reads output files in "tmp/" folder
+    >>> fdf = fdfSileSiesta("tmp/RUN.fdf", base=".") # reads output files in "./" folder
     """
 
     def _setup(self, *args, **kwargs):
@@ -147,7 +147,7 @@ class fdfSileSiesta(SileSiesta):
         l = self.readline()
         while l != '':
             ls = l.split()
-            if '%include' == ls[0].lower():
+            if "%include" == ls[0].lower():
                 add(ls[1])
                 self._pushfile(ls[1])
             elif '<' in ls:
@@ -203,7 +203,7 @@ class fdfSileSiesta(SileSiesta):
                 # 1. It is a block, in which case
                 #    the full block is piped into the label
                 #    %block Label < file
-                if lsl[0] == '%block' and lsl[1] == labell:
+                if lsl[0] == "%block" and lsl[1] == labell:
                     # Correct line found
                     # Read the file content, removing any empty and/or comment lines
                     lines = self.dir_file(ls[3]).open('r').readlines()
@@ -224,20 +224,20 @@ class fdfSileSiesta(SileSiesta):
             if lsl[0] == labell:
                 return (' '.join(ls[1:])).strip()
 
-            elif lsl[0] == '%block':
+            elif lsl[0] == "%block":
                 if lsl[1] == labell:
                     # Read in the block content
                     lines = []
 
                     # Now read lines
                     l = self.readline().strip()
-                    while not tolabel(l).startswith('%endblock'):
+                    while not tolabel(l).startswith("%endblock"):
                         if len(l) > 0:
                             lines.append(l)
                         l = self.readline().strip()
                     return lines
 
-            elif lsl[0] == '%include':
+            elif lsl[0] == "%include":
 
                 # We have to open a new file
                 self._pushfile(ls[1])
@@ -351,14 +351,14 @@ class fdfSileSiesta(SileSiesta):
         line 1
         line2
         %endblock
-        >>> fdf.get('LabeleV') == 1. # default unit is eV
-        >>> fdf.get('LabelRy') == unit.siesta.unit_convert('Ry', 'eV')
-        >>> fdf.get('LabelRy', unit='Ry') == 1.
-        >>> fdf.get('LabelRy', with_unit=True) == (1., 'Ry')
-        >>> fdf.get('FakeInt', '0') == '1'
-        >>> fdf.get('LabeleV', with_unit=True) == (1., 'eV')
-        >>> fdf.get('Label', with_unit=True) == 'name' # no unit present on line
-        >>> fdf.get('Hello') == ['line 1', 'line2']
+        >>> fdf.get("LabeleV") == 1. # default unit is eV
+        >>> fdf.get("LabelRy") == unit.siesta.unit_convert("Ry", "eV")
+        >>> fdf.get("LabelRy", unit="Ry") == 1.
+        >>> fdf.get("LabelRy", with_unit=True) == (1., "Ry")
+        >>> fdf.get("FakeInt", "0") == "1"
+        >>> fdf.get("LabeleV", with_unit=True) == (1., "eV")
+        >>> fdf.get("Label", with_unit=True) == "name" # no unit present on line
+        >>> fdf.get("Hello") == ["line 1", "line2"]
         """
         # Try and read a line
         value = self._read_label(label)
@@ -394,7 +394,7 @@ class fdfSileSiesta(SileSiesta):
             else:
                 if unit_group(value[1]) != unit_group(unit):
                     raise ValueError(f"Requested unit for {label} is not the same type. "
-                                     "Found/Requested {value[1]}/{unit}'")
+                                     "Found/Requested {value[1]}/{unit}")
                 default = unit
             return float(value[0]) * unit_convert(value[1], default)
 
@@ -455,8 +455,8 @@ class fdfSileSiesta(SileSiesta):
                 if self.line_has_key(line, lkey, case=False) and do_write:
                     write(fh, value)
                     if keep:
-                        fh.write('# Old value ({})\n'.format(datetime.today().strftime('%Y-%m-%d %H:%M')))
-                        fh.write(f'{line}')
+                        fh.write("# Old value ({})\n".format(datetime.today().strftime("%Y-%m-%d %H:%M")))
+                        fh.write(f"{line}")
                     do_write = False
                 else:
                     fh.write(line)
@@ -492,7 +492,7 @@ class fdfSileSiesta(SileSiesta):
         return s
 
     @sile_fh_open()
-    def write_supercell(self, sc, fmt='.8f', *args, **kwargs):
+    def write_supercell(self, sc, fmt=".8f", *args, **kwargs):
         """ Writes the supercell
 
         Parameters
@@ -501,30 +501,30 @@ class fdfSileSiesta(SileSiesta):
            supercell object to write
         fmt : str, optional
            precision used to store the lattice vectors
-        unit : {'Ang', 'Bohr'}
+        unit : {"Ang", "Bohr"}
            the unit used when writing the data.
         """
         sile_raise_write(self)
 
-        fmt_str = ' {{0:{0}}} {{1:{0}}} {{2:{0}}}\n'.format(fmt)
+        fmt_str = " {{0:{0}}} {{1:{0}}} {{2:{0}}}\n".format(fmt)
 
-        unit = kwargs.get('unit', 'Ang').capitalize()
+        unit = kwargs.get("unit", "Ang").capitalize()
         conv = 1.
-        if unit in ['Ang', 'Bohr']:
-            conv = unit_convert('Ang', unit)
+        if unit in ("Ang", "Bohr"):
+            conv = unit_convert("Ang", unit)
         else:
-            unit = 'Ang'
+            unit = "Ang"
 
         # Write out the cell
-        self._write(f'LatticeConstant 1.0 {unit}\n')
-        self._write('%block LatticeVectors\n')
+        self._write(f"LatticeConstant 1.0 {unit}\n")
+        self._write("%block LatticeVectors\n")
         self._write(fmt_str.format(*sc.cell[0, :] * conv))
         self._write(fmt_str.format(*sc.cell[1, :] * conv))
         self._write(fmt_str.format(*sc.cell[2, :] * conv))
-        self._write('%endblock LatticeVectors\n')
+        self._write("%endblock LatticeVectors\n")
 
     @sile_fh_open()
-    def write_geometry(self, geometry, fmt='.8f', *args, **kwargs):
+    def write_geometry(self, geometry, fmt=".8f", *args, **kwargs):
         """ Writes the geometry
 
         Parameters
@@ -533,7 +533,7 @@ class fdfSileSiesta(SileSiesta):
            geometry object to write
         fmt : str, optional
            precision used to store the atomic coordinates
-        unit : {'Ang', 'Bohr', 'fractional', 'frac'}
+        unit : {"Ang", "Bohr", "fractional", "frac"}
            the unit used when writing the data.
            fractional and frac are the same.
         """
@@ -560,10 +560,10 @@ class fdfSileSiesta(SileSiesta):
             xyz = geometry.xyz * conv
             if fmt[0] == '.':
                 # Correct for a "same" length of all coordinates
-                c_max = len(str((f'{{:{fmt}}}').format(xyz.max())))
-                c_min = len(str((f'{{:{fmt}}}').format(xyz.min())))
+                c_max = len(str((f"{{:{fmt}}}").format(xyz.max())))
+                c_min = len(str((f"{{:{fmt}}}").format(xyz.min())))
                 fmt = str(max(c_min, c_max)) + fmt
-        fmt_str = ' {{3:{0}}} {{4:{0}}} {{5:{0}}} {{0}} # {{1:{1}d}}: {{2}}\n'.format(fmt, len(str(len(geometry))))
+        fmt_str = " {{3:{0}}} {{4:{0}}} {{5:{0}}} {{0}} # {{1:{1}d}}: {{2}}\n".format(fmt, len(str(len(geometry))))
 
         for ia, a, isp in geometry.iter_species():
             self._write(fmt_str.format(isp + 1, ia + 1, a.tag, *xyz[ia, :]))
