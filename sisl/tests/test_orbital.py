@@ -10,7 +10,9 @@ from scipy import interpolate as interp
 from sisl.messages import SislDeprecation
 from sisl.utils.mathematics import cart2spher, spher2cart
 from sisl.orbital import Orbital, SphericalOrbital, AtomicOrbital
+from sisl.orbital import _rspher_harm_fact
 
+_max_l = len(_rspher_harm_fact) - 1
 
 def r_f(n):
     r = np.arange(n)
@@ -195,14 +197,8 @@ class Test_sphericalorbital:
 
     def test_toatomicorbital1(self):
         rf = r_f(6)
-        orb = SphericalOrbital(0, rf)
-        ao = orb.toAtomicOrbital()
-        assert len(ao) == 1
-        assert ao[0].l == orb.l
-        assert ao[0].m == 0
-
         # Check m and l
-        for l in range(1, 6):
+        for l in range(_max_l + 1):
             orb = SphericalOrbital(l, rf)
             ao = orb.toAtomicOrbital()
             assert len(ao) == 2*l + 1
@@ -238,12 +234,9 @@ class Test_sphericalorbital:
     def test_toatomicorbital_q0(self):
         rf = r_f(6)
         orb = SphericalOrbital(0, rf, 2.)
-        ao = orb.toAtomicOrbital()
-        assert len(ao) == 1
-        assert ao[0].q0 == 2.
 
         # Check m and l
-        for l in range(1, 6):
+        for l in range(_max_l + 1):
             orb = SphericalOrbital(l, rf, 2.)
             ao = orb.toAtomicOrbital()
             assert ao[0].q0 == pytest.approx(2. / (2*l+1))
@@ -295,7 +288,7 @@ class Test_atomicorbital:
 
     def test_init3(self):
         rf = r_f(6)
-        for l in range(6):
+        for l in range(_max_l + 1):
             a = AtomicOrbital(l=l, m=0, spherical=rf)
             a.name()
             a.name(True)
@@ -319,12 +312,12 @@ class Test_atomicorbital:
 
     def test_init5(self):
         with pytest.raises(ValueError):
-            AtomicOrbital(5, 6, 0)
+            AtomicOrbital(5, _max_l + 1, 0)
 
     def test_radial1(self):
         rf = r_f(6)
         r = np.linspace(0, 6, 100)
-        for l in range(6):
+        for l in range(_max_l + 1):
             so = SphericalOrbital(l, rf)
             sor = so.radial(r)
             for m in range(-l, l+1):
@@ -336,7 +329,7 @@ class Test_atomicorbital:
     def test_phi1(self):
         rf = r_f(6)
         r = np.linspace(0, 6, 999).reshape(-1, 3)
-        for l in range(6):
+        for l in range(_max_l + 1):
             so = SphericalOrbital(l, rf)
             for m in range(-l, l+1):
                 o = AtomicOrbital(l=l, m=m, spherical=rf)

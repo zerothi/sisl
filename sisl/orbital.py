@@ -38,10 +38,12 @@ def _rfact(l, m):
 #  [1]{-1} is l==1, m==-1
 #  [1]{1} is l==1, m==1
 # and so on.
-# Calculate it up to l == 5 which is the h shell
+# Calculate it up to l == 7 which is the j shell
+# It will never be used, but in case somebody wishes to play with spherical harmonics
+# then why not ;)
 _rspher_harm_fact = tuple(
     {m: _rfact(l, m) for m in range(-l, l+1)}
-    for l in range(6)
+    for l in range(8)
 )
 # Clean-up
 del _rfact
@@ -887,8 +889,8 @@ class AtomicOrbital(Orbital):
         self._zeta = zeta
         self._P = P
 
-        if self.l > 5:
-            raise ValueError(f"{self.__class__.__name__} does not implement shell h and above!")
+        if self.l >= len(_rspher_harm_fact):
+            raise ValueError(f"{self.__class__.__name__} does not implement shells l>={len(_rspher_harm_fact)}!")
         if abs(self.m) > self.l:
             raise ValueError(f"{self.__class__.__name__} requires |m| <= l.")
 
@@ -982,7 +984,7 @@ class AtomicOrbital(Orbital):
     def name(self, tex=False):
         """ Return named specification of the atomic orbital """
         if tex:
-            name = "{}{}".format(self.n, "spdfgh"[self.l])
+            name = "{}{}".format(self.n, "spdfghij"[self.l])
             if self.l == 1:
                 name += ("_y", "_z", "_x")[self.m+1]
             elif self.l == 2:
@@ -992,12 +994,12 @@ class AtomicOrbital(Orbital):
             elif self.l == 4:
                 name += ("_{_{xy(x^2-y^2)}}", "_{zy(3x^2-y^2)}", "_{z^2xy}", "_{z^3y}", "_{z^4}",
                          "_{z^3x}", "_{z^2(x^2-y^2)}", "_{zx(x^2-3y^2)}", "_{x^4+y^4}")[self.m+4]
-            elif self.l == 5:
+            elif self.l >= 5:
                 name = f"{name}_{{m={self.m}}}"
             if self.P:
                 return name + fr"\zeta^{self.zeta}\mathrm{{P}}"
             return name + fr"\zeta^{self.zeta}"
-        name = "{}{}".format(self.n, "spdfgh"[self.l])
+        name = "{}{}".format(self.n, "spdfghij"[self.l])
         if self.l == 1:
             name += ("y", "z", "x")[self.m+1]
         elif self.l == 2:
@@ -1007,7 +1009,7 @@ class AtomicOrbital(Orbital):
         elif self.l == 4:
             name += ("xy(x2-y2)", "zy(3x2-y2)", "z2xy", "z3y", "z4",
                      "z3x", "z2(x2-y2)", "zx(x2-3y2)", "x4+y4")[self.m+4]
-        elif self.l == 5:
+        elif self.l >= 5:
             name = f"{name}(m={self.m})"
         if self.P:
             return name + f"Z{self.zeta}P"
