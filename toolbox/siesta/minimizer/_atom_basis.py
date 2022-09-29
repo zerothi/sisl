@@ -94,7 +94,7 @@ class AtomBasis:
             if nl not in _shell_order:
                 continue
 
-            n, l = int(nl[0]), 'spdfg'.index(nl[1])
+            n, l = int(nl[0]), "spdfgh".index(nl[1])
             # Now we are sure we are dealing with valence shells
             basis = dic[nl].get("basis", {})
 
@@ -414,7 +414,7 @@ class AtomBasis:
                                     update_func=partial(update, d=self.opts, key="ion_charge")))
 
         # parse depending on shells in the atom
-        spdf = 'spdfg'
+        spdf = "spdfgh"
         for orb in self.atom:
             n, l = orb.n, orb.l
             nl = f"{n}{spdf[l]}"

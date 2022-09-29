@@ -73,7 +73,7 @@ _shell_order = [
     '4f', '5d', '6s', '6p', # [Rn]
     '7s', '5f', '6d', '7p' # [Og]
 ]
-_spdfg = 'spdfg'
+_spdfgh = 'spdfgh'
 
 
 class AtomInput:
@@ -168,7 +168,7 @@ class AtomInput:
         #  _shell_order.index("2p") == 2
         # which has 1s and 2s occupied.
         try:
-            core = reduce(min, (_shell_order.index(f"{orb.n}{_spdfg[orb.l]}")
+            core = reduce(min, (_shell_order.index(f"{orb.n}{_spdfgh[orb.l]}")
                                 for orb in atom), len(_shell_order))
         except Exception:
             core = -1
@@ -472,10 +472,11 @@ class AtomInput:
             charge = 0
         charge = lq.pop("charge", charge)
         # get indices of the orders
-        shell_idx = [_shell_order.index(f"{orb.n}{_spdfg[orb.l]}")
+        shell_idx = [_shell_order.index(f"{orb.n}{_spdfgh[orb.l]}")
                      for orb in self.atom]
         def _charge(idx):
-            return {'s': 2, 'p': 6, 'd': 10, 'f': 14}[_shell_order[idx][1]]
+            # while the g and h shells are never used, we just have them...
+            return {'s': 2, 'p': 6, 'd': 10, 'f': 14, 'g': 18, 'h': 22}[_shell_order[idx][1]]
         orig_charge = [_charge(idx) for idx in shell_idx]
         atom = self.atom.copy()
         # find order of orbitals (from highest index to lowest)
@@ -484,7 +485,7 @@ class AtomInput:
         shell_sort.sort(reverse=charge > 0)
 
         for l, q in lq.items():
-            l = _spdfg.index(l)
+            l = _spdfgh.index(l)
             for orb in atom:
                 if orb.l == l:
                     orb._q0 -= q
@@ -575,13 +576,13 @@ class AtomInput:
 
                 r, w = get_xy(f"AEWFNR{il}")
                 if not r is None:
-                    p = ax.plot(r, w, label=f"AE {_spdfg[il]}")
+                    p = ax.plot(r, w, label=f"AE {_spdfgh[il]}")
                     color = p[0].get_color()
                     ax.axvline(orb.R * _Ang2Bohr, color=color, alpha=0.5)
 
                 r, w = get_xy(f"PSWFNR{il}")
                 if not r is None:
-                    ax.plot(r, w, '--', label=f"PS {_spdfg[il]}")
+                    ax.plot(r, w, '--', label=f"PS {_spdfgh[il]}")
 
             ax.set_xlim(0, atom_r * 5)
             ax.autoscale(enable=True, axis='y', tight=True)
@@ -663,7 +664,7 @@ class AtomInput:
                     emark.shape = (1, -1)
                 emark = emark[:, 0]
                 if not e is None:
-                    p = ax.plot(e, log, label=f"AE {_spdfg[il]}")
+                    p = ax.plot(e, log, label=f"AE {_spdfgh[il]}")
 
                     idx_mark = (np.fabs(e.reshape(-1, 1) - emark.reshape(1, -1))
                                 .argmin(axis=0))
@@ -676,7 +677,7 @@ class AtomInput:
                     emark.shape = (1, -1)
                 emark = emark[:, 0]
                 if not e is None:
-                    p = ax.plot(e, log, ':', label=f"PS {_spdfg[il]}")
+                    p = ax.plot(e, log, ':', label=f"PS {_spdfgh[il]}")
 
                     idx_mark = (np.fabs(e.reshape(-1, 1) - emark.reshape(1, -1))
                                 .argmin(axis=0))
@@ -695,7 +696,7 @@ class AtomInput:
 
                 r, V = get_xy(f"PSPOTR{il}")
                 if not r is None:
-                    p = ax.plot(r, V, label=f"PS {_spdfg[il]}")
+                    p = ax.plot(r, V, label=f"PS {_spdfgh[il]}")
                     color = p[0].get_color()
                     ax.axvline(orb.R * _Ang2Bohr, color=color, alpha=0.5)
 

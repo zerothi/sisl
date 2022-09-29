@@ -311,11 +311,12 @@ class omxSileOpenMX(SileOpenMX):
                 1: [1, -1, 0], # px, py, pz
                 2: [0, 2, -2, 1, -1], # d3z^2-r^2, dx^2-y^2, dxy, dxz, dyz
                 3: [0, 1, -1, 2, -2, 3, -3], # f5z^2-3r^2, f5xz^2-xr^2, f5yz^2-yr^2, fzx^2-zy^2, fxyz, fx^3-3*xy^2, f3yx^2-y^3
-                4: [0, 1, -1, 2, -2, 3, -3, 4, -4]
+                4: [0, 1, -1, 2, -2, 3, -3, 4, -4],
+                5: [0, 1, -1, 2, -2, 3, -3, 4, -4, 5, -5]
             }
             for i, c in enumerate(spec):
                 try:
-                    l = 'spdfg'.index(c)
+                    l = "spdfgh".index(c)
                     try:
                         nZ = int(spec[i+1])
                     except Exception:

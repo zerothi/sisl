@@ -33,13 +33,16 @@ def _rfact(l, m):
         return -msqrt(2*(2*l + 1)/pi4 * fact(l-m)/fact(l+m)) * (-1) ** m
     return msqrt(2*(2*l + 1)/pi4 * fact(l-m)/fact(l+m))
 
-# This is a list of dict
+# This is a tuple of dicts
 #  [0]{0} is l==0, m==0
 #  [1]{-1} is l==1, m==-1
 #  [1]{1} is l==1, m==1
 # and so on.
 # Calculate it up to l == 5 which is the h shell
-_rspher_harm_fact = [{m: _rfact(l, m) for m in range(-l, l+1)} for l in range(6)]
+_rspher_harm_fact = tuple(
+    {m: _rfact(l, m) for m in range(-l, l+1)}
+    for l in range(6)
+)
 # Clean-up
 del _rfact
 
@@ -884,7 +887,7 @@ class AtomicOrbital(Orbital):
         self._zeta = zeta
         self._P = P
 
-        if self.l > 4:
+        if self.l > 5:
             raise ValueError(f"{self.__class__.__name__} does not implement shell h and above!")
         if abs(self.m) > self.l:
             raise ValueError(f"{self.__class__.__name__} requires |m| <= l.")
@@ -979,29 +982,33 @@ class AtomicOrbital(Orbital):
     def name(self, tex=False):
         """ Return named specification of the atomic orbital """
         if tex:
-            name = "{}{}".format(self.n, "spdfg"[self.l])
+            name = "{}{}".format(self.n, "spdfgh"[self.l])
             if self.l == 1:
-                name += ["_y", "_z", "_x"][self.m+1]
+                name += ("_y", "_z", "_x")[self.m+1]
             elif self.l == 2:
-                name += ["_{xy}", "_{yz}", "_{z^2}", "_{xz}", "_{x^2-y^2}"][self.m+2]
+                name += ("_{xy}", "_{yz}", "_{z^2}", "_{xz}", "_{x^2-y^2}")[self.m+2]
             elif self.l == 3:
-                name += ["_{y(3x^2-y^2)}", "_{xyz}", "_{z^2y}", "_{z^3}", "_{z^2x}", "_{z(x^2-y^2)}", "_{x(x^2-3y^2)}"][self.m+3]
+                name += ("_{y(3x^2-y^2)}", "_{xyz}", "_{z^2y}", "_{z^3}", "_{z^2x}", "_{z(x^2-y^2)}", "_{x(x^2-3y^2)}")[self.m+3]
             elif self.l == 4:
-                name += ["_{_{xy(x^2-y^2)}}", "_{zy(3x^2-y^2)}", "_{z^2xy}", "_{z^3y}", "_{z^4}",
-                         "_{z^3x}", "_{z^2(x^2-y^2)}", "_{zx(x^2-3y^2)}", "_{x^4+y^4}"][self.m+4]
+                name += ("_{_{xy(x^2-y^2)}}", "_{zy(3x^2-y^2)}", "_{z^2xy}", "_{z^3y}", "_{z^4}",
+                         "_{z^3x}", "_{z^2(x^2-y^2)}", "_{zx(x^2-3y^2)}", "_{x^4+y^4}")[self.m+4]
+            elif self.l == 5:
+                name = f"{name}_{{m={self.m}}}"
             if self.P:
                 return name + fr"\zeta^{self.zeta}\mathrm{{P}}"
             return name + fr"\zeta^{self.zeta}"
-        name = "{}{}".format(self.n, "spdfg"[self.l])
+        name = "{}{}".format(self.n, "spdfgh"[self.l])
         if self.l == 1:
-            name += ["y", "z", "x"][self.m+1]
+            name += ("y", "z", "x")[self.m+1]
         elif self.l == 2:
-            name += ["xy", "yz", "z2", "xz", "x2-y2"][self.m+2]
+            name += ("xy", "yz", "z2", "xz", "x2-y2")[self.m+2]
         elif self.l == 3:
-            name += ["y(3x2-y2)", "xyz", "z2y", "z3", "z2x", "z(x2-y2)", "x(x2-3y2)"][self.m+3]
+            name += ("y(3x2-y2)", "xyz", "z2y", "z3", "z2x", "z(x2-y2)", "x(x2-3y2)")[self.m+3]
         elif self.l == 4:
-            name += ["xy(x2-y2)", "zy(3x2-y2)", "z2xy", "z3y", "z4",
-                     "z3x", "z2(x2-y2)", "zx(x2-3y2)", "x4+y4"][self.m+4]
+            name += ("xy(x2-y2)", "zy(3x2-y2)", "z2xy", "z3y", "z4",
+                     "z3x", "z2(x2-y2)", "zx(x2-3y2)", "x4+y4")[self.m+4]
+        elif self.l == 5:
+            name = f"{name}(m={self.m})"
         if self.P:
             return name + f"Z{self.zeta}P"
         return name + f"Z{self.zeta}"

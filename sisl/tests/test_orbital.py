@@ -202,7 +202,7 @@ class Test_sphericalorbital:
         assert ao[0].m == 0
 
         # Check m and l
-        for l in range(1, 5):
+        for l in range(1, 6):
             orb = SphericalOrbital(l, rf)
             ao = orb.toAtomicOrbital()
             assert len(ao) == 2*l + 1
@@ -243,7 +243,7 @@ class Test_sphericalorbital:
         assert ao[0].q0 == 2.
 
         # Check m and l
-        for l in range(1, 5):
+        for l in range(1, 6):
             orb = SphericalOrbital(l, rf, 2.)
             ao = orb.toAtomicOrbital()
             assert ao[0].q0 == pytest.approx(2. / (2*l+1))
@@ -295,7 +295,7 @@ class Test_atomicorbital:
 
     def test_init3(self):
         rf = r_f(6)
-        for l in range(5):
+        for l in range(6):
             a = AtomicOrbital(l=l, m=0, spherical=rf)
             a.name()
             a.name(True)
@@ -319,12 +319,12 @@ class Test_atomicorbital:
 
     def test_init5(self):
         with pytest.raises(ValueError):
-            AtomicOrbital(5, 5, 0)
+            AtomicOrbital(5, 6, 0)
 
     def test_radial1(self):
         rf = r_f(6)
         r = np.linspace(0, 6, 100)
-        for l in range(5):
+        for l in range(6):
             so = SphericalOrbital(l, rf)
             sor = so.radial(r)
             for m in range(-l, l+1):
@@ -336,7 +336,7 @@ class Test_atomicorbital:
     def test_phi1(self):
         rf = r_f(6)
         r = np.linspace(0, 6, 999).reshape(-1, 3)
-        for l in range(5):
+        for l in range(6):
             so = SphericalOrbital(l, rf)
             for m in range(-l, l+1):
                 o = AtomicOrbital(l=l, m=m, spherical=rf)
