@@ -2,6 +2,9 @@
 0.11.0
 ******
 
+Released 17 of February 2021.
+
+
 Contributors
 ============
 

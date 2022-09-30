@@ -2,6 +2,9 @@
 0.9.0
 *****
 
+Released 16 of October 2017.
+
+
 Contributors
 ============
 

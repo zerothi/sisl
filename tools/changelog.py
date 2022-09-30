@@ -39,6 +39,7 @@ From the bash command line with $GITHUB token::
 import os
 import sys
 import re
+import datetime
 from git import Repo
 from github import Github
 
@@ -99,16 +100,82 @@ def get_pull_requests(repo, revision_range):
     prs = [repo.get_pull(n) for n in prnums]
     return prs
 
+def read_changelog(prior_rel, current_rel, format="md"):
+    # rst search for item
+    md_item = re.compile(r"^\s*-")
+
+    # when to capture the content
+    print_out = False
+    # for getting the date
+    date = None
+    out = []
+    for line in open("../CHANGELOG.md", 'r'):
+        if f"## [{current_rel}]" in line:
+            print_out = True
+            date = line.split("-", 1)[1].strip()
+            continue
+        elif f"## [{prior_rel}]" in line:
+            break
+        elif not print_out:
+            continue
+
+        header = 0
+        if format == "md":
+            # no change in header lines
+            pass
+        elif format == "rst":
+            if line.startswith("###"):
+                header = 3
+            elif line.startswith("##"):
+                header = 2
+            elif line.startswith("#"):
+                header = 1
+            elif md_item.search(line):
+                line = line.replace("-", "*", 1)
+
+            if header > 0:
+                line = line[header:].lstrip()
+        out.append(line)
+
+        if header > 0:
+            # this will only happen for rst
+            n = len(line)
+            out.append((" =-^"[header]) * n + "\n")
+
+    # parse the date into an iso date
+    if date is not None:
+        date = datetime.date(*[int(x) for x in date.split("-")])
+        date = date.strftime("%d of %B %Y")
+        if date[0] == "0":
+            date = date[1:]
+            
+    return "".join(out).strip(), date
 
 def main(token, revision_range, format="md"):
-    lst_release, cur_release = [r.strip() for r in revision_range.split("..")]
+    prior_rel, current_rel = [r.strip() for r in revision_range.split("..")]
 
-    if cur_release.startswith("v"):
-        cur_release_v = cur_release[1:]
-        if format == "rst":
-            print("*" * len(cur_release_v))
-            print(cur_release_v)
-            print("*" * len(cur_release_v))
+    # Also add the CHANGELOG.md information
+    if prior_rel.startswith("v"):
+        prior_rel = prior_rel[1:]
+
+    current_version = current_rel
+    if current_rel.startswith("v"):
+        current_rel = current_rel[1:]
+        current_version = current_rel
+    elif cur_release == "HEAD":
+        current_rel = "Unreleased"
+        current_version = "TBD"
+
+    changelog, date = read_changelog(prior_rel, current_rel, format=format)
+
+    if format == "rst" and current_version != "TBD":
+        print("*" * len(current_version))
+        print(current_version)
+        print("*" * len(current_version))
+
+    # print date
+    if date is not None:
+        print(f"\nReleased {date}.\n")
 
     github = Github(token)
     github_repo = github.get_repo("zerothi/sisl")
@@ -116,8 +183,7 @@ def main(token, revision_range, format="md"):
     # document authors
     authors = get_authors(revision_range)
     heading = "Contributors"
-    print()
-    print(heading)
+    print(f"\n{heading}")
     print("=" * len(heading))
     print(author_msg % len(authors))
 
@@ -129,8 +195,7 @@ def main(token, revision_range, format="md"):
     heading = "Pull requests merged"
     pull_msg = "* #{0}: {2}"
 
-    print()
-    print(heading)
+    print(f"\n{heading}")
     print("=" * len(heading))
     print(pull_request_msg % len(pull_requests))
 
@@ -144,59 +209,9 @@ def main(token, revision_range, format="md"):
                 title = title[:60] + remainder
         print(pull_msg.format(pull.number, pull.html_url, title))
 
-    # Also add the CHANGELOG.md information
-    versions = []
-    if lst_release.startswith("v"):
-        versions.append(lst_release[1:])
-    else:
-        versions.append(lst_release)
-    if cur_release.startswith("v"):
-        versions.append(cur_release[1:])
-    elif cur_release == "HEAD":
-        versions.append("Unreleased")
-    else:
-        versions.append(cur_release)
-
-    # rst search for item
-    md_item = re.compile(r"^\s*-")
-
-    print_out = False
-    out = []
-    for line in open("../CHANGELOG.md", 'r'):
-        if f"[{versions[1]}]" in line:
-            print_out = True
-            continue
-        elif f"[{versions[0]}]" in line:
-            break
-
-        if print_out:
-            header = 0
-            if format == "md":
-                # no change in header lines
-                pass
-            elif format == "rst":
-                if line.startswith("###"):
-                    header = 3
-                elif line.startswith("##"):
-                    header = 2
-                elif line.startswith("#"):
-                    header = 1
-                elif md_item.search(line):
-                    line = line.replace("-", "*", 1)
-
-                if header > 0:
-                    line = line[header:].lstrip()
-            out.append(line)
-
-            if header > 0:
-                # this will only happen for rst
-                n = len(line)
-                out.append((" =-^"[header]) * n + "\n")
-
-    if len(out) > 0:
-        # new-line
+    if len(changelog) > 0:
         print()
-        print("".join(out).strip())
+        print(changelog)
 
 
 if __name__ == "__main__":

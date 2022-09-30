@@ -2,6 +2,9 @@
 0.12.2
 ******
 
+Released 2 of May 2022.
+
+
 Contributors
 ============
 

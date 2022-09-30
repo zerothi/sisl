@@ -2,6 +2,9 @@
 0.8.4
 *****
 
+Released 11 of June 2017.
+
+
 Contributors
 ============
 

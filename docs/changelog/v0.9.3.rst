@@ -2,6 +2,9 @@
 0.9.3
 *****
 
+Released 4 of August 2018.
+
+
 Contributors
 ============
 
@@ -21,5 +24,3 @@ A total of 5 pull requests were merged for this release.
 * #54: WIP updated states, first progress
 * #57: Updated RTD to Py-3
 * #63: Implementation of charge density on grids
-
-

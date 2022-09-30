@@ -2,6 +2,9 @@
 0.9.8
 *****
 
+Released 10 of February 2020.
+
+
 Contributors
 ============
 

@@ -2,6 +2,9 @@
 0.9.7
 *****
 
+Released 26 of September 2019.
+
+
 Contributors
 ============
 
