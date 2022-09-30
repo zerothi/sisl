@@ -3,6 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import pytest
 import os.path as osp
+from io import StringIO
 from sisl.io.siesta.basis import *
 
 
@@ -22,6 +23,28 @@ def test_si_ion_nc(sisl_files):
 def test_si_ion_xml(sisl_files):
     f = sisl_files(_dir, 'Si.ion.xml')
     with ionxmlSileSiesta(f) as sile:
+        atom = sile.read_basis()
+
+    # Number of orbitals
+    assert len(atom) == 13
+
+
+def test_si_ion_xml_handle(sisl_files):
+    f = open(sisl_files(_dir, 'Si.ion.xml'), 'r')
+
+    with ionxmlSileSiesta(f) as sile:
+        assert "Buffer" in sile.__class__.__name__
+        atom = sile.read_basis()
+
+    # Number of orbitals
+    assert len(atom) == 13
+
+
+def test_si_ion_xml_stringio(sisl_files):
+    f = StringIO(open(sisl_files(_dir, 'Si.ion.xml'), 'r').read())
+
+    with ionxmlSileSiesta(f) as sile:
+        assert "Buffer" in sile.__class__.__name__
         atom = sile.read_basis()
 
     # Number of orbitals
