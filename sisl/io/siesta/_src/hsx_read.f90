@@ -114,8 +114,8 @@ subroutine read_hsx_sizes0(fname, Gamma, nspin, na_u, no_u, no_s, maxnh)
   end if
   read(iu, iostat=ierr) !numh
   call iostat_update(ierr)
-  do io = 1, no_u * (nspin + 1)
-    read(iu, iostat=ierr) !H and S
+  do io = 1, no_u * (nspin + 2)
+    read(iu, iostat=ierr) !H and S and listh
     call iostat_update(ierr)
   end do
   read(iu, iostat=ierr) !Qtot, temp
