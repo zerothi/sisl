@@ -9,6 +9,10 @@ publications below.
 Please help maintaining the list complete via a `pull request <pr_>`_ or
 by writing an email to `nickpapior AT gmail.com <mailto:nickpapior@gmail.com>`_.
 
+#. N. Papior, S. Leitherer, M. Brandbyge,
+   *Simple approach to current-induced bond weakening in ballistic conductors*,
+   Physical Review B, **106**, `155401 (2022) <10.1103/PhysRevB.106.155401>`_
+
 #. EA. Haidar, S.A. Tawfik, C. Stampfl,
    *Twist-Dependent Electron Charge Transfer and Transport in Phosphorene–Graphene Heterobilayers*,
    Journal of Physical Chemistry C, **46**, `25886 (2021) <https://doi.org/10.1021/acs.jpcc.1c08282>`_
