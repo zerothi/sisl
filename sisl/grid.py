@@ -333,7 +333,7 @@ class Grid(SuperCellChild):
         if dtype is None:
             dtype = np.float64
         if shape.size != 3:
-            raise ValueError(self.__class__.__name__ + '.set_grid requires shape to be of length 3')
+            raise ValueError(f"{self.__class__.__name__}.set_grid requires shape to be of length 3")
         self.grid = np.zeros(shape, dtype=dtype)
 
     def set_bc(self, boundary=None, a=None, b=None, c=None):
@@ -372,9 +372,9 @@ class Grid(SuperCellChild):
         for i in range(3):
             if (bc[i, 0] == self.PERIODIC and bc[i, 1] != self.PERIODIC) or \
                (bc[i, 0] != self.PERIODIC and bc[i, 1] == self.PERIODIC):
-                raise ValueError(self.__class__.__name__ + '.set_bc has a one non-periodic and '
-                                 'one periodic direction. If one direction is periodic, both instances '
-                                 'must have that BC.')
+                raise ValueError(f"{self.__class__.__name__}.set_bc has a one non-periodic and "
+                                 "one periodic direction. If one direction is periodic, both instances "
+                                 "must have that BC.")
 
     # Aliases
     set_boundary = set_bc
@@ -470,7 +470,7 @@ class Grid(SuperCellChild):
         elif axis == 2:
             grid.grid[:, :, :] = self.grid[:, :, idx]
         else:
-            raise ValueError('Unknown axis specification in cross_section')
+            raise ValueError(f"Unknown axis specification in cross_section {axis}")
 
         return grid
 
@@ -515,7 +515,7 @@ class Grid(SuperCellChild):
         elif axis == 2:
             grid.grid[:, :, 0] = np.average(self.grid, axis=axis, weights=weights)
         else:
-            raise ValueError(self.__class__.__name__ + '.average requires `axis` to be in [0, 1, 2]')
+            raise ValueError(f"{self.__class__.__name__}.average requires axis to be in [0, 1, 2]")
 
         return grid
 
@@ -860,9 +860,9 @@ class Grid(SuperCellChild):
         coord = _a.asarrayd(coord)
         if coord.size == 1: # float
             if axis is None:
-                raise ValueError(self.__class__.__name__ + '.index requires the '
-                                 'coordinate to be 3 values when an axis has not '
-                                 'been specified.')
+                raise ValueError(f"{self.__class__.__name__}.index requires the "
+                                 "coordinate to be 3 values when an axis has not "
+                                 "been specified.")
 
             c = (self.dcell[axis, :] ** 2).sum() ** 0.5
             return int(floor(coord / c))
@@ -970,8 +970,7 @@ class Grid(SuperCellChild):
             return True
         s1 = str(self)
         s2 = str(other)
-        raise ValueError('Grids are not compatible, ' +
-                         s1 + '-' + s2 + '. ', msg)
+        raise ValueError(f"Grids are not compatible, {s1}-{s2}. {msg}")
 
     def _compatible_copy(self, other, *args, **kwargs):
         """ Internally used copy function that also checks whether the two grids are compatible """
@@ -1155,7 +1154,7 @@ class Grid(SuperCellChild):
         index = _a.asarrayi(index).reshape(-1, 3)
         grid = _a.arrayi(self.shape[:])
         if np.any(index < 0) or np.any(index >= grid.reshape(1, 3)):
-            raise ValueError(self.__class__.__name__ + '.pyamg_index erroneous values for grid indices')
+            raise ValueError(f"{self.__class__.__name__}.pyamg_index erroneous values for grid indices")
         # Skipping factor per element
         cp = _a.arrayi([[grid[1] * grid[2], grid[2], 1]])
         return (cp * index).sum(1)
@@ -1189,8 +1188,8 @@ class Grid(SuperCellChild):
         value : float
            the value of the grid to fix the value at
         """
-        if not A.format in ['csc', 'csr']:
-            raise ValueError(self.__class__.__name__ + '.pyamg_fix only works for csr/csc sparse matrices')
+        if not A.format in ("csc", "csr"):
+            raise ValueError(f"{self.__class__.__name__}.pyamg_fix only works for csr/csc sparse matrices")
 
         # Clean all couplings between the respective indices and all other data
         s = _a.array_arange(A.indptr[pyamg_indices], A.indptr[pyamg_indices+1])
@@ -1264,7 +1263,7 @@ class Grid(SuperCellChild):
             if self.bc[i, 0] == self.PERIODIC or \
                self.bc[i, 1] == self.PERIODIC:
                 if self.bc[i, 0] != self.bc[i, 1]:
-                    raise ValueError(self.__class__.__name__ + '.pyamg_boundary_condition found a periodic and non-periodic direction in the same direction!')
+                    raise ValueError(f"{self.__class__.__name__}.pyamg_boundary_condition found a periodic and non-periodic direction in the same direction!")
                 new_sl[i] = slice(self.shape[i]-1, self.shape[i])
                 idx2 = sl2idx(new_sl) # upper
                 Periodic(idx1, idx2)

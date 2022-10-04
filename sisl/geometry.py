@@ -2201,7 +2201,7 @@ class Geometry(SuperCellChild):
                 g = getattr(g, method)(m[i], i)
 
         else:
-            raise ValueError('Multiplying a geometry has received a wrong argument')
+            raise ValueError(f"Multiplying a geometry got an unexpected value: {m}")
 
         return g
 
@@ -3357,8 +3357,8 @@ class Geometry(SuperCellChild):
             return ret[0]
 
         if not is_ascending(R):
-            raise ValueError(f'{self.__class__.__name__}.close_sc proximity checks for several '
-                             'quantities at a time requires ascending R values.')
+            raise ValueError(f"{self.__class__.__name__}.close_sc proximity checks for several "
+                             "quantities at a time requires ascending R values.")
 
         # The more neigbours you wish to find the faster this becomes
         # We only do "one" heavy duty search,
@@ -3748,7 +3748,7 @@ class Geometry(SuperCellChild):
         elif atoms2.size == 1:
             atoms2 = np.tile(atoms2, atoms1.size)
         else:
-            raise ValueError(f'{self.__class__.__name__}.a2transpose only allows length 1 or same length arrays.')
+            raise ValueError(f"{self.__class__.__name__}.a2transpose only allows length 1 or same length arrays.")
 
         # Now convert atoms
         na = self.na
@@ -3810,7 +3810,7 @@ class Geometry(SuperCellChild):
         elif orb2.size == 1:
             orb2 = np.tile(orb2, orb1.size)
         else:
-            raise ValueError(f'{self.__class__.__name__}.o2transpose only allows length 1 or same length arrays.')
+            raise ValueError(f"{self.__class__.__name__}.o2transpose only allows length 1 or same length arrays.")
 
         # Now convert orbs
         no = self.no
@@ -4202,10 +4202,10 @@ class Geometry(SuperCellChild):
         if R is None:
             R = self.maxR()
             if R < 0:
-                raise ValueError(self.__class__.__name__ +
-                                  ".distance cannot determine the `R` parameter. "
-                                  "The internal `maxR()` is negative and thus not set. "
-                                  "Set an explicit value for `R`.")
+                raise ValueError(f"{self.__class__.__name__}"
+                                 ".distance cannot determine the `R` parameter. "
+                                 "The internal `maxR()` is negative and thus not set. "
+                                 "Set an explicit value for `R`.")
         elif np.any(self.nsc > 1):
             maxR = fnorm(self.cell).max()
             # These loops could be leveraged if we look at angles...
@@ -4275,7 +4275,7 @@ class Geometry(SuperCellChild):
                 try:
                     func = getattr(np, method)
                 except Exception:
-                    raise ValueError(f"{self.__class__.__name__}.distance `method` has wrong input value.")
+                    raise ValueError(f"{self.__class__.__name__}.distance `method` got wrong input value.")
         else:
             func = method
 
@@ -4861,16 +4861,14 @@ class GeometryToDispatcher(AbstractDispatch):
     @staticmethod
     def _ensure_object(obj):
         if isinstance(obj, type):
-            raise ValueError(f"Dispatcher on {obj} must not be called on the class.")
+            raise TypeError(f"Dispatcher on {obj} must not be called on the class.")
 
 
 class GeometryToAseDispatcher(GeometryToDispatcher):
-    def dispatch(self, *args, **kwargs):
+    def dispatch(self, **kwargs):
         from ase import Atoms as ase_Atoms
         geom = self._obj
         self._ensure_object(geom)
-        if len(args) > 0:
-            raise ValueError(f"{geom}.to.ase only accepts keyword arguments")
         return ase_Atoms(symbols=geom.atoms.Z, positions=geom.xyz.tolist(),
                          cell=geom.cell.tolist(), pbc=geom.nsc > 1, **kwargs)
 
@@ -4878,15 +4876,13 @@ to_dispatch.register("ase", GeometryToAseDispatcher)
 
 
 class GeometryTopymatgenDispatcher(GeometryToDispatcher):
-    def dispatch(self, *args, **kwargs):
+    def dispatch(self, **kwargs):
         from pymatgen.core import Lattice, Structure, Molecule
         from sisl.atom import PeriodicTable
 
         # ensure we have an object
         geom = self._obj
         self._ensure_object(geom)
-        if len(args) > 0:
-            raise ValueError(f"{geom}.to.pymatgen only accepts keyword arguments")
 
         lattice = Lattice(geom.cell)
         # get atomic letters and coordinates

@@ -1085,9 +1085,9 @@ class Atom(metaclass=AtomMeta):
         """
         orbitals = _a.arrayi(orbitals).ravel()
         if len(orbitals) > self.no:
-            raise ValueError(self.__class__.__name__ + '.sub tries to remove more than the number of orbitals on an atom.')
+            raise ValueError(f"{self.__class__.__name__}.sub tries to remove more than the number of orbitals on an atom.")
         if np.any(orbitals >= self.no):
-            raise ValueError(self.__class__.__name__ + '.sub tries to remove a non-existing orbital io > no.')
+            raise ValueError(f"{self.__class__.__name__}.sub tries to remove a non-existing orbital io > no.")
 
         orbs = [self.orbitals[o].copy() for o in orbitals]
         return self.copy(orbitals=orbs)
@@ -1430,7 +1430,7 @@ class Atoms:
                 specie.append(s)
 
         else:
-            raise ValueError('atoms keyword was wrong input')
+            raise TypeError(f"atoms keyword type is not acceptable {type(atoms)}")
 
         # Default for number of atoms
         if na is None:
@@ -1888,8 +1888,8 @@ class Atoms:
             self.replace_atom(index, atom)
             return
         if not isinstance(atom, Atom):
-            raise ValueError(self.__class__.__name__ + '.replace requires input arguments to '
-                             'be of the class Atom')
+            raise TypeError(f"{self.__class__.__name__}.replace requires input arguments to "
+                            "be of the type Atom")
         index = _a.asarrayi(index).ravel()
 
         # Be sure to add the atom
@@ -1935,11 +1935,11 @@ class Atoms:
            if the atoms does not have the same number of orbitals.
         """
         if not isinstance(atom_from, Atom):
-            raise ValueError(f'{self.__class__.__name__}.replace_atom requires input arguments to '
-                             'be of the class Atom')
+            raise TypeError(f"{self.__class__.__name__}.replace_atom requires input arguments to "
+                             "be of the class Atom")
         if not isinstance(atom_to, Atom):
-            raise ValueError(f'{self.__class__.__name__}.replace_atom requires input arguments to '
-                             'be of the class Atom')
+            raise TypeError(f"{self.__class__.__name__}.replace_atom requires input arguments to "
+                             "be of the class Atom")
 
         # Get index of `atom_from`
         idx_from = self.specie_index(atom_from)
