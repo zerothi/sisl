@@ -1100,7 +1100,6 @@ class TestHamiltonian:
             es = HS.eigenstate(k)
             DOS = es.DOS(E)
             assert DOS.dtype.kind == 'f'
-            assert np.allclose(DOS, HS.DOS(E, k))
             assert np.allclose(es.norm2(), 1)
             str(es)
 
@@ -1117,7 +1116,6 @@ class TestHamiltonian:
             assert PDOS.shape[1] == len(HS)
             assert PDOS.shape[2] == len(E)
             assert np.allclose(PDOS.sum(1), DOS)
-            assert np.allclose(PDOS, HS.PDOS(E, k, 'lorentzian'))
 
     def test_pdos2(self, setup):
         H = setup.H.copy()
@@ -1129,7 +1127,6 @@ class TestHamiltonian:
             PDOS = es.PDOS(E)
             assert PDOS.dtype.kind == 'f'
             assert np.allclose(PDOS.sum(1), DOS)
-            assert np.allclose(PDOS, H.PDOS(E, k))
 
     def test_pdos3(self, setup):
         # check whether the default S(Gamma) works
@@ -1431,10 +1428,7 @@ class TestHamiltonian:
         es_beta = H.eigenstate(k, spin=1)
 
         sup, sdn = spin_squared(es_alpha.state, es_beta.state)
-        sup1, sdn1 = H.spin_squared(k)
         assert sup.sum() == pytest.approx(sdn.sum())
-        assert np.all(sup1 == sup)
-        assert np.all(sdn1 == sdn)
         assert len(sup) == es_alpha.shape[0]
         assert len(sdn) == es_beta.shape[0]
 
@@ -1444,10 +1438,7 @@ class TestHamiltonian:
         assert len(sdn) == es_beta.shape[0]
 
         sup, sdn = spin_squared(es_alpha.sub(range(3)).state, es_beta.sub(range(2)).state)
-        sup1, sdn1 = H.spin_squared(k, 3, 2)
         assert sup.sum() == pytest.approx(sdn.sum())
-        assert np.all(sup1 == sup)
-        assert np.all(sdn1 == sdn)
         assert len(sup) == 3
         assert len(sdn) == 2
 
@@ -1963,8 +1954,8 @@ class TestHamiltonian:
             return oplist([DOS, PDOS, vel])
         bz_avg = bz.apply.average
         results = bz_avg.eigenstate(wrap=wrap)
-        assert np.allclose(bz_avg.DOS(E, distribution=dist), results[0])
-        assert np.allclose(bz_avg.PDOS(E, distribution=dist), results[1])
+        assert np.allclose(bz_avg.eigenstate(wrap=lambda es: es.DOS(E, distribution=dist)), results[0])
+        assert np.allclose(bz_avg.eigenstate(wrap=lambda es: es.PDOS(E, distribution=dist)), results[1])
 
     def test_edges1(self, setup):
         R, param = [0.1, 1.5], [1., 0.1]

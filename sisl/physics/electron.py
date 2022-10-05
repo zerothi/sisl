@@ -65,7 +65,7 @@ from sisl._math_small import xyz_to_spherical_cos_phi
 import sisl._array as _a
 from sisl.linalg import det, sqrth, svd_destroy
 from sisl.linalg import eigvals as la_eigvals
-from sisl.messages import info, warn, SislError, progressbar, deprecate_method
+from sisl.messages import info, warn, SislError, progressbar
 from sisl._help import dtype_complex_to_real, dtype_real_to_complex
 from .distribution import get_distribution
 from .spin import Spin

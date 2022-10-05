@@ -23,7 +23,7 @@ from . import _array as _a
 from ._math_small import is_ascending, cross3
 from ._indices import indices_in_sphere_with_dist, indices_le, indices_gt_le
 from ._indices import list_index_le
-from .messages import info, warn, SislError, deprecate_method
+from .messages import info, warn, SislError
 from ._help import isndarray
 from .utils import default_ArgumentParser, default_namespace, cmd, str_spec
 from .utils import angle, direction
@@ -234,13 +234,6 @@ class Geometry(SuperCellChild):
     @property
     def atoms(self) -> Atoms:
         """ Atoms for the geometry (`Atoms` object) """
-        return self._atoms
-
-    # Backwards compatability (do not use)
-    @property
-    @deprecate_method(f"Geometry.atom is deprecated, use Geometry.atoms instead")
-    def atom(self) -> Atoms:
-        """ deprecated atom """
         return self._atoms
 
     @property
@@ -1989,8 +1982,6 @@ class Geometry(SuperCellChild):
             warn("The cut structure cannot be re-created by tiling\n"
                  "The tolerance between the coordinates can be altered using rtol, atol")
         return new
-
-    cut = deprecate_method("*.cut is deprecated, use .untile instead", "0.13")(untile)
 
     def tile(self, reps, axis) -> Geometry:
         """ Tile the geometry to create a bigger one
@@ -4044,30 +4035,6 @@ class Geometry(SuperCellChild):
         axes.set_ylabel('Ang')
 
         return axes
-
-    @classmethod
-    @deprecate_method("Geometry.fromASE is deprecated in favor of Geometry.new(ase_obj)")
-    def fromASE(cls, aseg):
-        """ Returns geometry from an ASE object.
-
-        Parameters
-        ----------
-        aseg : ASE ``Atoms`` object which contains the following routines:
-            ``get_atomic_numbers``, ``get_positions``, ``get_cell``.
-            From those methods a `Geometry` object will be created.
-        """
-        Z = aseg.get_atomic_numbers()
-        xyz = aseg.get_positions()
-        cell = aseg.get_cell()
-        # Convert to sisl object
-        return cls(xyz, atoms=Z, sc=cell)
-
-    @deprecate_method("Geometry.toASE is deprecated in favor of Geometry.to.ase()")
-    def toASE(self):
-        """ Returns the geometry as an ASE ``Atoms`` object """
-        from ase import Atoms as ASE_Atoms
-        return ASE_Atoms(symbols=self.atoms.Z, positions=self.xyz.tolist(),
-                         cell=self.cell.tolist(), pbc=self.nsc > 1)
 
     def equal(self, other, R=True, tol=1e-4) -> bool:
         """ Whether two geometries are the same (optional not check of the orbital radius)

@@ -143,8 +143,8 @@ import itertools
 from functools import reduce
 
 from numpy import pi
+from numpy import sum, dot, argsort
 import numpy as np
-from numpy import sum, dot, cross, argsort
 
 from sisl._internal import set_module
 from sisl.oplist import oplist
@@ -154,7 +154,7 @@ from sisl.utils.mathematics import cart2spher, fnorm
 from sisl.utils.misc import allow_kwargs
 from sisl.utils import batched_indices
 import sisl._array as _a
-from sisl.messages import info, warn, SislError, progressbar, deprecate_method, deprecate
+from sisl.messages import info, warn, SislError, progressbar
 from sisl.supercell import SuperCell
 from sisl.grid import Grid
 from sisl._dispatcher import ClassDispatcher
@@ -279,6 +279,8 @@ class BrillouinZone:
 
     def __init__(self, parent, k=None, weight=None):
         self.set_parent(parent)
+        # define a bz_attr as though it has not been set
+        self._bz_attr = ("", None)
 
         # Gamma point
         if k is None:
@@ -293,11 +295,6 @@ class BrillouinZone:
                 self._w = _a.arrayd(weight).ravel()
         if len(self.k) != len(self.weight):
             raise ValueError(f'{self.__class__.__name__}.__init__ requires input k-points and weights to be of equal length.')
-
-        # Instantiate the array call
-        with warnings.catch_warnings():
-            warnings.filterwarnings('ignore')
-            self.asarray()
 
     apply = BrillouinZoneDispatcher("apply",
                                     # Do not allow class dispatching
@@ -339,9 +336,12 @@ class BrillouinZone:
 
     def __str__(self):
         """ String representation of the BrillouinZone """
-        if isinstance(self.parent, SuperCell):
-            return self.__class__.__name__ + '{{nk: {},\n {}\n}}'.format(len(self), str(self.parent).replace('\n', '\n '))
-        return self.__class__.__name__ + '{{nk: {},\n {}\n}}'.format(len(self), str(self.parent.sc).replace('\n', '\n '))
+        parent = self.parent
+        if isinstance(parent, SuperCell):
+            parent = str(parent).replace("\n", "\n ")
+        else:
+            parent = str(parent.sc).replace("\n", "\n ")
+        return f"{self.__class__.__name__}{{nk: {len(self)},\n {parent}\n}}"
 
     def volume(self, ret_dim=False, periodic=None):
         """ Calculate the volume of the full Brillouin zone of the parent
@@ -493,7 +493,7 @@ class BrillouinZone:
             N = N_or_dk
         else:
             # Calculate the required number of points
-            N = int(kR ** 2 * np.pi / N_or_dk + 0.5)
+            N = int(kR ** 2 * pi / N_or_dk + 0.5)
             if N < 4:
                 N = 4
                 info('BrillouinZone.param_circle increased the number of circle points to 4.')
@@ -619,588 +619,6 @@ class BrillouinZone:
         k[k > 0.5] -= 1
 
         return k
-
-    #@deprecate_method TODO
-    _bz_attr = None
-
-    #@deprecate_method TODO
-
-    def __getattr__(self, attr):
-        try:
-            getattr(self.parent, attr)
-            self._bz_attr = attr
-            return self
-        except AttributeError:
-            raise AttributeError("'{}' does not exist in class '{}'".format(
-                attr, self.parent.__class__.__name__))
-
-    #@deprecate_method TODO
-    def _bz_get_func(self):
-        """ Internal method to retrieve the actual function to be called """
-        if callable(self._bz_attr):
-            return self._bz_attr
-        return getattr(self.parent, self._bz_attr)
-
-    @deprecate_method("BrillouinZone.call is deprecated (>0.9.9), register a BrillouinZoneParentDispatch to BrillouinZone.dispatch")
-    def call(self, func, *args, **kwargs):
-        """ Call the function `func` and run as though the function has been called
-
-        This is a wrapper to call user-defined functions not attached to the parent
-        object.
-
-        The below example shows that the equivalence of the call.
-
-        Examples
-        --------
-        >>> H = Hamiltonian(...)
-        >>> bz = BrillouinZone(H)
-        >>> bz.eigh() == bz.call(H.eigh)
-
-        Parameters
-        ----------
-        func : callable
-           method used
-        *args :
-           arguments passed to func in the call sequence
-        **kwargs :
-           keyword arguments passed to func in the call sequence
-        """
-        self._bz_attr = func
-        return self(*args, **kwargs)
-
-    # Implement wrapper calls
-    @deprecate_method("BrillouinZone.asarray is deprecated (>0.9.9), use BrillouinZone.apply.average")
-    def asarray(self):
-        """ Return `self` with `numpy.ndarray` returned quantities
-
-        This forces the `__call__` routine to return a single array.
-
-        Notes
-        -----
-        This method will be deprecated >0.9.9.
-        Please use ``self.apply.array`` instead.
-
-        All invocations of sub-methods are added these keyword-only arguments:
-
-        eta : bool, optional
-           if true a progress-bar is created, default false.
-        wrap : callable, optional
-           a function that accepts the output of the given routine and post-process
-           it. Defaults to ``lambda x: x``.
-
-        Examples
-        --------
-        >>> obj = BrillouinZone(...)
-        >>> obj.asarray().eigh(eta=True)
-
-        To compute multiple things in one go one should use wrappers to contain
-        the calculation
-
-        >>> E = np.linspace(-2, 2, 100)
-        >>> dist = get_distribution('gaussian', smearing=0.1)
-        >>> def wrap(es, parent, k, weight):
-        ...    DOS = es.DOS(E, distribution=dist)
-        ...    PDOS = es.PDOS(E, distribution=dist)
-        ...    occ = es.occupation()
-        ...    spin_moment = (es.spin_moment(E, distribution=dist) * occ.reshape(-1, 1)).sum(0)
-        ...    return oplist([DOS, PDOS, spin_moment])
-        >>> bz = BrillouinZone(hamiltonian)
-        >>> DOS, PDOS, spin_moment = bz.asarray().eigenstate(wrap=wrap)
-
-        See Also
-        --------
-        asyield : all output returned through an iterator
-        asaverage : take the average (with k-weights) of the Brillouin zone
-        assum : return the sum of values in the Brillouin zone
-        aslist : all output returned as a Python list
-        """
-
-        def asarray(self, *args, **kwargs):
-            func = self._bz_get_func()
-            has_wrap = 'wrap' in kwargs
-            if has_wrap:
-                wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap'))
-            eta = progressbar(len(self), f'{self.__class__.__name__}.asarray',
-                           'k', kwargs.pop('eta', False))
-            parent = self.parent
-            k = self.k
-            w = self.weight
-            if has_wrap:
-                v = wrap(func(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0])
-            else:
-                v = func(*args, k=k[0], **kwargs)
-            if v.ndim == 0:
-                a = np.empty([len(self)], dtype=v.dtype)
-            else:
-                a = np.empty((len(self), ) + v.shape, dtype=v.dtype)
-            a[0] = v
-            del v
-            eta.update()
-            if has_wrap:
-                for i in range(1, len(k)):
-                    a[i] = wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
-                    eta.update()
-            else:
-                for i in range(1, len(k)):
-                    a[i] = func(*args, k=k[i], **kwargs)
-                    eta.update()
-            eta.close()
-            return a
-        # Set instance __bz_call
-        setattr(self, '_bz_call', types.MethodType(asarray, self))
-        return self
-
-    @deprecate_method("BrillouinZone.asnone is deprecated (>0.9.9), use BrillouinZone.apply.none")
-    def asnone(self):
-        """ Return `self` with None, this may be done for instance when wrapping the function calls.
-
-        This forces the `__call__` routine to return ``None``. This usage is mainly intended when
-        creating custom `wrap` function calls.
-
-        Notes
-        -----
-        This method will be deprecated >0.9.9.
-        Please use ``self.apply.none`` instead.
-
-        All invocations of sub-methods are added these keyword-only arguments:
-
-        eta : bool, optional
-           if true a progress-bar is created, default false.
-        wrap : callable, optional
-           a function that accepts the output of the given routine and post-process
-           it. Defaults to ``lambda x: x``.
-
-        Examples
-        --------
-        >>> obj = BrillouinZone(...)
-        >>> obj.asnone().eigh(eta=True)
-
-        See Also
-        --------
-        asyield : all output returned through an iterator
-        asaverage : take the average (with k-weights) of the Brillouin zone
-        assum : return the sum of values in the Brillouin zone
-        aslist : all output returned as a Python list
-        """
-
-        def asnone(self, *args, **kwargs):
-            func = self._bz_get_func()
-            wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', lambda x: x))
-            eta = progressbar(len(self), f'{self.__class__.__name__}.asnone',
-                           'k', kwargs.pop('eta', False))
-            parent = self.parent
-            k = self.k
-            w = self.weight
-            for i in range(len(k)):
-                wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
-                eta.update()
-            eta.close()
-        # Set instance __call__
-        setattr(self, '_bz_call', types.MethodType(asnone, self))
-        return self
-
-    if _has_xarray:
-        @deprecate_method("BrillouinZone.asdataarray is deprecated (>0.9.9), use BrillouinZone.apply.dataarray")
-        def asdataarray(self):
-            r""" Return `self` with `xarray.DataArray` returned quantities
-
-            This forces the `__call__` routine to return a single `xarray.DataArray`.
-
-            Notes
-            -----
-            This method will be deprecated >0.9.9.
-            Please use ``self.apply.dataarray`` instead.
-
-            If you wrap the sub-method to return multiple data-sets, you should use `asdataset`
-            instead which returns a combination of data-arrays (so-called `xarray.Dataset`).
-
-            All invocations of sub-methods are added these keyword-only arguments:
-
-            eta : bool, optional
-                if true a progress-bar is created, default false.
-            wrap : callable, optional
-                a function that accepts the output of the given routine and post-process
-                it. Defaults to ``lambda x: x``.
-            coords : list of str or list of (str, array), optional
-                a list of coordinates used in ``xarray.DataArray(..., coords=coords)``.
-                By default the coordinates are named ``['k', 'v1', 'v2', ...]``
-                depending on the shape of the returned quantity.
-                These may optionally be a list of tuples (not a dictionary)!
-
-            Examples
-            --------
-            >>> obj = BrillouinZone(...)
-            >>> obj.asdataarray().eigh(eta=True)
-
-            See Also
-            --------
-            asyield : all output returned through an iterator
-            asaverage : take the average (with k-weights) of the Brillouin zone
-            assum : return the sum of values in the Brillouin zone
-            aslist : all output returned as a Python list
-            """
-
-            def asdataarray(self, *args, **kwargs):
-                func = self._bz_get_func()
-
-                # xarray specific data (default to function name)
-                name = kwargs.pop('name', func.__name__)
-                coords = kwargs.pop('coords', None)
-
-                has_wrap = 'wrap' in kwargs
-                if has_wrap:
-                    wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap'))
-                eta = progressbar(len(self), f'{self.__class__.__name__}.asarray',
-                               'k', kwargs.pop('eta', False))
-                parent = self.parent
-                k = self.k
-                w = self.weight
-                if has_wrap:
-                    v = wrap(func(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0])
-                else:
-                    v = func(*args, k=k[0], **kwargs)
-                if v.ndim == 0:
-                    a = np.empty([len(self)], dtype=v.dtype)
-                else:
-                    a = np.empty((len(self), ) + v.shape, dtype=v.dtype)
-                a[0] = v
-                del v
-                eta.update()
-                if has_wrap:
-                    for i in range(1, len(k)):
-                        a[i] = wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
-                        eta.update()
-                else:
-                    for i in range(1, len(k)):
-                        a[i] = func(*args, k=k[i], **kwargs)
-                        eta.update()
-                eta.close()
-
-                # Create coords
-                if coords is None:
-                    coords = [('k', _a.arangei(len(self)))]
-                    for i, v in enumerate(a.shape[1:]):
-                        coords.append((f"v{i+1}", _a.arangei(v)))
-                else:
-                    coords = list(coords)
-                    coords.insert(0, ('k', _a.arangei(len(self))))
-                    for i in range(1, len(coords)):
-                        if isinstance(coords[i], str):
-                            coords[i] = (coords[i], _a.arangei(a.shape[i]))
-                attrs = {'bz': self,
-                         'parent': self.parent,
-                }
-
-                return xarray.DataArray(a, coords=coords, name=name, attrs=attrs)
-
-            # Set instance __bz_call
-            setattr(self, '_bz_call', types.MethodType(asdataarray, self))
-            return self
-
-    @deprecate_method("BrillouinZone.aslist is deprecated (>0.9.9), use BrillouinZone.apply.list")
-    def aslist(self):
-        """ Return `self` with `list` returned quantities
-
-        This forces the `__call__` routine to return a list with returned values.
-
-        Notes
-        -----
-        This method will be deprecated >0.9.9.
-        Please use ``self.apply.list`` instead.
-
-        All invocations of sub-methods are added these keyword-only arguments:
-
-        eta : bool, optional
-           if true a progress-bar is created, default false.
-        wrap : callable, optional
-           a function that accepts the output of the given routine and post-process
-           it. Defaults to ``lambda x: x``.
-
-        Examples
-        --------
-        >>> obj = BrillouinZone(...)
-        >>> def first_ten(es):
-        ...    return es.sub(range(10))
-        >>> obj.aslist().eigenstate(eta=True, wrap=first_ten)
-
-        See Also
-        --------
-        asarray : all output as a single array
-        asyield : all output returned through an iterator
-        assum : return the sum of values in the Brillouin zone
-        asaverage : take the average (with k-weights) of the Brillouin zone
-        """
-
-        def aslist(self, *args, **kwargs):
-            func = self._bz_get_func()
-            has_wrap = 'wrap' in kwargs
-            if has_wrap:
-                wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap'))
-            eta = progressbar(len(self), f'{self.__class__.__name__}.aslist',
-                           'k', kwargs.pop('eta', False))
-            a = [None] * len(self)
-            parent = self.parent
-            k = self.k
-            w = self.weight
-            if has_wrap:
-                for i in range(len(k)):
-                    a[i] = wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
-                    eta.update()
-            else:
-                for i in range(len(k)):
-                    a[i] = func(*args, k=k[i], **kwargs)
-                    eta.update()
-            eta.close()
-            return a
-        # Set instance __call__
-        setattr(self, '_bz_call', types.MethodType(aslist, self))
-        return self
-
-    @deprecate_method("BrillouinZone.asyield is deprecated (>0.9.9), use BrillouinZone.apply.iter")
-    def asyield(self):
-        """ Return `self` with yielded quantities
-
-        This forces the `__call__` routine to return a an iterator which may
-        yield the quantities calculated.
-
-        Notes
-        -----
-        This method will be deprecated >0.9.9.
-        Please use ``self.apply.iter`` instead.
-
-        All invocations of sub-methods are added these keyword-only arguments:
-
-        eta : bool, optional
-           if true a progress-bar is created, default false.
-        wrap : callable, optional
-           a function that accepts the output of the given routine and post-process
-           it. Defaults to ``lambda x: x``.
-
-        Examples
-        --------
-        >>> obj = BrillouinZone(Hamiltonian)
-        >>> obj.asyield().eigh(eta=True)
-
-        See Also
-        --------
-        asarray : all output as a single array
-        asaverage : take the average (with k-weights) of the Brillouin zone
-        assum : return the sum of values in the Brillouin zone
-        aslist : all output returned as a Python list
-        """
-
-        def asyield(self, *args, **kwargs):
-            func = self._bz_get_func()
-            has_wrap = 'wrap' in kwargs
-            if has_wrap:
-                wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap'))
-            eta = progressbar(len(self), f'{self.__class__.__name__}.asyield',
-                           'k', kwargs.pop('eta', False))
-            parent = self.parent
-            k = self.k
-            w = self.weight
-            if has_wrap:
-                for i in range(len(k)):
-                    yield wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
-                    eta.update()
-            else:
-                for i in range(len(k)):
-                    yield func(*args, k=k[i], **kwargs)
-                    eta.update()
-            eta.close()
-        # Set instance __call__
-        setattr(self, '_bz_call', types.MethodType(asyield, self))
-        return self
-
-    @deprecate_method("BrillouinZone.asaverage is deprecated (>0.9.9), use BrillouinZone.apply.average")
-    def asaverage(self):
-        """ Return `self` with k-averaged quantities
-
-        This forces the `__call__` routine to return a single k-averaged value.
-
-        Notes
-        -----
-        This method will be deprecated >0.9.9.
-        Please use ``self.apply.average`` instead.
-
-        All invocations of sub-methods are added these keyword-only arguments:
-
-        eta : bool, optional
-           if true a progress-bar is created, default false.
-        wrap : callable, optional
-           a function that accepts the output of the given routine and post-process
-           it. Defaults to ``lambda x: x``.
-
-        Examples
-        --------
-        >>> obj = BrillouinZone(Hamiltonian)
-        >>> obj.asaverage().DOS(np.linspace(-2, 2, 100))
-
-        >>> obj = BrillouinZone(Hamiltonian)
-        >>> obj.asaverage()
-        >>> obj.DOS(np.linspace(-2, 2, 100))
-        >>> obj.PDOS(np.linspace(-2, 2, 100), eta=True)
-
-        >>> obj = BrillouinZone(Hamiltonian)
-        >>> obj.asaverage()
-        >>> E = np.linspace(-2, 2, 100)
-        >>> def wrap(es):
-        ...    return es.DOS(E), es.PDOS(E)
-        >>> DOS, PDOS = obj.eigenstate(wrap=wrap)
-
-        See Also
-        --------
-        asarray : all output as a single array
-        asyield : all output returned through an iterator
-        assum : return the sum of values in the Brillouin zone
-        aslist : all output returned as a Python list
-        """
-
-        def asaverage(self, *args, **kwargs):
-            func = self._bz_get_func()
-            has_wrap = 'wrap' in kwargs
-            if has_wrap:
-                wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap'))
-            eta = progressbar(len(self), f'{self.__class__.__name__}.asaverage',
-                           'k', kwargs.pop('eta', False))
-            parent = self.parent
-            k = self.k
-            w = self.weight
-            if has_wrap:
-                v = wrap(func(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0]) * w[0]
-                eta.update()
-                for i in range(1, len(k)):
-                    v += wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i]) * w[i]
-                    eta.update()
-            else:
-                v = func(*args, k=k[0], **kwargs) * w[0]
-                eta.update()
-                for i in range(1, len(k)):
-                    v += func(*args, k=k[i], **kwargs) * w[i]
-                    eta.update()
-            eta.close()
-            return v
-        # Set instance __call__
-        setattr(self, '_bz_call', types.MethodType(asaverage, self))
-        return self
-
-    @deprecate_method("BrillouinZone.assum is deprecated (>0.9.9), use BrillouinZone.apply.sum")
-    def assum(self):
-        """ Return `self` with summed quantities
-
-        This forces the `__call__` routine to return all k-point values summed.
-
-        Notes
-        -----
-        This method will be deprecated >0.9.9.
-        Please use ``self.apply.sum`` instead.
-
-        All invocations of sub-methods are added these keyword-only arguments:
-
-        eta : bool, optional
-           if true a progress-bar is created, default false.
-        wrap : callable, optional
-           a function that accepts the output of the given routine and post-process
-           it. Defaults to ``lambda x: x``.
-
-        Examples
-        --------
-        >>> obj = BrillouinZone(Hamiltonian)
-        >>> obj.assum().DOS(np.linspace(-2, 2, 100))
-
-        >>> obj = BrillouinZone(Hamiltonian)
-        >>> obj.assum()
-        >>> obj.DOS(np.linspace(-2, 2, 100))
-        >>> obj.PDOS(np.linspace(-2, 2, 100), eta=True)
-
-        >>> E = np.linspace(-2, 2, 100)
-        >>> dist = get_distribution('gaussian', smearing=0.1)
-        >>> def wrap(es, parent, k, weight):
-        ...    DOS = es.DOS(E, distribution=dist) * weight
-        ...    PDOS = es.PDOS(E, distribution=dist) * weight
-        ...    occ = es.occupation()
-        ...    spin_moment = (es.spin_moment(E, distribution=dist) * occ.reshape(-1, 1)).sum(0) * weight
-        ...    return oplist([DOS, PDOS, spin_moment])
-        >>> bz = BrillouinZone(hamiltonian)
-        >>> DOS, PDOS, spin_moment = bz.assum().eigenstate(wrap=wrap)
-
-        See Also
-        --------
-        asarray : all output as a single array
-        asyield : all output returned through an iterator
-        asaverage : take the average (with k-weights) of the Brillouin zone
-        aslist : all output returned as a Python list
-        """
-
-        def assum(self, *args, **kwargs):
-            func = self._bz_get_func()
-            has_wrap = 'wrap' in kwargs
-            if has_wrap:
-                wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap'))
-            eta = progressbar(len(self), f'{self.__class__.__name__}.assum',
-                           'k', kwargs.pop('eta', False))
-            parent = self.parent
-            k = self.k
-            w = self.weight
-            if has_wrap:
-                v = wrap(func(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0])
-                if isinstance(v, tuple):
-                    v = oplist(v)
-                eta.update()
-                for i in range(1, len(k)):
-                    v += wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
-                    eta.update()
-            else:
-                v = func(*args, k=k[0], **kwargs)
-                if isinstance(v, tuple):
-                    v = oplist(v)
-                eta.update()
-                for i in range(1, len(k)):
-                    v += func(*args, k=k[i], **kwargs)
-                    eta.update()
-            eta.close()
-            return v
-        # Set instance __call__
-        setattr(self, '_bz_call', types.MethodType(assum, self))
-        return self
-
-    def __call__(self, *args, **kwargs):
-        """ Calls the given attribute of the internal object and returns the quantity
-
-        Parameters
-        ----------
-        *args : optional
-            arguments passed to the attribute call, note that an argument `k=k` will be
-            added by this routine as a way to loop the k-points.
-        **kwargs : optional
-            keyword arguments passed to the attribute call, note that the first argument
-            will *always* be `k`
-
-        Returns
-        -------
-        *
-            whatever ``getattr(self, attr)(k, *args, **kwargs)`` returns
-        """
-        try:
-            func = "." + self._bz_get_func().__name__
-        except Exception:
-            func = ""
-        try:
-            call = getattr(self, '_bz_call')
-            fmt = dict(
-                cls=self.__class__.__name__,
-                method=call.__name__,
-                method2="*",
-                func=func)
-
-            if fmt["method"].startswith("as"):
-                fmt["method2"] = fmt["method"][2:]
-
-            deprecate("{cls}.{method}{func}(...) is deprecated (>0.9.9), "
-                      "please use {cls}.apply.{method2}{func}".format(**fmt))
-        except Exception:
-            raise NotImplementedError("Could not call the object it self")
-        return call(*args, **kwargs)
 
     def iter(self, ret_weight=False):
         """ An iterator for the k-points and (possibly) the weights
@@ -1444,167 +862,6 @@ class MonkhorstPack(BrillouinZone):
         bz._k = self._k.copy()
         bz._w = self._w.copy()
         return bz
-
-    def asgrid(self):
-        """ Return `self` with Grid quantities
-
-        This forces the `__call__` routine to return all k-point values in a regular grid.
-
-        The calculation of values on a grid requires some careful thought before
-        running the calculation as the returned grid may be somewhat difficult
-        to comprehend.
-
-        Notes
-        -----
-        All invocations of sub-methods are added these keyword-only arguments:
-
-        eta : bool, optional
-           if true a progress-bar is created, default false.
-        wrap : callable, optional
-           a function that accepts the output of the given routine and post-process
-           it. Defaults to ``lambda x: x``.
-        data_axis : int, optional
-           the Grid axis to put in the data values in. Has to be specified if the
-           subsequent routine calls return more than 1 data-point per k-point.
-        grid_unit : {'b', 'Ang', 'Bohr'}, optional
-           for 'b' the returned grid will be a cube, otherwise the grid will be the reciprocal lattice
-           vectors (for any other value) and in the given reciprocal unit ('Ang' => 1/Ang)
-
-        Examples
-        --------
-        >>> obj = MonkhorstPack(Hamiltonian, [10, 1, 10])
-        >>> grid = obj.asgrid().eigh(data_axis=1)
-
-        See Also
-        --------
-        asarray : all output as a single array
-        asyield : all output returned through an iterator
-        asaverage : take the average (with k-weights) of the Brillouin zone
-        aslist : all output returned as a Python list
-        """
-
-        def asgrid(self, *args, **kwargs):
-            data_axis = kwargs.pop('data_axis', None)
-            grid_unit = kwargs.pop('grid_unit', 'b')
-
-            func = self._bz_get_func()
-            wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', lambda x: x))
-            eta = progressbar(len(self), f'{self.__class__.__name__}.asgrid',
-                           'k', kwargs.pop('eta', False))
-            parent = self.parent
-            k = self.k
-            w = self.weight
-
-            # Extract information from the MP grid, these values
-            # define the Grid size, etc.
-            diag = self._diag.copy()
-            if not np.all(self._displ == 0):
-                raise SislError(self.__class__.__name__ + f'.{self._bz_attr} requires the displacement to be 0 for all k-points.')
-            displ = self._displ.copy()
-            size = self._size.copy()
-            steps = size / diag
-            if self._centered:
-                offset = np.where(diag % 2 == 0, steps, steps / 2)
-            else:
-                offset = np.where(diag % 2 == 0, steps / 2, steps)
-
-            # Instead of doing
-            #    _in_primitive(k) + 0.5 - offset
-            # we can do it here
-            #    _in_primitive(k) + offset'
-            offset -= 0.5
-
-            # Check the TRS direction
-            trs_axis = self._trs
-            _in_primitive = self.in_primitive
-            _rint = np.rint
-            _int32 = np.int32
-            def k2idx(k):
-                # In case TRS is applied two indices may be returned
-                return _rint((_in_primitive(k) - offset) / steps).astype(_int32)
-                # To find the opposite k-point, do this
-                #  idx[i] = [diag[i] - idx[i] - 1, idx[i]
-                # with i in [0, 1, 2]
-
-            # Create cell from the reciprocal cell.
-            if grid_unit == 'b':
-                cell = np.diag(self._size)
-            else:
-                cell = parent.sc.rcell * self._size.reshape(1, -1) / units('Ang', grid_unit)
-
-            # Find the grid origin
-            origin = -(cell * 0.5).sum(0)
-
-            # Calculate first k-point (to get size and dtype)
-            v = wrap(func(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0])
-
-            if data_axis is None:
-                if v.size != 1:
-                    raise SislError(self.__class__.__name__ + f'.{self._bz_attr} requires one value per-kpoint because of the 3D grid values')
-
-            else:
-
-                # Check the weights
-                weights = self.grid(diag[data_axis], displ[data_axis], size[data_axis],
-                                    centered=self._centered, trs=trs_axis == data_axis)[1]
-
-                # Correct the Grid size
-                diag[data_axis] = len(v)
-                # Create the orthogonal cell direction to ensure it is orthogonal
-                # Since array axis is cyclic for negative numbers, we simply do this
-                cell[data_axis, :] = cross(cell[data_axis-1, :], cell[data_axis-2, :])
-                # Check whether we should rotate it
-                if cart2spher(cell[data_axis, :])[2] > pi / 4:
-                    cell[data_axis, :] *= -1
-
-            # Correct cell for the grid
-            if trs_axis >= 0:
-                origin[trs_axis] = 0.
-                # Correct offset since we only have the positive halve
-                if self._diag[trs_axis] % 2 == 0 and not self._centered:
-                    offset[trs_axis] = steps[trs_axis] / 2
-                else:
-                    offset[trs_axis] = 0.
-
-                # Find number of points
-                if trs_axis != data_axis:
-                    diag[trs_axis] = len(self.grid(diag[trs_axis], displ[trs_axis], size[trs_axis],
-                                                   centered=self._centered, trs=True)[1])
-
-            # Create the grid in the reciprocal cell
-            sc = SuperCell(cell, origin=origin)
-            grid = Grid(diag, sc=sc, dtype=v.dtype)
-            if data_axis is None:
-                grid[k2idx(k[0])] = v
-            else:
-                idx = k2idx(k[0]).tolist()
-                weight = weights[idx[data_axis]]
-                idx[data_axis] = slice(None)
-                grid[tuple(idx)] = v * weight
-
-            del v
-
-            # Now perform calculation
-            eta.update()
-            if data_axis is None:
-                for i in range(1, len(k)):
-                    grid[k2idx(k[i])] = wrap(func(*args, k=k[i], **kwargs),
-                                             parent=parent, k=k[i], weight=w[i])
-                    eta.update()
-            else:
-                for i in range(1, len(k)):
-                    idx = k2idx(k[i]).tolist()
-                    weight = weights[idx[data_axis]]
-                    idx[data_axis] = slice(None)
-                    grid[tuple(idx)] = wrap(func(*args, k=k[i], **kwargs),
-                                            parent=parent, k=k[i], weight=w[i]) * weight
-                    eta.update()
-            eta.close()
-            return grid
-
-        # Set instance __call__
-        setattr(self, '_bz_call', types.MethodType(asgrid, self))
-        return self
 
     @classmethod
     def grid(cls, n, displ=0., size=1., centered=True, trs=False):
@@ -1895,30 +1152,21 @@ class BandStructure(BrillouinZone):
         #points, divisions, names=None):
         super().__init__(parent)
 
-        if "point" in kwargs:
-            deprecate(f"{self.__class__.__name__}(point=) is deprecated, use (points=) instead",
-                      "0.13.0")
-        points = kwargs.get("points", kwargs.get("point"))
+        points = kwargs.get("points")
         if points is None:
             if len(args) > 0:
                 points, *args = args
             else:
                 raise ValueError(f"{self.__class__.__name__} 'points' argument missing")
 
-        if "division" in kwargs:
-            deprecate(f"{self.__class__.__name__}(division=) is deprecated, use (divisions=) instead",
-                      "0.13.0")
-        divisions = kwargs.get("divisions", kwargs.get("division"))
+        divisions = kwargs.get("divisions")
         if divisions is None:
             if len(args) > 0:
                 divisions, *args = args
             else:
                 raise ValueError(f"{self.__class__.__name__} 'divisions' argument missing")
 
-        if "name" in kwargs:
-            deprecate(f"{self.__class__.__name__}(name=) is deprecated, use (names=) instead",
-                      "0.13.0")
-        names = kwargs.get("names", kwargs.get("name"))
+        names = kwargs.get("names")
         if names is None:
             if len(args) > 0:
                 names, *args = args
