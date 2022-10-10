@@ -17,6 +17,7 @@ class SileCDFTBtrans(SileCDF):
 
     # all netcdf output should not be masked
     def _setup(self, *args, **kwargs):
+        super()._setup(*args, **kwargs)
         # all NetCDF routines actually returns masked arrays
         # this is to prevent TBtrans CDF files from doing this.
         if hasattr(self, "fh"):

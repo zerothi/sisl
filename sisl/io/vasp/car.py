@@ -25,6 +25,7 @@ class carSileVASP(SileVASP):
 
     def _setup(self, *args, **kwargs):
         """ Setup the `carSile` after initialization """
+        super()._setup(*args, **kwargs)
         self._scale = 1.
 
     @sile_fh_open()

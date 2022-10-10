@@ -628,8 +628,11 @@ class Sile(BaseSile):
         return found
 
     def __iter__(self):
-        r""" Iterator for file """
-        yield from self.fh
+        """ Reading the entire content, without regarding comments """
+        l = self.readline(comment=True)
+        while l:
+            yield l
+            l = self.readline(comment=True)
 
     def readline(self, comment=False):
         r""" Reads the next line of the file """

@@ -27,6 +27,7 @@ class asciiSileBigDFT(SileBigDFT):
 
     def _setup(self, *args, **kwargs):
         """ Initialize for `asciiSileBigDFT` """
+        super()._setup(*args, **kwargs)
         self._comment = ['#', '!']
 
     @sile_fh_open()

@@ -35,6 +35,7 @@ class gotSileGULP(SileGULP):
 
     def _setup(self, *args, **kwargs):
         """ Setup `gotSileGULP` after initialization """
+        super()._setup(*args, **kwargs)
         self._keys = dict()
         self.set_supercell_key('Cartesian lattice vectors')
         self.set_geometry_key('Final fractional coordinates')

@@ -58,6 +58,7 @@ class winSileWannier90(SileWannier90):
 
     def _setup(self, *args, **kwargs):
         """ Setup `winSileWannier90` after initialization """
+        super()._setup(*args, **kwargs)
         self._comment = ['!', '#']
         self._seed = str(self.file).replace('.win', '')
 

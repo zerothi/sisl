@@ -58,6 +58,7 @@ class omxSileOpenMX(SileOpenMX):
 
     def _setup(self, *args, **kwargs):
         """ Setup the `omxSileOpenMX` after initialization """
+        super()._setup(*args, **kwargs)
         # These are the comments
         self._comment = ['#']
 

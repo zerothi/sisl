@@ -23,6 +23,7 @@ class pdbSile(Sile):
 
     def _setup(self, *args, **kwargs):
         """ Instantiate counters """
+        super()._setup(*args, **kwargs)
         self._model = 1
         self._serial = 1
         self._wrote_header = False

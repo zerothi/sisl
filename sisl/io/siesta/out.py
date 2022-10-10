@@ -38,10 +38,14 @@ class outSileSiesta(SileSiesta):
 
     This enables reading the output quantities from the Siesta output.
     """
-    _completed = None
 
-    def readline(self):
-        line = super().readline()
+    def _setup(self, *args, **kwargs):
+        """ Ensure the class has a _completed tag """
+        super()._setup(*args, **kwargs)
+        self._completed = None
+
+    def readline(self, *args, **kwargs):
+        line = super().readline(*args, **kwargs)
         if 'Job completed' in line:
             self._completed = True
         return line

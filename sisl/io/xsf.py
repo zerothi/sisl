@@ -32,6 +32,7 @@ class xsfSile(Sile):
 
     def _setup(self, *args, **kwargs):
         """ Setup the `xsfSile` after initialization """
+        super()._setup(*args, **kwargs)
         self._comment = ['#']
 
     def _write_key(self, key):
