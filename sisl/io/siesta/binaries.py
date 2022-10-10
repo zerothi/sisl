@@ -995,12 +995,14 @@ class hsxSileSiesta(SileBinSiesta):
             n_l_zeta = _siesta.read_hsx_specie(self.file, ispecie+1, norbs[ispecie])
             self._fortran_check("read_geometry", f"could not read specie {ispecie}.")
             # create orbital
-            # no shell will have l>5, so m=10 should be more than enough
-            m = 10
+            # since the n, l, zeta is unique per atomic orbital (before expanding to
+            # m shells), we will figure this out manually.
+            old_values = (-1, -1, -1)
+            m = 0
             orbs = []
             for n, l, zeta in zip(*n_l_zeta):
-                # manual loop on m quantum numbers
-                if m > l:
+                if old_values != (n, l, zeta):
+                    old_values = (n, l, zeta)
                     m = -l
                 orbs.append(AtomicOrbital(n=n, l=l, m=m, zeta=zeta, R=-1.))
                 m += 1
