@@ -560,14 +560,14 @@ class BufferSile:
 
         try:
             filename = Path(filehandle.name)
-        except:
+        except AttributeError:
             # this is not optimal, it will be the current directory, but one should not be able
             # to write to it
             filename = Path()
 
         try:
             mode = filehandle.mode
-        except:
+        except AttributeError:
             # a StringIO will always be able to read *and* write
             # to its buffer
             mode = "rw"
