@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.binaries &mdash; sisl 0.1.dev1+ga14a79d documentation</title>
+  <title>sisl.io.siesta.binaries &mdash; sisl 0.1.dev1+g3b3ade9 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -18,6 +18,7 @@
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
@@ -33,7 +34,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+ga14a79d
+                0.1.dev1+g3b3ade9
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -1093,12 +1094,14 @@
             <span class="n">n_l_zeta</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_specie</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">ispecie</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">norbs</span><span class="p">[</span><span class="n">ispecie</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s2">&quot;read_geometry&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;could not read specie </span><span class="si">{</span><span class="n">ispecie</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
             <span class="c1"># create orbital</span>
-            <span class="c1"># no shell will have l&gt;5, so m=10 should be more than enough</span>
-            <span class="n">m</span> <span class="o">=</span> <span class="mi">10</span>
+            <span class="c1"># since the n, l, zeta is unique per atomic orbital (before expanding to</span>
+            <span class="c1"># m shells), we will figure this out manually.</span>
+            <span class="n">old_values</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">orbs</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">zeta</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">n_l_zeta</span><span class="p">):</span>
-                <span class="c1"># manual loop on m quantum numbers</span>
-                <span class="k">if</span> <span class="n">m</span> <span class="o">&gt;</span> <span class="n">l</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">old_values</span> <span class="o">!=</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">zeta</span><span class="p">):</span>
+                    <span class="n">old_values</span> <span class="o">=</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">zeta</span><span class="p">)</span>
                     <span class="n">m</span> <span class="o">=</span> <span class="o">-</span><span class="n">l</span>
                 <span class="n">orbs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">AtomicOrbital</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="n">l</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="n">zeta</span><span class="o">=</span><span class="n">zeta</span><span class="p">,</span> <span class="n">R</span><span class="o">=-</span><span class="mf">1.</span><span class="p">))</span>
                 <span class="n">m</span> <span class="o">+=</span> <span class="mi">1</span>

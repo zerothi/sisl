@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.RealSpaceSI &mdash; sisl 0.1.dev1+ga14a79d documentation</title>
+  <title>sisl.physics.RealSpaceSI &mdash; sisl 0.1.dev1+g3b3ade9 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -19,6 +19,7 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -38,7 +39,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+ga14a79d
+                0.1.dev1+g3b3ade9
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -174,9 +175,9 @@ a physical object from which to calculate the real-space self-energy.
 object via the overlapping regions, the atoms that overlap <em class="xref py py-obj">semi</em> and <em class="xref py py-obj">surface</em>
 are determined in the <a class="reference internal" href="#sisl.physics.RealSpaceSI.initialize" title="sisl.physics.RealSpaceSI.initialize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">initialize</span></code></a> routine.
 <em class="xref py py-obj">semi</em> and <em class="xref py py-obj">surface</em> must have parallel lattice vectors.</p></li>
-<li><p><strong>k_axes</strong> (<em>array_like of int</em>) – axes where k-points are desired. 1 or 2 values are required. The axis cannot be a direction
+<li><p><strong>k_axes</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – axes where k-points are desired. 1 or 2 values are required. The axis cannot be a direction
 along the <em class="xref py py-obj">semi</em> semi-infinite direction.</p></li>
-<li><p><strong>unfold</strong> (<em>(</em><em>3</em><em>,</em><em>) </em><em>of int</em>) – number of times the <em class="xref py py-obj">surface</em> structure is tiled along each direction
+<li><p><strong>unfold</strong> (<em>(</em><em>3</em><em>,</em><em>) of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – number of times the <em class="xref py py-obj">surface</em> structure is tiled along each direction
 Since this is a surface there will maximally be 2 unfolds being non-unity.</p></li>
 <li><p><strong>eta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – imaginary part in the self-energy calculations (default 1e-4 eV)</p></li>
 <li><p><strong>dk</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – fineness of the default integration grid, specified in units of Ang, default to 1000 which

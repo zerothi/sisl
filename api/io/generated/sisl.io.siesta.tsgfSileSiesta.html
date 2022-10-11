@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.tsgfSileSiesta &mdash; sisl 0.1.dev1+ga14a79d documentation</title>
+  <title>sisl.io.siesta.tsgfSileSiesta &mdash; sisl 0.1.dev1+g3b3ade9 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -19,6 +19,7 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -38,7 +39,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+ga14a79d
+                0.1.dev1+g3b3ade9
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -263,7 +264,7 @@ closests to the energy.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>array_like of float</em><em>, </em><em>optional</em>) – k-point to read the corresponding Hamiltonian and overlap matrices
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – k-point to read the corresponding Hamiltonian and overlap matrices
 for. If a specific k-point is passed <a class="reference internal" href="#sisl.io.siesta.tsgfSileSiesta.kindex" title="sisl.io.siesta.tsgfSileSiesta.kindex"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kindex</span></code></a> will be used to find
 the corresponding index.</p></li>
 <li><p><strong>spin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – spin-index for the Hamiltonian and overlap matrices</p></li>
@@ -312,7 +313,7 @@ the corresponding index.</p></li>
 <dd><p>Return the index of the k-point that is closests to the queried k-point (in reduced coordinates)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>k</strong> (<em>array_like of float</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – the queried k-point in reduced coordinates <span class="math notranslate nohighlight">\(]-0.5;0.5]\)</span>. If <code class="docutils literal notranslate"><span class="pre">int</span></code>
+<dd class="field-odd"><p><strong>k</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – the queried k-point in reduced coordinates <span class="math notranslate nohighlight">\(]-0.5;0.5]\)</span>. If <code class="docutils literal notranslate"><span class="pre">int</span></code>
 return it-self.</p>
 </dd>
 </dl>
@@ -394,7 +395,7 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – energy to retrieve self-energy at</p></li>
-<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>array_like of float</em><em>, </em><em>optional</em>) – k-point to retrieve k-point at</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – k-point to retrieve k-point at</p></li>
 <li><p><strong>spin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – spin-index to retrieve self-energy at</p></li>
 </ul>
 </dd>
@@ -441,7 +442,7 @@ it may be advantageous to specify this argument for orthogonal cells.</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>bz</strong> (<a class="reference internal" href="../../generated/sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><em>BrillouinZone</em></a>) – contains the k-points, the weights and possibly the parent Hamiltonian (if <em class="xref py py-obj">obj</em> is None)s</p></li>
-<li><p><strong>E</strong> (<em>array_like of cmplx</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – the energy points. If <em class="xref py py-obj">obj</em> is an instance of <em class="xref py py-obj">SelfEnergy</em> where an
+<li><p><strong>E</strong> (<em>array_like</em><em> of </em><em>cmplx</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – the energy points. If <em class="xref py py-obj">obj</em> is an instance of <em class="xref py py-obj">SelfEnergy</em> where an
 associated <code class="docutils literal notranslate"><span class="pre">eta</span></code> is defined then <em class="xref py py-obj">E</em> may be float, otherwise
 it <em>has</em> to be a complex array.</p></li>
 <li><p><strong>mu</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – chemical potential in the file</p></li>

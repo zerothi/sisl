@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.Geometry &mdash; sisl 0.1.dev1+ga14a79d documentation</title>
+  <title>sisl.Geometry &mdash; sisl 0.1.dev1+g3b3ade9 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -19,6 +19,7 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -38,7 +39,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+ga14a79d
+                0.1.dev1+g3b3ade9
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -957,7 +958,7 @@ This allows one to decipher super-cell atoms from unit-cell atoms.</p>
 <li><p><strong>xyz_ia</strong> (<em>coordinate/index</em>) – Either a point in space or an index of an atom.
 If an index is passed it is the equivalent of passing
 the atomic coordinate <code class="docutils literal notranslate"><span class="pre">close_sc(self.xyz[xyz_ia,:])</span></code>.</p></li>
-<li><p><strong>R</strong> (<em>(</em><em>None</em><em>)</em><em>, </em><em>float/tuple of float</em>) – <p>The radii parameter to where the atomic connections are found.
+<li><p><strong>R</strong> (<em>(</em><em>None</em><em>)</em><em>, </em><em>float/tuple</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – <p>The radii parameter to where the atomic connections are found.
 If <em class="xref py py-obj">R</em> is an array it will return the indices:
 in the ranges:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">(</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">,</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">R</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="p">)</span>
@@ -1004,7 +1005,7 @@ in the ranges:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>xyz_ia</strong> (<em>array_like of floats</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Either a point in space or an index of an atom.
+<li><p><strong>xyz_ia</strong> (<em>array_like</em><em> of </em><em>floats</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Either a point in space or an index of an atom.
 If an index is passed it is the equivalent of passing
 the atomic coordinate <code class="docutils literal notranslate"><span class="pre">close_sc(self.xyz[xyz_ia,:])</span></code>.</p></li>
 <li><p><strong>isc</strong> (<em>(</em><em>3</em><em>,</em><em>)</em><em>, </em><em>optional</em>) – Integer super-cell offsets in which the coordinates are checked in.
@@ -1013,9 +1014,9 @@ I.e. <code class="docutils literal notranslate"><span class="pre">isc=[0,</span>
 If <em class="xref py py-obj">R</em> is an array it will return the indices:
 in the ranges <code class="docutils literal notranslate"><span class="pre">(</span> <span class="pre">x</span> <span class="pre">&lt;=</span> <span class="pre">R[0]</span> <span class="pre">,</span> <span class="pre">R[0]</span> <span class="pre">&lt;</span> <span class="pre">x</span> <span class="pre">&lt;=</span> <span class="pre">R[1],</span> <span class="pre">R[1]</span> <span class="pre">&lt;</span> <span class="pre">x</span> <span class="pre">&lt;=</span> <span class="pre">R[2]</span> <span class="pre">)</span></code>.
 If a single float it will return <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">&lt;=</span> <span class="pre">R</span></code>.</p></li>
-<li><p><strong>atoms</strong> (<em>array_like of int</em><em>, </em><em>optional</em>) – List of atoms that will be considered. This can
+<li><p><strong>atoms</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – List of atoms that will be considered. This can
 be used to only take out a certain atoms.</p></li>
-<li><p><strong>atoms_xyz</strong> (<em>array_like of float</em><em>, </em><em>optional</em>) – The atomic coordinates of the equivalent <a class="reference internal" href="#sisl.Geometry.atoms" title="sisl.Geometry.atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atoms</span></code></a> variable (<a class="reference internal" href="#sisl.Geometry.atoms" title="sisl.Geometry.atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atoms</span></code></a> must also be passed)</p></li>
+<li><p><strong>atoms_xyz</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – The atomic coordinates of the equivalent <a class="reference internal" href="#sisl.Geometry.atoms" title="sisl.Geometry.atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atoms</span></code></a> variable (<a class="reference internal" href="#sisl.Geometry.atoms" title="sisl.Geometry.atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atoms</span></code></a> must also be passed)</p></li>
 <li><p><strong>ret_xyz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If True this method will return the coordinates
 for each of the couplings.</p></li>
 <li><p><strong>ret_rij</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If True this method will return the distance
@@ -1104,7 +1105,7 @@ If this is a list, the shells will be of unequal size.</p>
 A list of distances within each shell is gathered and the equivalent
 method will be used to extract a single quantity from the list of
 distances in the shell.
-If <em class="xref py py-obj">‘mode’</em> is chosen it will use <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.mode.html#scipy.stats.mode" title="(in SciPy v1.9.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.stats.mode</span></code></a>.
+If <em class="xref py py-obj">‘mode’</em> is chosen it will use <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.mode.html#scipy.stats.mode" title="(in SciPy v1.9.2)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.stats.mode</span></code></a>.
 If a string is given it will correspond to <code class="docutils literal notranslate"><span class="pre">getattr(numpy,</span> <span class="pre">method)</span></code>,
 while any callable function may be passed. The passed function
 will only be passed a list of unsorted distances that needs to be
@@ -1684,8 +1685,8 @@ of more than 1 atom in <em class="xref py py-obj">other</em>.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>other</strong> (<a class="reference internal" href="#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a>) – Geometry to compare with <em class="xref py py-obj">self</em></p></li>
 <li><p><strong>eps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – atoms within this distance will be considered <em>equivalent</em></p></li>
-<li><p><strong>offset</strong> (<em>list of float</em><em>, </em><em>optional</em>) – offset for <em class="xref py py-obj">self.xyz</em> before comparing</p></li>
-<li><p><strong>offset_other</strong> (<em>list of float</em><em>, </em><em>optional</em>) – offset for <em class="xref py py-obj">other.xyz</em> before comparing</p></li>
+<li><p><strong>offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – offset for <em class="xref py py-obj">self.xyz</em> before comparing</p></li>
+<li><p><strong>offset_other</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – offset for <em class="xref py py-obj">other.xyz</em> before comparing</p></li>
 </ul>
 </dd>
 </dl>
@@ -1834,8 +1835,8 @@ if it is a string it will create a new sile using <code class="xref py py-obj do
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>atoms</strong> (<em>array_like of int</em><em> or </em><a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a>) – indices of atoms or <a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Atom</span></code></a> that will be reduced in size according to <a class="reference internal" href="#sisl.Geometry.orbitals" title="sisl.Geometry.orbitals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orbitals</span></code></a></p></li>
-<li><p><strong>orbitals</strong> (<em>array_like of int</em><em> or </em><a class="reference internal" href="sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital"><em>Orbital</em></a>) – indices of the orbitals on <a class="reference internal" href="#sisl.Geometry.atoms" title="sisl.Geometry.atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atoms</span></code></a> that are removed from the geometry.</p></li>
+<li><p><strong>atoms</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a>) – indices of atoms or <a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Atom</span></code></a> that will be reduced in size according to <a class="reference internal" href="#sisl.Geometry.orbitals" title="sisl.Geometry.orbitals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orbitals</span></code></a></p></li>
+<li><p><strong>orbitals</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><a class="reference internal" href="sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital"><em>Orbital</em></a>) – indices of the orbitals on <a class="reference internal" href="#sisl.Geometry.atoms" title="sisl.Geometry.atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atoms</span></code></a> that are removed from the geometry.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1918,7 +1919,7 @@ The <em>only</em> difference between the two is the final ordering of the atoms.
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>atoms</strong> (<em>array_like of int</em><em>, </em><em>optional</em>) – atoms in <em class="xref py py-obj">self</em> to be removed and replaced by other
+<li><p><strong>atoms</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – atoms in <em class="xref py py-obj">self</em> to be removed and replaced by other
 <em class="xref py py-obj">other</em> will be placed in the geometry at the lowest index of <a class="reference internal" href="#sisl.Geometry.atoms" title="sisl.Geometry.atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atoms</span></code></a></p></li>
 <li><p><strong>other</strong> (<a class="reference internal" href="#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a>) – the other Geometry to insert instead, the unit-cell will not
 be used.</p></li>
@@ -2035,7 +2036,7 @@ points along the Cartesian vector <code class="docutils literal notranslate"><sp
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> or </em><em>array-like of floats with shape</em><em> (</em><em>3</em><em>,</em><em>)</em>) – the scale factor for the new geometry (lattice vectors, coordinates
+<li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> or </em><em>array-like</em><em> of </em><em>floats with shape</em><em> (</em><em>3</em><em>,</em><em>)</em>) – the scale factor for the new geometry (lattice vectors, coordinates
 and the atomic radii are scaled).</p></li>
 <li><p><strong>what</strong> (<em>{&quot;abc&quot;</em><em>, </em><em>&quot;xyz&quot;}</em>) – If three different scale factors are provided, whether each scaling factor
 is to be applied on the corresponding lattice vector (“abc”) or on the
@@ -2095,10 +2096,10 @@ corresponding cartesian coordinate (“xyz”).</p></li>
 argument. All sorting algorithms will _only_ be performed on these atoms.
 Default, all atoms will be sorted.</p></li>
 <li><p><strong>ret_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – return a list of list for the groups of atoms that have been sorted.</p></li>
-<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>tuple of int</em><em>, </em><em>optional</em>) – sort coordinates according to Cartesian coordinates, if a tuple of
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><em>tuple</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – sort coordinates according to Cartesian coordinates, if a tuple of
 ints is passed it will be equivalent to <code class="docutils literal notranslate"><span class="pre">sort(axis0=axis[0],</span> <span class="pre">axis1=axis[1])</span></code>.
 This behaves differently than <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.lexsort.html#numpy.lexsort" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.lexsort</span></code></a>!</p></li>
-<li><p><strong>lattice</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>tuple of int</em><em>, </em><em>optional</em>) – sort coordinates according to lattice vectors, if a tuple of
+<li><p><strong>lattice</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><em>tuple</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – sort coordinates according to lattice vectors, if a tuple of
 ints is passed it will be equivalent to <code class="docutils literal notranslate"><span class="pre">sort(lattice0=lattice[0],</span> <span class="pre">lattice1=lattice[1])</span></code>.
 Note that before sorting we multiply the fractional coordinates by the length of the
 lattice vector. This ensures that <em class="xref py py-obj">atol</em> is meaningful for both <em class="xref py py-obj">axis</em> and <em class="xref py py-obj">lattice</em> since
@@ -2117,7 +2118,7 @@ If a tuple/list is passed the first item is described. All subsequent items are 
 list of groups, where each group comprises elements that should be sorted on an
 equal footing. If one of the groups is None, that group will be replaced with all
 non-mentioned elements. See examples.</p></li>
-<li><p><strong>func</strong> (<em>callable</em><em> or </em><em>list-like of callable</em><em>, </em><em>optional</em>) – pass a sorting function which should have an interface like <code class="docutils literal notranslate"><span class="pre">func(geometry,</span> <span class="pre">atoms,</span> <span class="pre">**kwargs)</span></code>.
+<li><p><strong>func</strong> (<em>callable</em><em> or </em><em>list-like</em><em> of </em><em>callable</em><em>, </em><em>optional</em>) – pass a sorting function which should have an interface like <code class="docutils literal notranslate"><span class="pre">func(geometry,</span> <span class="pre">atoms,</span> <span class="pre">**kwargs)</span></code>.
 The first argument is the geometry to sort. The 2nd argument is a list of indices in
 the current group of sorted atoms. And <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> are any optional arguments
 currently collected, i.e. <em class="xref py py-obj">ascend</em>, <em class="xref py py-obj">atol</em> etc.
@@ -2127,7 +2128,7 @@ for subsequent sorting methods).
 In either case the returned indices must never hold any other indices but the ones passed
 as <code class="docutils literal notranslate"><span class="pre">atoms</span></code>.
 If a list/tuple of functions, they will be processed in that order.</p></li>
-<li><p><strong>func_sort</strong> (<em>callable</em><em> or </em><em>list-like of callable</em><em>, </em><em>optional</em>) – pass a function returning a 1D array corresponding to all atoms in the geometry.
+<li><p><strong>func_sort</strong> (<em>callable</em><em> or </em><em>list-like</em><em> of </em><em>callable</em><em>, </em><em>optional</em>) – pass a function returning a 1D array corresponding to all atoms in the geometry.
 The interface should simply be: <code class="docutils literal notranslate"><span class="pre">func(geometry)</span></code>.
 Those values will be passed down to the internal sorting algorithm.
 To be compatible with <em class="xref py py-obj">atol</em> the returned values from <em class="xref py py-obj">func_sort</em> should
@@ -2333,8 +2334,8 @@ up the <a class="reference internal" href="#sisl.Geometry.iter_block" title="sis
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>atoms</strong> (<em>array_like of int</em><em> or </em><a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a>) – indices of atoms or <a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Atom</span></code></a> that will be reduced in size according to <a class="reference internal" href="#sisl.Geometry.orbitals" title="sisl.Geometry.orbitals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orbitals</span></code></a></p></li>
-<li><p><strong>orbitals</strong> (<em>array_like of int</em><em> or </em><a class="reference internal" href="sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital"><em>Orbital</em></a>) – indices of the orbitals on <a class="reference internal" href="#sisl.Geometry.atoms" title="sisl.Geometry.atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atoms</span></code></a> that are retained in the geometry, the list of
+<li><p><strong>atoms</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a>) – indices of atoms or <a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Atom</span></code></a> that will be reduced in size according to <a class="reference internal" href="#sisl.Geometry.orbitals" title="sisl.Geometry.orbitals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orbitals</span></code></a></p></li>
+<li><p><strong>orbitals</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><a class="reference internal" href="sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital"><em>Orbital</em></a>) – indices of the orbitals on <a class="reference internal" href="#sisl.Geometry.atoms" title="sisl.Geometry.atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atoms</span></code></a> that are retained in the geometry, the list of
 orbitals will be sorted.</p></li>
 </ul>
 </dd>
@@ -2628,7 +2629,7 @@ This allows one to decipher super-cell atoms from unit-cell atoms.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>shapes</strong> (<a class="reference internal" href="sisl.shape.Shape.html#sisl.shape.Shape" title="sisl.shape.Shape"><em>Shape</em></a><em>, </em><em>list of Shape</em>) – </p></li>
+<li><p><strong>shapes</strong> (<a class="reference internal" href="sisl.shape.Shape.html#sisl.shape.Shape" title="sisl.shape.Shape"><em>Shape</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em> of </em><a class="reference internal" href="sisl.shape.Shape.html#sisl.shape.Shape" title="sisl.shape.Shape"><em>Shape</em></a>) – </p></li>
 <li><p><strong>atoms</strong> (<em>array_like</em><em>, </em><em>optional</em>) – List of indices for atoms that are to be considered</p></li>
 <li><p><strong>atoms_xyz</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The atomic coordinates of the equivalent <a class="reference internal" href="#sisl.Geometry.atoms" title="sisl.Geometry.atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atoms</span></code></a> variable (<a class="reference internal" href="#sisl.Geometry.atoms" title="sisl.Geometry.atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atoms</span></code></a> must also be passed)</p></li>
 <li><p><strong>ret_xyz</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If true this method will return the coordinates
@@ -2667,12 +2668,12 @@ internally in sisl.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>sc</strong> (<a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><em>SuperCell</em></a><em> or </em><em>SuperCellChild</em>) – the supercell in which this geometry should be expanded into.</p></li>
-<li><p><strong>periodic</strong> (<em>list of bool</em>) – explicitly define the periodic directions, by default the periodic
+<li><p><strong>periodic</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – explicitly define the periodic directions, by default the periodic
 directions are only where <code class="docutils literal notranslate"><span class="pre">self.nsc</span> <span class="pre">&gt;</span> <span class="pre">1</span></code>.</p></li>
 <li><p><strong>tol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – length tolerance for the fractional coordinates to be on a duplicate site (in Ang).
 This allows atoms within <em class="xref py py-obj">tol</em> of the cell boundaries to be taken as <em>inside</em> the
 cell.</p></li>
-<li><p><strong>origin</strong> (<em>(</em><em>3</em><em>,</em><em>) </em><em>of float</em><em>, </em><em>optional</em>) – origin that is the basis for comparison, default to 0.</p></li>
+<li><p><strong>origin</strong> (<em>(</em><em>3</em><em>,</em><em>) of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – origin that is the basis for comparison, default to 0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -2700,7 +2701,7 @@ in the ranges:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>shapes</strong> (<a class="reference internal" href="sisl.shape.Shape.html#sisl.shape.Shape" title="sisl.shape.Shape"><em>Shape</em></a><em> or </em><em>list of Shape</em>) – <p>A list of increasing shapes that define the extend of the geometric
+<li><p><strong>shapes</strong> (<a class="reference internal" href="sisl.shape.Shape.html#sisl.shape.Shape" title="sisl.shape.Shape"><em>Shape</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em> of </em><a class="reference internal" href="sisl.shape.Shape.html#sisl.shape.Shape" title="sisl.shape.Shape"><em>Shape</em></a>) – <p>A list of increasing shapes that define the extend of the geometric
 volume that is searched.
 It is vital that:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">shapes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">shapes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="n">shapes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">...</span>

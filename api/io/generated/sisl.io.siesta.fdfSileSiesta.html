@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.fdfSileSiesta &mdash; sisl 0.1.dev1+ga14a79d documentation</title>
+  <title>sisl.io.siesta.fdfSileSiesta &mdash; sisl 0.1.dev1+g3b3ade9 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -19,6 +19,7 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -36,7 +37,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+ga14a79d
+                0.1.dev1+g3b3ade9
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -192,8 +193,8 @@ By default the <code class="docutils literal notranslate"><span class="pre">base
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fdf</span> <span class="o">=</span> <span class="n">fdfSileSiesta</span><span class="p">(</span><span class="s1">&#39;tmp/RUN.fdf&#39;</span><span class="p">)</span> <span class="c1"># reads output files in &#39;tmp/&#39; folder</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fdf</span> <span class="o">=</span> <span class="n">fdfSileSiesta</span><span class="p">(</span><span class="s1">&#39;tmp/RUN.fdf&#39;</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">)</span> <span class="c1"># reads output files in &#39;./&#39; folder</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fdf</span> <span class="o">=</span> <span class="n">fdfSileSiesta</span><span class="p">(</span><span class="s2">&quot;tmp/RUN.fdf&quot;</span><span class="p">)</span> <span class="c1"># reads output files in &quot;tmp/&quot; folder</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fdf</span> <span class="o">=</span> <span class="n">fdfSileSiesta</span><span class="p">(</span><span class="s2">&quot;tmp/RUN.fdf&quot;</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">)</span> <span class="c1"># reads output files in &quot;./&quot; folder</span>
 </pre></div>
 </div>
 <p class="rubric">Methods</p>
@@ -335,14 +336,14 @@ By default the <code class="docutils literal notranslate"><span class="pre">base
 <span class="go">line 1</span>
 <span class="go">line2</span>
 <span class="go">%endblock</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;LabeleV&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mf">1.</span> <span class="c1"># default unit is eV</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;LabelRy&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">unit</span><span class="o">.</span><span class="n">siesta</span><span class="o">.</span><span class="n">unit_convert</span><span class="p">(</span><span class="s1">&#39;Ry&#39;</span><span class="p">,</span> <span class="s1">&#39;eV&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;LabelRy&#39;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;Ry&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mf">1.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;LabelRy&#39;</span><span class="p">,</span> <span class="n">with_unit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="s1">&#39;Ry&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;FakeInt&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;1&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;LabeleV&#39;</span><span class="p">,</span> <span class="n">with_unit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="s1">&#39;eV&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Label&#39;</span><span class="p">,</span> <span class="n">with_unit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;name&#39;</span> <span class="c1"># no unit present on line</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Hello&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;line 1&#39;</span><span class="p">,</span> <span class="s1">&#39;line2&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;LabeleV&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mf">1.</span> <span class="c1"># default unit is eV</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;LabelRy&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">unit</span><span class="o">.</span><span class="n">siesta</span><span class="o">.</span><span class="n">unit_convert</span><span class="p">(</span><span class="s2">&quot;Ry&quot;</span><span class="p">,</span> <span class="s2">&quot;eV&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;LabelRy&quot;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;Ry&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mf">1.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;LabelRy&quot;</span><span class="p">,</span> <span class="n">with_unit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="s2">&quot;Ry&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;FakeInt&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;LabeleV&quot;</span><span class="p">,</span> <span class="n">with_unit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="s2">&quot;eV&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Label&quot;</span><span class="p">,</span> <span class="n">with_unit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;name&quot;</span> <span class="c1"># no unit present on line</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fdf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Hello&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;line 1&quot;</span><span class="p">,</span> <span class="s2">&quot;line2&quot;</span><span class="p">]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -386,7 +387,7 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 only a single file ending.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>order</strong> (<em>list of str</em><em>, </em><em>optional</em>) – the order of which to try and read the basis information.
+<dd class="field-odd"><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – the order of which to try and read the basis information.
 By default this is <code class="docutils literal notranslate"><span class="pre">[&quot;nc&quot;,</span> <span class="pre">&quot;ion&quot;,</span> <span class="pre">&quot;ORB_INDX&quot;,</span> <span class="pre">&quot;fdf&quot;]</span></code></p>
 </dd>
 </dl>
@@ -400,7 +401,7 @@ By default this is <code class="docutils literal notranslate"><span class="pre">
 only a single file ending.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>order</strong> (<em>list of str</em><em>, </em><em>optional</em>) – the order of which to try and read the density matrix
+<dd class="field-odd"><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – the order of which to try and read the density matrix
 By default this is <code class="docutils literal notranslate"><span class="pre">[&quot;nc&quot;,</span> <span class="pre">&quot;TSDE&quot;,</span> <span class="pre">&quot;DM&quot;]</span></code>.</p>
 </dd>
 </dl>
@@ -418,7 +419,7 @@ and <em>not</em> from the basis set information.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>order</strong> (<em>list of str</em><em>, </em><em>optional</em>) – the order of which to try and read the dynamical matrix.
+<li><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – the order of which to try and read the dynamical matrix.
 By default this is <code class="docutils literal notranslate"><span class="pre">[&quot;nc&quot;,</span> <span class="pre">&quot;FC&quot;]</span></code>.</p></li>
 <li><p><strong>cutoff_dist</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – cutoff value for the distance of the force-constants (everything farther than
 <em class="xref py py-obj">cutoff_dist</em> will be set to 0 Ang). Default, no cutoff.</p></li>
@@ -452,7 +453,7 @@ Please report back to developers about problems and suggestions.</p>
 only a single file ending.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>order</strong> (<em>list of str</em><em>, </em><em>optional</em>) – the order of which to try and read the density matrix
+<dd class="field-odd"><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – the order of which to try and read the density matrix
 By default this is <code class="docutils literal notranslate"><span class="pre">[&quot;nc&quot;,</span> <span class="pre">&quot;TSDE&quot;]</span></code>.</p>
 </dd>
 </dl>
@@ -464,7 +465,7 @@ By default this is <code class="docutils literal notranslate"><span class="pre">
 <dd><p>Read fermi-level from output of the calculation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>order</strong> (<em>list of str</em><em>, </em><em>optional</em>) – the order of which to try and read the fermi-level.
+<dd class="field-odd"><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – the order of which to try and read the fermi-level.
 By default this is <code class="docutils literal notranslate"><span class="pre">[&quot;nc&quot;,</span> <span class="pre">&quot;TSDE&quot;,</span> <span class="pre">&quot;TSHS&quot;,</span> <span class="pre">&quot;EIG&quot;,</span> <span class="pre">&quot;bands&quot;]</span></code>.</p>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -482,7 +483,7 @@ By default this is <code class="docutils literal notranslate"><span class="pre">
 <dd><p>Read forces from the output of the calculation (forces are not defined in the input)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>order</strong> (<em>list of str</em><em>, </em><em>optional</em>) – the order of the forces we are trying to read, default to <code class="docutils literal notranslate"><span class="pre">[&quot;FA&quot;,</span> <span class="pre">&quot;nc&quot;]</span></code></p>
+<dd class="field-odd"><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – the order of the forces we are trying to read, default to <code class="docutils literal notranslate"><span class="pre">[&quot;FA&quot;,</span> <span class="pre">&quot;nc&quot;]</span></code></p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>numpy.ndarray</strong></p>
@@ -518,7 +519,7 @@ only a single file ending.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>output</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – whether to read geometry from output files (default to read from
 the fdf file).</p></li>
-<li><p><strong>order</strong> (<em>list of str</em><em>, </em><em>optional</em>) – the order of which to try and read the geometry.
+<li><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – the order of which to try and read the geometry.
 By default this is <code class="docutils literal notranslate"><span class="pre">[&quot;XV&quot;,</span> <span class="pre">&quot;nc&quot;,</span> <span class="pre">&quot;fdf&quot;,</span> <span class="pre">&quot;TSHS&quot;,</span> <span class="pre">&quot;HSX&quot;,</span> <span class="pre">&quot;STRUCT&quot;]</span></code> if <em class="xref py py-obj">output</em> is true
 If <em class="xref py py-obj">order</em> is present <em class="xref py py-obj">output</em> is disregarded.</p></li>
 </ul>
@@ -547,7 +548,7 @@ only a single file ending.</p>
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – name of data to read. The list of names correspond to the
 Siesta output manual (Rho, TotalPotential, etc.), the strings are
 case insensitive.</p></li>
-<li><p><strong>order</strong> (<em>list of str</em><em>, </em><em>optional</em>) – the order of which to try and read the geometry.
+<li><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – the order of which to try and read the geometry.
 By default this is <code class="docutils literal notranslate"><span class="pre">[&quot;nc&quot;,</span> <span class="pre">&quot;grid.nc&quot;,</span> <span class="pre">&quot;bin&quot;]</span></code> (bin refers to the binary files)</p></li>
 </ul>
 </dd>
@@ -562,7 +563,7 @@ By default this is <code class="docutils literal notranslate"><span class="pre">
 only a single file ending.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>order</strong> (<em>list of str</em><em>, </em><em>optional</em>) – the order of which to try and read the Hamiltonian.
+<dd class="field-odd"><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – the order of which to try and read the Hamiltonian.
 By default this is <code class="docutils literal notranslate"><span class="pre">[&quot;nc&quot;,</span> <span class="pre">&quot;TSHS&quot;,</span> <span class="pre">&quot;HSX&quot;]</span></code>.</p>
 </dd>
 </dl>
@@ -576,7 +577,7 @@ By default this is <code class="docutils literal notranslate"><span class="pre">
 only a single file ending.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>order</strong> (<em>list of str</em><em>, </em><em>optional</em>) – the order of which to try and read the overlap matrix
+<dd class="field-odd"><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – the order of which to try and read the overlap matrix
 By default this is <code class="docutils literal notranslate"><span class="pre">[&quot;nc&quot;,</span> <span class="pre">&quot;TSHS&quot;,</span> <span class="pre">&quot;HSX&quot;,</span> <span class="pre">&quot;onlyS&quot;]</span></code>.</p>
 </dd>
 </dl>
@@ -593,7 +594,7 @@ only a single file ending.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>output</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – whether to read supercell from output files (default to read from
 the fdf file).</p></li>
-<li><p><strong>order</strong> (<em>list of str</em><em>, </em><em>optional</em>) – the order of which to try and read the supercell.
+<li><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – the order of which to try and read the supercell.
 By default this is <code class="docutils literal notranslate"><span class="pre">[&quot;XV&quot;,</span> <span class="pre">&quot;nc&quot;,</span> <span class="pre">&quot;fdf&quot;]</span></code> if <em class="xref py py-obj">output</em> is true.
 If <em class="xref py py-obj">order</em> is present <em class="xref py py-obj">output</em> is disregarded.</p></li>
 </ul>
@@ -628,7 +629,7 @@ If <em class="xref py py-obj">order</em> is present <em class="xref py py-obj">o
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – the fdf-key value to be set in the fdf file</p></li>
-<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><em>list of str</em>) – the value of the string. If a <em class="xref py py-obj">str</em> is passed a regular
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – the value of the string. If a <em class="xref py py-obj">str</em> is passed a regular
 fdf-key is used, if a <em class="xref py py-obj">list</em> it will be a %block.</p></li>
 <li><p><strong>keep</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – whether old flags will be kept in the fdf file. In this case
 a time-stamp will be written to show when the key was overwritten.</p></li>
@@ -674,7 +675,7 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>geometry</strong> (<a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a>) – geometry object to write</p></li>
 <li><p><strong>fmt</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – precision used to store the atomic coordinates</p></li>
-<li><p><strong>unit</strong> (<em>{'Ang'</em><em>, </em><em>'Bohr'</em><em>, </em><em>'fractional'</em><em>, </em><em>'frac'}</em>) – the unit used when writing the data.
+<li><p><strong>unit</strong> (<em>{&quot;Ang&quot;</em><em>, </em><em>&quot;Bohr&quot;</em><em>, </em><em>&quot;fractional&quot;</em><em>, </em><em>&quot;frac&quot;}</em>) – the unit used when writing the data.
 fractional and frac are the same.</p></li>
 </ul>
 </dd>
@@ -690,7 +691,7 @@ fractional and frac are the same.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>sc</strong> (<a class="reference internal" href="../../generated/sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><em>SuperCell</em></a>) – supercell object to write</p></li>
 <li><p><strong>fmt</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – precision used to store the lattice vectors</p></li>
-<li><p><strong>unit</strong> (<em>{'Ang'</em><em>, </em><em>'Bohr'}</em>) – the unit used when writing the data.</p></li>
+<li><p><strong>unit</strong> (<em>{&quot;Ang&quot;</em><em>, </em><em>&quot;Bohr&quot;}</em>) – the unit used when writing the data.</p></li>
 </ul>
 </dd>
 </dl>

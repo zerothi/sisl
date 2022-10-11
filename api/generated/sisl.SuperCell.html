@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.SuperCell &mdash; sisl 0.1.dev1+ga14a79d documentation</title>
+  <title>sisl.SuperCell &mdash; sisl 0.1.dev1+g3b3ade9 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -19,6 +19,7 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -38,7 +39,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+ga14a79d
+                0.1.dev1+g3b3ade9
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -170,8 +171,8 @@ primary unit-cell and one <em>after</em>.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cell</strong> (<em>array_like</em>) – the lattice parameters of the unit cell (the actual cell
 is returned from <a class="reference internal" href="#sisl.SuperCell.tocell" title="sisl.SuperCell.tocell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tocell</span></code></a>.</p></li>
-<li><p><strong>nsc</strong> (<em>array_like of int</em>) – number of supercells along each latticevector</p></li>
-<li><p><strong>origin</strong> (<em>(</em><em>3</em><em>,</em><em>) </em><em>of float</em><em>, </em><em>optional</em>) – the origin of the supercell.</p></li>
+<li><p><strong>nsc</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – number of supercells along each latticevector</p></li>
+<li><p><strong>origin</strong> (<em>(</em><em>3</em><em>,</em><em>) of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – the origin of the supercell.</p></li>
 </ul>
 </dd>
 </dl>
@@ -702,7 +703,7 @@ individually with <code class="docutils literal notranslate"><span class="pre">o
 <p>Returns the index for the supercell in the global offset.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>sc_off</strong> (<em>(</em><em>3</em><em>,</em><em>) or </em><em>list of</em><em> (</em><em>3</em><em>,</em><em>)</em>) – super cell specification. For each axis having value <code class="docutils literal notranslate"><span class="pre">None</span></code> all supercells
+<dd class="field-odd"><p><strong>sc_off</strong> (<em>(</em><em>3</em><em>,</em><em>) or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em> of </em><em>(</em><em>3</em><em>,</em><em>)</em>) – super cell specification. For each axis having value <code class="docutils literal notranslate"><span class="pre">None</span></code> all supercells
 along that axis is returned.</p>
 </dd>
 </dl>
@@ -738,7 +739,7 @@ corresponding cartesian coordinate (“xyz”).</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>nsc</strong> (<em>list of int</em><em>, </em><em>optional</em>) – number of supercells in each direction</p></li>
+<li><p><strong>nsc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – number of supercells in each direction</p></li>
 <li><p><strong>a</strong> (<em>integer</em><em>, </em><em>optional</em>) – number of supercells in the first unit-cell vector direction</p></li>
 <li><p><strong>b</strong> (<em>integer</em><em>, </em><em>optional</em>) – number of supercells in the second unit-cell vector direction</p></li>
 <li><p><strong>c</strong> (<em>integer</em><em>, </em><em>optional</em>) – number of supercells in the third unit-cell vector direction</p></li>

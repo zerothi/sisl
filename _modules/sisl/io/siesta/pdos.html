@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.pdos &mdash; sisl 0.1.dev1+ga14a79d documentation</title>
+  <title>sisl.io.siesta.pdos &mdash; sisl 0.1.dev1+g3b3ade9 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -18,6 +18,7 @@
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
@@ -33,7 +34,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+ga14a79d
+                0.1.dev1+g3b3ade9
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -101,7 +102,7 @@
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">get_sile</span>
+<span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">get_sile</span><span class="p">,</span> <span class="n">sile_fh_open</span>
 <span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileSiesta</span>
 
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
@@ -136,18 +137,20 @@
         <span class="sd">&quot;&quot;&quot; Read the geometry with coordinates and correct orbital counts &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_data</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="pdosSileSiesta.read_fermi_level"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.pdosSileSiesta.html#sisl.io.siesta.pdosSileSiesta.read_fermi_level">[docs]</a>    <span class="k">def</span> <span class="nf">read_fermi_level</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="pdosSileSiesta.read_fermi_level"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.pdosSileSiesta.html#sisl.io.siesta.pdosSileSiesta.read_fermi_level">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">read_fermi_level</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns the fermi-level &quot;&quot;&quot;</span>
         <span class="c1"># Get the element-tree</span>
-        <span class="n">root</span> <span class="o">=</span> <span class="n">xml_parse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">xml_parse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="p">)</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span>
 
         <span class="c1"># Try and find the fermi-level</span>
-        <span class="n">Ef</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;fermi_energy&#39;</span><span class="p">)</span>
+        <span class="n">Ef</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;fermi_energy&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">Ef</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!s}</span><span class="s2">.read_data could not locate the Fermi-level in the XML tree&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Ef</span></div>
 
-<div class="viewcode-block" id="pdosSileSiesta.read_data"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.pdosSileSiesta.html#sisl.io.siesta.pdosSileSiesta.read_data">[docs]</a>    <span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">as_dataarray</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="pdosSileSiesta.read_data"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.pdosSileSiesta.html#sisl.io.siesta.pdosSileSiesta.read_data">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">as_dataarray</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Returns data associated with the PDOS file</span>
 
 <span class="sd">        For spin-polarized calculations the returned values are up/down, orbitals, energy.</span>
@@ -169,15 +172,15 @@
 <span class="sd">        DataArray : if `as_dataarray` is True, only this data array is returned, in this case all data can be post-processed using the `xarray` selection routines.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Get the element-tree</span>
-        <span class="n">root</span> <span class="o">=</span> <span class="n">xml_parse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">xml_parse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="p">)</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span>
 
         <span class="c1"># Get number of orbitals</span>
-        <span class="n">nspin</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;nspin&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">nspin</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;nspin&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
         <span class="c1"># Try and find the fermi-level</span>
-        <span class="n">Ef</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;fermi_energy&#39;</span><span class="p">)</span>
-        <span class="n">E</span> <span class="o">=</span> <span class="n">arrayd</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;energy_values&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+        <span class="n">Ef</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;fermi_energy&quot;</span><span class="p">)</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="n">arrayd</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;energy_values&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
         <span class="k">if</span> <span class="n">Ef</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.read_data could not locate the Fermi-level in the XML tree, using E_F = 0. eV&#39;</span><span class="p">)</span>
+            <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!s}</span><span class="s2">.read_data could not locate the Fermi-level in the XML tree, using E_F = 0. eV&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">Ef</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">Ef</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
             <span class="n">E</span> <span class="o">-=</span> <span class="n">Ef</span>
@@ -213,14 +216,14 @@
         <span class="k">if</span> <span class="n">as_dataarray</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
             <span class="k">if</span> <span class="n">nspin</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">spin</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sum&#39;</span><span class="p">]</span>
+                <span class="n">spin</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sum&quot;</span><span class="p">]</span>
             <span class="k">elif</span> <span class="n">nspin</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-                <span class="n">spin</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;up&#39;</span><span class="p">,</span> <span class="s1">&#39;down&#39;</span><span class="p">]</span>
+                <span class="n">spin</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;up&quot;</span><span class="p">,</span> <span class="s2">&quot;down&quot;</span><span class="p">]</span>
             <span class="k">elif</span> <span class="n">nspin</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
-                <span class="n">spin</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sum&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span> <span class="s1">&#39;z&#39;</span><span class="p">]</span>
+                <span class="n">spin</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">]</span>
 
             <span class="c1"># Dimensions of the PDOS data-array</span>
-            <span class="n">dims</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;spin&#39;</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">,</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span> <span class="s1">&#39;zeta&#39;</span><span class="p">,</span> <span class="s1">&#39;polarization&#39;</span><span class="p">]</span>
+            <span class="n">dims</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="s2">&quot;n&quot;</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;zeta&quot;</span><span class="p">,</span> <span class="s2">&quot;polarization&quot;</span><span class="p">]</span>
 
             <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">ne</span><span class="p">,</span> <span class="n">nspin</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="k">def</span> <span class="nf">to</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">DOS</span><span class="p">):</span>
@@ -229,28 +232,28 @@
                           <span class="p">[</span><span class="n">o</span><span class="o">.</span><span class="n">n</span><span class="p">],</span> <span class="p">[</span><span class="n">o</span><span class="o">.</span><span class="n">l</span><span class="p">],</span> <span class="p">[</span><span class="n">o</span><span class="o">.</span><span class="n">m</span><span class="p">],</span> <span class="p">[</span><span class="n">o</span><span class="o">.</span><span class="n">zeta</span><span class="p">],</span> <span class="p">[</span><span class="n">o</span><span class="o">.</span><span class="n">P</span><span class="p">]]</span>
 
                 <span class="k">return</span> <span class="n">xr</span><span class="o">.</span><span class="n">DataArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">process</span><span class="p">(</span><span class="n">DOS</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">),</span>
-                                    <span class="n">dims</span><span class="o">=</span><span class="n">dims</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="n">coords</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;PDOS&#39;</span><span class="p">)</span>
+                                    <span class="n">dims</span><span class="o">=</span><span class="n">dims</span><span class="p">,</span> <span class="n">coords</span><span class="o">=</span><span class="n">coords</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;PDOS&quot;</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">def</span> <span class="nf">to</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">DOS</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">process</span><span class="p">(</span><span class="n">DOS</span><span class="p">)</span>
         <span class="n">D</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">for</span> <span class="n">orb</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;orbital&#39;</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">orb</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s2">&quot;orbital&quot;</span><span class="p">):</span>
 
             <span class="c1"># Short-hand function to retrieve integers for the attributes</span>
             <span class="k">def</span> <span class="nf">oi</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
                 <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">orb</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
 
             <span class="c1"># Get indices</span>
-            <span class="n">ia</span> <span class="o">=</span> <span class="n">oi</span><span class="p">(</span><span class="s1">&#39;atom_index&#39;</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
-            <span class="n">i</span> <span class="o">=</span> <span class="n">oi</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="n">ia</span> <span class="o">=</span> <span class="n">oi</span><span class="p">(</span><span class="s2">&quot;atom_index&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">oi</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
 
-            <span class="n">species</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;species&#39;</span><span class="p">)</span>
+            <span class="n">species</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;species&quot;</span><span class="p">)</span>
 
             <span class="c1"># Create the atomic orbital</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">Z</span> <span class="o">=</span> <span class="n">oi</span><span class="p">(</span><span class="s1">&#39;Z&#39;</span><span class="p">)</span>
+                <span class="n">Z</span> <span class="o">=</span> <span class="n">oi</span><span class="p">(</span><span class="s2">&quot;Z&quot;</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">Z</span> <span class="o">=</span> <span class="n">PeriodicTable</span><span class="p">()</span><span class="o">.</span><span class="n">Z</span><span class="p">(</span><span class="n">species</span><span class="p">)</span>
@@ -259,16 +262,16 @@
                     <span class="n">Z</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
 
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">P</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;P&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;true&#39;</span>
+                <span class="n">P</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;P&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="n">P</span> <span class="o">=</span> <span class="kc">False</span>
 
             <span class="n">ensure_size</span><span class="p">(</span><span class="n">ia</span><span class="p">)</span>
-            <span class="n">xyz</span><span class="p">[</span><span class="n">ia</span><span class="p">]</span> <span class="o">=</span> <span class="n">arrayd</span><span class="p">(</span><span class="n">orb</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;position&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+            <span class="n">xyz</span><span class="p">[</span><span class="n">ia</span><span class="p">]</span> <span class="o">=</span> <span class="n">arrayd</span><span class="p">(</span><span class="n">orb</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;position&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
             <span class="n">atom_species</span><span class="p">[</span><span class="n">ia</span><span class="p">]</span> <span class="o">=</span> <span class="n">Z</span>
 
             <span class="c1"># Construct the atomic orbital</span>
-            <span class="n">O</span> <span class="o">=</span> <span class="n">AtomicOrbital</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">oi</span><span class="p">(</span><span class="s1">&#39;n&#39;</span><span class="p">),</span> <span class="n">l</span><span class="o">=</span><span class="n">oi</span><span class="p">(</span><span class="s1">&#39;l&#39;</span><span class="p">),</span> <span class="n">m</span><span class="o">=</span><span class="n">oi</span><span class="p">(</span><span class="s1">&#39;m&#39;</span><span class="p">),</span> <span class="n">zeta</span><span class="o">=</span><span class="n">oi</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">),</span> <span class="n">P</span><span class="o">=</span><span class="n">P</span><span class="p">)</span>
+            <span class="n">O</span> <span class="o">=</span> <span class="n">AtomicOrbital</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">oi</span><span class="p">(</span><span class="s2">&quot;n&quot;</span><span class="p">),</span> <span class="n">l</span><span class="o">=</span><span class="n">oi</span><span class="p">(</span><span class="s2">&quot;l&quot;</span><span class="p">),</span> <span class="n">m</span><span class="o">=</span><span class="n">oi</span><span class="p">(</span><span class="s2">&quot;m&quot;</span><span class="p">),</span> <span class="n">zeta</span><span class="o">=</span><span class="n">oi</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">),</span> <span class="n">P</span><span class="o">=</span><span class="n">P</span><span class="p">)</span>
 
             <span class="c1"># We know that the index is far too high. However,</span>
             <span class="c1"># this ensures a consecutive orbital</span>
@@ -276,7 +279,7 @@
             <span class="n">atoms</span><span class="p">[</span><span class="n">ia</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">O</span>
 
             <span class="c1"># it is formed like : spin-1, spin-2 (however already in eV)</span>
-            <span class="n">DOS</span> <span class="o">=</span> <span class="n">arrayd</span><span class="p">(</span><span class="n">orb</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">())</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">nspin</span><span class="p">)</span>
+            <span class="n">DOS</span> <span class="o">=</span> <span class="n">arrayd</span><span class="p">(</span><span class="n">orb</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">())</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">nspin</span><span class="p">)</span>
 
             <span class="n">D</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">to</span><span class="p">(</span><span class="n">O</span><span class="p">,</span> <span class="n">DOS</span><span class="p">))</span>
 
@@ -288,14 +291,14 @@
 
         <span class="k">if</span> <span class="n">as_dataarray</span><span class="p">:</span>
             <span class="c1"># Create a new dimension without coordinates (orbital index)</span>
-            <span class="n">D</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="s1">&#39;orbital&#39;</span><span class="p">)</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="s2">&quot;orbital&quot;</span><span class="p">)</span>
             <span class="c1"># Add attributes</span>
-            <span class="n">D</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">geom</span>
-            <span class="n">D</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;1/eV&#39;</span>
+            <span class="n">D</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;geometry&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">geom</span>
+            <span class="n">D</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;unit&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;1/eV&quot;</span>
             <span class="k">if</span> <span class="n">Ef</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">D</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;Ef&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Unknown&#39;</span>
+                <span class="n">D</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;Ef&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Unknown&quot;</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">D</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;Ef&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Ef</span>
+                <span class="n">D</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;Ef&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Ef</span>
 
             <span class="k">return</span> <span class="n">D</span>
 
@@ -336,7 +339,7 @@
         <span class="kn">import</span> <span class="nn">argparse</span>
         <span class="kn">import</span> <span class="nn">warnings</span>
 
-        <span class="n">comment</span> <span class="o">=</span> <span class="s1">&#39;Fermi-level shifted to 0&#39;</span>
+        <span class="n">comment</span> <span class="o">=</span> <span class="s2">&quot;Fermi-level shifted to 0&quot;</span>
         <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">(</span><span class="n">record</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">w</span><span class="p">:</span>
             <span class="c1"># Cause all warnings to always be triggered.</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;always&quot;</span><span class="p">)</span>
@@ -344,40 +347,40 @@
 
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">w</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">category</span><span class="p">,</span> <span class="n">SislWarning</span><span class="p">):</span>
-                    <span class="n">comment</span> <span class="o">=</span> <span class="s1">&#39;Fermi-level unknown&#39;</span>
+                    <span class="n">comment</span> <span class="o">=</span> <span class="s2">&quot;Fermi-level unknown&quot;</span>
 
-        <span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">):</span>
             <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Normalization factor depending on the input</span>
 
 <span class="sd">            The normalization can be performed in one of the below methods.</span>
 <span class="sd">            In the following :math:`N` refers to the normalization constant</span>
 <span class="sd">            that is to be used (i.e. the divisor):</span>
 
-<span class="sd">            ``&#39;none&#39;``</span>
+<span class="sd">            ``&quot;none&quot;``</span>
 <span class="sd">               :math:`N=1`</span>
-<span class="sd">            ``&#39;all&#39;``</span>
+<span class="sd">            ``&quot;all&quot;``</span>
 <span class="sd">               :math:`N` equals the number of orbitals in the total geometry</span>
-<span class="sd">            ``&#39;atom&#39;``</span>
+<span class="sd">            ``&quot;atom&quot;``</span>
 <span class="sd">               :math:`N` equals the total number of orbitals in the selected</span>
 <span class="sd">               atoms. If `orbitals` is an argument a conversion of `orbitals` to the equivalent</span>
 <span class="sd">               unique atoms is performed, and subsequently the total number of orbitals on the</span>
 <span class="sd">               atoms is used. This makes it possible to compare the fraction of orbital DOS easier.</span>
-<span class="sd">            ``&#39;orbital&#39;``</span>
+<span class="sd">            ``&quot;orbital&quot;``</span>
 <span class="sd">               :math:`N` is the sum of selected orbitals, if `atoms` is specified, this</span>
-<span class="sd">               is equivalent to the &#39;atom&#39; option.</span>
+<span class="sd">               is equivalent to the &quot;atom&quot; option.</span>
 
 <span class="sd">            Parameters</span>
 <span class="sd">            ----------</span>
 <span class="sd">            orbitals : array_like of int or bool, optional</span>
 <span class="sd">               only return for a given set of orbitals (default to all)</span>
-<span class="sd">            norm : {&#39;none&#39;, &#39;atom&#39;, &#39;orbital&#39;, &#39;all&#39;}</span>
+<span class="sd">            norm : {&quot;none&quot;, &quot;atom&quot;, &quot;orbital&quot;, &quot;all&quot;}</span>
 <span class="sd">               how the normalization of the summed DOS is performed (see `norm` routine)</span>
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="c1"># Cast to lower</span>
             <span class="n">norm</span> <span class="o">=</span> <span class="n">norm</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">norm</span> <span class="o">==</span> <span class="s1">&#39;none&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">norm</span> <span class="o">==</span> <span class="s2">&quot;none&quot;</span><span class="p">:</span>
                 <span class="n">NORM</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="k">elif</span> <span class="n">norm</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="s1">&#39;atom&#39;</span><span class="p">,</span> <span class="s1">&#39;orbital&#39;</span><span class="p">]:</span>
+            <span class="k">elif</span> <span class="n">norm</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;atom&quot;</span><span class="p">,</span> <span class="s2">&quot;orbital&quot;</span><span class="p">]:</span>
                 <span class="n">NORM</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">no</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;norm error on norm keyword in when requesting normalization!&quot;</span><span class="p">)</span>
@@ -388,9 +391,9 @@
 
             <span class="c1"># Now figure out what to do</span>
             <span class="c1"># Get pivoting indices to average over</span>
-            <span class="k">if</span> <span class="n">norm</span> <span class="o">==</span> <span class="s1">&#39;orbital&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">norm</span> <span class="o">==</span> <span class="s2">&quot;orbital&quot;</span><span class="p">:</span>
                 <span class="n">NORM</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">norm</span> <span class="o">==</span> <span class="s1">&#39;atom&#39;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">norm</span> <span class="o">==</span> <span class="s2">&quot;atom&quot;</span><span class="p">:</span>
                 <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">orbitals</span><span class="p">))</span>
                 <span class="c1"># Now sum the orbitals per atom</span>
                 <span class="n">NORM</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">orbitals</span><span class="p">[</span><span class="n">a</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
@@ -411,7 +414,7 @@
                                       <span class="c1"># The energy range of all data</span>
                                       <span class="n">_Erng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                       <span class="n">_norm</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">,</span>
-                                      <span class="n">_PDOS_filter_name</span><span class="o">=</span><span class="s1">&#39;total&#39;</span><span class="p">,</span>
+                                      <span class="n">_PDOS_filter_name</span><span class="o">=</span><span class="s2">&quot;total&quot;</span><span class="p">,</span>
                                       <span class="n">_PDOS_filter</span><span class="o">=</span><span class="n">_sum_filter</span><span class="p">,</span>
                                       <span class="n">_data</span><span class="o">=</span><span class="p">[],</span>
                                       <span class="n">_data_description</span><span class="o">=</span><span class="p">[],</span>
@@ -425,7 +428,7 @@
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="c1"># We immediately extract the energies</span>
                     <span class="n">ns</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_E</span><span class="p">[</span><span class="n">ns</span><span class="o">.</span><span class="n">_Erng</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
-                    <span class="n">ns</span><span class="o">.</span><span class="n">_data_header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Energy[eV]&#39;</span><span class="p">)</span>
+                    <span class="n">ns</span><span class="o">.</span><span class="n">_data_header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Energy[eV]&quot;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">assign_E</span>
 
@@ -451,7 +454,7 @@
                         <span class="n">E</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">Eindex</span><span class="p">(</span><span class="n">begin</span><span class="p">),</span> <span class="n">Eindex</span><span class="p">(</span><span class="n">end</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
                 <span class="c1"># Issuing unique also sorts the entries</span>
                 <span class="n">ns</span><span class="o">.</span><span class="n">_Erng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">arrayi</span><span class="p">(</span><span class="n">E</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--energy&#39;</span><span class="p">,</span> <span class="s1">&#39;-E&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">ERange</span><span class="p">,</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--energy&quot;</span><span class="p">,</span> <span class="s2">&quot;-E&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">ERange</span><span class="p">,</span>
                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Denote the sub-section of energies that are extracted: &quot;-1:0,1:2&quot; [eV]</span>
 <span class="s2">                       </span>
 <span class="s2">                       This flag takes effect on all energy-resolved quantities and is reset whenever --plot or --out is called&quot;&quot;&quot;</span><span class="p">)</span>
@@ -462,8 +465,8 @@
             <span class="nd">@collect_action</span>
             <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
                 <span class="n">ns</span><span class="o">.</span><span class="n">_norm</span> <span class="o">=</span> <span class="n">value</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--norm&#39;</span><span class="p">,</span> <span class="s1">&#39;-N&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">NormAction</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;atom&#39;</span><span class="p">,</span>
-                       <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="s1">&#39;atom&#39;</span><span class="p">,</span> <span class="s1">&#39;orbital&#39;</span><span class="p">,</span> <span class="s1">&#39;all&#39;</span><span class="p">],</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--norm&quot;</span><span class="p">,</span> <span class="s2">&quot;-N&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">NormAction</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;atom&quot;</span><span class="p">,</span>
+                       <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;none&quot;</span><span class="p">,</span> <span class="s2">&quot;atom&quot;</span><span class="p">,</span> <span class="s2">&quot;orbital&quot;</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">],</span>
                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Specify the normalization method; &quot;none&quot;) no normalization, &quot;atom&quot;) total orbitals in selected atoms,</span>
 <span class="s2">                       &quot;orbital&quot;) selected orbitals or &quot;all&quot;) all orbitals.</span>
 
@@ -497,7 +500,7 @@
                         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Wrong argument for --spin [up, down, sum], found </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                     <span class="n">ns</span><span class="o">.</span><span class="n">_PDOS_filter_name</span> <span class="o">=</span> <span class="n">name</span>
                     <span class="n">ns</span><span class="o">.</span><span class="n">_PDOS_filter</span> <span class="o">=</span> <span class="n">_filter</span>
-            <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--spin&#39;</span><span class="p">,</span> <span class="s1">&#39;-S&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">Spin</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--spin&quot;</span><span class="p">,</span> <span class="s2">&quot;-S&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">Spin</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Which spin-component to store, up/u, down/d or sum/+/total&quot;</span><span class="p">)</span>
 
         <span class="k">elif</span> <span class="n">PDOS</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
@@ -520,7 +523,7 @@
                             <span class="k">return</span> <span class="n">PDOS</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
                     <span class="n">ns</span><span class="o">.</span><span class="n">_PDOS_filter_name</span> <span class="o">=</span> <span class="n">name</span>
                     <span class="n">ns</span><span class="o">.</span><span class="n">_PDOS_filter</span> <span class="o">=</span> <span class="n">_filter</span>
-            <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--spin&#39;</span><span class="p">,</span> <span class="s1">&#39;-S&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">Spin</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--spin&quot;</span><span class="p">,</span> <span class="s2">&quot;-S&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">Spin</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Which spin-component to store, sum/+/total, x, y, z or a sum of either of the directions xy, zx etc.&quot;</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">parse_atom_range</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -541,7 +544,7 @@
             <span class="c1"># * will &quot;only&quot; fail if files are named accordingly, else</span>
             <span class="c1"># it will be passed as-is.</span>
             <span class="c1">#       {    [    *</span>
-            <span class="n">sep</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">]</span>
+            <span class="n">sep</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">]</span>
             <span class="n">failed</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="k">while</span> <span class="n">failed</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">sep</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
@@ -573,11 +576,11 @@
                 <span class="n">orbs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ob</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">orbs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Available atoms:&#39;</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  1-</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Input atoms:&#39;</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  &#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Atomic/Orbital requests are not fully included in the device region.&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Available atoms:&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  1-</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Input atoms:&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  &quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Atomic/Orbital requests are not fully included in the device region.&quot;</span><span class="p">)</span>
 
             <span class="c1"># Add one to make the c-index equivalent to the f-index</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">orbs</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">value</span>
@@ -607,7 +610,7 @@
                     <span class="n">ns</span><span class="o">.</span><span class="n">_data_header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">DOS</span><span class="si">}</span><span class="s2">[</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">][1/eV]&quot;</span><span class="p">)</span>
                     <span class="n">ns</span><span class="o">.</span><span class="n">_data_description</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Column </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> is the total PDOS on atoms[orbs] </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2"> with normalization 1/</span><span class="si">{</span><span class="n">scale</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--atom&#39;</span><span class="p">,</span> <span class="s1">&#39;-a&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">AtomRange</span><span class="p">,</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--atom&quot;</span><span class="p">,</span> <span class="s2">&quot;-a&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">AtomRange</span><span class="p">,</span>
                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Limit orbital resolved PDOS to a sub-set of atoms/orbitals: &quot;1-2[3,4]&quot; will yield the 1st and 2nd atom and their 3rd and fourth orbital. Multiple comma-separated specifications are allowed. Note that some shells does not allow [] as text-input (due to expansion), {, [ or * are allowed orbital delimiters.</span>
 
 <span class="s2">Multiple options will create a new column/line in output, the --norm and --E should be before any of these arguments&quot;&quot;&quot;</span><span class="p">)</span>
@@ -621,8 +624,8 @@
                 <span class="k">try</span><span class="p">:</span>
                     <span class="c1"># We figure out if the user wants to write</span>
                     <span class="c1"># to a geometry</span>
-                    <span class="n">obj</span> <span class="o">=</span> <span class="n">get_sile</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;write_geometry&#39;</span><span class="p">):</span>
+                    <span class="n">obj</span> <span class="o">=</span> <span class="n">get_sile</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;write_geometry&quot;</span><span class="p">):</span>
                         <span class="k">with</span> <span class="n">obj</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
                             <span class="n">fh</span><span class="o">.</span><span class="n">write_geometry</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_geometry</span><span class="p">)</span>
                         <span class="k">return</span>
@@ -632,7 +635,7 @@
 
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">ns</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_E</span><span class="p">)</span>
-                    <span class="n">ns</span><span class="o">.</span><span class="n">_data_header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Energy[eV]&#39;</span><span class="p">)</span>
+                    <span class="n">ns</span><span class="o">.</span><span class="n">_data_header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Energy[eV]&quot;</span><span class="p">)</span>
                     <span class="n">ns</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_PDOS_filter</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_PDOS</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
                     <span class="k">if</span> <span class="n">ns</span><span class="o">.</span><span class="n">_PDOS_filter_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="n">ns</span><span class="o">.</span><span class="n">_data_header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DOS[spin=</span><span class="si">{</span><span class="n">ns</span><span class="o">.</span><span class="n">_PDOS_filter_name</span><span class="si">}</span><span class="s2">][1/eV]&quot;</span><span class="p">)</span>
@@ -640,7 +643,7 @@
                         <span class="n">ns</span><span class="o">.</span><span class="n">_data_header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;DOS[1/eV]&quot;</span><span class="p">)</span>
 
                 <span class="kn">from</span> <span class="nn">sisl.io</span> <span class="kn">import</span> <span class="n">tableSile</span>
-                <span class="n">tableSile</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="o">*</span><span class="n">ns</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span>
+                <span class="n">tableSile</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="o">*</span><span class="n">ns</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span>
                                                <span class="n">comment</span><span class="o">=</span><span class="p">[</span><span class="n">comment</span><span class="p">]</span> <span class="o">+</span> <span class="n">ns</span><span class="o">.</span><span class="n">_data_description</span><span class="p">,</span>
                                                <span class="n">header</span><span class="o">=</span><span class="n">ns</span><span class="o">.</span><span class="n">_data_header</span><span class="p">)</span>
                 <span class="c1"># Clean all data</span>
@@ -652,8 +655,8 @@
                 <span class="n">ns</span><span class="o">.</span><span class="n">_PDOS_filter_name</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="n">ns</span><span class="o">.</span><span class="n">_PDOS_filter</span> <span class="o">=</span> <span class="n">_sum_filter</span>
                 <span class="n">ns</span><span class="o">.</span><span class="n">_Erng</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--out&#39;</span><span class="p">,</span> <span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">Out</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Store currently collected PDOS (at its current invocation) to the out file.&#39;</span><span class="p">)</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--out&quot;</span><span class="p">,</span> <span class="s2">&quot;-o&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">Out</span><span class="p">,</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Store currently collected PDOS (at its current invocation) to the out file.&quot;</span><span class="p">)</span>
 
         <span class="k">class</span> <span class="nc">Plot</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
 
@@ -662,7 +665,7 @@
 
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">ns</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_E</span><span class="p">)</span>
-                    <span class="n">ns</span><span class="o">.</span><span class="n">_data_header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Energy[eV]&#39;</span><span class="p">)</span>
+                    <span class="n">ns</span><span class="o">.</span><span class="n">_data_header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Energy[eV]&quot;</span><span class="p">)</span>
                     <span class="n">ns</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_PDOS_filter</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_PDOS</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
                     <span class="k">if</span> <span class="n">ns</span><span class="o">.</span><span class="n">_PDOS_filter_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="n">ns</span><span class="o">.</span><span class="n">_data_header</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DOS[spin=</span><span class="si">{</span><span class="n">ns</span><span class="o">.</span><span class="n">_PDOS_filter_name</span><span class="si">}</span><span class="s2">][1/eV]&quot;</span><span class="p">)</span>
@@ -688,15 +691,15 @@
 
                 <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
-                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;alpha&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.6</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;alpha&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.6</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_data</span><span class="p">)):</span>
                     <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ns</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">_get_header</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_data_header</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-                <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;DOS [1/eV]&#39;</span><span class="p">)</span>
-                <span class="k">if</span> <span class="s1">&#39;unknown&#39;</span> <span class="ow">in</span> <span class="n">comment</span><span class="p">:</span>
-                    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;E [eV]&#39;</span><span class="p">)</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;DOS [1/eV]&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s2">&quot;unknown&quot;</span> <span class="ow">in</span> <span class="n">comment</span><span class="p">:</span>
+                    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;E [eV]&quot;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;E - E_F [eV]&#39;</span><span class="p">)</span>
+                    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;E - E_F [eV]&quot;</span><span class="p">)</span>
 
                 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
                 <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -713,8 +716,8 @@
                 <span class="n">ns</span><span class="o">.</span><span class="n">_PDOS_filter_name</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="n">ns</span><span class="o">.</span><span class="n">_PDOS_filter</span> <span class="o">=</span> <span class="n">_sum_filter</span>
                 <span class="n">ns</span><span class="o">.</span><span class="n">_Erng</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--plot&#39;</span><span class="p">,</span> <span class="s1">&#39;-p&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">Plot</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;?&#39;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;FILE&#39;</span><span class="p">,</span>
-                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Plot the currently collected information (at its current invocation).&#39;</span><span class="p">)</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--plot&quot;</span><span class="p">,</span> <span class="s2">&quot;-p&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">Plot</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;?&quot;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;FILE&quot;</span><span class="p">,</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Plot the currently collected information (at its current invocation).&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">p</span><span class="p">,</span> <span class="n">namespace</span>
 
@@ -723,9 +726,9 @@
 <span class="c1"># They contain the same file (same xml-data)</span>
 <span class="c1"># However, pdos.xml is preferred because it has higher precision.</span>
 <span class="c1">#  siesta.PDOS</span>
-<span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;PDOS&#39;</span><span class="p">,</span> <span class="n">pdosSileSiesta</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">add_sile</span><span class="p">(</span><span class="s2">&quot;PDOS&quot;</span><span class="p">,</span> <span class="n">pdosSileSiesta</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="c1">#  pdos.xml/siesta.PDOS.xml</span>
-<span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;PDOS.xml&#39;</span><span class="p">,</span> <span class="n">pdosSileSiesta</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">add_sile</span><span class="p">(</span><span class="s2">&quot;PDOS.xml&quot;</span><span class="p">,</span> <span class="n">pdosSileSiesta</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
            </div>

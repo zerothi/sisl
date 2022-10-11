@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.hamiltonian &mdash; sisl 0.1.dev1+ga14a79d documentation</title>
+  <title>sisl.physics.hamiltonian &mdash; sisl 0.1.dev1+g3b3ade9 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -18,6 +18,7 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -33,7 +34,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+ga14a79d
+                0.1.dev1+g3b3ade9
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -108,7 +109,8 @@
 <span class="kn">from</span> <span class="nn">.electron</span> <span class="kn">import</span> <span class="n">EigenvalueElectron</span><span class="p">,</span> <span class="n">EigenstateElectron</span><span class="p">,</span> <span class="n">spin_squared</span>
 <span class="kn">from</span> <span class="nn">.sparse</span> <span class="kn">import</span> <span class="n">SparseOrbitalBZSpin</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Hamiltonian&#39;</span><span class="p">]</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Hamiltonian&quot;</span><span class="p">]</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics&quot;</span><span class="p">)</span>
@@ -118,29 +120,66 @@
 <span class="sd">    Assigning or changing Hamiltonian elements is as easy as with standard `numpy` assignments:</span>
 
 <span class="sd">    &gt;&gt;&gt; ham = Hamiltonian(...)</span>
-<span class="sd">    &gt;&gt;&gt; ham.H[1,2] = 0.1</span>
+<span class="sd">    &gt;&gt;&gt; ham.H[1, 2] = 0.1</span>
 
 <span class="sd">    which assigns 0.1 as the coupling constant between orbital 2 and 3.</span>
 <span class="sd">    (remember that Python is 0-based elements).</span>
 
+<span class="sd">    For spin matrices the elements are defined with an extra dimension.</span>
+
+<span class="sd">    For a polarized matrix:</span>
+
+<span class="sd">    &gt;&gt;&gt; M = Hamiltonian(..., spin=&quot;polarized&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; M[0, 0, 0] = # onsite spin up</span>
+<span class="sd">    &gt;&gt;&gt; M[0, 0, 1] = # onsite spin down</span>
+
+<span class="sd">    For non-colinear the indices are a bit more tricky:</span>
+
+<span class="sd">    &gt;&gt;&gt; M = Hamiltonian(..., spin=&quot;non-colinear&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; M[0, 0, M.M11] = # Re(up-up)</span>
+<span class="sd">    &gt;&gt;&gt; M[0, 0, M.M22] = # Re(down-down)</span>
+<span class="sd">    &gt;&gt;&gt; M[0, 0, M.M12r] = # Re(up-down)</span>
+<span class="sd">    &gt;&gt;&gt; M[0, 0, M.M12i] = # Im(up-down)</span>
+
+<span class="sd">    For spin-orbit it looks like this:</span>
+
+<span class="sd">    &gt;&gt;&gt; M = Hamiltonian(..., spin=&quot;spin-orbit&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; M[0, 0, M.M11r] = # Re(up-up)</span>
+<span class="sd">    &gt;&gt;&gt; M[0, 0, M.M11i] = # Im(up-up)</span>
+<span class="sd">    &gt;&gt;&gt; M[0, 0, M.M22r] = # Re(down-down)</span>
+<span class="sd">    &gt;&gt;&gt; M[0, 0, M.M22i] = # Im(down-down)</span>
+<span class="sd">    &gt;&gt;&gt; M[0, 0, M.M12r] = # Re(up-down)</span>
+<span class="sd">    &gt;&gt;&gt; M[0, 0, M.M12i] = # Im(up-down)</span>
+<span class="sd">    &gt;&gt;&gt; M[0, 0, M.M21r] = # Re(down-up)</span>
+<span class="sd">    &gt;&gt;&gt; M[0, 0, M.M21i] = # Im(down-up)</span>
+
+<span class="sd">    Thus the number of *orbitals* is unchanged but a sub-block exists for</span>
+<span class="sd">    the spin-block.</span>
+
+<span class="sd">    When transferring the matrix to a k-point the spin-box is local to each</span>
+<span class="sd">    orbital, meaning that the spin-box for orbital i will be:</span>
+
+<span class="sd">    &gt;&gt;&gt; Hk = ham.Hk()</span>
+<span class="sd">    &gt;&gt;&gt; Hk[i*2:(i+1)*2, i*2:(i+1)*2]</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    geometry : Geometry</span>
-<span class="sd">      parent geometry to create a density matrix from. The density matrix will</span>
+<span class="sd">      parent geometry to create a Hamiltonian from. The Hamiltonian will</span>
 <span class="sd">      have size equivalent to the number of orbitals in the geometry</span>
 <span class="sd">    dim : int or Spin, optional</span>
 <span class="sd">      number of components per element, may be a `Spin` object</span>
 <span class="sd">    dtype : np.dtype, optional</span>
-<span class="sd">      data type contained in the density matrix. See details of `Spin` for default values.</span>
+<span class="sd">      data type contained in the matrix. See details of `Spin` for default values.</span>
 <span class="sd">    nnzpr : int, optional</span>
-<span class="sd">      number of initially allocated memory per orbital in the density matrix.</span>
+<span class="sd">      number of initially allocated memory per orbital in the matrix.</span>
 <span class="sd">      For increased performance this should be larger than the actual number of entries</span>
 <span class="sd">      per orbital.</span>
 <span class="sd">    spin : Spin, optional</span>
 <span class="sd">      equivalent to `dim` argument. This keyword-only argument has precedence over `dim`.</span>
 <span class="sd">    orthogonal : bool, optional</span>
-<span class="sd">      whether the density matrix corresponds to a non-orthogonal basis. In this case</span>
-<span class="sd">      the dimensionality of the density matrix is one more than `dim`.</span>
+<span class="sd">      whether the matrix corresponds to a non-orthogonal basis. In this case</span>
+<span class="sd">      the dimensionality of the matrix is one more than `dim`.</span>
 <span class="sd">      This is a keyword-only argument.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 

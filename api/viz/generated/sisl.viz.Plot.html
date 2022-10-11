@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.viz.Plot &mdash; sisl 0.1.dev1+ga14a79d documentation</title>
+  <title>sisl.viz.Plot &mdash; sisl 0.1.dev1+g3b3ade9 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -19,6 +19,7 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -36,7 +37,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+ga14a79d
+                0.1.dev1+g3b3ade9
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -77,7 +78,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../../physics.html">Physical objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../mixing.html">Mixing self-consistent quantities</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../index.html">Visualization</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">sisl.viz.Plot</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">sisl.viz.Plot</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#sisl.viz.Plot"><code class="docutils literal notranslate"><span class="pre">Plot</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="sisl.viz.Animation.html">sisl.viz.Animation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="sisl.viz.MultiplePlot.html">sisl.viz.MultiplePlot</a></li>
 <li class="toctree-l3"><a class="reference internal" href="sisl.viz.SubPlots.html">sisl.viz.SubPlots</a></li>
@@ -191,7 +195,7 @@ located. This path has to be relative to the root fdf.</p></li>
 <p>Each group is a dict like { “key”: , “name”: ,”icon”: , “description”: }</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>tuple of dicts</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)">tuple</a> of dicts</p>
 </dd>
 </dl>
 </dd></dl>
@@ -423,7 +427,7 @@ In this function, you can call predefined methods of the parameter, for example.
 </p></li>
 <li><p><strong>fixed</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a><em>, </em><em>optional</em>) – A dictionary containing values for settings that will be fixed along the animation.
 For the settings that you don’t specify here you will get the defaults.</p></li>
-<li><p><strong>frame_names</strong> (<em>list of str</em><em> or </em><em>function</em><em>, </em><em>optional</em>) – <p>If it is a list of strings, each string will be used as the name for the corresponding frame.</p>
+<li><p><strong>frame_names</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><em>function</em><em>, </em><em>optional</em>) – <p>If it is a list of strings, each string will be used as the name for the corresponding frame.</p>
 <p>If it is a function, it should accept <em class="xref py py-obj">self</em> (the animation object) and return a list of strings
 with the frame names. Note that you can access the plot instance responsible for each frame under
 <em class="xref py py-obj">self.children</em>. The function will be run each time the figure is generated, so in this way your
@@ -690,7 +694,7 @@ It can also be the setting key that you want to read.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>presets</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><em>array-like of str</em>) – all the presets that you want to use.
+<li><p><strong>presets</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><em>array-like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – all the presets that you want to use.
 Note that you can register new presets using <em class="xref py py-obj">sisl.viz.plotly.add_preset</em></p></li>
 <li><p><strong>**kwargs</strong> – <p>the values of the settings passed as keyword arguments.</p>
 <p>If a setting is not provided, the default value will be used.</p>
@@ -744,7 +748,7 @@ Although right now, this does not make much sense because figure widgets don’t
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>others</strong> (<em>array-like of Plot</em><em>(</em><em>) or </em><a class="reference internal" href="#sisl.viz.Plot" title="sisl.viz.Plot"><em>Plot</em></a><em>(</em><em>)</em>) – the plots that we want to merge with this plot instance.</p></li>
+<li><p><strong>others</strong> (<em>array-like</em><em> of </em><a class="reference internal" href="#sisl.viz.Plot" title="sisl.viz.Plot"><em>Plot</em></a><em>(</em><em>) or </em><a class="reference internal" href="#sisl.viz.Plot" title="sisl.viz.Plot"><em>Plot</em></a><em>(</em><em>)</em>) – the plots that we want to merge with this plot instance.</p></li>
 <li><p><strong>to</strong> (<em>{&quot;multiple&quot;</em><em>, </em><em>&quot;subplots&quot;</em><em>, </em><em>&quot;animation&quot;}</em><em>, </em><em>optional</em>) – the merge method. Each option results in a different way of putting all the plots
 together:
 - “multiple”: All plots are shown in the same canvas at the same time. Useful for direct
