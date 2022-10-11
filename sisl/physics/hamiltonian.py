@@ -10,7 +10,8 @@ from .distribution import get_distribution
 from .electron import EigenvalueElectron, EigenstateElectron, spin_squared
 from .sparse import SparseOrbitalBZSpin
 
-__all__ = ['Hamiltonian']
+
+__all__ = ["Hamiltonian"]
 
 
 @set_module("sisl.physics")
@@ -20,29 +21,66 @@ class Hamiltonian(SparseOrbitalBZSpin):
     Assigning or changing Hamiltonian elements is as easy as with standard `numpy` assignments:
 
     >>> ham = Hamiltonian(...)
-    >>> ham.H[1,2] = 0.1
+    >>> ham.H[1, 2] = 0.1
 
     which assigns 0.1 as the coupling constant between orbital 2 and 3.
     (remember that Python is 0-based elements).
 
+    For spin matrices the elements are defined with an extra dimension.
+
+    For a polarized matrix:
+
+    >>> M = Hamiltonian(..., spin="polarized")
+    >>> M[0, 0, 0] = # onsite spin up
+    >>> M[0, 0, 1] = # onsite spin down
+
+    For non-colinear the indices are a bit more tricky:
+
+    >>> M = Hamiltonian(..., spin="non-colinear")
+    >>> M[0, 0, M.M11] = # Re(up-up)
+    >>> M[0, 0, M.M22] = # Re(down-down)
+    >>> M[0, 0, M.M12r] = # Re(up-down)
+    >>> M[0, 0, M.M12i] = # Im(up-down)
+
+    For spin-orbit it looks like this:
+
+    >>> M = Hamiltonian(..., spin="spin-orbit")
+    >>> M[0, 0, M.M11r] = # Re(up-up)
+    >>> M[0, 0, M.M11i] = # Im(up-up)
+    >>> M[0, 0, M.M22r] = # Re(down-down)
+    >>> M[0, 0, M.M22i] = # Im(down-down)
+    >>> M[0, 0, M.M12r] = # Re(up-down)
+    >>> M[0, 0, M.M12i] = # Im(up-down)
+    >>> M[0, 0, M.M21r] = # Re(down-up)
+    >>> M[0, 0, M.M21i] = # Im(down-up)
+
+    Thus the number of *orbitals* is unchanged but a sub-block exists for
+    the spin-block.
+
+    When transferring the matrix to a k-point the spin-box is local to each
+    orbital, meaning that the spin-box for orbital i will be:
+
+    >>> Hk = ham.Hk()
+    >>> Hk[i*2:(i+1)*2, i*2:(i+1)*2]
+
     Parameters
     ----------
     geometry : Geometry
-      parent geometry to create a density matrix from. The density matrix will
+      parent geometry to create a Hamiltonian from. The Hamiltonian will
       have size equivalent to the number of orbitals in the geometry
     dim : int or Spin, optional
       number of components per element, may be a `Spin` object
     dtype : np.dtype, optional
-      data type contained in the density matrix. See details of `Spin` for default values.
+      data type contained in the matrix. See details of `Spin` for default values.
     nnzpr : int, optional
-      number of initially allocated memory per orbital in the density matrix.
+      number of initially allocated memory per orbital in the matrix.
       For increased performance this should be larger than the actual number of entries
       per orbital.
     spin : Spin, optional
       equivalent to `dim` argument. This keyword-only argument has precedence over `dim`.
     orthogonal : bool, optional
-      whether the density matrix corresponds to a non-orthogonal basis. In this case
-      the dimensionality of the density matrix is one more than `dim`.
+      whether the matrix corresponds to a non-orthogonal basis. In this case
+      the dimensionality of the matrix is one more than `dim`.
       This is a keyword-only argument.
     """
 

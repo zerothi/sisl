@@ -21,7 +21,8 @@ from sisl.sparse import SparseCSR, _ncol_to_indptr
 from sisl.sparse_geometry import SparseOrbital
 from .sparse import SparseOrbitalBZSpin
 
-__all__ = ['DensityMatrix']
+
+__all__ = ["DensityMatrix"]
 
 
 class _densitymatrix(SparseOrbitalBZSpin):
@@ -795,6 +796,43 @@ class DensityMatrix(_densitymatrix):
 
     which assigns 0.1 as the density element between orbital 2 and 3.
     (remember that Python is 0-based elements).
+
+    For spin matrices the elements are defined with an extra dimension.
+
+    For a polarized matrix:
+
+    >>> M = DensityMatrix(..., spin="polarized")
+    >>> M[0, 0, 0] = # onsite spin up
+    >>> M[0, 0, 1] = # onsite spin down
+
+    For non-colinear the indices are a bit more tricky:
+
+    >>> M = DensityMatrix(..., spin="non-colinear")
+    >>> M[0, 0, M.M11] = # Re(up-up)
+    >>> M[0, 0, M.M22] = # Re(down-down)
+    >>> M[0, 0, M.M12r] = # Re(up-down)
+    >>> M[0, 0, M.M12i] = # Im(up-down)
+
+    For spin-orbit it looks like this:
+
+    >>> M = DensityMatrix(..., spin="spin-orbit")
+    >>> M[0, 0, M.M11r] = # Re(up-up)
+    >>> M[0, 0, M.M11i] = # Im(up-up)
+    >>> M[0, 0, M.M22r] = # Re(down-down)
+    >>> M[0, 0, M.M22i] = # Im(down-down)
+    >>> M[0, 0, M.M12r] = # Re(up-down)
+    >>> M[0, 0, M.M12i] = # Im(up-down)
+    >>> M[0, 0, M.M21r] = # Re(down-up)
+    >>> M[0, 0, M.M21i] = # Im(down-up)
+
+    Thus the number of *orbitals* is unchanged but a sub-block exists for
+    the spin-block.
+
+    When transferring the matrix to a k-point the spin-box is local to each
+    orbital, meaning that the spin-box for orbital i will be:
+
+    >>> Dk = M.Dk()
+    >>> Dk[i*2:(i+1)*2, i*2:(i+1)*2]
 
     Parameters
     ----------
