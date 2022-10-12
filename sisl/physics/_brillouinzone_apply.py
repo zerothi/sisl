@@ -434,8 +434,9 @@ apply_dispatch.register("ndarray", NDArrayApply)
 apply_dispatch.register("none", NoneApply)
 apply_dispatch.register("list", ListApply)
 apply_dispatch.register("oplist", OpListApply)
-apply_dispatch.register("dataarray", XArrayApply)
-apply_dispatch.register("xarray", XArrayApply)
+if _has_xarray:
+    apply_dispatch.register("dataarray", XArrayApply)
+    apply_dispatch.register("xarray", XArrayApply)
 
 # Remove refernce
 del apply_dispatch

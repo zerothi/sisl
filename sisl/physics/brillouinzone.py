@@ -136,9 +136,7 @@ and ``imap`` and ``uimap`` methods. See the ``pathos`` documentation for detalis
 
 """
 
-import types
 from numbers import Integral, Real
-import warnings
 import itertools
 from functools import reduce
 
@@ -151,19 +149,12 @@ from sisl.oplist import oplist
 from sisl.unit import units
 from sisl.quaternion import Quaternion
 from sisl.utils.mathematics import cart2spher, fnorm
-from sisl.utils.misc import allow_kwargs
 from sisl.utils import batched_indices
 import sisl._array as _a
 from sisl.messages import info, warn, SislError, progressbar
 from sisl.supercell import SuperCell
 from sisl.grid import Grid
 from sisl._dispatcher import ClassDispatcher
-
-try:
-    import xarray
-    _has_xarray = True
-except ImportError:
-    _has_xarray = False
 
 
 __all__ = ["BrillouinZone", "MonkhorstPack", "BandStructure", "linspace_bz"]
