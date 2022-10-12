@@ -9,22 +9,11 @@ import pytest
 from scipy.linalg import block_diag
 from scipy.sparse import SparseEfficiencyWarning, issparse
 
-from sisl import (
-    Atom,
-    BandStructure,
-    BrillouinZone,
-    Geometry,
-    Grid,
-    Hamiltonian,
-    Lattice,
-    MonkhorstPack,
-    SislError,
-    SphericalOrbital,
-    Spin,
-    get_distribution,
-    oplist,
-)
-from sisl.physics.electron import berry_phase, conductivity, spin_squared
+from sisl import Geometry, Atom, Lattice, Hamiltonian, Spin, BandStructure, MonkhorstPack, BrillouinZone
+from sisl import get_distribution
+from sisl import oplist
+from sisl import Grid, SphericalOrbital, SislError
+from sisl.physics.electron import berry_phase, spin_contamination, conductivity
 
 pytestmark = [
     pytest.mark.physics,
@@ -1438,12 +1427,8 @@ class TestHamiltonian:
         assert np.abs(Hcsr[-1] - Ht.tocsr(-1)).sum() == 0
 
     @pytest.mark.parametrize("k", [[0, 0, 0], [0.1, 0, 0]])
-    def test_spin_squared(self, setup, k):
-        g = Geometry(
-            [[i, 0, 0] for i in range(10)],
-            Atom(6, R=1.01),
-            lattice=Lattice(1, nsc=[3, 1, 1]),
-        )
+    def test_spin_contamination(self, setup, k):
+        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), lattice=Lattice(1, nsc=[3, 1, 1]))
         H = Hamiltonian(g, spin=Spin.POLARIZED)
         H.construct(([0.1, 1.1], [[0, 0.1], [1, 1.1]]))
         H[0, 0] = (0.1, 0.0)
@@ -1451,41 +1436,33 @@ class TestHamiltonian:
         es_alpha = H.eigenstate(k, spin=0)
         es_beta = H.eigenstate(k, spin=1)
 
-        sup, sdn = spin_squared(es_alpha.state, es_beta.state)
+        sup, sdn = spin_contamination(es_alpha.state, es_beta.state)
         assert sup.sum() == pytest.approx(sdn.sum())
         assert len(sup) == es_alpha.shape[0]
         assert len(sdn) == es_beta.shape[0]
 
-        sup, sdn = spin_squared(es_alpha.sub(range(2)).state, es_beta.state)
+        sup, sdn = spin_contamination(es_alpha.sub(range(2)).state, es_beta.state)
         assert sup.sum() == pytest.approx(sdn.sum())
         assert len(sup) == 2
         assert len(sdn) == es_beta.shape[0]
 
-        sup, sdn = spin_squared(
-            es_alpha.sub(range(3)).state, es_beta.sub(range(2)).state
-        )
+        sup, sdn = spin_contamination(es_alpha.sub(range(3)).state, es_beta.sub(range(2)).state)
         assert sup.sum() == pytest.approx(sdn.sum())
         assert len(sup) == 3
         assert len(sdn) == 2
 
-        sup, sdn = spin_squared(
-            es_alpha.sub(0).state.ravel(), es_beta.sub(range(2)).state
-        )
+        sup, sdn = spin_contamination(es_alpha.sub(0).state.ravel(), es_beta.sub(range(2)).state)
         assert sup.sum() == pytest.approx(sdn.sum())
         assert sup.ndim == 1
         assert len(sup) == 1
         assert len(sdn) == 2
 
-        sup, sdn = spin_squared(
-            es_alpha.sub(0).state.ravel(), es_beta.sub(0).state.ravel()
-        )
+        sup, sdn = spin_contamination(es_alpha.sub(0).state.ravel(), es_beta.sub(0).state.ravel())
         assert sup.sum() == pytest.approx(sdn.sum())
         assert sup.ndim == 0
         assert sdn.ndim == 0
 
-        sup, sdn = spin_squared(
-            es_alpha.sub(range(2)).state, es_beta.sub(0).state.ravel()
-        )
+        sup, sdn = spin_contamination(es_alpha.sub(range(2)).state, es_beta.sub(0).state.ravel())
         assert sup.sum() == pytest.approx(sdn.sum())
         assert len(sup) == 2
         assert len(sdn) == 1

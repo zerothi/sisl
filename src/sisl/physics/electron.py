@@ -20,7 +20,7 @@ One may also plot real-space wavefunctions.
    conductivity
    wavefunction
    spin_moment
-   spin_squared
+   spin_contamination
 
 
 Supporting classes
@@ -86,7 +86,7 @@ from .spin import Spin
 from .state import Coefficient, State, StateC, _FakeMatrix, degenerate_decouple
 
 __all__ = ["DOS", "PDOS", "COP"]
-__all__ += ["spin_moment", "spin_squared"]
+__all__ += ["spin_moment", "spin_contamination"]
 __all__ += ["berry_phase", "berry_curvature"]
 __all__ += ["conductivity"]
 __all__ += ["wavefunction"]
@@ -526,12 +526,12 @@ def spin_moment(state, S=None, project=False):
 
 
 @set_module("sisl.physics.electron")
-def spin_squared(state_alpha, state_beta, S=None):
-    r""" Calculate the spin squared expectation value between two spin states
+def spin_contamination(state_alpha, state_beta, S=None):
+    r""" Calculate the spin contamination value between two spin states
 
     This calculation only makes sense for spin-polarized calculations.
 
-    The expectation value is calculated using the following formula:
+    The contamination value is calculated using the following formula:
 
     .. math::
        S^2_{\alpha,i} &= \sum_j |\langle \psi_j^\beta | \mathbf S | \psi_i^\alpha \rangle|^2
@@ -564,18 +564,14 @@ def spin_squared(state_alpha, state_beta, S=None):
     """
     if state_alpha.ndim == 1:
         if state_beta.ndim == 1:
-            Sa, Sb = spin_squared(
-                state_alpha.reshape(1, -1), state_beta.reshape(1, -1), S
-            )
+            Sa, Sb = spin_contamination(state_alpha.reshape(1, -1), state_beta.reshape(1, -1), S)
             return oplist((Sa[0], Sb[0]))
-        return spin_squared(state_alpha.reshape(1, -1), state_beta, S)
+        return spin_contamination(state_alpha.reshape(1, -1), state_beta, S)
     elif state_beta.ndim == 1:
-        return spin_squared(state_alpha, state_beta.reshape(1, -1), S)
+        return spin_contamination(state_alpha, state_beta.reshape(1, -1), S)
 
     if state_alpha.shape[1] != state_beta.shape[1]:
-        raise ValueError(
-            "spin_squared requires alpha and beta states to have same number of orbitals"
-        )
+        raise ValueError("spin_contamination requires alpha and beta states to have same number of orbitals")
 
     if S is None:
 
