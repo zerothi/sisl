@@ -408,3 +408,19 @@ class TestObject:
                 sile(f).ArgumentParser()
             except Exception:
                 pass
+
+
+def test_buffer_cls():
+    # Check that buffer_cls argument for subclassing classes
+    # works correctly
+    class customBuffer(BufferSile):
+        pass
+
+    class tmpSile(xyzSile, buffer_cls=customBuffer):
+        pass
+
+    assert tmpSile._buffer_cls.__name__ == "customBuffer"
+
+    with pytest.raises(TypeError):
+        class tmpSile(xyzSile, buffer_cls=object):
+            pass

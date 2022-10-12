@@ -4,6 +4,7 @@
 from functools import wraps
 from os.path import splitext, basename
 import gzip
+from io import TextIOBase
 from pathlib import Path
 
 from sisl._internal import set_module
@@ -23,6 +24,7 @@ __all__ = [
 
 __all__ += [
     'BaseSile',
+    'BufferSile',
     'Sile',
     'SileCDF',
     'SileBin',
@@ -545,22 +547,102 @@ def sile_fh_open(from_closed=False):
 
 
 @set_module("sisl.io")
+class BufferSile:
+    """ Sile for handling `StringIO` and `TextIOBase` objects
+
+    These are basically meant for users passing down the above objects
+    """
+
+    def __init__(self, filename, *args, **kwargs):
+        # here, filename is actually a file-handle.
+        # However, to accommodate keyword arguments we *must* have the same name
+        filehandle = filename
+
+        try:
+            filename = Path(filehandle.name)
+        except AttributeError:
+            # this is not optimal, it will be the current directory, but one should not be able
+            # to write to it
+            filename = Path()
+
+        try:
+            mode = filehandle.mode
+        except AttributeError:
+            # a StringIO will always be able to read *and* write
+            # to its buffer
+            mode = "rw"
+
+        self.fh = filehandle
+        self._fh_init_tell = filehandle.tell()
+
+        # pass mode to the file to let it know what happened
+        # we can't use super here due to the coupling to the Sile class
+        super().__init__(filename, mode, *args, **kwargs)
+
+    def _open(self):
+        self.fh.seek(self._fh_init_tell)
+        self._line = 0
+
+    def __exit__(self, type, value, traceback):
+        # we will not close a file-handle
+        self._line = 0
+        return False
+
+    def close(self):
+        """ Will not close the file since this is passed by the user """
+        pass
+
+
+@set_module("sisl.io")
 class Sile(BaseSile):
     """ Base class for ASCII files
 
     All ASCII files that needs to be added to the global lookup table can
     with benefit inherit this class.
+
+    By subclassing a `Sile` one can manually specify the buffer class used
+    when passing a `buffer_cls` keyword argument. This enables one to overwrite
+    buffer classes for custom siles.
+
+    >>> class mySile(otherSislSile, buffer_cls=myBufferClass): ...
     """
 
-    def __init__(self, filename, mode='r', comment=None, *args, **kwargs):
+    def __new__(cls, filename, *args, **kwargs):
+
+        # check whether filename is an actual str, or StringIO or some buffer
+        if not isinstance(filename, TextIOBase):
+            # this is just a regular sile opening
+            return super().__new__(cls)
+
+        return super().__new__(cls._buffer_cls)
+
+    def __init_subclass__(cls, buffer_cls=None):
+        if issubclass(cls, BufferSile):
+            # return since it already inherits BufferSile
+            return
+
+        if buffer_cls is None:
+            buffer_cls = type(f"{cls.__name__}Buffer", (BufferSile, cls),
+                              # Ensure the module is the same
+                              {"__module__": cls.__module__})
+        elif not issubclass(buffer_cls, BufferSile):
+            raise TypeError(f"The passed buffer_cls should inherit from sisl.io.BufferSile to "
+                            "ensure correct behaviour.")
+
+        cls._buffer_cls = buffer_cls
+
+    def __init__(self, filename, mode='r', *args, **kwargs):
         self._file = Path(filename)
         self._mode = mode
+
+        comment = kwargs.pop("comment", None)
         if isinstance(comment, (list, tuple)):
             self._comment = list(comment)
         elif not comment is None:
             self._comment = [comment]
         else:
             self._comment = []
+
         self._line = 0
 
         # Initialize
@@ -584,11 +666,14 @@ class Sile(BaseSile):
         return self
 
     def __exit__(self, type, value, traceback):
-        self.fh.close()
         # clean-up so that it does not exist
-        delattr(self, 'fh')
+        self.close()
         self._line = 0
         return False
+
+    def close(self):
+        self.fh.close()
+        delattr(self, 'fh')
 
     @staticmethod
     def is_keys(keys):
@@ -666,7 +751,7 @@ class Sile(BaseSile):
             # We may be in the case where the user request
             # reading the same twice...
             # So we need to re-read the file...
-            self.fh.close()
+            self.close()
             # Re-open the file...
             self._open()
 

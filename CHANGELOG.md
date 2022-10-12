@@ -8,6 +8,7 @@ we hit release version 1.0.0.
 ## [0.13.0] - YYYY-MM-DD
 
 ### Added
+- enabled ASCII siles to read from file-handles and buffers, #484
 - enabled unit specification for lengths in cube-files
 - added `kwargs` passed to eigenstate functions in `berry_phase`
 	and `conductivity`
