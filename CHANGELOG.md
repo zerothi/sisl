@@ -19,6 +19,7 @@ we hit release version 1.0.0.
 	as the only argument.
 
 ### Fixed
+- reading TranSiesta data from outSileSiesta
 - regression from 80f27b05, reading version 0 HSX content, #492
 - delta-files (netCDF) would always have diagonal components,
   this has now been removed since it only needs the elements with

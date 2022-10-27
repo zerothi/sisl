@@ -808,6 +808,7 @@ class outSileSiesta(SileSiesta):
                         # We are probably reading a device list
                         # ensure that props are appended
                         if data[-1] not in props:
+                            d["order"].append("ts-q")
                             props.extend(data)
                 elif line.startswith('ts-scf:'):
                     d['_found_iscf'] = True
