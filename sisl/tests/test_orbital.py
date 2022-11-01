@@ -9,7 +9,7 @@ from scipy import interpolate as interp
 
 from sisl.messages import SislDeprecation
 from sisl.utils.mathematics import cart2spher, spher2cart
-from sisl.orbital import Orbital, SphericalOrbital, AtomicOrbital
+from sisl.orbital import Orbital, SphericalOrbital, AtomicOrbital, HydrogenicOrbital
 from sisl.orbital import _rspher_harm_fact
 
 _max_l = len(_rspher_harm_fact) - 1
@@ -362,3 +362,10 @@ class Test_atomicorbital:
         assert o0 != l1
         assert o1 != l0
         assert o2 != l0
+
+
+@pytest.mark.orbital
+class Test_hydrogenicorbital:
+
+    def test_init1(self):
+        orb = HydrogenicOrbital(3.2, 2, 1, 0)
