@@ -1138,6 +1138,8 @@ class HydrogenicOrbital(AtomicOrbital):
     in addition to the usual quantum numbers (n, l, m).
     The returned orbital is properly normalized.
 
+    See https://en.wikipedia.org/wiki/Hydrogen-like_atom
+
     Parameters
     ----------
     Zeff : float
