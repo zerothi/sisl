@@ -367,5 +367,25 @@ class Test_atomicorbital:
 @pytest.mark.orbital
 class Test_hydrogenicorbital:
 
-    def test_init1(self):
+    def test_init(self):
         orb = HydrogenicOrbital(3.2, 2, 1, 0)
+
+    def test_normalization(self):
+        x = np.linspace(0, 10, 1000)
+        for n in range(6):
+            zeff = n * 0.9
+            for l in range(n):
+                orb = HydrogenicOrbital(zeff, n, l, 0)
+                Rnl = orb.radial(x)
+                I = np.trapz(x ** 2 * Rnl ** 2, x=x)
+                assert abs(I - 1) < 1e-4
+
+    def test_togrid(self):
+        for n in range(3):
+            zeff = n * 0.9
+            for l in range(n):
+                for m in range(-l, l + 1):
+                    orb = HydrogenicOrbital(zeff, n, l, m)
+                    g = orb.toGrid()
+                    I = (g.grid ** 2).sum() * g.dvolume
+                    assert abs(I - 1) < 1e-4
