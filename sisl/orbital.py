@@ -1140,7 +1140,7 @@ class HydrogenicOrbital(AtomicOrbital):
 
     Parameters
     ----------
-    Z : float
+    Zeff : float
         effective atomic number
     n : int
         principal quantum number
@@ -1157,14 +1157,21 @@ class HydrogenicOrbital(AtomicOrbital):
 
     """
 
-    def __init__(self, Z, n, l, m, *args, **kwargs):
+    def __init__(self, Zeff, n, l, m, *args, **kwargs):
+
+        self._Zeff = Zeff
 
         R = kwargs.get("R", 10.)
         r = np.linspace(0, R, 1000)
         a0 = 0.529177 # Bohr radius
-        z = 2 * Z / (n * a0)
+        z = 2 * Zeff / (n * a0)
         pref = (z ** 3 * factorial(n - l - 1) / (2 * n * factorial(n + l))) ** 0.5
         L = eval_genlaguerre(n - l - 1, 2 * l + 1, z * r)
         Rnl = pref * np.exp(-z * r / 2) * (z * r) ** l * L
 
         super().__init__(n, l, m, (r, Rnl), q0=kwargs.get("q0", 0.), tag=kwargs.get("tag", ""))
+
+
+    def copy(self):
+        """ Create an exact copy of this object """
+        return self.__class__(self._Zeff, self.n, self.l, self.m, self.q0, self.tag)
