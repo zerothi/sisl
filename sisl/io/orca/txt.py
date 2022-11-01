@@ -1,12 +1,13 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+import numpy as np
 from .sile import SileORCA
 from ..sile import add_sile, sile_fh_open
 
 from sisl.utils import PropertyDict
 from sisl._internal import set_module
-
+from sisl import Geometry
 
 __all__ = ['txtSileORCA']
 
@@ -78,6 +79,53 @@ class txtSileORCA(SileORCA):
             return E
         if len(E) > 0:
             return E[-1]
+        return None
+
+    @sile_fh_open()
+    def read_geometry(self, all=False):
+        """ Reads the geometry from ORCA property txt file
+
+        Parameters
+        ----------
+        all: bool, optional
+            return a list of all geometries instead of the last one
+
+        Returns
+        -------
+        geometries: list or Geometry or None
+            if all is False only one geometry will be returned (or None). Otherwise
+            a list of geometries corresponding to each step.
+        """
+        def readG(itt):
+            # Read the Geometry block
+            f = self.step_to("!GEOMETRY!", reread=False)[0]
+            if not f:
+                return None
+            line = next(itt)
+            na = int(line.split()[-1])
+            line = next(itt)
+            gidx = int(line.split()[-1])
+            next(itt) # skip Coordinates line
+            atoms = []
+            xyz = np.empty([na, 3], np.float64)
+            for ia in range(na):
+                line = next(itt)
+                l = line.split()
+                atoms.append(l[1])
+                xyz[ia] = l[2:5]
+            return Geometry(xyz, atoms)
+
+        itt = iter(self)
+        G = []
+        g = readG(itt)
+        while g is not None:
+            G.append(g)
+            g = readG(itt)
+
+        if all:
+            return G
+        if len(G) > 0:
+            return G[-1]
         return None
 
 add_sile('txt', txtSileORCA, gzip=True)
