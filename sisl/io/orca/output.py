@@ -18,6 +18,7 @@ class outputSileORCA(SileORCA):
 
     @sile_fh_open()
     def completed(self):
+        """ True if the full file has been read and "ORCA TERMINATED NORMALLY"" was found. """
         return self.step_to("ORCA TERMINATED NORMALLY")[0]
 
 
