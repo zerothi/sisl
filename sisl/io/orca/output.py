@@ -2,6 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
+from functools import lru_cache
 from .sile import SileORCA
 from ..sile import add_sile, sile_fh_open
 
@@ -18,11 +19,12 @@ class outputSileORCA(SileORCA):
 
     @sile_fh_open()
     def completed(self):
-        """ True if the full file has been read and "ORCA TERMINATED NORMALLY"" was found. """
+        """ True if the full file has been read and "ORCA TERMINATED NORMALLY" was found. """
         return self.step_to("ORCA TERMINATED NORMALLY")[0]
 
 
     @property
+    @lru_cache(1)
     def _natoms(self):
         f, line = self.step_to("Number of atoms")
         v = line.split()
@@ -106,7 +108,7 @@ class outputSileORCA(SileORCA):
 
         Returns
         -------
-        ndarrays or PropertyDicts : charge and spin data
+        ndarray or PropertyDicts : charge and spin data
         """
 
         f = self.step_to("MULLIKEN REDUCED ORBITAL CHARGES AND SPIN POPULATIONS", reread=False)[0]
@@ -121,14 +123,13 @@ class outputSileORCA(SileORCA):
 
         if orbital is not None:
             natoms = self._natoms
-            c = np.zeros(natoms, np.float64)
-            s = np.zeros(natoms, np.float64)
+            cs = np.zeros((natoms, 2), np.float64)
             for key in charge:
                 ia, orb = key
                 if orb == orbital:
-                    c[ia] = charge[key]
-                    s[ia] = spin[key]
-            return c, s
+                    cs[ia, 0] = charge[key]
+                    cs[ia, 1] = spin[key]
+            return cs
 
         return charge, spin
 
@@ -145,7 +146,7 @@ class outputSileORCA(SileORCA):
 
         Returns
         -------
-        ndarrays or PropertyDicts : charge and spin data
+        ndarray or PropertyDicts : charge and spin data
         """
 
         f = self.step_to("LOEWDIN REDUCED ORBITAL CHARGES AND SPIN POPULATIONS", reread=False)[0]
@@ -160,14 +161,13 @@ class outputSileORCA(SileORCA):
 
         if orbital is not None:
             natoms = self._natoms
-            c = np.zeros(natoms, np.float64)
-            s = np.zeros(natoms, np.float64)
+            cs = np.zeros((natoms, 2), np.float64)
             for key in charge:
                 ia, orb = key
                 if orb == orbital:
-                    c[ia] = charge[key]
-                    s[ia] = spin[key]
-            return c, s
+                    cs[ia, 0] = charge[key]
+                    cs[ia, 1] = spin[key]
+            return cs
 
         return charge, spin
 

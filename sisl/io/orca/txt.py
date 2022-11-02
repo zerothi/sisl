@@ -64,7 +64,7 @@ class txtSileORCA(SileORCA):
                 elif v[0] == "Embedding":
                     E["embedding"] = value
                 elif v[1] == "DFT":
-                    E["total_energy"] = value
+                    E["total"] = value
                 line = next(itt)
             return E
 
