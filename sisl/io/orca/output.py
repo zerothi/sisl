@@ -16,6 +16,24 @@ __all__ = ['outputSileORCA']
 class outputSileORCA(SileORCA):
     """ Output file from ORCA """
 
+    @property
+    def _natoms(self):
+        f, line = self.step_to("Number of atoms")
+        v = line.split()
+        return int(v[-1])
+
+
+    def _read_atomic_block(self, natoms):
+        itt = iter(self)
+        next(itt) # skip ---
+        A = np.empty((natoms, 2), np.float64)
+        for ia in range(natoms):
+            line = next(itt)
+            v = line.split()
+            A[ia] = float(v[-2]), float(v[-1])
+        return A
+
+
     @sile_fh_open()
     def read_mulliken_atomic(self):
         """ Reads the atom-resolved Mulliken charge and spin population analysis
@@ -25,22 +43,13 @@ class outputSileORCA(SileORCA):
         ndarray : atom-resolved charge and spin populations
         """
 
+        natoms = self._natoms
+
         f = self.step_to("MULLIKEN ATOMIC CHARGES AND SPIN POPULATIONS", reread=False)[0]
         if not f:
             return None
 
-        itt = iter(self)
-
-        next(itt) # ---
-        M = []
-        line = next(itt)
-        while "Sum of atomic" not in line:
-            v = line.split()
-            ia = int(v[0])
-            M.append([float(v[-2]), float(v[-1])])
-            line = next(itt)
-
-        return np.array(M)
+        return self._read_atomic_block(natoms)
 
 
     @sile_fh_open()
@@ -52,21 +61,13 @@ class outputSileORCA(SileORCA):
         ndarray : atom-resolved charge and spin populations
         """
 
+        natoms = self._natoms
+
         f = self.step_to("LOEWDIN ATOMIC CHARGES AND SPIN POPULATIONS", reread=False)[0]
         if not f:
             return None
 
-        itt = iter(self)
-
-        next(itt) # ---
-        L = []
-        v = next(itt).split()
-        while len(v) > 0:
-            ia = int(v[0])
-            L.append([float(v[-2]), float(v[-1])])
-            v = next(itt).split()
-
-        return np.array(L)
+        return self._read_atomic_block(natoms)
 
 
     def _read_orbital_block(self):
