@@ -42,8 +42,27 @@ class outputSileORCA(SileORCA):
 
         return np.array(M)
 
+
+    def _read_orbital_block(self):
+        itt = iter(self)
+        D = PropertyDict()
+        v = next(itt).split()
+        while len(v) > 0:
+            if len(v) == 8:
+                ia = int(v[0])
+                D[(ia, v[2])] = float(v[4])
+                D[(ia, v[5])] = float(v[7])
+            elif len(v) == 6:
+                D[(ia, v[0])] = float(v[2])
+                D[(ia, v[3])] = float(v[5])
+            else:
+                D[(ia, v[0])] = float(v[2])
+            v = next(itt).split()
+        return D
+
+
     @sile_fh_open()
-    def read_mulliken_orbitals(self, all=False):
+    def read_mulliken_orbitals(self):
         """ Reads the orbital-resolved Mulliken charge and spin population analysis
 
         Returns
@@ -55,38 +74,11 @@ class outputSileORCA(SileORCA):
         if not f:
             return None
 
-        itt = iter(self)
-
         f = self.step_to("CHARGE", reread=False)[0]
-        charge = PropertyDict()
-        v = next(itt).split()
-        while len(v) > 0:
-            if len(v) == 8:
-                ia = int(v[0])
-                #sa = v[1]
-                charge[(ia, v[2])] = float(v[4])
-                charge[(ia, v[5])] = float(v[7])
-            elif len(v) == 6:
-                charge[(ia, v[0])] = float(v[2])
-                charge[(ia, v[3])] = float(v[5])
-            else:
-                charge[(ia, v[0])] = float(v[2])
-            v = next(itt).split()
+        charge = self._read_orbital_block()
         
         f = self.step_to("SPIN", reread=False)[0]
-        spin = PropertyDict()
-        v = next(itt).split()
-        while len(v) > 0:
-            if len(v) == 8:
-                ia = int(v[0])
-                spin[(ia, v[2])] = float(v[4])
-                spin[(ia, v[5])] = float(v[7])
-            elif len(v) == 6:
-                spin[(ia, v[0])] = float(v[2])
-                spin[(ia, v[3])] = float(v[5])
-            else:
-                spin[(ia, v[0])] = float(v[2])
-            v = next(itt).split()
+        spin = self._read_orbital_block()
 
         return charge, spin
 
