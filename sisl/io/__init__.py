@@ -56,6 +56,7 @@ OpenMX
 ORCA
 ====
 
+   outputSileORCA - standard output file
    txtSileORCA - property txt file
 
 
