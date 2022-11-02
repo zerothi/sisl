@@ -43,6 +43,32 @@ class outputSileORCA(SileORCA):
         return np.array(M)
 
 
+    @sile_fh_open()
+    def read_loewdin_atomic(self):
+        """ Reads the atom-resolved Loewdin charge and spin population analysis
+
+        Returns
+        -------
+        ndarray : atom-resolved charge and spin populations
+        """
+
+        f = self.step_to("LOEWDIN ATOMIC CHARGES AND SPIN POPULATIONS", reread=False)[0]
+        if not f:
+            return None
+
+        itt = iter(self)
+
+        next(itt) # ---
+        L = []
+        v = next(itt).split()
+        while len(v) > 0:
+            ia = int(v[0])
+            L.append([float(v[-2]), float(v[-1])])
+            v = next(itt).split()
+
+        return np.array(L)
+
+
     def _read_orbital_block(self):
         itt = iter(self)
         D = PropertyDict()
@@ -76,10 +102,33 @@ class outputSileORCA(SileORCA):
 
         f = self.step_to("CHARGE", reread=False)[0]
         charge = self._read_orbital_block()
-        
+
         f = self.step_to("SPIN", reread=False)[0]
         spin = self._read_orbital_block()
 
         return charge, spin
+
+
+    @sile_fh_open()
+    def read_loewdin_orbitals(self):
+        """ Reads the orbital-resolved Loewdin charge and spin population analysis
+
+        Returns
+        -------
+        PropertyDicts : charge and spin dictionaries
+        """
+
+        f = self.step_to("LOEWDIN REDUCED ORBITAL CHARGES AND SPIN POPULATIONS", reread=False)[0]
+        if not f:
+            return None
+
+        f = self.step_to("CHARGE", reread=False)[0]
+        charge = self._read_orbital_block()
+
+        f = self.step_to("SPIN", reread=False)[0]
+        spin = self._read_orbital_block()
+
+        return charge, spin
+
 
 add_sile('output', outputSileORCA, gzip=True)
