@@ -103,8 +103,7 @@ class txtSileORCA(SileORCA):
                 return None
             line = next(itt)
             na = int(line.split()[-1])
-            line = next(itt)
-            gidx = int(line.split()[-1])
+            next(itt) # skip Geometry index
             next(itt) # skip Coordinates line
             atoms = []
             xyz = np.empty([na, 3], np.float64)
