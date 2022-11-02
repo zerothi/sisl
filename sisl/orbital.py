@@ -1165,7 +1165,7 @@ class HydrogenicOrbital(AtomicOrbital):
 
     """
 
-    def __init__(self, Z, n, l, m, *args, **kwargs):
+    def __init__(self, Z, n, l, m, **kwargs):
 
         self._Z = Z
 
@@ -1181,4 +1181,4 @@ class HydrogenicOrbital(AtomicOrbital):
 
     def copy(self):
         """ Create an exact copy of this object """
-        return self.__class__(self._Z, self.n, self.l, self.m, self.q0, self.tag)
+        return self.__class__(self._Z, self.n, self.l, self.m, q0=self.q0, tag=self.tag)
