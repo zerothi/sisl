@@ -16,6 +16,11 @@ __all__ = ['outputSileORCA']
 class outputSileORCA(SileORCA):
     """ Output file from ORCA """
 
+    @sile_fh_open()
+    def completed(self):
+        return self.step_to("ORCA TERMINATED NORMALLY")[0]
+
+
     @property
     def _natoms(self):
         f, line = self.step_to("Number of atoms")
@@ -94,7 +99,7 @@ class outputSileORCA(SileORCA):
 
         Parameters
         ----------
-        orbital : str or list of str, optional
+        orbital : str, optional
             if an orbital string is specified a ndarray is returned with the corresponding
             values per atom, otherwise the whole orbital block is returned as dictionary
 
