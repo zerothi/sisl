@@ -85,7 +85,7 @@ class PhysicalConstant(float):
         return super().__eq__(self, other)
 
 
-__all__ += ['q', 'c', 'h', 'hbar', 'm_e', 'm_p', 'G', 'G0']
+__all__ += ['q', 'c', 'h', 'hbar', 'm_e', 'm_p', 'G', 'G0', 'a0']
 
 
 #: Unit of charge [C], or [A s]
@@ -104,3 +104,6 @@ m_p = PhysicalConstant(1.67262189821e-27, 'kg')
 G0 = PhysicalConstant(2 * (q ** 2 / h), 'm^2/s^2')
 #: Gravitational constant [m^3/kg/s^2]
 G = PhysicalConstant(6.6740831e-11, 'm^3/kg/s^2')
+#: Bohr radius [m]
+a0 = PhysicalConstant(5.29177210903e-11, 'm')
+
