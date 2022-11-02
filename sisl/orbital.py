@@ -19,6 +19,7 @@ from . import _array as _a
 from .messages import deprecate, deprecate_method
 from .shape import Sphere
 from .utils.mathematics import cart2spher
+from sisl.constant import a0
 
 
 __all__ = ["Orbital", "SphericalOrbital", "AtomicOrbital", "HydrogenicOrbital"]
@@ -1134,15 +1135,20 @@ class AtomicOrbital(Orbital):
 
 @set_module("sisl")
 class HydrogenicOrbital(AtomicOrbital):
-    r""" A hydrogen-like atomic orbital defined by an effective atomic number Z
-    in addition to the usual quantum numbers (n, l, m).
-    The returned orbital is properly normalized.
+    r""" A hydrogen-like atomic orbital defined by an effective atomic number Z in addition to the usual quantum numbers (n, l, m).
 
-    See https://en.wikipedia.org/wiki/Hydrogen-like_atom
+    A hydrogenic atom (Hydrogen-like) is an atom with a single valence electron.
+
+    The returned orbital is properly normalized, see [1]_ for details.
+
+    References
+    ----------
+    .. [1] : https://en.wikipedia.org/wiki/Hydrogen-like_atom
+
 
     Parameters
     ----------
-    Zeff : float
+    Z : float
         effective atomic number
     n : int
         principal quantum number
@@ -1159,21 +1165,20 @@ class HydrogenicOrbital(AtomicOrbital):
 
     """
 
-    def __init__(self, Zeff, n, l, m, *args, **kwargs):
+    def __init__(self, Z, n, l, m, *args, **kwargs):
 
-        self._Zeff = Zeff
+        self._Z = Z
 
         R = kwargs.get("R", 10.)
         r = np.linspace(0, R, 1000)
-        a0 = 0.529177 # Bohr radius
-        z = 2 * Zeff / (n * a0)
+        z = 2 * Z / (n * a0("Ang"))
         pref = (z ** 3 * factorial(n - l - 1) / (2 * n * factorial(n + l))) ** 0.5
         L = eval_genlaguerre(n - l - 1, 2 * l + 1, z * r)
         Rnl = pref * np.exp(-z * r / 2) * (z * r) ** l * L
 
-        super().__init__(n, l, m, (r, Rnl), q0=kwargs.get("q0", 0.), tag=kwargs.get("tag", ""))
+        super().__init__(n, l, m, (r, Rnl), **kwargs)
 
 
     def copy(self):
         """ Create an exact copy of this object """
-        return self.__class__(self._Zeff, self.n, self.l, self.m, self.q0, self.tag)
+        return self.__class__(self._Z, self.n, self.l, self.m, self.q0, self.tag)
