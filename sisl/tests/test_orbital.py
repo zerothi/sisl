@@ -375,7 +375,7 @@ class Test_hydrogenicorbital:
         for n in range(6):
             zeff = n * 0.9
             for l in range(n):
-                orb = HydrogenicOrbital(zeff, n, l, 0)
+                orb = HydrogenicOrbital(n, l, 0, zeff)
                 Rnl = orb.radial(x)
                 I = np.trapz(x ** 2 * Rnl ** 2, x=x)
                 assert abs(I - 1) < 1e-4
@@ -385,7 +385,7 @@ class Test_hydrogenicorbital:
             zeff = n * 0.9
             for l in range(n):
                 for m in range(-l, l + 1):
-                    orb = HydrogenicOrbital(zeff, n, l, m)
+                    orb = HydrogenicOrbital(n, l, m, zeff)
                     g = orb.toGrid(0.1)
                     I = (g.grid ** 2).sum() * g.dvolume
                     assert abs(I - 1) < 1e-3

@@ -1148,24 +1148,24 @@ class HydrogenicOrbital(AtomicOrbital):
 
     Parameters
     ----------
-    Z : float
-        effective atomic number
     n : int
         principal quantum number
     l : int
         angular momentum quantum number
     m : int
         magnetic quantum number
+    Z : float
+        effective atomic number
     R : float, optional
         max range of the constructed orbital
 
     Examples
     --------
-    >>> carbon_pz = HydrogenicOrbital(3.2, 2, 1, 0)
+    >>> carbon_pz = HydrogenicOrbital(2, 1, 0, 3.2)
 
     """
 
-    def __init__(self, Z, n, l, m, **kwargs):
+    def __init__(self, n, l, m, Z, **kwargs):
 
         self._Z = Z
 
@@ -1181,4 +1181,4 @@ class HydrogenicOrbital(AtomicOrbital):
 
     def copy(self):
         """ Create an exact copy of this object """
-        return self.__class__(self._Z, self.n, self.l, self.m, q0=self.q0, tag=self.tag)
+        return self.__class__(self.n, self.l, self.m, self._Z, q0=self.q0, tag=self.tag)
