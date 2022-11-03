@@ -123,7 +123,6 @@ class outputSileORCA(SileORCA):
                 return charge, spin
 
             else:
-                natoms = self._natoms
                 cs = np.zeros((natoms, 2), np.float64)
                 for key in charge:
                     ia, orb = key
