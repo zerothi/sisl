@@ -42,39 +42,19 @@ class outputSileORCA(SileORCA):
         return A
 
 
-    @sile_fh_open()
-    def read_mulliken_atomic(self):
-        """ Reads the atom-resolved Mulliken charge and spin population analysis
-
-        Returns
-        -------
-        ndarray : atom-resolved charge and spin populations
-        """
-
+    def _read_mulliken_atomic(self):
         natoms = self._natoms
-
         f = self.step_to("MULLIKEN ATOMIC CHARGES AND SPIN POPULATIONS")[0]
         if not f:
             return None
-
         return self._read_atomic_block(natoms)
 
 
-    @sile_fh_open()
-    def read_loewdin_atomic(self):
-        """ Reads the atom-resolved Loewdin charge and spin population analysis
-
-        Returns
-        -------
-        ndarray : atom-resolved charge and spin populations
-        """
-
+    def _read_loewdin_atomic(self):
         natoms = self._natoms
-
         f = self.step_to("LOEWDIN ATOMIC CHARGES AND SPIN POPULATIONS")[0]
         if not f:
             return None
-
         return self._read_atomic_block(natoms)
 
 
@@ -96,80 +76,69 @@ class outputSileORCA(SileORCA):
         return D
 
 
-    @sile_fh_open()
-    def read_mulliken_orbitals(self, orbital=None):
-        """ Reads the orbital-resolved Mulliken charge and spin population analysis
-
-        Parameters
-        ----------
-        orbital : str, optional
-            if an orbital string is specified a ndarray is returned with the corresponding
-            values per atom, otherwise the whole orbital block is returned as dictionary
-
-        Returns
-        -------
-        ndarray or PropertyDicts : charge and spin data
-        """
-
+    def _read_mulliken_orbitals(self):
         f = self.step_to("MULLIKEN REDUCED ORBITAL CHARGES AND SPIN POPULATIONS", reread=False)[0]
         if not f:
-            return None
-
+            return None, None
         self.step_to("CHARGE", reread=False)
         charge = self._read_orbital_block()
-
         self.step_to("SPIN", reread=False)
         spin = self._read_orbital_block()
+        return charge, spin
 
-        if orbital is not None:
-            natoms = self._natoms
-            cs = np.zeros((natoms, 2), np.float64)
-            for key in charge:
-                ia, orb = key
-                if orb == orbital:
-                    cs[ia, 0] = charge[key]
-                    cs[ia, 1] = spin[key]
-            return cs
 
+    def _read_loewdin_orbitals(self):
+        f = self.step_to("LOEWDIN REDUCED ORBITAL CHARGES AND SPIN POPULATIONS", reread=False)[0]
+        if not f:
+            return None, None
+        self.step_to("CHARGE", reread=False)
+        charge = self._read_orbital_block()
+        self.step_to("SPIN", reread=False)
+        spin = self._read_orbital_block()
         return charge, spin
 
 
     @sile_fh_open()
-    def read_loewdin_orbitals(self, orbital=None):
-        """ Reads the orbital-resolved Loewdin charge and spin population analysis
+    def read_charge(self, name='mulliken', projection='orbital', orbital=None):
+        """ Reads from charge and spin population analysis
 
         Parameters
         ----------
+        name : {'mulliken', 'loewdin'}
+            name of the charge scheme to be read
+        projection : {'orbital', 'atom'}
+            whether to get orbital- or atom-resolved quantities
         orbital : str, optional
-            if an orbital string is specified a ndarray is returned with the corresponding
-            values per atom, otherwise the whole orbital block is returned as dictionary
+            allows to extract the atom-resolved orbital values matching this keyword
 
         Returns
         -------
-        ndarray or PropertyDicts : charge and spin data
+        PropertyDicts or ndarray : atom/orbital-resolved charge and spin data
         """
+        if projection.lower()[0] == 'a':
+            if name.lower()[0] == 'm':
+                return self._read_mulliken_atomic()
+            elif name.lower()[0] == 'l':
+                return self._read_loewdin_atomic()
 
-        f = self.step_to("LOEWDIN REDUCED ORBITAL CHARGES AND SPIN POPULATIONS", reread=False)[0]
-        if not f:
-            return None
+        elif projection.lower()[0] == 'o':
+            if name.lower()[0] == 'm':
+                charge, spin = self._read_mulliken_orbitals()
+            elif name.lower()[0] == 'l':
+                charge, spin = self._read_loewdin_orbitals()
 
-        self.step_to("CHARGE", reread=False)
-        charge = self._read_orbital_block()
+            if orbital is None:
+                return charge, spin
 
-        self.step_to("SPIN", reread=False)
-        spin = self._read_orbital_block()
-
-        if orbital is not None:
-            natoms = self._natoms
-            cs = np.zeros((natoms, 2), np.float64)
-            for key in charge:
-                ia, orb = key
-                if orb == orbital:
-                    cs[ia, 0] = charge[key]
-                    cs[ia, 1] = spin[key]
-            return cs
-
-        return charge, spin
+            else:
+                natoms = self._natoms
+                cs = np.zeros((natoms, 2), np.float64)
+                for key in charge:
+                    ia, orb = key
+                    if orb == orbital:
+                        cs[ia, 0] = charge[key]
+                        cs[ia, 1] = spin[key]
+                return cs
 
 
 add_sile('output', outputSileORCA, gzip=True)
