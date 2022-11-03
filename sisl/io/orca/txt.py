@@ -44,15 +44,7 @@ class txtSileORCA(SileORCA):
             while "----" not in line:
                 v = line.split()
                 value = float(v[-1])
-                v.append([]) # ensure at least four entries
-                if v[3] == "Electrons":
-                    if v[2] == "Alpha":
-                        E["elec_alpha"] = value
-                    elif v[2] == "Beta":
-                        E["elec_beta"] = value
-                    else:
-                        E["elec_total"] = value
-                elif v[0] == "Exchange":
+                if v[0] == "Exchange":
                     E["exchange"] = value
                 elif v[0] == "Correlation":
                     if v[2] == "NL":
