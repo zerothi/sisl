@@ -833,18 +833,6 @@ class AtomicOrbital(Orbital):
                 # We should be left with m specification
                 m = _m.get(s, m)
 
-                # Now we should figure out how the spherical orbital
-                # has been passed.
-                # There are two options:
-                #  1. The radial function is passed as two arrays: r, f
-                #  2. The SphericalOrbital-class is passed which already contains
-                #     the relevant information.
-                # Figure out if it is a sphericalorbital
-                if len(args) > 0:
-                    if isinstance(args[0], SphericalOrbital):
-                        self._orb = args.pop(0)
-                    else:
-                        self._orb = SphericalOrbital(l, args.pop(0), q0=self.q0)
             else:
 
                 # Arguments *have* to be
@@ -865,12 +853,18 @@ class AtomicOrbital(Orbital):
                     if isinstance(args[0], bool):
                         P = args.pop(0)
 
-                # Figure out if it is a sphericalorbital
-                if len(args) > 0:
-                    if isinstance(args[0], SphericalOrbital):
-                        self._orb = args.pop(0)
-                    else:
-                        self._orb = SphericalOrbital(l, args.pop(0), q0=self.q0)
+        # Now we should figure out how the spherical orbital
+        # has been passed.
+        # There are two options:
+        #  1. The radial function is passed as two arrays: r, f
+        #  2. The SphericalOrbital-class is passed which already contains
+        #     the relevant information.
+        # Figure out if it is a sphericalorbital
+        if len(args) > 0:
+            if isinstance(args[0], SphericalOrbital):
+                self._orb = args.pop(0)
+            else:
+                self._orb = SphericalOrbital(l, args.pop(0), q0=self.q0)
 
         if l is None:
             raise ValueError(f"{self.__class__.__name__} l is not defined")
