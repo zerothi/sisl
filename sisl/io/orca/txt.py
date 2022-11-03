@@ -52,12 +52,18 @@ class txtSileORCA(SileORCA):
                     else:
                         E["correlation"] = value
                 elif v[0] == "Exchange-Correlation":
-                    E["exchange-correlation"] = value
+                    E["xc"] = value
                 elif v[0] == "Embedding":
                     E["embedding"] = value
                 elif v[1] == "DFT":
                     E["total"] = value
                 line = next(itt)
+            f = self.step_to("$ VdW_Correction", reread=False)[0]
+            if f:
+                v = self.step_to("Van der Waals Correction:", reread=False)[1].split()
+                E["vdw"] = float(v[-1])
+                E["total_vdw"] = E["total"] + float(v[-1])
+
             return E
 
         itt = iter(self)
