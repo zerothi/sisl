@@ -9,7 +9,7 @@ from scipy import interpolate as interp
 
 from sisl.messages import SislDeprecation
 from sisl.utils.mathematics import cart2spher, spher2cart
-from sisl.orbital import Orbital, SphericalOrbital, AtomicOrbital
+from sisl.orbital import Orbital, SphericalOrbital, AtomicOrbital, HydrogenicOrbital
 from sisl.orbital import _rspher_harm_fact
 
 _max_l = len(_rspher_harm_fact) - 1
@@ -362,3 +362,39 @@ class Test_atomicorbital:
         assert o0 != l1
         assert o1 != l0
         assert o2 != l0
+
+
+@pytest.mark.orbital
+class Test_hydrogenicorbital:
+
+    def test_init(self):
+        orb = HydrogenicOrbital(2, 1, 0, 3.2)
+
+    def test_normalization(self):
+        x = np.linspace(0, 10, 1000)
+        for n in range(6):
+            zeff = n * 0.9
+            for l in range(n):
+                orb = HydrogenicOrbital(n, l, 0, zeff)
+                Rnl = orb.radial(x)
+                I = np.trapz(x ** 2 * Rnl ** 2, x=x)
+                assert abs(I - 1) < 1e-4
+
+    def test_togrid(self):
+        for n in range(3):
+            zeff = n * 0.9
+            for l in range(n):
+                for m in range(-l, l + 1):
+                    orb = HydrogenicOrbital(n, l, m, zeff)
+                    g = orb.toGrid(0.1)
+                    I = (g.grid ** 2).sum() * g.dvolume
+                    assert abs(I - 1) < 1e-3
+
+    def test_copy(self):
+        orb = HydrogenicOrbital(2, 1, 0, 3.2, tag='test', q0=2.5)
+        orb2 = orb.copy()
+        assert orb.n == orb2.n
+        assert orb.l == orb2.l
+        assert orb.m == orb2.m
+        assert orb.q0 == orb2.q0
+        assert orb.tag == orb2.tag

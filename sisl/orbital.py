@@ -10,7 +10,7 @@ from math import factorial as fact
 import numpy as np
 from numpy import cos, sin
 from numpy import take, sqrt, square
-from scipy.special import lpmv
+from scipy.special import lpmv, factorial, eval_genlaguerre
 from scipy.interpolate import UnivariateSpline
 
 from ._internal import set_module
@@ -19,9 +19,10 @@ from . import _array as _a
 from .messages import deprecate, deprecate_method
 from .shape import Sphere
 from .utils.mathematics import cart2spher
+from sisl.constant import a0
 
 
-__all__ = ["Orbital", "SphericalOrbital", "AtomicOrbital"]
+__all__ = ["Orbital", "SphericalOrbital", "AtomicOrbital", "HydrogenicOrbital"]
 
 
 # Create the factor table for the real spherical harmonics
@@ -1124,3 +1125,54 @@ class AtomicOrbital(Orbital):
             self.__init__(d["name"], q0=d["q0"], tag=d["tag"])
         else:
             self.__init__(d["name"], (d["r"], d["f"]), q0=d["q0"], tag=d["tag"])
+
+
+@set_module("sisl")
+class HydrogenicOrbital(AtomicOrbital):
+    r""" A hydrogen-like atomic orbital defined by an effective atomic number Z in addition to the usual quantum numbers (n, l, m).
+
+    A hydrogenic atom (Hydrogen-like) is an atom with a single valence electron.
+
+    The returned orbital is properly normalized, see [1]_ for details.
+
+    References
+    ----------
+    .. [1] : https://en.wikipedia.org/wiki/Hydrogen-like_atom
+
+
+    Parameters
+    ----------
+    n : int
+        principal quantum number
+    l : int
+        angular momentum quantum number
+    m : int
+        magnetic quantum number
+    Z : float
+        effective atomic number
+    R : float, optional
+        max range of the constructed orbital
+
+    Examples
+    --------
+    >>> carbon_pz = HydrogenicOrbital(2, 1, 0, 3.2)
+
+    """
+
+    def __init__(self, n, l, m, Z, **kwargs):
+
+        self._Z = Z
+
+        R = kwargs.get("R", 10.)
+        r = np.linspace(0, R, 1000)
+        z = 2 * Z / (n * a0("Ang"))
+        pref = (z ** 3 * factorial(n - l - 1) / (2 * n * factorial(n + l))) ** 0.5
+        L = eval_genlaguerre(n - l - 1, 2 * l + 1, z * r)
+        Rnl = pref * np.exp(-z * r / 2) * (z * r) ** l * L
+
+        super().__init__(n, l, m, (r, Rnl), **kwargs)
+
+
+    def copy(self):
+        """ Create an exact copy of this object """
+        return self.__class__(self.n, self.l, self.m, self._Z, q0=self.q0, tag=self.tag)
