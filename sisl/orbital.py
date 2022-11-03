@@ -1172,7 +1172,15 @@ class HydrogenicOrbital(AtomicOrbital):
 
         super().__init__(n, l, m, (r, Rnl), **kwargs)
 
-
     def copy(self):
         """ Create an exact copy of this object """
         return self.__class__(self.n, self.l, self.m, self._Z, q0=self.q0, tag=self.tag)
+
+    def __getstate__(self):
+        """ Return the state of this object """
+        return {"n": self.n, "l": self.l, "m": self.m,
+                "Z": self._Z, "R": self.R, "q0": self.q0, "tag": self.tag}
+
+    def __setstate__(self, d):
+        """ Re-create the state of this object """
+        self.__init__(d["n"], d["l"], d["m"], d["Z"], R=d["R"], q0=d["q0"], tag=d["tag"])

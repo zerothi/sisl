@@ -23,6 +23,7 @@ Simple objects
    Orbital
    SphericalOrbital
    AtomicOrbital
+   HydrogenicOrbital
    Atom
    Atoms
    Geometry

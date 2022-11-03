@@ -12,6 +12,8 @@ from sisl.utils.mathematics import cart2spher, spher2cart
 from sisl.orbital import Orbital, SphericalOrbital, AtomicOrbital, HydrogenicOrbital
 from sisl.orbital import _rspher_harm_fact
 
+pytestmark = [pytest.mark.orbital]
+
 _max_l = len(_rspher_harm_fact) - 1
 
 def r_f(n):
@@ -19,7 +21,6 @@ def r_f(n):
     return r, r
 
 
-@pytest.mark.orbital
 def test_spherical():
     rad2 = np.pi / 45
     r, theta, phi = np.ogrid[0.1:10:0.2, -np.pi:np.pi:rad2, 0:np.pi:rad2]
@@ -34,7 +35,6 @@ def test_spherical():
     assert np.allclose(phi, phi1[0:1, 0:1, :])
 
 
-@pytest.mark.orbital
 class Test_orbital:
 
     def test_init1(self):
@@ -78,7 +78,6 @@ class Test_orbital:
         assert o1 != l0
 
 
-@pytest.mark.orbital
 class Test_sphericalorbital:
 
     def test_init1(self):
@@ -266,7 +265,6 @@ class Test_sphericalorbital:
             o.toGrid(R=-1)
 
 
-@pytest.mark.orbital
 class Test_atomicorbital:
 
     def test_init1(self):
@@ -364,7 +362,6 @@ class Test_atomicorbital:
         assert o2 != l0
 
 
-@pytest.mark.orbital
 class Test_hydrogenicorbital:
 
     def test_init(self):
@@ -398,3 +395,16 @@ class Test_hydrogenicorbital:
         assert orb.m == orb2.m
         assert orb.q0 == orb2.q0
         assert orb.tag == orb2.tag
+
+    def test_pickle(self):
+        import pickle as p
+        o0 = HydrogenicOrbital(2, 1, 0, 3.2, tag='test', q0=2.5)
+        o1 = HydrogenicOrbital(2, 1, 0, 3.2)
+        p0 = p.dumps(o0)
+        p1 = p.dumps(o1)
+        l0 = p.loads(p0)
+        l1 = p.loads(p1)
+        assert o0 == l0
+        assert o1 == l1
+        assert o0 != l1
+        assert o1 != l0

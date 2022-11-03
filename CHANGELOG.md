@@ -8,6 +8,8 @@ we hit release version 1.0.0.
 ## [0.13.0] - YYYY-MM-DD
 
 ### Added
+- HydrogenicOrbital is added for simple handling of 1-valence electron
+	orbitals, #499
 - Bohr radius to constants
 - enabled ASCII siles to read from file-handles and buffers, #484
 - enabled unit specification for lengths in cube-files
