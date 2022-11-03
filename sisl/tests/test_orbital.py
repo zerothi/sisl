@@ -368,7 +368,7 @@ class Test_atomicorbital:
 class Test_hydrogenicorbital:
 
     def test_init(self):
-        orb = HydrogenicOrbital(3.2, 2, 1, 0)
+        orb = HydrogenicOrbital(2, 1, 0, 3.2)
 
     def test_normalization(self):
         x = np.linspace(0, 10, 1000)
@@ -389,3 +389,12 @@ class Test_hydrogenicorbital:
                     g = orb.toGrid(0.1)
                     I = (g.grid ** 2).sum() * g.dvolume
                     assert abs(I - 1) < 1e-3
+
+    def test_copy(self):
+        orb = HydrogenicOrbital(2, 1, 0, 3.2, tag='test', q0=2.5)
+        orb2 = orb.copy()
+        assert orb.n == orb2.n
+        assert orb.l == orb2.l
+        assert orb.m == orb2.m
+        assert orb.q0 == orb2.q0
+        assert orb.tag == orb2.tag
