@@ -58,8 +58,8 @@ class txtSileORCA(SileORCA):
                 elif v[1] == "DFT":
                     E["total"] = value
                 line = next(itt)
-            f = self.step_to("$ VdW_Correction", reread=False)[0]
-            if f:
+            line = next(itt)
+            if "$ VdW_Correction" in line:
                 v = self.step_to("Van der Waals Correction:", reread=False)[1].split()
                 E["vdw"] = float(v[-1])
                 E["total_vdw"] = E["total"] + float(v[-1])
