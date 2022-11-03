@@ -27,6 +27,8 @@ class outputSileORCA(SileORCA):
     @lru_cache(1)
     def _natoms(self):
         f, line = self.step_to("Number of atoms")
+        if not f:
+            return None
         v = line.split()
         return int(v[-1])
 
