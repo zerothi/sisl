@@ -386,6 +386,6 @@ class Test_hydrogenicorbital:
             for l in range(n):
                 for m in range(-l, l + 1):
                     orb = HydrogenicOrbital(zeff, n, l, m)
-                    g = orb.toGrid()
+                    g = orb.toGrid(0.1)
                     I = (g.grid ** 2).sum() * g.dvolume
-                    assert abs(I - 1) < 1e-4
+                    assert abs(I - 1) < 1e-3
