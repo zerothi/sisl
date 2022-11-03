@@ -17,11 +17,29 @@ __all__ = ['outputSileORCA']
 class outputSileORCA(SileORCA):
     """ Output file from ORCA """
 
+    def _setup(self, *args, **kwargs):
+        """ Ensure the class has a _completed tag """
+        super()._setup(*args, **kwargs)
+        self._completed = None
+
+    def readline(self, *args, **kwargs):
+        line = super().readline(*args, **kwargs)
+        if "ORCA TERMINATED NORMALLY" in line:
+            self._completed = True
+        return line
+
+    readline.__doc__ = SileORCA.readline.__doc__
+
     @sile_fh_open()
     def completed(self):
         """ True if the full file has been read and "ORCA TERMINATED NORMALLY" was found. """
-        return self.step_to("ORCA TERMINATED NORMALLY")[0]
-
+        if self._completed is None:
+            completed = self.step_to("ORCA TERMINATED NORMALLY")[0]
+        else:
+            completed = self._completed
+        if completed:
+            self._completed = True
+        return completed
 
     @property
     @lru_cache(1)
@@ -31,7 +49,6 @@ class outputSileORCA(SileORCA):
             return None
         v = line.split()
         return int(v[-1])
-
 
     def _read_atomic_block(self, natoms):
         itt = iter(self)
@@ -43,7 +60,6 @@ class outputSileORCA(SileORCA):
             A[ia] = float(v[-2]), float(v[-1])
         return A
 
-
     def _read_mulliken_atomic(self):
         natoms = self._natoms
         f = self.step_to("MULLIKEN ATOMIC CHARGES AND SPIN POPULATIONS")[0]
@@ -51,14 +67,12 @@ class outputSileORCA(SileORCA):
             return None
         return self._read_atomic_block(natoms)
 
-
     def _read_loewdin_atomic(self):
         natoms = self._natoms
         f = self.step_to("LOEWDIN ATOMIC CHARGES AND SPIN POPULATIONS")[0]
         if not f:
             return None
         return self._read_atomic_block(natoms)
-
 
     def _read_orbital_block(self):
         itt = iter(self)
@@ -77,7 +91,6 @@ class outputSileORCA(SileORCA):
             v = next(itt).split()
         return D
 
-
     def _read_mulliken_orbitals(self):
         f = self.step_to("MULLIKEN REDUCED ORBITAL CHARGES AND SPIN POPULATIONS", reread=False)[0]
         if not f:
@@ -88,7 +101,6 @@ class outputSileORCA(SileORCA):
         spin = self._read_orbital_block()
         return charge, spin
 
-
     def _read_loewdin_orbitals(self):
         f = self.step_to("LOEWDIN REDUCED ORBITAL CHARGES AND SPIN POPULATIONS", reread=False)[0]
         if not f:
@@ -98,7 +110,6 @@ class outputSileORCA(SileORCA):
         self.step_to("SPIN", reread=False)
         spin = self._read_orbital_block()
         return charge, spin
-
 
     @sile_fh_open()
     def read_charge(self, name='mulliken', projection='orbital', orbital=None):
