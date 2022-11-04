@@ -76,7 +76,7 @@ class outputSileORCA(SileORCA):
             A[ia] = float(v[-2]), float(v[-1])
         return A
 
-    def _read_orbital_block(self):
+    def _read_reduced_orbital_block(self):
         itt = iter(self)
         D = PropertyDict()
         v = next(itt).split()
@@ -94,7 +94,7 @@ class outputSileORCA(SileORCA):
         return D
 
     @sile_fh_open()
-    def read_charge(self, name='mulliken', projection='orbital', orbital=None):
+    def read_charge(self, name='mulliken', projection='orbital', orbital=None, reduced=True):
         """ Reads from charge and spin population analysis
 
         Parameters
@@ -105,6 +105,8 @@ class outputSileORCA(SileORCA):
             whether to get orbital- or atom-resolved quantities
         orbital : str, optional
             allows to extract the atom-resolved orbital values matching this keyword
+        reduced : bool, optional
+            whether to search for full or reduced orbital projections
 
         Returns
         -------
@@ -112,39 +114,78 @@ class outputSileORCA(SileORCA):
         """
 
         if projection.lower() == 'atom':
+
             if name.lower() == 'mulliken':
                 f = self.step_to("MULLIKEN ATOMIC CHARGES AND SPIN POPULATIONS")[0]
             elif name.lower() in ['loewdin', 'lowdin', 'löwdin']:
                 f = self.step_to("LOEWDIN ATOMIC CHARGES AND SPIN POPULATIONS")[0]
             if not f:
                 return None
+
             return self._read_atomic_block()
 
-        elif projection.lower() == 'orbital':
+        elif projection.lower() == 'orbital' and reduced:
+
+            # Reduced basis
             if name.lower() == 'mulliken':
-                f = self.step_to("MULLIKEN REDUCED ORBITAL CHARGES AND SPIN POPULATIONS", reread=False)[0]
+                f = self.step_to("MULLIKEN REDUCED ORBITAL CHARGES AND SPIN POPULATIONS")[0]
             elif name.lower() in ['loewdin', 'lowdin', 'löwdin']:
-                f = self.step_to("LOEWDIN REDUCED ORBITAL CHARGES AND SPIN POPULATIONS", reread=False)[0]
+                f = self.step_to("LOEWDIN REDUCED ORBITAL CHARGES AND SPIN POPULATIONS")[0]
             if not f:
                 return None
 
             self.step_to("CHARGE", reread=False)
-            charge = self._read_orbital_block()
+            charge = self._read_reduced_orbital_block()
 
             self.step_to("SPIN", reread=False)
-            spin = self._read_orbital_block()
+            spin = self._read_reduced_orbital_block()
 
             if orbital is None:
                 return charge, spin
 
             else:
-                cs = np.zeros((self.na, 2), np.float64)
+                # atom-resolved (charge, spin) from dictionary
+                csa = np.zeros((self.na, 2), np.float64)
                 for key in charge:
                     ia, orb = key
                     if orb == orbital:
-                        cs[ia, 0] = charge[key]
-                        cs[ia, 1] = spin[key]
-                return cs
+                        csa[ia, 0] = charge[key]
+                        csa[ia, 1] = spin[key]
+                return csa
+
+        elif projection.lower() == 'orbital' and not reduced:
+
+            # Full basis
+            itt = iter(self)
+            if name.lower() == 'mulliken':
+                f = self.step_to("MULLIKEN ORBITAL CHARGES AND SPIN POPULAITONS")[0]
+                next(itt) # skip one more line in this case
+            elif name.lower() in ['loewdin', 'lowdin', 'löwdin']:
+                f = self.step_to("LOEWDIN ORBITAL CHARGES AND SPIN POPULATIONS")[0]
+            if not f:
+                return None
+
+            next(itt) # skip ---
+            cso = np.empty((self.no, 2), np.float64) # orbital-resolved (charge, spin)
+            csa = np.zeros((self.na, 2), np.float64) # atom-resolved (charge, spin)
+            for io in range(self.no):
+                v = next(itt).split() # io, ia+element, orb, chg, spin
+                # split atom number and element from v[1]
+                ia, element = '', ''
+                for s in v[1]:
+                    if s.isdigit():
+                        ia += s
+                    else:
+                        element += s
+                ia = int(ia)
+                cso[io] = v[3:5]
+                if orbital == v[2]:
+                    csa[ia] += cso[io]
+
+            if orbital is None:
+                return cso
+            else:
+                return csa
 
 
 add_sile('output', outputSileORCA, gzip=True)
