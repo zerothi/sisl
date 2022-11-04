@@ -111,19 +111,19 @@ class outputSileORCA(SileORCA):
         PropertyDicts or ndarray : atom/orbital-resolved charge and spin data
         """
 
-        if projection.lower()[0] == 'a':
-            if name.lower()[0] == 'm':
+        if projection.lower() == 'atom':
+            if name.lower() == 'mulliken':
                 f = self.step_to("MULLIKEN ATOMIC CHARGES AND SPIN POPULATIONS")[0]
-            elif name.lower()[0] == 'l':
+            elif name.lower() in ['loewdin', 'lowdin', 'löwdin']:
                 f = self.step_to("LOEWDIN ATOMIC CHARGES AND SPIN POPULATIONS")[0]
             if not f:
                 return None
             return self._read_atomic_block()
 
-        elif projection.lower()[0] == 'o':
-            if name.lower()[0] == 'm':
+        elif projection.lower() == 'orbital':
+            if name.lower() == 'mulliken':
                 f = self.step_to("MULLIKEN REDUCED ORBITAL CHARGES AND SPIN POPULATIONS", reread=False)[0]
-            elif name.lower()[0] == 'l':
+            elif name.lower() in ['loewdin', 'lowdin', 'löwdin']:
                 f = self.step_to("LOEWDIN REDUCED ORBITAL CHARGES AND SPIN POPULATIONS", reread=False)[0]
             if not f:
                 return None
