@@ -2,7 +2,6 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
-from functools import lru_cache
 from .sile import SileORCA
 from ..sile import add_sile, sile_fh_open
 
@@ -18,14 +17,22 @@ class outputSileORCA(SileORCA):
     """ Output file from ORCA """
 
     def _setup(self, *args, **kwargs):
-        """ Ensure the class has a _completed tag """
+        """ Ensure the class has essential tags """
         super()._setup(*args, **kwargs)
         self._completed = None
+        self._na = None
+        self._no = None
 
     def readline(self, *args, **kwargs):
         line = super().readline(*args, **kwargs)
-        if "ORCA TERMINATED NORMALLY" in line:
+        if self._completed is None and "ORCA TERMINATED NORMALLY" in line:
             self._completed = True
+        elif self._na is None and "Number of atoms" in line:
+            v = line.split()
+            self._na = int(v[-1])
+        elif self._no is None and "Number of basis functions" in line:
+            v = line.split()
+            self._no = int(v[-1])
         return line
 
     readline.__doc__ = SileORCA.readline.__doc__
@@ -42,19 +49,28 @@ class outputSileORCA(SileORCA):
         return completed
 
     @property
-    @lru_cache(1)
-    def _natoms(self):
-        f, line = self.step_to("Number of atoms")
-        if not f:
-            return None
-        v = line.split()
-        return int(v[-1])
+    @sile_fh_open()
+    def na(self):
+        """ Number of atoms """
+        if self._na is None:
+            v = self.step_to("Number of atoms")[1].split()
+            self._na = int(v[-1])
+        return self._na
 
-    def _read_atomic_block(self, natoms):
+    @property
+    @sile_fh_open()
+    def no(self):
+        """ Number of orbitals (basis functions) """
+        if self._no is None:
+            v = self.step_to("Number of basis functions")[1].split()
+            self._no = int(v[-1])
+        return self._no
+
+    def _read_atomic_block(self):
         itt = iter(self)
         next(itt) # skip ---
-        A = np.empty((natoms, 2), np.float64)
-        for ia in range(natoms):
+        A = np.empty((self.na, 2), np.float64)
+        for ia in range(self.na):
             line = next(itt)
             v = line.split()
             A[ia] = float(v[-2]), float(v[-1])
@@ -94,7 +110,6 @@ class outputSileORCA(SileORCA):
         -------
         PropertyDicts or ndarray : atom/orbital-resolved charge and spin data
         """
-        natoms = self._natoms
 
         if projection.lower()[0] == 'a':
             if name.lower()[0] == 'm':
@@ -103,7 +118,7 @@ class outputSileORCA(SileORCA):
                 f = self.step_to("LOEWDIN ATOMIC CHARGES AND SPIN POPULATIONS")[0]
             if not f:
                 return None
-            return self._read_atomic_block(natoms)
+            return self._read_atomic_block()
 
         elif projection.lower()[0] == 'o':
             if name.lower()[0] == 'm':
@@ -123,7 +138,7 @@ class outputSileORCA(SileORCA):
                 return charge, spin
 
             else:
-                cs = np.zeros((natoms, 2), np.float64)
+                cs = np.zeros((self.na, 2), np.float64)
                 for key in charge:
                     ia, orb = key
                     if orb == orbital:
