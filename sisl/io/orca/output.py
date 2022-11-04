@@ -66,23 +66,6 @@ class outputSileORCA(SileORCA):
             self._no = int(v[-1])
         return self._no
 
-    def _read_reduced_orbital_block(self):
-        itt = iter(self)
-        D = PropertyDict()
-        v = next(itt).split()
-        while len(v) > 0:
-            if len(v) == 8:
-                ia = int(v[0])
-                D[(ia, v[2])] = float(v[4])
-                D[(ia, v[5])] = float(v[7])
-            elif len(v) == 6:
-                D[(ia, v[0])] = float(v[2])
-                D[(ia, v[3])] = float(v[5])
-            else:
-                D[(ia, v[0])] = float(v[2])
-            v = next(itt).split()
-        return D
-
     @sile_fh_open()
     def read_charge(self, name='mulliken', projection='orbital', orbital=None,
                     reduced=True, all=False):
@@ -117,7 +100,7 @@ class outputSileORCA(SileORCA):
                 f = self.step_to(step_to, reread=False)[0]
                 if not f:
                     return None
-                print(next(itt)) # skip ---
+                next(itt) # skip ---
                 A = np.empty((self.na, 2), np.float64)
                 for ia in range(self.na):
                     line = next(itt)
@@ -133,14 +116,30 @@ class outputSileORCA(SileORCA):
             elif name.lower() in ['loewdin', 'lowdin', 'löwdin']:
                 step_to = "LOEWDIN REDUCED ORBITAL CHARGES AND SPIN POPULATIONS"
 
+            def read_reduced_orbital_block(itt):
+                D = PropertyDict()
+                v = next(itt).split()
+                while len(v) > 0:
+                    if len(v) == 8:
+                        ia = int(v[0])
+                        D[(ia, v[2])] = float(v[4])
+                        D[(ia, v[5])] = float(v[7])
+                    elif len(v) == 6:
+                        D[(ia, v[0])] = float(v[2])
+                        D[(ia, v[3])] = float(v[5])
+                    else:
+                        D[(ia, v[0])] = float(v[2])
+                    v = next(itt).split()
+                return D
+
             def read_block(itt, step_to):
                 f = self.step_to(step_to, reread=False)[0]
                 if not f:
                     return None
                 self.step_to("CHARGE", reread=False)
-                charge = self._read_reduced_orbital_block()
+                charge = read_reduced_orbital_block(itt)
                 self.step_to("SPIN", reread=False)
-                spin = self._read_reduced_orbital_block()
+                spin = read_reduced_orbital_block(itt)
                 if orbital is None:
                     return charge, spin
                 else:
