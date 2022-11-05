@@ -14,7 +14,7 @@ __all__ = ['txtSileORCA']
 
 @set_module("sisl.io.orca")
 class txtSileORCA(SileORCA):
-    """ Output property txt file from ORCA """
+    """ Output from the ORCA property.txt file """
 
     def _setup(self, *args, **kwargs):
         """ Ensure the class has essential tags """
@@ -52,8 +52,7 @@ class txtSileORCA(SileORCA):
 
     @sile_fh_open()
     def read_energy(self, all=False):
-        """ Reads the energy specification from ORCA property txt file and returns 
-        energy dictionary in units of eV (and related info from the block)
+        """ Reads the energy specification (in eV) from ORCA property.txt file.
 
         Parameters
         ----------
@@ -62,7 +61,7 @@ class txtSileORCA(SileORCA):
 
         Returns
         -------
-        PropertyDict : all data from the "DFT_Energy" segment of ORCA property output
+        PropertyDict : all data from the "DFT_Energy" segment
         """
 
         def readE(itt):
@@ -115,7 +114,7 @@ class txtSileORCA(SileORCA):
 
     @sile_fh_open()
     def read_geometry(self, all=False):
-        """ Reads the geometry from ORCA property txt file
+        """ Reads the geometry from ORCA property.txt file
 
         Parameters
         ----------
