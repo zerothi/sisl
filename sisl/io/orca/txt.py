@@ -64,9 +64,9 @@ class txtSileORCA(SileORCA):
         PropertyDict : all data from the "DFT_Energy" segment
         """
 
-        def readE(itt):
+        def readE(itt, reread=True):
             # read the DFT_Energy block
-            f = self.step_to("$ DFT_Energy", reread=False)[0]
+            f = self.step_to("$ DFT_Energy", reread=reread)[0]
             if not f:
                 return None
             next(itt) # description
@@ -93,7 +93,7 @@ class txtSileORCA(SileORCA):
                 line = next(itt)
             line = next(itt)
             if "$ VdW_Correction" in line:
-                v = self.step_to("Van der Waals Correction:", reread=False)[1].split()
+                v = self.step_to("Van der Waals Correction:", reread=reread)[1].split()
                 E["vdw"] = float(v[-1])
                 E["total_vdw"] = E["total"] + float(v[-1])
 
@@ -104,7 +104,7 @@ class txtSileORCA(SileORCA):
         e = readE(itt)
         while e is not None:
             E.append(e)
-            e = readE(itt)
+            e = readE(itt, reread=False)
 
         if all:
             return E
@@ -127,9 +127,9 @@ class txtSileORCA(SileORCA):
             if all is False only one geometry will be returned (or None). Otherwise
             a list of geometries corresponding to each step.
         """
-        def readG(itt):
+        def readG(itt, reread=True):
             # Read the Geometry block
-            f = self.step_to("!GEOMETRY!", reread=False)[0]
+            f = self.step_to("!GEOMETRY!", reread=reread)[0]
             if not f:
                 return None
             line = next(itt)
@@ -150,7 +150,7 @@ class txtSileORCA(SileORCA):
         g = readG(itt)
         while g is not None:
             G.append(g)
-            g = readG(itt)
+            g = readG(itt, reread=False)
 
         if all:
             return G

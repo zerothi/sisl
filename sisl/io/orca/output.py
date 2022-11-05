@@ -96,8 +96,8 @@ class outputSileORCA(SileORCA):
             elif name.lower() in ['loewdin', 'lowdin', 'löwdin']:
                 step_to = "LOEWDIN ATOMIC CHARGES AND SPIN POPULATIONS"
 
-            def read_block(itt, step_to):
-                f = self.step_to(step_to, reread=False)[0]
+            def read_block(itt, step_to, reread=True):
+                f = self.step_to(step_to, reread=reread)[0]
                 if not f:
                     return None
                 next(itt) # skip ---
@@ -132,13 +132,13 @@ class outputSileORCA(SileORCA):
                     v = next(itt).split()
                 return D
 
-            def read_block(itt, step_to):
-                f = self.step_to(step_to, reread=False)[0]
+            def read_block(itt, step_to, reread=True):
+                f = self.step_to(step_to, reread=reread)[0]
                 if not f:
                     return None
-                self.step_to("CHARGE", reread=False)
+                self.step_to("CHARGE", reread=reread)
                 charge = read_reduced_orbital_block(itt)
-                self.step_to("SPIN", reread=False)
+                self.step_to("SPIN", reread=reread)
                 spin = read_reduced_orbital_block(itt)
                 if orbital is None:
                     return charge, spin
@@ -160,8 +160,8 @@ class outputSileORCA(SileORCA):
             elif name.lower() in ['loewdin', 'lowdin', 'löwdin']:
                 step_to = "LOEWDIN ORBITAL CHARGES AND SPIN POPULATIONS"
 
-            def read_block(itt, step_to):
-                f = self.step_to(step_to, reread=False)[0]
+            def read_block(itt, step_to, reread=True):
+                f = self.step_to(step_to, reread=reread)[0]
                 if not f:
                     return None
                 next(itt) # skip ---
@@ -192,7 +192,7 @@ class outputSileORCA(SileORCA):
         block = read_block(itt, step_to)
         while block is not None:
             blocks.append(block)
-            block = read_block(itt, step_to)
+            block = read_block(itt, step_to, reread=False)
 
         if all:
             return blocks
