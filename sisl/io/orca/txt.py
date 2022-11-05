@@ -16,6 +16,40 @@ __all__ = ['txtSileORCA']
 class txtSileORCA(SileORCA):
     """ Output property txt file from ORCA """
 
+    def _setup(self, *args, **kwargs):
+        """ Ensure the class has essential tags """
+        super()._setup(*args, **kwargs)
+        self._na = None
+        self._no = None
+
+    def readline(self, *args, **kwargs):
+        line = super().readline(*args, **kwargs)
+        if self._na is None and "Number of atoms:"[1:] in line:
+            v = line.split()
+            self._na = int(v[-1])
+        elif self._no is None and "Number of basis functions:"[1:] in line:
+            v = line.split()
+            self._no = int(v[-1])
+        return line
+
+    @property
+    @sile_fh_open()
+    def na(self):
+        """ Number of atoms """
+        if self._na is None:
+            v = self.step_to("Number of atoms"[1:])[1].split()
+            self._na = int(v[-1])
+        return self._na
+
+    @property
+    @sile_fh_open()
+    def no(self):
+        """ Number of orbitals (basis functions) """
+        if self._no is None:
+            v = self.step_to("Number of basis functions"[1:])[1].split()
+            self._no = int(v[-1])
+        return self._no
+
     @sile_fh_open()
     def read_energy(self, all=False):
         """ Reads the energy specification from ORCA property txt file and returns 
