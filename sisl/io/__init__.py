@@ -57,7 +57,7 @@ ORCA
 ====
 
    outputSileORCA - standard output file
-   txtSileORCA - property txt file
+   txtSileORCA - property.txt file
 
 
 ScaleUp
