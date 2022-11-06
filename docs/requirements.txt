@@ -19,5 +19,6 @@ plotly
 sphinx-gallery
 sphinx-rtd-theme
 tqdm
-ipywidgets
+ipywidgets==7.7.1 # Plotly is incompatible with ipywidgets 8.x
+jupyterlab-widgets==1.1.1
 kaleido
