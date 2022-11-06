@@ -74,7 +74,13 @@ class outputSileORCA(SileORCA):
 
     @sile_fh_open()
     def read_electrons(self, all=False):
-        """ Number of electrons (alpha, beta) """
+        """ Read number of electrons (alpha, beta)
+
+        Parameters
+        ----------
+        all : bool, optional
+            return electron numbers from all steps (instead of last)
+        """
 
         def readE(itt, reread=True):
             f = self.step_to("N(Alpha)", reread=reread)
