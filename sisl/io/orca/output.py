@@ -136,9 +136,9 @@ class outputSileORCA(SileORCA):
                 f = self.step_to(step_to, reread=reread)[0]
                 if not f:
                     return None
-                self.step_to("CHARGE", reread=reread)
+                self.step_to("CHARGE", reread=False)
                 charge = read_reduced_orbital_block(itt)
-                self.step_to("SPIN", reread=reread)
+                self.step_to("SPIN", reread=False)
                 spin = read_reduced_orbital_block(itt)
                 if orbital is None:
                     return charge, spin
