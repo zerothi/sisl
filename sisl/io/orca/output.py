@@ -89,11 +89,24 @@ class outputSileORCA(SileORCA):
         PropertyDicts or ndarray : atom/orbital-resolved charge and spin data
         """
 
-        if projection.lower() == 'atom':
+        if name.lower() in ['mulliken', 'm']:
+            name = 'mulliken'
+        elif name.lower() in ['loewdin', 'lowdin', 'löwdin', 'l']:
+            name = 'loewdin'
+        else:
+            raise NotImplementedError(f"name={name} is not implemented")
 
-            if name.lower() == 'mulliken':
+        if projection.lower() in ['atom', 'atoms', 'a']:
+            projection = 'atom'
+        elif projection.lower() in ['orbital', 'orbitals', 'orb', 'o']:
+            projection = 'orbital'
+        else:
+            raise ValueError(f"Projection must be atom or orbital")
+
+        if projection == 'atom':
+            if name == 'mulliken':
                 step_to = "MULLIKEN ATOMIC CHARGES AND SPIN POPULATIONS"
-            elif name.lower() in ['loewdin', 'lowdin', 'löwdin']:
+            elif name == 'loewdin':
                 step_to = "LOEWDIN ATOMIC CHARGES AND SPIN POPULATIONS"
 
             def read_block(itt, step_to, reread=True):
@@ -108,12 +121,10 @@ class outputSileORCA(SileORCA):
                     A[ia] = float(v[-2]), float(v[-1])
                 return A
 
-        elif projection.lower() == 'orbital' and reduced:
-
-            # Reduced basis
-            if name.lower() == 'mulliken':
+        elif projection == 'orbital' and reduced:
+            if name == 'mulliken':
                 step_to = "MULLIKEN REDUCED ORBITAL CHARGES AND SPIN POPULATIONS"
-            elif name.lower() in ['loewdin', 'lowdin', 'löwdin']:
+            elif name == 'loewdin':
                 step_to = "LOEWDIN REDUCED ORBITAL CHARGES AND SPIN POPULATIONS"
 
             def read_reduced_orbital_block(itt):
@@ -152,12 +163,10 @@ class outputSileORCA(SileORCA):
                             csa[ia, 1] = spin[key]
                     return csa
 
-        elif projection.lower() == 'orbital' and not reduced:
-
-            # Full basis
-            if name.lower() == 'mulliken':
+        elif projection == 'orbital' and not reduced:
+            if name == 'mulliken':
                 step_to = "MULLIKEN ORBITAL CHARGES AND SPIN POPULAITONS"
-            elif name.lower() in ['loewdin', 'lowdin', 'löwdin']:
+            elif name == 'loewdin':
                 step_to = "LOEWDIN ORBITAL CHARGES AND SPIN POPULATIONS"
 
             def read_block(itt, step_to, reread=True):
