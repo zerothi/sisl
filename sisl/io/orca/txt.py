@@ -37,8 +37,11 @@ class txtSileORCA(SileORCA):
     def na(self):
         """ Number of atoms """
         if self._na is None:
-            v = self.step_to("Number of atoms"[1:])[1].split()
-            self._na = int(v[-1])
+            f = self.step_to("Number of atoms"[1:])
+            if f[0]:
+                self._na = int(f[1].split()[-1])
+            else:
+                return None
         return self._na
 
     @property
@@ -46,8 +49,11 @@ class txtSileORCA(SileORCA):
     def no(self):
         """ Number of orbitals (basis functions) """
         if self._no is None:
-            v = self.step_to("Number of basis functions"[1:])[1].split()
-            self._no = int(v[-1])
+            f = self.step_to("Number of basis functions"[1:])
+            if f[0]:
+                self._no = int(f[1].split()[-1])
+            else:
+                return None
         return self._no
 
     @sile_fh_open()
