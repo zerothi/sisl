@@ -19,6 +19,16 @@ def test_tags(sisl_files):
     assert out.na == 2
     assert out.no == None
 
+def test_read_electrons(sisl_files):
+    f = sisl_files(_dir, 'molecule_property.txt')
+    out = txtSileORCA(f)
+    N = out.read_electrons(all=True)
+    assert N[0, 0] == 7.9999985377
+    assert N[0, 1] == 6.9999989872
+    N = out.read_electrons(all=False)
+    assert N[0] == 7.9999985377
+    assert N[1] == 6.9999989872
+
 def test_read_energy(sisl_files):
     f = sisl_files(_dir, 'molecule_property.txt')
     out = txtSileORCA(f)

@@ -57,6 +57,32 @@ class txtSileORCA(SileORCA):
         return self._no
 
     @sile_fh_open()
+    def read_electrons(self, all=False):
+        """ Number of electrons (alpha, beta) """
+
+        def readE(itt, reread=True):
+            f = self.step_to("Number of Alpha Electrons", reread=reread)
+            if f[0]:
+                alpha = float(f[1].split()[-1])
+                beta = float(next(itt).split()[-1])
+            else:
+                return None
+            return alpha, beta
+
+        itt = iter(self)
+        E = []
+        e = readE(itt)
+        while e is not None:
+            E.append(e)
+            e = readE(itt, reread=False)
+
+        if all:
+            return np.array(E)
+        if len(E) > 0:
+            return np.array(E[-1])
+        return None
+
+    @sile_fh_open()
     def read_energy(self, all=False):
         """ Reads the energy specification (in eV) from ORCA property.txt file.
 

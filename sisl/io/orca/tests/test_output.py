@@ -20,6 +20,16 @@ def test_tags(sisl_files):
     assert out.na == 2
     assert out.no == 62
 
+def test_read_electrons(sisl_files):
+    f = sisl_files(_dir, 'molecule.output')
+    out = outputSileORCA(f)
+    N = out.read_electrons(all=True)
+    assert N[0, 0] == 7.999998537730
+    assert N[0, 1] == 6.999998987205
+    N = out.read_electrons(all=False)
+    assert N[0] == 7.999998537734
+    assert N[1] == 6.999998987209
+
 def test_charge_name(sisl_files):
     f = sisl_files(_dir, 'molecule.output')
     out = outputSileORCA(f)
