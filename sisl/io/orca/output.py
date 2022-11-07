@@ -250,6 +250,8 @@ class outputSileORCA(SileORCA):
                     ia = int(ia)
                     if spin_block and spin:
                         Do[io] = float(v[4])
+                    elif not spin_block and spin:
+                        return None
                     else:
                         Do[io] = float(v[3])
                     if orbital == v[2]:
