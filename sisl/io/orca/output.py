@@ -288,7 +288,7 @@ class outputSileORCA(SileORCA):
         PropertyDict : all data from the "TOTAL SCF ENERGY" segment
         """
 
-        Hartree2eV = 27.211386245988
+        Hartree2eV = 27.2113834
 
         def readE(itt, vdw, reread=True):
             if convert:

@@ -103,7 +103,7 @@ class txtSileORCA(SileORCA):
         PropertyDict : all data from the "DFT_Energy" segment
         """
 
-        Hartree2eV = 27.211386245988
+        Hartree2eV = 27.2113834
 
         def readE(itt, reread=True):
             # read the DFT_Energy block
