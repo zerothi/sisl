@@ -16,7 +16,6 @@ from scipy.interpolate import UnivariateSpline
 from ._internal import set_module
 from . import _plot as plt
 from . import _array as _a
-from .messages import deprecate, deprecate_method
 from .shape import Sphere
 from .utils.mathematics import cart2spher
 from sisl.constant import a0
@@ -775,7 +774,7 @@ class AtomicOrbital(Orbital):
         l = kwargs.get("l", None)
         m = kwargs.get("m", None)
         if "Z" in kwargs:
-            deprecate(f"{self.__class__.__name__}(Z=) is deprecated, please use (zeta=) instead")
+            raise NameError(f"{self.__class__.__name__}(Z=) is removed, please use (zeta=) instead")
         zeta = kwargs.get("zeta", kwargs.get("Z", 1))
         P = kwargs.get("P", False)
 
@@ -928,12 +927,6 @@ class AtomicOrbital(Orbital):
 
     @property
     def zeta(self):
-        r""" :math:`\zeta` shell """
-        return self._zeta
-
-    @property
-    @deprecate_method("AtomicOrbital.Z is deprecated, please use .zeta instead")
-    def Z(self):
         r""" :math:`\zeta` shell """
         return self._zeta
 
