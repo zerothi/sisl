@@ -39,124 +39,135 @@ def test_charge_name(sisl_files):
 def test_charge_mulliken_atom(sisl_files):
     f = sisl_files(_dir, 'molecule.output')
     out = outputSileORCA(f)
-    A = out.read_charge(name='mulliken', projection='atom', all=True)
-    assert len(A) == 2
-    assert A[0][0, 0] == 0.029160
-    assert A[0][0, 1] == 0.687779
-    assert A[0][1, 0] == -0.029160
-    assert A[0][1, 1] == 0.312221
-    assert A[1][0, 0] == 0.029158
-    assert A[1][0, 1] == 0.687793
-    assert A[1][1, 0] == -0.029158
-    assert A[1][1, 1] == 0.312207
-    A = out.read_charge(name='mulliken', projection='atom', all=False)
-    assert A[0, 0] == 0.029158
-    assert A[0, 1] == 0.687793
-    assert A[1, 0] == -0.029158
-    assert A[1, 1] == 0.312207
+    C = out.read_charge(name='mulliken', projection='atom', all=True)
+    S = out.read_charge(name='mulliken', projection='atom', spin=True, all=True)
+    assert len(C) == 2
+    assert C[0][0] == 0.029160
+    assert S[0][0] == 0.687779
+    assert C[0][1] == -0.029160
+    assert S[0][1] == 0.312221
+    assert C[1][0] == 0.029158
+    assert S[1][0] == 0.687793
+    assert C[1][1] == -0.029158
+    assert S[1][1] == 0.312207
+    C = out.read_charge(name='mulliken', projection='atom', all=False)
+    S = out.read_charge(name='mulliken', projection='atom', spin=True, all=False)
+    assert C[0] == 0.029158
+    assert S[0] == 0.687793
+    assert C[1] == -0.029158
+    assert S[1] == 0.312207
 
 def test_lowedin_atom(sisl_files):
     f = sisl_files(_dir, 'molecule.output')
     out = outputSileORCA(f)
-    A = out.read_charge(name='loewdin', projection='atom', all=True)
-    assert len(A) == 2
-    assert A[0][0, 0] == -0.111221
-    assert A[0][0, 1] == 0.660316
-    assert A[0][1, 0] == 0.111221
-    assert A[0][1, 1] == 0.339684
-    assert A[1][0, 0] == -0.111223
-    assert A[1][0, 1] == 0.660327
-    assert A[1][1, 0] == 0.111223
-    assert A[1][1, 1] == 0.339673
-    A = out.read_charge(name='loewdin', projection='atom', all=False)
-    assert A[0, 0] == -0.111223
-    assert A[0, 1] == 0.660327
-    assert A[1, 0] == 0.111223
-    assert A[1, 1] == 0.339673
+    C = out.read_charge(name='loewdin', projection='atom', all=True)
+    S = out.read_charge(name='loewdin', projection='atom', spin=True, all=True)
+    assert len(C) == 2
+    assert C[0][0] == -0.111221
+    assert S[0][0] == 0.660316
+    assert C[0][1] == 0.111221
+    assert S[0][1] == 0.339684
+    assert C[1][0] == -0.111223
+    assert S[1][0] == 0.660327
+    assert C[1][1] == 0.111223
+    assert S[1][1] == 0.339673
+    C = out.read_charge(name='loewdin', projection='atom', all=False)
+    S = out.read_charge(name='loewdin', projection='atom', spin=True, all=False)
+    assert C[0] == -0.111223
+    assert S[0] == 0.660327
+    assert C[1] == 0.111223
+    assert S[1] == 0.339673
 
 def test_charge_mulliken_reduced(sisl_files):
     f = sisl_files(_dir, 'molecule.output')
     out = outputSileORCA(f)
-    A = out.read_charge(name='mulliken', projection='orbital', all=True)
-    assert len(A) == 2
+    C = out.read_charge(name='mulliken', projection='orbital', all=True)
+    S = out.read_charge(name='mulliken', projection='orbital', spin=True, all=True)
+    assert len(C) == 2
     # first charge block
-    assert A[0][0][(0, 's')] == 3.915850
-    assert A[0][0][(0, 'pz')] == 0.710261
-    assert A[0][0][(1, 'dz2')] == 0.004147
-    assert A[0][0][(1, 'p')] == 4.116068
+    assert C[0][(0, 's')] == 3.915850
+    assert C[0][(0, 'pz')] == 0.710261
+    assert C[0][(1, 'dz2')] == 0.004147
+    assert C[0][(1, 'p')] == 4.116068
     # first spin block
-    assert A[0][1][(0, 'dx2y2')] == 0.001163
-    assert A[0][1][(1, 'f+2')] == -0.000122
+    assert S[0][(0, 'dx2y2')] == 0.001163
+    assert S[0][(1, 'f+2')] == -0.000122
     # last charge block
-    assert A[1][0][(0, 'pz')] == 0.710263
-    assert A[1][0][(0, 'f0')] == 0.000681
-    assert A[1][0][(1, 's')] == 3.860487
+    assert C[1][(0, 'pz')] == 0.710263
+    assert C[1][(0, 'f0')] == 0.000681
+    assert C[1][(1, 's')] == 3.860487
     # last spin block
-    assert A[1][1][(0, 'p')] == 0.685743
-    assert A[1][1][(1, 'dz2')] == -0.000163
-    A = out.read_charge(name='mulliken', projection='orbital', all=False)
+    assert S[1][(0, 'p')] == 0.685743
+    assert S[1][(1, 'dz2')] == -0.000163
+    C = out.read_charge(name='mulliken', projection='orbital', all=False)
+    S = out.read_charge(name='mulliken', projection='orbital', spin=True, all=False)
     # last charge block
-    assert A[0][(0, 'pz')] == 0.710263
-    assert A[0][(0, 'f0')] == 0.000681
-    assert A[0][(1, 's')] == 3.860487
+    assert C[(0, 'pz')] == 0.710263
+    assert C[(0, 'f0')] == 0.000681
+    assert C[(1, 's')] == 3.860487
     # last spin block
-    assert A[1][(0, 'p')] == 0.685743
-    assert A[1][(1, 'dz2')] == -0.000163
-    A = out.read_charge(name='mulliken', projection='orbital', orbital='pz', all=True)
-    assert A[0][0, 0] == 0.710261
-    A = out.read_charge(name='mulliken', projection='orbital', orbital='f+2', all=True)
-    assert A[0][1, 1] == -0.000122
-    A = out.read_charge(name='mulliken', projection='orbital', orbital='p', all=False)
-    assert A[0, 1] == 0.685743
+    assert S[(0, 'p')] == 0.685743
+    assert S[(1, 'dz2')] == -0.000163
+    C = out.read_charge(name='mulliken', projection='orbital', orbital='pz', all=True)
+    assert C[0][0] == 0.710261
+    S = out.read_charge(name='mulliken', projection='orbital', orbital='f+2', spin=True, all=True)
+    assert S[0][1] == -0.000122
+    S = out.read_charge(name='mulliken', projection='orbital', orbital='p', spin=True, all=False)
+    assert S[0] == 0.685743
 
 def test_charge_loewdin_reduced(sisl_files):
     f = sisl_files(_dir, 'molecule.output')
     out = outputSileORCA(f)
-    A = out.read_charge(name='loewdin', projection='orbital', all=True)
-    assert len(A) == 2
-    assert A[0][0][(0, 's')] == 3.553405
-    assert A[0][0][(0, 'pz')] == 0.723111
-    assert A[1][0][(0, 'pz')] == 0.723113
-    assert A[1][1][(1, 'pz')] == -0.010829
-    A = out.read_charge(name='loewdin', projection='orbital', all=False)
-    assert A[0][(0, 'f-3')] == 0.017486
-    assert A[1][(1, 'pz')] == -0.010829
-    assert A[0][(0, 'pz')] == 0.723113
-    assert A[1][(1, 'pz')] == -0.010829
-    A = out.read_charge(name='loewdin', projection='orbital', orbital='s', all=True)
-    assert A[0][0, 0] == 3.553405
-    A = out.read_charge(name='loewdin', projection='orbital', orbital='f-3', all=False)
-    assert A[0, 0] == 0.017486
-    A = out.read_charge(name='loewdin', projection='orbital', orbital='pz', all=False)
-    assert A[0, 0] == 0.723113
+    C = out.read_charge(name='loewdin', projection='orbital', all=True)
+    S = out.read_charge(name='loewdin', projection='orbital', spin=True, all=True)
+    assert len(S) == 2
+    assert C[0][(0, 's')] == 3.553405
+    assert C[0][(0, 'pz')] == 0.723111
+    assert C[1][(0, 'pz')] == 0.723113
+    assert S[1][(1, 'pz')] == -0.010829
+    C = out.read_charge(name='loewdin', projection='orbital', all=False)
+    S = out.read_charge(name='loewdin', projection='orbital', spin=True, all=False)
+    assert C[(0, 'f-3')] == 0.017486
+    assert S[(1, 'pz')] == -0.010829
+    assert C[(0, 'pz')] == 0.723113
+    assert S[(1, 'pz')] == -0.010829
+    C = out.read_charge(name='loewdin', projection='orbital', orbital='s', all=True)
+    assert C[0][0] == 3.553405
+    C = out.read_charge(name='loewdin', projection='orbital', orbital='f-3', all=False)
+    assert C[0] == 0.017486
+    C = out.read_charge(name='loewdin', projection='orbital', orbital='pz', all=False)
+    assert C[0] == 0.723113
 
 def test_charge_mulliken_full(sisl_files):
     f = sisl_files(_dir, 'molecule.output')
     out = outputSileORCA(f)
-    A = out.read_charge(name='mulliken', projection='orbital', reduced=False, all=True)
-    assert len(A) == 2
-    assert A[0][0, 0] == 0.821857
-    assert A[0][0, 1] == -0.000020
-    assert A[0][32, 0] == 1.174653
-    assert A[0][32, 1] == -0.000200
-    assert A[1][8, 0] == 0.313072
-    assert A[1][8, 1] == 0.006429
-    A = out.read_charge(name='mulliken', projection='orbital', reduced=False, all=False)
-    assert A[8, 0] == 0.313072
-    assert A[8, 1] == 0.006429
+    C = out.read_charge(name='mulliken', projection='orbital', reduced=False, all=True)
+    S = out.read_charge(name='mulliken', projection='orbital', reduced=False, spin=True, all=True)
+    assert len(C) == 2
+    assert C[0][0] == 0.821857
+    assert S[0][0] == -0.000020
+    assert C[0][32] == 1.174653
+    assert S[0][32] == -0.000200
+    assert C[1][8] == 0.313072
+    assert S[1][8] == 0.006429
+    C = out.read_charge(name='mulliken', projection='orbital', reduced=False, all=False)
+    S = out.read_charge(name='mulliken', projection='orbital', reduced=False, spin=True, all=False)
+    assert C[8] == 0.313072
+    assert S[8] == 0.006429
 
 def test_charge_loewdin_full(sisl_files):
     f = sisl_files(_dir, 'molecule.output')
     out = outputSileORCA(f)
-    A = out.read_charge(name='loewdin', projection='orbital', reduced=False, all=True)
-    assert len(A) == 2
-    assert A[0][0, 0] == 0.894846
-    assert A[0][0, 1] == 0.000337
-    assert A[0][61, 0] == 0.006054
-    assert A[0][61, 1] == 0.004362
-    assert A[1][8, 0] == 0.312172
-    assert A[1][8, 1] == 0.005159
-    A = out.read_charge(name='loewdin', projection='orbital', reduced=False, all=False)
-    assert A[8, 0] == 0.312172
-    assert A[8, 1] == 0.005159
-
+    C = out.read_charge(name='loewdin', projection='orbital', reduced=False, all=True)
+    S = out.read_charge(name='loewdin', projection='orbital', reduced=False, spin=True, all=True)
+    assert len(S) == 2
+    assert C[0][0] == 0.894846
+    assert S[0][0] == 0.000337
+    assert C[0][61] == 0.006054
+    assert S[0][61] == 0.004362
+    assert C[1][8] == 0.312172
+    assert S[1][8] == 0.005159
+    C = out.read_charge(name='loewdin', projection='orbital', reduced=False, all=False)
+    S = out.read_charge(name='loewdin', projection='orbital', reduced=False, spin=True, all=False)
+    assert C[8] == 0.312172
+    assert S[8] == 0.005159

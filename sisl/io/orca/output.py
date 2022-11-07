@@ -106,8 +106,8 @@ class outputSileORCA(SileORCA):
 
     @sile_fh_open()
     def read_charge(self, name='mulliken', projection='orbital', orbital=None,
-                    reduced=True, all=False):
-        """ Reads from charge and spin population analysis
+                    reduced=True, spin=False, all=False):
+        """ Reads from charge (or spin) population analysis
 
         Parameters
         ----------
@@ -119,12 +119,14 @@ class outputSileORCA(SileORCA):
             allows to extract the atom-resolved orbital values matching this keyword
         reduced : bool, optional
             whether to search for full or reduced orbital projections
+        spin : bool, optional
+            whether to return the spin block instead of charge
         all: bool, optional
             return a list of all population analysis blocks instead of the last one
 
         Returns
         -------
-        PropertyDicts or ndarray : atom/orbital-resolved charge and spin data
+        PropertyDicts or ndarray : atom/orbital-resolved charge (or spin) data
         """
 
         if name.lower() in ['mulliken', 'm']:
@@ -143,27 +145,36 @@ class outputSileORCA(SileORCA):
 
         if projection == 'atom':
             if name == 'mulliken':
-                step_to = "MULLIKEN ATOMIC CHARGES AND SPIN POPULATIONS"
+                step_to = "MULLIKEN ATOMIC CHARGES"
             elif name == 'loewdin':
-                step_to = "LOEWDIN ATOMIC CHARGES AND SPIN POPULATIONS"
+                step_to = "LOEWDIN ATOMIC CHARGES"
 
             def read_block(itt, step_to, reread=True):
-                f = self.step_to(step_to, reread=reread)[0]
+                f, line = self.step_to(step_to, reread=reread)
                 if not f:
                     return None
                 next(itt) # skip ---
-                A = np.empty((self.na, 2), np.float64)
+                if "SPIN" in line:
+                    spin_block = True
+                else:
+                    spin_block = False
+                A = np.empty(self.na, np.float64)
                 for ia in range(self.na):
                     line = next(itt)
                     v = line.split()
-                    A[ia] = float(v[-2]), float(v[-1])
+                    if spin_block and not spin:
+                        A[ia] = float(v[-2])
+                    elif not spin_block and spin:
+                        return None
+                    else:
+                        A[ia] = float(v[-1])
                 return A
 
         elif projection == 'orbital' and reduced:
             if name == 'mulliken':
-                step_to = "MULLIKEN REDUCED ORBITAL CHARGES AND SPIN POPULATIONS"
+                step_to = "MULLIKEN REDUCED ORBITAL CHARGES"
             elif name == 'loewdin':
-                step_to = "LOEWDIN REDUCED ORBITAL CHARGES AND SPIN POPULATIONS"
+                step_to = "LOEWDIN REDUCED ORBITAL CHARGES"
 
             def read_reduced_orbital_block(itt):
                 D = PropertyDict()
@@ -182,42 +193,51 @@ class outputSileORCA(SileORCA):
                 return D
 
             def read_block(itt, step_to, reread=True):
-                f = self.step_to(step_to, reread=reread)[0]
+                f, line = self.step_to(step_to, reread=reread)
                 if not f:
                     return None
-                self.step_to("CHARGE", reread=False)
-                charge = read_reduced_orbital_block(itt)
-                self.step_to("SPIN", reread=False)
-                spin = read_reduced_orbital_block(itt)
-                if orbital is None:
-                    return charge, spin
+                if "SPIN" in line:
+                    spin_block = True
                 else:
-                    # atom-resolved (charge, spin) from dictionary
-                    csa = np.zeros((self.na, 2), np.float64)
-                    for key in charge:
+                    spin_block = False
+                if spin:
+                    self.step_to("SPIN", reread=False)
+                elif spin_block:
+                    self.step_to("CHARGE", reread=False)
+                else:
+                    next(itt) # skip ---
+                D = read_reduced_orbital_block(itt)
+                if orbital is None:
+                    return D
+                else:
+                    Da = np.zeros(self.na, np.float64)
+                    for key in D:
                         ia, orb = key
                         if orb == orbital:
-                            csa[ia, 0] = charge[key]
-                            csa[ia, 1] = spin[key]
-                    return csa
+                            Da[ia] = D[key]
+                    return Da
 
         elif projection == 'orbital' and not reduced:
             if name == 'mulliken':
-                step_to = "MULLIKEN ORBITAL CHARGES AND SPIN POPULAITONS"
+                step_to = "MULLIKEN ORBITAL CHARGES"
             elif name == 'loewdin':
-                step_to = "LOEWDIN ORBITAL CHARGES AND SPIN POPULATIONS"
+                step_to = "LOEWDIN ORBITAL CHARGES"
 
             def read_block(itt, step_to, reread=True):
-                f = self.step_to(step_to, reread=reread)[0]
+                f, line = self.step_to(step_to, reread=reread)
+                if "SPIN" in line:
+                    spin_block = True
+                else:
+                    spin_block = False
                 if not f:
                     return None
                 next(itt) # skip ---
                 if "MULLIKEN" in step_to:
                     next(itt) # skip another line
-                cso = np.empty((self.no, 2), np.float64) # orbital-resolved (charge, spin)
-                csa = np.zeros((self.na, 2), np.float64) # atom-resolved (charge, spin)
+                Do = np.empty(self.no, np.float64) # orbital-resolved
+                Da = np.zeros(self.na, np.float64) # atom-resolved
                 for io in range(self.no):
-                    v = next(itt).split() # io, ia+element, orb, chg, spin
+                    v = next(itt).split() # io, ia+element, orb, chg, (spin)
                     # split atom number and element from v[1]
                     ia, element = '', ''
                     for s in v[1]:
@@ -226,13 +246,16 @@ class outputSileORCA(SileORCA):
                         else:
                             element += s
                     ia = int(ia)
-                    cso[io] = v[3:5]
+                    if spin:
+                        Do[io] = float(v[4])
+                    else:
+                        Do[io] = float(v[3])
                     if orbital == v[2]:
-                        csa[ia] += cso[io]
+                        Da[ia] += Do[io]
                 if orbital is None:
-                    return cso
+                    return Do
                 else:
-                    return csa
+                    return Da
 
         itt = iter(self)
         blocks = []
