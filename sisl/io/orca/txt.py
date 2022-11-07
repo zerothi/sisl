@@ -137,8 +137,11 @@ class txtSileORCA(SileORCA):
             line = next(itt)
             if "$ VdW_Correction" in line:
                 v = self.step_to("Van der Waals Correction:", reread=reread)[1].split()
-                E["vdw"] = float(v[-1])
-                E["total_vdw"] = E["total"] + float(v[-1])
+                value = float(v[-1])
+                if convert:
+                    value *= Hartree2eV
+                E["vdw"] = value
+                E["total_vdw"] = E["total"] + value
 
             return E
 
