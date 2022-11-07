@@ -222,3 +222,23 @@ def test_charge_orbital_full_unpol(sisl_files):
     S = out.read_charge(name='mulliken', projection='orbital', reduced=False, spin=True)
     assert C is None
     assert S is None
+
+def test_read_energy(sisl_files):
+    f = sisl_files(_dir, 'molecule.output')
+    out = outputSileORCA(f)
+    E = out.read_energy(all=True, convert=False)
+    assert E[0].xc == -15.222438585593
+    assert E[1].xc == -15.222439217603
+    E = out.read_energy()
+    assert E.xc != -15.222439217603
+
+def test_read_energy_vdw(sisl_files):
+    f = sisl_files(_dir, 'molecule2.output')
+    out = outputSileORCA(f)
+    E = out.read_energy(all=True, convert=False)
+    assert E[0].exchange == -13.310141538373
+    assert E[1].exchange == -13.310144803077
+    assert E[1].vdw == -0.000410877
+    E = out.read_energy()
+    assert E.exchange != -13.310144803077
+    assert E.vdw != -0.000410877

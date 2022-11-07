@@ -274,5 +274,70 @@ class outputSileORCA(SileORCA):
             return blocks[-1]
         return None
 
+    @sile_fh_open()
+    def read_energy(self, all=False, convert=True):
+        """ Reads the energy specification from ORCA output file
+
+        Parameters
+        ----------
+        all: bool, optional
+            return a list of dictionaries from each step
+
+        Returns
+        -------
+        PropertyDict : all data from the "TOTAL SCF ENERGY" segment
+        """
+
+        Hartree2eV = 27.211386245988
+
+        def readE(itt, vdw, reread=True):
+            if convert:
+                sc = Hartree2eV
+            else:
+                sc = 1
+            f = self.step_to("TOTAL SCF ENERGY", reread=reread)[0]
+            if not f:
+                return None
+            next(itt) # skip ---
+            next(itt) # skip blank line
+            line = next(itt)
+            print(line)
+            E = PropertyDict()
+            while "----" not in line:
+                v = line.split()
+                if "Total Energy" in line:
+                    E["total"] = float(v[-4]) * sc
+                elif "E(X)" in line:
+                    E["exchange"] = float(v[-2]) * sc
+                elif "E(C)" in line:
+                    E["correlation"] = float(v[-2]) * sc
+                elif "E(XC)" in line:
+                    E["xc"] = float(v[-2]) * sc
+                elif "DFET-embed. en." in line:
+                    E["embedding"] = float(v[-2]) * sc
+                line = next(itt)
+            if vdw:
+                self.step_to("DFT DISPERSION CORRECTION", reread=False)[1]
+                v = self.step_to("Dispersion correction", reread=False)[1].split()
+                E["vdw"] = float(v[-1]) * sc
+            return E
+
+        vdw = self.step_to("DFT DISPERSION CORRECTION")[0]
+        # Force open/close, step_to(..., reread=True) is not necessarily doing this!
+        self.close()
+        self._open()
+        itt = iter(self)
+        E = []
+        e = readE(itt, vdw)
+        while e is not None:
+            E.append(e)
+            e = readE(itt, vdw, reread=False)
+
+        if all:
+            return E
+        if len(E) > 0:
+            return E[-1]
+        return None
+
 
 add_sile('output', outputSileORCA, gzip=True)
