@@ -738,8 +738,7 @@ class Sile(BaseSile):
             # Force close and reopen from the beginning
             self.close()
             self._open()
-        # The previously read line...
-        line = self._line
+
         if isinstance(keywords, str):
             # convert to list
             keywords = [keywords]
