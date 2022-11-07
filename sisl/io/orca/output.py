@@ -200,12 +200,14 @@ class outputSileORCA(SileORCA):
                     spin_block = True
                 else:
                     spin_block = False
-                if spin:
+                if spin_block and spin:
                     self.step_to("SPIN", reread=False)
                 elif spin_block:
                     self.step_to("CHARGE", reread=False)
-                else:
+                elif not spin:
                     next(itt) # skip ---
+                else:
+                    return None
                 D = read_reduced_orbital_block(itt)
                 if orbital is None:
                     return D
@@ -233,7 +235,7 @@ class outputSileORCA(SileORCA):
                     return None
                 next(itt) # skip ---
                 if "MULLIKEN" in step_to:
-                    next(itt) # skip another line
+                    next(itt) # skip line "The uncorrected..."
                 Do = np.empty(self.no, np.float64) # orbital-resolved
                 Da = np.zeros(self.na, np.float64) # atom-resolved
                 for io in range(self.no):
@@ -246,7 +248,7 @@ class outputSileORCA(SileORCA):
                         else:
                             element += s
                     ia = int(ia)
-                    if spin:
+                    if spin_block and spin:
                         Do[io] = float(v[4])
                     else:
                         Do[io] = float(v[3])
