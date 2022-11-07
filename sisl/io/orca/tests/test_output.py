@@ -171,3 +171,54 @@ def test_charge_loewdin_full(sisl_files):
     S = out.read_charge(name='loewdin', projection='orbital', reduced=False, spin=True, all=False)
     assert C[8] == 0.312172
     assert S[8] == 0.005159
+
+def test_charge_atom_unpol(sisl_files):
+    f = sisl_files(_dir, 'molecule2.output')
+    out = outputSileORCA(f)
+    C = out.read_charge(name='mulliken', projection='atom', all=True)
+    S = out.read_charge(name='mulliken', projection='atom', spin=True, all=True)
+    assert len(C) == 2
+    assert len(S) == 0
+    assert C[0][0] == -0.037652
+    C = out.read_charge(name='mulliken', projection='atom', all=False)
+    S = out.read_charge(name='mulliken', projection='atom', spin=True, all=False)
+    assert C[0] == -0.037652
+    assert S is None
+    C = out.read_charge(name='loewdin', projection='atom', all=False)
+    S = out.read_charge(name='loewdin', projection='atom', spin=True, all=False)
+    assert C[0] == -0.259865
+    assert S is None
+
+def test_charge_orbital_reduced_unpol(sisl_files):
+    f = sisl_files(_dir, 'molecule2.output')
+    out = outputSileORCA(f)
+    C = out.read_charge(name='mulliken', projection='orbital', all=True)
+    S = out.read_charge(name='mulliken', projection='orbital', spin=True, all=True)
+    assert len(C) == 2
+    assert len(S) == 0
+    assert C[0][(0, "py")] == 0.534313
+    assert C[1][(1, "px")] == 1.346363
+    C = out.read_charge(name='mulliken', projection='orbital', all=False)
+    S = out.read_charge(name='mulliken', projection='orbital', spin=True, all=False)
+    assert C[(0, "px")] == 0.954436
+    assert S is None
+    C = out.read_charge(name='mulliken', projection='orbital', orbital='px', all=False)
+    S = out.read_charge(name='mulliken', projection='orbital', orbital='px', spin=True, all=False)
+    assert C[0] == 0.954436
+    assert S is None
+    C = out.read_charge(name='loewdin', projection='orbital', all=False)
+    S = out.read_charge(name='loewdin', projection='orbital', spin=True, all=False)
+    assert C[(0, "d")] == 0.315910
+    assert S is None
+    C = out.read_charge(name='loewdin', projection='orbital', orbital='d', all=False)
+    S = out.read_charge(name='loewdin', projection='orbital', orbital='d', spin=True, all=False)
+    assert C[0] == 0.315910
+    assert S is None
+
+def test_charge_orbital_full_unpol(sisl_files):
+    f = sisl_files(_dir, 'molecule2.output')
+    out = outputSileORCA(f)
+    C = out.read_charge(name='mulliken', projection='orbital', reduced=False)
+    S = out.read_charge(name='mulliken', projection='orbital', reduced=False, spin=True)
+    assert C is None
+    assert S is None
