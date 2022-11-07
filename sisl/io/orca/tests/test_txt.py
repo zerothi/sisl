@@ -32,7 +32,7 @@ def test_read_electrons(sisl_files):
 def test_read_energy(sisl_files):
     f = sisl_files(_dir, 'molecule_property.txt')
     out = txtSileORCA(f)
-    E = out.read_energy(all=True)
+    E = out.read_energy(all=True, convert=False)
     assert E[0].total == -129.8161893572
     assert E[1].exchange == -14.7323176552
     assert E[1].correlation == -0.4901215624
@@ -40,18 +40,18 @@ def test_read_energy(sisl_files):
     assert E[1].xc == -15.2224392176
     assert E[1].embedding == 0.0
     assert E[1].total == -129.8161893569
-    E = out.read_energy(all=False)
+    E = out.read_energy(all=False, convert=False)
     assert E.total == -129.8161893569
 
 def test_read_energy_vdw(sisl_files):
     f = sisl_files(_dir, 'molecule2_property.txt')
     out = txtSileORCA(f)
-    E = out.read_energy(all=True)
+    E = out.read_energy(all=True, convert=False)
     assert E[0].total == -113.2343646532
     assert E[0].vdw == -0.0004108775
     assert E[1].total == -113.2343646534
     assert E[1].vdw == -0.0004108775
-    E = out.read_energy()
+    E = out.read_energy(convert=False)
     assert E.total == -113.2343646534
     assert E.vdw == -0.0004108775
 

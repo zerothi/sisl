@@ -88,18 +88,22 @@ class txtSileORCA(SileORCA):
         return None
 
     @sile_fh_open()
-    def read_energy(self, all=False):
-        """ Reads the energy specification (in eV) from ORCA property.txt file.
+    def read_energy(self, all=False, convert=True):
+        """ Reads the energy specification from ORCA property.txt file.
 
         Parameters
         ----------
         all: bool, optional
             return a list of dictionaries from each step
+        convert: bool, optional
+            convert from Hartree to eV units
 
         Returns
         -------
         PropertyDict : all data from the "DFT_Energy" segment
         """
+
+        Hartree2eV = 27.211386245988
 
         def readE(itt, reread=True):
             # read the DFT_Energy block
@@ -114,6 +118,8 @@ class txtSileORCA(SileORCA):
             while "----" not in line:
                 v = line.split()
                 value = float(v[-1])
+                if convert:
+                    value *= Hartree2eV
                 if v[0] == "Exchange":
                     E["exchange"] = value
                 elif v[0] == "Correlation":
