@@ -282,7 +282,7 @@ class outSileSiesta(SileSiesta):
         return next_geom()[1]
 
     @sile_fh_open()
-    def read_force(self, last=True, all=False, total=False, max=False):
+    def read_force(self, last=True, all=False, total=False, max=False, key="siesta"):
         """ Reads the forces from the Siesta output file
 
         Parameters
@@ -302,6 +302,10 @@ class outSileSiesta(SileSiesta):
 
             Note that this is not the same as doing `max(outSile.read_force(total=True))` since
             the forces returned in that case are averages on each axis.
+        key: {"siesta", "ts"}
+            Specifies the indicator string for the forces that are to be read. 
+            The function will look for a line containing ``f'{key}: Atomic forces'``
+            to start reading forces.
 
         Returns
         -------
@@ -326,7 +330,7 @@ class outSileSiesta(SileSiesta):
         def next_force():
 
             line = self.readline()
-            while not 'siesta: Atomic forces' in line:
+            while not f'{key}: Atomic forces' in line:
                 line = self.readline()
                 if line == '':
                     return None
