@@ -42,6 +42,8 @@ def test_read_energy(sisl_files):
     assert E[1].total == -129.8161893569
     E = out.read_energy(all=False, convert=False)
     assert E.total == -129.8161893569
+    E = out.read_energy(all=False)
+    assert E.total != -129.8161893569
 
 def test_read_energy_vdw(sisl_files):
     f = sisl_files(_dir, 'molecule2_property.txt')
@@ -54,6 +56,9 @@ def test_read_energy_vdw(sisl_files):
     E = out.read_energy(convert=False)
     assert E.total == -113.2343646534
     assert E.vdw == -0.0004108775
+    E = out.read_energy()
+    assert E.total != -113.2343646534
+    assert E.vdw != -0.0004108775
 
 def test_read_geometry(sisl_files):
     f = sisl_files(_dir, 'molecule_property.txt')
