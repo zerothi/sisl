@@ -734,6 +734,10 @@ class Sile(BaseSile):
         r""" Steps the file-handle until the keyword(s) is found in the input """
         # If keyword is a list, it just matches one of the inputs
         found = False
+        if reread:
+            # Force close and reopen from the beginning
+            self.close()
+            self._open()
         # The previously read line...
         line = self._line
         if isinstance(keywords, str):
@@ -746,21 +750,6 @@ class Sile(BaseSile):
             if l == '':
                 break
             found = self.line_has_keys(l, keys, case)
-
-        if not found and (l == '' and line > 0) and reread:
-            # We may be in the case where the user request
-            # reading the same twice...
-            # So we need to re-read the file...
-            self.close()
-            # Re-open the file...
-            self._open()
-
-            # Try and read again
-            while not found and self._line <= line:
-                l = self.readline()
-                if l == '':
-                    break
-                found = self.line_has_keys(l, keys, case)
 
         if ret_index:
             idx = -1
