@@ -100,10 +100,10 @@ class outSileVASP(SileVASP):
             "Solvation": "solvation",
         }
 
-        def readE(itt):
+        def readE(itt, reread=True):
             nonlocal name_conv
             # read the energy tables
-            f = self.step_to("Free energy of the ion-electron system", reread=False)[0]
+            f = self.step_to("Free energy of the ion-electron system", reread=reread)[0]
             if not f:
                 return None
             next(itt) # -----
@@ -131,7 +131,7 @@ class outSileVASP(SileVASP):
         e = readE(itt)
         while e is not None:
             E.append(e)
-            e = readE(itt)
+            e = readE(itt, reread=False)
         try:
             # this just puts the job_completed flag. But otherwise not used
             self.cpu_time()
