@@ -9,7 +9,7 @@ import math
 import warnings
 from numbers import Integral
 import numpy as np
-from numpy import dot
+from numpy import ndarray, dot
 
 from ._internal import set_module
 from . import _plot as plt
@@ -71,7 +71,7 @@ class SuperCell:
         self.set_nsc(nsc=nsc)
 
     @property
-    def length(self):
+    def length(self) -> ndarray:
         """ Length of each lattice vector """
         return fnorm(self.cell)
 
@@ -85,7 +85,7 @@ class SuperCell:
         return (cross3(self.cell[ax0, :], self.cell[ax1, :]) ** 2).sum() ** 0.5
 
     @property
-    def origin(self):
+    def origin(self) -> ndarray:
         """ Origin for the cell """
         return self._origin
 
@@ -128,7 +128,7 @@ class SuperCell:
         find_min_max(cmin, cmax, self.cell.sum(0))
         return Cuboid(cmax - cmin, self.center() + self.origin)
 
-    def parameters(self, rad=False):
+    def parameters(self, rad=False) -> tuple:
         r""" Cell parameters of this cell in 3 lengths and 3 angles
 
         Notes
@@ -279,7 +279,7 @@ class SuperCell:
             self._isc_off[d[0], d[1], d[2]] = i
 
     @property
-    def sc_off(self):
+    def sc_off(self) -> ndarray:
         """ Integer supercell offsets """
         return self._sc_off
 
@@ -290,7 +290,7 @@ class SuperCell:
         self._update_isc_off()
 
     @property
-    def isc_off(self):
+    def isc_off(self) -> ndarray:
         """ Internal indexed supercell ``[ia, ib, ic] == i`` """
         return self._isc_off
 
@@ -516,27 +516,34 @@ class SuperCell:
         """
         return cell_reciprocal(self.cell)
 
-    def cell_length(self, length):
+    def cell2length(self, length, axes=(0, 1, 2)) -> ndarray:
         """ Calculate cell vectors such that they each have length `length`
 
         Parameters
         ----------
         length : float or array_like
             length for cell vectors, if an array it corresponds to the individual
-            vectors and it must have length 3
+            vectors and it must have length equal to `axes`
+        axes : int or array_like, optional
+            which axes the `length` variable refers too.
 
         Returns
         -------
         numpy.ndarray
-             cell-vectors with prescribed length
+             cell-vectors with prescribed length, same order as `axes`
         """
-        length = _a.asarrayd(length)
-        if length.size == 1:
-            length = np.tile(length, 3)
-        if length.size != 3:
-            raise ValueError(self.__class__.__name__ + '.cell_length length parameter should be a single '
-                             'float, or an array of 3 values.')
-        return self.cell * (length.ravel() / self.length).reshape(3, 1)
+        if isinstance(axes, Integral):
+            # ravel
+            axes = (axes,)
+
+        length = _a.asarrayd(length).ravel()
+        if len(length) != len(axes):
+            if len(length) == 1:
+                length = np.tile(length, len(axes))
+            else:
+                raise ValueError(f"{self.__class__.__name__}.cell2length length parameter should be a single "
+                                 "float, or an array of values according to axes argument.")
+        return self.cell[axes] * (length / self.length[axes]).reshape(-1, 1)
 
     def rotate(self, angle, v, only='abc', rad=False):
         """ Rotates the supercell, in-place by the angle around the vector
@@ -631,7 +638,7 @@ class SuperCell:
         if len(sc_off) == 0:
             return _a.arrayi([[]])
 
-        elif isinstance(sc_off[0], np.ndarray):
+        elif isinstance(sc_off[0], ndarray):
             _assert(hsc[0], sc_off[:, 0])
             _assert(hsc[1], sc_off[:, 1])
             _assert(hsc[2], sc_off[:, 2])
@@ -772,7 +779,7 @@ class SuperCell:
         """
         return self.append(other, axis)
 
-    def move(self, v):
+    def translate(self, v):
         """ Appends additional space to the object """
         # check which cell vector resembles v the most,
         # use that
@@ -783,7 +790,7 @@ class SuperCell:
             p[i] = abs(np.sum(cell[i, :] * v)) / cl[i]
         cell[np.argmax(p), :] += v
         return self.copy(cell)
-    translate = move
+    move = translate
 
     def center(self, axis=None):
         """ Returns center of the `SuperCell`, possibly with respect to an axis """
