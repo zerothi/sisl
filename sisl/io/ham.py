@@ -118,7 +118,7 @@ class hamiltonianSile(Sile):
 
         # Start reading in the supercell
         while True:
-            found, l = self.step_to('matrix', reread=False)
+            found, l = self.step_to('matrix', allow_reread=False)
             if not found:
                 break
 
