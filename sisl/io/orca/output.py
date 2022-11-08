@@ -7,7 +7,7 @@ from ..sile import add_sile, sile_fh_open
 
 from sisl.utils import PropertyDict
 from sisl._internal import set_module
-from sisl import Geometry
+from sisl.unit import units
 
 __all__ = ['outputSileORCA']
 
@@ -287,12 +287,9 @@ class outputSileORCA(SileORCA):
         -------
         PropertyDict : all data from the "TOTAL SCF ENERGY" segment
         """
-
-        Hartree2eV = 27.2113834
-
         def readE(itt, vdw, reopen=False):
             if convert:
-                sc = Hartree2eV
+                sc = units('Ha', 'eV')
             else:
                 sc = 1
             f = self.step_to("TOTAL SCF ENERGY", reopen=reopen, allow_reread=False)[0]

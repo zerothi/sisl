@@ -231,7 +231,7 @@ def test_read_energy(sisl_files):
     assert E[1].xc == -15.222439217603
     E = out.read_energy()
     assert E.xc != -15.222439217603
-    assert abs(E.total + 3532.47810) < 1e-6
+    assert abs(E.total + 3532.4797529941284) < 1e-8
 
 def test_read_energy_vdw(sisl_files):
     f = sisl_files(_dir, 'molecule2.output')
@@ -243,4 +243,4 @@ def test_read_energy_vdw(sisl_files):
     E = out.read_energy()
     assert E.exchange != -13.310144803077
     assert E.vdw != -0.000410877
-    assert (E.total + 3081.26371) < 1e-6
+    assert abs(E.total + 3081.265152222452) < 1e-8

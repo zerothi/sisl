@@ -8,6 +8,7 @@ from ..sile import add_sile, sile_fh_open
 from sisl.utils import PropertyDict
 from sisl._internal import set_module
 from sisl import Geometry
+from sisl.unit import units
 
 __all__ = ['txtSileORCA']
 
@@ -102,9 +103,6 @@ class txtSileORCA(SileORCA):
         -------
         PropertyDict : all data from the "DFT_Energy" segment
         """
-
-        Hartree2eV = 27.2113834
-
         def readE(itt, reopen=False):
             # read the DFT_Energy block
             f = self.step_to("$ DFT_Energy", reopen=reopen, allow_reread=False)[0]
@@ -119,7 +117,7 @@ class txtSileORCA(SileORCA):
                 v = line.split()
                 value = float(v[-1])
                 if convert:
-                    value *= Hartree2eV
+                    value *= units('Ha', 'eV')
                 if v[0] == "Exchange":
                     E["exchange"] = value
                 elif v[0] == "Correlation":
@@ -139,7 +137,7 @@ class txtSileORCA(SileORCA):
                 v = self.step_to("Van der Waals Correction:")[1].split()
                 value = float(v[-1])
                 if convert:
-                    value *= Hartree2eV
+                    value *= units('Ha', 'eV')
                 E["vdw"] = value
                 E["total_vdw"] = E["total"] + value
 
