@@ -82,8 +82,8 @@ class outputSileORCA(SileORCA):
             return electron numbers from all steps (instead of last)
         """
 
-        def readE(itt, reread=True):
-            f = self.step_to("N(Alpha)", reread=reread)
+        def readE(itt, reopen=False):
+            f = self.step_to("N(Alpha)", reopen=reopen, allow_reread=False)
             if f[0]:
                 alpha = float(f[1].split()[-2])
                 beta = float(next(itt).split()[-2])
@@ -93,10 +93,10 @@ class outputSileORCA(SileORCA):
 
         itt = iter(self)
         E = []
-        e = readE(itt)
+        e = readE(itt, reopen=True)
         while e is not None:
             E.append(e)
-            e = readE(itt, reread=False)
+            e = readE(itt)
 
         if all:
             return np.array(E)
@@ -149,8 +149,8 @@ class outputSileORCA(SileORCA):
             elif name == 'loewdin':
                 step_to = "LOEWDIN ATOMIC CHARGES"
 
-            def read_block(itt, step_to, reread=True):
-                f, line = self.step_to(step_to, reread=reread)
+            def read_block(itt, step_to, reopen=False):
+                f, line = self.step_to(step_to, reopen=reopen, allow_reread=False)
                 if not f:
                     return None
                 next(itt) # skip ---
@@ -192,8 +192,8 @@ class outputSileORCA(SileORCA):
                     v = next(itt).split()
                 return D
 
-            def read_block(itt, step_to, reread=True):
-                f, line = self.step_to(step_to, reread=reread)
+            def read_block(itt, step_to, reopen=False):
+                f, line = self.step_to(step_to, reopen=reopen, allow_reread=False)
                 if not f:
                     return None
                 if "SPIN" in line:
@@ -201,9 +201,9 @@ class outputSileORCA(SileORCA):
                 else:
                     spin_block = False
                 if spin_block and spin:
-                    self.step_to("SPIN", reread=False)
+                    self.step_to("SPIN")
                 elif spin_block:
-                    self.step_to("CHARGE", reread=False)
+                    self.step_to("CHARGE")
                 elif not spin:
                     next(itt) # skip ---
                 else:
@@ -225,8 +225,8 @@ class outputSileORCA(SileORCA):
             elif name == 'loewdin':
                 step_to = "LOEWDIN ORBITAL CHARGES"
 
-            def read_block(itt, step_to, reread=True):
-                f, line = self.step_to(step_to, reread=reread)
+            def read_block(itt, step_to, reopen=False):
+                f, line = self.step_to(step_to, reopen=reopen, allow_reread=False)
                 if "SPIN" in line:
                     spin_block = True
                 else:
@@ -263,10 +263,10 @@ class outputSileORCA(SileORCA):
 
         itt = iter(self)
         blocks = []
-        block = read_block(itt, step_to)
+        block = read_block(itt, step_to, reopen=True)
         while block is not None:
             blocks.append(block)
-            block = read_block(itt, step_to, reread=False)
+            block = read_block(itt, step_to)
 
         if all:
             return blocks
@@ -290,12 +290,12 @@ class outputSileORCA(SileORCA):
 
         Hartree2eV = 27.2113834
 
-        def readE(itt, vdw, reread=True):
+        def readE(itt, vdw, reopen=False):
             if convert:
                 sc = Hartree2eV
             else:
                 sc = 1
-            f = self.step_to("TOTAL SCF ENERGY", reread=reread)[0]
+            f = self.step_to("TOTAL SCF ENERGY", reopen=reopen, allow_reread=False)[0]
             if not f:
                 return None
             next(itt) # skip ---
@@ -317,21 +317,20 @@ class outputSileORCA(SileORCA):
                     E["embedding"] = float(v[-2]) * sc
                 line = next(itt)
             if vdw:
-                self.step_to("DFT DISPERSION CORRECTION", reread=False)[1]
-                v = self.step_to("Dispersion correction", reread=False)[1].split()
+                self.step_to("DFT DISPERSION CORRECTION")[1]
+                v = self.step_to("Dispersion correction")[1].split()
                 E["vdw"] = float(v[-1]) * sc
             return E
 
+        # check if vdw block is present
         vdw = self.step_to("DFT DISPERSION CORRECTION")[0]
-        # Force open/close, step_to(..., reread=True) is not necessarily doing this!
-        self.close()
-        self._open()
+
         itt = iter(self)
         E = []
-        e = readE(itt, vdw)
+        e = readE(itt, vdw, reopen=True)
         while e is not None:
             E.append(e)
-            e = readE(itt, vdw, reread=False)
+            e = readE(itt, vdw)
 
         if all:
             return E

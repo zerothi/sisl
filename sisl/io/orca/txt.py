@@ -65,8 +65,8 @@ class txtSileORCA(SileORCA):
         all: bool, optional
             return electron numbers from all steps (instead of last)
         """
-        def readE(itt, reread=True):
-            f = self.step_to("Number of Alpha Electrons", reread=reread)
+        def readE(itt, reopen=False):
+            f = self.step_to("Number of Alpha Electrons", reopen=reopen, allow_reread=False)
             if f[0]:
                 alpha = float(f[1].split()[-1])
                 beta = float(next(itt).split()[-1])
@@ -76,10 +76,10 @@ class txtSileORCA(SileORCA):
 
         itt = iter(self)
         E = []
-        e = readE(itt)
+        e = readE(itt, reopen=True)
         while e is not None:
             E.append(e)
-            e = readE(itt, reread=False)
+            e = readE(itt)
 
         if all:
             return np.array(E)
@@ -105,9 +105,9 @@ class txtSileORCA(SileORCA):
 
         Hartree2eV = 27.2113834
 
-        def readE(itt, reread=True):
+        def readE(itt, reopen=False):
             # read the DFT_Energy block
-            f = self.step_to("$ DFT_Energy", reread=reread)[0]
+            f = self.step_to("$ DFT_Energy", reopen=reopen, allow_reread=False)[0]
             if not f:
                 return None
             next(itt) # description
@@ -136,7 +136,7 @@ class txtSileORCA(SileORCA):
                 line = next(itt)
             line = next(itt)
             if "$ VdW_Correction" in line:
-                v = self.step_to("Van der Waals Correction:", reread=reread)[1].split()
+                v = self.step_to("Van der Waals Correction:")[1].split()
                 value = float(v[-1])
                 if convert:
                     value *= Hartree2eV
@@ -147,10 +147,10 @@ class txtSileORCA(SileORCA):
 
         itt = iter(self)
         E = []
-        e = readE(itt)
+        e = readE(itt, reopen=True)
         while e is not None:
             E.append(e)
-            e = readE(itt, reread=False)
+            e = readE(itt)
 
         if all:
             return E
@@ -173,9 +173,9 @@ class txtSileORCA(SileORCA):
             if all is False only one geometry will be returned (or None). Otherwise
             a list of geometries corresponding to each step.
         """
-        def readG(itt, reread=True):
+        def readG(itt, reopen=False):
             # Read the Geometry block
-            f = self.step_to("!GEOMETRY!", reread=reread)[0]
+            f = self.step_to("!GEOMETRY!", reopen=reopen, allow_reread=False)[0]
             if not f:
                 return None
             line = next(itt)
@@ -193,10 +193,10 @@ class txtSileORCA(SileORCA):
 
         itt = iter(self)
         G = []
-        g = readG(itt)
+        g = readG(itt, reopen=True)
         while g is not None:
             G.append(g)
-            g = readG(itt, reread=False)
+            g = readG(itt)
 
         if all:
             return G
