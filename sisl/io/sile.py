@@ -730,8 +730,39 @@ class Sile(BaseSile):
             self._line += 1
         return l
 
-    def step_to(self, keywords, case=True, reread=True, ret_index=False):
-        r""" Steps the file-handle until the keyword(s) is found in the input """
+    def step_to(self, keywords, case=True, allow_reread=True, ret_index=False, reopen=False):
+        r""" Steps the file-handle until the keyword(s) is found in the input
+
+        Parameters
+        ----------
+        keywords : str or list
+            keyword(s) to find in the sile
+        case : bool, optional
+            whether to search case sensitive
+        allow_reread : bool, optional
+            whether the search from current position is allowed to
+            loop back to the beginning
+        ret_index : bool, optional
+            returns the index in the keyword list that was matched in the search
+        reopen : bool, optional
+            if True, the search is forced to start from the beginning
+            of the sile (search after sile close and reopen)
+
+        Returns
+        -------
+        found : bool
+            whether the search was successful or not
+        l : str
+            the found line that matches the keyword(s)
+        idx : int, optional
+            index of the keyword from the list that was matched
+        """
+
+        if reopen:
+            # ensure file is read from the beginning
+            self.close()
+            self._open()
+
         # If keyword is a list, it just matches one of the inputs
         found = False
         # The previously read line...
@@ -747,7 +778,7 @@ class Sile(BaseSile):
                 break
             found = self.line_has_keys(l, keys, case)
 
-        if not found and (l == '' and line > 0) and reread:
+        if not found and (l == '' and line > 0) and allow_reread:
             # We may be in the case where the user request
             # reading the same twice...
             # So we need to re-read the file...

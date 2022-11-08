@@ -100,7 +100,7 @@ class outSileSiesta(SileSiesta):
             line = self.readline().split("=")
             tag = line[0].split()[0]
             atoms[tag]["mass"] = float(line[2].split()[0])
-            found, line = self.step_to("<basis_specs>", reread=False)
+            found, line = self.step_to("<basis_specs>", allow_reread=False)
 
         block = []
         found, line = self.step_to("%block PAO.Basis")
@@ -591,7 +591,7 @@ class outSileSiesta(SileSiesta):
         -------
         PropertyDict : dictionary like lookup table ionic energies are stored in a nested `PropertyDict` at the key ``ion`` (all energies in eV)
         """
-        found = self.step_to("siesta: Final energy", reread=False)[0]
+        found = self.step_to("siesta: Final energy", allow_reread=False)[0]
         out = PropertyDict()
         out.ion = PropertyDict()
         if not found:
@@ -1155,7 +1155,7 @@ class outSileSiesta(SileSiesta):
         FOUND_FINAL = False
 
         # TODO whalrus
-        ret = self.step_to(search_keys, case=True, ret_index=True, reread=False)
+        ret = self.step_to(search_keys, case=True, ret_index=True, allow_reread=False)
         while ret[0]:
             if ret[2] in IDX_SCF_END:
                 # we finished all SCF iterations
@@ -1218,7 +1218,7 @@ class outSileSiesta(SileSiesta):
                 current_state = state.CHARGE
 
             # step to next entry
-            ret = self.step_to(search_keys, case=True, ret_index=True, reread=False)
+            ret = self.step_to(search_keys, case=True, ret_index=True, allow_reread=False)
 
         if not any((FOUND_SCF, FOUND_MD, FOUND_FINAL)):
             raise SileError(f"{self!s} does not contain any charges ({name})")

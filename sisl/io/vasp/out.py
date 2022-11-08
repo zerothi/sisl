@@ -41,7 +41,7 @@ class outSileVASP(SileVASP):
         else:
             raise ValueError(f"{self.__class__.__name__}.cpu_time unknown flag '{flag}'")
 
-        found = self.step_to(flag, reread=False)[0]
+        found = self.step_to(flag, allow_reread=False)[0]
         if found:
             self._completed = True
             for _ in range(nskip):
@@ -103,7 +103,7 @@ class outSileVASP(SileVASP):
         def readE(itt):
             nonlocal name_conv
             # read the energy tables
-            f = self.step_to("Free energy of the ion-electron system", reread=False)[0]
+            f = self.step_to("Free energy of the ion-electron system", allow_reread=False)[0]
             if not f:
                 return None
             next(itt) # -----
