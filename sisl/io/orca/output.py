@@ -80,6 +80,10 @@ class outputSileORCA(SileORCA):
         ----------
         all : bool, optional
             return electron numbers from all steps (instead of last)
+
+        Returns
+        -------
+        ndarray or list of ndarrays : alpha and beta electrons
         """
 
         def readE(itt, reopen=False):
@@ -126,7 +130,7 @@ class outputSileORCA(SileORCA):
 
         Returns
         -------
-        PropertyDicts or ndarray : atom/orbital-resolved charge (or spin) data
+        PropertyDicts or ndarray or lists : atom/orbital-resolved charge (or spin) data
         """
 
         if name.lower() in ['mulliken', 'm']:
@@ -276,16 +280,18 @@ class outputSileORCA(SileORCA):
 
     @sile_fh_open()
     def read_energy(self, all=False, convert=True):
-        """ Reads the energy specification from ORCA output file
+        """ Reads the energy blocks
 
         Parameters
         ----------
-        all: bool, optional
-            return a list of dictionaries from each step
+        all : bool, optional
+            return a list of dictionaries from each step (instead of the last)
+        convert : bool, optional
+            whether to convert the energies to eV (Ha-values are read)
 
         Returns
         -------
-        PropertyDict : all data from the "TOTAL SCF ENERGY" segment
+        PropertyDict or list of PropertyDict : all energy data from the "TOTAL SCF ENERGY" and "DFT DISPERSION CORRECTION" blocks
         """
         def readE(itt, vdw, reopen=False):
             if convert:

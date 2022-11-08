@@ -65,6 +65,10 @@ class txtSileORCA(SileORCA):
         ----------
         all: bool, optional
             return electron numbers from all steps (instead of last)
+
+        Returns
+        -------
+        ndarray or list of ndarrays : alpha and beta electrons
         """
         def readE(itt, reopen=False):
             f = self.step_to("Number of Alpha Electrons", reopen=reopen, allow_reread=False)
@@ -90,18 +94,18 @@ class txtSileORCA(SileORCA):
 
     @sile_fh_open()
     def read_energy(self, all=False, convert=True):
-        """ Reads the energy specification from ORCA property.txt file.
+        """ Reads the energy blocks
 
         Parameters
         ----------
         all: bool, optional
-            return a list of dictionaries from each step
+            return a list of dictionaries from each step (instead of the last)
         convert: bool, optional
-            convert from Hartree to eV units
+            whether to convert the energies to eV (Ha-values are read)
 
         Returns
         -------
-        PropertyDict : all data from the "DFT_Energy" segment
+        PropertyDict : all data from the "DFT_Energy" and "VdW_Correction" blocks
         """
         def readE(itt, reopen=False):
             # read the DFT_Energy block
