@@ -73,5 +73,5 @@ def test_read_geometry(sisl_files):
     assert G.xyz[1, 0] == 1.578781789721
     assert G.xyz[0, 1] == 0.0
     assert G.xyz[1, 1] == 0.0
-    assert G.atom[0].tag == 'N'
-    assert G.atom[1].tag == 'O'
+    assert G.atoms[0].tag == 'N'
+    assert G.atoms[1].tag == 'O'
