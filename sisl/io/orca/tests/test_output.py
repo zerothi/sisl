@@ -108,11 +108,11 @@ def test_charge_mulliken_reduced(sisl_files):
     # last spin block
     assert S[(0, 'p')] == 0.685743
     assert S[(1, 'dz2')] == -0.000163
-    C = out.read_charge(name='mulliken', projection='orbital', orbital='pz', all=True)
+    C = out.read_charge(name='mulliken', projection='orbital', orb_key='pz', all=True)
     assert C[0][0] == 0.710261
-    S = out.read_charge(name='mulliken', projection='orbital', orbital='f+2', spin=True, all=True)
+    S = out.read_charge(name='mulliken', projection='orbital', orb_key='f+2', spin=True, all=True)
     assert S[0][1] == -0.000122
-    S = out.read_charge(name='mulliken', projection='orbital', orbital='p', spin=True, all=False)
+    S = out.read_charge(name='mulliken', projection='orbital', orb_key='p', spin=True, all=False)
     assert S[0] == 0.685743
 
 def test_charge_loewdin_reduced(sisl_files):
@@ -131,11 +131,11 @@ def test_charge_loewdin_reduced(sisl_files):
     assert S[(1, 'pz')] == -0.010829
     assert C[(0, 'pz')] == 0.723113
     assert S[(1, 'pz')] == -0.010829
-    C = out.read_charge(name='loewdin', projection='orbital', orbital='s', all=True)
+    C = out.read_charge(name='loewdin', projection='orbital', orb_key='s', all=True)
     assert C[0][0] == 3.553405
-    C = out.read_charge(name='loewdin', projection='orbital', orbital='f-3', all=False)
+    C = out.read_charge(name='loewdin', projection='orbital', orb_key='f-3', all=False)
     assert C[0] == 0.017486
-    C = out.read_charge(name='loewdin', projection='orbital', orbital='pz', all=False)
+    C = out.read_charge(name='loewdin', projection='orbital', orb_key='pz', all=False)
     assert C[0] == 0.723113
 
 def test_charge_mulliken_full(sisl_files):
@@ -202,16 +202,16 @@ def test_charge_orbital_reduced_unpol(sisl_files):
     S = out.read_charge(name='mulliken', projection='orbital', spin=True, all=False)
     assert C[(0, "px")] == 0.954436
     assert S is None
-    C = out.read_charge(name='mulliken', projection='orbital', orbital='px', all=False)
-    S = out.read_charge(name='mulliken', projection='orbital', orbital='px', spin=True, all=False)
+    C = out.read_charge(name='mulliken', projection='orbital', orb_key='px', all=False)
+    S = out.read_charge(name='mulliken', projection='orbital', orb_key='px', spin=True, all=False)
     assert C[0] == 0.954436
     assert S is None
     C = out.read_charge(name='loewdin', projection='orbital', all=False)
     S = out.read_charge(name='loewdin', projection='orbital', spin=True, all=False)
     assert C[(0, "d")] == 0.315910
     assert S is None
-    C = out.read_charge(name='loewdin', projection='orbital', orbital='d', all=False)
-    S = out.read_charge(name='loewdin', projection='orbital', orbital='d', spin=True, all=False)
+    C = out.read_charge(name='loewdin', projection='orbital', orb_key='d', all=False)
+    S = out.read_charge(name='loewdin', projection='orbital', orb_key='d', spin=True, all=False)
     assert C[0] == 0.315910
     assert S is None
 
