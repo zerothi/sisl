@@ -348,11 +348,11 @@ class TestSuperCell:
         assert sc.angle(0, 2) == 90
         assert sc.angle(1, 2) == 90
 
-    def test_cell_length(self):
+    def test_cell2length(self):
         gr = graphene(orthogonal=True)
         sc = (gr * (40, 40, 1)).rotate(24, gr.cell[2, :]).sc
-        assert np.allclose(sc.length, (sc.cell_length(sc.length) ** 2).sum(1) ** 0.5)
-        assert np.allclose(1, (sc.cell_length(1) ** 2).sum(0))
+        assert np.allclose(sc.length, (sc.cell2length(sc.length) ** 2).sum(1) ** 0.5)
+        assert np.allclose(1, (sc.cell2length(1) ** 2).sum(0))
 
     def test_set_sc_off_wrong_size(self, setup):
         sc = setup.sc.copy()
