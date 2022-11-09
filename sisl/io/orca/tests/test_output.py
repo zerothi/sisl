@@ -244,3 +244,33 @@ def test_read_energy_vdw(sisl_files):
     assert E.exchange != -13.310144803077
     assert E.vdw != -0.000410877
     assert abs(E.total + 3081.265152222452) < 1e-8
+
+
+def test_read_orbital_energies(sisl_files):
+    f = sisl_files(_dir, 'molecule.output')
+    out = outputSileORCA(f)
+    E = out.read_orbital_energies(all=True)
+    assert E[0][0, 0] == -513.8983
+    assert E[0][0, 1] == -513.6538
+    assert E[0][61, 0] == 1173.4258
+    assert E[0][61, 1] == 1173.6985
+    assert E[1][0, 0] == -513.8983
+    assert E[1][0, 1] == -513.6538
+    assert E[1][61, 0] == 1173.4259
+    assert E[1][61, 1] == 1173.6985
+    E = out.read_orbital_energies(all=False)
+    assert E.shape == (out.no, 2)
+    assert E[61, 0] == 1173.4259
+
+def test_read_orbital_energies_unpol(sisl_files):
+    f = sisl_files(_dir, 'molecule2.output')
+    out = outputSileORCA(f)
+    E = out.read_orbital_energies(all=True)
+    assert E[0][0] == -513.0978
+    assert E[0][61] == 1171.5965
+    assert E[1][0] == -513.0976
+    assert E[1][61] == 1171.5967
+    E = out.read_orbital_energies(all=False)
+    assert E.shape == (out.no,)
+    assert E[0] == -513.0976
+    assert E[61] == 1171.5967

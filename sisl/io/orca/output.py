@@ -341,5 +341,60 @@ class outputSileORCA(SileORCA):
             return E[-1]
         return None
 
+    @sile_fh_open()
+    def read_orbital_energies(self, all=False):
+        """ Reads the "ORBITAL ENERGIES" blocks
+
+        Parameters
+        ----------
+        all : bool, optional
+            return a list of ndarrays from each step (instead of the last)
+
+        Returns
+        -------
+        ndarray or list : orbital energies (in eV) from the "ORBITAL ENERGIES" blocks
+        """
+        def readE(itt, reopen=False):
+            f = self.step_to("ORBITAL ENERGIES", reopen=reopen, allow_reread=False)[0]
+            if not f:
+                return None
+            next(itt) # skip ---
+            line = next(itt)
+            if "SPIN UP ORBITALS" in line:
+                spin = True
+            else:
+                spin = False
+            next(itt) # Skip "NO OCC" header line
+            E = np.empty((self.no, 2), np.float64)
+            v = next(itt).split()
+            while len(v) > 0:
+                i = int(v[0])
+                E[i, 0] = float(v[-1])
+                v = next(itt).split()
+            if not spin:
+                return E[:, 0]
+
+            next(itt) # skip "SPIN DOWN ORBITALS"
+            next(itt) # Skip "NO OCC" header line
+            v = next(itt).split()
+            while len(v) > 0 and '---' not in v[0]:
+                i = int(v[0])
+                E[i, 1] = float(v[-1])
+                v = next(itt).split()
+            return E
+
+        itt = iter(self)
+        E = []
+        e = readE(itt, reopen=True)
+        while e is not None:
+            E.append(e)
+            e = readE(itt)
+
+        if all:
+            return E
+        if len(E) > 0:
+            return E[-1]
+        return None
+
 
 add_sile('output', outputSileORCA, gzip=True)
