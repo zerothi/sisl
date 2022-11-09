@@ -93,19 +93,17 @@ class txtSileORCA(SileORCA):
         return None
 
     @sile_fh_open()
-    def read_energy(self, all=False, convert=True):
+    def read_energy(self, all=False):
         """ Reads the energy blocks
 
         Parameters
         ----------
         all: bool, optional
             return a list of dictionaries from each step (instead of the last)
-        convert: bool, optional
-            whether to convert the energies to eV (Ha-values are read)
 
         Returns
         -------
-        PropertyDict : all data from the "DFT_Energy" and "VdW_Correction" blocks
+        PropertyDict : all data (in eV) from the "DFT_Energy" and "VdW_Correction" blocks
         """
         def readE(itt, reopen=False):
             # read the DFT_Energy block
@@ -119,9 +117,7 @@ class txtSileORCA(SileORCA):
             E = PropertyDict()
             while "----" not in line:
                 v = line.split()
-                value = float(v[-1])
-                if convert:
-                    value *= units('Ha', 'eV')
+                value = float(v[-1]) * units('Ha', 'eV')
                 if v[0] == "Exchange":
                     E["exchange"] = value
                 elif v[0] == "Correlation":
@@ -139,10 +135,7 @@ class txtSileORCA(SileORCA):
             line = next(itt)
             if "$ VdW_Correction" in line:
                 v = self.step_to("Van der Waals Correction:")[1].split()
-                value = float(v[-1])
-                if convert:
-                    value *= units('Ha', 'eV')
-                E["vdw"] = value
+                E["vdw"] = float(v[-1]) * units('Ha', 'eV')
 
             return E
 

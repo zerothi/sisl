@@ -279,25 +279,19 @@ class outputSileORCA(SileORCA):
         return None
 
     @sile_fh_open()
-    def read_energy(self, all=False, convert=True):
+    def read_energy(self, all=False):
         """ Reads the energy blocks
 
         Parameters
         ----------
         all : bool, optional
             return a list of dictionaries from each step (instead of the last)
-        convert : bool, optional
-            whether to convert the energies to eV (Ha-values are read)
 
         Returns
         -------
-        PropertyDict or list of PropertyDict : all energy data from the "TOTAL SCF ENERGY" and "DFT DISPERSION CORRECTION" blocks
+        PropertyDict or list of PropertyDict : all energy data (in eV) from the "TOTAL SCF ENERGY" and "DFT DISPERSION CORRECTION" blocks
         """
         def readE(itt, vdw, reopen=False):
-            if convert:
-                sc = units('Ha', 'eV')
-            else:
-                sc = 1
             f = self.step_to("TOTAL SCF ENERGY", reopen=reopen, allow_reread=False)[0]
             if not f:
                 return None
@@ -309,20 +303,20 @@ class outputSileORCA(SileORCA):
             while "----" not in line:
                 v = line.split()
                 if "Total Energy" in line:
-                    E["total"] = float(v[-4]) * sc
+                    E["total"] = float(v[-4]) * units('Ha', 'eV')
                 elif "E(X)" in line:
-                    E["exchange"] = float(v[-2]) * sc
+                    E["exchange"] = float(v[-2]) * units('Ha', 'eV')
                 elif "E(C)" in line:
-                    E["correlation"] = float(v[-2]) * sc
+                    E["correlation"] = float(v[-2]) * units('Ha', 'eV')
                 elif "E(XC)" in line:
-                    E["xc"] = float(v[-2]) * sc
+                    E["xc"] = float(v[-2]) * units('Ha', 'eV')
                 elif "DFET-embed. en." in line:
-                    E["embedding"] = float(v[-2]) * sc
+                    E["embedding"] = float(v[-2]) * units('Ha', 'eV')
                 line = next(itt)
             if vdw:
                 self.step_to("DFT DISPERSION CORRECTION")[1]
                 v = self.step_to("Dispersion correction")[1].split()
-                E["vdw"] = float(v[-1]) * sc
+                E["vdw"] = float(v[-1]) * units('Ha', 'eV')
             return E
 
         # check if vdw block is present
