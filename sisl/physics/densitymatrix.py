@@ -286,7 +286,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
 
         .. math::
 
-             M_{\nu} &= \sum_mu [\boldsymbol\rho \mathbf S]_{\nu\mu}
+             M_{\nu} &= \sum_mu [\boldsymbol\rho_{\nu\mu} \mathbf S_{\nu\mu}]
              \\
              M_{\alpha} &= \sum_{\nu\in\alpha} M_{\nu}
 
@@ -294,16 +294,16 @@ class _densitymatrix(SparseOrbitalBZSpin):
         as above but using the spin-box per orbital (:math:`\sigma` is spin)
 
         .. math::
-             M_{\nu} &= \sum_\sigma\sum_mu [\boldsymbol\rho \mathbf S]_{\nu\mu,\sigma\sigma}
+             M_{\nu} &= \sum_\sigma\sum_mu [\boldsymbol\rho_{\nu\mu,\sigma\sigma} \mathbf S_{\nu\mu,\sigma\sigma}]
              \\
-             S_{\nu}^x &= \sum_mu \Re [\boldsymbol\rho \mathbf S]_{\nu\mu,\uparrow\downarrow} +
-                          \Re [\boldsymbol\rho \mathbf S]_{\nu\mu,\downarrow\uparrow}
+             S_{\nu}^x &= \sum_mu \Re [\boldsymbol\rho_{\nu\mu,\uparrow\downarrow} \mathbf S_{\nu\mu,\uparrow\downarrow}] +
+                          \Re [\boldsymbol\rho_{\nu\mu,\downarrow\uparrow} \mathbf S_{\nu\mu,\downarrow\uparrow}]
              \\
-             S_{\nu}^y &= \sum_mu \Im [\boldsymbol\rho \mathbf S]_{\nu\mu,\uparrow\downarrow} -
-                          \Im [\boldsymbol\rho \mathbf S]_{\nu\mu,\downarrow\uparrow}
+             S_{\nu}^y &= \sum_mu \Im [\boldsymbol\rho_{\nu\mu,\uparrow\downarrow} \mathbf S_{\nu\mu,\uparrow\downarrow}] -
+                          \Im [\boldsymbol\rho_{\nu\mu,\downarrow\uparrow} \mathbf S_{\nu\mu,\downarrow\uparrow}]
              \\
-             S_{\nu}^z &= \sum_mu \Re [\boldsymbol\rho \mathbf S]_{\nu\mu,\uparrow\uparrow} -
-                          \Re [\boldsymbol\rho \mathbf S]_{\nu\mu,\downarrow\downarrow}
+             S_{\nu}^z &= \sum_mu \Re [\boldsymbol\rho_{\nu\mu,\uparrow\uparrow} \mathbf S_{\nu\mu,\uparrow\uparrow}] -
+                          \Re [\boldsymbol\rho_{\nu\mu,\downarrow\downarrow} \mathbf S_{\nu\mu,\downarrow\downarrow}]
 
         Parameters
         ----------
