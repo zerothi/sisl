@@ -72,7 +72,7 @@ class outputSileORCA(SileORCA):
                 return None
         return self._no
 
-    @sile_fh_open()
+    @sile_fh_open(True)
     def read_electrons(self, all=False):
         """ Read number of electrons (alpha, beta)
 
@@ -86,8 +86,8 @@ class outputSileORCA(SileORCA):
         ndarray or list of ndarrays : alpha and beta electrons
         """
 
-        def readE(itt, reopen=False):
-            f = self.step_to("N(Alpha)", reopen=reopen, allow_reread=False)
+        def readE(itt):
+            f = self.step_to("N(Alpha)", allow_reread=False)
             if f[0]:
                 alpha = float(f[1].split()[-2])
                 beta = float(next(itt).split()[-2])
@@ -97,7 +97,7 @@ class outputSileORCA(SileORCA):
 
         itt = iter(self)
         E = []
-        e = readE(itt, reopen=True)
+        e = readE(itt)
         while e is not None:
             E.append(e)
             e = readE(itt)
@@ -108,7 +108,7 @@ class outputSileORCA(SileORCA):
             return np.array(E[-1])
         return None
 
-    @sile_fh_open()
+    @sile_fh_open(True)
     def read_charge(self, name='mulliken', projection='orbital', orb_key=None,
                     reduced=True, spin=False, all=False):
         """ Reads from charge (or spin) population analysis
@@ -153,8 +153,8 @@ class outputSileORCA(SileORCA):
             elif name == 'loewdin':
                 step_to = "LOEWDIN ATOMIC CHARGES"
 
-            def read_block(itt, step_to, reopen=False):
-                f, line = self.step_to(step_to, reopen=reopen, allow_reread=False)
+            def read_block(itt, step_to):
+                f, line = self.step_to(step_to, allow_reread=False)
                 if not f:
                     return None
                 next(itt) # skip ---
@@ -196,8 +196,8 @@ class outputSileORCA(SileORCA):
                     v = next(itt).split()
                 return D
 
-            def read_block(itt, step_to, reopen=False):
-                f, line = self.step_to(step_to, reopen=reopen, allow_reread=False)
+            def read_block(itt, step_to):
+                f, line = self.step_to(step_to, allow_reread=False)
                 if not f:
                     return None
                 if "SPIN" in line:
@@ -228,8 +228,8 @@ class outputSileORCA(SileORCA):
             elif name == 'loewdin':
                 step_to = "LOEWDIN ORBITAL CHARGES"
 
-            def read_block(itt, step_to, reopen=False):
-                f, line = self.step_to(step_to, reopen=reopen, allow_reread=False)
+            def read_block(itt, step_to):
+                f, line = self.step_to(step_to, allow_reread=False)
                 if "SPIN" in line:
                     spin_block = True
                 else:
@@ -266,7 +266,7 @@ class outputSileORCA(SileORCA):
 
         itt = iter(self)
         blocks = []
-        block = read_block(itt, step_to, reopen=True)
+        block = read_block(itt, step_to)
         while block is not None:
             blocks.append(block)
             block = read_block(itt, step_to)
@@ -277,7 +277,7 @@ class outputSileORCA(SileORCA):
             return blocks[-1]
         return None
 
-    @sile_fh_open()
+    @sile_fh_open(True)
     def read_energy(self, all=False):
         """ Reads the energy blocks
 
@@ -297,7 +297,6 @@ class outputSileORCA(SileORCA):
             next(itt) # skip ---
             next(itt) # skip blank line
             line = next(itt)
-            print(line)
             E = PropertyDict()
             while "----" not in line:
                 v = line.split()
@@ -334,7 +333,7 @@ class outputSileORCA(SileORCA):
             return E[-1]
         return None
 
-    @sile_fh_open()
+    @sile_fh_open(True)
     def read_orbital_energies(self, all=False):
         """ Reads the "ORBITAL ENERGIES" blocks
 
@@ -347,8 +346,8 @@ class outputSileORCA(SileORCA):
         -------
         ndarray or list : orbital energies (in eV) from the "ORBITAL ENERGIES" blocks
         """
-        def readE(itt, reopen=False):
-            f = self.step_to("ORBITAL ENERGIES", reopen=reopen, allow_reread=False)[0]
+        def readE(itt):
+            f = self.step_to("ORBITAL ENERGIES", allow_reread=False)[0]
             if not f:
                 return None
             next(itt) # skip ---
@@ -378,7 +377,7 @@ class outputSileORCA(SileORCA):
 
         itt = iter(self)
         E = []
-        e = readE(itt, reopen=True)
+        e = readE(itt)
         while e is not None:
             E.append(e)
             e = readE(itt)

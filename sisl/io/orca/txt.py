@@ -57,7 +57,7 @@ class txtSileORCA(SileORCA):
                 return None
         return self._no
 
-    @sile_fh_open()
+    @sile_fh_open(True)
     def read_electrons(self, all=False):
         """ Read number of electrons (alpha, beta)
 
@@ -70,8 +70,8 @@ class txtSileORCA(SileORCA):
         -------
         ndarray or list of ndarrays : alpha and beta electrons
         """
-        def readE(itt, reopen=False):
-            f = self.step_to("Number of Alpha Electrons", reopen=reopen, allow_reread=False)
+        def readE(itt):
+            f = self.step_to("Number of Alpha Electrons", allow_reread=False)
             if f[0]:
                 alpha = float(f[1].split()[-1])
                 beta = float(next(itt).split()[-1])
@@ -81,7 +81,7 @@ class txtSileORCA(SileORCA):
 
         itt = iter(self)
         E = []
-        e = readE(itt, reopen=True)
+        e = readE(itt)
         while e is not None:
             E.append(e)
             e = readE(itt)
@@ -92,7 +92,7 @@ class txtSileORCA(SileORCA):
             return np.array(E[-1])
         return None
 
-    @sile_fh_open()
+    @sile_fh_open(True)
     def read_energy(self, all=False):
         """ Reads the energy blocks
 
@@ -105,9 +105,9 @@ class txtSileORCA(SileORCA):
         -------
         PropertyDict : all data (in eV) from the "DFT_Energy" and "VdW_Correction" blocks
         """
-        def readE(itt, reopen=False):
+        def readE(itt):
             # read the DFT_Energy block
-            f = self.step_to("$ DFT_Energy", reopen=reopen, allow_reread=False)[0]
+            f = self.step_to("$ DFT_Energy", allow_reread=False)[0]
             if not f:
                 return None
             next(itt) # description
@@ -141,7 +141,7 @@ class txtSileORCA(SileORCA):
 
         itt = iter(self)
         E = []
-        e = readE(itt, reopen=True)
+        e = readE(itt)
         while e is not None:
             E.append(e)
             e = readE(itt)
@@ -152,7 +152,7 @@ class txtSileORCA(SileORCA):
             return E[-1]
         return None
 
-    @sile_fh_open()
+    @sile_fh_open(True)
     def read_geometry(self, all=False):
         """ Reads the geometry from ORCA property.txt file
 
@@ -167,9 +167,9 @@ class txtSileORCA(SileORCA):
             if all is False only one geometry will be returned (or None). Otherwise
             a list of geometries corresponding to each step.
         """
-        def readG(itt, reopen=False):
+        def readG(itt):
             # Read the Geometry block
-            f = self.step_to("!GEOMETRY!", reopen=reopen, allow_reread=False)[0]
+            f = self.step_to("!GEOMETRY!", allow_reread=False)[0]
             if not f:
                 return None
             line = next(itt)
@@ -187,7 +187,7 @@ class txtSileORCA(SileORCA):
 
         itt = iter(self)
         G = []
-        g = readG(itt, reopen=True)
+        g = readG(itt)
         while g is not None:
             G.append(g)
             g = readG(itt)
