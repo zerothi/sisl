@@ -281,7 +281,7 @@ class outSileSiesta(SileSiesta):
         # just read the next geometry we hit
         return next_geom()[1]
 
-    @sile_fh_open()
+    @sile_fh_open(True)
     def read_force(self, last=True, all=False, total=False, max=False, key="siesta"):
         """ Reads the forces from the Siesta output file
 
@@ -329,11 +329,9 @@ class outSileSiesta(SileSiesta):
         # Read until forces are found
         def next_force():
 
-            line = self.readline()
-            while not f'{key}: Atomic forces' in line:
-                line = self.readline()
-                if line == '':
-                    return None
+            found, line = self.step_to(f"{key}: Atomic forces", allow_reread=False)
+            if not found:
+                return None
 
             # Now read data
             F = []
@@ -398,8 +396,8 @@ class outSileSiesta(SileSiesta):
 
         return return_forces(next_force())
 
-    @sile_fh_open()
-    def read_stress(self, key='static', last=True, all=False):
+    @sile_fh_open(True)
+    def read_stress(self, key="static", last=True, all=False):
         """ Reads the stresses from the Siesta output file
 
         Parameters
@@ -423,11 +421,14 @@ class outSileSiesta(SileSiesta):
 
         # Read until stress are found
         def next_stress():
-            line = self.readline()
-            while not ('siesta: Stress tensor' in line and key in line):
-                line = self.readline()
-                if line == '':
-                    return None
+
+            found, line = self.step_to(f"siesta: Stress tensor", allow_reread=False)
+            found = found and key in line
+            while not found and line != '':
+                found, line = self.step_to(f"siesta: Stress tensor", allow_reread=False)
+                found = found and key in line
+            if not found:
+                return None
 
             # Now read data
             S = []
@@ -449,13 +450,13 @@ class outSileSiesta(SileSiesta):
 
             if last:
                 return Ss[-1]
-            if self.completed() and key == 'static':
+            if self.completed() and key == "static":
                 return Ss[:-1]
             return Ss
 
         return next_stress()
 
-    @sile_fh_open()
+    @sile_fh_open(True)
     def read_moment(self, orbitals=False, quantity='S', last=True, all=False):
         """ Reads the moments from the Siesta output file
 
@@ -476,14 +477,11 @@ class outSileSiesta(SileSiesta):
         """
 
         # Read until outcoor is found
-        itt = iter(self)
-        for line in itt:
-            if 'moments: Atomic' in line:
-                break
-        if not 'moments: Atomic' in line:
+        if not self.step_to("moments: Atomic", allow_reread=False)[0]:
             return None
 
         # The moments are printed in SPECIES list
+        itt = iter(self)
         next(itt) # empty
         next(itt) # empty
 
@@ -537,7 +535,7 @@ class outSileSiesta(SileSiesta):
             return _a.arrayd(moments)
         return moments
 
-    @sile_fh_open()
+    @sile_fh_open(True)
     def read_energy(self):
         """ Reads the final energy distribution
 
@@ -668,7 +666,7 @@ class outSileSiesta(SileSiesta):
         # This loops ensures that we preserve the order of arguments
         # From Py3.6 and onwards the **kwargs is an OrderedDictionary
         for kw in kwargs.keys():
-            if kw in ['geometry', 'force', 'moment', 'stress', 'energy']:
+            if kw in ("geometry", "force", "moment", "stress", "energy"):
                 if kwargs[kw]:
                     run.append(kw)
 
@@ -678,7 +676,7 @@ class outSileSiesta(SileSiesta):
 
         val = []
         for name in run:
-            val.append(getattr(self, 'read_{}'.format(name.lower()))(*args, **kwargs))
+            val.append(getattr(self, f"read_{name.lower()}")(*args, **kwargs))
 
         if len(val) == 0:
             return None
@@ -686,7 +684,7 @@ class outSileSiesta(SileSiesta):
             val = val[0]
         return val
 
-    @sile_fh_open()
+    @sile_fh_open(True)
     def read_scf(self, key="scf", iscf=-1, imd=None, as_dataframe=False, ret_header=False):
         r""" Parse SCF information and return a table of SCF information depending on what is requested
 
@@ -961,7 +959,7 @@ class outSileSiesta(SileSiesta):
             return scf, props
         return scf
 
-    @sile_fh_open()
+    @sile_fh_open(True)
     def read_charge(self, name, iscf=Opt.ANY, imd=Opt.ANY, key_scf="scf", as_dataframe=False):
         r"""Read charges calculated in SCF loop or MD loop (or both)
 
@@ -1377,4 +1375,4 @@ class outSileSiesta(SileSiesta):
         return md_scf_charge[imd][iscf]
 
 
-add_sile('out', outSileSiesta, case=False, gzip=True)
+add_sile("out", outSileSiesta, case=False, gzip=True)
