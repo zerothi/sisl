@@ -534,9 +534,11 @@ class SuperCell:
         """
         if isinstance(axes, Integral):
             # ravel
-            axes = (axes,)
+            axes = [axes]
+        else:
+            axes = list(axes)
 
-        length = _a.asarrayd(length).ravel()
+        length = _a.asarray(length).ravel()
         if len(length) != len(axes):
             if len(length) == 1:
                 length = np.tile(length, len(axes))
