@@ -64,3 +64,15 @@ def test_read_geometry(sisl_files):
     assert G.xyz[1, 1] == 0.0
     assert G.atoms[0].tag == 'N'
     assert G.atoms[1].tag == 'O'
+
+def test_multiple_calls(sisl_files):
+    f = sisl_files(_dir, 'molecule_property.txt')
+    out = txtSileORCA(f)
+    N = out.read_electrons(all=True)
+    assert len(N) == 2
+    E = out.read_energy(all=True)
+    assert len(E) == 2
+    G = out.read_geometry(all=True)
+    assert len(G) == 2
+    N = out.read_electrons(all=True)
+    assert len(N) == 2

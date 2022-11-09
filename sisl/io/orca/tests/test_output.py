@@ -267,3 +267,17 @@ def test_read_orbital_energies_unpol(sisl_files):
     assert E.shape == (out.no,)
     assert E[0] == -513.0976
     assert E[61] == 1171.5967
+
+def test_multiple_calls(sisl_files):
+    f = sisl_files(_dir, 'molecule2.output')
+    out = outputSileORCA(f)
+    N = out.read_electrons(all=True)
+    assert len(N) == 2
+    E = out.read_orbital_energies(all=True)
+    assert len(E) == 2
+    E = out.read_energy(all=True)
+    assert len(E) == 2
+    C = out.read_charge(name='mulliken', projection='atom', all=True)
+    assert len(C) == 2
+    N = out.read_electrons(all=True)
+    assert len(N) == 2
