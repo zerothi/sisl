@@ -217,10 +217,9 @@ class outputSileORCA(SileORCA):
                     return D
                 else:
                     Da = np.zeros(self.na, np.float64)
-                    for key in D:
-                        ia, orb = key
+                    for (ia, orb), d in D.items():
                         if orb == orb_key:
-                            Da[ia] = D[key]
+                            Da[ia] = d
                     return Da
 
         elif projection == 'orbital' and not reduced:
