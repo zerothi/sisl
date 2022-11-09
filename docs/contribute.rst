@@ -15,6 +15,9 @@ Any size of contribution is extremely welcome!
 - If you've created a tutorial
 
 Then please share them `here <issue_>`_.
+It is recommended to test the development, please follow `these instructions <installation-testing>`_.
+
+Contributing additional test files should be contributed `here <sisl-files>`_.
 
 
 Contribute external code

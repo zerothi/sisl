@@ -153,6 +153,7 @@ To remedy this please ensure ``%HOME%\pydistutils.cfg`` contains the build optio
 Adapt to compilers. For an explanation, see `here <https://docs.python.org/3/install/index.html#location-and-names-of-config-files>`_
 or the `user issue <https://github.com/zerothi/sisl/issues/244>`_ which spurred this content.
 
+.. _installation-testing:
 
 Testing your installation
 -------------------------
@@ -168,7 +169,7 @@ Testing the installation may be done by:
    pytest --pyargs sisl
 
 The above will run the default test-suite which covers most of the `sisl` tool-box.
-Additional tests may be runned by cloning the `sisl-files <sisl-test-files_>`_
+Additional tests may be runned by cloning the `sisl-files <sisl-files_>`_
 and setting the environment variable `SISL_FILES_TESTS` as the ``tests`` path to the repository.
 
 A basic procedure would be:
@@ -210,6 +211,3 @@ the Intel compilers you should do:
 which will pass the correct options to the build system.
 
 The `-U` flag ensures that prior installations are overwritten.
-
-
-.. _sisl-test-files: http://github.com/zerothi/sisl-files
