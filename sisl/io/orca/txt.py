@@ -143,7 +143,6 @@ class txtSileORCA(SileORCA):
                 if convert:
                     value *= units('Ha', 'eV')
                 E["vdw"] = value
-                E["total_vdw"] = E["total"] + value
 
             return E
 
