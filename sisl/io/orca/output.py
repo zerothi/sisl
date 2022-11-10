@@ -109,7 +109,7 @@ class outputSileORCA(SileORCA):
         return None
 
     @sile_fh_open(True)
-    def read_charge(self, name='mulliken', projection='orbital', orb_key=None,
+    def read_charge(self, name='mulliken', projection='orbital', orbitals=None,
                     reduced=True, spin=False, all=False):
         """ Reads from charge (or spin) population analysis
 
@@ -119,7 +119,7 @@ class outputSileORCA(SileORCA):
             name of the charge scheme to be read
         projection : {'orbital', 'atom'}
             whether to get orbital- or atom-resolved quantities
-        orb_key : str, optional
+        orbitals : str, optional
             allows to extract the atom-resolved orbitals matching this keyword
         reduced : bool, optional
             whether to search for full or reduced orbital projections
@@ -213,12 +213,12 @@ class outputSileORCA(SileORCA):
                 else:
                     return None
                 D = read_reduced_orbital_block(itt)
-                if orb_key is None:
+                if orbitals is None:
                     return D
                 else:
                     Da = np.zeros(self.na, np.float64)
                     for (ia, orb), d in D.items():
-                        if orb == orb_key:
+                        if orb == orbitals:
                             Da[ia] = d
                     return Da
 
@@ -257,9 +257,9 @@ class outputSileORCA(SileORCA):
                         return None
                     else:
                         Do[io] = float(v[3])
-                    if v[2] == orb_key:
+                    if v[2] == orbitals:
                         Da[ia] += Do[io]
-                if orb_key is None:
+                if orbitals is None:
                     return Do
                 else:
                     return Da
