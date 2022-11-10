@@ -88,22 +88,28 @@ class PhysicalConstant(float):
 __all__ += ['q', 'c', 'h', 'hbar', 'm_e', 'm_p', 'G', 'G0', 'a0']
 
 
-#: Unit of charge [C], or [A s]
-q = PhysicalConstant(1.602176634e-19, 'A s')
-#: Speed of light [m/s]
-c = PhysicalConstant(299792458, 'm/s')
-#: Plancks constant [J s]
-h = PhysicalConstant(6.62607015e-34, 'J s')
-#: Reduced Plancks constant [J s]
-hbar = PhysicalConstant(1.0545718176461565e-34, 'J s')
-#: Mass of electron [kg]
-m_e = PhysicalConstant(9.1093835611e-31, 'kg')
-#: Mass of proton [kg]
-m_p = PhysicalConstant(1.67262189821e-27, 'kg')
+# These are CODATA-2018 values
+#: Unit of charge [C]
+q = PhysicalConstant(1.602176634e-19, "C")
+#: Bohr radius [m]
+a0 = PhysicalConstant(5.29177210903e-11, "m")
+#: Boltzmann constant [J K^-1]
+kB = PhysicalConstant(1.380649e-23, "J K^-1")
+#: Electron mass [kg]
+m_e = PhysicalConstant(9.1093837015e-31, "kg")
+#: Planck constant [J Hz^-1]
+h = PhysicalConstant(6.62607015e-34, "J Hz^-1")
+#: Reduced Planck constant [J Hz^-1]
+hbar = PhysicalConstant(1.0545718176461565e-34, "J Hz^-1")
+#: Proton mass [kg]
+m_p = PhysicalConstant(1.67262192369e-27, "kg")
+#: Speed of light in vacuum [m s^-1]
+c = PhysicalConstant(299792458.0, "m s^-1")
+
+
+# Values not found in the CODATA table
 #: Conductance quantum [S], or [m^2/s^2]
 G0 = PhysicalConstant(2 * (q ** 2 / h), 'm^2/s^2')
 #: Gravitational constant [m^3/kg/s^2]
 G = PhysicalConstant(6.6740831e-11, 'm^3/kg/s^2')
-#: Bohr radius [m]
-a0 = PhysicalConstant(5.29177210903e-11, 'm')
 
