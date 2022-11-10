@@ -53,6 +53,13 @@ OpenMX
    omxSileOpenMX - input file
 
 
+ORCA
+====
+
+   outputSileORCA - standard output file
+   txtSileORCA - property.txt file
+
+
 ScaleUp
 =======
 
@@ -157,6 +164,7 @@ from .gulp import *
 from .ham import *
 from .molden import *
 from .openmx import *
+from .orca import *
 from .pdb import *
 from .scaleup import *
 from .siesta import *
