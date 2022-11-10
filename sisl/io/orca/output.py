@@ -65,7 +65,7 @@ class outputSileORCA(SileORCA):
     def no(self):
         """ Number of orbitals (basis functions) """
         if self._no is None:
-            f = self.step_to("Number of atoms")
+            f = self.step_to("Number of basis functions")
             if f[0]:
                 self._no = int(f[1].split()[-1])
             else:

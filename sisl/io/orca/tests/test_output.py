@@ -16,9 +16,9 @@ _dir = osp.join('sisl', 'io', 'orca')
 def test_tags(sisl_files):
     f = sisl_files(_dir, 'molecule.output')
     out = outputSileORCA(f)
-    assert out.completed()
     assert out.na == 2
     assert out.no == 62
+    assert out.completed()
 
 def test_read_electrons(sisl_files):
     f = sisl_files(_dir, 'molecule.output')
