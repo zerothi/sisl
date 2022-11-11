@@ -35,19 +35,19 @@ def test_read_energy(sisl_files):
     E = out.read_energy(all=True)
     assert len(E) == 2
     E = out.read_energy(all=False)
-    assert E.total == -3532.4797529097723
+    assert pytest.approx(E.total) == -3532.4797529097723
 
 def test_read_energy_vdw(sisl_files):
     f = sisl_files(_dir, 'molecule2_property.txt')
     out = txtSileORCA(f)
     E = out.read_energy(all=True)
     assert len(E) == 2
-    assert E[0].total == -3081.2651523095283
-    assert E[1].total == -3081.2651523149702
-    assert E[1].vdw == -0.011180550414138613
+    assert pytest.approx(E[0].total) == -3081.2651523095283
+    assert pytest.approx(E[1].total) == -3081.2651523149702
+    assert pytest.approx(E[1].vdw) == -0.011180550414138613
     E = out.read_energy()
-    assert E.total == -3081.2651523149702
-    assert E.vdw == -0.011180550414138613
+    assert pytest.approx(E.total) == -3081.2651523149702
+    assert pytest.approx(E.vdw) == -0.011180550414138613
 
 def test_read_geometry(sisl_files):
     f = sisl_files(_dir, 'molecule_property.txt')
