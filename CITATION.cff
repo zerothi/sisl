@@ -7,7 +7,7 @@ authors:
     orcid: "https://orcid.org/0000-0003-3038-1855"
     alias: zerothi
 title: sisl
-version: 0.13.0rc1
+version: 0.13.0rc2
 identifiers:
   - description: "Collection DOI for all sisl versions (preferred to use)"
     type: doi
