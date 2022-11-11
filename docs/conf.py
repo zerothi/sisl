@@ -88,7 +88,7 @@ templates_path = ['_templates']
 extlinks = {
     'issue': ('https://github.com/zerothi/sisl/issues/%s', 'issue %s'),
     'pull': ('https://github.com/zerothi/sisl/pull/%s', 'pull request %s'),
-    'doi': ('https://dx.doi.org/%s', '%s'),
+    'doi': ('https://doi.org/%s', '%s'),
 }
 
 # The suffix(es) of source filenames.

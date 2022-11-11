@@ -9,53 +9,60 @@ publications below.
 Please help maintaining the list complete via a `pull request <pr_>`_ or
 by writing an email to `nickpapior AT gmail.com <mailto:nickpapior@gmail.com>`_.
 
+#. CA. Pantis-Simut, *et al.*,
+   Nanomaterials **12**, :doi:`3650 (2022) <10.3390/nano12203650>`
+
+#. D. Li, *et al.*,
+   *Negative Differential Resistance in Spin-Crossover Molecular Devices*,
+   J. Phys. Chem. Lett. **13**, :doi:`7514-7520 <10.1021/acs.jpclett.2c01934>`
+
 #. N. Papior, S. Leitherer, M. Brandbyge,
    *Simple approach to current-induced bond weakening in ballistic conductors*,
-   Physical Review B, **106**, `155401 (2022) <10.1103/PhysRevB.106.155401>`_
+   Physical Review B, **106**, :doi:`155401 (2022) <10.1103/PhysRevB.106.155401>`
 
 #. EA. Haidar, S.A. Tawfik, C. Stampfl,
    *Twist-Dependent Electron Charge Transfer and Transport in Phosphorene–Graphene Heterobilayers*,
-   Journal of Physical Chemistry C, **46**, `25886 (2021) <https://doi.org/10.1021/acs.jpcc.1c08282>`_
+   Journal of Physical Chemistry C, **46**, :doi:`25886 (2021) <10.1021/acs.jpcc.1c08282>`
 
 #. M. Tenorio, *et al.*,
    *Atomically Sharp Lateral Superlattice Heterojunctions Built-in Nitrogen-doped Nanoporous Graphene*,
-   Advanced Materials, `(2022) <https://doi.org/10.1002/adma.202110099>`_
+   Advanced Materials, :doi:`(2022) <10.1002/adma.202110099>`
 
 #. G. Yu, *et al.*,
    *Interlayer hybridization in graphene quasicrystal and other bilayer graphene systems*,
-   Physical Review B, **105**, `125403 (2022) <https://doi.org/10.1103/PhysRevB.105.125403>`_
+   Physical Review B, **105**, :doi:`125403 (2022) <10.1103/PhysRevB.105.125403>`
 
 #. T. Wang, *et al.*,
    *Magnetic interactions between radical pairs in chiral graphene nanoribbons*,
-   Nano Lett. **22**, `164-171 (2022) <https://doi.org/10.1021/acs.nanolett.1c03578>`_
+   Nano Lett. **22**, :doi:`164-171 (2022) <10.1021/acs.nanolett.1c03578>`
 
 #. J. Hieulle, *et al.*,
    *On-surface synthesis and collective spin excitations of a triangulene-based nanostar*
-   Angew. Chem. Int. Ed. **60**, `25224-25229 (2021) <https://doi.org/10.1002/anie.202108301>`_
+   Angew. Chem. Int. Ed. **60**, :doi:`25224-25229 (2021) <10.1002/anie.202108301>`
 
 #. A. Pezo, *et al.*,
    *Manipulation of spin transport in graphene/transition metal dichalcogenide heterobilayers upon twisting*,
-   2D Materials, **9**, `015008 (2021) <https://doi.org/10.1088/2053-1583/ac3378>`_
+   2D Materials, **9**, :doi:`015008 (2021) <10.1088/2053-1583/ac3378>`
 
 #. J. Tong, *et al.*,
    *Breaking the symmetry of spin-sublattices in antiferromagnet by interfacial tailoring in the L10-MnPt/NaCl/Fe junction*,
-   Applied Physics Letter, **119**, `172401 (2021) <https://doi.org/10.1063/5.0064931>`_
+   Applied Physics Letter, **119**, :doi:`172401 (2021) <10.1063/5.0064931>`
 
 #. I. Alcon, N. Papior, G. Calogero, F. Vines, P. Gamallo, M. Brandbyge,
    *Acetylene-Mediated Electron Transport in Nanostructured Graphene and Hexagonal Boron Nitride*,
-   J. Phys. Chem. Lett. **12**, `11220 (2021) <https://doi.org/10.1021/acs.jpclett.1c03166>`_
+   J. Phys. Chem. Lett. **12**, :doi:`11220 (2021) <10.1021/acs.jpclett.1c03166>`
 
 #. N. Wittemeier, M.J. Verstraete, P. Ordejón, Z. Zanolli,
    *Interference effects in one-dimensional moiré crystals*,
-   Carbon **186**, `416 (2021) <https://doi.org/10.1016/j.carbon.2021.10.028>`_
+   Carbon **186**, :doi:`416 (2021) <10.1016/j.carbon.2021.10.028>`
 
 #. M. Mohr, A. Weismann, D. Li, M. Brandbyge, R. Berndt,
    *Current shot noise in atomic contacts: Fe and FeH2 between Au electrodes*
-   Physical Review B **104**, `115431 (2021) <https://doi.org/10.1103/PhysRevB.104.115431>`_
+   Physical Review B **104**, :doi:`115431 (2021) <10.1103/PhysRevB.104.115431>`
 
 #. J. Zhang, E.P. Fahrenthold,
    *Spin current distribution in antiferromagnetic zigzag graphene nanoribbons under transverse electric fields*,
-   Scientific Reports **1**, `17088 (2021) <https://doi.org/10.1038/s41598-021-96636-6>`_
+   Scientific Reports **1**, :doi:`17088 (2021) <10.1038/s41598-021-96636-6>`
 
 #. I. Alcon, G. Calogero, N. Papior, M. Brandbyge,
    *Electrochemical Control of Charge Current Flow in Nanoporous Graphene*,
@@ -103,7 +110,7 @@ by writing an email to `nickpapior AT gmail.com <mailto:nickpapior@gmail.com>`_.
 
 #. S. Sanz, P. Brandimarte, G. Giedke, D. Sanchez-Portal, T. Frederiksen,
    *Crossed graphene nanoribbons as beam splitters and mirrors for electron quantum optics*,
-   Physical Review B **102**, `035436 (2020) <https://journals.aps.org/prb/abstract/10.1103/PhysRevB.102.035436>`_
+   Physical Review B **102**, :doi:`035436 (2020) <10.1103/PhysRevB.102.035436>`
 
 #. J. Li, S. Sanz, J. Castro-Esteban, M. Vilas-Varela, N. Friedrich, T. Frederiksen, D. Pena, J.I. Pascual,
    *Uncovering the Triplet Ground State of Triangular Graphene Nanoflakes Engineered with Atomic Precision on a Metal Surface*,
@@ -213,4 +220,8 @@ These publications are as far as we know in the review process.
 
 - D. Weckbecker, M. Fleischmann, R. Gupta, W. Landgraf, S. Leitherer, O. Pankratov, S. Sharma, V. Meded, S. Shallcross,
   *Moiré ordered current loops in the graphene twist bilayer*,
-  `1901.04712 <https://arxiv.org/abs/1901.04712>`_
+  :doi:`1901.04712 <10.48550/arXiv.1901.04712>`
+
+- Y. Guan, O.V. Yazyev,
+  *Electronic transport in graphene with out-of-plane disorder*,
+  :doi:`2210.16629 <10.48550/arXiv.2210.16629>`
