@@ -94,17 +94,17 @@ q = PhysicalConstant(1.602176634e-19, "C")
 #: Bohr radius [m]
 a0 = PhysicalConstant(5.29177210903e-11, "m")
 #: Boltzmann constant [J K^-1]
-kB = PhysicalConstant(1.380649e-23, "J K^-1")
+kB = PhysicalConstant(1.380649e-23, "J/K")
 #: Electron mass [kg]
 m_e = PhysicalConstant(9.1093837015e-31, "kg")
 #: Planck constant [J Hz^-1]
-h = PhysicalConstant(6.62607015e-34, "J Hz^-1")
+h = PhysicalConstant(6.62607015e-34, "J s")
 #: Reduced Planck constant [J Hz^-1]
-hbar = PhysicalConstant(1.0545718176461565e-34, "J Hz^-1")
+hbar = PhysicalConstant(1.0545718176461565e-34, "J s")
 #: Proton mass [kg]
 m_p = PhysicalConstant(1.67262192369e-27, "kg")
 #: Speed of light in vacuum [m s^-1]
-c = PhysicalConstant(299792458.0, "m s^-1")
+c = PhysicalConstant(299792458.0, "m/s")
 
 
 # Values not found in the CODATA table

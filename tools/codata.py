@@ -8,7 +8,7 @@ def parse_line(line):
 
     name, value, (error), (unit)
     """
-    lines = line.strip().split("  ")
+    lines = line.strip().replace("Hz^-1", "s").split("  ")
     lines = [line.strip() for line in lines if line]
     if len(lines) in (3, 4):
         lines[1] = float(lines[1].replace(" ", "").replace("...", ""))
