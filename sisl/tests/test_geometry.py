@@ -809,6 +809,25 @@ class TestGeometry:
         sc_3x3 = g.sc.tile(3, 0).tile(3, 1)
         assert len(g.within_inf(sc_3x3)[0]) == len(g) * 3 ** 2
 
+    def test_within_inf_nonperiodic(self, setup):
+        g = setup.g.copy()
+
+        # Even if the geometry has nsc > 1, if we set periodic=False
+        # we should get only the atoms in the unit cell.
+        g.set_nsc([3,3,1])
+
+        ia, xyz, isc = g.within_inf(g.sc, periodic=[False, False, False])
+
+        assert len(ia) == g.na
+        assert np.all(isc == 0)
+
+        # Make sure that it also works with mixed periodic/non periodic directions
+        ia, xyz, isc = g.within_inf(g.sc, periodic=[True, False, False])
+
+        assert len(ia) > g.na
+        assert np.any(isc[:, 0] != 0)
+        assert np.all(isc[:, 1] == 0)
+
     def test_within_inf2(self, setup):
         g = setup.mol.translate([0.05] * 3)
         sc = SuperCell(1.5)
