@@ -4380,6 +4380,10 @@ class Geometry(SuperCellChild):
         # Now we have to figure out all atomic coordinates within
         cuboid = sc.toCuboid()
 
+        # Make sure that full_geom doesn't return coordinates outside the unit cell
+        # for non periodic directions
+        full_geom.set_nsc([full_geom.nsc[i] if periodic[i] else 1 for i in range(3)])
+
         # Now retrieve all atomic coordinates from the full geometry
         xyz = full_geom.axyz(_a.arangei(full_geom.na_s))
         idx = cuboid.within_index(xyz)
