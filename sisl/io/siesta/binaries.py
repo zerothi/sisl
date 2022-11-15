@@ -1017,12 +1017,12 @@ class hsxSileSiesta(SileBinSiesta):
 
     def _r_geometry_v0(self, **kwargs):
         """ Read the geometry from the old file version """
-        Gamma, spin, _, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
-        self._fortran_check("read_hamiltonian", "could not read Hamiltonian sizes.")
-        ncol, col, _, _, dxij = _siesta.read_hsx_hsx0(self.file, Gamma, spin, no, no_s, nnz)
+        spin, _, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
+        self._fortran_check("read_geometry", "could not read geometry sizes.")
+        ncol, col, _, _, dxij = _siesta.read_hsx_hsx0(self.file, spin, no, no_s, nnz)
         dxij = dxij.T * _Bohr2Ang
         col -= 1
-        self._fortran_check("read_hamiltonian", "could not read Hamiltonian.")
+        self._fortran_check("read_geometry", "could not read Hamiltonian.")
         ptr = _ncol_to_indptr(ncol)
         xij = SparseCSR((dxij, col, ptr), shape=(no, no_s))
         geom = self._xij2system(xij, kwargs.get("geometry", kwargs.get("geom", None)))
@@ -1033,7 +1033,7 @@ class hsxSileSiesta(SileBinSiesta):
         atoms = self._read_atoms(**kwargs)
 
         # now read coordinates and cell sizes
-        _, _, na, _, _, _ = _siesta.read_hsx_sizes(self.file)
+        _, na, _, _, _ = _siesta.read_hsx_sizes(self.file)
 
         cell, nsc, xa, _ = _siesta.read_hsx_geom1(self.file, na)
 
@@ -1064,9 +1064,9 @@ class hsxSileSiesta(SileBinSiesta):
         geom = self.read_geometry(**kwargs)
 
         # Now read the sizes used...
-        Gamma, spin, _, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
+        spin, _, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
         self._fortran_check("read_hamiltonian", "could not read Hamiltonian sizes.")
-        ncol, col, dH, dS, _ = _siesta.read_hsx_hsx0(self.file, Gamma, spin, no, no_s, nnz)
+        ncol, col, dH, dS, _ = _siesta.read_hsx_hsx0(self.file, spin, no, no_s, nnz)
         col -= 1
         self._fortran_check("read_hamiltonian", "could not read Hamiltonian.")
 
@@ -1101,7 +1101,7 @@ class hsxSileSiesta(SileBinSiesta):
         # Now read the sizes used...
         geom = self.read_geometry(**kwargs)
 
-        _, spin, _, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
+        spin, _, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
         self._fortran_check("read_hamiltonian", "could not read Hamiltonian sizes.")
         ncol, col, dH, dS, isc = _siesta.read_hsx_hsx1(self.file, spin, no, no_s, nnz)
         col -= 1
@@ -1144,9 +1144,9 @@ class hsxSileSiesta(SileBinSiesta):
         geom = self.read_geometry(**kwargs)
 
         # Now read the sizes used...
-        Gamma, spin, _, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
+        spin, _, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
         self._fortran_check("read_overlap", "could not read overlap matrix sizes.")
-        ncol, col, dS, _ = _siesta.read_hsx_sx0(self.file, Gamma, spin, no, no_s, nnz)
+        ncol, col, dS, _ = _siesta.read_hsx_sx0(self.file, spin, no, no_s, nnz)
         col -= 1
         self._fortran_check("read_overlap", "could not read overlap matrix.")
 
@@ -1180,7 +1180,7 @@ class hsxSileSiesta(SileBinSiesta):
         geom = self.read_geometry(**kwargs)
 
         # Now read the sizes used...
-        _, spin, _, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
+        spin, _, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
         self._fortran_check("read_overlap", "could not read overlap matrix sizes.")
         ncol, col, dS, isc = _siesta.read_hsx_sx1(self.file, spin, no, no_s, nnz)
         col -= 1

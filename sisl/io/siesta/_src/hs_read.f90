@@ -31,7 +31,7 @@ subroutine read_hs_header(fname, Gamma, nspin, no_u, no_s, maxnh)
 
 end subroutine read_hs_header
 
-subroutine read_hs(fname, Gamma, nspin, no_u,no_s,maxnh, &
+subroutine read_hs(fname, nspin, no_u,no_s,maxnh, &
     numh,listhptr,listh,H,S,xij)
   use io_m, only: open_file, close_file
   use io_m, only: iostat_update
@@ -44,14 +44,13 @@ subroutine read_hs(fname, Gamma, nspin, no_u,no_s,maxnh, &
 
   ! Input parameters
   character(len=*), intent(in) :: fname
-  logical, intent(in) :: Gamma
   integer, intent(in) :: no_u, no_s, nspin, maxnh
   integer, intent(out) :: listh(maxnh), numh(no_u), listhptr(no_u)
   real(dp), intent(out) :: H(maxnh,nspin), S(maxnh), xij(3,maxnh)
 
 ! Define f2py intents
 !f2py intent(in)  :: fname
-!f2py intent(in) :: Gamma, no_u, no_s, nspin, maxnh
+!f2py intent(in) :: no_u, no_s, nspin, maxnh
 !f2py intent(out) :: numh, listhptr, listh
 !f2py intent(out) :: H, S, xij
 
@@ -60,7 +59,7 @@ subroutine read_hs(fname, Gamma, nspin, no_u,no_s,maxnh, &
   integer :: is, ih, im, ip
 
   ! Local readables
-  logical :: lGamma
+  logical :: Gamma
   integer :: lno_s, lno_u, lnspin, lmaxnh
 
   call open_file(fname, 'read', 'old', 'unformatted', iu)
@@ -72,9 +71,15 @@ subroutine read_hs(fname, Gamma, nspin, no_u,no_s,maxnh, &
   if ( lnspin /= nspin ) stop 'Error in reading data, not allocated, nspin'
   if ( lmaxnh /= maxnh ) stop 'Error in reading data, not allocated, maxnh'
 
-  read(iu, iostat=ierr) lGamma
+  read(iu, iostat=ierr) Gamma
   call iostat_update(ierr)
-  if ( lGamma .neqv. Gamma ) stop 'Error in reading data, not allocated'
+  if ( Gamma ) then
+    if ( no_u /= no_s ) then
+      stop 'Error in reading data, not allocated, Gamma'
+    end if
+  else if ( no_u == no_s ) then
+    stop 'Error in reading data, not allocated, Gamma'
+  end if
 
 ! Read out indxuo
   if (.not. Gamma) then

@@ -47,18 +47,17 @@ subroutine read_hsx_version(fname, version)
 end subroutine read_hsx_version
 
 
-subroutine read_hsx_sizes(fname, Gamma, nspin, na_u, no_u, no_s, maxnh)
+subroutine read_hsx_sizes(fname, nspin, na_u, no_u, no_s, maxnh)
 
   implicit none
 
   ! Input parameters
   character(len=*), intent(in) :: fname
-  logical, intent(out) :: Gamma
   integer, intent(out) :: nspin, na_u, no_u, no_s, maxnh
 
 ! Define f2py intents
 !f2py intent(in)  :: fname
-!f2py intent(out) :: Gamma, nspin, na_u, no_u, no_s, maxnh
+!f2py intent(out) :: nspin, na_u, no_u, no_s, maxnh
 
   ! Internal variables and arrays
   integer :: version
@@ -67,17 +66,17 @@ subroutine read_hsx_sizes(fname, Gamma, nspin, na_u, no_u, no_s, maxnh)
 
   if ( version == 0 ) then ! old
 
-    call read_hsx_sizes0(fname, Gamma, nspin, na_u, no_u, no_s, maxnh)
+    call read_hsx_sizes0(fname, nspin, na_u, no_u, no_s, maxnh)
 
   else if ( version == 1 ) then
 
-    call read_hsx_sizes1(fname, Gamma, nspin, na_u, no_u, no_s, maxnh)
+    call read_hsx_sizes1(fname, nspin, na_u, no_u, no_s, maxnh)
 
   end if
 
 end subroutine read_hsx_sizes
 
-subroutine read_hsx_sizes0(fname, Gamma, nspin, na_u, no_u, no_s, maxnh)
+subroutine read_hsx_sizes0(fname, nspin, na_u, no_u, no_s, maxnh)
   use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
@@ -87,16 +86,16 @@ subroutine read_hsx_sizes0(fname, Gamma, nspin, na_u, no_u, no_s, maxnh)
 
   ! Input parameters
   character(len=*), intent(in) :: fname
-  logical, intent(out) :: Gamma
   integer, intent(out) :: nspin, na_u, no_u, no_s, maxnh
 
 ! Define f2py intents
 !f2py intent(in)  :: fname
-!f2py intent(out) :: Gamma, nspin, na_u, no_u, no_s, maxnh
+!f2py intent(out) :: nspin, na_u, no_u, no_s, maxnh
 
   ! Internal variables and arrays
   integer :: iu, ierr
   integer :: io, is, nspecies
+  logical :: Gamma
   character(len=20), allocatable :: label(:)
   real(dp), allocatable :: zval(:)
   integer, allocatable :: no(:)
@@ -146,7 +145,7 @@ subroutine read_hsx_sizes0(fname, Gamma, nspin, na_u, no_u, no_s, maxnh)
 
 end subroutine read_hsx_sizes0
 
-subroutine read_hsx_sizes1(fname, Gamma, nspin, na_u, no_u, no_s, maxnh)
+subroutine read_hsx_sizes1(fname, nspin, na_u, no_u, no_s, maxnh)
   use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
@@ -154,14 +153,14 @@ subroutine read_hsx_sizes1(fname, Gamma, nspin, na_u, no_u, no_s, maxnh)
 
   ! Input parameters
   character(len=*), intent(in) :: fname
-  logical, intent(out) :: Gamma
   integer, intent(out) :: nspin, na_u, no_u, no_s, maxnh
 
 ! Define f2py intents
 !f2py intent(in)  :: fname
-!f2py intent(out) :: Gamma, nspin, na_u, no_u, no_s, maxnh
+!f2py intent(out) :: nspin, na_u, no_u, no_s, maxnh
 
   ! Internal variables and arrays
+  logical :: Gamma
   integer :: version, nspecies, nsc(3)
   integer, allocatable :: numh(:)
   integer :: is
@@ -324,7 +323,7 @@ subroutine internal_read_hsx_skip_specie1(iu, nspecies)
 end subroutine internal_read_hsx_skip_specie1
 
 
-subroutine read_hsx_hsx0(fname, Gamma, nspin, no_u, no_s, maxnh, &
+subroutine read_hsx_hsx0(fname, nspin, no_u, no_s, maxnh, &
     numh, listh, H, S, xij)
   use io_m, only: open_file, close_file
   use io_m, only: iostat_update
@@ -336,14 +335,13 @@ subroutine read_hsx_hsx0(fname, Gamma, nspin, no_u, no_s, maxnh, &
 
   ! Input parameters
   character(len=*), intent(in) :: fname
-  logical, intent(in) :: Gamma
   integer, intent(in) :: nspin, no_u, no_s, maxnh
   integer, intent(out) :: numh(no_u), listh(maxnh)
   real(sp), intent(out) :: H(maxnh,nspin), S(maxnh), xij(3,maxnh)
 
 ! Define f2py intents
 !f2py intent(in) :: fname
-!f2py intent(in) :: Gamma, nspin, no_u, no_s, maxnh
+!f2py intent(in) :: nspin, no_u, no_s, maxnh
 !f2py intent(out) :: numh, listh
 !f2py intent(out) :: H, S, xij
 
@@ -353,7 +351,7 @@ subroutine read_hsx_hsx0(fname, Gamma, nspin, no_u, no_s, maxnh, &
   integer, allocatable :: listhptr(:)
 
   ! Local readables
-  logical :: lGamma
+  logical :: Gamma
   integer :: lno_s, lno_u, lnspin, lmaxnh
 
   call open_file(fname, 'read', 'old', 'unformatted', iu)
@@ -367,9 +365,15 @@ subroutine read_hsx_hsx0(fname, Gamma, nspin, no_u, no_s, maxnh, &
   if ( lmaxnh /= maxnh ) stop 'Error in reading data, not allocated, maxnh'
 
 ! Read logical
-  read(iu, iostat=ierr) lGamma
+  read(iu, iostat=ierr) Gamma
   call iostat_update(ierr)
-  if ( lGamma .neqv. Gamma ) stop 'Error in reading data, not allocated'
+  if ( Gamma ) then
+    if ( no_u /= no_s ) then
+      stop 'Error in reading data, not allocated, Gamma'
+    end if
+  else if ( no_u == no_s ) then
+    stop 'Error in reading data, not allocated, Gamma'
+  end if
 
 ! Read out indxuo
   if (.not. Gamma) then
@@ -559,7 +563,7 @@ subroutine read_hsx_hsx1(fname, nspin, no_u, no_s, maxnh, &
 end subroutine read_hsx_hsx1
 
 
-subroutine read_hsx_sx0(fname, Gamma, nspin, no_u, no_s, maxnh, &
+subroutine read_hsx_sx0(fname, nspin, no_u, no_s, maxnh, &
     numh, listh, S, xij)
   use io_m, only: open_file, close_file
   use io_m, only: iostat_update
@@ -571,7 +575,6 @@ subroutine read_hsx_sx0(fname, Gamma, nspin, no_u, no_s, maxnh, &
 
   ! Input parameters
   character(len=*), intent(in) :: fname
-  logical, intent(in) :: Gamma
   integer, intent(in) :: nspin, no_u, no_s, maxnh
   integer, intent(out) :: numh(no_u), listh(maxnh)
   real(sp), intent(out) :: S(maxnh), xij(3,maxnh)
@@ -588,7 +591,7 @@ subroutine read_hsx_sx0(fname, Gamma, nspin, no_u, no_s, maxnh, &
   integer, allocatable :: listhptr(:)
 
   ! Local readables
-  logical :: lGamma
+  logical :: Gamma
   integer :: lno_s, lno_u, lnspin, lmaxnh
 
   real(sp), allocatable :: buf(:)
@@ -604,9 +607,15 @@ subroutine read_hsx_sx0(fname, Gamma, nspin, no_u, no_s, maxnh, &
   if ( lmaxnh /= maxnh ) stop 'Error in reading data, not allocated, maxnh'
 
   ! Read logical
-  read(iu, iostat=ierr) lGamma
+  read(iu, iostat=ierr) Gamma
   call iostat_update(ierr)
-  if ( lGamma .neqv. Gamma ) stop 'Error in reading data, not allocated'
+  if ( Gamma ) then
+    if ( no_u /= no_s ) then
+      stop 'Error in reading data, not allocated, Gamma'
+    end if
+  else if ( no_u == no_s ) then
+    stop 'Error in reading data, not allocated, Gamma'
+  end if
 
   ! Read out indxuo
   if (.not. Gamma) then

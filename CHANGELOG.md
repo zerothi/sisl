@@ -23,6 +23,7 @@ we hit release version 1.0.0.
 	as the only argument.
 
 ### Fixed
+- rare compiler bug, #512
 - within_inf with periodic arguments, #511
 - reading TranSiesta data from outSileSiesta
 - regression from 80f27b05, reading version 0 HSX content, #492
