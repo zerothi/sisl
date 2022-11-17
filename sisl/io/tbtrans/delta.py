@@ -1,6 +1,7 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from pathlib import Path
 import numpy as np
 
 # Import sile objects
@@ -60,6 +61,131 @@ class deltancSileTBtrans(SileCDFTBtrans):
     >>> H[1, 1] += 1.j
     >>> dH.write_delta(H, E=1., k=[0, 0, 0]) # only at 1 eV and Gamma-point
     """
+
+    @classmethod
+    def merge(cls, fname, *deltas, **kwargs):
+        """ Merge several delta files into one Sile which contains the sum of the content
+
+        In cases where implementors use several different delta files it is necessary
+        to merge them into a single delta file before use in TBtrans.
+        This method does exactly that.
+
+        Notes
+        -----
+        The code checks whether `fname` is different from all `deltas` and that
+        all `deltas` are the same class.
+
+        Parameters
+        ----------
+        fname : str, Path
+          the output name of the merged file
+        *deltas : deltancSileTBtrans
+          all the delta files that should be merged
+        **kwargs :
+          arguments passed directly to the init of ``cls(fname, **kwargs)``
+        """
+        file = Path(fname)
+        for delta in deltas:
+            if delta.__class__ != cls:
+                raise ValueError(f"{cls.__name__}.merge requires all files to be the same class.")
+            if delta.file == file:
+                raise ValueError(f"{cls.__name__}.merge requires that the output file is different from all arguments.")
+
+        out = cls(fname, mode='w', **kwargs)
+
+        # Now create and simultaneously check for the same arguments
+        geom = deltas[0].read_geometry()
+        for delta in deltas[1:]:
+            if not geom.equal(delta.read_geometry()):
+                raise ValueError(f"{cls.__name__}.merge requires that the input files all contain the same geometry.")
+
+        # Now we are ready to write
+        out.write_geometry(geom)
+
+        # Now loop all different sparse stuff
+
+        # Level 1
+        deltas_lvl = []
+        m = 0
+        for delta in deltas:
+            if delta.has_level(1):
+                m = m + delta.read_delta()
+                deltas_lvl.append(delta)
+        if len(deltas_lvl) > 0:
+            out.write_delta(m)
+
+        # Level 2
+        deltas_lvl = []
+        ks = []
+        for delta in deltas:
+            if delta.has_level(2):
+                ks.append(delta._get_lvl(2).variables["kpt"][:])
+                deltas_lvl.append(delta)
+        ks = np.concatenate(ks)
+        ks = np.unique(ks, axis=0)
+        for k in ks:
+            m = 0
+            for delta in deltas_lvl:
+                try:
+                    # it could be that the k does not exist in this delta
+                    m = m + delta.read_delta(k=k)
+                except ValueError:
+                    pass
+            out.write_delta(m, k=k)
+
+        # Level 3
+        deltas_lvl = []
+        Es = []
+        for delta in deltas:
+            if delta.has_level(3):
+                Es.append(delta._get_lvl(3).variables["E"][:] * Ry2eV)
+                deltas_lvl.append(delta)
+        Es = np.concatenate(Es)
+        Es = np.unique(Es)
+        for E in Es:
+            m = 0
+            for delta in deltas_lvl:
+                try:
+                    # it could be that the E does not exist in this delta
+                    m = m + delta.read_delta(E=E)
+                except ValueError:
+                    pass
+            out.write_delta(m, E=E)
+
+        # Level 4
+        deltas_lvl = []
+        ks, Es = [], []
+        for delta in deltas:
+            if delta.has_level(4):
+                lvl = delta._get_lvl(4)
+                ks.append(lvl.variables["kpt"][:])
+                Es.append(lvl.variables["E"][:] * Ry2eV)
+                deltas_lvl.append(delta)
+        ks = np.concatenate(ks)
+        ks = np.unique(ks, axis=0)
+        Es = np.concatenate(Es)
+        Es = np.unique(Es)
+
+        for k in ks:
+            for E in Es:
+                m = 0
+                for delta in deltas_lvl:
+                    try:
+                        # it could be that the E does not exist in this delta
+                        m = m + delta.read_delta(E=E, k=k)
+                    except ValueError:
+                        pass
+                out.write_delta(m, E=E, k=k)
+
+    def has_level(self, ilvl):
+        """ Query whether the file has level `ilvl` content
+
+        Parameters
+        ----------
+        ilvl : int
+           the level to be queried, one of 1, 2, 3 or 4
+        """
+        return f"LEVEL-{ilvl}" in self.groups
 
     def read_supercell(self):
         """ Returns the `SuperCell` object from this file """
@@ -210,7 +336,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
 
         # Now determine the energy and k-indices
         iE = -1
-        if ilvl in [3, 4]:
+        if ilvl in (3, 4):
             if lvl.variables['E'].size != 0:
                 Es = _a.arrayd(lvl.variables['E'][:])
                 iE = np.argmin(np.abs(Es - E))
@@ -218,7 +344,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
                     iE = -1
 
         ik = -1
-        if ilvl in [2, 4]:
+        if ilvl in (2, 4):
             if lvl.variables['kpt'].size != 0:
                 kpt = _a.arrayd(lvl.variables['kpt'][:])
                 kpt.shape = (-1, 3)
@@ -229,9 +355,8 @@ class deltancSileTBtrans(SileCDFTBtrans):
         return ilvl, ik, iE
 
     def _get_lvl(self, ilvl):
-        slvl = f'LEVEL-{ilvl}'
-        if slvl in self.groups:
-            return self._crt_grp(self, slvl)
+        if self.has_level(ilvl):
+            return self._crt_grp(self, f"LEVEL-{ilvl}")
         raise ValueError(f"Level {ilvl} does not exist in {self.file}.")
 
     def _add_lvl(self, ilvl):
@@ -241,12 +366,12 @@ class deltancSileTBtrans(SileCDFTBtrans):
             lvl = self._crt_grp(self, slvl)
         else:
             lvl = self._crt_grp(self, slvl)
-            if ilvl in [2, 4]:
+            if ilvl in (2, 4):
                 self._crt_dim(lvl, 'nkpt', None)
                 self._crt_var(lvl, 'kpt', 'f8', ('nkpt', 'xyz'),
                               attrs={'info': 'k-points for delta values',
                                      'unit': 'b**-1'})
-            if ilvl in [3, 4]:
+            if ilvl in (3, 4):
                 self._crt_dim(lvl, 'ne', None)
                 self._crt_var(lvl, 'E', 'f8', ('ne',),
                               attrs={'info': 'Energy points for delta values',
@@ -326,7 +451,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
             v[:] = siesta_sc_off(*delta.geometry.sc.nsc).T
 
         warn_E = True
-        if ilvl in [3, 4]:
+        if ilvl in (3, 4):
             if iE < 0:
                 # We need to add the new value
                 iE = lvl.variables['E'].shape[0]
@@ -334,7 +459,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
                 warn_E = False
 
         warn_k = True
-        if ilvl in [2, 4]:
+        if ilvl in (2, 4):
             if ik < 0:
                 ik = lvl.variables['kpt'].shape[0]
                 lvl.variables['kpt'][ik, :] = k
@@ -410,16 +535,15 @@ class deltancSileTBtrans(SileCDFTBtrans):
         geom = self.read_geometry()
 
         # Determine the type of delta we are storing...
-        E = kwargs.get('E', None)
-
         ilvl, ik, iE = self._get_lvl_k_E(**kwargs)
 
         # Get the level
         lvl = self._get_lvl(ilvl)
 
-        if iE < 0 and ilvl in [3, 4]:
+        if iE < 0 and ilvl in (3, 4):
+            E = kwargs.get('E', None)
             raise ValueError(f"Energy {E} eV does not exist in the file.")
-        if ik < 0 and ilvl in [2, 4]:
+        if ik < 0 and ilvl in (2, 4):
             raise ValueError("k-point requested does not exist in the file.")
 
         if ilvl == 1:

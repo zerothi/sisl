@@ -8,6 +8,8 @@ we hit release version 1.0.0.
 ## [0.13.0] - YYYY-MM-DD
 
 ### Added
+- deltancSileTBtrans.merge allowing easy merging of several delta
+	siles, #513
 - implemented reading of output files from ORCA, #500
 - HydrogenicOrbital is added for simple handling of 1-valence electron
 	orbitals, #499

@@ -119,3 +119,47 @@ def test_tbt_delta_fail_ncol(sisl_tmp, sisl_system):
         H.finalize()
         with pytest.raises(ValueError):
             sile.write_delta(H, E=1.)
+
+
+def test_tbt_delta_merge(sisl_tmp, sisl_system):
+    f1 = sisl_tmp('gr1.dH.nc', _dir)
+    f2 = sisl_tmp('gr2.dH.nc', _dir)
+    fout = sisl_tmp('grmerged.dH.nc', _dir)
+
+
+    H = Hamiltonian(sisl_system.gtb)
+    H.construct([sisl_system.R, sisl_system.t])
+    H.finalize()
+
+    with deltancSileTBtrans(f1, 'w') as sile:
+        sile.write_delta(H, E=-1.)
+        sile.write_delta(H, E=-1., k=[0, 1, 1])
+        sile.write_delta(H)
+        sile.write_delta(H, k=[0, 1, 0])
+
+    with deltancSileTBtrans(f2, 'w') as sile:
+        sile.write_delta(H, E=-1.)
+        sile.write_delta(H, E=-1., k=[0, 1, 1])
+        sile.write_delta(H)
+        sile.write_delta(H, k=[0, 1, 0])
+
+    # Now merge them
+    deltancSileTBtrans.merge(fout,
+                             deltancSileTBtrans(f1),
+                             deltancSileTBtrans(f2))
+
+    with deltancSileTBtrans(fout, 'r') as sile:
+        h = sile.read_delta() / 2
+        assert h.spsame(H)
+        h = sile.read_delta(E=-1.) / 2
+        assert h.spsame(H)
+        h = sile.read_delta(E=-1., k=[0, 1, 1]) / 2
+        assert h.spsame(H)
+        h = sile.read_delta(k=[0, 1, 0]) / 2
+        assert h.spsame(H)
+
+        try:
+            h = sile.read_delta(k=[0, 1, 1]) / 2
+            assert False
+        except:
+            assert True
