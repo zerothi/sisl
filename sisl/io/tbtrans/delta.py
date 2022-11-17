@@ -79,17 +79,24 @@ class deltancSileTBtrans(SileCDFTBtrans):
         ----------
         fname : str, Path
           the output name of the merged file
-        *deltas : deltancSileTBtrans
+        *deltas : deltancSileTBtrans, str, Path
           all the delta files that should be merged
         **kwargs :
           arguments passed directly to the init of ``cls(fname, **kwargs)``
         """
         file = Path(fname)
+        deltas_obj = []
         for delta in deltas:
+            if isinstance(delta, (str, Path)):
+                delta = cls(delta, mode='r')
+            deltas_obj.append(delta)
             if delta.__class__ != cls:
                 raise ValueError(f"{cls.__name__}.merge requires all files to be the same class.")
             if delta.file == file:
                 raise ValueError(f"{cls.__name__}.merge requires that the output file is different from all arguments.")
+
+        # be sure to overwrite the input with objects
+        deltas = deltas_obj
 
         out = cls(fname, mode='w', **kwargs)
 

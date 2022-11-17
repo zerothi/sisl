@@ -144,9 +144,7 @@ def test_tbt_delta_merge(sisl_tmp, sisl_system):
         sile.write_delta(H, k=[0, 1, 0])
 
     # Now merge them
-    deltancSileTBtrans.merge(fout,
-                             deltancSileTBtrans(f1),
-                             deltancSileTBtrans(f2))
+    deltancSileTBtrans.merge(fout, deltancSileTBtrans(f1), f2)
 
     with deltancSileTBtrans(fout, 'r') as sile:
         h = sile.read_delta() / 2
