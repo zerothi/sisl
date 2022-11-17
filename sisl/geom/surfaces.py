@@ -297,10 +297,11 @@ def fcc_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=False, 
         If a `str` it can contain spaces to specify vacuum positions (then equivalent to ``layers.split()``).
         If there are no vacuum positions specified a vacuum will be placed *after* the layers.
         See examples for details.
-    vacuum : float or array_like, optional
+    vacuum : float or array_like or None, optional
         size of vacuum at locations specified in `layers`. The vacuum will always
         be placed along the :math:`z`-axis (3rd lattice vector).
         Each segment in `layers` will be appended the vacuum as found by ``zip_longest(layers, vacuum)``.
+        None means that no vacuum is inserted (keeps the crystal structure intact).
     orthogonal : bool, optional
         if True returns an orthogonal lattice
     start : int or str or array_like, optional
@@ -325,6 +326,10 @@ def fcc_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=False, 
     111 surface, ending with the B layer
 
     >>> fcc_slab(alat, atoms, "111", end='B')
+
+    fcc crystal with 6 layers and the 111 orientation (periodic also on the z-direction, e.g., for an electrode geometry)
+
+    >>> fcc_slab(alat, atoms, "111", layers=6, vacuum=None)
 
     111 surface, with explicit layers in a given order
 
@@ -477,10 +482,11 @@ def bcc_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=False, 
         If a `str` it can contain spaces to specify vacuum positions (then equivalent to ``layers.split()``).
         If there are no vacuum positions specified a vacuum will be placed *after* the layers.
         See examples for details.
-    vacuum : float or array_like, optional
+    vacuum : float or array_like or None, optional
         size of vacuum at locations specified in `layers`. The vacuum will always
         be placed along the :math:`z`-axis (3rd lattice vector).
         Each segment in `layers` will be appended the vacuum as found by ``zip_longest(layers, vacuum)``.
+        None means that no vacuum is inserted (keeps the crystal structure intact).
     orthogonal : bool, optional
         if True returns an orthogonal lattice
     start : int or str or array_like, optional
@@ -626,10 +632,11 @@ def rocksalt_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=Fa
         If a `str` it can contain spaces to specify vacuum positions (then equivalent to ``layers.split()``).
         If there are no vacuum positions specified a vacuum will be placed *after* the layers.
         See examples for details.
-    vacuum : float or array_like, optional
+    vacuum : float or array_like or None, optional
         size of vacuum at locations specified in `layers`. The vacuum will always
         be placed along the :math:`z`-axis (3rd lattice vector).
         Each segment in `layers` will be appended the vacuum as found by ``zip_longest(layers, vacuum)``.
+        None means that no vacuum is inserted (keeps the crystal structure intact).
     orthogonal : bool, optional
         if True returns an orthogonal lattice
     start : int or str or array_like, optional
