@@ -47,6 +47,9 @@ we hit release version 1.0.0.
 - significant performance improvement for COOP calculations,
 	thanks to Susanne Leitherer for discovering the issue
 - changed argument order of ElectronState.COP
+- index ordering of polarized spin quantities are now changed to
+  [total, Sz]. This makes the ordering follow the non-colinear
+	cases (see discussion in #501)
 - ensured all units are now CODATA-2018 values
 - `cell_length` changed to `cell2length` with new axes argument
 - enabled orbitals up to the h-shell, #491

@@ -1139,17 +1139,17 @@ class TestHamiltonian:
         pdos = es.inner(matrix=spin.X).real
         assert np.allclose(PDOS[1, 0], pdos.sum())
         assert np.allclose(SM[:, 0], pdos)
-        assert np.allclose(SMp[:, :, 0].sum(-1), pdos)
+        assert np.allclose(SMp[:, 0].sum(-1), pdos)
 
         pdos = es.inner(matrix=spin.Y).real
         assert np.allclose(PDOS[2, 0], pdos.sum())
         assert np.allclose(SM[:, 1], pdos)
-        assert np.allclose(SMp[:, :, 1].sum(-1), pdos)
+        assert np.allclose(SMp[:, 1].sum(-1), pdos)
 
         pdos = es.inner(matrix=spin.Z).real
         assert np.allclose(PDOS[3, 0], pdos.sum())
         assert np.allclose(SM[:, 2], pdos)
-        assert np.allclose(SMp[:, :, 2].sum(-1), pdos)
+        assert np.allclose(SMp[:, 2].sum(-1), pdos)
 
     def test_pdos_so(self):
         geom = Geometry([0] * 3)
@@ -1174,17 +1174,17 @@ class TestHamiltonian:
         pdos = es.inner(matrix=spin.X).real
         assert np.allclose(PDOS[1, 0], pdos.sum())
         assert np.allclose(SM[:, 0], pdos)
-        assert np.allclose(SMp[:, :, 0].sum(-1), pdos)
+        assert np.allclose(SMp[:, 0].sum(-1), pdos)
 
         pdos = es.inner(matrix=spin.Y).real
         assert np.allclose(PDOS[2, 0], pdos.sum())
         assert np.allclose(SM[:, 1], pdos)
-        assert np.allclose(SMp[:, :, 1].sum(-1), pdos)
+        assert np.allclose(SMp[:, 1].sum(-1), pdos)
 
         pdos = es.inner(matrix=spin.Z).real
         assert np.allclose(PDOS[3, 0], pdos.sum())
         assert np.allclose(SM[:, 2], pdos)
-        assert np.allclose(SMp[:, :, 2].sum(-1), pdos)
+        assert np.allclose(SMp[:, 2].sum(-1), pdos)
 
     def test_coop_against_pdos_nonortho(self, setup):
         HS = setup.HS.copy()
@@ -1472,7 +1472,7 @@ class TestHamiltonian:
             assert np.allclose(sm[:, 2], sm3)
 
             om = es.spin_moment(project=True)
-            assert np.allclose(sm, om.sum(1))
+            assert np.allclose(sm, om.sum(-1))
 
             PDOS = es.PDOS(np.linspace(-1, 1, 21))
             DOS = es.DOS(np.linspace(-1, 1, 21))
@@ -1535,7 +1535,7 @@ class TestHamiltonian:
             sm = es.spin_moment()
 
             om = es.spin_moment(project=True)
-            assert np.allclose(sm, om.sum(1))
+            assert np.allclose(sm, om.sum(-1))
 
             PDOS = es.PDOS(np.linspace(-1, 1, 21))
             DOS = es.DOS(np.linspace(-1, 1, 21))
@@ -1611,7 +1611,7 @@ class TestHamiltonian:
             assert np.allclose(sm[:, 2], sm3)
 
             om = es.spin_moment(project=True)
-            assert np.allclose(sm, om.sum(1))
+            assert np.allclose(sm, om.sum(-1))
 
             PDOS = es.PDOS(np.linspace(-1, 1, 21))
             DOS = es.DOS(np.linspace(-1, 1, 21))
