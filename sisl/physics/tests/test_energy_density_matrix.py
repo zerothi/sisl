@@ -88,9 +88,9 @@ class TestEnergyDensityMatrix:
         E = setup.E.copy()
         E.construct(setup.func)
         mulliken = E.mulliken('atom')
-        assert mulliken.shape == (len(E.geometry), 1)
+        assert mulliken.shape == (len(E.geometry),)
         mulliken = E.mulliken('orbital')
-        assert mulliken.shape == (len(E), 1)
+        assert mulliken.shape == (len(E),)
 
     def test_mulliken_values_orthogonal(self, setup):
         E = setup.E.copy()
@@ -98,10 +98,10 @@ class TestEnergyDensityMatrix:
         E[1, 1] = 2.
         E[1, 2] = 2.
         mulliken = E.mulliken('orbital')
-        assert np.allclose(mulliken[:2, 0], [1., 2.])
+        assert np.allclose(mulliken[:2], [1., 2.])
         assert mulliken.sum() == pytest.approx(3)
         mulliken = E.mulliken('atom')
-        assert mulliken[0, 0] == pytest.approx(3)
+        assert mulliken[0] == pytest.approx(3)
         assert mulliken.sum() == pytest.approx(3)
 
     def test_mulliken_values_non_orthogonal(self, setup):
@@ -110,10 +110,10 @@ class TestEnergyDensityMatrix:
         E[1, 1] = (2., 1.)
         E[1, 2] = (2., 0.5)
         mulliken = E.mulliken('orbital')
-        assert np.allclose(mulliken[:2, 0], [1., 3.])
+        assert np.allclose(mulliken[:2], [1., 3.])
         assert mulliken.sum() == pytest.approx(4.)
         mulliken = E.mulliken('atom')
-        assert mulliken[0, 0] == pytest.approx(4)
+        assert mulliken[0] == pytest.approx(4)
         assert mulliken.sum() == pytest.approx(4)
 
     def test_set1(self, setup):

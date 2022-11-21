@@ -72,7 +72,7 @@ def test_dm_soc_pt2_xx_mulliken(sisl_files):
     o2a = DM.geometry.o2a(np.arange(DM.no))
 
     ma = np.zeros_like(Ma)
-    np.add.at(ma, o2a, Mo)
+    np.add.at(ma.T, o2a, Mo.T)
     assert np.allclose(ma, Ma)
 
 

@@ -1043,10 +1043,21 @@ class outSileSiesta(SileSiesta):
             """ Read output from Voronoi/Hirshfeld charges """
             nonlocal pd
 
-            # Expecting something like this:
+            # Expecting something like this (NC/SOC)
             # Voronoi Atomic Populations:
             # Atom #     dQatom  Atom pop         S        Sx        Sy        Sz  Species
             #      1   -0.02936   4.02936   0.00000  -0.00000   0.00000   0.00000  C
+            # or (polarized)
+            # Voronoi Atomic Populations:
+            # Atom #     dQatom  Atom pop        Sz  Species
+            #      1   -0.02936   4.02936   0.00000  C
+
+            # first line is the header
+            header = (self.readline()
+                      .replace("dQatom", "dq") # dQatom in master
+                      .replace(" Qatom", " dq") # Qatom in 4.1
+                      .replace("Atom pop", "e") # not found in 4.1
+                      .split())[2:-1]
 
             # Define the function that parses the charges
             def _parse_charge(line):
@@ -1056,13 +1067,6 @@ class outSileSiesta(SileSiesta):
                 # is still parseable
                 #atom_idx = int(atom_idx)
                 return list(map(float, vals))
-
-            # first line is the header
-            header = (self.readline()
-                      .replace("dQatom", "dq") # dQatom in master
-                      .replace(" Qatom", " dq") # Qatom in 4.1
-                      .replace("Atom pop", "e") # not found in 4.1
-                      .split())[2:-1]
 
             # We have found the header, prepare a list to read the charges
             atom_charges = []

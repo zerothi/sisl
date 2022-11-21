@@ -315,22 +315,29 @@ class _densitymatrix(SparseOrbitalBZSpin):
         Returns
         -------
         numpy.ndarray
-            if `projection` does not contain matrix, the first dimension contains the orbitals, and
-            the 2nd the spin information
+            if `projection` does not contain matrix, otherwise ``[spin, no]``, for polarized spin is [T, Sz]
+            and for non-colinear spin is [T, Sx, Sy, Sz]
         """
         def _convert(M):
             """ Converts a non-colinear DM from [11, 22, Re(12), Im(12)] -> [T, Sx, Sy, Sz] """
-            if M.shape[-1] == 8:
+            if M.shape[0] == 8:
                 # We need to calculate the corresponding values
-                M[:, 2] = 0.5 * (M[:, 2] + M[:, 6])
-                M[:, 3] = 0.5 * (M[:, 3] - M[:, 7]) # sign change again below
-                M = M[:, :4]
-            if M.shape[-1] == 4:
+                M[2] = 0.5 * (M[2] + M[6])
+                M[3] = 0.5 * (M[3] - M[7]) # sign change again below
+                M = M[:4]
+            elif M.shape[0] == 2:
+                tmp = M[1]
+                M[1] = M[0] - M[1]
+                M[0] += tmp
+            elif M.shape[0] == 1:
+                M = M[0]
+            if M.shape[0] == 4:
+                # catches both shape[0] in [4, 8]
                 m = np.empty_like(M)
-                m[:, 0] = M[:, 0] + M[:, 1]
-                m[:, 3] = M[:, 0] - M[:, 1]
-                m[:, 1] = 2 * M[:, 2]
-                m[:, 2] = - 2 * M[:, 3]
+                m[0] = M[0] + M[1]
+                m[3] = M[0] - M[1]
+                m[1] = 2 * M[2]
+                m[2] = - 2 * M[3]
             else:
                 return M
             return m
@@ -338,27 +345,27 @@ class _densitymatrix(SparseOrbitalBZSpin):
         if "orbital" == projection:
             # Orbital Mulliken population
             if self.orthogonal:
-                D = np.array([self._csr.tocsr(i).diagonal() for i in range(self.shape[2])]).T
+                D = np.array([self._csr.tocsr(i).diagonal() for i in range(self.shape[2])])
             else:
                 D = self._csr.copy(range(self.shape[2] - 1))
                 D._D *= self._csr._D[:, -1].reshape(-1, 1)
-                D = np.sum(D, axis=1)
+                D = np.sum(D, axis=1).T
 
             return _convert(D)
 
         elif "atom" == projection:
             # Atomic Mulliken population
             if self.orthogonal:
-                D = np.array([self._csr.tocsr(i).diagonal() for i in range(self.shape[2])]).T
+                D = np.array([self._csr.tocsr(i).diagonal() for i in range(self.shape[2])])
             else:
                 D = self._csr.copy(range(self.shape[2] - 1))
                 D._D *= self._csr._D[:, -1].reshape(-1, 1)
-                D = np.sum(D, axis=1)
+                D = np.sum(D, axis=1).T
 
             # Now perform summation per atom
             geom = self.geometry
-            M = np.zeros([geom.na, D.shape[1]], dtype=D.dtype)
-            np.add.at(M, geom.o2a(np.arange(geom.no)), D)
+            M = np.zeros([D.shape[0], geom.na], dtype=D.dtype)
+            np.add.at(M.T, geom.o2a(np.arange(geom.no)), D.T)
             del D
 
             return _convert(M)
@@ -989,10 +996,10 @@ class DensityMatrix(_densitymatrix):
         #    L(:) = [L(3), -L(2), -L(1)]
         # Here we *directly* store the quantities used.
         # Pre-allocate the L_xyz quantity per orbital.
-        L = np.zeros([geom.no, 3])
-        L0 = L[:, 0]
-        L1 = L[:, 1]
-        L2 = L[:, 2]
+        L = np.zeros([3, geom.no])
+        L0 = L[0]
+        L1 = L[1]
+        L2 = L[2]
 
         # Pre-calculate all those which have m_i + m_j == 0
         b = (idx_m + jdx_m == 0).nonzero()[0]
@@ -1084,8 +1091,8 @@ class DensityMatrix(_densitymatrix):
             return L
         if "atom" == projection:
             # Now perform summation per atom
-            l = np.zeros([geom.na, 3], dtype=L.dtype)
-            add.at(l, geom.o2a(np.arange(geom.no)), L)
+            l = np.zeros([3, geom.na], dtype=L.dtype)
+            add.at(l.T, geom.o2a(np.arange(geom.no)), L.T)
             return l
         raise ValueError(f"{self.__class__.__name__}.orbital_momentum must define projection to be 'orbital' or 'atom'.")
 
