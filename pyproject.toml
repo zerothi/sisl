@@ -12,7 +12,7 @@
 # TODO update this together with setup.cfg
 requires = [
     "wheel",
-    "setuptools>=46.0",
+    "setuptools>=46.0, <=59.2",
     "setuptools_scm>=6.2",
     "Cython>=0.28",
     # see https://github.com/scipy/oldest-supported-numpy/
