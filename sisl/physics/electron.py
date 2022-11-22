@@ -451,7 +451,7 @@ def spin_moment(state, S=None, project=False):
     Returns
     -------
     numpy.ndarray
-        spin moments per state with final dimension ``(state.shape[0], 3)``, or ``(state.shape[0], 3, state.shape[1]//2)`` if project is true
+        spin moments per state with final dimension ``(3, state.shape[0])``, or ``(3, state.shape[0], state.shape[1]//2)`` if project is true
     """
     if state.ndim == 1:
         return spin_moment(state.reshape(1, -1), S, project)[0]
@@ -470,20 +470,20 @@ def spin_moment(state, S=None, project=False):
     # see PDOS for details related to the spin-box calculations
 
     if project:
-        s = np.empty([state.shape[0], 3, state.shape[1] // 2], dtype=dtype_complex_to_real(state.dtype))
+        s = np.empty([3, state.shape[0], state.shape[1] // 2], dtype=dtype_complex_to_real(state.dtype))
 
         for i in range(len(state)):
             cs = conj(state[i]).reshape(-1, 2)
             Sstate = S.dot(state[i].reshape(-1, 2))
             D1 = (cs * Sstate).real
-            s[i, 2, :] = D1[:, 0] - D1[:, 1]
+            s[2, i] = D1[:, 0] - D1[:, 1]
             D1 = cs[:, 1] * Sstate[:, 0]
             D2 = cs[:, 0] * Sstate[:, 1]
-            s[i, 0, :] = D1.real + D2.real
-            s[i, 1, :] = D2.imag - D1.imag
+            s[0, i] = D1.real + D2.real
+            s[1, i] = D2.imag - D1.imag
 
     else:
-        s = np.empty([state.shape[0], 3], dtype=dtype_complex_to_real(state.dtype))
+        s = np.empty([3, state.shape[0]], dtype=dtype_complex_to_real(state.dtype))
 
         # TODO consider doing this all in a few lines
         # TODO Since there are no energy dependencies here we can actually do all
@@ -493,9 +493,9 @@ def spin_moment(state, S=None, project=False):
             cs = conj(state[i]).reshape(-1, 2)
             Sstate = S.dot(state[i].reshape(-1, 2))
             D = cs.T @ Sstate
-            s[i, 2] = D[0, 0].real - D[1, 1].real
-            s[i, 0] = D[1, 0].real + D[0, 1].real
-            s[i, 1] = D[0, 1].imag - D[1, 0].imag
+            s[2, i] = D[0, 0].real - D[1, 1].real
+            s[0, i] = D[1, 0].real + D[0, 1].real
+            s[1, i] = D[0, 1].imag - D[1, 0].imag
 
     return s
 
