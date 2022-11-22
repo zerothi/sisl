@@ -1843,7 +1843,7 @@ class EigenstateElectron(StateCElectron):
         """
         return PDOS(E, self.c, self.state, self.Sk(), distribution, getattr(self.parent, "spin", None))
 
-    def COP(self, M, E, distribution="gaussian"):
+    def COP(self, E, M, distribution="gaussian"):
         r""" Calculate COP for provided energies, `E` using matrix `M`
 
         This routine calls `~sisl.physics.electron.COP` with appropriate arguments.

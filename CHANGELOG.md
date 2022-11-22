@@ -40,6 +40,7 @@ we hit release version 1.0.0.
 - tbtrans files now have a separate entry in the documentation
 
 ### Changed
+- changed argument order of ElectronState.COP
 - ensured all units are now CODATA-2018 values
 - `cell_length` changed to `cell2length` with new axes argument
 - enabled orbitals up to the h-shell, #491
