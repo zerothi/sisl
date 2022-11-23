@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.RealSpaceSE &mdash; sisl 0.1.dev1+g3b3ade9 documentation</title>
+  <title>sisl.physics.RealSpaceSE &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -21,7 +21,7 @@
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -39,7 +39,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g3b3ade9
+                0.1.dev1+gdb0fc67
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -114,11 +114,11 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">API documentation</a> &raquo;</li>
-          <li><a href="../physics.html">Physical objects</a> &raquo;</li>
-          <li><a href="../physics.matrix.html">Physical quantites</a> &raquo;</li>
-      <li>sisl.physics.RealSpaceSE</li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">API documentation</a></li>
+          <li class="breadcrumb-item"><a href="../physics.html">Physical objects</a></li>
+          <li class="breadcrumb-item"><a href="../physics.matrix.html">Physical quantites</a></li>
+      <li class="breadcrumb-item active">sisl.physics.RealSpaceSE</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/api/generated/sisl.physics.RealSpaceSE.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -170,19 +170,19 @@
 <li><p><strong>parent</strong> (<a class="reference internal" href="sisl.physics.SparseOrbitalBZ.html#sisl.physics.SparseOrbitalBZ" title="sisl.physics.SparseOrbitalBZ"><em>SparseOrbitalBZ</em></a>) – a physical object from which to calculate the real-space self-energy.
 The parent object <em>must</em> have only 3 supercells along the direction where
 self-energies are used.</p></li>
-<li><p><strong>semi_axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – semi-infinite direction (where self-energies are used and thus <em>exact</em> precision)</p></li>
-<li><p><strong>k_axes</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – the axes where k-points are desired. 1 or 2 values are required and the <em class="xref py py-obj">semi_axis</em>
+<li><p><strong>semi_axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – semi-infinite direction (where self-energies are used and thus <em>exact</em> precision)</p></li>
+<li><p><strong>k_axes</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the axes where k-points are desired. 1 or 2 values are required and the <em class="xref py py-obj">semi_axis</em>
 cannot be one of them</p></li>
-<li><p><strong>unfold</strong> (<em>(</em><em>3</em><em>,</em><em>) of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – number of times the <em class="xref py py-obj">parent</em> structure is tiled along each direction
+<li><p><strong>unfold</strong> (<em>(</em><em>3</em><em>,</em><em>) of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – number of times the <em class="xref py py-obj">parent</em> structure is tiled along each direction
 The resulting Green function/self-energy ordering is always tiled along
 the semi-infinite direction first, and then the other directions in order.</p></li>
-<li><p><strong>eta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – imaginary part in the self-energy calculations (default 1e-4 eV)</p></li>
-<li><p><strong>dk</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – fineness of the default integration grid, specified in units of Ang, default to 1000 which
+<li><p><strong>eta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – imaginary part in the self-energy calculations (default 1e-4 eV)</p></li>
+<li><p><strong>dk</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – fineness of the default integration grid, specified in units of Ang, default to 1000 which
 translates to 1000 k-points along reciprocal cells of length 1. Ang^-1.</p></li>
 <li><p><strong>bz</strong> (<a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><em>BrillouinZone</em></a><em>, </em><em>optional</em>) – integration k-points, if not passed the number of k-points will be determined using
 <em class="xref py py-obj">dk</em> and time-reversal symmetry will be determined by <em class="xref py py-obj">trs</em>, the number of points refers
 to the unfolded system.</p></li>
-<li><p><strong>trs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – whether time-reversal symmetry is used in the BrillouinZone integration, default
+<li><p><strong>trs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether time-reversal symmetry is used in the BrillouinZone integration, default
 to true.</p></li>
 </ul>
 </dd>
@@ -269,7 +269,7 @@ to true.</p></li>
 <li><p><strong>k</strong> (<em>array_like</em><em>, </em><em>optional</em>) – only viable for 3D bulk systems with real-space Green functions along 2 directions.
 I.e. this would correspond to a circular real-space Green function</p></li>
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the resulting data type, default to <code class="docutils literal notranslate"><span class="pre">np.complex128</span></code></p></li>
-<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a><em>, </em><em>optional</em>) – arguments passed directly to the <code class="docutils literal notranslate"><span class="pre">self.parent.Pk</span></code> method (not <code class="docutils literal notranslate"><span class="pre">self.parent.Sk</span></code>), for instance <code class="docutils literal notranslate"><span class="pre">spin</span></code></p></li>
+<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – arguments passed directly to the <code class="docutils literal notranslate"><span class="pre">self.parent.Pk</span></code> method (not <code class="docutils literal notranslate"><span class="pre">self.parent.Sk</span></code>), for instance <code class="docutils literal notranslate"><span class="pre">spin</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -294,7 +294,7 @@ sampling times the unfolding (per <span class="math notranslate nohighlight">\(\
 out of the real-space matrix.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ret_indices</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – if true, also return the atomic indices (corresponding to <a class="reference internal" href="#sisl.physics.RealSpaceSE.real_space_parent" title="sisl.physics.RealSpaceSE.real_space_parent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">real_space_parent</span></code></a>) that encompass the coupling matrix</p>
+<dd class="field-odd"><p><strong>ret_indices</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – if true, also return the atomic indices (corresponding to <a class="reference internal" href="#sisl.physics.RealSpaceSE.real_space_parent" title="sisl.physics.RealSpaceSE.real_space_parent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">real_space_parent</span></code></a>) that encompass the coupling matrix</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
@@ -375,12 +375,12 @@ calculated the self-energy, this will be <em>much</em>, <em>MUCH</em> faster!</p
 <li><p><strong>E</strong> (<em>float/complex</em>) – energy to evaluate the real-space self-energy at</p></li>
 <li><p><strong>k</strong> (<em>array_like</em><em>, </em><em>optional</em>) – only viable for 3D bulk systems with real-space self-energies along 2 directions.
 I.e. this would correspond to circular self-energies.</p></li>
-<li><p><strong>bulk</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – if true, <span class="math notranslate nohighlight">\(\mathbf S^{\mathcal{R}} E - \mathbf H^{\mathcal{R}} - \boldsymbol\Sigma^\mathcal{R}\)</span>
+<li><p><strong>bulk</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – if true, <span class="math notranslate nohighlight">\(\mathbf S^{\mathcal{R}} E - \mathbf H^{\mathcal{R}} - \boldsymbol\Sigma^\mathcal{R}\)</span>
 is returned, otherwise <span class="math notranslate nohighlight">\(\boldsymbol\Sigma^\mathcal{R}\)</span> is returned</p></li>
-<li><p><strong>coupling</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – if True, only the self-energy terms located on the coupling geometry (<em class="xref py py-obj">coupling_geometry</em>)
+<li><p><strong>coupling</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – if True, only the self-energy terms located on the coupling geometry (<em class="xref py py-obj">coupling_geometry</em>)
 are returned</p></li>
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the resulting data type, default to <code class="docutils literal notranslate"><span class="pre">np.complex128</span></code></p></li>
-<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a><em>, </em><em>optional</em>) – arguments passed directly to the <code class="docutils literal notranslate"><span class="pre">self.parent.Pk</span></code> method (not <code class="docutils literal notranslate"><span class="pre">self.parent.Sk</span></code>), for instance <code class="docutils literal notranslate"><span class="pre">spin</span></code></p></li>
+<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – arguments passed directly to the <code class="docutils literal notranslate"><span class="pre">self.parent.Pk</span></code> method (not <code class="docutils literal notranslate"><span class="pre">self.parent.Sk</span></code>), for instance <code class="docutils literal notranslate"><span class="pre">spin</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -394,13 +394,13 @@ are returned</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>eta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – imaginary part in the self-energy calculations (default 1e-4 eV)</p></li>
-<li><p><strong>dk</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – fineness of the default integration grid, specified in units of Ang, default to 1000 which
+<li><p><strong>eta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – imaginary part in the self-energy calculations (default 1e-4 eV)</p></li>
+<li><p><strong>dk</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – fineness of the default integration grid, specified in units of Ang, default to 1000 which
 translates to 1000 k-points along reciprocal cells of length 1. Ang^-1.</p></li>
 <li><p><strong>bz</strong> (<a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><em>BrillouinZone</em></a><em>, </em><em>optional</em>) – integration k-points, if not passed the number of k-points will be determined using
 <em class="xref py py-obj">dk</em> and time-reversal symmetry will be determined by <em class="xref py py-obj">trs</em>, the number of points refers
 to the unfolded system.</p></li>
-<li><p><strong>trs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – whether time-reversal symmetry is used in the BrillouinZone integration, default
+<li><p><strong>trs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether time-reversal symmetry is used in the BrillouinZone integration, default
 to true.</p></li>
 </ul>
 </dd>

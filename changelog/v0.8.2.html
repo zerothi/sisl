@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>0.8.2 &mdash; sisl 0.1.dev1+g3b3ade9 documentation</title>
+  <title>0.8.2 &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -21,7 +21,7 @@
         <script src="../_static/doctools.js"></script>
         <script src="../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -37,7 +37,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g3b3ade9
+                0.1.dev1+gdb0fc67
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -114,9 +114,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="index.html">Release notes</a> &raquo;</li>
-      <li>0.8.2</li>
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Release notes</a></li>
+      <li class="breadcrumb-item active">0.8.2</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/changelog/v0.8.2.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -256,7 +256,7 @@ The orbitals are with respect to the local orbital indices on the given atom</p>
 <span class="pre">&gt;&gt;&gt;</span> <span class="pre">for</span> <span class="pre">ia,</span> <span class="pre">io</span> <span class="pre">in</span> <span class="pre">Geometry.iter_orbitals(local=False):</span>
 <span class="pre">&gt;&gt;&gt;</span>&#160;&#160;&#160;&#160; <span class="pre">Geometry.atom[ia].R[io]</span>
 <span class="pre">`</span></code></p>
-<p>does not work because <a class="reference external" href="https://docs.python.org/3/library/io.html#module-io" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">io</span></code></a> is globally defined.</p>
+<p>does not work because <a class="reference external" href="https://docs.python.org/3/library/io.html#module-io" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">io</span></code></a> is globally defined.</p>
 </li>
 <li><p>Changed argument name for <em class="xref py py-obj">coords</em>, <em class="xref py py-obj">atom</em> instead of the
 old <em class="xref py py-obj">idx</em>.</p></li>

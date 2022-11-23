@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>0.12.0 &mdash; sisl 0.1.dev1+g3b3ade9 documentation</title>
+  <title>0.12.0 &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -21,7 +21,7 @@
         <script src="../_static/doctools.js"></script>
         <script src="../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -37,7 +37,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g3b3ade9
+                0.1.dev1+gdb0fc67
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -122,9 +122,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="index.html">Release notes</a> &raquo;</li>
-      <li>0.12.0</li>
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Release notes</a></li>
+      <li class="breadcrumb-item active">0.12.0</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/changelog/v0.12.0.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -210,7 +210,7 @@ names contributed a patch for the first time.</p>
 <li><p><em class="xref py py-obj">sc</em> argument to <em class="xref py py-obj">xyzSile.read_geometry</em> for user defined cells</p></li>
 <li><p>tiling a State object, #354 and #355</p></li>
 <li><p>replacing atoms in SparseOrbital geometries #139</p></li>
-<li><p>direction now accepts <a class="reference external" href="https://docs.python.org/3/library/abc.html#module-abc" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">abc</span></code></a> and <em class="xref py py-obj">xyz</em> keywords to retrieve vectors depending on direction input.</p></li>
+<li><p>direction now accepts <a class="reference external" href="https://docs.python.org/3/library/abc.html#module-abc" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">abc</span></code></a> and <em class="xref py py-obj">xyz</em> keywords to retrieve vectors depending on direction input.</p></li>
 <li><p>replacing atoms in SparseOrbital geometries #139</p></li>
 <li><p>reading from STRUCT_* files (Siesta input/output) #308</p></li>
 <li><p>reading the SuperCell block from fdf</p></li>
@@ -251,7 +251,7 @@ names contributed a patch for the first time.</p>
 <ul class="simple">
 <li><p>order of arguments for <em class="xref py py-obj">nanoribbon</em> it was not consistent with the others</p></li>
 <li><p>removed cell argument in <em class="xref py py-obj">Geometry.sub</em></p></li>
-<li><p>removed <em class="xref py py-obj">Sile.exist</em>, refer to <em class="xref py py-obj">Sile.file</em> which always will be a <a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pathlib.Path</span></code></a> instance</p></li>
+<li><p>removed <em class="xref py py-obj">Sile.exist</em>, refer to <em class="xref py py-obj">Sile.file</em> which always will be a <a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pathlib.Path</span></code></a> instance</p></li>
 <li><p><em class="xref py py-obj">berry_phase</em> now uses the gauge=R convention, the code became much simpler</p></li>
 <li><p><em class="xref py py-obj">BrillouinZone.parametrize</em> function changed interface to allow more dimensions</p></li>
 <li><dl class="simple">

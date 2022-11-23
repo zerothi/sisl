@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>bcc_slab &mdash; sisl 0.1.dev1+g3b3ade9 documentation</title>
+  <title>bcc_slab &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -21,7 +21,7 @@
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -39,7 +39,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g3b3ade9
+                0.1.dev1+gdb0fc67
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -111,10 +111,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">API documentation</a> &raquo;</li>
-          <li><a href="../default_geom.html">Common geometries</a> &raquo;</li>
-      <li>bcc_slab</li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">API documentation</a></li>
+          <li class="breadcrumb-item"><a href="../default_geom.html">Common geometries</a></li>
+      <li class="breadcrumb-item active">bcc_slab</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/api/generated/sisl.geom.bcc_slab.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -161,23 +161,24 @@ either <em class="xref py py-obj">layers</em> being a list, or by having spaces 
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>alat</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – lattice constant of the fcc crystal</p></li>
+<li><p><strong>alat</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – lattice constant of the fcc crystal</p></li>
 <li><p><strong>atoms</strong> (<a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a>) – the atom that the crystal consists of</p></li>
-<li><p><strong>miller</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><em>(</em><em>3</em><em>,</em><em>)</em>) – Miller indices of the surface facet</p></li>
-<li><p><strong>layers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><em>array_like</em><em> of </em><em>ints</em><em>, </em><em>optional</em>) – Number of layers in the slab or explicit layer specification.
+<li><p><strong>miller</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><em>(</em><em>3</em><em>,</em><em>)</em>) – Miller indices of the surface facet</p></li>
+<li><p><strong>layers</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><em>array_like</em><em> of </em><em>ints</em><em>, </em><em>optional</em>) – Number of layers in the slab or explicit layer specification.
 For array like arguments vacuum will be placed between each index of the layers.
 Each element can either be an int or a str to specify number of layers or an explicit
 order of layers.
 If a <em class="xref py py-obj">str</em> it can contain spaces to specify vacuum positions (then equivalent to <code class="docutils literal notranslate"><span class="pre">layers.split()</span></code>).
 If there are no vacuum positions specified a vacuum will be placed <em>after</em> the layers.
 See examples for details.</p></li>
-<li><p><strong>vacuum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> or </em><em>array_like</em><em>, </em><em>optional</em>) – size of vacuum at locations specified in <em class="xref py py-obj">layers</em>. The vacuum will always
+<li><p><strong>vacuum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><em>array_like</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – size of vacuum at locations specified in <em class="xref py py-obj">layers</em>. The vacuum will always
 be placed along the <span class="math notranslate nohighlight">\(z\)</span>-axis (3rd lattice vector).
-Each segment in <em class="xref py py-obj">layers</em> will be appended the vacuum as found by <code class="docutils literal notranslate"><span class="pre">zip_longest(layers,</span> <span class="pre">vacuum)</span></code>.</p></li>
-<li><p><strong>orthogonal</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – if True returns an orthogonal lattice</p></li>
-<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><em>array_like</em><em>, </em><em>optional</em>) – sets the first layer in the slab. Only one of <em class="xref py py-obj">start</em> or <em class="xref py py-obj">end</em> must be specified.
+Each segment in <em class="xref py py-obj">layers</em> will be appended the vacuum as found by <code class="docutils literal notranslate"><span class="pre">zip_longest(layers,</span> <span class="pre">vacuum)</span></code>.
+None means that no vacuum is inserted (keeps the crystal structure intact).</p></li>
+<li><p><strong>orthogonal</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – if True returns an orthogonal lattice</p></li>
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><em>array_like</em><em>, </em><em>optional</em>) – sets the first layer in the slab. Only one of <em class="xref py py-obj">start</em> or <em class="xref py py-obj">end</em> must be specified.
 Discouraged to pass if <em class="xref py py-obj">layers</em> is a str.</p></li>
-<li><p><strong>end</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><em>array_like</em><em>, </em><em>optional</em>) – sets the last layer in the slab. Only one of <em class="xref py py-obj">start</em> or <em class="xref py py-obj">end</em> must be specified.
+<li><p><strong>end</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><em>array_like</em><em>, </em><em>optional</em>) – sets the last layer in the slab. Only one of <em class="xref py py-obj">start</em> or <em class="xref py py-obj">end</em> must be specified.
 Discouraged to pass if <em class="xref py py-obj">layers</em> is a str.</p></li>
 </ul>
 </dd>
@@ -186,7 +187,7 @@ Discouraged to pass if <em class="xref py py-obj">layers</em> is a str.</p></li>
 <p>Please see <a class="reference internal" href="sisl.geom.fcc_slab.html#sisl.geom.fcc_slab" title="sisl.geom.fcc_slab"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fcc_slab</span></code></a> for examples, they are equivalent to this method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.10)"><strong>NotImplementedError</strong></a> – In case the Miller index has not been implemented or a stacking fault is
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.11)"><strong>NotImplementedError</strong></a> – In case the Miller index has not been implemented or a stacking fault is
     introduced in <em class="xref py py-obj">layers</em>.</p>
 </dd>
 </dl>

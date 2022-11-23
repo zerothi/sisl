@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Basic classes &mdash; sisl 0.1.dev1+g3b3ade9 documentation</title>
+  <title>Basic classes &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -21,7 +21,7 @@
         <script src="../_static/doctools.js"></script>
         <script src="../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script src="../_static/js/theme.js"></script>
@@ -39,7 +39,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g3b3ade9
+                0.1.dev1+gdb0fc67
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -81,6 +81,7 @@
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.Orbital.html">sisl.Orbital</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.SphericalOrbital.html">sisl.SphericalOrbital</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.AtomicOrbital.html">sisl.AtomicOrbital</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.HydrogenicOrbital.html">sisl.HydrogenicOrbital</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.Atom.html">sisl.Atom</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.Atoms.html">sisl.Atoms</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.Geometry.html">sisl.Geometry</a></li>
@@ -126,9 +127,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="index.html">API documentation</a> &raquo;</li>
-      <li>Basic classes</li>
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">API documentation</a></li>
+      <li class="breadcrumb-item active">Basic classes</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/api/basic.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -186,19 +187,22 @@ unit cells and grid functions.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.AtomicOrbital.html#sisl.AtomicOrbital" title="sisl.AtomicOrbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomicOrbital</span></code></a>(*args, **kwargs)</p></td>
 <td><p>A projected atomic orbital consisting of real harmonics</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.Atom.html#sisl.Atom" title="sisl.Atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Atom</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.HydrogenicOrbital.html#sisl.HydrogenicOrbital" title="sisl.HydrogenicOrbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HydrogenicOrbital</span></code></a>(n, l, m, Z, **kwargs)</p></td>
+<td><p>A hydrogen-like atomic orbital defined by an effective atomic number Z in addition to the usual quantum numbers (n, l, m).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.Atom.html#sisl.Atom" title="sisl.Atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Atom</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Atomic information, mass, name number of orbitals and ranges</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.Atoms.html#sisl.Atoms" title="sisl.Atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Atoms</span></code></a>([atoms, na])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.Atoms.html#sisl.Atoms" title="sisl.Atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Atoms</span></code></a>([atoms, na])</p></td>
 <td><p>A list-like object to contain a list of different atoms with minimum data duplication.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code></a>(xyz[, atoms, sc, names])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code></a>(xyz[, atoms, sc, names])</p></td>
 <td><p>Holds atomic information, coordinates, species, lattice vectors</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell</span></code></a>(cell[, nsc, origin])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell</span></code></a>(cell[, nsc, origin])</p></td>
 <td><p>A cell class to retain lattice vectors and a supercell structure</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.Grid.html#sisl.Grid" title="sisl.Grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Grid</span></code></a>(shape[, bc, sc, dtype, geometry])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.Grid.html#sisl.Grid" title="sisl.Grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Grid</span></code></a>(shape[, bc, sc, dtype, geometry])</p></td>
 <td><p>Real-space grid information with associated geometry.</p></td>
 </tr>
 </tbody>
@@ -220,7 +224,7 @@ in <a class="reference internal" href="physics.matrix.html#physics-matrix"><span
 <td><p>Quaternion object to enable easy rotational quantities.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.SparseCSR.html#sisl.SparseCSR" title="sisl.SparseCSR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SparseCSR</span></code></a>(arg1[, dim, dtype, nnzpr, nnz])</p></td>
-<td><p>A compressed sparse row matrix, slightly different than <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.9.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a>.</p></td>
+<td><p>A compressed sparse row matrix, slightly different than <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.9.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.SparseAtom.html#sisl.SparseAtom" title="sisl.SparseAtom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SparseAtom</span></code></a>(geometry[, dim, dtype, nnzpr])</p></td>
 <td><p>Sparse object with number of rows equal to the total number of atoms in the <a class="reference internal" href="generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code></a></p></td>

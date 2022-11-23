@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.constant &mdash; sisl 0.1.dev1+g3b3ade9 documentation</title>
+  <title>sisl.constant &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -20,7 +20,7 @@
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -34,7 +34,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g3b3ade9
+                0.1.dev1+gdb0fc67
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -85,9 +85,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>sisl.constant</li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">sisl.constant</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -184,25 +184,34 @@
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
 
-<span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s1">&#39;hbar&#39;</span><span class="p">,</span> <span class="s1">&#39;m_e&#39;</span><span class="p">,</span> <span class="s1">&#39;m_p&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="s1">&#39;G0&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s1">&#39;hbar&#39;</span><span class="p">,</span> <span class="s1">&#39;m_e&#39;</span><span class="p">,</span> <span class="s1">&#39;m_p&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="s1">&#39;G0&#39;</span><span class="p">,</span> <span class="s1">&#39;a0&#39;</span><span class="p">]</span>
 
 
-<span class="c1">#: Unit of charge [C], or [A s]</span>
-<span class="n">q</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mf">1.602176634e-19</span><span class="p">,</span> <span class="s1">&#39;A s&#39;</span><span class="p">)</span>
-<span class="c1">#: Speed of light [m/s]</span>
-<span class="n">c</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mi">299792458</span><span class="p">,</span> <span class="s1">&#39;m/s&#39;</span><span class="p">)</span>
-<span class="c1">#: Plancks constant [J s]</span>
-<span class="n">h</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mf">6.62607015e-34</span><span class="p">,</span> <span class="s1">&#39;J s&#39;</span><span class="p">)</span>
-<span class="c1">#: Reduced Plancks constant [J s]</span>
-<span class="n">hbar</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mf">1.0545718176461565e-34</span><span class="p">,</span> <span class="s1">&#39;J s&#39;</span><span class="p">)</span>
-<span class="c1">#: Mass of electron [kg]</span>
-<span class="n">m_e</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mf">9.1093835611e-31</span><span class="p">,</span> <span class="s1">&#39;kg&#39;</span><span class="p">)</span>
-<span class="c1">#: Mass of proton [kg]</span>
-<span class="n">m_p</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mf">1.67262189821e-27</span><span class="p">,</span> <span class="s1">&#39;kg&#39;</span><span class="p">)</span>
+<span class="c1"># These are CODATA-2018 values</span>
+<span class="c1">#: Unit of charge [C]</span>
+<span class="n">q</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mf">1.602176634e-19</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
+<span class="c1">#: Bohr radius [m]</span>
+<span class="n">a0</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mf">5.29177210903e-11</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">)</span>
+<span class="c1">#: Boltzmann constant [J K^-1]</span>
+<span class="n">kB</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mf">1.380649e-23</span><span class="p">,</span> <span class="s2">&quot;J/K&quot;</span><span class="p">)</span>
+<span class="c1">#: Electron mass [kg]</span>
+<span class="n">m_e</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mf">9.1093837015e-31</span><span class="p">,</span> <span class="s2">&quot;kg&quot;</span><span class="p">)</span>
+<span class="c1">#: Planck constant [J Hz^-1]</span>
+<span class="n">h</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mf">6.62607015e-34</span><span class="p">,</span> <span class="s2">&quot;J s&quot;</span><span class="p">)</span>
+<span class="c1">#: Reduced Planck constant [J Hz^-1]</span>
+<span class="n">hbar</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mf">1.0545718176461565e-34</span><span class="p">,</span> <span class="s2">&quot;J s&quot;</span><span class="p">)</span>
+<span class="c1">#: Proton mass [kg]</span>
+<span class="n">m_p</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mf">1.67262192369e-27</span><span class="p">,</span> <span class="s2">&quot;kg&quot;</span><span class="p">)</span>
+<span class="c1">#: Speed of light in vacuum [m s^-1]</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mf">299792458.0</span><span class="p">,</span> <span class="s2">&quot;m/s&quot;</span><span class="p">)</span>
+
+
+<span class="c1"># Values not found in the CODATA table</span>
 <span class="c1">#: Conductance quantum [S], or [m^2/s^2]</span>
 <span class="n">G0</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">q</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">h</span><span class="p">),</span> <span class="s1">&#39;m^2/s^2&#39;</span><span class="p">)</span>
 <span class="c1">#: Gravitational constant [m^3/kg/s^2]</span>
 <span class="n">G</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mf">6.6740831e-11</span><span class="p">,</span> <span class="s1">&#39;m^3/kg/s^2&#39;</span><span class="p">)</span>
+
 </pre></div>
 
            </div>

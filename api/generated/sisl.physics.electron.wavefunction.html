@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>wavefunction &mdash; sisl 0.1.dev1+g3b3ade9 documentation</title>
+  <title>wavefunction &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -21,7 +21,7 @@
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -39,7 +39,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g3b3ade9
+                0.1.dev1+gdb0fc67
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -122,11 +122,11 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">API documentation</a> &raquo;</li>
-          <li><a href="../physics.html">Physical objects</a> &raquo;</li>
-          <li><a href="../physics.electron.html">Electron related functions</a> &raquo;</li>
-      <li>wavefunction</li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">API documentation</a></li>
+          <li class="breadcrumb-item"><a href="../physics.html">Physical objects</a></li>
+          <li class="breadcrumb-item"><a href="../physics.electron.html">Electron related functions</a></li>
+      <li class="breadcrumb-item active">wavefunction</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/api/generated/sisl.physics.electron.wavefunction.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -206,13 +206,13 @@ If this is <code class="docutils literal notranslate"><span class="pre">None</sp
 <li><p><strong>k</strong> (<em>array_like</em><em>, </em><em>optional</em>) – k-point associated with wavefunction, by default the inherent k-point used
 to calculate the eigenstate will be used (generally shouldn’t be used unless the <a class="reference internal" href="sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron" title="sisl.physics.electron.EigenstateElectron"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EigenstateElectron</span></code></a> object
 has not been created via <a class="reference internal" href="sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.eigenstate" title="sisl.physics.Hamiltonian.eigenstate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">eigenstate</span></code></a>).</p></li>
-<li><p><strong>spinor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – the spinor for non-colinear/spin-orbit calculations. This is only used if the
+<li><p><strong>spinor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the spinor for non-colinear/spin-orbit calculations. This is only used if the
 eigenstate object has been created from a parent object with a <code class="xref py py-obj docutils literal notranslate"><span class="pre">Spin</span></code> object
 contained, <em>and</em> if the spin-configuration is non-colinear or spin-orbit coupling.
 Default to the first spinor component.</p></li>
 <li><p><strong>spin</strong> (<a class="reference internal" href="sisl.physics.Spin.html#sisl.physics.Spin" title="sisl.physics.Spin"><em>Spin</em></a><em>, </em><em>optional</em>) – specification of the spin configuration of the orbital coefficients. This only has
 influence for non-colinear wavefunctions where <em class="xref py py-obj">spinor</em> choice is important.</p></li>
-<li><p><strong>eta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Display a console progressbar.</p></li>
+<li><p><strong>eta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – Display a console progressbar.</p></li>
 </ul>
 </dd>
 </dl>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>angle &mdash; sisl 0.1.dev1+g3b3ade9 documentation</title>
+  <title>angle &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -21,7 +21,7 @@
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g3b3ade9
+                0.1.dev1+gdb0fc67
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -110,11 +110,11 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">API documentation</a> &raquo;</li>
-          <li><a href="../utilities.html">Utilities</a> &raquo;</li>
-          <li><a href="../utilities.misc.html">Range routines</a> &raquo;</li>
-      <li>angle</li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">API documentation</a></li>
+          <li class="breadcrumb-item"><a href="../utilities.html">Utilities</a></li>
+          <li class="breadcrumb-item"><a href="../utilities.misc.html">Range routines</a></li>
+      <li class="breadcrumb-item active">angle</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/api/generated/sisl.utils.angle.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -157,16 +157,16 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>s</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – <p>If <em class="xref py py-obj">s</em> starts with ‘r’ it is interpreted as radians <code class="docutils literal notranslate"><span class="pre">[0:2pi]</span></code>.
+<li><p><strong>s</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – <p>If <em class="xref py py-obj">s</em> starts with ‘r’ it is interpreted as radians <code class="docutils literal notranslate"><span class="pre">[0:2pi]</span></code>.
 If <em class="xref py py-obj">s</em> starts with ‘a’ it is interpreted as a regular angle <code class="docutils literal notranslate"><span class="pre">[0:360]</span></code>.
 If <em class="xref py py-obj">s</em> ends with ‘r’ it returns in radians.
 If <em class="xref py py-obj">s</em> ends with ‘a’ it returns in regular angle.</p>
 <p><em class="xref py py-obj">s</em> may be any mathematical equation which can be
 intercepted through <code class="docutils literal notranslate"><span class="pre">eval</span></code>.</p>
 </p></li>
-<li><p><strong>rad</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether the returned angle is in radians.
+<li><p><strong>rad</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether the returned angle is in radians.
 Note than an ‘r’ at the end of <em class="xref py py-obj">s</em> has precedence.</p></li>
-<li><p><strong>in_rad</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether the calculated angle is in radians.
+<li><p><strong>in_rad</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether the calculated angle is in radians.
 Note than an ‘r’ at the beginning of <em class="xref py py-obj">s</em> has precedence.</p></li>
 </ul>
 </dd>
@@ -174,7 +174,7 @@ Note than an ‘r’ at the beginning of <em class="xref py py-obj">s</em> has p
 <dd class="field-even"><p>the angle in the requested unit</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)">float</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
 </dd>
 </dl>
 </dd></dl>

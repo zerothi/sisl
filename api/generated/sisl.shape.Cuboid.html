@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.shape.Cuboid &mdash; sisl 0.1.dev1+g3b3ade9 documentation</title>
+  <title>sisl.shape.Cuboid &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -21,7 +21,7 @@
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g3b3ade9
+                0.1.dev1+gdb0fc67
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -111,11 +111,11 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">API documentation</a> &raquo;</li>
-          <li><a href="../utilities.html">Utilities</a> &raquo;</li>
-          <li><a href="../utilities.shape.html">Shapes</a> &raquo;</li>
-      <li>sisl.shape.Cuboid</li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">API documentation</a></li>
+          <li class="breadcrumb-item"><a href="../utilities.html">Utilities</a></li>
+          <li class="breadcrumb-item"><a href="../utilities.shape.html">Shapes</a></li>
+      <li class="breadcrumb-item active">sisl.shape.Cuboid</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/api/generated/sisl.shape.Cuboid.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -159,7 +159,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>v</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> or </em><em>(</em><em>3</em><em>,</em><em>) or </em><em>(</em><em>3</em><em>, </em><em>3</em><em>)</em>) – vectors describing the cuboid, if only 3 the cuboid will be
+<li><p><strong>v</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><em>(</em><em>3</em><em>,</em><em>) or </em><em>(</em><em>3</em><em>, </em><em>3</em><em>)</em>) – vectors describing the cuboid, if only 3 the cuboid will be
 along the Euclidean vectors.</p></li>
 <li><p><strong>center</strong> (<em>(</em><em>3</em><em>,</em><em>)</em><em>, </em><em>optional</em>) – the center of the cuboid. Defaults to the origin.
 Not allowed as argument if <a class="reference internal" href="#sisl.shape.Cuboid.origin" title="sisl.shape.Cuboid.origin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">origin</span></code></a> is passed.</p></li>
@@ -252,7 +252,7 @@ Not allowed as argument if <a class="reference internal" href="#sisl.shape.Cuboi
 <dd><p>Expand the cuboid by a constant value along side vectors</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> or </em><em>(</em><em>3</em><em>,</em><em>)</em>) – the extension in Ang per cuboid vector.</p>
+<dd class="field-odd"><p><strong>length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><em>(</em><em>3</em><em>,</em><em>)</em>) – the extension in Ang per cuboid vector.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -269,7 +269,7 @@ Not allowed as argument if <a class="reference internal" href="#sisl.shape.Cuboi
 <dd><p>Scale the cuboid box size (center is retained)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> or </em><em>(</em><em>3</em><em>,</em><em>)</em>) – the scale parameter for each of the vectors defining the <a class="reference internal" href="#sisl.shape.Cuboid" title="sisl.shape.Cuboid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Cuboid</span></code></a></p>
+<dd class="field-odd"><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><em>(</em><em>3</em><em>,</em><em>)</em>) – the scale parameter for each of the vectors defining the <a class="reference internal" href="#sisl.shape.Cuboid" title="sisl.shape.Cuboid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Cuboid</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -286,8 +286,8 @@ method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – name of the attribute in the class</p></li>
-<li><p><strong>dispatchs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a><em>, </em><em>optional</em>) – dictionary of dispatch methods</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – name of the attribute in the class</p></li>
+<li><p><strong>dispatchs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – dictionary of dispatch methods</p></li>
 <li><p><strong>obj_getattr</strong> (<em>callable</em><em>, </em><em>optional</em>) – method with 2 arguments, an <code class="docutils literal notranslate"><span class="pre">obj</span></code> and the <code class="docutils literal notranslate"><span class="pre">attr</span></code> which may be used
 to control how the attribute is called.</p></li>
 <li><p><strong>instance_dispatcher</strong> (<em>AbstractDispatcher</em><em>, </em><em>optional</em>) – control how instance dispatchers are handled through <em class="xref py py-obj">__get__</em> method.
@@ -353,7 +353,7 @@ This controls the dispatcher used if called from a class.</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>other</strong> (<em>array_like</em>) – the object that is checked for containment</p></li>
-<li><p><strong>tol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – absolute tolerance for boundaries</p></li>
+<li><p><strong>tol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – absolute tolerance for boundaries</p></li>
 </ul>
 </dd>
 </dl>

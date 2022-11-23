@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.densitymatrix &mdash; sisl 0.1.dev1+g3b3ade9 documentation</title>
+  <title>sisl.physics.densitymatrix &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -20,7 +20,7 @@
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -34,7 +34,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g3b3ade9
+                0.1.dev1+gdb0fc67
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -85,9 +85,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-      <li>sisl.physics.densitymatrix</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">sisl.physics.densitymatrix</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -385,7 +385,7 @@
 
 <span class="sd">        .. math::</span>
 
-<span class="sd">             M_{\nu} &amp;= \sum_mu [\boldsymbol\rho \mathbf S]_{\nu\mu}</span>
+<span class="sd">             M_{\nu} &amp;= \sum_{\mu} [\boldsymbol\rho_{\nu\mu} \mathbf S_{\nu\mu}]</span>
 <span class="sd">             \\</span>
 <span class="sd">             M_{\alpha} &amp;= \sum_{\nu\in\alpha} M_{\nu}</span>
 
@@ -393,16 +393,16 @@
 <span class="sd">        as above but using the spin-box per orbital (:math:`\sigma` is spin)</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">             M_{\nu} &amp;= \sum_\sigma\sum_mu [\boldsymbol\rho \mathbf S]_{\nu\mu,\sigma\sigma}</span>
+<span class="sd">             M_{\nu} &amp;= \sum_\sigma\sum_{\mu} [\boldsymbol\rho_{\nu\mu,\sigma\sigma} \mathbf S_{\nu\mu,\sigma\sigma}]</span>
 <span class="sd">             \\</span>
-<span class="sd">             S_{\nu}^x &amp;= \sum_mu \Re [\boldsymbol\rho \mathbf S]_{\nu\mu,\uparrow\downarrow} +</span>
-<span class="sd">                          \Re [\boldsymbol\rho \mathbf S]_{\nu\mu,\downarrow\uparrow}</span>
+<span class="sd">             S_{\nu}^x &amp;= \sum_{\mu} \Re [\boldsymbol\rho_{\nu\mu,\uparrow\downarrow} \mathbf S_{\nu\mu,\uparrow\downarrow}] +</span>
+<span class="sd">                          \Re [\boldsymbol\rho_{\nu\mu,\downarrow\uparrow} \mathbf S_{\nu\mu,\downarrow\uparrow}]</span>
 <span class="sd">             \\</span>
-<span class="sd">             S_{\nu}^y &amp;= \sum_mu \Im [\boldsymbol\rho \mathbf S]_{\nu\mu,\uparrow\downarrow} -</span>
-<span class="sd">                          \Im [\boldsymbol\rho \mathbf S]_{\nu\mu,\downarrow\uparrow}</span>
+<span class="sd">             S_{\nu}^y &amp;= \sum_{\mu} \Im [\boldsymbol\rho_{\nu\mu,\uparrow\downarrow} \mathbf S_{\nu\mu,\uparrow\downarrow}] -</span>
+<span class="sd">                          \Im [\boldsymbol\rho_{\nu\mu,\downarrow\uparrow} \mathbf S_{\nu\mu,\downarrow\uparrow}]</span>
 <span class="sd">             \\</span>
-<span class="sd">             S_{\nu}^z &amp;= \sum_mu \Re [\boldsymbol\rho \mathbf S]_{\nu\mu,\uparrow\uparrow} -</span>
-<span class="sd">                          \Re [\boldsymbol\rho \mathbf S]_{\nu\mu,\downarrow\downarrow}</span>
+<span class="sd">             S_{\nu}^z &amp;= \sum_{\mu} \Re [\boldsymbol\rho_{\nu\mu,\uparrow\uparrow} \mathbf S_{\nu\mu,\uparrow\uparrow}] -</span>
+<span class="sd">                          \Re [\boldsymbol\rho_{\nu\mu,\downarrow\downarrow} \mathbf S_{\nu\mu,\downarrow\downarrow}]</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.tbtrans.deltancSileTBtrans &mdash; sisl 0.1.dev1+g3b3ade9 documentation</title>
+  <title>sisl.io.tbtrans.deltancSileTBtrans &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -21,7 +21,7 @@
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -39,7 +39,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g3b3ade9
+                0.1.dev1+gdb0fc67
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -127,11 +127,11 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">API documentation</a> &raquo;</li>
-          <li><a href="../index.html">Input/Output</a> &raquo;</li>
-          <li><a href="../siesta.html">Siesta</a> &raquo;</li>
-      <li>sisl.io.tbtrans.deltancSileTBtrans</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">API documentation</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Input/Output</a></li>
+          <li class="breadcrumb-item"><a href="../siesta.html">Siesta</a></li>
+      <li class="breadcrumb-item active">sisl.io.tbtrans.deltancSileTBtrans</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../_sources/api/io/generated/sisl.io.tbtrans.deltancSileTBtrans.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -208,8 +208,14 @@ to make the <span class="math notranslate nohighlight">\(\delta\)</span> depende
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.deltancSileTBtrans.dir_file" title="sisl.io.tbtrans.deltancSileTBtrans.dir_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dir_file</span></code></a>([filename, filename_base])</p></td>
 <td><p>File of the current <em class="xref py py-obj">Sile</em></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.deltancSileTBtrans.iter" title="sisl.io.tbtrans.deltancSileTBtrans.iter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter</span></code></a>([group, dimension, variable, levels, root])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.deltancSileTBtrans.has_level" title="sisl.io.tbtrans.deltancSileTBtrans.has_level"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_level</span></code></a>(ilvl)</p></td>
+<td><p>Query whether the file has level <em class="xref py py-obj">ilvl</em> content</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.deltancSileTBtrans.iter" title="sisl.io.tbtrans.deltancSileTBtrans.iter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter</span></code></a>([group, dimension, variable, levels, root])</p></td>
 <td><p>Iterator on all groups, variables and dimensions.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.deltancSileTBtrans.merge" title="sisl.io.tbtrans.deltancSileTBtrans.merge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge</span></code></a>(fname, *deltas, **kwargs)</p></td>
+<td><p>Merge several delta files into one Sile which contains the sum of the content</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.deltancSileTBtrans.read" title="sisl.io.tbtrans.deltancSileTBtrans.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Generic read method which should be overloaded in child-classes</p></td>
@@ -272,6 +278,17 @@ to make the <span class="math notranslate nohighlight">\(\delta\)</span> depende
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.tbtrans.deltancSileTBtrans.has_level">
+<span class="sig-name descname"><span class="pre">has_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ilvl</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/tbtrans/delta.html#deltancSileTBtrans.has_level"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.tbtrans.deltancSileTBtrans.has_level" title="Permalink to this definition"></a></dt>
+<dd><p>Query whether the file has level <em class="xref py py-obj">ilvl</em> content</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ilvl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the level to be queried, one of 1, 2, 3 or 4</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.tbtrans.deltancSileTBtrans.iter">
 <span class="sig-name descname"><span class="pre">iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">levels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.deltancSileTBtrans.iter" title="Permalink to this definition"></a></dt>
 <dd><p>Iterator on all groups, variables and dimensions.</p>
@@ -310,6 +327,27 @@ sub-groups this iterator will return.</p></li>
 <span class="gp">... </span>        <span class="c1"># is variable</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.tbtrans.deltancSileTBtrans.merge">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">deltas</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/tbtrans/delta.html#deltancSileTBtrans.merge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.tbtrans.deltancSileTBtrans.merge" title="Permalink to this definition"></a></dt>
+<dd><p>Merge several delta files into one Sile which contains the sum of the content</p>
+<p>In cases where implementors use several different delta files it is necessary
+to merge them into a single delta file before use in TBtrans.
+This method does exactly that.</p>
+<p class="rubric">Notes</p>
+<p>The code checks whether <em class="xref py py-obj">fname</em> is different from all <em class="xref py py-obj">deltas</em> and that
+all <em class="xref py py-obj">deltas</em> are the same class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>Path</em>) – the output name of the merged file</p></li>
+<li><p><strong>*deltas</strong> (<a class="reference internal" href="#sisl.io.tbtrans.deltancSileTBtrans" title="sisl.io.tbtrans.deltancSileTBtrans"><em>deltancSileTBtrans</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>Path</em>) – all the delta files that should be merged</p></li>
+<li><p><strong>**kwargs</strong> – arguments passed directly to the init of <code class="docutils literal notranslate"><span class="pre">cls(fname,</span> <span class="pre">**kwargs)</span></code></p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py attribute">
@@ -382,7 +420,7 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 <li><p><strong>delta</strong> (<a class="reference internal" href="../../generated/sisl.physics.SparseOrbitalBZSpin.html#sisl.physics.SparseOrbitalBZSpin" title="sisl.physics.SparseOrbitalBZSpin"><em>SparseOrbitalBZSpin</em></a>) – the model to be saved in the NC file</p></li>
 <li><p><strong>k</strong> (<em>array_like</em><em>, </em><em>optional</em>) – a specific k-point <span class="math notranslate nohighlight">\(\delta\)</span> term. I.e. only save the <span class="math notranslate nohighlight">\(\delta\)</span> term for
 the given k-point. May be combined with <em class="xref py py-obj">E</em> for a specific k and energy point.</p></li>
-<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – an energy dependent <span class="math notranslate nohighlight">\(\delta\)</span> term. I.e. only save the <span class="math notranslate nohighlight">\(\delta\)</span> term for
+<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – an energy dependent <span class="math notranslate nohighlight">\(\delta\)</span> term. I.e. only save the <span class="math notranslate nohighlight">\(\delta\)</span> term for
 the given energy. May be combined with <em class="xref py py-obj">k</em> for a specific k and energy point.</p></li>
 </ul>
 </dd>

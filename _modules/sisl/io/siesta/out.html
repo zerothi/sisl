@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.out &mdash; sisl 0.1.dev1+g3b3ade9 documentation</title>
+  <title>sisl.io.siesta.out &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -20,7 +20,7 @@
         <script src="../../../../_static/doctools.js"></script>
         <script src="../../../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -34,7 +34,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g3b3ade9
+                0.1.dev1+gdb0fc67
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -85,9 +85,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../../index.html">Module code</a> &raquo;</li>
-      <li>sisl.io.siesta.out</li>
+      <li><a href="../../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">sisl.io.siesta.out</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -199,7 +199,7 @@
             <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)</span>
             <span class="n">tag</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">atoms</span><span class="p">[</span><span class="n">tag</span><span class="p">][</span><span class="s2">&quot;mass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="n">found</span><span class="p">,</span> <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;&lt;basis_specs&gt;&quot;</span><span class="p">,</span> <span class="n">reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">found</span><span class="p">,</span> <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;&lt;basis_specs&gt;&quot;</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="n">block</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">found</span><span class="p">,</span> <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;%block PAO.Basis&quot;</span><span class="p">)</span>
@@ -380,8 +380,8 @@
         <span class="c1"># just read the next geometry we hit</span>
         <span class="k">return</span> <span class="n">next_geom</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="outSileSiesta.read_force"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.outSileSiesta.html#sisl.io.siesta.outSileSiesta.read_force">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">read_force</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="outSileSiesta.read_force"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.outSileSiesta.html#sisl.io.siesta.outSileSiesta.read_force">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">read_force</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Reads the forces from the Siesta output file</span>
 
 <span class="sd">        Parameters</span>
@@ -401,6 +401,10 @@
 
 <span class="sd">            Note that this is not the same as doing `max(outSile.read_force(total=True))` since</span>
 <span class="sd">            the forces returned in that case are averages on each axis.</span>
+<span class="sd">        key: {&quot;siesta&quot;, &quot;ts&quot;}</span>
+<span class="sd">            Specifies the indicator string for the forces that are to be read. </span>
+<span class="sd">            The function will look for a line containing ``f&#39;{key}: Atomic forces&#39;``</span>
+<span class="sd">            to start reading forces.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -424,11 +428,9 @@
         <span class="c1"># Read until forces are found</span>
         <span class="k">def</span> <span class="nf">next_force</span><span class="p">():</span>
 
-            <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-            <span class="k">while</span> <span class="ow">not</span> <span class="s1">&#39;siesta: Atomic forces&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
-                <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">line</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="kc">None</span>
+            <span class="n">found</span><span class="p">,</span> <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">: Atomic forces&quot;</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
 
             <span class="c1"># Now read data</span>
             <span class="n">F</span> <span class="o">=</span> <span class="p">[]</span>
@@ -493,8 +495,8 @@
 
         <span class="k">return</span> <span class="n">return_forces</span><span class="p">(</span><span class="n">next_force</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="outSileSiesta.read_stress"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.outSileSiesta.html#sisl.io.siesta.outSileSiesta.read_stress">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">read_stress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s1">&#39;static&#39;</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="outSileSiesta.read_stress"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.outSileSiesta.html#sisl.io.siesta.outSileSiesta.read_stress">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">read_stress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;static&quot;</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Reads the stresses from the Siesta output file</span>
 
 <span class="sd">        Parameters</span>
@@ -518,11 +520,14 @@
 
         <span class="c1"># Read until stress are found</span>
         <span class="k">def</span> <span class="nf">next_stress</span><span class="p">():</span>
-            <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-            <span class="k">while</span> <span class="ow">not</span> <span class="p">(</span><span class="s1">&#39;siesta: Stress tensor&#39;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">line</span><span class="p">):</span>
-                <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">line</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="kc">None</span>
+
+            <span class="n">found</span><span class="p">,</span> <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;siesta: Stress tensor&quot;</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">found</span> <span class="o">=</span> <span class="n">found</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">line</span>
+            <span class="k">while</span> <span class="ow">not</span> <span class="n">found</span> <span class="ow">and</span> <span class="n">line</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                <span class="n">found</span><span class="p">,</span> <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;siesta: Stress tensor&quot;</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">found</span> <span class="o">=</span> <span class="n">found</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">line</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
 
             <span class="c1"># Now read data</span>
             <span class="n">S</span> <span class="o">=</span> <span class="p">[]</span>
@@ -544,13 +549,13 @@
 
             <span class="k">if</span> <span class="n">last</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">Ss</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">completed</span><span class="p">()</span> <span class="ow">and</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;static&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">completed</span><span class="p">()</span> <span class="ow">and</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;static&quot;</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">Ss</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
             <span class="k">return</span> <span class="n">Ss</span>
 
         <span class="k">return</span> <span class="n">next_stress</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="outSileSiesta.read_moment"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.outSileSiesta.html#sisl.io.siesta.outSileSiesta.read_moment">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
+<div class="viewcode-block" id="outSileSiesta.read_moment"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.outSileSiesta.html#sisl.io.siesta.outSileSiesta.read_moment">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">read_moment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">quantity</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Reads the moments from the Siesta output file</span>
 
@@ -571,14 +576,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># Read until outcoor is found</span>
-        <span class="n">itt</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">itt</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s1">&#39;moments: Atomic&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
-                <span class="k">break</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;moments: Atomic&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;moments: Atomic&quot;</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">]:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
         <span class="c1"># The moments are printed in SPECIES list</span>
+        <span class="n">itt</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span> <span class="c1"># empty</span>
         <span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span> <span class="c1"># empty</span>
 
@@ -632,7 +634,7 @@
             <span class="k">return</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">(</span><span class="n">moments</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">moments</span></div>
 
-<div class="viewcode-block" id="outSileSiesta.read_energy"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.outSileSiesta.html#sisl.io.siesta.outSileSiesta.read_energy">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
+<div class="viewcode-block" id="outSileSiesta.read_energy"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.outSileSiesta.html#sisl.io.siesta.outSileSiesta.read_energy">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">read_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Reads the final energy distribution</span>
 
@@ -686,7 +688,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        PropertyDict : dictionary like lookup table ionic energies are stored in a nested `PropertyDict` at the key ``ion`` (all energies in eV)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">found</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;siesta: Final energy&quot;</span><span class="p">,</span> <span class="n">reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">found</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;siesta: Final energy&quot;</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">out</span> <span class="o">=</span> <span class="n">PropertyDict</span><span class="p">()</span>
         <span class="n">out</span><span class="o">.</span><span class="n">ion</span> <span class="o">=</span> <span class="n">PropertyDict</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
@@ -763,7 +765,7 @@
         <span class="c1"># This loops ensures that we preserve the order of arguments</span>
         <span class="c1"># From Py3.6 and onwards the **kwargs is an OrderedDictionary</span>
         <span class="k">for</span> <span class="n">kw</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">kw</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">,</span> <span class="s1">&#39;force&#39;</span><span class="p">,</span> <span class="s1">&#39;moment&#39;</span><span class="p">,</span> <span class="s1">&#39;stress&#39;</span><span class="p">,</span> <span class="s1">&#39;energy&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">kw</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;geometry&quot;</span><span class="p">,</span> <span class="s2">&quot;force&quot;</span><span class="p">,</span> <span class="s2">&quot;moment&quot;</span><span class="p">,</span> <span class="s2">&quot;stress&quot;</span><span class="p">,</span> <span class="s2">&quot;energy&quot;</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">kw</span><span class="p">]:</span>
                     <span class="n">run</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kw</span><span class="p">)</span>
 
@@ -773,7 +775,7 @@
 
         <span class="n">val</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">run</span><span class="p">:</span>
-            <span class="n">val</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()))(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+            <span class="n">val</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;read_</span><span class="si">{</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
@@ -781,7 +783,7 @@
             <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">val</span></div>
 
-<div class="viewcode-block" id="outSileSiesta.read_scf"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.outSileSiesta.html#sisl.io.siesta.outSileSiesta.read_scf">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
+<div class="viewcode-block" id="outSileSiesta.read_scf"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.outSileSiesta.html#sisl.io.siesta.outSileSiesta.read_scf">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">read_scf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;scf&quot;</span><span class="p">,</span> <span class="n">iscf</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">imd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">as_dataframe</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ret_header</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Parse SCF information and return a table of SCF information depending on what is requested</span>
 
@@ -907,6 +909,7 @@
                         <span class="c1"># We are probably reading a device list</span>
                         <span class="c1"># ensure that props are appended</span>
                         <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">props</span><span class="p">:</span>
+                            <span class="n">d</span><span class="p">[</span><span class="s2">&quot;order&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;ts-q&quot;</span><span class="p">)</span>
                             <span class="n">props</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;ts-scf:&#39;</span><span class="p">):</span>
                     <span class="n">d</span><span class="p">[</span><span class="s1">&#39;_found_iscf&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
@@ -1055,7 +1058,7 @@
             <span class="k">return</span> <span class="n">scf</span><span class="p">,</span> <span class="n">props</span>
         <span class="k">return</span> <span class="n">scf</span></div>
 
-<div class="viewcode-block" id="outSileSiesta.read_charge"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.outSileSiesta.html#sisl.io.siesta.outSileSiesta.read_charge">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
+<div class="viewcode-block" id="outSileSiesta.read_charge"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.outSileSiesta.html#sisl.io.siesta.outSileSiesta.read_charge">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">read_charge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">iscf</span><span class="o">=</span><span class="n">Opt</span><span class="o">.</span><span class="n">ANY</span><span class="p">,</span> <span class="n">imd</span><span class="o">=</span><span class="n">Opt</span><span class="o">.</span><span class="n">ANY</span><span class="p">,</span> <span class="n">key_scf</span><span class="o">=</span><span class="s2">&quot;scf&quot;</span><span class="p">,</span> <span class="n">as_dataframe</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Read charges calculated in SCF loop or MD loop (or both)</span>
 
@@ -1249,7 +1252,7 @@
         <span class="n">FOUND_FINAL</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="c1"># TODO whalrus</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="n">search_keys</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ret_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="n">search_keys</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ret_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">while</span> <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
             <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">in</span> <span class="n">IDX_SCF_END</span><span class="p">:</span>
                 <span class="c1"># we finished all SCF iterations</span>
@@ -1312,7 +1315,7 @@
                 <span class="n">current_state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">CHARGE</span>
 
             <span class="c1"># step to next entry</span>
-            <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="n">search_keys</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ret_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="n">search_keys</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ret_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">((</span><span class="n">FOUND_SCF</span><span class="p">,</span> <span class="n">FOUND_MD</span><span class="p">,</span> <span class="n">FOUND_FINAL</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!s}</span><span class="s2"> does not contain any charges (</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
@@ -1471,7 +1474,7 @@
         <span class="k">return</span> <span class="n">md_scf_charge</span><span class="p">[</span><span class="n">imd</span><span class="p">][</span><span class="n">iscf</span><span class="p">]</span></div>
 
 
-<span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="n">outSileSiesta</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">add_sile</span><span class="p">(</span><span class="s2">&quot;out&quot;</span><span class="p">,</span> <span class="n">outSileSiesta</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
            </div>
