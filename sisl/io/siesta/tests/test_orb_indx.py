@@ -18,5 +18,18 @@ def test_si_pdos_kgrid_orb_indx(sisl_files):
     atoms = orbindxSileSiesta(f).read_basis()
 
     assert len(atoms) == 2
+    assert atoms.nspecie == 1
     assert len(atoms[0]) == 13
     assert len(atoms[1]) == 13
+
+
+def test_sih_orb_indx(sisl_files):
+    f = sisl_files(_dir, 'sih.ORB_INDX')
+    nsc = orbindxSileSiesta(f).read_supercell_nsc()
+    assert np.all(nsc == 1)
+    atoms = orbindxSileSiesta(f).read_basis()
+
+    assert len(atoms) == 65
+    assert atoms.nspecie == 2
+    assert len(atoms[0]) == 4
+    assert len(atoms[-1]) == 1
