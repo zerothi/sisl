@@ -83,11 +83,11 @@ class orbindxSileSiesta(SileSiesta):
         orbs = []
         specs = []
         ia = 1
+        i_s = 0
         for _ in range(no):
             line = self.readline().split()
 
             i_a = int(line[1])
-            i_s = int(line[2]) - 1
             spec = line[3]
             if i_a != ia:
                 if i_s not in specs:
@@ -95,6 +95,8 @@ class orbindxSileSiesta(SileSiesta):
                 specs.append(i_s)
                 ia = i_a
                 orbs = []
+
+            i_s = int(line[2]) - 1
 
             if i_s in specs:
                 continue
