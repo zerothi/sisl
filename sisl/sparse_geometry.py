@@ -2504,6 +2504,11 @@ class SparseOrbital(_SparseGeometry):
         It will _not_ check whether the orbitals or atoms _are_ the same, nor the order
         of the orbitals.
 
+        The replacement algorithm takes the couplings from ``self -> other`` on atoms
+        belonging to ``self`` and ``other -> self`` from ``other``. This will in some
+        cases mean that the matrix becomes non-symmetric. See in Notes for details on
+        symmetrizing the matrices.
+
         Examples
         --------
         >>> minimal = SparseOrbital(....)
@@ -2511,6 +2516,12 @@ class SparseOrbital(_SparseGeometry):
         >>> big2 = big.replace(np.arange(big.na), minimal)
         >>> big.spsame(big2)
         True
+
+        To ensure hermiticity and using the average of the couplings from ``big`` and
+        ``minimal`` one can do:
+
+        >>> big2 = big.replace(np.arange(big.na), minimal)
+        >>> big2 = (big2 + big2.transpose()) / 2
 
         To retain couplings only from the ``big`` sparse matrix, one should
         do the following (note the subsequent transposing which ensures hermiticy
@@ -2533,7 +2544,14 @@ class SparseOrbital(_SparseGeometry):
         >>> sm = (sm + sm.transpose()) / 2
 
         Also note that the ordering of the atoms will be ``range(atoms.min()), range(len(other_atoms)), <rest>``.
-        So algorithms using atomic indices should be careful.
+
+        Algorithms that utilizes atomic indices should be careful.
+
+        When the tolerance `eps` is high, the elements may be more prone to differences in the
+        symmetry elements. A good idea would be to check the difference between the couplings.
+        The below variable ``diff`` will contain the difference ``(self -> other) - (other -> self)``
+
+        >>> diff = sm - sm.transpose()
 
         Parameters
         ----------
@@ -2544,10 +2562,10 @@ class SparseOrbital(_SparseGeometry):
             sparse matrix and combined with `self` to create a new sparse matrix
         other_atoms : array_like, optional
             to select a subset of atoms in `other` that are taken out.
-            Defaults to all atoms.
+            Defaults to all atoms in `other`.
         eps : float, optional
-            coordinate tolerance to allow a replacement.
-            It is important that this value is smaller than half the distance between
+            coordinate tolerance for allowing replacement.
+            It is important that this value is at least smaller than half the distance between
             the two closests atoms such that there is no ambiguity in selecting
             equivalent atoms.
         scale : float or array_like, optional
@@ -2559,9 +2577,9 @@ class SparseOrbital(_SparseGeometry):
 
         See Also
         --------
-        prepend : equivalent scheme as this method
+        prepend : prepend two sparse matrices, see `append` for details
         add : merge two matrices without considering overlap or commensurability
-        transpose : ensure hermiticity by using this routine
+        transpose : may be used to ensure hermiticity (symmetrization of the matrix elements)
         append : append two sparse matrices
         Geometry.append
         Geometry.prepend
@@ -2574,7 +2592,6 @@ class SparseOrbital(_SparseGeometry):
         AssertionError
            if the two geometries are not compatible for either coordinate, orbital or supercell errors
 
-
         Warns
         -----
         SislWarning
@@ -2583,7 +2600,7 @@ class SparseOrbital(_SparseGeometry):
         Returns
         -------
         object
-            a new instance with two sparse matrices merged together by removing and adding
+            a new instance with two sparse matrices merged together by replacing some atoms
         """
         if np.asarray(scale).size == 1:
             scale = np.array([scale, scale])
