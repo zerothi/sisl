@@ -23,6 +23,9 @@ TBtrans
    SileCDFTBtrans
    SileBinTBtrans
 
+PHtrans
+=======
+
 `TBtrans`_ is per default a ballistic electron transport utility. It may also
 be compiled in a ballistic phonon transport mode, named ``PHtrans``.
 
@@ -33,6 +36,3 @@ be compiled in a ballistic phonon transport mode, named ``PHtrans``.
    phtsencSilePHtrans
    phtavncSilePHtrans
    phtprojncSilePHtrans
-
-
-
