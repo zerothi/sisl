@@ -1142,7 +1142,7 @@ class StateC(State):
 
         .. math::
 
-           \mathbf{d}_{ij\alpha} = \langle \psi_j |
+           \mathbf{d}_{\alpha ij} = \langle \psi_j |
                     \frac{\partial}{\partial\mathbf k_\alpha} \mathbf H(\mathbf k) | \psi_i \rangle
 
         In case of non-orthogonal basis the equations substitutes :math:`\mathbf H(\mathbf k)` by
@@ -1152,9 +1152,9 @@ class StateC(State):
 
         .. math::
 
-           \mathbf d^2_{ij\alpha\beta} = \langle\psi_j|
+           \mathbf d^2_{\alpha \beta ij} = \langle\psi_j|
                \frac{\partial^2}{\partial\mathbf k_\alpha\partial\mathbf k_\beta} \mathbf H(\mathbf k) | \psi_i\rangle
-               - \frac12\frac{\mathbf{d}_{ij\alpha}\mathbf{d}_{ij\beta}}
+               - \frac12\frac{\mathbf{d}_{\alpha ij}\mathbf{d}_{\beta ij}}
                      {\epsilon_j - \epsilon_i}
 
         Notes
@@ -1189,17 +1189,19 @@ class StateC(State):
 
         Returns
         -------
-        dv, ddv
-            if `matrix` is false, they are per state with shape ``(state.shape[0], *)``, ddv is only
-            returned if ``order>=2``
-        dv, ddv
-            if `matrix` is true, they are per state with shape ``(state.shape[0], state.shape[0], *)``, ddv is only
-            returned if ``order>=2``
+        dv
+            the 1st derivative, has shape ``(3, state.shape[0])`` for ``matrix=False``, else
+            has shape ``(3, state.shape[0], state.shape[0])``
+            Also returned for ``order >= 2`` since it is used in the higher order derivatives
+        ddv
+            the 2nd derivative, has shape ``(6, state.shape[0])`` for ``matrix=False``, else
+            has shape ``(6, state.shape[0], state.shape[0])``, the first dimension is in the Voigt representation
+            Only returned for ``order >= 2``
         """
 
         # Figure out arguments
         opt = {
-            "k": self.info.get("k", (0, 0, 0)),
+            "k": self.info.get("k", np.zeros(3)),
             "dtype": dtype_real_to_complex(self.dtype),
         }
 
@@ -1283,24 +1285,25 @@ class StateC(State):
 
             if matrix or order > 1:
                 # calculate the full matrix
-                v = np.empty((nstate, nstate, 3), dtype=opt["dtype"])
-                v[:, :, 0] = (cstate @ dPk[0].dot(state.T)).T
-                v[:, :, 1] = (cstate @ dPk[1].dot(state.T)).T
-                v[:, :, 2] = (cstate @ dPk[2].dot(state.T)).T
+                v = np.empty([3, nstate, nstate], dtype=opt["dtype"])
+                v[0] = (cstate @ dPk[0].dot(state.T)).T
+                v[1] = (cstate @ dPk[1].dot(state.T)).T
+                v[2] = (cstate @ dPk[2].dot(state.T)).T
 
                 if matrix:
                     ret = (v,)
                 else:
-                    # diagonal of nd removes axis0 and axis1 and appends a new
-                    # axis to the end, this is not what we want
-                    ret = (np.diagonal(v).T,)
+                    # numpy >= 1.9 returns a read-only view of the data,
+                    # so take a copy to ensure editable state
+                    ret = (np.diagonal(v, axis1=1, axis2=2).copy(),)
 
             else:
                 # calculate projections on states
-                v = np.empty((nstate, 3), dtype=opt["dtype"])
-                v[:, 0] = (cstate * dPk[0].dot(state.T).T).sum(1)
-                v[:, 1] = (cstate * dPk[1].dot(state.T).T).sum(1)
-                v[:, 2] = (cstate * dPk[2].dot(state.T).T).sum(1)
+                v = np.empty([3, nstate], dtype=opt["dtype"])
+
+                v[0] = einsum("ij,ji->i", cstate, dPk[0].dot(state.T))
+                v[1] = einsum("ij,ji->i", cstate, dPk[1].dot(state.T))
+                v[2] = einsum("ij,ji->i", cstate, dPk[2].dot(state.T))
 
                 ret = (v,)
 
@@ -1309,52 +1312,52 @@ class StateC(State):
                 # loop energies
 
                 if matrix:
-                    vv = np.empty((nstate, nstate, 6), dtype=opt["dtype"])
+                    vv = np.empty([6, nstate, nstate], dtype=opt["dtype"])
                     for s, e in enumerate(energy):
                         de = energy - e
                         # add factor 2 here
                         np.divide(2, de, where=(de != 0), out=de)
 
                         # we will use this multiple times
-                        absv = np.absolute(v[s]).T
+                        absv = np.absolute(v[:, s])
 
                         # calculate 2nd derivative
                         # xx
-                        vv[s, :, 0] = cstate @ ddPk[0].dot(state[s]) - de * absv[0] ** 2
+                        vv[0, s] = cstate @ ddPk[0].dot(state[s]) - de * absv[0] ** 2
                         # yy
-                        vv[s, :, 1] = cstate @ ddPk[1].dot(state[s]) - de * absv[1] ** 2
+                        vv[1, s] = cstate @ ddPk[1].dot(state[s]) - de * absv[1] ** 2
                         # zz
-                        vv[s, :, 2] = cstate @ ddPk[2].dot(state[s]) - de * absv[2] ** 2
+                        vv[2, s] = cstate @ ddPk[2].dot(state[s]) - de * absv[2] ** 2
                         # yz
-                        vv[s, :, 3] = cstate @ ddPk[3].dot(state[s]) - de * absv[1] * absv[2]
+                        vv[3, s] = cstate @ ddPk[3].dot(state[s]) - de * absv[1] * absv[2]
                         # xz
-                        vv[s, :, 4] = cstate @ ddPk[4].dot(state[s]) - de * absv[0] * absv[2]
+                        vv[4, s] = cstate @ ddPk[4].dot(state[s]) - de * absv[0] * absv[2]
                         # xy
-                        vv[s, :, 5] = cstate @ ddPk[5].dot(state[s]) - de * absv[0] * absv[1]
+                        vv[5, s] = cstate @ ddPk[5].dot(state[s]) - de * absv[0] * absv[1]
 
                 else:
-                    vv = np.empty((nstate, 6), dtype=opt["dtype"])
+                    vv = np.empty([6, nstate], dtype=opt["dtype"])
                     for s, e in enumerate(energy):
                         de = energy - e
                         # add factor 2 here
                         np.divide(2, de, where=(de != 0), out=de)
 
-                        # we will use this multiple times, .T just for easier access
-                        absv = np.absolute(v[s]).T
+                        # we will use this multiple times
+                        absv = np.absolute(v[:, s])
 
                         # calculate 2nd derivative
                         # xx
-                        vv[s, 0] = cstate[s] @ ddPk[0].dot(state[s]) - de @ absv[0] ** 2
+                        vv[0, s] = cstate[s] @ ddPk[0].dot(state[s]) - de @ absv[0] ** 2
                         # yy
-                        vv[s, 1] = cstate[s] @ ddPk[1].dot(state[s]) - de @ absv[1] ** 2
+                        vv[1, s] = cstate[s] @ ddPk[1].dot(state[s]) - de @ absv[1] ** 2
                         # zz
-                        vv[s, 2] = cstate[s] @ ddPk[2].dot(state[s]) - de @ absv[2] ** 2
+                        vv[2, s] = cstate[s] @ ddPk[2].dot(state[s]) - de @ absv[2] ** 2
                         # yz
-                        vv[s, 3] = cstate[s] @ ddPk[3].dot(state[s]) - de @ (absv[1] * absv[2])
+                        vv[3, s] = cstate[s] @ ddPk[3].dot(state[s]) - de @ (absv[1] * absv[2])
                         # xz
-                        vv[s, 4] = cstate[s] @ ddPk[4].dot(state[s]) - de @ (absv[0] * absv[2])
+                        vv[4, s] = cstate[s] @ ddPk[4].dot(state[s]) - de @ (absv[0] * absv[2])
                         # xy
-                        vv[s, 5] = cstate[s] @ ddPk[5].dot(state[s]) - de @ (absv[0] * absv[1])
+                        vv[5, s] = cstate[s] @ ddPk[5].dot(state[s]) - de @ (absv[0] * absv[1])
 
                 ret += (vv,)
         else:
@@ -1362,26 +1365,26 @@ class StateC(State):
 
             if matrix or order > 1:
                 # calculate the full matrix
-                v = np.empty((nstate, nstate, 3), dtype=opt["dtype"])
+                v = np.empty([3, nstate, nstate], dtype=opt["dtype"])
                 for s, e in enumerate(energy):
-                    v[s, :, 0] = cstate @ (dPk[0] - e * dSk[0]).dot(state[s])
-                    v[s, :, 1] = cstate @ (dPk[1] - e * dSk[1]).dot(state[s])
-                    v[s, :, 2] = cstate @ (dPk[2] - e * dSk[2]).dot(state[s])
+                    v[0, s] = cstate @ (dPk[0] - e * dSk[0]).dot(state[s])
+                    v[1, s] = cstate @ (dPk[1] - e * dSk[1]).dot(state[s])
+                    v[2, s] = cstate @ (dPk[2] - e * dSk[2]).dot(state[s])
 
                 if matrix:
                     ret = (v,)
                 else:
                     # diagonal of nd removes axis0 and axis1 and appends a new
                     # axis to the end, this is not what we want
-                    ret = (np.diagonal(v).T,)
+                    ret = (np.diagonal(v, axis1=1, axis2=2).copy(),)
 
             else:
                 # calculate diagonal components on states
-                v = np.empty((nstate, 3), dtype=opt["dtype"])
+                v = np.empty([3, nstate], dtype=opt["dtype"])
                 for s, e in enumerate(energy):
-                    v[s, 0] = cstate[s] @ (dPk[0] - e * dSk[0]).dot(state[s])
-                    v[s, 1] = cstate[s] @ (dPk[1] - e * dSk[1]).dot(state[s])
-                    v[s, 2] = cstate[s] @ (dPk[2] - e * dSk[2]).dot(state[s])
+                    v[0, s] = cstate[s] @ (dPk[0] - e * dSk[0]).dot(state[s])
+                    v[1, s] = cstate[s] @ (dPk[1] - e * dSk[1]).dot(state[s])
+                    v[2, s] = cstate[s] @ (dPk[2] - e * dSk[2]).dot(state[s])
 
                 ret = (v,)
 
@@ -1390,52 +1393,52 @@ class StateC(State):
                 # loop energies
 
                 if matrix:
-                    vv = np.empty((nstate, nstate, 6), dtype=opt["dtype"])
+                    vv = np.empty([6, nstate, nstate], dtype=opt["dtype"])
                     for s, e in enumerate(energy):
                         de = energy - e
                         # add factor 2 here
                         np.divide(2, de, where=(de != 0), out=de)
 
-                        # we will use this multiple times:
-                        absv = np.absolute(v[s]).T
+                        # we will use this multiple times
+                        absv = np.absolute(v[:, s])
 
                         # calculate 2nd derivative
                         # xx
-                        vv[s, :, 0] = cstate @ (ddPk[0] - e * ddSk[0]).dot(state[s]) - de * absv[0] ** 2
+                        vv[0, s] = cstate @ (ddPk[0] - e * ddSk[0]).dot(state[s]) - de * absv[0] ** 2
                         # yy
-                        vv[s, :, 1] = cstate @ (ddPk[1] - e * ddSk[1]).dot(state[s]) - de * absv[1] ** 2
+                        vv[1, s] = cstate @ (ddPk[1] - e * ddSk[1]).dot(state[s]) - de * absv[1] ** 2
                         # zz
-                        vv[s, :, 2] = cstate @ (ddPk[2] - e * ddSk[2]).dot(state[s]) - de * absv[2] ** 2
+                        vv[2, s] = cstate @ (ddPk[2] - e * ddSk[2]).dot(state[s]) - de * absv[2] ** 2
                         # yz
-                        vv[s, :, 3] = cstate @ (ddPk[3] - e * ddSk[3]).dot(state[s]) - de * absv[1] * absv[2]
+                        vv[3, s] = cstate @ (ddPk[3] - e * ddSk[3]).dot(state[s]) - de * absv[1] * absv[2]
                         # xz
-                        vv[s, :, 4] = cstate @ (ddPk[4] - e * ddSk[4]).dot(state[s]) - de * absv[0] * absv[2]
+                        vv[4, s] = cstate @ (ddPk[4] - e * ddSk[4]).dot(state[s]) - de * absv[0] * absv[2]
                         # xy
-                        vv[s, :, 5] = cstate @ (ddPk[5] - e * ddSk[5]).dot(state[s]) - de * absv[0] * absv[1]
+                        vv[5, s] = cstate @ (ddPk[5] - e * ddSk[5]).dot(state[s]) - de * absv[0] * absv[1]
 
                 else:
-                    vv = np.empty((nstate, 6), dtype=opt["dtype"])
+                    vv = np.empty([6, nstate], dtype=opt["dtype"])
                     for s, e in enumerate(energy):
                         de = energy - e
                         # add factor 2 here
                         np.divide(2, de, where=(de != 0), out=de)
 
-                        # we will use this multiple times:
-                        absv = np.absolute(v[s]).T
+                        # we will use this multiple times
+                        absv = np.absolute(v[:, s])
 
                         # calculate 2nd derivative
                         # xx
-                        vv[s, 0] = cstate[s] @ (ddPk[0] - e * ddSk[0]).dot(state[s]) - de @ absv[0] ** 2
+                        vv[0, s] = cstate[s] @ (ddPk[0] - e * ddSk[0]).dot(state[s]) - de @ absv[0] ** 2
                         # yy
-                        vv[s, 1] = cstate[s] @ (ddPk[1] - e * ddSk[1]).dot(state[s]) - de @ absv[1] ** 2
+                        vv[1, s] = cstate[s] @ (ddPk[1] - e * ddSk[1]).dot(state[s]) - de @ absv[1] ** 2
                         # zz
-                        vv[s, 2] = cstate[s] @ (ddPk[2] - e * ddSk[2]).dot(state[s]) - de @ absv[2] ** 2
+                        vv[2, s] = cstate[s] @ (ddPk[2] - e * ddSk[2]).dot(state[s]) - de @ absv[2] ** 2
                         # yz
-                        vv[s, 3] = cstate[s] @ (ddPk[3] - e * ddSk[3]).dot(state[s]) - de @ (absv[1] * absv[2])
+                        vv[3, s] = cstate[s] @ (ddPk[3] - e * ddSk[3]).dot(state[s]) - de @ (absv[1] * absv[2])
                         # xz
-                        vv[s, 4] = cstate[s] @ (ddPk[4] - e * ddSk[4]).dot(state[s]) - de @ (absv[0] * absv[2])
+                        vv[4, s] = cstate[s] @ (ddPk[4] - e * ddSk[4]).dot(state[s]) - de @ (absv[0] * absv[2])
                         # xy
-                        vv[s, 5] = cstate[s] @ (ddPk[5] - e * ddSk[5]).dot(state[s]) - de @ (absv[0] * absv[1])
+                        vv[5, s] = cstate[s] @ (ddPk[5] - e * ddSk[5]).dot(state[s]) - de @ (absv[0] * absv[1])
 
                 ret += (vv,)
 

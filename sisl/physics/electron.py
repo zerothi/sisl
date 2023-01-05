@@ -195,7 +195,7 @@ def PDOS(E, eig, state, S=None, distribution="gaussian", spin=None):
     Returns
     -------
     numpy.ndarray
-        projected DOS calculated at energies, has dimension ``(state.shape[1], len(E))``.
+        projected DOS calculated at energies, has dimension ``(1, state.shape[1], len(E))``.
         For non-colinear calculations it will be ``(4, state.shape[1] // 2, len(E))``, ordered as
         indicated in the above list.
     """
@@ -260,9 +260,11 @@ def PDOS(E, eig, state, S=None, distribution="gaussian", spin=None):
     else:
         PDOS = (conj(state[0]) * S.dot(state[0])).real.reshape(-1, 1) \
                * distribution(E - eig[0]).reshape(1, -1)
+
         for i in range(1, len(eig)):
-            PDOS[:, :] += (conj(state[i]) * S.dot(state[i])).real.reshape(-1, 1) \
-                          * distribution(E - eig[i]).reshape(1, -1)
+            PDOS += (conj(state[i]) * S.dot(state[i])).real.reshape(-1, 1) \
+                * distribution(E - eig[i]).reshape(1, -1)
+        PDOS.shape = (1, *PDOS.shape)
 
     return PDOS
 
@@ -587,6 +589,7 @@ def spin_squared(state_alpha, state_beta, S=None):
 
 
 @set_module("sisl.physics.electron")
+@deprecate_method("use <Matrix>.eigenstate(...).velocity() instead", "0.13.0")
 def velocity(state, dHk, energy=None, dSk=None, degenerate=None, degenerate_dir=(1, 1, 1), project=False):
     r""" Calculate the velocity of a set of states
 
@@ -649,9 +652,9 @@ def velocity(state, dHk, energy=None, dSk=None, degenerate=None, degenerate_dir=
     Returns
     -------
     numpy.ndarray
-        if `project` is false, velocities per state with final dimension ``(state.shape[0], 3)``, the velocity unit is Ang/ps. Units *may* change in future releases.
+        if `project` is false, velocities per state with final dimension ``(3, state.shape[0])``, the velocity unit is Ang/ps. Units *may* change in future releases.
     numpy.ndarray
-        if `project` is true, velocities per state with final dimension ``(state.shape[0], state.shape[1], 3)``, the velocity unit is Ang/ps. Units *may* change in future releases.
+        if `project` is true, velocities per state with final dimension ``(3, state.shape[0], state.shape[1])``, the velocity unit is Ang/ps. Units *may* change in future releases.
     """
     if state.ndim == 1:
         return velocity(state.reshape(1, -1), dHk, energy, dSk, degenerate, degenerate_dir, project)[0]
@@ -685,25 +688,26 @@ def _velocity_non_ortho(state, dHk, energy, dSk, degenerate, degenerate_dir, pro
         del deg_dHk
 
     if project:
-        v = np.empty([state.shape[0], state.shape[1], 3], dtype=dtype_complex_to_real(state.dtype))
+        v = np.empty([3, state.shape[0], state.shape[1]], dtype=dtype_complex_to_real(state.dtype))
         # Since they depend on the state energies and dSk we have to loop them individually.
         for s, e in enumerate(energy):
             cs = conj(state[s])
             # Since dHk *may* be a csr_matrix or sparse, we have to do it like
             # this. A sparse matrix cannot be re-shaped with an extra dimension.
-            v[s, :, 0] = (cs * (dHk[0] - e * dSk[0]).dot(state[s])).real
-            v[s, :, 1] = (cs * (dHk[1] - e * dSk[1]).dot(state[s])).real
-            v[s, :, 2] = (cs * (dHk[2] - e * dSk[2]).dot(state[s])).real
+            v[0, s] = (cs * (dHk[0] - e * dSk[0]).dot(state[s])).real
+            v[1, s] = (cs * (dHk[1] - e * dSk[1]).dot(state[s])).real
+            v[2, s] = (cs * (dHk[2] - e * dSk[2]).dot(state[s])).real
 
     else:
-        v = np.empty([state.shape[0], 3], dtype=dtype_complex_to_real(state.dtype))
+        v = np.empty([3, state.shape[0]], dtype=dtype_complex_to_real(state.dtype))
         for s, e in enumerate(energy):
             cs = conj(state[s])
-            v[s, 0] = cs.dot((dHk[0] - e * dSk[0]).dot(state[s])).real
-            v[s, 1] = cs.dot((dHk[1] - e * dSk[1]).dot(state[s])).real
-            v[s, 2] = cs.dot((dHk[2] - e * dSk[2]).dot(state[s])).real
+            v[0, s] = cs.dot((dHk[0] - e * dSk[0]).dot(state[s])).real
+            v[1, s] = cs.dot((dHk[1] - e * dSk[1]).dot(state[s])).real
+            v[2, s] = cs.dot((dHk[2] - e * dSk[2]).dot(state[s])).real
 
-    return v * _velocity_const
+    v *= _velocity_const
+    return v
 
 
 def _velocity_ortho(state, dHk, degenerate, degenerate_dir, project):
@@ -722,20 +726,21 @@ def _velocity_ortho(state, dHk, degenerate, degenerate_dir, project):
 
     cs = conj(state)
     if project:
-        v = np.empty([state.shape[0], state.shape[1], 3], dtype=dtype_complex_to_real(state.dtype))
+        v = np.empty([3, state.shape[0], state.shape[1]], dtype=dtype_complex_to_real(state.dtype))
 
-        v[:, :, 0] = (cs * dHk[0].dot(state.T).T).real
-        v[:, :, 1] = (cs * dHk[1].dot(state.T).T).real
-        v[:, :, 2] = (cs * dHk[2].dot(state.T).T).real
+        v[0] = (cs * dHk[0].dot(state.T).T).real
+        v[1] = (cs * dHk[1].dot(state.T).T).real
+        v[2] = (cs * dHk[2].dot(state.T).T).real
 
     else:
-        v = np.empty([state.shape[0], 3], dtype=dtype_complex_to_real(state.dtype))
+        v = np.empty([3, state.shape[0]], dtype=dtype_complex_to_real(state.dtype))
 
-        v[:, 0] = einsum("ij,ji->i", cs, dHk[0].dot(state.T)).real
-        v[:, 1] = einsum("ij,ji->i", cs, dHk[1].dot(state.T)).real
-        v[:, 2] = einsum("ij,ji->i", cs, dHk[2].dot(state.T)).real
+        v[0] = einsum("ij,ji->i", cs, dHk[0].dot(state.T)).real
+        v[1] = einsum("ij,ji->i", cs, dHk[1].dot(state.T)).real
+        v[2] = einsum("ij,ji->i", cs, dHk[2].dot(state.T)).real
 
-    return v * _velocity_const
+    v *= _velocity_const
+    return v
 
 
 @set_module("sisl.physics.electron")
@@ -800,7 +805,7 @@ def velocity_matrix(state, dHk, energy=None, dSk=None, degenerate=None, degenera
     Returns
     -------
     numpy.ndarray
-        velocity matrix state with final dimension ``(state.shape[0], state.shape[0], 3)``, the velocity unit is Ang/ps. Units *may* change in future releases.
+        velocity matrix state with final dimension ``(3, state.shape[0], state.shape[0])``, the velocity unit is Ang/ps. Units *may* change in future releases.
     """
     if state.ndim == 1:
         return velocity_matrix(state.reshape(1, -1), dHk, energy, dSk, degenerate, degenerate_dir)
@@ -816,7 +821,7 @@ def _velocity_matrix_non_ortho(state, dHk, energy, dSk, degenerate, degenerate_d
 
     # All matrix elements along the 3 directions
     n = state.shape[0]
-    v = np.empty([n, n, 3], dtype=dtype)
+    v = np.empty([3, n, n], dtype=dtype)
 
     # Decouple the degenerate states
     if not degenerate is None:
@@ -840,11 +845,12 @@ def _velocity_matrix_non_ortho(state, dHk, energy, dSk, degenerate, degenerate_d
 
         # Since dHk *may* be a csr_matrix or sparse, we have to do it like
         # this. A sparse matrix cannot be re-shaped with an extra dimension.
-        v[s, :, 0] = cs.dot((dHk[0] - e * dSk[0]).dot(state[s]))
-        v[s, :, 1] = cs.dot((dHk[1] - e * dSk[1]).dot(state[s]))
-        v[s, :, 2] = cs.dot((dHk[2] - e * dSk[2]).dot(state[s]))
+        v[0, s] = cs @ (dHk[0] - e * dSk[0]).dot(state[s])
+        v[1, s] = cs @ (dHk[1] - e * dSk[1]).dot(state[s])
+        v[2, s] = cs @ (dHk[2] - e * dSk[2]).dot(state[s])
 
-    return v * _velocity_const
+    v *= _velocity_const
+    return v
 
 
 def _velocity_matrix_ortho(state, dHk, degenerate, degenerate_dir, dtype):
@@ -852,7 +858,7 @@ def _velocity_matrix_ortho(state, dHk, degenerate, degenerate_dir, dtype):
 
     # All matrix elements along the 3 directions
     n = state.shape[0]
-    v = np.empty([n, n, 3], dtype=dtype)
+    v = np.empty([3, n, n], dtype=dtype)
 
     # Decouple the degenerate states
     if not degenerate is None:
@@ -868,11 +874,12 @@ def _velocity_matrix_ortho(state, dHk, degenerate, degenerate_dir, dtype):
 
     cs = conj(state)
     for s in range(n):
-        v[s, :, 0] = cs.dot(dHk[0].dot(state[s, :]))
-        v[s, :, 1] = cs.dot(dHk[1].dot(state[s, :]))
-        v[s, :, 2] = cs.dot(dHk[2].dot(state[s, :]))
+        v[0, s] = cs @ dHk[0].dot(state[s])
+        v[1, s] = cs @ dHk[1].dot(state[s])
+        v[2, s] = cs @ dHk[2].dot(state[s])
 
-    return v * _velocity_const
+    v *= _velocity_const
+    return v
 
 
 @set_module("sisl.physics.electron")
@@ -885,7 +892,7 @@ def berry_curvature(state, energy, dHk, dSk=None,
 
     .. math::
 
-       \boldsymbol\Omega_{i,\alpha\beta} = - \frac2{\hbar^2}\Im\sum_{j\neq i}
+       \boldsymbol\Omega_{\alpha\beta,i} = - \frac2{\hbar^2}\Im\sum_{j\neq i}
                 \frac{v^\alpha_{ij} v^\beta_{ji}}
                      {[\epsilon_j - \epsilon_i]^2}
 
@@ -927,7 +934,7 @@ def berry_curvature(state, energy, dHk, dSk=None,
     Returns
     -------
     numpy.ndarray
-        Berry flux with final dimension ``(state.shape[0], 3, 3)``
+        Berry flux with final dimension ``(3, 3, state.shape[0])``
     """
     if state.ndim == 1:
         return berry_curvature(state.reshape(1, -1), energy, dHk, dSk, degenerate, degenerate_dir)[0]
@@ -949,12 +956,11 @@ def _berry_curvature(v_M, energy):
     r""" Calculate Berry curvature for a given velocity matrix """
 
     # All matrix elements along the 3 directions
-    N = v_M.shape[0]
+    N = v_M.shape[1]
     # For cases where all states are degenerate then we would not be able
     # to calculate anything. Hence we need to initialize as zero
-    # This is a vector of matrices
-    #   \Omega_{n, \alpha \beta}
-    sigma = np.zeros([N, 3, 3], dtype=dtype_complex_to_real(v_M.dtype))
+    #   \Omega_{\alpha \beta, n}
+    sigma = np.zeros([3, 3, N], dtype=dtype_complex_to_real(v_M.dtype))
 
     for s, e in enumerate(energy):
         de = (energy - e) ** 2
@@ -963,10 +969,11 @@ def _berry_curvature(v_M, energy):
         np.divide(2, de, where=(de != 0), out=de)
 
         # Calculate the berry-curvature
-        sigma[s] = ((de.reshape(-1, 1) * v_M[s]).T @ v_M[:, s]).imag
+        sigma[:, :, s] = ((de * v_M[:, s]) @ v_M[:, :, s].T).imag
 
     # negative here
-    return sigma * (- _berry_curvature_const)
+    sigma *= - _berry_curvature_const
+    return sigma
 
 
 @set_module("sisl.physics.electron")
@@ -1035,7 +1042,7 @@ def conductivity(bz, distribution="fermi-dirac", method="ahc",
         def _ahc(es):
             occ = distribution(es.eig)
             bc = es.berry_curvature(degenerate=degenerate, degenerate_dir=degenerate_dir)
-            return (bc.T @ occ).T
+            return bc @ occ
 
         vol, dim = bz.volume(ret_dim=True)
 
@@ -1742,13 +1749,15 @@ class StateCElectron(_electron_State, StateC):
         -----
         The states and energies for the states *may* have changed after calling this routine.
         This is because of the velocity un-folding for degenerate modes. I.e. calling
-        `displacement` and/or `PDOS` after this method *may* change the result.
+        `PDOS` after this method *may* change the result.
 
         See Also
         --------
         derivative : for details of the implementation
         """
-        return self.derivative(1, *args, **kwargs).real * _velocity_const
+        v = self.derivative(1, *args, **kwargs)
+        v *= _velocity_const
+        return v
 
     def berry_curvature(self, *args, **kwargs):
         r""" Calculate Berry curvature for the states
