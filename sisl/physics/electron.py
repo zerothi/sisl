@@ -53,7 +53,7 @@ from numpy import floor, ceil
 from numpy import conj, dot, ogrid, einsum
 from numpy import cos, sin, log, exp, pi
 from numpy import add, argsort, sort
-from scipy.sparse import isspmatrix
+from scipy.sparse import identity, csr_matrix, hstack, isspmatrix
 
 from sisl._internal import set_module
 from sisl import units, constant
@@ -322,24 +322,54 @@ def COP(E, eig, state, M, distribution="gaussian"):
 
     assert len(eig) == len(state), "COP: number of eigenvalues and states are not consistent"
 
+    # initialize the COP values
+    cop = oplist([0.] * len(E))
+
+    no = M.shape[0]
     n_s = M.shape[1] // M.shape[0]
 
-    def calc_cop(M, state, n_s):
-        state = np.tile(np.outer(state.conj(), state), n_s)
-        return M.multiply(state).real
+    if isinstance(M, _FakeMatrix):
+        # A fake matrix equals the identity matrix.
+        # Hence we can do all calculations only on the diagonal,
+        # then finally we recreate the full matrix dimensions.
 
-    # now calculate the COP curves for the different energies
-    cop = oplist([0.] * len(E))
-    if isspmatrix(M):
         for e, s in zip(eig, state):
             # calculate contribution from this state
             we = distribution(E - e)
-            tmp = calc_cop(M, s, n_s)
+            tmp = (s.conj() * s).real
+            cop += [tmp * w for w in we]
+
+        # Now recreate the full size (in sparse form)
+        idx = np.arange(no)
+        def tosize(diag, idx):
+            return csr_matrix((diag, (idx, idx)), shape=M.shape)
+
+        cop = oplist([tosize(d, idx) for d in cop])
+
+    elif isspmatrix(M):
+
+        # split M, then we will rejoin afterwards
+        Ms = [M[:, i*no:(i+1)*no] for i in range(n_s)]
+
+        def calc_cop(Ms, state):
+            state = np.outer(state.conj(), state)
+            return hstack([M.multiply(state).real for M in Ms])
+
+        for e, s in zip(eig, state):
+            # calculate contribution from this state
+            we = distribution(E - e)
+            tmp = calc_cop(Ms, s)
             cop += [tmp.multiply(w) for w in we]
+
     else:
+        old_shape = M.shape
+        Ms = M.reshape(old_shape[0], n_s, old_shape[0])
+
         for e, s in zip(eig, state):
             we = distribution(E - e)
-            cop += we.reshape(-1, 1, 1) * calc_cop(M, s, n_s)
+            # expand the state and do multiplication
+            s = np.outer(s.conj(), s)[:, None, :]
+            cop += we.reshape(-1, 1, 1) * (Ms * s).real.reshape(old_shape)
 
     return cop
 
@@ -1855,8 +1885,8 @@ class EigenstateElectron(StateCElectron):
 
         This routine calls `~sisl.physics.electron.COP` with appropriate arguments.
         """
-        # Get Sk in full format
-        Sk = self.Sk(format="sc:csr")
+        format = self.info.get("format", "csr")
+        Sk = self.Sk(format=f"sc:{format}")
         return COP(E, self.c, self.state, Sk, distribution)
 
     def COHP(self, E, distribution="gaussian"):
@@ -1864,6 +1894,6 @@ class EigenstateElectron(StateCElectron):
 
         This routine calls `~sisl.physics.electron.COP` with appropriate arguments.
         """
-        # Get Hk in full format
-        Hk = self.parent.Hk(format="sc:csr")
+        format = self.info.get("format", "csr")
+        Hk = self.parent.Hk(format=f"sc:{format}")
         return COP(E, self.c, self.state, Hk, distribution)

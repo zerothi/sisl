@@ -7,7 +7,7 @@ from functools import partial
 import warnings
 import numpy as np
 from scipy.linalg import block_diag
-from scipy.sparse import SparseEfficiencyWarning
+from scipy.sparse import SparseEfficiencyWarning, isspmatrix
 
 from sisl import Geometry, Atom, SuperCell, Hamiltonian, Spin, BandStructure, MonkhorstPack, BrillouinZone
 from sisl import get_distribution
@@ -1005,7 +1005,7 @@ class TestHamiltonian:
     def test_velocity_orthogonal(self, setup):
         H = setup.H.copy()
         H.construct([(0.1, 1.5), ((1., 1.))])
-        E = np.linspace(-4, 4, 1000)
+        E = np.linspace(-4, 4, 21)
         for k in ([0] *3, [0.2] * 3):
             es = H.eigenstate(k)
             v = es.velocity()
@@ -1016,7 +1016,7 @@ class TestHamiltonian:
     def test_velocity_nonorthogonal(self, setup):
         HS = setup.HS.copy()
         HS.construct([(0.1, 1.5), ((1., 1.), (0.1, 0.1))])
-        E = np.linspace(-4, 4, 1000)
+        E = np.linspace(-4, 4, 21)
         for k in ([0] *3, [0.2] * 3):
             es = HS.eigenstate(k)
             v = es.velocity()
@@ -1026,7 +1026,7 @@ class TestHamiltonian:
     def test_velocity_matrix_orthogonal(self, setup):
         H = setup.H.copy()
         H.construct([(0.1, 1.5), ((1., 1.))])
-        E = np.linspace(-4, 4, 1000)
+        E = np.linspace(-4, 4, 21)
         for k in ([0] *3, [0.2] * 3):
             es = H.eigenstate(k)
             v = es.velocity(matrix=True)
@@ -1037,7 +1037,7 @@ class TestHamiltonian:
     def test_velocity_matrix_nonorthogonal(self, setup):
         HS = setup.HS.copy()
         HS.construct([(0.1, 1.5), ((1., 1.), (0.1, 0.1))])
-        E = np.linspace(-4, 4, 1000)
+        E = np.linspace(-4, 4, 21)
         for k in ([0] *3, [0.2] * 3):
             es = HS.eigenstate(k)
             v = es.velocity(matrix=True)
@@ -1047,7 +1047,7 @@ class TestHamiltonian:
     def test_dos1(self, setup):
         HS = setup.HS.copy()
         HS.construct([(0.1, 1.5), ((1., 1.), (0.1, 0.1))])
-        E = np.linspace(-4, 4, 1000)
+        E = np.linspace(-4, 4, 21)
         for k in ([0] *3, [0.2] * 3):
             es = HS.eigenstate(k)
             DOS = es.DOS(E)
@@ -1059,7 +1059,7 @@ class TestHamiltonian:
     def test_pdos1(self, setup):
         HS = setup.HS.copy()
         HS.construct([(0.1, 1.5), ((0., 1.), (1., 0.1))])
-        E = np.linspace(-4, 4, 1000)
+        E = np.linspace(-4, 4, 21)
         for k in ([0] *3, [0.2] * 3):
             es = HS.eigenstate(k)
             DOS = es.DOS(E, 'lorentzian')
@@ -1073,7 +1073,7 @@ class TestHamiltonian:
     def test_pdos2(self, setup):
         H = setup.H.copy()
         H.construct([(0.1, 1.5), (0., 0.1)])
-        E = np.linspace(-4, 4, 1000)
+        E = np.linspace(-4, 4, 21)
         for k in ([0] *3, [0.2] * 3):
             es = H.eigenstate(k)
             DOS = es.DOS(E)
@@ -1088,7 +1088,7 @@ class TestHamiltonian:
         # basis, however, the basis is not orthogonal.
         HS = setup.HS.copy()
         HS.construct([(0.1, 1.5), ((0., 1.), (1., 0.1))])
-        E = np.linspace(-4, 4, 1000)
+        E = np.linspace(-4, 4, 21)
         es = HS.eigenstate()
         es.parent = None
         DOS = es.DOS(E)
@@ -1102,7 +1102,7 @@ class TestHamiltonian:
         # regardless of k, the PDOS will be correct.
         H = setup.H.copy()
         H.construct([(0.1, 1.5), (0., 0.1)])
-        E = np.linspace(-4, 4, 1000)
+        E = np.linspace(-4, 4, 21)
         es = H.eigenstate()
         es.parent = None
         DOS = es.DOS(E)
@@ -1189,7 +1189,7 @@ class TestHamiltonian:
     def test_coop_against_pdos_nonortho(self, setup):
         HS = setup.HS.copy()
         HS.construct([(0.1, 1.5), ((0., 1.), (1., 0.1))])
-        E = np.linspace(-4, 4, 100)
+        E = np.linspace(-4, 4, 21)
         for k in ([0] *3, [0.2] * 3):
             es = HS.eigenstate(k)
             COOP = es.COOP(E, 'lorentzian')
@@ -1209,7 +1209,7 @@ class TestHamiltonian:
     def test_coop_against_pdos_ortho(self, setup):
         H = setup.H.copy()
         H.construct([(0.1, 1.5), (0., 1.)])
-        E = np.linspace(-4, 4, 100)
+        E = np.linspace(-4, 4, 21)
         for k in ([0] *3, [0.2] * 3):
             es = H.eigenstate(k)
             COOP = es.COOP(E, 'lorentzian')
@@ -1220,9 +1220,26 @@ class TestHamiltonian:
             assert np.allclose(DOS, COOP2DOS)
 
             DOS = es.PDOS(E, 'lorentzian')
-            COOP2DOS = np.array([C.sum(1).ravel() for C in COOP]).T
+            # matrix.A1 is np.array(matrix).ravel()
+            COOP2DOS = np.array([C.sum(1).A1 for C in COOP]).T
             assert DOS.shape == COOP2DOS.shape
             assert np.allclose(DOS, COOP2DOS)
+
+    def test_coop_sp_vs_np(self, setup):
+        HS = setup.HS.copy()
+        HS.construct([(0.1, 1.5), ((0., 1.), (1., 0.1))])
+        E = np.linspace(-4, 4, 21)
+        for k in ([0] *3, [0.2] * 3):
+            es = HS.eigenstate(k)
+            COOP_sp = es.COOP(E, 'lorentzian')
+            assert isspmatrix(COOP_sp[0])
+
+            es = HS.eigenstate(k, format='array')
+            COOP_np = es.COOP(E, 'lorentzian')
+            assert isinstance(COOP_np[0], np.ndarray)
+
+            for c_sp, c_np in zip(COOP_sp, COOP_np):
+                assert np.allclose(c_sp.toarray(), c_np)
 
     def test_spin1(self, setup):
         g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=SuperCell(100, nsc=[3, 3, 1]))
@@ -1457,8 +1474,8 @@ class TestHamiltonian:
             om = es.spin_moment(project=True)
             assert np.allclose(sm, om.sum(1))
 
-            PDOS = es.PDOS(np.linspace(-1, 1, 100))
-            DOS = es.DOS(np.linspace(-1, 1, 100))
+            PDOS = es.PDOS(np.linspace(-1, 1, 21))
+            DOS = es.DOS(np.linspace(-1, 1, 21))
             assert np.allclose(PDOS.sum(1)[0, :], DOS)
             es.velocity(matrix=True)
 
@@ -1520,8 +1537,8 @@ class TestHamiltonian:
             om = es.spin_moment(project=True)
             assert np.allclose(sm, om.sum(1))
 
-            PDOS = es.PDOS(np.linspace(-1, 1, 100))
-            DOS = es.DOS(np.linspace(-1, 1, 100))
+            PDOS = es.PDOS(np.linspace(-1, 1, 21))
+            DOS = es.DOS(np.linspace(-1, 1, 21))
             assert np.allclose(PDOS.sum(1)[0, :], DOS)
             es.velocity(matrix=True)
 
@@ -1596,8 +1613,8 @@ class TestHamiltonian:
             om = es.spin_moment(project=True)
             assert np.allclose(sm, om.sum(1))
 
-            PDOS = es.PDOS(np.linspace(-1, 1, 100))
-            DOS = es.DOS(np.linspace(-1, 1, 100))
+            PDOS = es.PDOS(np.linspace(-1, 1, 21))
+            DOS = es.DOS(np.linspace(-1, 1, 21))
             assert np.allclose(PDOS.sum(1)[0, :], DOS)
             es.velocity(matrix=True)
 
@@ -1888,7 +1905,7 @@ class TestHamiltonian:
         H = Hamiltonian(setup.g.copy())
         H.construct([R, param])
         bz = MonkhorstPack(H, [10, 10, 1])
-        E = np.linspace(-4, 4, 500)
+        E = np.linspace(-4, 4, 21)
         dist = get_distribution('gaussian', smearing=0.05)
         def wrap(es, parent, k, weight):
             DOS = es.DOS(E, distribution=dist)
