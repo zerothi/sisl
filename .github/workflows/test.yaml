@@ -92,11 +92,11 @@ jobs:
         # This needs to be done in a separate folder
         # Otherwise the import will try to use the one in the current folder
         mkdir sisl-test-dir ; cd sisl-test-dir
-	if [[ "${{ github.event.inputs.marks }}" == "all" ]]; then
-	  ADD_FLAGS=""
-	else
-	  ADD_FLAGS="-m ${{ github.event.inputs.marks }}"
-	fi
+        if [[ "${{ github.event.inputs.marks }}" == "all" ]]; then
+         ADD_FLAGS=""
+        else
+         ADD_FLAGS="-m ${{ github.event.inputs.marks }}"
+        fi
         # --cov forces the reading of .coveragerc
         py.test -vv -rX --cov --cov-report term-missing --cov-report xml --cov-config=../.coveragerc $ADD_FLAGS --pyargs sisl sisl_toolbox.btd sisl_toolbox.models sisl_toolbox.siesta sisl_toolbox.transiesta
         #cp coverage.xml ../
