@@ -220,11 +220,6 @@ class UnitParser:
         self._p_right = self.create_parser(convert, default, group, self._right)
 
     @staticmethod
-    def _empty_list(lst):
-        while len(lst) > 0:
-            lst.pop()
-
-    @staticmethod
     def create_parser(convert, default, group, group_table=None):
         """ Routine to internally create a parser with specified unit_convert, unit_default and unit_group routines """
 
@@ -351,45 +346,56 @@ class UnitParser:
             # Ensure lists are cleaned (in case the user catches stuff
             left = list(self._left)
             right = list(self._right)
-            self._empty_list(self._left)
-            self._empty_list(self._right)
+            self._left = []
+            self._right = []
             raise ValueError(f"The unit conversion is not from the same group: {left} to {right}!")
-        self._empty_list(self._left)
-        self._empty_list(self._right)
+        self._left = []
+        self._right = []
         return conv_A / conv_B
 
-    def convert(self, *args):
-        """ Return conversion between the different arguments
+    def convert(self, *units):
+        """ Conversion factors between units
 
-        If 1 parameter is passed a conversion to the default values will be returned.
-        If 2 parameters are passed then a single float will be returned that converts between
-        ``args[0]`` and ``args[1]``.
+        If 1 unit is passed a conversion to the default  will be returned.
+        If 2 parameters are passed then a single float will be returned that converts from
+        ``units[0]`` to ``units[1]``.
         If 3 or more parameters are passed then a tuple of floats will be returned where
-        ``tuple[0]`` is the conversion between ``args[0]`` and ``args[1]``,
-        ``tuple[1]`` is the conversion between ``args[1]`` and `args[2]`` and so on.
+        ``tuple[0]`` is the conversion from ``units[0]`` to ``units[1]``,
+        ``tuple[1]`` is the conversion from ``units[1]`` to ``units[2]`` and so on.
 
         Parameters
         ----------
-        *args : list of string
-           units
+        *units : list of string
+           units to be converted
+
+        Examples
+        --------
+        >>> up = UnitParser(unit_table)
+        >>> up.convert("kg", "g")
+        1000.0
+        >>> up.convert("kg", "g", "amu")
+        (1000.0, 6.022140762081123e+23)
 
         Raises
         ------
         UnitSislError
             if the units are not commensurate
         """
-        if len(args) == 2:
+        if len(units) == 2:
             # basic unit conversion
-            return self._convert(args[0], args[1])
-        elif len(args) == 1:
-            # to default
-            conv = self._p_left(args[0])
-            self._empty_list(self._left)
-            return conv
-        return tuple(self._convert(args[i], args[i + 1]) for i in range(len(args) - 1))
+            return self._convert(units[0], units[1])
 
-    def __call__(self, *args):
-        return self.convert(*args)
+        elif len(units) == 1:
+            # to default
+            conv = self._p_left(units[0])
+            self._left = []
+            return conv
+
+        return tuple(self._convert(units[i], units[i + 1]) for i in range(len(units) - 1))
+
+    def __call__(self, *units):
+        return self.convert(*units)
+
 
 # Create base sisl unit conversion object
 units = UnitParser(unit_table)
