@@ -120,12 +120,12 @@ jobs:
           #   platform_id: macosx_arm64
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           submodules: false
 
       # Setup the fortran compiler. This is aware of the operating system.
-      - uses: awvwgk/setup-fortran@e6d2a1f7e1bad99a8adff6c46dd3c237dc14c7d2
+      - uses: awvwgk/setup-fortran@main
         id: setup-fortran
         with:
           compiler: gcc
@@ -133,7 +133,7 @@ jobs:
 
       # We use the cibuildwheel action to take care of everything
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2.3.1
+        uses: pypa/cibuildwheel@v2.11.4
         env:
           # Specify the exact python-platform version that we want to build
           # the wheel for.
@@ -141,7 +141,7 @@ jobs:
           # The rest of options are specified at pyproject.toml
       
       # Upload the wheel to the action's articfact.
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           path: ./wheelhouse/*.whl
 
@@ -150,14 +150,14 @@ jobs:
     name: Build source distribution
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           submodules: false
 
       - name: Build sdist
         run: pipx run build --sdist
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           path: dist/*.tar.gz
   
@@ -168,12 +168,12 @@ jobs:
     name: Publish package to TestPyPI
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: artifact
           path: dist
 
-      - uses: pypa/gh-action-pypi-publish@release/v1
+      - uses: pypa/gh-action-pypi-publish@v1.6.4
         with:
           user: __token__
           password: ${{ secrets.TESTPYPI_TOKEN }}
@@ -195,13 +195,13 @@ jobs:
           - os: macos-latest
 
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: artifact
           path: dist
 
       - name: Python installation
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: "3.8"
       
@@ -226,12 +226,12 @@ jobs:
     # alternatively, to publish when a GitHub Release is created, use the following rule:
     # if: github.event_name == 'release' && github.event.action == 'published'
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: artifact
           path: dist
 
-      - uses: pypa/gh-action-pypi-publish@v1.4.2
+      - uses: pypa/gh-action-pypi-publish@v1.6.4
         with:
           user: __token__
           password: ${{ secrets.PYPI_TOKEN }}
