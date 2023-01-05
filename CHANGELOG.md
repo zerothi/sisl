@@ -40,9 +40,11 @@ we hit release version 1.0.0.
 - tbtrans files now have a separate entry in the documentation
 
 ### Changed
-- index ordering of polarized spin quantities are now changed to
-  [total, Sz]. This makes the ordering follow the non-colinear
-	cases (see discussion in #501)
+- index ordering of spin and coordinate quantities are now changed to
+  have these as the first indices. This ensures consistency across
+	return types and allows easier handling.
+	Note that non-polarized PDOS calculations now has an extra dimension
+	for coherence with non-colinear spin.	(see #501)
 - ensured all units are now CODATA-2018 values
 - `cell_length` changed to `cell2length` with new axes argument
 - enabled orbitals up to the h-shell, #491

@@ -13,7 +13,7 @@ from sisl import Geometry, Atom, SuperCell, Hamiltonian, Spin, BandStructure, Mo
 from sisl import get_distribution
 from sisl import oplist
 from sisl import Grid, SphericalOrbital, SislError
-from sisl.physics.electron import berry_phase, spin_squared, conductivity
+from sisl.physics.electron import berry_phase, spin_squared, conductivity, velocity, velocity_matrix
 
 
 pytestmark = [pytest.mark.physics, pytest.mark.hamiltonian,
@@ -749,8 +749,8 @@ class TestHamiltonian:
         # Projected velocity
         vv1 = es1.velocity(matrix=True)
         vv2 = es2.velocity(matrix=True)
-        assert np.allclose(np.diagonal(vv1).T, v2)
-        assert np.allclose(np.diagonal(vv2).T, v1)
+        assert np.allclose(np.diagonal(vv1, axis1=1, axis2=2), v2)
+        assert np.allclose(np.diagonal(vv2, axis1=1, axis2=2), v1)
 
     def test_derivative_orthogonal(self, setup):
         R, param = [0.1, 1.5], [1., 0.1]
@@ -775,6 +775,54 @@ class TestHamiltonian:
         v1, vv1 = es.derivative(2)
         v = es.derivative(1)
         assert np.allclose(v1, v)
+
+    def test_velocity_equal_orthogonal(self, setup):
+        R, param = [0.1, 1.5], [1., 0.1]
+        g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
+        H = Hamiltonian(g)
+        H.construct((R, param))
+
+        k = [0.1] * 3
+        es = H.eigenstate(k)
+        v1 = es.copy().velocity(degenerate=None)
+        v2 = velocity(es.state, H.dHk(k), es.eig)
+        assert np.allclose(v1, v2)
+
+    def test_velocity_equal_non_orthogonal(self, setup):
+        R, param = [0.1, 1.5], [(1., 1.), (0.1, 0.1)]
+        g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
+        H = Hamiltonian(g, orthogonal=False)
+        H.construct((R, param))
+
+        k = [0.1] * 3
+        es = H.eigenstate(k)
+        v1 = es.copy().velocity(degenerate=None)
+        v2 = velocity(es.state, H.dHk(k), es.eig, H.dSk(k))
+        assert np.allclose(v1, v2)
+
+    def test_velocity_matrix_equal_orthogonal(self, setup):
+        R, param = [0.1, 1.5], [1., 0.1]
+        g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
+        H = Hamiltonian(g)
+        H.construct((R, param))
+
+        k = [0.1] * 3
+        es = H.eigenstate(k)
+        v1 = es.copy().velocity(matrix=True, degenerate=None)
+        v2 = velocity_matrix(es.state, H.dHk(k), es.eig)
+        assert np.allclose(v1, v2)
+
+    def test_velocity_matrix_equal_non_orthogonal(self, setup):
+        R, param = [0.1, 1.5], [(1., 1.), (0.1, 0.1)]
+        g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
+        H = Hamiltonian(g, orthogonal=False)
+        H.construct((R, param))
+
+        k = [0.1] * 3
+        es = H.eigenstate(k)
+        v1 = es.copy().velocity(matrix=True, degenerate=None)
+        v2 = velocity_matrix(es.state, H.dHk(k), es.eig, H.dSk(k))
+        assert np.allclose(v1, v2)
 
     def test_berry_phase(self, setup):
         R, param = [0.1, 1.5], [1., 0.1]
@@ -1009,8 +1057,8 @@ class TestHamiltonian:
         for k in ([0] *3, [0.2] * 3):
             es = H.eigenstate(k)
             v = es.velocity()
-            vsub = es.sub([0]).velocity()
-            assert np.allclose(v[0, :], vsub)
+            vsub = es.sub([0]).velocity()[:, 0]
+            assert np.allclose(v[:, 0], vsub)
 
     @pytest.mark.filterwarnings('ignore', category=np.ComplexWarning)
     def test_velocity_nonorthogonal(self, setup):
@@ -1021,7 +1069,7 @@ class TestHamiltonian:
             es = HS.eigenstate(k)
             v = es.velocity()
             vsub = es.sub([0]).velocity()
-            assert np.allclose(v[0, :], vsub)
+            assert np.allclose(v[:, 0], vsub)
 
     def test_velocity_matrix_orthogonal(self, setup):
         H = setup.H.copy()
@@ -1031,7 +1079,7 @@ class TestHamiltonian:
             es = H.eigenstate(k)
             v = es.velocity(matrix=True)
             vsub = es.sub([0, 1]).velocity(matrix=True)
-            assert np.allclose(v[:2, :2, :], vsub)
+            assert np.allclose(v[:, :2, :2], vsub)
 
     @pytest.mark.filterwarnings('ignore', category=np.ComplexWarning)
     def test_velocity_matrix_nonorthogonal(self, setup):
@@ -1042,7 +1090,7 @@ class TestHamiltonian:
             es = HS.eigenstate(k)
             v = es.velocity(matrix=True)
             vsub = es.sub([0, 1]).velocity(matrix=True)
-            assert np.allclose(v[:2, :2, :], vsub)
+            assert np.allclose(v[:, :2, :2], vsub)
 
     def test_dos1(self, setup):
         HS = setup.HS.copy()
@@ -1065,9 +1113,10 @@ class TestHamiltonian:
             DOS = es.DOS(E, 'lorentzian')
             PDOS = es.PDOS(E, 'lorentzian')
             assert PDOS.dtype.kind == 'f'
-            assert PDOS.shape[0] == len(HS)
-            assert PDOS.shape[1] == len(E)
-            assert np.allclose(PDOS.sum(0), DOS)
+            assert PDOS.shape[0] == 1
+            assert PDOS.shape[1] == len(HS)
+            assert PDOS.shape[2] == len(E)
+            assert np.allclose(PDOS.sum(1), DOS)
             assert np.allclose(PDOS, HS.PDOS(E, k, 'lorentzian'))
 
     def test_pdos2(self, setup):
@@ -1079,7 +1128,7 @@ class TestHamiltonian:
             DOS = es.DOS(E)
             PDOS = es.PDOS(E)
             assert PDOS.dtype.kind == 'f'
-            assert np.allclose(PDOS.sum(0), DOS)
+            assert np.allclose(PDOS.sum(1), DOS)
             assert np.allclose(PDOS, H.PDOS(E, k))
 
     def test_pdos3(self, setup):
@@ -1093,7 +1142,7 @@ class TestHamiltonian:
         es.parent = None
         DOS = es.DOS(E)
         PDOS = es.PDOS(E)
-        assert not np.allclose(PDOS.sum(0), DOS)
+        assert not np.allclose(PDOS.sum(1), DOS)
 
     def test_pdos4(self, setup):
         # check whether the default S(Gamma) works
@@ -1108,13 +1157,13 @@ class TestHamiltonian:
         DOS = es.DOS(E)
         PDOS = es.PDOS(E)
         assert PDOS.dtype.kind == 'f'
-        assert np.allclose(PDOS.sum(0), DOS)
+        assert np.allclose(PDOS.sum(1), DOS)
         es = H.eigenstate([0.25] * 3)
         DOS = es.DOS(E)
         es.parent = None
         PDOS = es.PDOS(E)
         assert PDOS.dtype.kind == 'f'
-        assert np.allclose(PDOS.sum(0), DOS)
+        assert np.allclose(PDOS.sum(1), DOS)
 
     def test_pdos_nc(self):
         geom = Geometry([0] * 3)
@@ -1201,7 +1250,7 @@ class TestHamiltonian:
 
             # This one returns sparse matrices, so we have to
             # deal with that.
-            DOS = es.PDOS(E, 'lorentzian')
+            DOS = es.PDOS(E, 'lorentzian')[0]
             COOP2DOS = np.array([C.sum(1).A.ravel() for C in COOP]).T
             assert DOS.shape == COOP2DOS.shape
             assert np.allclose(DOS, COOP2DOS)
@@ -1219,7 +1268,7 @@ class TestHamiltonian:
             assert DOS.shape == COOP2DOS.shape
             assert np.allclose(DOS, COOP2DOS)
 
-            DOS = es.PDOS(E, 'lorentzian')
+            DOS = es.PDOS(E, 'lorentzian')[0]
             COOP2DOS = np.array([C.sum(1).ravel() for C in COOP]).T
             assert DOS.shape == COOP2DOS.shape
             assert np.allclose(DOS, COOP2DOS)
@@ -1893,7 +1942,7 @@ class TestHamiltonian:
         def wrap(es, parent, k, weight):
             DOS = es.DOS(E, distribution=dist)
             PDOS = es.PDOS(E, distribution=dist)
-            vel = es.velocity() * es.occupation().reshape(-1, 1)
+            vel = es.velocity() * es.occupation()
             return oplist([DOS, PDOS, vel])
         bz_avg = bz.apply.average
         results = bz_avg.eigenstate(wrap=wrap)

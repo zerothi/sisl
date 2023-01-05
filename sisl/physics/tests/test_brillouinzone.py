@@ -355,10 +355,9 @@ class TestBrillouinZone:
                                              coords=[
                                                  {"orb": np.arange(len(H))},
                                                  {"E": E},
-                                                 {"orb": np.arange(len(H)),
-                                                  "E": E},
+                                                 {"spin": [0], "orb": np.arange(len(H)), "E": E},
                                              ],
-                                             dims=(['orb'], ['E'], ['orb', 'E']),
+                                             dims=(['orb'], ['E'], ['spin', 'orb', 'E']),
                                              name=["eig", "DOS", "PDOS"])
 
         for var, data in zip(["eig", "DOS", "PDOS"], [eig, DOS, PDOS]):
@@ -480,13 +479,13 @@ class TestBrillouinZone:
         # Check with a wrap function
         E = np.linspace(-2, 2, 20)
         def wrap_sum(es, weight):
-            PDOS = es.PDOS(E) * weight
+            PDOS = es.PDOS(E)[0] * weight
             return PDOS.sum(0), PDOS
 
         DOS, PDOS = bz.apply.sum.eigenstate(wrap=wrap_sum)
         bz_arr = bz.apply.array
         assert np.allclose(bz_arr.DOS(E), DOS)
-        assert np.allclose(bz_arr.PDOS(E), PDOS)
+        assert np.allclose(bz_arr.PDOS(E)[0], PDOS)
 
     def test_wrap_unzip(self):
         from sisl import geom, Hamiltonian

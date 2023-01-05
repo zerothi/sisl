@@ -127,11 +127,11 @@ def PDOS(E, mode, hw, distribution='gaussian'):
     numpy.ndarray
         projected DOS calculated at energies, has dimension ``(mode.shape[1], len(E))``.
     """
-    return electron_PDOS(E, hw, mode, distribution=distribution)
+    return electron_PDOS(E, hw, mode, distribution=distribution)[0]
 
 
 @set_module("sisl.physics.phonon")
-@deprecate_method("use DynamicalMatrix.eigenstate(...).velocity() instead", "0.13.0")
+@deprecate_method("use DynamicalMatrix.eigenmode(...).velocity() instead", "0.13.0")
 def velocity(mode, hw, dDk, degenerate=None, degenerate_dir=(1, 1, 1), project=False):
     r""" Calculate the velocity of a set of modes
 
@@ -139,7 +139,7 @@ def velocity(mode, hw, dDk, degenerate=None, degenerate_dir=(1, 1, 1), project=F
 
     .. math::
 
-       \mathbf{v}_{i\alpha} = \frac1{2\hbar\omega} \langle \epsilon_i |
+       \mathbf{v}^\alpha_{i} = \frac1{2\hbar\omega} \langle \epsilon_i |
                 \frac{\partial}{\partial\mathbf k}_\alpha \mathbf D(\mathbf k) | \epsilon_i \rangle
 
     Parameters
@@ -167,10 +167,10 @@ def velocity(mode, hw, dDk, degenerate=None, degenerate_dir=(1, 1, 1), project=F
     Returns
     -------
     numpy.ndarray
-        if `project` is false; velocities per mode with final dimension ``(mode.shape[0], 3)``, the velocity unit is Ang/ps
+        if `project` is false; velocities per mode with final dimension ``(3, mode.shape[0])``, the velocity unit is Ang/ps
         Units *may* change in future releases.
     numpy.ndarray
-        if `project` is true; velocities per mode with final dimension ``(mode.shape[0], mode.shape[1], 3)``, the velocity unit is Ang/ps
+        if `project` is true; velocities per mode with final dimension ``(3, mode.shape[0], mode.shape[1])``, the velocity unit is Ang/ps
         Units *may* change in future releases.
     """
     if mode.ndim == 1:
@@ -180,7 +180,7 @@ def velocity(mode, hw, dDk, degenerate=None, degenerate_dir=(1, 1, 1), project=F
 
 # dDk is in [Ang * eV ** 2]
 # velocity units in Ang/ps
-_velocity_const = units('ps', 's') / constant.hbar('eV s')
+_velocity_const = 1 / constant.hbar('eV ps')
 
 
 def _velocity(mode, hw, dDk, degenerate, degenerate_dir, project):
@@ -202,23 +202,25 @@ def _velocity(mode, hw, dDk, degenerate, degenerate_dir, project):
 
     cm = conj(mode)
     if project:
-        v = np.empty([mode.shape[0], mode.shape[1], 3], dtype=dtype_complex_to_real(mode.dtype))
-        v[:, :, 0] = (cm * dDk[0].dot(mode.T).T).real
-        v[:, :, 1] = (cm * dDk[1].dot(mode.T).T).real
-        v[:, :, 2] = (cm * dDk[2].dot(mode.T).T).real
+        v = np.empty([3, mode.shape[0], mode.shape[1]], dtype=dtype_complex_to_real(mode.dtype))
+        v[0] = (cm * dDk[0].dot(mode.T).T).real
+        v[1] = (cm * dDk[1].dot(mode.T).T).real
+        v[2] = (cm * dDk[2].dot(mode.T).T).real
 
     else:
-        v = np.empty([mode.shape[0], 3], dtype=dtype_complex_to_real(mode.dtype))
-        v[:, 0] = einsum('ij,ji->i', cm, dDk[0].dot(mode.T)).real
-        v[:, 1] = einsum('ij,ji->i', cm, dDk[1].dot(mode.T)).real
-        v[:, 2] = einsum('ij,ji->i', cm, dDk[2].dot(mode.T)).real
+        v = np.empty([3, mode.shape[0]], dtype=dtype_complex_to_real(mode.dtype))
+        v[0] = einsum('ij,ji->i', cm, dDk[0].dot(mode.T)).real
+        v[1] = einsum('ij,ji->i', cm, dDk[1].dot(mode.T)).real
+        v[2] = einsum('ij,ji->i', cm, dDk[2].dot(mode.T)).real
 
     # Set everything to zero for the negative frequencies
-    v[hw < 0, ...] = 0
+    v[:, hw < 0] = 0
 
     if project:
-        return v * _velocity_const / (2 * hw.reshape(-1, 1, 1))
-    return v * _velocity_const / (2 * hw.reshape(-1, 1))
+        v *= _velocity_const / (2 * hw.reshape(1, -1, 1))
+    else:
+        v *= _velocity_const / (2 * hw.reshape(1, -1))
+    return v
 
 
 @set_module("sisl.physics.phonon")
@@ -249,7 +251,7 @@ def displacement(mode, hw, mass):
     Returns
     -------
     numpy.ndarray
-        displacements per mode with final dimension ``(mode.shape[0], 3)``, displacements are in Ang
+        displacements per mode with final dimension ``(3, mode.shape[0])``, displacements are in Ang
     """
     if mode.ndim == 1:
         return displacement(mode.reshape(1, -1), hw, mass)[0]
@@ -257,8 +259,7 @@ def displacement(mode, hw, mass):
     return _displacement(mode, hw, mass)
 
 
-# Rest mass in units of proton mass (the units we use for the atoms)
-_displacement_const = (2 * units('Ry', 'eV') * constant.m_e('amu')) ** 0.5 * units('Bohr', 'Ang')
+_displacement_const = (2 * units('Ry', 'eV') * (constant.m_e / constant.m_p)) ** 0.5 * units('Bohr', 'Ang')
 
 
 def _displacement(mode, hw, mass):
@@ -274,7 +275,8 @@ def _displacement(mode, hw, mass):
     factor = _displacement_const / fabs(hw[idx]).reshape(-1, 1) ** 0.5
 
     U.shape = (mode.shape[0], -1, 3)
-    U[idx, :, :] = (mode[idx, :] * factor).reshape(-1, mass.shape[0], 3) / mass.reshape(1, -1, 1) ** 0.5
+    U[idx] = (mode[idx, :] * factor).reshape(len(idx), -1, 3) / mass.reshape(1, -1, 1) ** 0.5
+    U = np.swapaxes(U, 0, 2)
 
     return U
 
@@ -328,8 +330,8 @@ class ModeCPhonon(StateC):
         --------
         derivative : for details of the implementation
         """
-        d = self.derivative(1, *args, **kwargs).real
-        axes = tuple(i for i in range(1, d.ndim))
+        d = self.derivative(1, *args, **kwargs)
+        axes = tuple(i for i in range(0, d.ndim, 2))
         c = np.expand_dims(self.c, axis=axes) * 2 / _velocity_const
         return np.divide(d, c, where=(c != 0))
 
