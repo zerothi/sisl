@@ -1862,14 +1862,20 @@ def _ufunc_sp_sp(ufunc, a, b, **kwargs):
         # Common indices
         iover, aover, bover, iaonly, ibonly = intersect_and_diff_sets(aidx, bidx)
 
-        # overlapping indices
-        out._D[iover, :] = ufunc(adata[asl[aover], :],
-                                 bdata[bsl[bover], :], **kwargs)
+        # the following size checks should solve ufunc calls with no elements (numpy >= 1.24)
+        #   TypeError: No loop matching the specified signature and casting was found for ufunc equal
 
-        # only a
-        out._D[aidx[iaonly]] = ufunc(adata[asl[iaonly], :], 0, **kwargs)
-        # only b
-        out._D[bidx[ibonly]] = ufunc(0, bdata[bsl[ibonly], :], **kwargs)
+        # overlapping indices
+        if iover.size > 0:
+            out._D[iover, :] = ufunc(adata[asl[aover], :],
+                                     bdata[bsl[bover], :], **kwargs)
+
+        if iaonly.size > 0:
+            # only a
+            out._D[aidx[iaonly]] = ufunc(adata[asl[iaonly], :], 0, **kwargs)
+        if ibonly.size > 0:
+            # only b
+            out._D[bidx[ibonly]] = ufunc(0, bdata[bsl[ibonly], :], **kwargs)
 
     return out
 

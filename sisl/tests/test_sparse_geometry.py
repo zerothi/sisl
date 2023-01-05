@@ -12,6 +12,9 @@ from sisl.geom import fcc, graphene
 from sisl.sparse_geometry import *
 
 
+pytestmark = [pytest.mark.sparse, pytest.mark.sparse_geometry]
+
+
 @pytest.fixture
 def setup():
     class t():
@@ -22,8 +25,6 @@ def setup():
     return t()
 
 
-@pytest.mark.sparse
-@pytest.mark.sparse_geometry
 class TestSparseAtom:
 
     def test_fail_align1(self, setup):
