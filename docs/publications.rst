@@ -20,6 +20,10 @@ by writing an email to `nickpapior AT gmail.com <mailto:nickpapior@gmail.com>`_.
    *Simple approach to current-induced bond weakening in ballistic conductors*,
    Physical Review B, **106**, :doi:`155401 (2022) <10.1103/PhysRevB.106.155401>`
 
+#. J.G. Fallaque, S. Rodriguez-Gonzalez, F. Martin, C. Diaz,
+   *Self-energy corrected DFT-NEGF for conductance in molecular junctions: an accurate and efficient implementation for TRANSIESTA package applied to Au electrodes*,
+   Journal of Physics: Condensed Matter, **34**, :doi:`435901 (2022) <10.1088/1361-648X/ac89c4>`
+
 #. EA. Haidar, S.A. Tawfik, C. Stampfl,
    *Twist-Dependent Electron Charge Transfer and Transport in Phosphorene–Graphene Heterobilayers*,
    Journal of Physical Chemistry C, **46**, :doi:`25886 (2021) <10.1021/acs.jpcc.1c08282>`

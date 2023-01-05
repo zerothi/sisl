@@ -34,6 +34,7 @@ we hit release version 1.0.0.
 	values
 - Siesta sparse matrices could in some cases set wrong diagonal
   components
+- too large energies in Siesta files could result in crash, #482
 - orbital quantum numbers from HSX file was wrong in v1, #462
 - corrected sign for spin-Y direction, PDOS, spin_moment, #486
 - RealSpaceSI for right semi-infinite directions, #475

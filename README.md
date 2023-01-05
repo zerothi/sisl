@@ -11,7 +11,7 @@
 
 sisl is an *open-source easy-to-use density functional theory API framework* to post-analyse density functional theory codes output
 as well as providing tight-binding calculation capabilities.
-It couples to a wide range of density functional theory codes and has a high connection with LCAO codes such as [Siesta][siesta]. The tight-binding matrices can be used in non-equilibrium Green function calculations with [TBtrans][tbtrans] as a backend. A sub-module exists for creating publication ready graphs and images.
+It couples to a wide range of density functional theory codes and has a high connection with LCAO codes such as [Siesta][siesta]. The tight-binding matrices can be used in non-equilibrium Green function calculations with [TBtrans][tbtrans] as a backend. API for creating publication ready graphs and images.
 
 ## Features ##
 
@@ -28,7 +28,7 @@ It couples to a wide range of density functional theory codes and has a high con
 
 ## Tutorials and examples ##
 
-The easiest way to get started is to follow some tutorials [here](https://zerothi.github.io/sisl/tutorials.html) and the workshop material for [TranSiesta][siesta] [here][workshop].
+The easiest way to get started is to follow the tutorials [here](https://zerothi.github.io/sisl/tutorials.html) and the workshop material for [TranSiesta][siesta] [here][workshop].
 
 
 ## Documentation ##
