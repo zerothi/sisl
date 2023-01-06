@@ -24,7 +24,7 @@ from sisl.constant import a0
 
 __all__ = ["Orbital", "SphericalOrbital", "AtomicOrbital",
            "HydrogenicOrbital",
-           "GTOrbital", "STOrbital"
+           "GTOrbital", "STOrbital",
 ]
 
 
@@ -473,88 +473,6 @@ def _radial(self, r, *args, **kwargs) -> np.ndarray:
     return p
 
 
-def _psi(self, r, m=0):
-    r""" Calculate :math:`\phi(\mathbf R)` at a given point (or more points)
-
-    The position `r` is a vector from the origin of this orbital.
-
-    Parameters
-    -----------
-    r : array_like of (:, 3)
-       the vector from the orbital origin
-    m : int, optional
-       magnetic quantum number, must be in range ``-self.l <= m <= self.l``
-
-    Returns
-    -------
-    numpy.ndarray
-         basis function value at point `r`
-    """
-    r = _a.asarray(r)
-    s = r.shape[:-1]
-    # Convert to spherical coordinates
-    n, idx, r, theta, phi = cart2spher(r, theta=m != 0, cos_phi=True, maxR=self.R)
-    p = _a.zerosd(n)
-    if len(idx) > 0:
-        p[idx] = self.psi_spher(r, theta, phi, m, cos_phi=True)
-        # Reduce memory immediately
-        del idx, r, theta, phi
-    p.shape = s
-    return p
-
-
-def _spher(self, theta, phi, m=0, cos_phi=False):
-    r""" Calculate the spherical harmonics of this orbital at a given point (in spherical coordinates)
-
-    Parameters
-    -----------
-    theta : array_like
-       azimuthal angle in the :math:`x-y` plane (from :math:`x`)
-    phi : array_like
-       polar angle from :math:`z` axis
-    m : int, optional
-       magnetic quantum number, must be in range ``-self.l <= m <= self.l``
-    cos_phi : bool, optional
-       whether `phi` is actually :math:`cos(\phi)` which will be faster because
-       `cos` is not necessary to call.
-
-    Returns
-    -------
-    numpy.ndarray
-        spherical harmonics at angles :math:`\theta` and :math:`\phi` and given quantum number `m`
-    """
-    if cos_phi:
-        return _rspherical_harm(m, self.l, theta, phi)
-    return _rspherical_harm(m, self.l, theta, cos(phi))
-
-
-def _psi_spher(self, r, theta, phi, m=0, cos_phi=False):
-    r""" Calculate :math:`\phi(|\mathbf R|, \theta, \phi)` at a given point (in spherical coordinates)
-
-    This is equivalent to `psi` however, the input is given in spherical coordinates.
-
-    Parameters
-    -----------
-    r : array_like
-       the radius from the orbital origin
-    theta : array_like
-       azimuthal angle in the :math:`x-y` plane (from :math:`x`)
-    phi : array_like
-       polar angle from :math:`z` axis
-    m : int, optional
-       magnetic quantum number, must be in range ``-self.l <= m <= self.l``
-    cos_phi : bool, optional
-       whether `phi` is actually :math:`cos(\phi)` which will be faster because
-       `cos` is not necessary to call.
-
-    Returns
-    -------
-    numpy.ndarray
-         basis function value at point `r`
-    """
-    return self.radial(r) * self.spher(theta, phi, m, cos_phi)
-
-
 @set_module("sisl")
 class SphericalOrbital(Orbital):
     r""" An *arbitrary* orbital class which only contains the harmonical part of the wavefunction  where :math:`\phi(\mathbf r)=f(|\mathbf r|)Y_l^m(\theta,\varphi)`
@@ -629,9 +547,85 @@ class SphericalOrbital(Orbital):
 
     set_radial = _set_radial
     radial = _radial
-    spher = _spher
-    psi = _psi
-    psi_spher = _psi_spher
+
+    def spher(self, theta, phi, m=0, cos_phi=False):
+        r""" Calculate the spherical harmonics of this orbital at a given point (in spherical coordinates)
+
+        Parameters
+        -----------
+        theta : array_like
+            azimuthal angle in the :math:`x-y` plane (from :math:`x`)
+        phi : array_like
+            polar angle from :math:`z` axis
+        m : int, optional
+            magnetic quantum number, must be in range ``-self.l <= m <= self.l``
+        cos_phi : bool, optional
+            whether `phi` is actually :math:`cos(\phi)` which will be faster because
+            `cos` is not necessary to call.
+
+        Returns
+        -------
+        numpy.ndarray
+           spherical harmonics at angles :math:`\theta` and :math:`\phi` and given quantum number `m`
+        """
+        if cos_phi:
+            return _rspherical_harm(m, self.l, theta, phi)
+        return _rspherical_harm(m, self.l, theta, cos(phi))
+
+    def psi(self, r, m=0):
+        r""" Calculate :math:`\phi(\mathbf R)` at a given point (or more points)
+
+        The position `r` is a vector from the origin of this orbital.
+
+        Parameters
+        -----------
+        r : array_like of (:, 3)
+           vector from the orbital origin
+        m : int, optional
+           magnetic quantum number, must be in range ``-self.l <= m <= self.l``
+
+        Returns
+        -------
+        numpy.ndarray
+            basis function value at point `r`
+        """
+        r = _a.asarray(r)
+        s = r.shape[:-1]
+        # Convert to spherical coordinates
+        n, idx, r, theta, phi = cart2spher(r, theta=m != 0, cos_phi=True, maxR=self.R)
+        p = _a.zerosd(n)
+        if len(idx) > 0:
+            p[idx] = self.psi_spher(r, theta, phi, m, cos_phi=True)
+            # Reduce memory immediately
+            del idx, r, theta, phi
+        p.shape = s
+        return p
+
+    def psi_spher(self, r, theta, phi, m=0, cos_phi=False):
+        r""" Calculate :math:`\phi(|\mathbf R|, \theta, \phi)` at a given point (in spherical coordinates)
+
+        This is equivalent to `psi` however, the input is given in spherical coordinates.
+
+        Parameters
+        -----------
+        r : array_like
+           the radius from the orbital origin
+        theta : array_like
+           azimuthal angle in the :math:`x-y` plane (from :math:`x`)
+        phi : array_like
+           polar angle from :math:`z` axis
+        m : int, optional
+           magnetic quantum number, must be in range ``-self.l <= m <= self.l``
+        cos_phi : bool, optional
+           whether `phi` is actually :math:`cos(\phi)` which will be faster because
+           `cos` is not necessary to call.
+
+        Returns
+        -------
+        numpy.ndarray
+            basis function value at point `r`
+        """
+        return self.radial(r) * self.spher(theta, phi, m, cos_phi)
 
     @property
     def l(self):
