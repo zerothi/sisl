@@ -24,6 +24,8 @@ Simple objects
    SphericalOrbital
    AtomicOrbital
    HydrogenicOrbital
+   GTOrbital
+   STOrbital
    Atom
    Atoms
    Geometry

@@ -8,6 +8,8 @@ we hit release version 1.0.0.
 ## [0.13.0] - YYYY-MM-DD
 
 ### Added
+- enabled Gaussian and Slater type orbitals, #463
+	Please give feedback!
 - deltancSileTBtrans.merge allowing easy merging of several delta
 	siles, #513
 - implemented reading of output files from ORCA, #500
