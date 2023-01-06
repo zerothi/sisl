@@ -268,7 +268,7 @@ def PDOS(E, eig, state, S=None, distribution="gaussian", spin=None):
 
 
 @set_module("sisl.physics.electron")
-def COP(E, eig, state, M, distribution="gaussian"):
+def COP(E, eig, state, M, distribution="gaussian", tol=1e-10):
     r""" Calculate the Crystal Orbital Population for a set of energies, `E`, with a distribution function
 
     The :math:`\mathrm{COP}(E)` is calculated as:
@@ -297,6 +297,10 @@ def COP(E, eig, state, M, distribution="gaussian"):
     distribution : func or str, optional
        a function that accepts :math:`E-\epsilon` as argument and calculates the
        distribution function.
+    tol : float, optional
+       tolerance for considering an eigenstate to contribute to an energy point,
+       a higher value means that more energy points are discarded and so the calculation
+       is faster.
 
     Notes
     -----
@@ -322,48 +326,72 @@ def COP(E, eig, state, M, distribution="gaussian"):
 
     assert len(eig) == len(state), "COP: number of eigenvalues and states are not consistent"
 
-    # initialize the COP values
-    cop = oplist([0.] * len(E))
+    # get default dtype
+    dtype = dtype_complex_to_real(state.dtype)
 
+    # initialize the COP values
     no = M.shape[0]
     n_s = M.shape[1] // M.shape[0]
 
     if isinstance(M, _FakeMatrix):
+
         # A fake matrix equals the identity matrix.
         # Hence we can do all calculations only on the diagonal,
         # then finally we recreate the full matrix dimensions.
+        cop = oplist(np.zeros(no, dtype=dtype) for _ in range(len(E)))
+
+        def new_list(bools, tmp, we):
+            for bl, w in zip(bools, we):
+                if bl:
+                    yield tmp * w
+                else:
+                    yield 0.
 
         for e, s in zip(eig, state):
             # calculate contribution from this state
             we = distribution(E - e)
-            tmp = (s.conj() * s).real
-            cop += [tmp * w for w in we]
+            bools = we >= tol
+            if np.any(bools):
+                tmp = (s.conj() * s).real
+                cop += new_list(bools, tmp, we)
 
         # Now recreate the full size (in sparse form)
         idx = np.arange(no)
         def tosize(diag, idx):
             return csr_matrix((diag, (idx, idx)), shape=M.shape)
 
-        cop = oplist([tosize(d, idx) for d in cop])
+        cop = oplist(tosize(d, idx) for d in cop)
 
     elif isspmatrix(M):
+
+        # create the new list
+        cop0 = M.multiply(0.).real
+        cop = oplist(cop0.copy() for _ in range(len(E)))
+        del cop0
 
         # split M, then we will rejoin afterwards
         Ms = [M[:, i*no:(i+1)*no] for i in range(n_s)]
 
-        def calc_cop(Ms, state):
-            state = np.outer(state.conj(), state)
-            return hstack([M.multiply(state).real for M in Ms])
+        def new_list(bools, tmp, we):
+            for bl, w in zip(bools, we):
+                if bl:
+                    yield tmp.multiply(w)
+                else:
+                    yield 0.
 
         for e, s in zip(eig, state):
             # calculate contribution from this state
             we = distribution(E - e)
-            tmp = calc_cop(Ms, s)
-            cop += [tmp.multiply(w) for w in we]
+            bools = we >= tol
+            if np.any(bools):
+                s = np.outer(s.conj(), s)
+                tmp = hstack([m.multiply(s).real for m in Ms])
+                cop += new_list(bools, tmp, we)
 
     else:
         old_shape = M.shape
         Ms = M.reshape(old_shape[0], n_s, old_shape[0])
+        cop = oplist(np.zeros(old_shape, dtype=dtype) for _ in range(len(E)))
 
         for e, s in zip(eig, state):
             we = distribution(E - e)
@@ -1873,27 +1901,27 @@ class EigenstateElectron(StateCElectron):
         """
         return PDOS(E, self.c, self.state, self.Sk(), distribution, getattr(self.parent, "spin", None))
 
-    def COP(self, E, M, distribution="gaussian"):
+    def COP(self, E, M, *args, **kwargs):
         r""" Calculate COP for provided energies, `E` using matrix `M`
 
         This routine calls `~sisl.physics.electron.COP` with appropriate arguments.
         """
-        return COP(E, self.c, self.state, M, distribution)
+        return COP(E, self.c, self.state, M, *args, **kwargs)
 
-    def COOP(self, E, distribution="gaussian"):
+    def COOP(self, E, *args, **kwargs):
         r""" Calculate COOP for provided energies, `E`.
 
         This routine calls `~sisl.physics.electron.COP` with appropriate arguments.
         """
         format = self.info.get("format", "csr")
         Sk = self.Sk(format=f"sc:{format}")
-        return COP(E, self.c, self.state, Sk, distribution)
+        return COP(E, self.c, self.state, Sk, *args, **kwargs)
 
-    def COHP(self, E, distribution="gaussian"):
+    def COHP(self, E, *args, **kwargs):
         r""" Calculate COHP for provided energies, `E`.
 
         This routine calls `~sisl.physics.electron.COP` with appropriate arguments.
         """
         format = self.info.get("format", "csr")
         Hk = self.parent.Hk(format=f"sc:{format}")
-        return COP(E, self.c, self.state, Hk, distribution)
+        return COP(E, self.c, self.state, Hk, *args, **kwargs)

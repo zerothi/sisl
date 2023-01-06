@@ -10,57 +10,73 @@ This sub-module implements a list which allows to make operations with it-self o
 """
 
 from functools import wraps
+from itertools import zip_longest
 import operator as op
 
 from ._internal import set_module
 from ._help import isiterable
 
 
-__all__ = ['oplist']
+__all__ = ["oplist"]
 
 
-def _crt_op(op, only_self=False):
-    if only_self:
-        def _(self):
+def yield_oplist(oplist_, rhs):
+    """ Yield elements from `oplist_` and `rhs`
+
+    This also ensures that ``len(oplist_)`` and ``len(rhs)`` are the same.
+
+    We cannot use `len` on `rhs` since it might be an iterator.
+    Since `oplist` might be used for heavy lifting it is better to
+    circumvent this by directly using the element when requested by the
+    iterator. This should limit memory usage in most cases.
+    """
+    n_lhs = len(oplist_)
+    n = 0
+    for l, r in zip_longest(oplist_, rhs, fillvalue=0.):
+        n += 1
+        if n_lhs >= n:
+            yield l, r
+
+    if n_lhs != n:
+        raise ValueError(f"{oplist_.__class__.__name__} requires other data to contain same number of elements (or a scalar).")
+
+
+def _crt_op(op, unitary=False):
+    if unitary:
+        def func_op(self):
             return self.__class__(op(s) for s in self)
     else:
-        def _(self, other):
+        def func_op(self, other):
             if isiterable(other):
-                if len(self) != len(other):
-                    raise ValueError(f"{self.__class__.__name__} requires other data to contain same number of elements (or a scalar).")
-                return self.__class__(op(s, o) for s, o in zip(self, other))
+                return self.__class__(op(s, o) for s, o in yield_oplist(self, other))
             return self.__class__(op(s, other) for s in self)
-    return _
+    return func_op
 
 
 def _crt_rop(op):
-    def _(self, other):
+    def func_op(self, other):
         if isiterable(other):
-            if len(self) != len(other):
-                raise ValueError(f"{self.__class__.__name__} requires other data to contain same number of elements (or a scalar).")
-            return self.__class__(op(o, s) for s, o in zip(self, other))
+            return self.__class__(op(o, s) for s, o in yield_oplist(self, other))
         return self.__class__(op(other, s) for s in self)
-    return _
+    return func_op
 
 
-def _crt_iop(op, only_self=False):
-    if only_self:
-        def _(self):
+def _crt_iop(op, unitary=False):
+    if unitary:
+        def func_op(self):
             for i in range(len(self)): # pylint: disable=C0200
                 self[i] = op(self[i])
             return self
     else:
-        def _(self, other):
+        def func_op(self, other):
             if isiterable(other):
-                if len(self) != len(other):
-                    raise ValueError(f"{self.__class__.__name__} requires other data to contain same number of elements (or a scalar).")
-                for i in range(len(self)): # pylint: disable=C0200
-                    self[i] = op(self[i], other[i])
+                for i, (s, o) in enumerate(yield_oplist(self, other)):
+                    self[i] = op(s, o)
             else:
                 for i in range(len(self)): # pylint: disable=C0200
                     self[i] = op(self[i], other)
             return self
-    return _
+    return func_op
 
 
 @set_module("sisl")
@@ -172,7 +188,7 @@ class oplist(list):
         return wrap_func
 
     # Implement math operations
-    __abs__ = _crt_op(op.abs, only_self=True)
+    __abs__ = _crt_op(op.abs, unitary=True)
     __add__ = _crt_op(op.add)
     __radd__ = _crt_rop(op.add)
     __iadd__ = _crt_iop(op.iadd)
@@ -186,8 +202,8 @@ class oplist(list):
     __rmul__ = _crt_rop(op.mul)
     __matmul__ = _crt_op(op.matmul)
     __imatmul__ = _crt_iop(op.imatmul)
-    __neg__ = _crt_op(op.neg, only_self=True)
-    __pos__ = _crt_op(op.pos, only_self=True)
+    __neg__ = _crt_op(op.neg, unitary=True)
+    __pos__ = _crt_op(op.pos, unitary=True)
     __pow__ = _crt_op(op.pow)
     __ipow__ = _crt_iop(op.ipow)
     __rpow__ = _crt_rop(op.pow)
@@ -204,7 +220,7 @@ class oplist(list):
     __le__ = _crt_op(op.le)
     __ge__ = _crt_op(op.ge)
     __gt__ = _crt_op(op.gt)
-    __not__ = _crt_op(op.not_, only_self=True)
+    __not__ = _crt_op(op.not_, unitary=True)
     __and__ = _crt_op(op.and_)
     __iand__ = _crt_iop(op.iand)
     __or__ = _crt_op(op.or_)
