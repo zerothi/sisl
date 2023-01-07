@@ -366,11 +366,20 @@ class PdosPlot(Plot):
         # Note that we pass the hamiltonian as the parent here so that the overlap matrix
         # for each point can be calculated by eigenstate.PDOS()
         for eigenstate in wfsx_sile.yield_eigenstate():
-            spin = eigenstate.info.get("spin", 0)
-            if nspin == 4:
+            if nspin == 2:
+                spin = eigenstate.info.get("spin", 0)
+            else:
                 spin = slice(None)
 
             self.PDOS[spin] += eigenstate.PDOS(self.E, distribution=distribution) * eigenstate.info.get("weight", 1)
+
+        if nspin == 2:
+            # Convert from spin components to total and z contributions.
+            total = self.PDOS[0] + self.PDOS[1]
+            z = self.PDOS[0] - self.PDOS[1]
+
+            self.PDOS[0] = total
+            self.PDOS[1] = z
 
     @entry_point('hamiltonian', 4)
     def _read_from_H(self, kgrid, kgrid_displ, Erange, nE, E0, distribution):
@@ -414,7 +423,11 @@ class PdosPlot(Plot):
         if len(spin_indices) == 1:
             PDOS = PDOS[0]
         else:
-            PDOS = np.array(PDOS)
+            # Convert from spin components to total and z contributions.
+            total = PDOS[0] + PDOS[1]
+            z = PDOS[0] - PDOS[1]
+
+            PDOS = np.concatenate([total, z])
 
         self.PDOS = PDOS
 
@@ -423,6 +436,10 @@ class PdosPlot(Plot):
         Creates the PDOS dataarray and updates the "requests" input field.
         """
         from xarray import DataArray
+
+        if self.PDOS.ndim == 2:
+            # Add an extra axis for spin at the beggining if the array only has dimensions for orbitals and energy.
+            self.PDOS = self.PDOS[None, ...]
 
         # Check if the PDOS contains spin resolution (there should be three dimensions,
         # and the first one should be the spin components)
@@ -440,16 +457,12 @@ class PdosPlot(Plot):
 
         self.get_param('requests').update_options(self.geometry, self.spin)
 
-        # If there's one dimension for spin but the calculation is spin unpolarized,
-        # remove the spurious spin dimension
-        if self.spin.is_unpolarized and self.PDOS.ndim == 3:
-            self.PDOS = self.PDOS[0]
-
+        dims = ('spin', 'orb', 'E')
         coords = {'E': self.E}
-        dims = ('orb', 'E')
-        if not self.spin.is_unpolarized:
+        if self.spin.is_polarized:
+            coords['spin'] = ['total', 'z']
+        elif not self.spin.is_diagonal:
             coords['spin'] = self.get_param('requests').get_options("spin")
-            dims = ('spin', 'orb', 'E')
 
         self.PDOS = DataArray(self.PDOS, coords=coords, dims=dims)
 
@@ -474,6 +487,43 @@ class PdosPlot(Plot):
             self._get_request_PDOS(request, E_PDOS, values_storage=for_backend["PDOS_values"], metadata_storage=for_backend["request_metadata"])
 
         return for_backend
+
+    @staticmethod
+    def _select_spin(dataarray, spin):
+        nspin = len(dataarray.spin)
+
+        if nspin == 1:
+            if spin is not None:
+                warn(f"There is no spin information but the spin request is {spin}, ignoring spin request.")
+            return dataarray
+
+        if spin is None:
+            spin = "total"
+
+        if nspin == 4:
+            # Non colinear spin calculation, just select from the dataarray
+            dataarray = dataarray.sel(spin=spin)
+        elif nspin == 2:
+            # Spin polarized calculation. The information is stored as cartesian, but the user
+            # might request spin components.
+            if not isinstance(spin, (int, str)):
+                assert len(spin) == 1
+                spin = spin[0]
+            
+            if spin in ('total', 'z'):
+                dataarray = dataarray.sel(spin=spin)
+            else:
+                total = dataarray.sel(spin="total")
+                z = dataarray.sel(spin="z")
+
+                if spin == 0:
+                    dataarray = (total + z) / 2
+                elif spin == 1:
+                    dataarray = (total - z) / 2
+                else:
+                    raise ValueError(f"Incorrect spin request for spin polarized data: {spin}")
+
+        return dataarray
 
     def _get_request_PDOS(self, request, E_PDOS=None, values_storage=None, metadata_storage=None):
         """Extracts the PDOS values that correspond to a specific request.
@@ -549,8 +599,7 @@ class PdosPlot(Plot):
             return
 
         req_PDOS = E_PDOS.sel(orb=orb)
-        if request['spin'] is not None and 'spin' in req_PDOS.dims:
-            req_PDOS = req_PDOS.sel(spin=request['spin'])
+        req_PDOS = self._select_spin(req_PDOS, request['spin'])
 
         reduce_coords = set(["orb", "spin"]).intersection(req_PDOS.dims)
 

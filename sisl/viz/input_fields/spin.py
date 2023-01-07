@@ -39,7 +39,8 @@ class SpinSelect(OptionsInput):
 
     _options = {
         Spin.UNPOLARIZED: [],
-        Spin.POLARIZED: [{"label": "↑", "value": 0}, {"label": "↓", "value": 1}],
+        Spin.POLARIZED: [{"label": "↑", "value": 0}, {"label": "↓", "value": 1}, 
+            {"label": "Total", "value": "total"}, {"label": "Net z", "value": "z"}],
         Spin.NONCOLINEAR: [{"label": val, "value": val} for val in ("total", "x", "y", "z")],
         Spin.SPINORBIT: [{"label": val, "value": val}
                          for val in ("total", "x", "y", "z")]
@@ -74,6 +75,8 @@ class SpinSelect(OptionsInput):
         """
         if not isinstance(spin, Spin):
             spin = Spin(spin)
+
+        self.spin = spin
 
         # Use the default for this input field if only_if_polarized is not provided.
         if only_if_polarized is None:
