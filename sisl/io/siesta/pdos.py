@@ -210,8 +210,6 @@ class pdosSileSiesta(SileSiesta):
             return D
 
         D = np.moveaxis(np.stack(D, axis=0), 2, 0)
-        if nspin == 1:
-            return geom, E, D[0]
         return geom, E, D
 
     @default_ArgumentParser(description="""
