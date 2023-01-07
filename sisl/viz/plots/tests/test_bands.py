@@ -218,7 +218,7 @@ class TestBandsPlot(_TestPlot):
         spin_moments = plot.spin_moments
         assert isinstance(spin_moments, DataArray)
         assert set(spin_moments.dims) == set(('k', 'band', 'axis'))
-        assert spin_moments.shape == (test_attrs['bands_shape'][0], test_attrs['bands_shape'][-1], 3)
+        assert spin_moments.shape == (test_attrs['bands_shape'][0], 3, test_attrs['bands_shape'][-1])
 
     def test_spin_texture(self, plot, test_attrs):
         assert plot._for_backend["draw_bands"]["spin_texture"]["show"] is False

@@ -175,7 +175,12 @@ class OrbitalQueries(QueriesInput):
         if spin_in_keys:
             spin_key_i = keys.index("spin")
             keys.remove("spin")
-            spin_options = self.get_param("spin").options
+
+            spin_param = self.get_param("spin")
+            spin_options = spin_param.options
+
+            if spin_param.spin.is_polarized and len(spin_options) > 1:
+                spin_options = (0, 1)
 
             # We might have some constraints on what the spin value can be
             if "spin" in kwargs:

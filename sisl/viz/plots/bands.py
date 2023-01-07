@@ -395,7 +395,7 @@ class BandsPlot(Plot):
                 return eigenstate.spin_moment().real
 
             extra_vars = ({
-                "coords": ("band", "axis"), "coords_values": dict(axis=["x", "y", "z"]),
+                "coords": ("axis", "band"), "coords_values": dict(axis=["x", "y", "z"]),
                 "name": "spin_moments", "getter": _spin_moment_getter},
             *extra_vars)
 
