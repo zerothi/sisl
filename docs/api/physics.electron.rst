@@ -19,8 +19,6 @@ One may also plot real-space wavefunctions.
    DOS
    PDOS
    COP
-   velocity
-   velocity_matrix
    berry_phase
    berry_curvature
    conductivity

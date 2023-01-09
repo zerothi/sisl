@@ -43,6 +43,7 @@ we hit release version 1.0.0.
 - tbtrans files now have a separate entry in the documentation
 
 ### Changed
+- removed all deprecated routines, #495
 - oplist now can do in-place operations on generators
 - significant performance improvement for COOP calculations,
 	thanks to Susanne Leitherer for discovering the issue

@@ -50,7 +50,7 @@ from numpy import zeros, empty
 from numpy import floor, ceil
 from numpy import conj, dot, ogrid, einsum
 from numpy import cos, sin, log, exp, pi
-from numpy import add, argsort, sort
+from numpy import add, sort
 from scipy.sparse import identity, csr_matrix, hstack, isspmatrix
 
 from sisl._internal import set_module
@@ -224,7 +224,7 @@ def PDOS(E, eig, state, S=None, distribution="gaussian", spin=None):
             S = S[::2, ::2]
 
         # Initialize data
-        PDOS = np.empty([4, state.shape[1] // 2, len(E)], dtype=dtype_complex_to_real(state.dtype))
+        PDOS = empty([4, state.shape[1] // 2, len(E)], dtype=dtype_complex_to_real(state.dtype))
 
         # Do spin-box calculations:
         #  PDOS[0] = total DOS (diagonal)
@@ -337,7 +337,7 @@ def COP(E, eig, state, M, distribution="gaussian", tol=1e-10):
         # A fake matrix equals the identity matrix.
         # Hence we can do all calculations only on the diagonal,
         # then finally we recreate the full matrix dimensions.
-        cop = oplist(np.zeros(no, dtype=dtype) for _ in range(len(E)))
+        cop = oplist(zeros(no, dtype=dtype) for _ in range(len(E)))
 
         def new_list(bools, tmp, we):
             for bl, w in zip(bools, we):
@@ -390,7 +390,7 @@ def COP(E, eig, state, M, distribution="gaussian", tol=1e-10):
     else:
         old_shape = M.shape
         Ms = M.reshape(old_shape[0], n_s, old_shape[0])
-        cop = oplist(np.zeros(old_shape, dtype=dtype) for _ in range(len(E)))
+        cop = oplist(zeros(old_shape, dtype=dtype) for _ in range(len(E)))
 
         for e, s in zip(eig, state):
             we = distribution(E - e)
@@ -469,7 +469,7 @@ def spin_moment(state, S=None, project=False):
     # see PDOS for details related to the spin-box calculations
 
     if project:
-        s = np.empty([3, state.shape[0], state.shape[1] // 2], dtype=dtype_complex_to_real(state.dtype))
+        s = empty([3, state.shape[0], state.shape[1] // 2], dtype=dtype_complex_to_real(state.dtype))
 
         for i in range(len(state)):
             cs = conj(state[i]).reshape(-1, 2)
@@ -482,7 +482,7 @@ def spin_moment(state, S=None, project=False):
             s[1, i] = D2.imag - D1.imag
 
     else:
-        s = np.empty([3, state.shape[0]], dtype=dtype_complex_to_real(state.dtype))
+        s = empty([3, state.shape[0]], dtype=dtype_complex_to_real(state.dtype))
 
         # TODO consider doing this all in a few lines
         # TODO Since there are no energy dependencies here we can actually do all
@@ -595,7 +595,7 @@ def _velocity_matrix_non_ortho(state, dHk, energy, dSk, degenerate, degenerate_d
 
     # All matrix elements along the 3 directions
     n = state.shape[0]
-    v = np.empty([3, n, n], dtype=dtype)
+    v = empty([3, n, n], dtype=dtype)
 
     # Decouple the degenerate states
     if not degenerate is None:
@@ -632,7 +632,7 @@ def _velocity_matrix_ortho(state, dHk, degenerate, degenerate_dir, dtype):
 
     # All matrix elements along the 3 directions
     n = state.shape[0]
-    v = np.empty([3, n, n], dtype=dtype)
+    v = empty([3, n, n], dtype=dtype)
 
     # Decouple the degenerate states
     if not degenerate is None:
@@ -734,7 +734,7 @@ def _berry_curvature(v_M, energy):
     # For cases where all states are degenerate then we would not be able
     # to calculate anything. Hence we need to initialize as zero
     #   \Omega_{\alpha \beta, n}
-    sigma = np.zeros([3, 3, N], dtype=dtype_complex_to_real(v_M.dtype))
+    sigma = zeros([3, 3, N], dtype=dtype_complex_to_real(v_M.dtype))
 
     for s, e in enumerate(energy):
         de = (energy - e) ** 2
