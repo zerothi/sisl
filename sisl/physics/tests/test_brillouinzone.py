@@ -615,10 +615,6 @@ class TestBandStructure:
         with pytest.raises(ValueError):
             bz = BandStructure(setup.s1, divisions=[10, 10])
 
-    def test_pbs_deprecate_arguments(self, setup):
-        with pytest.deprecated_call():
-            bz = BandStructure(setup.s1, [[0]*3, [.25]*3, [.5]*3], division=[10, 10])
-
     def test_pbs_fail(self, setup):
         with pytest.raises(ValueError):
             BandStructure(setup.s1, [[0]*3, [.5]*3, [.25] * 3], 1)
