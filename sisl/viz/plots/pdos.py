@@ -411,10 +411,12 @@ class PdosPlot(Plot):
 
             PDOS.append(spin_PDOS)
 
-        if not self.H.spin.is_diagonal:
+        if len(spin_indices) == 1:
             PDOS = PDOS[0]
+        else:
+            PDOS = np.array(PDOS)
 
-        self.PDOS = np.array(PDOS)
+        self.PDOS = PDOS
 
     def _after_read(self, geometry):
         """
@@ -424,13 +426,11 @@ class PdosPlot(Plot):
 
         # Check if the PDOS contains spin resolution (there should be three dimensions,
         # and the first one should be the spin components)
-        self.spin = sisl.Spin.UNPOLARIZED
-        if self.PDOS.squeeze().ndim == 3:
-            self.spin = {
-                2: sisl.Spin.POLARIZED,
-                4: sisl.Spin.NONCOLINEAR
-            }[self.PDOS.shape[0]]
-        self.spin = sisl.Spin(self.spin)
+        self.spin = sisl.Spin({
+            1: sisl.Spin.UNPOLARIZED,
+            2: sisl.Spin.POLARIZED,
+            4: sisl.Spin.NONCOLINEAR
+        }[self.PDOS.shape[0]])
 
         # Set the geometry.
         if geometry is not None:

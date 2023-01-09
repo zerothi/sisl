@@ -110,6 +110,12 @@ class pdosSileSiesta(SileSiesta):
                 D[:, 1] = D[:, 2]
                 D[:, 2] = tmp[:]
                 return D
+        elif nspin == 2:
+            def process(D):
+                tmp = D[:, 0] + D[:, 1]
+                D[:, 1] = D[:, 0] - D[:, 1]
+                D[:, 0] = tmp
+                return D
         else:
             def process(D):
                 return D
@@ -119,7 +125,7 @@ class pdosSileSiesta(SileSiesta):
             if nspin == 1:
                 spin = ["sum"]
             elif nspin == 2:
-                spin = ["up", "down"]
+                spin = ["sum", "z"]
             elif nspin == 4:
                 spin = ["sum", "x", "y", "z"]
 
@@ -204,8 +210,6 @@ class pdosSileSiesta(SileSiesta):
             return D
 
         D = np.moveaxis(np.stack(D, axis=0), 2, 0)
-        if nspin == 1:
-            return geom, E, D[0]
         return geom, E, D
 
     @default_ArgumentParser(description="""
@@ -307,7 +311,7 @@ will store the spin x/y components of all atoms in spin_x_all.dat/spin_y_all.dat
                 return PDOS
             elif PDOS.shape[0] == 2:
                 # polarized
-                return PDOS.sum(0)
+                return PDOS[0]
             return PDOS[0]
         namespace = default_namespace(_geometry=geometry,
                                       _E=E,
@@ -388,21 +392,25 @@ will store the spin x/y components of all atoms in spin_x_all.dat/spin_y_all.dat
                     if value in ("up", "u"):
                         name = "up"
                         def _filter(PDOS):
-                            return PDOS[0]
+                            return (PDOS[0] + PDOS[1]) / 2
                     elif value in ("down", "dn", "dw", "d"):
                         name = "down"
                         def _filter(PDOS):
-                            return PDOS[1]
+                            return (PDOS[0] - PDOS[1]) / 2
                     elif value in ("sum", "+", "total"):
                         name = "total"
                         def _filter(PDOS):
-                            return PDOS.sum(0)
+                            return PDOS[0]
+                    elif value in ("z", "spin"):
+                        name = "z"
+                        def _filter(PDOS):
+                            return PDOS[1]
                     else:
-                        raise ValueError(f"Wrong argument for --spin [up, down, sum], found {value}")
+                        raise ValueError(f"Wrong argument for --spin [up, down, sum, z], found {value}")
                     ns._PDOS_filter_name = name
                     ns._PDOS_filter = _filter
             p.add_argument("--spin", "-S", action=Spin, nargs=1,
-                           help="Which spin-component to store, up/u, down/d or sum/+/total")
+                           help="Which spin-component to store, up/u, down/d, z/spin or sum/+/total")
 
         elif PDOS.shape[0] == 4:
             # Add a spin-action

@@ -47,6 +47,11 @@ we hit release version 1.0.0.
 - significant performance improvement for COOP calculations,
 	thanks to Susanne Leitherer for discovering the issue
 - changed argument order of ElectronState.COP
+- index ordering of spin and coordinate quantities are now changed to
+  have these as the first indices. This ensures consistency across
+	return types and allows easier handling.
+	Note that non-polarized PDOS calculations now has an extra dimension
+	for coherence with non-colinear spin.	(see #501)
 - ensured all units are now CODATA-2018 values
 - `cell_length` changed to `cell2length` with new axes argument
 - enabled orbitals up to the h-shell, #491
