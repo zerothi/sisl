@@ -102,6 +102,7 @@ jobs:
         #cp coverage.xml ../
 
     - name: Upload code-coverage
+      if: ${{ github.event.inputs.marks == 'all' }}
       uses: codecov/codecov-action@v2
       with:
         directory: ./sisl-test-dir/
