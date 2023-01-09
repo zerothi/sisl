@@ -13,7 +13,7 @@ from sisl import Geometry, Atom, SuperCell, Hamiltonian, Spin, BandStructure, Mo
 from sisl import get_distribution
 from sisl import oplist
 from sisl import Grid, SphericalOrbital, SislError
-from sisl.physics.electron import berry_phase, spin_squared, conductivity, velocity, velocity_matrix
+from sisl.physics.electron import berry_phase, spin_squared, conductivity
 
 
 pytestmark = [pytest.mark.physics, pytest.mark.hamiltonian,
@@ -775,54 +775,6 @@ class TestHamiltonian:
         v1, vv1 = es.derivative(2)
         v = es.derivative(1)
         assert np.allclose(v1, v)
-
-    def test_velocity_equal_orthogonal(self, setup):
-        R, param = [0.1, 1.5], [1., 0.1]
-        g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
-        H = Hamiltonian(g)
-        H.construct((R, param))
-
-        k = [0.1] * 3
-        es = H.eigenstate(k)
-        v1 = es.copy().velocity(degenerate=None)
-        v2 = velocity(es.state, H.dHk(k), es.eig)
-        assert np.allclose(v1, v2)
-
-    def test_velocity_equal_non_orthogonal(self, setup):
-        R, param = [0.1, 1.5], [(1., 1.), (0.1, 0.1)]
-        g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
-        H = Hamiltonian(g, orthogonal=False)
-        H.construct((R, param))
-
-        k = [0.1] * 3
-        es = H.eigenstate(k)
-        v1 = es.copy().velocity(degenerate=None)
-        v2 = velocity(es.state, H.dHk(k), es.eig, H.dSk(k))
-        assert np.allclose(v1, v2)
-
-    def test_velocity_matrix_equal_orthogonal(self, setup):
-        R, param = [0.1, 1.5], [1., 0.1]
-        g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
-        H = Hamiltonian(g)
-        H.construct((R, param))
-
-        k = [0.1] * 3
-        es = H.eigenstate(k)
-        v1 = es.copy().velocity(matrix=True, degenerate=None)
-        v2 = velocity_matrix(es.state, H.dHk(k), es.eig)
-        assert np.allclose(v1, v2)
-
-    def test_velocity_matrix_equal_non_orthogonal(self, setup):
-        R, param = [0.1, 1.5], [(1., 1.), (0.1, 0.1)]
-        g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
-        H = Hamiltonian(g, orthogonal=False)
-        H.construct((R, param))
-
-        k = [0.1] * 3
-        es = H.eigenstate(k)
-        v1 = es.copy().velocity(matrix=True, degenerate=None)
-        v2 = velocity_matrix(es.state, H.dHk(k), es.eig, H.dSk(k))
-        assert np.allclose(v1, v2)
 
     def test_berry_phase(self, setup):
         R, param = [0.1, 1.5], [1., 0.1]
