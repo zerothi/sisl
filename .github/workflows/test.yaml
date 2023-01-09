@@ -26,7 +26,7 @@ on:
       marks:
         description: 'Which marks to test'
         required: false
-        default: 'all'
+        default: ''
 
 
 jobs:
@@ -92,7 +92,7 @@ jobs:
         # This needs to be done in a separate folder
         # Otherwise the import will try to use the one in the current folder
         mkdir sisl-test-dir ; cd sisl-test-dir
-        if [[ "${{ github.event.inputs.marks }}" == "all" ]]; then
+        if [[ "${{ github.event.inputs.marks }}" == "" ]]; then
          ADD_FLAGS=""
         else
          ADD_FLAGS="-m ${{ github.event.inputs.marks }}"
@@ -102,7 +102,7 @@ jobs:
         #cp coverage.xml ../
 
     - name: Upload code-coverage
-      if: ${{ github.event.inputs.marks == 'all' }}
+      if: ${{ github.event.inputs.marks == '' }}
       uses: codecov/codecov-action@v2
       with:
         directory: ./sisl-test-dir/
