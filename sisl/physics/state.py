@@ -15,20 +15,12 @@ from sisl.messages import warn
 
 __all__ = ['degenerate_decouple', 'Coefficient', 'State', 'StateC']
 
-_abs = np.absolute
-_phase = np.angle
-_argmax = np.argmax
-_append = np.append
-_diff = np.diff
-_dot = np.dot
-_conj = np.conjugate
-_outer_ = np.outer
 _pi = np.pi
 _pi2 = np.pi * 2
 
 
 def _inner(v1, v2):
-    return _dot(_conj(v1), v2)
+    return np.dot(np.conj(v1), v2)
 
 
 @set_module("sisl.physics")
@@ -58,7 +50,7 @@ def degenerate_decouple(state, M):
         state.state = degenerate_decouple(state.state, M)
     else:
         # since M may be a sparse matrix, we cannot use __matmul__
-        p = _conj(state) @ M.dot(state.T)
+        p = np.conj(state) @ M.dot(state.T)
         state = eigh_destroy(p)[1].T @ state
     return state
 
@@ -205,7 +197,7 @@ class Coefficient(ParentContainer):
         """
         deg = list()
         sidx = np.argsort(self.c)
-        dc = _diff(self.c[sidx])
+        dc = np.diff(self.c[sidx])
 
         # Degenerate indices
         idx = (np.absolute(dc) <= eps).nonzero()[0]
@@ -214,10 +206,10 @@ class Coefficient(ParentContainer):
             return deg
 
         # These are the points were we split the degeneracies
-        seps = (_diff(idx) > 1).nonzero()[0]
+        seps = (np.diff(idx) > 1).nonzero()[0]
         IDX = np.array_split(idx, seps + 1)
         for idx in IDX:
-            deg.append(_append(sidx[idx], sidx[idx[-1] + 1]))
+            deg.append(np.append(sidx[idx], sidx[idx[-1] + 1]))
         return deg
 
     def sub(self, idx, inplace=False):
@@ -577,7 +569,7 @@ class State(ParentContainer):
         """
         if sum:
             return self.inner()
-        return _conj(self.state) * self.state
+        return np.conj(self.state) * self.state
 
     def ipr(self, q=2):
         r""" Calculate the inverse participation ratio (IPR) for arbitrary `q` values
@@ -708,11 +700,11 @@ class State(ParentContainer):
                 raise ValueError(f"{self.__class__.__name__}.outer requires the objects to have matching shapes ket @ M @ bra ket={ket.shape[::-1]}, M={M.shape}, bra={self.shape}")
 
         if ndim == 2:
-            Aij = ket.T @ M.dot(_conj(bra))
+            Aij = ket.T @ M.dot(np.conj(bra))
         elif ndim == 1:
-            Aij = einsum('ij,i,ik->jk', ket, M, _conj(bra))
+            Aij = einsum('ij,i,ik->jk', ket, M, np.conj(bra))
         elif ndim == 0:
-            Aij = einsum('ij,ik->jk', ket * M, _conj(bra))
+            Aij = einsum('ij,ik->jk', ket * M, np.conj(bra))
         return Aij
 
     def inner(self, ket=None, matrix=None, diag=True):
@@ -783,17 +775,17 @@ class State(ParentContainer):
             if bra.shape[0] != ket.shape[0]:
                 raise ValueError(f"{self.__class__.__name__}.inner diagonal matrix product is non-square, please use diag=False or reduce number of vectors.")
             if ndim == 2:
-                Aij = einsum('ij,ji->i', _conj(bra), M.dot(ket.T))
+                Aij = einsum('ij,ji->i', np.conj(bra), M.dot(ket.T))
             elif ndim == 1:
-                Aij = einsum('ij,j,ij->i', _conj(bra), M, ket)
+                Aij = einsum('ij,j,ij->i', np.conj(bra), M, ket)
             elif ndim == 0:
-                Aij = einsum('ij,ij->i', _conj(bra), ket) * M
+                Aij = einsum('ij,ij->i', np.conj(bra), ket) * M
         elif ndim == 2:
-            Aij = _conj(bra) @ M.dot(ket.T)
+            Aij = np.conj(bra) @ M.dot(ket.T)
         elif ndim == 1:
-            Aij = einsum('ij,j,kj->ik', _conj(bra), M, ket)
+            Aij = einsum('ij,j,kj->ik', np.conj(bra), M, ket)
         elif ndim == 0:
-            Aij = einsum('ij,kj->ik', _conj(bra), ket) * M
+            Aij = einsum('ij,kj->ik', np.conj(bra), ket) * M
         return Aij
 
     def phase(self, method='max', ret_index=False):
@@ -808,12 +800,12 @@ class State(ParentContainer):
            return indices for the elements used when ``method=='max'``
         """
         if method == 'max':
-            idx = _argmax(_abs(self.state), 1)
+            idx = np.argmax(np.absolute(self.state), 1)
             if ret_index:
-                return _phase(self.state[:, idx]), idx
-            return _phase(self.state[:, idx])
+                return np.angle(self.state[:, idx]), idx
+            return np.angle(self.state[:, idx])
         elif method == 'all':
-            return _phase(self.state)
+            return np.angle(self.state)
         raise ValueError(f"{self.__class__.__name__}.phase only accepts method in [max, all]")
 
     def align_phase(self, other, ret_index=False, inplace=False):
@@ -835,10 +827,10 @@ class State(ParentContainer):
         align_norm : re-order states such that site-norms have a smaller residual
         """
         other_phase, idx = other.phase(ret_index=True)
-        phase = _phase(self.state[:, idx])
+        phase = np.angle(self.state[:, idx])
 
         # Calculate absolute phase difference
-        abs_phase = _abs((phase - other_phase + _pi) % _pi2 - _pi)
+        abs_phase = np.absolute((phase - other_phase + _pi) % _pi2 - _pi)
 
         idx = (abs_phase > _pi / 2).nonzero()[0]
 
@@ -948,12 +940,12 @@ class State(ParentContainer):
         if individual:
             for i in range(len(self)):
                 # Find the maximum amplitude index
-                idx = _argmax(_abs(s[i, :]))
-                s[i, :] *= phi * _conj(s[i, idx] / _abs(s[i, idx]))
+                idx = np.argmax(np.absolute(s[i, :]))
+                s[i, :] *= phi * np.conj(s[i, idx] / np.absolute(s[i, idx]))
         else:
             # Find the maximum amplitude index among all elements
-            idx = np.unravel_index(_argmax(_abs(s)), s.shape)
-            s *= phi * _conj(s[idx] / _abs(s[idx]))
+            idx = np.unravel_index(np.argmax(np.absolute(s)), s.shape)
+            s *= phi * np.conj(s[idx] / np.absolute(s[idx]))
 
     def change_gauge(self, gauge, offset=(0, 0, 0)):
         r""" In-place change of the gauge of the state coefficients
@@ -1277,7 +1269,7 @@ class StateC(State):
         # number of states
         nstate, lstate = state.shape
         # we calculate the first derivative matrix
-        cstate = _conj(state)
+        cstate = np.conj(state)
 
         # We split everything up into orthogonal and non-orthogonal
         # This reduces if-checks
@@ -1461,7 +1453,7 @@ class StateC(State):
         """
         deg = list()
         sidx = np.argsort(self.c)
-        dc = _diff(self.c[sidx])
+        dc = np.diff(self.c[sidx])
 
         # Degenerate indices
         idx = (dc < eps).nonzero()[0]
@@ -1470,10 +1462,10 @@ class StateC(State):
             return deg
 
         # These are the points were we split the degeneracies
-        seps = (_diff(idx) > 1).nonzero()[0]
+        seps = (np.diff(idx) > 1).nonzero()[0]
         IDX = np.array_split(idx, seps + 1)
         for idx in IDX:
-            deg.append(_append(sidx[idx], sidx[idx[-1] + 1]))
+            deg.append(np.append(sidx[idx], sidx[idx[-1] + 1]))
         return deg
 
     def sub(self, idx, inplace=False):
