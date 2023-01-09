@@ -17,7 +17,7 @@ import scipy.sparse.linalg as ssl
 from sisl._internal import set_module
 
 
-__all__ = ['linalg_info']
+__all__ = ["linalg_info"]
 
 
 def _datacopied(arr, original):
@@ -28,7 +28,7 @@ def _datacopied(arr, original):
     """
     if arr is original:
         return False
-    if not isinstance(original, np.ndarray) and hasattr(original, '__array__'):
+    if not isinstance(original, np.ndarray) and hasattr(original, "__array__"):
         return False
     return arr.base is None
 
@@ -238,69 +238,56 @@ def _append(name, suffix):
 
 # Solving a linear system
 solve_destroy = _partial(solve, overwrite_a=True, overwrite_b=True)
-__all__ += _append('solve', ['', '_destroy'])
+__all__ += _append("solve", ["", "_destroy"])
 
 # Inversion of matrix
 inv_destroy = _partial(inv, overwrite_a=True)
-__all__ += _append('inv', ['', '_destroy'])
+__all__ += _append("inv", ["", "_destroy"])
 
 # Solve eigenvalue problem
 eig = _partial(sl.eig, check_finite=False, overwrite_a=False, overwrite_b=False)
 eig_left = _partial(sl.eig, check_finite=False, overwrite_a=False, overwrite_b=False, left=True)
 eig_right = _partial(sl.eig, check_finite=False, overwrite_a=False, overwrite_b=False, right=True)
-__all__ += _append('eig', ['', '_left', '_right'])
+__all__ += _append("eig", ["", "_left", "_right"])
 
 eig_destroy = _partial(sl.eig, check_finite=False, overwrite_a=True, overwrite_b=True)
 eig_left_destroy = _partial(sl.eig, check_finite=False, overwrite_a=True, overwrite_b=True, left=True)
 eig_right_destroy = _partial(sl.eig, check_finite=False, overwrite_a=True, overwrite_b=True, right=True)
-__all__ += _append('eig_', ['destroy', 'left_destroy', 'right_destroy'])
+__all__ += _append("eig_", ["destroy", "left_destroy", "right_destroy"])
 
 eigvals = _partial(sl.eigvals, check_finite=False, overwrite_a=False)
 eigvals_destroy = _partial(sl.eigvals, check_finite=False, overwrite_a=True)
-__all__ += _append('eigvals', ['', '_destroy'])
+__all__ += _append("eigvals", ["", "_destroy"])
 
 # Solve symmetric/hermitian eigenvalue problem (generic == no overwrite)
-eigh = _partial(sl.eigh, check_finite=False, overwrite_a=False, overwrite_b=False, turbo=True)
-eigh_dc = eigh
-eigh_qr = _partial(sl.eigh, check_finite=False, overwrite_a=False, overwrite_b=False, turbo=False)
-__all__ += _append('eigh', ['', '_dc', '_qr'])
+eigh = _partial(sl.eigh, check_finite=False, overwrite_a=False, overwrite_b=False)
+eigh_destroy = _partial(sl.eigh, check_finite=False, overwrite_a=True, overwrite_b=True)
+__all__ += _append("eigh", ["", "_destroy"])
 
-# Solve symmetric/hermitian eigenvalue problem (allow overwrite)
-eigh_destroy = _partial(sl.eigh, check_finite=False, overwrite_a=True, overwrite_b=True, turbo=True)
-eigh_dc_destroy = eigh_destroy
-eigh_qr_destroy = _partial(sl.eigh, check_finite=False, overwrite_a=True, overwrite_b=True, turbo=False)
-__all__ += _append('eigh_', ['destroy', 'dc_destroy', 'qr_destroy'])
-
-eigvalsh = _partial(sl.eigvalsh, check_finite=False, overwrite_a=False, overwrite_b=False, turbo=True)
-eigvalsh_dc = eigvalsh
-eigvalsh_qr = _partial(sl.eigvalsh, check_finite=False, overwrite_a=False, overwrite_b=False, turbo=False)
-__all__ += _append('eigvalsh', ['', '_dc', '_qr'])
-
-eigvalsh_destroy = _partial(sl.eigvalsh, check_finite=False, overwrite_a=True, overwrite_b=True, turbo=True)
-eigvalsh_dc_destroy = eigvalsh_destroy
-eigvalsh_qr_destroy = _partial(sl.eigvalsh, check_finite=False, overwrite_a=True, overwrite_b=True, turbo=False)
-__all__ += _append('eigvalsh_', ['destroy', 'dc_destroy', 'qr_destroy'])
+eigvalsh = _partial(sl.eigvalsh, check_finite=False, overwrite_a=False, overwrite_b=False)
+eigvalsh_destroy = _partial(sl.eigvalsh, check_finite=False, overwrite_a=True, overwrite_b=True)
+__all__ += _append("eigvalsh", ["", "_destroy"])
 
 cholesky = _partial(sl.cholesky, check_finite=False)
 cholesky_destroy = _partial(sl.cholesky, check_finite=False, overwrite_a=True)
-__all__ += _append('cholesky', ['', '_destroy'])
+__all__ += _append("cholesky", ["", "_destroy"])
 
 # SVD problem
 svd = _partial(sl.svd, check_finite=False, overwrite_a=False)
 svd_destroy = _partial(sl.svd, check_finite=False, overwrite_a=True)
-__all__ += _append('svd', ['', '_destroy'])
+__all__ += _append("svd", ["", "_destroy"])
 
 # Determinants
 det = _partial(sl.det, check_finite=False, overwrite_a=False)
 det_destroy = _partial(sl.det, check_finite=False, overwrite_a=True)
-__all__ += _append('det', ['', '_destroy'])
+__all__ += _append("det", ["", "_destroy"])
 
 # Sparse linalg routines
 
 # Solve eigenvalue problem
 eigs = set_module("sisl.linalg")(ssl.eigs)
-__all__ += ['eigs']
+__all__ += ["eigs"]
 
 # Solve symmetric/hermitian eigenvalue problem (generic == no overwrite)
 eigsh = set_module("sisl.linalg")(ssl.eigsh)
-__all__ += ['eigsh']
+__all__ += ["eigsh"]

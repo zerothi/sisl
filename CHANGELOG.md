@@ -28,7 +28,7 @@ we hit release version 1.0.0.
 
 ### Fixed
 - rare compiler bug, #512
-- within_inf with periodic arguments, #511
+- `within_inf` with periodic arguments, #511
 - reading TranSiesta data from outSileSiesta
 - regression from 80f27b05, reading version 0 HSX content, #492
 - delta-files (netCDF) would always have diagonal components,
@@ -38,7 +38,7 @@ we hit release version 1.0.0.
   components
 - too large energies in Siesta files could result in crash, #482
 - orbital quantum numbers from HSX file was wrong in v1, #462
-- corrected sign for spin-Y direction, PDOS, spin_moment, #486
+- corrected sign for spin-Y direction, `PDOS`, `spin_moment`, #486
 - RealSpaceSI for right semi-infinite directions, #475
 - tbtrans files now have a separate entry in the documentation
 

@@ -6,8 +6,8 @@ import pytest
 import numpy as np
 import scipy.linalg as sl
 from sisl.linalg import (eig, eig_destroy,
-                         eigh, eigh_destroy,
-                         eigh_qr, eigh_dc)
+                         eigh, eigh_destroy
+                         )
 
 pytestmark = [pytest.mark.linalg, pytest.mark.eig]
 
@@ -34,16 +34,6 @@ def test_eigh1():
     ac = a.copy()
     xs, vs = sl.eigh(a)
     x, v = eigh(a)
-    assert np.allclose(xs, x)
-    assert np.allclose(vs, v)
-    assert np.allclose(a, ac)
-
-    x, v = eigh_dc(a)
-    assert np.allclose(xs, x)
-    assert np.allclose(vs, v)
-    assert np.allclose(a, ac)
-
-    x, v = eigh_qr(a)
     assert np.allclose(xs, x)
     assert np.allclose(vs, v)
     assert np.allclose(a, ac)
