@@ -1271,7 +1271,7 @@ class TestHamiltonian:
             DOS = es.PDOS(E, 'lorentzian')
             # matrix.A1 is np.array(matrix).ravel()
             COOP2DOS = np.array([C.sum(1).A1 for C in COOP]).T
-            assert DOS.shape == COOP2DOS.shape
+            assert DOS.shape[1:] == COOP2DOS.shape
             assert np.allclose(DOS, COOP2DOS)
 
     def test_coop_sp_vs_np(self, setup):
