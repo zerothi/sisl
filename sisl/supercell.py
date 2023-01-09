@@ -14,7 +14,6 @@ from numpy import ndarray, dot
 from ._internal import set_module
 from . import _plot as plt
 from . import _array as _a
-from .messages import deprecate_method
 from .utils.mathematics import fnorm
 from .shape.prism4 import Cuboid
 from .quaternion import Quaternion
@@ -92,18 +91,6 @@ class SuperCell:
     @origin.setter
     def origin(self, origin):
         """ Set origin for the cell """
-        self._origin[:] = origin
-
-    @property
-    @deprecate_method("use .origin instead")
-    def origo(self):
-        """ Origin for the cell """
-        return self._origin
-
-    @origo.setter
-    @deprecate_method("use .origin instead")
-    def origo(self, origin):
-        """ Set origin """
         self._origin[:] = origin
 
     def toCuboid(self, orthogonal=False):
@@ -765,8 +752,6 @@ class SuperCell:
         return self.copy(cell)
 
     unrepeat = untile
-
-    cut = deprecate_method("*.cut is deprecated, use .untile instead", "0.13")(untile)
 
     def append(self, other, axis):
         """ Appends other `SuperCell` to this grid along axis """

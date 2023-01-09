@@ -1352,19 +1352,6 @@ class TestGeometry:
 
     # Test ASE (but only fail if present)
 
-    def test_geometry_toASE(self):
-        pytest.importorskip("ase", reason="ase not available")
-        sisl_geom.graphene().toASE()
-
-    def test_geometry_fromASE(self):
-        pytest.importorskip("ase", reason="ase not available")
-        gr = sisl_geom.graphene()
-        ase_geom = gr.toASE()
-        from_ase = Geometry.fromASE(ase_geom)
-        assert np.allclose(gr.xyz, from_ase.xyz)
-        assert np.allclose(gr.cell, from_ase.cell)
-        assert np.allclose(gr.atoms.Z, from_ase.atoms.Z)
-
     def test_geometry_ase_new_to(self):
         pytest.importorskip("ase", reason="ase not available")
         gr = sisl_geom.graphene()

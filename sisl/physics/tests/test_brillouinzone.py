@@ -207,7 +207,7 @@ class TestMonkhorstPack:
                 self.set_supercell(sc)
             def eigh(self, k, *args, **kwargs):
                 return np.arange(3)
-        bz = MonkhorstPack(Test(setup.s1), [2] * 3).asgrid()
+        bz = MonkhorstPack(Test(setup.s1), [2] * 3).apply.grid
 
         # Check the shape
         grid = bz.eigh(wrap=lambda eig: eig[0])
@@ -230,7 +230,7 @@ class TestMonkhorstPack:
                 self.set_supercell(sc)
             def eigh(self, k, *args, **kwargs):
                 return np.arange(3)
-        bz = MonkhorstPack(Test(setup.s1), [2] * 3, displacement=[0.1] * 3).asgrid()
+        bz = MonkhorstPack(Test(setup.s1), [2] * 3, displacement=[0.1] * 3).apply.grid
         with pytest.raises(SislError):
             bz.eigh(wrap=lambda eig: eig[0])
 
@@ -489,8 +489,8 @@ class TestMonkhorstPack:
 
         DOS, PDOS = bz.apply.sum.eigenstate(wrap=wrap_sum)
         bz_arr = bz.apply.array
-        assert np.allclose(bz_arr.DOS(E), DOS)
-        assert np.allclose(bz_arr.PDOS(E)[0], PDOS)
+        assert np.allclose(bz_arr.eigenstate(wrap=lambda es: es.DOS(E)), DOS)
+        assert np.allclose(bz_arr.eigenstate(wrap=lambda es: es.PDOS(E)[0]), PDOS)
 
     def test_wrap_unzip(self):
         from sisl import geom, Hamiltonian
@@ -537,17 +537,17 @@ class TestMonkhorstPack:
 
         E = np.linspace(-2, 2, 20)
         bz_array = bz.apply.array
-        asarray1 = (bz_array.DOS(E, wrap=wrap_none) * bz.weight.reshape(-1, 1)).sum(0)
-        asarray2 = bz_array.DOS(E, wrap=wrap_kwargs).sum(0)
+        asarray1 = (bz_array.eigenstate(wrap=lambda es: es.DOS(E)) * bz.weight.reshape(-1, 1)).sum(0)
+        asarray2 = bz_array.eigenstate(wrap=lambda es, parent, k, weight: es.DOS(E)).sum(0)
         bz_list = bz.apply.list
-        aslist1 = (np.array(bz_list.DOS(E, wrap=wrap_none)) * bz.weight.reshape(-1, 1)).sum(0)
-        aslist2 = np.array(bz_list.DOS(E, wrap=wrap_kwargs)).sum(0)
+        aslist1 = (np.array(bz_list.eigenstate(wrap=lambda es: es.DOS(E))) * bz.weight.reshape(-1, 1)).sum(0)
+        aslist2 = np.array(bz_list.eigenstate(wrap=lambda es, parent, k, weight: es.DOS(E))).sum(0)
         bz_yield = bz.apply.iter
-        asyield1 = (np.array([a for a in bz_yield.DOS(E, wrap=wrap_none)]) * bz.weight.reshape(-1, 1)).sum(0)
-        asyield2 = np.array([a for a in bz_yield.DOS(E, wrap=wrap_kwargs)]).sum(0)
+        asyield1 = (np.array([a for a in bz_yield.eigenstate(wrap=lambda es: es.DOS(E))]) * bz.weight.reshape(-1, 1)).sum(0)
+        asyield2 = np.array([a for a in bz_yield.eigenstate(wrap=lambda es, parent, k, weight: es.DOS(E))]).sum(0)
 
-        asaverage = bz.apply.average.DOS(E, wrap=wrap_none)
-        assum = bz.apply.sum.DOS(E, wrap=wrap_kwargs)
+        asaverage = bz.apply.average.eigenstate(wrap=lambda es: es.DOS(E))
+        assum = bz.apply.sum.eigenstate(wrap=lambda es: es.DOS(E))
 
         assert np.allclose(asarray1, asaverage)
         assert np.allclose(asarray2, asaverage)
@@ -614,10 +614,6 @@ class TestBandStructure:
     def test_pbs_missing_arguments(self, setup):
         with pytest.raises(ValueError):
             bz = BandStructure(setup.s1, divisions=[10, 10])
-
-    def test_pbs_deprecate_arguments(self, setup):
-        with pytest.deprecated_call():
-            bz = BandStructure(setup.s1, [[0]*3, [.25]*3, [.5]*3], division=[10, 10])
 
     def test_pbs_fail(self, setup):
         with pytest.raises(ValueError):

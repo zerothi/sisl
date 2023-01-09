@@ -5,7 +5,6 @@ import numpy as np
 
 from sisl._internal import set_module
 import sisl._array as _a
-from ..messages import deprecate_method
 from .distribution import get_distribution
 from .electron import EigenvalueElectron, EigenstateElectron, spin_squared
 from .sparse import SparseOrbitalBZSpin
@@ -415,123 +414,6 @@ class Hamiltonian(SparseOrbitalBZSpin):
         else:
             with get_sile(sile, 'w') as fh:
                 fh.write_hamiltonian(self, *args, **kwargs)
-
-    @deprecate_method("use Hamiltonian.eigenstate(...).spin_squared() instead", "0.13.0")
-    def spin_squared(self, k=(0, 0, 0), n_up=None, n_down=None, **kwargs):
-        r""" Calculate spin-squared expectation value, see `~sisl.physics.electron.spin_squared` for details
-
-        Parameters
-        ----------
-        k : array_like, optional
-            k-point at which the spin-squared expectation value is
-        n_up : int, optional
-            number of states for spin up configuration, default to all. All states up to and including
-            `n_up`.
-        n_down : int, optional
-            same as `n_up` but for the spin-down configuration
-        **kwargs : optional
-            additional parameters passed to the `eigenstate` routine
-        """
-        if not self.spin.is_polarized:
-            raise ValueError(self.__class__.__name__ + '.spin_squared requires as spin-polarized system')
-        es_alpha = self.eigenstate(k, spin=0, **kwargs)
-        if not n_up is None:
-            es_alpha = es_alpha.sub(range(n_up))
-        es_beta = self.eigenstate(k, spin=1, **kwargs)
-        if not n_down is None:
-            es_beta = es_beta.sub(range(n_down))
-        # es_alpha.Sk should equal es_beta.Sk, so just pass one of them
-        return spin_squared(es_alpha.state, es_beta.state, es_alpha.Sk())
-
-    @deprecate_method("use Hamiltonian.eigenstate(...).velocity() instead", "0.13.0")
-    def velocity(self, k=(0, 0, 0), matrix=False, **kwargs):
-        r""" Calculate the velocity for the eigenstates for a given `k` point
-
-        Parameters
-        ----------
-        k : array_like, optional
-            k-point at which the velocities are calculated
-        matrix : bool, optional
-            see `EigenstateElectron.velocity` for details and possible arguments
-        **kwargs : optional
-            additional parameters passed to the `eigenstate` routine
-
-        See Also
-        --------
-        eigenstate : method used to calculate the eigenstates
-        EigenstateElectron.velocity : Underlying method used to calculate the velocity
-        """
-        return self.eigenstate(k, **kwargs).velocity(matrix=matrix)
-
-    @deprecate_method("use Hamiltonian.eigenstate(...).spin_moment() instead", "0.13.0")
-    def spin_moment(self, k=(0, 0, 0), project=False, **kwargs):
-        r""" Calculate the spin moment for the eigenstates for a given `k` point
-
-        Parameters
-        ----------
-        k : array_like, optional
-            k-point at which the spin moments are calculated
-        project : bool, optional
-           whether the moments are orbitally resolved or not
-        **kwargs : optional
-            additional parameters passed to the `eigenstate` routine
-
-        See Also
-        --------
-        eigenstate : method used to calculate the eigenstates
-        EigenvalueElectron.spin_moment : Underlying method used to calculate the spin moment
-        """
-        return self.eigenstate(k, **kwargs).spin_moment()
-
-    @deprecate_method("use Hamiltonian.eigenstate(...).DOS() instead", "0.13.0")
-    def DOS(self, E, k=(0, 0, 0), distribution='gaussian', **kwargs):
-        r""" Calculate the DOS at the given energies for a specific `k` point
-
-        Parameters
-        ----------
-        E : array_like
-            energies to calculate the DOS at
-        k : array_like, optional
-            k-point at which the DOS is calculated
-        distribution : func or str, optional
-            a function that accepts :math:`E-\epsilon` as argument and calculates the
-            distribution function.
-        **kwargs : optional
-            additional parameters passed to the `eigenvalue` routine
-
-        See Also
-        --------
-        sisl.physics.distribution : setup a distribution function, see details regarding the `distribution` argument
-        eigenvalue : method used to calculate the eigenvalues
-        PDOS : Calculate projected DOS
-        EigenvalueElectron.DOS : Underlying method used to calculate the DOS
-        """
-        return self.eigenvalue(k, **kwargs).DOS(E, distribution)
-
-    @deprecate_method("use Hamiltonian.eigenstate(...).PDOS() instead", "0.13.0")
-    def PDOS(self, E, k=(0, 0, 0), distribution='gaussian', **kwargs):
-        r""" Calculate the projected DOS at the given energies for a specific `k` point
-
-        Parameters
-        ----------
-        E : array_like
-            energies to calculate the projected DOS at
-        k : array_like, optional
-            k-point at which the projected DOS is calculated
-        distribution : func or str, optional
-            a function that accepts :math:`E-\epsilon` as argument and calculates the
-            distribution function.
-        **kwargs : optional
-            additional parameters passed to the `eigenstate` routine
-
-        See Also
-        --------
-        sisl.physics.distribution : setup a distribution function, see details regarding the `distribution` argument
-        eigenstate : method used to calculate the eigenstates
-        DOS : Calculate total DOS
-        EigenstateElectron.PDOS : Underlying method used to calculate the projected DOS
-        """
-        return self.eigenstate(k, **kwargs).PDOS(E, distribution)
 
     def fermi_level(self, bz=None, q=None, distribution='fermi_dirac', q_tol=1e-10):
         """ Calculate the Fermi-level using a Brillouinzone sampling and a target charge

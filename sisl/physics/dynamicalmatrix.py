@@ -5,7 +5,6 @@ import numpy as np
 from scipy.sparse import lil_matrix
 
 from sisl._internal import set_module
-from sisl.messages import deprecate_method
 from .sparse import SparseOrbitalBZ
 from .phonon import EigenvaluePhonon, EigenmodePhonon
 
@@ -344,93 +343,3 @@ class DynamicalMatrix(SparseOrbitalBZ):
         else:
             with get_sile(sile, 'w') as fh:
                 fh.write_dynamical_matrix(self, *args, **kwargs)
-
-    @deprecate_method("use DynamicalMatrix.eigenstate(...).velocity() instead", "0.13.0")
-    def velocity(self, k=(0, 0, 0), matrix=False, **kwargs):
-        r""" Calculate the velocity for the eigenmodes for a given `k` point
-
-        Parameters
-        ----------
-        k : array_like, optional
-            k-point at which the velocities are calculated
-        matrix : bool, optional
-            see `EigenmodePhonon.velocity` for details
-        **kwargs : optional
-            additional parameters passed to the `eigenmode` routine
-
-        See Also
-        --------
-        eigenmode : method used to calculate the eigenmodes
-        displacement : Calculate mode displacements
-        EigenmodePhonon.velocity : Underlying method used to calculate the velocity
-        """
-        return self.eigenmode(k, **kwargs).velocity(matrix=matrix)
-
-    @deprecate_method("use DynamicalMatrix.eigenstate(...).displacement() instead", "0.13.0")
-    def displacement(self, k=(0, 0, 0), **kwargs):
-        r""" Calculate the displacement for the eigenmodes for a given `k` point
-
-        Parameters
-        ----------
-        k : array_like, optional
-            k-point at which the displacement are calculated
-        **kwargs : optional
-            additional parameters passed to the `eigenmode` routine
-
-        See Also
-        --------
-        eigenmode : method used to calculate the eigenmodes
-        velocity : Calculate mode velocity
-        EigenmodePhonon.displacement : Underlying method used to calculate the velocity
-        """
-        return self.eigenmode(k, **kwargs).displacement()
-
-    @deprecate_method("use DynamicalMatrix.eigenstate(...).DOS() instead", "0.13.0")
-    def DOS(self, E, k=(0, 0, 0), distribution='gaussian', **kwargs):
-        r""" Calculate the DOS at the given energies for a specific `k` point
-
-        Parameters
-        ----------
-        E : array_like
-            energies to calculate the DOS at
-        k : array_like, optional
-            k-point at which the DOS is calculated
-        distribution : func or str, optional
-            a function that accepts :math:`E-\hbar\omega` as argument and calculates the
-            distribution function.
-        **kwargs : optional
-            additional parameters passed to the `eigenvalue` routine
-
-        See Also
-        --------
-        sisl.physics.distribution : setup a distribution function, see details regarding the `distribution` argument
-        eigenvalue : method used to calculate the eigenvalues
-        PDOS : Calculate projected DOS
-        EigenvaluePhonon.DOS : Underlying method used to calculate the DOS
-        """
-        return self.eigenvalue(k, **kwargs).DOS(E, distribution)
-
-    @deprecate_method("use DynamicalMatrix.eigenstate(...).PDOS() instead", "0.13.0")
-    def PDOS(self, E, k=(0, 0, 0), distribution='gaussian', **kwargs):
-        r""" Calculate the projected DOS at the given energies for a specific `k` point
-
-        Parameters
-        ----------
-        E : array_like
-            energies to calculate the projected DOS at
-        k : array_like, optional
-            k-point at which the projected DOS is calculated
-        distribution : func or str, optional
-            a function that accepts :math:`E-\epsilon` as argument and calculates the
-            distribution function.
-        **kwargs : optional
-            additional parameters passed to the `eigenmode` routine
-
-        See Also
-        --------
-        sisl.physics.distribution : setup a distribution function, see details regarding the `distribution` argument
-        eigenmode : method used to calculate the eigenmodes
-        DOS : Calculate total DOS
-        EigenmodePhonon.PDOS : Underlying method used to calculate the projected DOS
-        """
-        return self.eigenmode(k, **kwargs).PDOS(E, distribution)

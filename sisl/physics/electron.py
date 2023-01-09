@@ -15,8 +15,6 @@ One may also plot real-space wavefunctions.
    DOS
    PDOS
    COP
-   velocity
-   velocity_matrix
    berry_phase
    berry_curvature
    conductivity
@@ -52,7 +50,7 @@ from numpy import zeros, empty
 from numpy import floor, ceil
 from numpy import conj, dot, ogrid, einsum
 from numpy import cos, sin, log, exp, pi
-from numpy import add, argsort, sort
+from numpy import add, sort
 from scipy.sparse import identity, csr_matrix, hstack, isspmatrix
 
 from sisl._internal import set_module
@@ -65,7 +63,7 @@ from sisl._math_small import xyz_to_spherical_cos_phi
 import sisl._array as _a
 from sisl.linalg import det, sqrth, svd_destroy
 from sisl.linalg import eigvals as la_eigvals
-from sisl.messages import info, warn, SislError, progressbar, deprecate_method
+from sisl.messages import info, warn, SislError, progressbar
 from sisl._help import dtype_complex_to_real, dtype_real_to_complex
 from .distribution import get_distribution
 from .spin import Spin
@@ -74,7 +72,6 @@ from .state import degenerate_decouple, Coefficient, State, StateC, _FakeMatrix
 
 
 __all__ = ["DOS", "PDOS", "COP"]
-__all__ += ["velocity", "velocity_matrix"]
 __all__ += ["spin_moment", "spin_squared"]
 __all__ += ["berry_phase", "berry_curvature"]
 __all__ += ["conductivity"]
@@ -227,7 +224,7 @@ def PDOS(E, eig, state, S=None, distribution="gaussian", spin=None):
             S = S[::2, ::2]
 
         # Initialize data
-        PDOS = np.empty([4, state.shape[1] // 2, len(E)], dtype=dtype_complex_to_real(state.dtype))
+        PDOS = empty([4, state.shape[1] // 2, len(E)], dtype=dtype_complex_to_real(state.dtype))
 
         # Do spin-box calculations:
         #  PDOS[0] = total DOS (diagonal)
@@ -340,7 +337,7 @@ def COP(E, eig, state, M, distribution="gaussian", tol=1e-10):
         # A fake matrix equals the identity matrix.
         # Hence we can do all calculations only on the diagonal,
         # then finally we recreate the full matrix dimensions.
-        cop = oplist(np.zeros(no, dtype=dtype) for _ in range(len(E)))
+        cop = oplist(zeros(no, dtype=dtype) for _ in range(len(E)))
 
         def new_list(bools, tmp, we):
             for bl, w in zip(bools, we):
@@ -393,7 +390,7 @@ def COP(E, eig, state, M, distribution="gaussian", tol=1e-10):
     else:
         old_shape = M.shape
         Ms = M.reshape(old_shape[0], n_s, old_shape[0])
-        cop = oplist(np.zeros(old_shape, dtype=dtype) for _ in range(len(E)))
+        cop = oplist(zeros(old_shape, dtype=dtype) for _ in range(len(E)))
 
         for e, s in zip(eig, state):
             we = distribution(E - e)
@@ -472,7 +469,7 @@ def spin_moment(state, S=None, project=False):
     # see PDOS for details related to the spin-box calculations
 
     if project:
-        s = np.empty([3, state.shape[0], state.shape[1] // 2], dtype=dtype_complex_to_real(state.dtype))
+        s = empty([3, state.shape[0], state.shape[1] // 2], dtype=dtype_complex_to_real(state.dtype))
 
         for i in range(len(state)):
             cs = conj(state[i]).reshape(-1, 2)
@@ -485,7 +482,7 @@ def spin_moment(state, S=None, project=False):
             s[1, i] = D2.imag - D1.imag
 
     else:
-        s = np.empty([3, state.shape[0]], dtype=dtype_complex_to_real(state.dtype))
+        s = empty([3, state.shape[0]], dtype=dtype_complex_to_real(state.dtype))
 
         # TODO consider doing this all in a few lines
         # TODO Since there are no energy dependencies here we can actually do all
@@ -588,232 +585,9 @@ def spin_squared(state_alpha, state_beta, S=None):
     return oplist((Sa, Sb))
 
 
-@set_module("sisl.physics.electron")
-@deprecate_method("use <Matrix>.eigenstate(...).velocity() instead", "0.13.0")
-def velocity(state, dHk, energy=None, dSk=None, degenerate=None, degenerate_dir=(1, 1, 1), project=False):
-    r""" Calculate the velocity of a set of states
-
-    These are calculated using the analytic expression (:math:`\alpha` corresponding to the Cartesian directions):
-
-    .. math::
-
-       \mathbf{v}^\alpha_{i} = \frac1\hbar \langle \psi_i |
-                \frac{\partial}{\partial\mathbf k_\alpha} \mathbf H(\mathbf k) | \psi_i \rangle
-
-    In case of non-orthogonal basis the equations substitutes :math:`\mathbf H(\mathbf k)` by
-    :math:`\mathbf H(\mathbf k) - \epsilon_i\mathbf S(\mathbf k)`.
-
-    In case the user requests to project the velocities (`project` is True) the equation follows that
-    of `PDOS` with the same changes.
-    In case of non-colinear spin the velocities will be returned also for each spin-direction.
-
-    Notes
-    -----
-    The velocities are calculated without the Berry curvature contribution see Eq. (2) in [1]_.
-    The missing contribution may be added in later editions, for completeness sake, it is:
-
-    .. math::
-        \delta \mathbf v = - \mathbf k\times \Omega_i(\mathbf k)
-
-    where :math:`\Omega_i` is the Berry curvature for state :math:`i`.
-
-    Parameters
-    ----------
-    state : array_like
-       vectors describing the electronic states, 2nd dimension contains the states. In case of degenerate
-       states the vectors *may* be rotated upon return.
-    dHk : list of array_like
-       Hamiltonian derivative with respect to :math:`\mathbf k`. This needs to be a tuple or
-       list of the Hamiltonian derivative along the 3 Cartesian directions.
-    energy : array_like, optional
-       energies of the states. Required for non-orthogonal basis together with `dSk`. In case of degenerate
-       states the eigenvalues of the states will be averaged in the degenerate sub-space.
-    dSk : list of array_like, optional
-       :math:`\delta \mathbf S_k` matrix required for non-orthogonal basis. This and `energy` *must* both be
-       provided in a non-orthogonal basis (otherwise the results will be wrong).
-       Same derivative as `dHk`
-    degenerate : list of array_like, optional
-       a list containing the indices of degenerate states. In that case a prior diagonalization
-       is required to decouple them. See `degenerate_dir` for the sum of directions.
-    degenerate_dir : (3,), optional
-       a direction used for degenerate decoupling. The decoupling based on the velocity along this direction
-    project : bool, optional
-       whether the velocities will be returned projected per orbital
-
-    See Also
-    --------
-    Hamiltonian.dHk : function for generating the Hamiltonian derivatives (`dHk` argument)
-    Hamiltonian.dSk : function for generating the Hamiltonian derivatives (`dSk` argument)
-
-    References
-    ----------
-    .. [1] :doi:`X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, "Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation", PRB **74**, 195118 (2006) <10.1103/PhysRevB.74.195118>`
-
-    Returns
-    -------
-    numpy.ndarray
-        if `project` is false, velocities per state with final dimension ``(3, state.shape[0])``, the velocity unit is Ang/ps. Units *may* change in future releases.
-    numpy.ndarray
-        if `project` is true, velocities per state with final dimension ``(3, state.shape[0], state.shape[1])``, the velocity unit is Ang/ps. Units *may* change in future releases.
-    """
-    if state.ndim == 1:
-        return velocity(state.reshape(1, -1), dHk, energy, dSk, degenerate, degenerate_dir, project)[0]
-
-    if dSk is None:
-        return _velocity_ortho(state, dHk, degenerate, degenerate_dir, project)
-    return _velocity_non_ortho(state, dHk, energy, dSk, degenerate, degenerate_dir, project)
-
-
 # dHk is in [Ang eV]
 # velocity units in [Ang/ps]
 _velocity_const = 1 / constant.hbar("eV ps")
-
-
-def _velocity_non_ortho(state, dHk, energy, dSk, degenerate, degenerate_dir, project):
-    r""" For states in a non-orthogonal basis """
-    # Decouple the degenerate states
-    if not degenerate is None:
-        degenerate_dir = _a.asarrayd(degenerate_dir)
-        degenerate_dir /= (degenerate_dir ** 2).sum() ** 0.5
-        deg_dHk = sum(d*dh for d, dh in zip(degenerate_dir, dHk))
-        for deg in degenerate:
-            # Set the average energy
-            e = np.average(energy[deg])
-            energy[deg] = e
-
-            # Now diagonalize to find the contributions from individual states
-            # then re-construct the seperated degenerate states
-            # Since we do this for all directions we should decouple them all
-            state[deg] = degenerate_decouple(state[deg], deg_dHk - sum(d * e * ds for d, ds in zip(degenerate_dir, dSk)))
-        del deg_dHk
-
-    if project:
-        v = np.empty([3, state.shape[0], state.shape[1]], dtype=dtype_complex_to_real(state.dtype))
-        # Since they depend on the state energies and dSk we have to loop them individually.
-        for s, e in enumerate(energy):
-            cs = conj(state[s])
-            # Since dHk *may* be a csr_matrix or sparse, we have to do it like
-            # this. A sparse matrix cannot be re-shaped with an extra dimension.
-            v[0, s] = (cs * (dHk[0] - e * dSk[0]).dot(state[s])).real
-            v[1, s] = (cs * (dHk[1] - e * dSk[1]).dot(state[s])).real
-            v[2, s] = (cs * (dHk[2] - e * dSk[2]).dot(state[s])).real
-
-    else:
-        v = np.empty([3, state.shape[0]], dtype=dtype_complex_to_real(state.dtype))
-        for s, e in enumerate(energy):
-            cs = conj(state[s])
-            v[0, s] = cs.dot((dHk[0] - e * dSk[0]).dot(state[s])).real
-            v[1, s] = cs.dot((dHk[1] - e * dSk[1]).dot(state[s])).real
-            v[2, s] = cs.dot((dHk[2] - e * dSk[2]).dot(state[s])).real
-
-    v *= _velocity_const
-    return v
-
-
-def _velocity_ortho(state, dHk, degenerate, degenerate_dir, project):
-    r""" For states in an orthogonal basis """
-    # Decouple the degenerate states
-    if not degenerate is None:
-        degenerate_dir = _a.asarrayd(degenerate_dir)
-        degenerate_dir /= (degenerate_dir ** 2).sum() ** 0.5
-        deg_dHk = sum(d*dh for d, dh in zip(degenerate_dir, dHk))
-        for deg in degenerate:
-            # Now diagonalize to find the contributions from individual states
-            # then re-construct the seperated degenerate states
-            # Since we do this for all directions we should decouple them all
-            state[deg] = degenerate_decouple(state[deg], deg_dHk)
-        del deg_dHk
-
-    cs = conj(state)
-    if project:
-        v = np.empty([3, state.shape[0], state.shape[1]], dtype=dtype_complex_to_real(state.dtype))
-
-        v[0] = (cs * dHk[0].dot(state.T).T).real
-        v[1] = (cs * dHk[1].dot(state.T).T).real
-        v[2] = (cs * dHk[2].dot(state.T).T).real
-
-    else:
-        v = np.empty([3, state.shape[0]], dtype=dtype_complex_to_real(state.dtype))
-
-        v[0] = einsum("ij,ji->i", cs, dHk[0].dot(state.T)).real
-        v[1] = einsum("ij,ji->i", cs, dHk[1].dot(state.T)).real
-        v[2] = einsum("ij,ji->i", cs, dHk[2].dot(state.T)).real
-
-    v *= _velocity_const
-    return v
-
-
-@set_module("sisl.physics.electron")
-def velocity_matrix(state, dHk, energy=None, dSk=None, degenerate=None, degenerate_dir=(1, 1, 1)):
-    r""" Calculate the velocity matrix of a set of states
-
-    These are calculated using the analytic expression (:math:`\alpha` corresponding to the Cartesian directions):
-
-    .. math::
-
-       \mathbf{v}^\alpha_{ij} = \frac1\hbar \langle \psi_j |
-                \frac{\partial}{\partial\mathbf k_\alpha} \mathbf H(\mathbf k) | \psi_i \rangle
-
-    In case of non-orthogonal basis the equations substitutes :math:`\mathbf H(\mathbf k)` by
-    :math:`\mathbf H(\mathbf k) - \epsilon_i\mathbf S(\mathbf k)`.
-
-    Although the matrix :math:`\mathbf v` should be Hermitian it is not checked, and we explicitly calculate
-    all elements.
-
-    Parameters
-    ----------
-    state : array_like
-       vectors describing the electronic states, 2nd dimension contains the states. In case of degenerate
-       states the vectors *may* be rotated upon return.
-    dHk : list of array_like
-       Hamiltonian derivative with respect to :math:`\mathbf k`. This needs to be a tuple or
-       list of the Hamiltonian derivative along the 3 Cartesian directions.
-    energy : array_like, optional
-       energies of the states. Required for non-orthogonal basis together with `dSk`. In case of degenerate
-       states the eigenvalues of the states will be averaged in the degenerate sub-space.
-    dSk : list of array_like, optional
-       :math:`\delta \mathbf S_k` matrix required for non-orthogonal basis. This and `energy` *must* both be
-       provided in a non-orthogonal basis (otherwise the results will be wrong).
-       Same derivative as `dHk`
-    degenerate : list of array_like, optional
-       a list containing the indices of degenerate states. In that case a prior diagonalization
-       is required to decouple them. See `degenerate_dir` for details.
-    degenerate_dir : (3,), optional
-       a direction used for degenerate decoupling. The decoupling based on the velocity along this direction
-
-
-    See Also
-    --------
-    velocity : only calculate the diagonal components of this matrix
-    Hamiltonian.dHk : function for generating the Hamiltonian derivatives (`dHk` argument)
-    Hamiltonian.dSk : function for generating the Hamiltonian derivatives (`dSk` argument)
-
-    Notes
-    -----
-    The velocities are calculated without the Berry curvature contribution see Eq. (2) in [1]_.
-    The missing contribution may be added in later editions, for completeness sake, it is:
-
-    .. math::
-        \delta \mathbf v = - \mathbf k\times \Omega_i(\mathbf k)
-
-    where :math:`\Omega_i` is the Berry curvature for state :math:`i`.
-
-    References
-    ----------
-    .. [1] :doi:`X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, "Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation", PRB **74**, 195118 (2006) <10.1103/PhysRevB.74.195118>`
-
-    Returns
-    -------
-    numpy.ndarray
-        velocity matrix state with final dimension ``(3, state.shape[0], state.shape[0])``, the velocity unit is Ang/ps. Units *may* change in future releases.
-    """
-    if state.ndim == 1:
-        return velocity_matrix(state.reshape(1, -1), dHk, energy, dSk, degenerate, degenerate_dir)
-
-    dtype = find_common_type([state.dtype, dHk[0].dtype, dtype_real_to_complex(state.dtype)], [])
-    if dSk is None:
-        return _velocity_matrix_ortho(state, dHk, degenerate, degenerate_dir, dtype)
-    return _velocity_matrix_non_ortho(state, dHk, energy, dSk, degenerate, degenerate_dir, dtype)
 
 
 def _velocity_matrix_non_ortho(state, dHk, energy, dSk, degenerate, degenerate_dir, dtype):
@@ -821,7 +595,7 @@ def _velocity_matrix_non_ortho(state, dHk, energy, dSk, degenerate, degenerate_d
 
     # All matrix elements along the 3 directions
     n = state.shape[0]
-    v = np.empty([3, n, n], dtype=dtype)
+    v = empty([3, n, n], dtype=dtype)
 
     # Decouple the degenerate states
     if not degenerate is None:
@@ -858,7 +632,7 @@ def _velocity_matrix_ortho(state, dHk, degenerate, degenerate_dir, dtype):
 
     # All matrix elements along the 3 directions
     n = state.shape[0]
-    v = np.empty([3, n, n], dtype=dtype)
+    v = empty([3, n, n], dtype=dtype)
 
     # Decouple the degenerate states
     if not degenerate is None:
@@ -960,7 +734,7 @@ def _berry_curvature(v_M, energy):
     # For cases where all states are degenerate then we would not be able
     # to calculate anything. Hence we need to initialize as zero
     #   \Omega_{\alpha \beta, n}
-    sigma = np.zeros([3, 3, N], dtype=dtype_complex_to_real(v_M.dtype))
+    sigma = zeros([3, 3, N], dtype=dtype_complex_to_real(v_M.dtype))
 
     for s, e in enumerate(energy):
         de = (energy - e) ** 2
@@ -1750,6 +1524,20 @@ class StateCElectron(_electron_State, StateC):
         The states and energies for the states *may* have changed after calling this routine.
         This is because of the velocity un-folding for degenerate modes. I.e. calling
         `PDOS` after this method *may* change the result.
+
+        Notes
+        -----
+        The velocities are calculated without the Berry curvature contribution see Eq. (2) in [1]_.
+        The missing contribution may be added in later editions, for completeness sake, it is:
+
+        .. math::
+           \delta \mathbf v = - \mathbf k\times \Omega_i(\mathbf k)
+
+        where :math:`\Omega_i` is the Berry curvature for state :math:`i`.
+
+        References
+        ----------
+        .. [1] :doi:`X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, "Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation", PRB **74**, 195118 (2006) <10.1103/PhysRevB.74.195118>`
 
         See Also
         --------

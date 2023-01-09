@@ -39,7 +39,7 @@ class AbstractDispatch(metaclass=ABCMeta):
         self._attrs = attrs
 
     def copy(self):
-        """ Create a copy of this object """
+        """ Create a copy of this object (will not copy `obj`) """
         return self.__class__(self._obj, **self._attrs)
 
     def renew(self, **attrs):

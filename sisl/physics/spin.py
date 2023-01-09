@@ -4,7 +4,6 @@
 import numpy as np
 
 from sisl._internal import set_module
-from sisl.messages import deprecate_method
 
 
 __all__ = ['Spin']
@@ -140,12 +139,6 @@ class Spin:
         return self._size
 
     @property
-    @deprecate_method("Use Spin.size instead")
-    def spins(self):
-        """ Number of elements to describe the spin-components """
-        return self._size
-
-    @property
     def spinor(self):
         """ Number of spinor components (1 or 2) """
         return min(2, self._size)
@@ -181,12 +174,6 @@ class Spin:
         Otherwise false.
         """
         return self.kind in (Spin.UNPOLARIZED, Spin.POLARIZED)
-
-    @property
-    @deprecate_method("Use 'not Spin.is_diagonal' instead")
-    def has_noncolinear(self):
-        """ True if the configuration is non-collinear or spin-orbit """
-        return self.kind >= Spin.NONCOLINEAR
 
     @property
     def is_spinorbit(self):

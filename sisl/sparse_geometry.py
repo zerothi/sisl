@@ -22,7 +22,7 @@ from ._array import array_arange
 from .atom import Atom
 from .orbital import Orbital
 from .geometry import Geometry
-from .messages import warn, SislError, SislWarning, progressbar, deprecate_method
+from .messages import warn, SislError, SislWarning, progressbar
 from .utils.ranges import list2str
 from .sparse import SparseCSR, isspmatrix, _ncol_to_indptr
 
@@ -55,12 +55,6 @@ class _SparseGeometry(NDArrayOperatorsMixin):
     @property
     def geometry(self):
         """ Associated geometry """
-        return self._geometry
-
-    @property
-    @deprecate_method(f"*.geom is deprecated, use *.geometry instead")
-    def geom(self):
-        """ deprecated geometry """
         return self._geometry
 
     @property
@@ -1133,8 +1127,6 @@ class SparseAtom(_SparseGeometry):
         """
         return super().untile('a', reps, axis, segment, *args, sym=sym, **kwargs)
 
-    cut = deprecate_method("*.cut is deprecated, use .untile instead", "0.13")(untile)
-
     def sub(self, atoms):
         """ Create a subset of this sparse matrix by only retaining the elements corresponding to the `atoms`
 
@@ -1884,8 +1876,6 @@ class SparseOrbital(_SparseGeometry):
         Geometry.untile : same as this method, see details about parameters here
         """
         return super().untile('o', reps, axis, segment, *args, sym=sym, **kwargs)
-
-    cut = deprecate_method("*.cut is deprecated, use .untile instead", "0.13")(untile)
 
     def repeat(self, reps, axis):
         """ Create a repeated sparse orbital object, equivalent to `Geometry.repeat`

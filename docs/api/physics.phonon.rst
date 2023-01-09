@@ -17,8 +17,6 @@ DOS, PDOS, group-velocities and real-space displacements.
 
    DOS
    PDOS
-   velocity
-   displacement
 
 
 Supporting classes

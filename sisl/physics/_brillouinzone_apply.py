@@ -9,6 +9,7 @@ from functools import wraps, reduce
 from itertools import zip_longest
 import operator as op
 
+from numpy import pi, cross
 import numpy as np
 try:
     import xarray
@@ -20,16 +21,22 @@ from sisl._dispatcher import AbstractDispatch
 from sisl._environ import get_environ_variable
 from sisl._internal import set_module
 from sisl.utils.misc import allow_kwargs
+from sisl.utils.mathematics import cart2spher
 from sisl.oplist import oplist
 import sisl._array as _a
-from sisl.messages import progressbar
+from sisl.messages import progressbar, SislError
+from sisl.supercell import SuperCell
+from sisl.grid import Grid
+from sisl.unit import units
 
 # Stuff used for patching
-from .brillouinzone import BrillouinZone
+from .brillouinzone import BrillouinZone, MonkhorstPack
 
 
 # We expose the Apply and ParentApply classes
 __all__ = ["BrillouinZoneApply", "BrillouinZoneParentApply"]
+__all__ += ["MonkhorstPackApply", "MonkhorstPackParentApply"]
+
 
 
 def _asoplist(arg):
@@ -427,8 +434,205 @@ apply_dispatch.register("ndarray", NDArrayApply)
 apply_dispatch.register("none", NoneApply)
 apply_dispatch.register("list", ListApply)
 apply_dispatch.register("oplist", OpListApply)
-apply_dispatch.register("dataarray", XArrayApply)
-apply_dispatch.register("xarray", XArrayApply)
+if _has_xarray:
+    apply_dispatch.register("dataarray", XArrayApply)
+    apply_dispatch.register("xarray", XArrayApply)
 
 # Remove refernce
+del apply_dispatch
+
+
+@set_module("sisl.physics")
+class MonkhorstPackApply(BrillouinZoneApply):
+    # this dispatch function will do stuff on the BrillouinZone object
+    __slots__ = ()
+
+
+@set_module("sisl.physics")
+class MonkhorstPackParentApply(MonkhorstPackApply):
+
+    def __str__(self, message=''):
+        return _correct_str(super().__str__(), message)
+
+    def _parse_kwargs(self, wrap, eta=None, eta_key=""):
+        """ Parse kwargs """
+        bz = self._obj
+        parent = bz.parent
+        if wrap is None:
+            # we always return a wrap
+            def wrap(v, parent=None, k=None, weight=None):
+                return v
+        else:
+            wrap = allow_kwargs("parent", "k", "weight")(wrap)
+        eta = progressbar(len(bz), f"{bz.__class__.__name__}.{eta_key}", "k", eta)
+        return bz, parent, wrap, eta
+
+    def __getattr__(self, key):
+        # We need to offload the dispatcher to retrieve
+        # methods from the parent object
+        # This dispatch will _never_ do anything to the BrillouinZone
+        method = getattr(self._obj.parent, key)
+        return self.dispatch(method)
+
+
+@set_module("sisl.physics")
+class GridApply(MonkhorstPackParentApply):
+    """ Calculate on a Grid
+
+    The calculation of values on a grid requires some careful thought before
+    running the calculation as the returned grid may be somewhat difficult
+    to comprehend.
+
+    Notes
+    -----
+    All invocations of sub-methods are added these keyword-only arguments:
+
+    eta : bool, optional
+        if true a progress-bar is created, default false.
+    wrap : callable, optional
+        a function that accepts the output of the given routine and post-process
+        it. Defaults to ``lambda x: x``.
+    data_axis : int, optional
+        the Grid axis to put in the data values in. Has to be specified if the
+        subsequent routine calls return more than 1 data-point per k-point.
+    grid_unit : {'b', 'Ang', 'Bohr'}, optional
+        for 'b' the returned grid will be a cube, otherwise the grid will be the reciprocal lattice
+        vectors (for any other value) and in the given reciprocal unit ('Ang' => 1/Ang)
+
+    Examples
+    --------
+    >>> obj = MonkhorstPack(Hamiltonian, [10, 1, 10])
+    >>> grid = obj.asgrid().eigh(data_axis=1)
+    """
+    def __str__(self, message="grid"):
+        return super().__str__(message)
+
+    def dispatch(self, method, eta_key="grid"):
+        """ Dispatch the method by putting values on the grid """
+        pool = _pool_procs(self._attrs.get("pool", None))
+
+        @wraps(method)
+        def func(*args, wrap=None, eta=None, **kwargs):
+
+            data_axis = kwargs.pop("data_axis", None)
+            grid_unit = kwargs.pop("grid_unit", "b")
+
+            mp, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key=eta_key)
+            k = mp.k
+            w = mp.weight
+
+            # Extract information from the MP grid, these values
+            # define the Grid size, etc.
+            diag = mp._diag.copy()
+            if not np.all(mp._displ == 0):
+                raise SislError(f"{mp.__class__.__name__ } requires the displacement to be 0 for all k-points.")
+            displ = mp._displ.copy()
+            size = mp._size.copy()
+            steps = size / diag
+            if mp._centered:
+                offset = np.where(diag % 2 == 0, steps, steps / 2)
+            else:
+                offset = np.where(diag % 2 == 0, steps / 2, steps)
+
+            # Instead of doing
+            #    _in_primitive(k) + 0.5 - offset
+            # we can do it here
+            #    _in_primitive(k) + offset'
+            offset -= 0.5
+
+            # Check the TRS direction
+            trs_axis = mp._trs
+            _in_primitive = mp.in_primitive
+            _rint = np.rint
+            _int32 = np.int32
+            def k2idx(k):
+                # In case TRS is applied two indices may be returned
+                return _rint((_in_primitive(k) - offset) / steps).astype(_int32)
+                # To find the opposite k-point, do this
+                #  idx[i] = [diag[i] - idx[i] - 1, idx[i]
+                # with i in [0, 1, 2]
+
+            # Create cell from the reciprocal cell.
+            if grid_unit == 'b':
+                cell = np.diag(mp._size)
+            else:
+                cell = parent.sc.rcell * mp._size.reshape(1, -1) / units("Ang", grid_unit)
+
+            # Find the grid origin
+            origin = -(cell * 0.5).sum(0)
+
+            # Calculate first k-point (to get size and dtype)
+            v = wrap(method(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0])
+
+            if data_axis is None:
+                if v.size != 1:
+                    raise SislError(f"{self.__class__.__name__} {func.__name__} requires one value per-kpoint because of the 3D grid values")
+
+            else:
+
+                # Check the weights
+                weights = mp.grid(diag[data_axis], displ[data_axis], size[data_axis],
+                                    centered=mp._centered, trs=trs_axis == data_axis)[1]
+
+                # Correct the Grid size
+                diag[data_axis] = len(v)
+                # Create the orthogonal cell direction to ensure it is orthogonal
+                # Since array axis is cyclic for negative numbers, we simply do this
+                cell[data_axis, :] = cross(cell[data_axis-1, :], cell[data_axis-2, :])
+                # Check whether we should rotate it
+                if cart2spher(cell[data_axis, :])[2] > pi / 4:
+                    cell[data_axis, :] *= -1
+
+            # Correct cell for the grid
+            if trs_axis >= 0:
+                origin[trs_axis] = 0.
+                # Correct offset since we only have the positive halve
+                if mp._diag[trs_axis] % 2 == 0 and not mp._centered:
+                    offset[trs_axis] = steps[trs_axis] / 2
+                else:
+                    offset[trs_axis] = 0.
+
+                # Find number of points
+                if trs_axis != data_axis:
+                    diag[trs_axis] = len(mp.grid(diag[trs_axis], displ[trs_axis], size[trs_axis],
+                                                   centered=mp._centered, trs=True)[1])
+
+            # Create the grid in the reciprocal cell
+            sc = SuperCell(cell, origin=origin)
+            grid = Grid(diag, sc=sc, dtype=v.dtype)
+            if data_axis is None:
+                grid[k2idx(k[0])] = v
+            else:
+                idx = k2idx(k[0]).tolist()
+                weight = weights[idx[data_axis]]
+                idx[data_axis] = slice(None)
+                grid[tuple(idx)] = v * weight
+
+            del v
+
+            # Now perform calculation
+            eta.update()
+            if data_axis is None:
+                for i in range(1, len(k)):
+                    grid[k2idx(k[i])] = wrap(method(*args, k=k[i], **kwargs),
+                                             parent=parent, k=k[i], weight=w[i])
+                    eta.update()
+            else:
+                for i in range(1, len(k)):
+                    idx = k2idx(k[i]).tolist()
+                    weight = weights[idx[data_axis]]
+                    idx[data_axis] = slice(None)
+                    grid[tuple(idx)] = wrap(method(*args, k=k[i], **kwargs),
+                                            parent=parent, k=k[i], weight=w[i]) * weight
+                    eta.update()
+            eta.close()
+            return grid
+
+        return func
+
+
+# Register dispatched functions
+apply_dispatch = MonkhorstPack.apply
+apply_dispatch.register("grid", GridApply)
+
 del apply_dispatch

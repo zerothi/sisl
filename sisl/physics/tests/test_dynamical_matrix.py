@@ -114,12 +114,7 @@ class TestDynamicalMatrix:
         D.construct(setup.func)
         E = np.linspace(0, .5, 10)
         em = D.eigenmode()
-        assert np.allclose(D.DOS(E), D.PDOS(E).sum(0))
-        assert np.allclose(D.DOS(E), em.DOS(E))
-        assert np.allclose(D.PDOS(E), em.PDOS(E))
-        assert np.allclose(D.displacement(), em.displacement())
-        assert np.allclose(D.velocity(), em.velocity())
-        assert np.allclose(np.diagonal(D.velocity(matrix=True), axis1=1, axis2=2), em.velocity())
+        assert np.allclose(em.DOS(E), em.PDOS(E).sum(0))
 
     def test_pickle(self, setup):
         import pickle as p

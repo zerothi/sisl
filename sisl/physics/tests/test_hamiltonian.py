@@ -13,7 +13,7 @@ from sisl import Geometry, Atom, SuperCell, Hamiltonian, Spin, BandStructure, Mo
 from sisl import get_distribution
 from sisl import oplist
 from sisl import Grid, SphericalOrbital, SislError
-from sisl.physics.electron import berry_phase, spin_squared, conductivity, velocity, velocity_matrix
+from sisl.physics.electron import berry_phase, spin_squared, conductivity
 
 
 pytestmark = [pytest.mark.physics, pytest.mark.hamiltonian,
@@ -776,54 +776,6 @@ class TestHamiltonian:
         v = es.derivative(1)
         assert np.allclose(v1, v)
 
-    def test_velocity_equal_orthogonal(self, setup):
-        R, param = [0.1, 1.5], [1., 0.1]
-        g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
-        H = Hamiltonian(g)
-        H.construct((R, param))
-
-        k = [0.1] * 3
-        es = H.eigenstate(k)
-        v1 = es.copy().velocity(degenerate=None)
-        v2 = velocity(es.state, H.dHk(k), es.eig)
-        assert np.allclose(v1, v2)
-
-    def test_velocity_equal_non_orthogonal(self, setup):
-        R, param = [0.1, 1.5], [(1., 1.), (0.1, 0.1)]
-        g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
-        H = Hamiltonian(g, orthogonal=False)
-        H.construct((R, param))
-
-        k = [0.1] * 3
-        es = H.eigenstate(k)
-        v1 = es.copy().velocity(degenerate=None)
-        v2 = velocity(es.state, H.dHk(k), es.eig, H.dSk(k))
-        assert np.allclose(v1, v2)
-
-    def test_velocity_matrix_equal_orthogonal(self, setup):
-        R, param = [0.1, 1.5], [1., 0.1]
-        g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
-        H = Hamiltonian(g)
-        H.construct((R, param))
-
-        k = [0.1] * 3
-        es = H.eigenstate(k)
-        v1 = es.copy().velocity(matrix=True, degenerate=None)
-        v2 = velocity_matrix(es.state, H.dHk(k), es.eig)
-        assert np.allclose(v1, v2)
-
-    def test_velocity_matrix_equal_non_orthogonal(self, setup):
-        R, param = [0.1, 1.5], [(1., 1.), (0.1, 0.1)]
-        g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
-        H = Hamiltonian(g, orthogonal=False)
-        H.construct((R, param))
-
-        k = [0.1] * 3
-        es = H.eigenstate(k)
-        v1 = es.copy().velocity(matrix=True, degenerate=None)
-        v2 = velocity_matrix(es.state, H.dHk(k), es.eig, H.dSk(k))
-        assert np.allclose(v1, v2)
-
     def test_berry_phase(self, setup):
         R, param = [0.1, 1.5], [1., 0.1]
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
@@ -1100,7 +1052,6 @@ class TestHamiltonian:
             es = HS.eigenstate(k)
             DOS = es.DOS(E)
             assert DOS.dtype.kind == 'f'
-            assert np.allclose(DOS, HS.DOS(E, k))
             assert np.allclose(es.norm2(), 1)
             str(es)
 
@@ -1117,7 +1068,6 @@ class TestHamiltonian:
             assert PDOS.shape[1] == len(HS)
             assert PDOS.shape[2] == len(E)
             assert np.allclose(PDOS.sum(1), DOS)
-            assert np.allclose(PDOS, HS.PDOS(E, k, 'lorentzian'))
 
     def test_pdos2(self, setup):
         H = setup.H.copy()
@@ -1129,7 +1079,6 @@ class TestHamiltonian:
             PDOS = es.PDOS(E)
             assert PDOS.dtype.kind == 'f'
             assert np.allclose(PDOS.sum(1), DOS)
-            assert np.allclose(PDOS, H.PDOS(E, k))
 
     def test_pdos3(self, setup):
         # check whether the default S(Gamma) works
@@ -1431,10 +1380,7 @@ class TestHamiltonian:
         es_beta = H.eigenstate(k, spin=1)
 
         sup, sdn = spin_squared(es_alpha.state, es_beta.state)
-        sup1, sdn1 = H.spin_squared(k)
         assert sup.sum() == pytest.approx(sdn.sum())
-        assert np.all(sup1 == sup)
-        assert np.all(sdn1 == sdn)
         assert len(sup) == es_alpha.shape[0]
         assert len(sdn) == es_beta.shape[0]
 
@@ -1444,10 +1390,7 @@ class TestHamiltonian:
         assert len(sdn) == es_beta.shape[0]
 
         sup, sdn = spin_squared(es_alpha.sub(range(3)).state, es_beta.sub(range(2)).state)
-        sup1, sdn1 = H.spin_squared(k, 3, 2)
         assert sup.sum() == pytest.approx(sdn.sum())
-        assert np.all(sup1 == sup)
-        assert np.all(sdn1 == sdn)
         assert len(sup) == 3
         assert len(sdn) == 2
 
@@ -1963,8 +1906,8 @@ class TestHamiltonian:
             return oplist([DOS, PDOS, vel])
         bz_avg = bz.apply.average
         results = bz_avg.eigenstate(wrap=wrap)
-        assert np.allclose(bz_avg.DOS(E, distribution=dist), results[0])
-        assert np.allclose(bz_avg.PDOS(E, distribution=dist), results[1])
+        assert np.allclose(bz_avg.eigenstate(wrap=lambda es: es.DOS(E, distribution=dist)), results[0])
+        assert np.allclose(bz_avg.eigenstate(wrap=lambda es: es.PDOS(E, distribution=dist)), results[1])
 
     def test_edges1(self, setup):
         R, param = [0.1, 1.5], [1., 0.1]

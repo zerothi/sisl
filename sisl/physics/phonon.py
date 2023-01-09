@@ -13,8 +13,6 @@ DOS, PDOS, group-velocities and real-space displacements.
 
    DOS
    PDOS
-   velocity
-   displacement
 
 
 Supporting classes
@@ -33,8 +31,7 @@ using automatic arguments.
 """
 
 import numpy as np
-from numpy import conj, dot, fabs, exp, einsum
-from numpy import delete
+from numpy import fabs, delete
 
 from sisl._internal import set_module
 from sisl.messages import deprecate_method
@@ -48,7 +45,7 @@ from .electron import DOS as electron_DOS
 from .electron import PDOS as electron_PDOS
 
 
-__all__ = ['DOS', 'PDOS', 'velocity', 'displacement']
+__all__ = ['DOS', 'PDOS']
 __all__ += ['CoefficientPhonon', 'ModePhonon', 'ModeCPhonon']
 __all__ += ['EigenvaluePhonon', 'EigenvectorPhonon', 'EigenmodePhonon']
 
@@ -130,155 +127,12 @@ def PDOS(E, mode, hw, distribution='gaussian'):
     return electron_PDOS(E, hw, mode, distribution=distribution)[0]
 
 
-@set_module("sisl.physics.phonon")
-@deprecate_method("use DynamicalMatrix.eigenmode(...).velocity() instead", "0.13.0")
-def velocity(mode, hw, dDk, degenerate=None, degenerate_dir=(1, 1, 1), project=False):
-    r""" Calculate the velocity of a set of modes
-
-    These are calculated using the analytic expression (:math:`\alpha` corresponding to the Cartesian directions):
-
-    .. math::
-
-       \mathbf{v}^\alpha_{i} = \frac1{2\hbar\omega} \langle \epsilon_i |
-                \frac{\partial}{\partial\mathbf k}_\alpha \mathbf D(\mathbf k) | \epsilon_i \rangle
-
-    Parameters
-    ----------
-    mode : array_like
-       vectors describing the phonon modes, 2nd dimension contains the modes. In case of degenerate
-       modes the vectors *may* be rotated upon return.
-    hw : array_like
-       frequencies of the modes, for any negative frequency the velocity will be set to 0.
-    dDk : list of array_like
-       Dynamical matrix derivative with respect to :math:`\mathbf k`. This needs to be a tuple or
-       list of the dynamical matrix derivative along the 3 Cartesian directions.
-    degenerate : list of array_like, optional
-       a list containing the indices of degenerate modes. In that case a prior diagonalization
-       is required to decouple them. This is done 3 times along each of the Cartesian directions.
-    degenerate_dir : (3,), optional
-       a direction used for degenerate decoupling. The decoupling based on the velocity along this direction
-    project : bool, optional
-       if true, velocities will be returned projected per mode component
-
-    See Also
-    --------
-    DynamicalMatrix.dDk : function for generating the dynamical matrix derivatives (`dDk` argument)
-
-    Returns
-    -------
-    numpy.ndarray
-        if `project` is false; velocities per mode with final dimension ``(3, mode.shape[0])``, the velocity unit is Ang/ps
-        Units *may* change in future releases.
-    numpy.ndarray
-        if `project` is true; velocities per mode with final dimension ``(3, mode.shape[0], mode.shape[1])``, the velocity unit is Ang/ps
-        Units *may* change in future releases.
-    """
-    if mode.ndim == 1:
-        return velocity(mode.reshape(1, -1), hw, dDk, degenerate, degenerate_dir, project)[0]
-    return _velocity(mode, hw, dDk, degenerate, degenerate_dir, project)
-
-
 # dDk is in [Ang * eV ** 2]
 # velocity units in Ang/ps
 _velocity_const = 1 / constant.hbar('eV ps')
 
 
-def _velocity(mode, hw, dDk, degenerate, degenerate_dir, project):
-    r""" For modes in an orthogonal basis """
-    # Decouple the degenerate modes
-    if not degenerate is None:
-        degenerate_dir = _a.asarrayd(degenerate_dir)
-        degenerate_dir /= (degenerate_dir ** 2).sum() ** 0.5
-        deg_dDk = sum(d*dd for d, dd in zip(degenerate_dir, dDk))
-        for deg in degenerate:
-            # Set the average frequency
-            hw[deg] = np.average(hw[deg])
-
-            # Now diagonalize to find the contributions from individual modes
-            # then re-construct the seperated degenerate modes
-            # Since we do this for all directions we should decouple them all
-            mode[deg] = degenerate_decouple(mode[deg], deg_dDk)
-        del deg_dDk
-
-    cm = conj(mode)
-    if project:
-        v = np.empty([3, mode.shape[0], mode.shape[1]], dtype=dtype_complex_to_real(mode.dtype))
-        v[0] = (cm * dDk[0].dot(mode.T).T).real
-        v[1] = (cm * dDk[1].dot(mode.T).T).real
-        v[2] = (cm * dDk[2].dot(mode.T).T).real
-
-    else:
-        v = np.empty([3, mode.shape[0]], dtype=dtype_complex_to_real(mode.dtype))
-        v[0] = einsum('ij,ji->i', cm, dDk[0].dot(mode.T)).real
-        v[1] = einsum('ij,ji->i', cm, dDk[1].dot(mode.T)).real
-        v[2] = einsum('ij,ji->i', cm, dDk[2].dot(mode.T)).real
-
-    # Set everything to zero for the negative frequencies
-    v[:, hw < 0] = 0
-
-    if project:
-        v *= _velocity_const / (2 * hw.reshape(1, -1, 1))
-    else:
-        v *= _velocity_const / (2 * hw.reshape(1, -1))
-    return v
-
-
-@set_module("sisl.physics.phonon")
-def displacement(mode, hw, mass):
-    r""" Calculate real-space displacements for a given mode (in units of the characteristic length)
-
-    The displacements per mode may be written as:
-
-    .. math::
-
-       \mathbf{u}_{i\alpha} = \epsilon_{i\alpha}\sqrt{\frac{\hbar}{m_i \omega}}
-
-    where :math:`i` is the atomic index.
-
-    Even for negative frequencies the characteristic length is calculated for use of non-equilibrium
-    modes.
-
-    Parameters
-    ----------
-    mode : array_like
-       vectors describing the phonon modes, 2nd dimension contains the modes. In case of degenerate
-       modes the vectors *may* be rotated upon return.
-    hw : array_like
-       frequencies of the modes, for any negative frequency the returned displacement will be 0.
-    mass : array_like
-       masses for the atoms (has to have length ``mode.shape[1] // 3``
-
-    Returns
-    -------
-    numpy.ndarray
-        displacements per mode with final dimension ``(3, mode.shape[0])``, displacements are in Ang
-    """
-    if mode.ndim == 1:
-        return displacement(mode.reshape(1, -1), hw, mass)[0]
-
-    return _displacement(mode, hw, mass)
-
-
 _displacement_const = (2 * units('Ry', 'eV') * (constant.m_e / constant.m_p)) ** 0.5 * units('Bohr', 'Ang')
-
-
-def _displacement(mode, hw, mass):
-    """ Real space displacements """
-    idx = (hw == 0).nonzero()[0]
-    U = mode.copy()
-    U[idx, :] = 0.
-
-    # Now create the remaining displacements
-    idx = delete(_a.arangei(mode.shape[0]), idx)
-
-    # Generate displacement factor
-    factor = _displacement_const / fabs(hw[idx]).reshape(-1, 1) ** 0.5
-
-    U.shape = (mode.shape[0], -1, 3)
-    U[idx] = (mode[idx, :] * factor).reshape(len(idx), -1, 3) / mass.reshape(1, -1, 1) ** 0.5
-    U = np.swapaxes(U, 0, 2)
-
-    return U
 
 
 @set_module("sisl.physics.phonon")
@@ -332,7 +186,7 @@ class ModeCPhonon(StateC):
         """
         d = self.derivative(1, *args, **kwargs)
         axes = tuple(i for i in range(0, d.ndim, 2))
-        c = np.expand_dims(self.c, axis=axes) * 2 / _velocity_const
+        c = np.expand_dims(self.c, axis=axes) * (2 / _velocity_const)
         return np.divide(d, c, where=(c != 0))
 
 
@@ -434,14 +288,46 @@ class EigenmodePhonon(ModeCPhonon):
         return PDOS(E, self.mode, self.hw, distribution)
 
     def displacement(self):
-        r""" Calculate displacements for the modes
+        r""" Calculate real-space displacements for a given mode (in units of the characteristic length)
 
-        This routine calls `~sisl.physics.phonon.displacements` with appropriate arguments
-        and returns the real space displacements for the modes.
+        The displacements per mode may be written as:
 
-        Note that the coefficients associated with the `ModeCPhonon` *must* correspond
-        to the frequencies of the modes.
+        .. math::
 
-        See `~sisl.physics.phonon.displacement` for details.
+            \mathbf{u}_{i\alpha} = \epsilon_{i\alpha}\sqrt{\frac{\hbar}{m_i \omega}}
+
+        where :math:`i` is the atomic index.
+
+        Even for negative frequencies the characteristic length is calculated for use of non-equilibrium
+        modes.
+
+        Parameters
+        ----------
+        mode : array_like
+            vectors describing the phonon modes, 2nd dimension contains the modes. In case of degenerate
+            modes the vectors *may* be rotated upon return.
+        hw : array_like
+            frequencies of the modes, for any negative frequency the returned displacement will be 0.
+        mass : array_like
+            masses for the atoms (has to have length ``mode.shape[1] // 3``
+
+        Returns
+        -------
+        numpy.ndarray
+            displacements per mode with final dimension ``(3, mode.shape[0])``, displacements are in Ang
         """
-        return displacement(self.mode, self.hw, self.parent.mass)
+        idx = (self.c == 0).nonzero()[0]
+        mode = self.mode
+        U = mode.copy()
+        U[idx, :] = 0.
+
+        # Now create the remaining displacements
+        idx = delete(_a.arangei(U.shape[0]), idx)
+
+        # Generate displacement factor
+        factor = _displacement_const / fabs(self.c[idx]).reshape(-1, 1) ** 0.5
+
+        U.shape = (U.shape[0], -1, 3)
+        U[idx] = (mode[idx, :] * factor).reshape(len(idx), -1, 3) / self.parent.mass.reshape(1, -1, 1) ** 0.5
+        U = np.swapaxes(U, 0, 2)
+        return U
