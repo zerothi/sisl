@@ -1793,7 +1793,6 @@ class fdfSileSiesta(SileSiesta):
             orbs = []
             # we just use a non-physical number to signal it didn't get added
             # in siesta it can automatically determine this, we can't... (yet!)
-            n = 0
             for _ in range(int(nl)):
                 # we have 2 or 3 lines
                 nl_line = blockline()
@@ -1811,6 +1810,7 @@ class fdfSileSiesta(SileSiesta):
                 nl_line = nl_line.replace("n=", "").split()
 
                 # first 3|2: are n?, l, Nzeta
+                n = None # use default n defined in AtomitOrbital
                 first = int(nl_line.pop(0))
                 second = int(nl_line.pop(0))
                 try:
