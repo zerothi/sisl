@@ -1976,7 +1976,7 @@ class fdfSileSiesta(SileSiesta):
         if f.is_file():
             if "geometry" not in kwargs:
                 # to ensure we get the correct orbital count
-                kwargs["geometry"] = self.read_geometry(True, order=["nc", "TSHS"])
+                kwargs["geometry"] = self.read_geometry(True, order=["nc", "TSHS", "fdf"])
             EDM = tsdeSileSiesta(f).read_energy_density_matrix(*args, **kwargs)
             self._r_add_overlap("_r_energy_density_matrix_tsde", EDM)
         return EDM
