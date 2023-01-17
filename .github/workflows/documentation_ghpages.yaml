@@ -18,7 +18,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 1
           submodules: false
       - name: Print the latest commit
         run: echo ${{ github.sha }}

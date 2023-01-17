@@ -13,7 +13,7 @@
 requires = [
     "wheel",
     "setuptools>=46.0, <=59.2",
-    "setuptools_scm>=6.2",
+    "setuptools_scm[toml]>=6.2",
     "Cython>=0.28",
     # see https://github.com/scipy/oldest-supported-numpy/
     # should fix #310

@@ -58,8 +58,6 @@ jobs:
         submodules: true
         # the 'files' submodule uses lfs
         lfs: true
-        # we only need the latest commit
-        fetch-depth: 1
 
     - name: Print-out commit information
       run: |
