@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.electron.StateCElectron &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.physics.electron.StateCElectron &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -39,7 +39,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -84,8 +84,6 @@
 <li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.DOS.html">DOS</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.PDOS.html">PDOS</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.COP.html">COP</a></li>
-<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.velocity.html">velocity</a></li>
-<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.velocity_matrix.html">velocity_matrix</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.berry_phase.html">berry_phase</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.berry_curvature.html">berry_curvature</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.conductivity.html">conductivity</a></li>
@@ -437,7 +435,7 @@ to the energies of the states.</p>
 <dd class="field-even"><p>a list of indices</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a> of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a> of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -449,15 +447,15 @@ to the energies of the states.</p>
 <p>These are calculated using the analytic expression (<span class="math notranslate nohighlight">\(\alpha\)</span> corresponding to the Cartesian directions),
 here only shown for the 1st order derivative:</p>
 <div class="math notranslate nohighlight">
-\[\mathbf{d}_{ij\alpha} = \langle \psi_j |
+\[\mathbf{d}_{\alpha ij} = \langle \psi_j |
          \frac{\partial}{\partial\mathbf k_\alpha} \mathbf H(\mathbf k) | \psi_i \rangle\]</div>
 <p>In case of non-orthogonal basis the equations substitutes <span class="math notranslate nohighlight">\(\mathbf H(\mathbf k)\)</span> by
 <span class="math notranslate nohighlight">\(\mathbf H(\mathbf k) - \epsilon_i\mathbf S(\mathbf k)\)</span>.</p>
 <p>The 2nd order derivatives are calculated with the Berry curvature correction:</p>
 <div class="math notranslate nohighlight">
-\[\mathbf d^2_{ij\alpha\beta} = \langle\psi_j|
+\[\mathbf d^2_{\alpha \beta ij} = \langle\psi_j|
     \frac{\partial^2}{\partial\mathbf k_\alpha\partial\mathbf k_\beta} \mathbf H(\mathbf k) | \psi_i\rangle
-    - \frac12\frac{\mathbf{d}_{ij\alpha}\mathbf{d}_{ij\beta}}
+    - \frac12\frac{\mathbf{d}_{\alpha ij}\mathbf{d}_{\beta ij}}
           {\epsilon_j - \epsilon_i}\]</div>
 <p class="rubric">Notes</p>
 <p>When requesting 2nd derivatives it will not be advisable to use a <a class="reference internal" href="#sisl.physics.electron.StateCElectron.sub" title="sisl.physics.electron.StateCElectron.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub</span></code></a> before
@@ -491,10 +489,12 @@ is required to decouple them. See <em class="xref py py-obj">degenerate_dir</em>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><ul class="simple">
-<li><p><em>dv, ddv</em> – if <em class="xref py py-obj">matrix</em> is false, they are per state with shape <code class="docutils literal notranslate"><span class="pre">(state.shape[0],</span> <span class="pre">*)</span></code>, ddv is only
-returned if <code class="docutils literal notranslate"><span class="pre">order&gt;=2</span></code></p></li>
-<li><p><em>dv, ddv</em> – if <em class="xref py py-obj">matrix</em> is true, they are per state with shape <code class="docutils literal notranslate"><span class="pre">(state.shape[0],</span> <span class="pre">state.shape[0],</span> <span class="pre">*)</span></code>, ddv is only
-returned if <code class="docutils literal notranslate"><span class="pre">order&gt;=2</span></code></p></li>
+<li><p><em>dv</em> – the 1st derivative, has shape <code class="docutils literal notranslate"><span class="pre">(3,</span> <span class="pre">state.shape[0])</span></code> for <code class="docutils literal notranslate"><span class="pre">matrix=False</span></code>, else
+has shape <code class="docutils literal notranslate"><span class="pre">(3,</span> <span class="pre">state.shape[0],</span> <span class="pre">state.shape[0])</span></code>
+Also returned for <code class="docutils literal notranslate"><span class="pre">order</span> <span class="pre">&gt;=</span> <span class="pre">2</span></code> since it is used in the higher order derivatives</p></li>
+<li><p><em>ddv</em> – the 2nd derivative, has shape <code class="docutils literal notranslate"><span class="pre">(6,</span> <span class="pre">state.shape[0])</span></code> for <code class="docutils literal notranslate"><span class="pre">matrix=False</span></code>, else
+has shape <code class="docutils literal notranslate"><span class="pre">(6,</span> <span class="pre">state.shape[0],</span> <span class="pre">state.shape[0])</span></code>, the first dimension is in the Voigt representation
+Only returned for <code class="docutils literal notranslate"><span class="pre">order</span> <span class="pre">&gt;=</span> <span class="pre">2</span></code></p></li>
 </ul>
 </p>
 </dd>
@@ -570,7 +570,7 @@ product with itself. The object itself will always be the bra <span class="math 
 <dd class="field-even"><p>a matrix with the sum of inner state products</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -594,7 +594,7 @@ states:</p>
      \\
      const. &amp; \text{localized state}
     \end{aligned}
-\end{align}</div><p>For further details see <a class="footnote-reference brackets" href="#id2" id="id1">1</a>. Note that for eigen states the IPR reduces to:</p>
+\end{align}</div><p>For further details see <a href="#id5"><span class="problematic" id="id1">[1]_</span></a>. Note that for eigen states the IPR reduces to:</p>
 <div class="math notranslate nohighlight">
 \[I_{q,i} = \sum_\nu |\psi_{i\nu}|^{2q}\]</div>
 <p>since the denominator is <span class="math notranslate nohighlight">\(1^{q} = 1\)</span>.</p>
@@ -605,7 +605,7 @@ states:</p>
 </dl>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
-<dt class="label" id="id2"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dt class="label" id="id2"><span class="brackets">1</span></dt>
 <dd><p><a class="reference external" href="https://doi.org/10.1103/PhysRevB.83.184206">N. C. Murphy *et.al.*, “Generalized inverse participation ratio as a possible measure of localization for interacting systems”, PRB **83**, 184206 (2011)</a></p>
 </dd>
 </dl>
@@ -638,7 +638,7 @@ Otherwise an equivalent object is yielded.</p>
 <dd class="field-odd"><p>the Euclidean norm for each state</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">numpy.ndarray</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -658,7 +658,7 @@ per basis element will be returned.</p>
 <dd class="field-even"><p>the squared norm for each state</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -705,7 +705,7 @@ product with itself. The object itself will always be the bra <span class="math 
 <dd class="field-odd"><p>a matrix with the sum of outer state products</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">numpy.ndarray</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -883,7 +883,19 @@ to the energies of the states.</p>
 <p class="rubric">Notes</p>
 <p>The states and energies for the states <em>may</em> have changed after calling this routine.
 This is because of the velocity un-folding for degenerate modes. I.e. calling
-<em class="xref py py-obj">displacement</em> and/or <a class="reference internal" href="sisl.physics.electron.PDOS.html#sisl.physics.electron.PDOS" title="sisl.physics.electron.PDOS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PDOS</span></code></a> after this method <em>may</em> change the result.</p>
+<a class="reference internal" href="sisl.physics.electron.PDOS.html#sisl.physics.electron.PDOS" title="sisl.physics.electron.PDOS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PDOS</span></code></a> after this method <em>may</em> change the result.</p>
+<p class="rubric">Notes</p>
+<p>The velocities are calculated without the Berry curvature contribution see Eq. (2) in <a href="#id6"><span class="problematic" id="id3">[1]_</span></a>.
+The missing contribution may be added in later editions, for completeness sake, it is:</p>
+<div class="math notranslate nohighlight">
+\[\delta \mathbf v = - \mathbf k\times \Omega_i(\mathbf k)\]</div>
+<p>where <span class="math notranslate nohighlight">\(\Omega_i\)</span> is the Berry curvature for state <span class="math notranslate nohighlight">\(i\)</span>.</p>
+<p class="rubric">References</p>
+<dl class="footnote brackets">
+<dt class="label" id="id4"><span class="brackets">1</span></dt>
+<dd><p><a class="reference external" href="https://doi.org/10.1103/PhysRevB.74.195118">X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, “Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation”, PRB **74**, 195118 (2006)</a></p>
+</dd>
+</dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
@@ -916,7 +928,7 @@ in this method are automatically passed from this object.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

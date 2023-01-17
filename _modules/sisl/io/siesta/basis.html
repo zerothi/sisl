@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.basis &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.io.siesta.basis &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -118,14 +118,14 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">ionxmlSileSiesta</span><span class="p">(</span><span class="n">SileSiesta</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Basis set information in xml format</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Basis set information in xml format</span>
 
 <span class="sd">    Note that the ``ion`` files are equivalent to the ``ion.xml`` files.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="ionxmlSileSiesta.read_basis"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ionxmlSileSiesta.html#sisl.io.siesta.ionxmlSileSiesta.read_basis">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">read_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns data associated with the ion.xml file &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns data associated with the ion.xml file &quot;&quot;&quot;</span>
         <span class="c1"># Get the element-tree</span>
         <span class="n">root</span> <span class="o">=</span> <span class="n">xml_parse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="p">)</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span>
 
@@ -186,13 +186,13 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">ionncSileSiesta</span><span class="p">(</span><span class="n">SileCDFSiesta</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Basis set information in NetCDF files</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Basis set information in NetCDF files</span>
 
 <span class="sd">    Note that the ``ion.nc`` files are equivalent to the ``ion.xml`` files.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="ionncSileSiesta.read_basis"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ionncSileSiesta.html#sisl.io.siesta.ionncSileSiesta.read_basis">[docs]</a>    <span class="k">def</span> <span class="nf">read_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns data associated with the ion.xml file &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns data associated with the ion.xml file &quot;&quot;&quot;</span>
         <span class="n">no</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dimension</span><span class="p">(</span><span class="s2">&quot;norbs&quot;</span><span class="p">))</span>
 
         <span class="c1"># Get number of orbitals</span>
@@ -247,7 +247,7 @@
 
     <span class="nd">@default_ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Extracting basis-set information.&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">ArgumentParser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns the arguments that is available for this Sile &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the arguments that is available for this Sile &quot;&quot;&quot;</span>
         <span class="c1">#limit_args = kwargs.get(&quot;limit_arguments&quot;, True)</span>
         <span class="n">short</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;short&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
@@ -430,7 +430,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

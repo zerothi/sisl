@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.bands &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.io.siesta.bands &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -114,17 +114,17 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">bandsSileSiesta</span><span class="p">(</span><span class="n">SileSiesta</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Bandstructure information &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Bandstructure information &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="bandsSileSiesta.read_fermi_level"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.bandsSileSiesta.html#sisl.io.siesta.bandsSileSiesta.read_fermi_level">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">read_fermi_level</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns the Fermi level in the bands file &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the Fermi level in the bands file &quot;&quot;&quot;</span>
         <span class="c1"># Luckily the data is in eV</span>
         <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="bandsSileSiesta.read_data"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.bandsSileSiesta.html#sisl.io.siesta.bandsSileSiesta.read_data">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">as_dataarray</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns data associated with the bands file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns data associated with the bands file</span>
 
 <span class="sd">        The energy levels are shifted with respect to the Fermi-level.</span>
 
@@ -202,7 +202,7 @@
 
     <span class="nd">@default_ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Manipulate bands file in sisl.&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">ArgumentParser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns the arguments that is available for this Sile &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the arguments that is available for this Sile &quot;&quot;&quot;</span>
         <span class="c1">#limit_args = kwargs.get(&quot;limit_arguments&quot;, True)</span>
         <span class="n">short</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;short&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
@@ -289,7 +289,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

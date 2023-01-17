@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.MonkhorstPack &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.physics.MonkhorstPack &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -39,7 +39,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -190,108 +190,59 @@ are normalized to the entire BZ.</p></li>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.asarray" title="sisl.physics.MonkhorstPack.asarray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asarray</span></code></a>()</p></td>
-<td><p>Return <em class="xref py py-obj">self</em> with <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> returned quantities</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.asaverage" title="sisl.physics.MonkhorstPack.asaverage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asaverage</span></code></a>()</p></td>
-<td><p>Return <em class="xref py py-obj">self</em> with k-averaged quantities</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.asdataarray" title="sisl.physics.MonkhorstPack.asdataarray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asdataarray</span></code></a>()</p></td>
-<td><p>Return <em class="xref py py-obj">self</em> with <a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2022.11.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a> returned quantities</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.asgrid" title="sisl.physics.MonkhorstPack.asgrid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asgrid</span></code></a>()</p></td>
-<td><p>Return <em class="xref py py-obj">self</em> with Grid quantities</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.aslist" title="sisl.physics.MonkhorstPack.aslist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">aslist</span></code></a>()</p></td>
-<td><p>Return <em class="xref py py-obj">self</em> with <em class="xref py py-obj">list</em> returned quantities</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.asnone" title="sisl.physics.MonkhorstPack.asnone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asnone</span></code></a>()</p></td>
-<td><p>Return <em class="xref py py-obj">self</em> with None, this may be done for instance when wrapping the function calls.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.assum" title="sisl.physics.MonkhorstPack.assum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">assum</span></code></a>()</p></td>
-<td><p>Return <em class="xref py py-obj">self</em> with summed quantities</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.asyield" title="sisl.physics.MonkhorstPack.asyield"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asyield</span></code></a>()</p></td>
-<td><p>Return <em class="xref py py-obj">self</em> with yielded quantities</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.call" title="sisl.physics.MonkhorstPack.call"><code class="xref py py-obj docutils literal notranslate"><span class="pre">call</span></code></a>(func, *args, **kwargs)</p></td>
-<td><p>Call the function <em class="xref py py-obj">func</em> and run as though the function has been called</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.copy" title="sisl.physics.MonkhorstPack.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>([parent])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.copy" title="sisl.physics.MonkhorstPack.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>([parent])</p></td>
 <td><p>Create a copy of this object, optionally changing the parent</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.grid" title="sisl.physics.MonkhorstPack.grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">grid</span></code></a>(n[, displ, size, centered, trs])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.grid" title="sisl.physics.MonkhorstPack.grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">grid</span></code></a>(n[, displ, size, centered, trs])</p></td>
 <td><p>Create a grid of <em class="xref py py-obj">n</em> points with an offset of <em class="xref py py-obj">displ</em> and sampling <em class="xref py py-obj">size</em> around <em class="xref py py-obj">displ</em></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.in_primitive" title="sisl.physics.MonkhorstPack.in_primitive"><code class="xref py py-obj docutils literal notranslate"><span class="pre">in_primitive</span></code></a>(k)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.in_primitive" title="sisl.physics.MonkhorstPack.in_primitive"><code class="xref py py-obj docutils literal notranslate"><span class="pre">in_primitive</span></code></a>(k)</p></td>
 <td><p>Move the k-point into the primitive point(s) ]-0.5 ; 0.5]</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.iter" title="sisl.physics.MonkhorstPack.iter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter</span></code></a>([ret_weight])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.iter" title="sisl.physics.MonkhorstPack.iter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter</span></code></a>([ret_weight])</p></td>
 <td><p>An iterator for the k-points and (possibly) the weights</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.param_circle" title="sisl.physics.MonkhorstPack.param_circle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">param_circle</span></code></a>(parent, N_or_dk, kR, normal, origin)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.param_circle" title="sisl.physics.MonkhorstPack.param_circle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">param_circle</span></code></a>(parent, N_or_dk, kR, normal, origin)</p></td>
 <td><p>Create a parameterized k-point list where the k-points are generated on a circle around an origin</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.parametrize" title="sisl.physics.MonkhorstPack.parametrize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parametrize</span></code></a>(parent, func, N, *args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.parametrize" title="sisl.physics.MonkhorstPack.parametrize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parametrize</span></code></a>(parent, func, N, *args, **kwargs)</p></td>
 <td><p>Generate a new <a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BrillouinZone</span></code></a> object with k-points parameterized via the function <em class="xref py py-obj">func</em> in <em class="xref py py-obj">N</em> separations</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.replace" title="sisl.physics.MonkhorstPack.replace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">replace</span></code></a>(k, mp[, displacement, as_index, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.replace" title="sisl.physics.MonkhorstPack.replace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">replace</span></code></a>(k, mp[, displacement, as_index, ...])</p></td>
 <td><p>Replace a k-point with a new set of k-points from a Monkhorst-Pack grid</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.set_parent" title="sisl.physics.MonkhorstPack.set_parent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_parent</span></code></a>(parent)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.set_parent" title="sisl.physics.MonkhorstPack.set_parent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_parent</span></code></a>(parent)</p></td>
 <td><p>Update the parent associated to this object</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.tocartesian" title="sisl.physics.MonkhorstPack.tocartesian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tocartesian</span></code></a>(k)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.tocartesian" title="sisl.physics.MonkhorstPack.tocartesian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tocartesian</span></code></a>(k)</p></td>
 <td><p>Transfer a k-point in reduced coordinates to the Cartesian coordinates</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.toreduced" title="sisl.physics.MonkhorstPack.toreduced"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toreduced</span></code></a>(k)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.toreduced" title="sisl.physics.MonkhorstPack.toreduced"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toreduced</span></code></a>(k)</p></td>
 <td><p>Transfer a k-point in Cartesian coordinates to the reduced coordinates</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.volume" title="sisl.physics.MonkhorstPack.volume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">volume</span></code></a>([ret_dim, periodic])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.volume" title="sisl.physics.MonkhorstPack.volume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">volume</span></code></a>([ret_dim, periodic])</p></td>
 <td><p>Calculate the volume of the full Brillouin zone of the parent</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.write" title="sisl.physics.MonkhorstPack.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(sile, *args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.write" title="sisl.physics.MonkhorstPack.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(sile, *args, **kwargs)</p></td>
 <td><p>Writes k-points to a <a class="reference internal" href="../io/generated/sisl.io.tableSile.html#sisl.io.tableSile" title="sisl.io.tableSile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tableSile</span></code></a>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.apply" title="sisl.physics.MonkhorstPack.apply"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.apply" title="sisl.physics.MonkhorstPack.apply"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply</span></code></a></p></td>
 <td><p>Loop over all k-points by applying <em class="xref py py-obj">parent</em> methods for all k.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.cell" title="sisl.physics.MonkhorstPack.cell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cell</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.cell" title="sisl.physics.MonkhorstPack.cell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cell</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.k" title="sisl.physics.MonkhorstPack.k"><code class="xref py py-obj docutils literal notranslate"><span class="pre">k</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.k" title="sisl.physics.MonkhorstPack.k"><code class="xref py py-obj docutils literal notranslate"><span class="pre">k</span></code></a></p></td>
 <td><p>A list of all k-points (if available)</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.rcell" title="sisl.physics.MonkhorstPack.rcell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rcell</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.rcell" title="sisl.physics.MonkhorstPack.rcell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rcell</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.weight" title="sisl.physics.MonkhorstPack.weight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">weight</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.weight" title="sisl.physics.MonkhorstPack.weight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">weight</span></code></a></p></td>
 <td><p>Weight of the k-points in the <a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BrillouinZone</span></code></a> object</p></td>
 </tr>
 </tbody>
 </table>
-<dl class="py method">
-<dt class="sig sig-object py" id="sisl.physics.MonkhorstPack.__call__">
-<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.MonkhorstPack.__call__" title="Permalink to this definition"></a></dt>
-<dd><p>Calls the given attribute of the internal object and returns the quantity</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>*args</strong> (<em>optional</em>) – arguments passed to the attribute call, note that an argument <em class="xref py py-obj">k=k</em> will be
-added by this routine as a way to loop the k-points.</p></li>
-<li><p><strong>**kwargs</strong> (<em>optional</em>) – keyword arguments passed to the attribute call, note that the first argument
-will <em>always</em> be <a class="reference internal" href="#sisl.physics.MonkhorstPack.k" title="sisl.physics.MonkhorstPack.k"><code class="xref py py-obj docutils literal notranslate"><span class="pre">k</span></code></a></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>whatever <code class="docutils literal notranslate"><span class="pre">getattr(self,</span> <span class="pre">attr)(k,</span> <span class="pre">*args,</span> <span class="pre">**kwargs)</span></code> returns</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>*</p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.MonkhorstPack.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nkpt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">displacement</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centered</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/brillouinzone.html#MonkhorstPack.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.MonkhorstPack.__init__" title="Permalink to this definition"></a></dt>
@@ -321,385 +272,9 @@ and passing <a class="reference internal" href="#sisl.physics.MonkhorstPack.k" t
 <li><p><em class="xref py py-obj">apply.none</em>, specialized method that is mainly useful when wrapping methods</p></li>
 <li><p><em class="xref py py-obj">apply.list</em> same as <em class="xref py py-obj">apply.array</em> but using Python list as return value</p></li>
 <li><p><em class="xref py py-obj">apply.oplist</em> using <a class="reference internal" href="sisl.oplist.oplist.html#sisl.oplist.oplist" title="sisl.oplist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.oplist</span></code></a> allows greater flexibility for mathematical operations element wise</p></li>
-<li><p><em class="xref py py-obj">apply.datarray</em> if <a class="reference external" href="https://docs.xarray.dev/en/stable/index.html#module-xarray" title="(in xarray v2022.11.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray</span></code></a> is available one can retrieve an <a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2022.11.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a> instance</p></li>
+<li><p><em class="xref py py-obj">apply.datarray</em> if <a class="reference external" href="https://docs.xarray.dev/en/stable/index.html#module-xarray" title="(in xarray v2022.12.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray</span></code></a> is available one can retrieve an <a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2022.12.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a> instance</p></li>
 </ul>
 <p>Please see <a class="reference internal" href="../physics.brillouinzone.html#physics-brillouinzone"><span class="std std-ref">Brillouin zone</span></a> for further examples.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="sisl.physics.MonkhorstPack.asarray">
-<span class="sig-name descname"><span class="pre">asarray</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.MonkhorstPack.asarray" title="Permalink to this definition"></a></dt>
-<dd><p>Return <em class="xref py py-obj">self</em> with <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> returned quantities</p>
-<p>This forces the <a class="reference internal" href="#sisl.physics.MonkhorstPack.__call__" title="sisl.physics.MonkhorstPack.__call__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code></a> routine to return a single array.</p>
-<p class="rubric">Notes</p>
-<p>This method will be deprecated &gt;0.9.9.
-Please use <code class="docutils literal notranslate"><span class="pre">self.apply.array</span></code> instead.</p>
-<p>All invocations of sub-methods are added these keyword-only arguments:</p>
-<dl class="simple">
-<dt>eta<span class="classifier">bool, optional</span></dt><dd><p>if true a progress-bar is created, default false.</p>
-</dd>
-<dt>wrap<span class="classifier">callable, optional</span></dt><dd><p>a function that accepts the output of the given routine and post-process
-it. Defaults to <code class="docutils literal notranslate"><span class="pre">lambda</span> <span class="pre">x:</span> <span class="pre">x</span></code>.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span> <span class="o">=</span> <span class="n">BrillouinZone</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">asarray</span><span class="p">()</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">eta</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>To compute multiple things in one go one should use wrappers to contain
-the calculation</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dist</span> <span class="o">=</span> <span class="n">get_distribution</span><span class="p">(</span><span class="s1">&#39;gaussian&#39;</span><span class="p">,</span> <span class="n">smearing</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="n">es</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">weight</span><span class="p">):</span>
-<span class="gp">... </span>   <span class="n">DOS</span> <span class="o">=</span> <span class="n">es</span><span class="o">.</span><span class="n">DOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="n">dist</span><span class="p">)</span>
-<span class="gp">... </span>   <span class="n">PDOS</span> <span class="o">=</span> <span class="n">es</span><span class="o">.</span><span class="n">PDOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="n">dist</span><span class="p">)</span>
-<span class="gp">... </span>   <span class="n">occ</span> <span class="o">=</span> <span class="n">es</span><span class="o">.</span><span class="n">occupation</span><span class="p">()</span>
-<span class="gp">... </span>   <span class="n">spin_moment</span> <span class="o">=</span> <span class="p">(</span><span class="n">es</span><span class="o">.</span><span class="n">spin_moment</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="n">dist</span><span class="p">)</span> <span class="o">*</span> <span class="n">occ</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="gp">... </span>   <span class="k">return</span> <span class="n">oplist</span><span class="p">([</span><span class="n">DOS</span><span class="p">,</span> <span class="n">PDOS</span><span class="p">,</span> <span class="n">spin_moment</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">bz</span> <span class="o">=</span> <span class="n">BrillouinZone</span><span class="p">(</span><span class="n">hamiltonian</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">DOS</span><span class="p">,</span> <span class="n">PDOS</span><span class="p">,</span> <span class="n">spin_moment</span> <span class="o">=</span> <span class="n">bz</span><span class="o">.</span><span class="n">asarray</span><span class="p">()</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">(</span><span class="n">wrap</span><span class="o">=</span><span class="n">wrap</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><a class="reference internal" href="#sisl.physics.MonkhorstPack.asyield" title="sisl.physics.MonkhorstPack.asyield"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asyield</span></code></a></dt><dd><p>all output returned through an iterator</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.physics.MonkhorstPack.asaverage" title="sisl.physics.MonkhorstPack.asaverage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asaverage</span></code></a></dt><dd><p>take the average (with k-weights) of the Brillouin zone</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.physics.MonkhorstPack.assum" title="sisl.physics.MonkhorstPack.assum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">assum</span></code></a></dt><dd><p>return the sum of values in the Brillouin zone</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.physics.MonkhorstPack.aslist" title="sisl.physics.MonkhorstPack.aslist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">aslist</span></code></a></dt><dd><p>all output returned as a Python list</p>
-</dd>
-</dl>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="sisl.physics.MonkhorstPack.asaverage">
-<span class="sig-name descname"><span class="pre">asaverage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.MonkhorstPack.asaverage" title="Permalink to this definition"></a></dt>
-<dd><p>Return <em class="xref py py-obj">self</em> with k-averaged quantities</p>
-<p>This forces the <a class="reference internal" href="#sisl.physics.MonkhorstPack.__call__" title="sisl.physics.MonkhorstPack.__call__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code></a> routine to return a single k-averaged value.</p>
-<p class="rubric">Notes</p>
-<p>This method will be deprecated &gt;0.9.9.
-Please use <code class="docutils literal notranslate"><span class="pre">self.apply.average</span></code> instead.</p>
-<p>All invocations of sub-methods are added these keyword-only arguments:</p>
-<dl class="simple">
-<dt>eta<span class="classifier">bool, optional</span></dt><dd><p>if true a progress-bar is created, default false.</p>
-</dd>
-<dt>wrap<span class="classifier">callable, optional</span></dt><dd><p>a function that accepts the output of the given routine and post-process
-it. Defaults to <code class="docutils literal notranslate"><span class="pre">lambda</span> <span class="pre">x:</span> <span class="pre">x</span></code>.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span> <span class="o">=</span> <span class="n">BrillouinZone</span><span class="p">(</span><span class="n">Hamiltonian</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">asaverage</span><span class="p">()</span><span class="o">.</span><span class="n">DOS</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span> <span class="o">=</span> <span class="n">BrillouinZone</span><span class="p">(</span><span class="n">Hamiltonian</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">asaverage</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">DOS</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">PDOS</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">eta</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span> <span class="o">=</span> <span class="n">BrillouinZone</span><span class="p">(</span><span class="n">Hamiltonian</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">asaverage</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="n">es</span><span class="p">):</span>
-<span class="gp">... </span>   <span class="k">return</span> <span class="n">es</span><span class="o">.</span><span class="n">DOS</span><span class="p">(</span><span class="n">E</span><span class="p">),</span> <span class="n">es</span><span class="o">.</span><span class="n">PDOS</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">DOS</span><span class="p">,</span> <span class="n">PDOS</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">(</span><span class="n">wrap</span><span class="o">=</span><span class="n">wrap</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><a class="reference internal" href="#sisl.physics.MonkhorstPack.asarray" title="sisl.physics.MonkhorstPack.asarray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asarray</span></code></a></dt><dd><p>all output as a single array</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.physics.MonkhorstPack.asyield" title="sisl.physics.MonkhorstPack.asyield"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asyield</span></code></a></dt><dd><p>all output returned through an iterator</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.physics.MonkhorstPack.assum" title="sisl.physics.MonkhorstPack.assum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">assum</span></code></a></dt><dd><p>return the sum of values in the Brillouin zone</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.physics.MonkhorstPack.aslist" title="sisl.physics.MonkhorstPack.aslist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">aslist</span></code></a></dt><dd><p>all output returned as a Python list</p>
-</dd>
-</dl>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="sisl.physics.MonkhorstPack.asdataarray">
-<span class="sig-name descname"><span class="pre">asdataarray</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.MonkhorstPack.asdataarray" title="Permalink to this definition"></a></dt>
-<dd><p>Return <em class="xref py py-obj">self</em> with <a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2022.11.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a> returned quantities</p>
-<p>This forces the <a class="reference internal" href="#sisl.physics.MonkhorstPack.__call__" title="sisl.physics.MonkhorstPack.__call__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code></a> routine to return a single <a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2022.11.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a>.</p>
-<p class="rubric">Notes</p>
-<p>This method will be deprecated &gt;0.9.9.
-Please use <code class="docutils literal notranslate"><span class="pre">self.apply.dataarray</span></code> instead.</p>
-<p>If you wrap the sub-method to return multiple data-sets, you should use <em class="xref py py-obj">asdataset</em>
-instead which returns a combination of data-arrays (so-called <a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset" title="(in xarray v2022.11.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.Dataset</span></code></a>).</p>
-<p>All invocations of sub-methods are added these keyword-only arguments:</p>
-<dl class="simple">
-<dt>eta<span class="classifier">bool, optional</span></dt><dd><p>if true a progress-bar is created, default false.</p>
-</dd>
-<dt>wrap<span class="classifier">callable, optional</span></dt><dd><p>a function that accepts the output of the given routine and post-process
-it. Defaults to <code class="docutils literal notranslate"><span class="pre">lambda</span> <span class="pre">x:</span> <span class="pre">x</span></code>.</p>
-</dd>
-<dt>coords<span class="classifier">list of str or list of (str, array), optional</span></dt><dd><p>a list of coordinates used in <code class="docutils literal notranslate"><span class="pre">xarray.DataArray(...,</span> <span class="pre">coords=coords)</span></code>.
-By default the coordinates are named <code class="docutils literal notranslate"><span class="pre">['k',</span> <span class="pre">'v1',</span> <span class="pre">'v2',</span> <span class="pre">...]</span></code>
-depending on the shape of the returned quantity.
-These may optionally be a list of tuples (not a dictionary)!</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span> <span class="o">=</span> <span class="n">BrillouinZone</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">asdataarray</span><span class="p">()</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">eta</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><a class="reference internal" href="#sisl.physics.MonkhorstPack.asyield" title="sisl.physics.MonkhorstPack.asyield"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asyield</span></code></a></dt><dd><p>all output returned through an iterator</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.physics.MonkhorstPack.asaverage" title="sisl.physics.MonkhorstPack.asaverage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asaverage</span></code></a></dt><dd><p>take the average (with k-weights) of the Brillouin zone</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.physics.MonkhorstPack.assum" title="sisl.physics.MonkhorstPack.assum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">assum</span></code></a></dt><dd><p>return the sum of values in the Brillouin zone</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.physics.MonkhorstPack.aslist" title="sisl.physics.MonkhorstPack.aslist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">aslist</span></code></a></dt><dd><p>all output returned as a Python list</p>
-</dd>
-</dl>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="sisl.physics.MonkhorstPack.asgrid">
-<span class="sig-name descname"><span class="pre">asgrid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/brillouinzone.html#MonkhorstPack.asgrid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.MonkhorstPack.asgrid" title="Permalink to this definition"></a></dt>
-<dd><p>Return <em class="xref py py-obj">self</em> with Grid quantities</p>
-<p>This forces the <a class="reference internal" href="#sisl.physics.MonkhorstPack.__call__" title="sisl.physics.MonkhorstPack.__call__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code></a> routine to return all k-point values in a regular grid.</p>
-<p>The calculation of values on a grid requires some careful thought before
-running the calculation as the returned grid may be somewhat difficult
-to comprehend.</p>
-<p class="rubric">Notes</p>
-<p>All invocations of sub-methods are added these keyword-only arguments:</p>
-<dl class="simple">
-<dt>eta<span class="classifier">bool, optional</span></dt><dd><p>if true a progress-bar is created, default false.</p>
-</dd>
-<dt>wrap<span class="classifier">callable, optional</span></dt><dd><p>a function that accepts the output of the given routine and post-process
-it. Defaults to <code class="docutils literal notranslate"><span class="pre">lambda</span> <span class="pre">x:</span> <span class="pre">x</span></code>.</p>
-</dd>
-<dt>data_axis<span class="classifier">int, optional</span></dt><dd><p>the Grid axis to put in the data values in. Has to be specified if the
-subsequent routine calls return more than 1 data-point per k-point.</p>
-</dd>
-<dt>grid_unit<span class="classifier">{‘b’, ‘Ang’, ‘Bohr’}, optional</span></dt><dd><p>for ‘b’ the returned grid will be a cube, otherwise the grid will be the reciprocal lattice
-vectors (for any other value) and in the given reciprocal unit (‘Ang’ =&gt; 1/Ang)</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span> <span class="o">=</span> <span class="n">MonkhorstPack</span><span class="p">(</span><span class="n">Hamiltonian</span><span class="p">,</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">grid</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">asgrid</span><span class="p">()</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">data_axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><a class="reference internal" href="#sisl.physics.MonkhorstPack.asarray" title="sisl.physics.MonkhorstPack.asarray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asarray</span></code></a></dt><dd><p>all output as a single array</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.physics.MonkhorstPack.asyield" title="sisl.physics.MonkhorstPack.asyield"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asyield</span></code></a></dt><dd><p>all output returned through an iterator</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.physics.MonkhorstPack.asaverage" title="sisl.physics.MonkhorstPack.asaverage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asaverage</span></code></a></dt><dd><p>take the average (with k-weights) of the Brillouin zone</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.physics.MonkhorstPack.aslist" title="sisl.physics.MonkhorstPack.aslist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">aslist</span></code></a></dt><dd><p>all output returned as a Python list</p>
-</dd>
-</dl>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="sisl.physics.MonkhorstPack.aslist">
-<span class="sig-name descname"><span class="pre">aslist</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.MonkhorstPack.aslist" title="Permalink to this definition"></a></dt>
-<dd><p>Return <em class="xref py py-obj">self</em> with <em class="xref py py-obj">list</em> returned quantities</p>
-<p>This forces the <a class="reference internal" href="#sisl.physics.MonkhorstPack.__call__" title="sisl.physics.MonkhorstPack.__call__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code></a> routine to return a list with returned values.</p>
-<p class="rubric">Notes</p>
-<p>This method will be deprecated &gt;0.9.9.
-Please use <code class="docutils literal notranslate"><span class="pre">self.apply.list</span></code> instead.</p>
-<p>All invocations of sub-methods are added these keyword-only arguments:</p>
-<dl class="simple">
-<dt>eta<span class="classifier">bool, optional</span></dt><dd><p>if true a progress-bar is created, default false.</p>
-</dd>
-<dt>wrap<span class="classifier">callable, optional</span></dt><dd><p>a function that accepts the output of the given routine and post-process
-it. Defaults to <code class="docutils literal notranslate"><span class="pre">lambda</span> <span class="pre">x:</span> <span class="pre">x</span></code>.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span> <span class="o">=</span> <span class="n">BrillouinZone</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">first_ten</span><span class="p">(</span><span class="n">es</span><span class="p">):</span>
-<span class="gp">... </span>   <span class="k">return</span> <span class="n">es</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">aslist</span><span class="p">()</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">(</span><span class="n">eta</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="n">first_ten</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><a class="reference internal" href="#sisl.physics.MonkhorstPack.asarray" title="sisl.physics.MonkhorstPack.asarray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asarray</span></code></a></dt><dd><p>all output as a single array</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.physics.MonkhorstPack.asyield" title="sisl.physics.MonkhorstPack.asyield"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asyield</span></code></a></dt><dd><p>all output returned through an iterator</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.physics.MonkhorstPack.assum" title="sisl.physics.MonkhorstPack.assum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">assum</span></code></a></dt><dd><p>return the sum of values in the Brillouin zone</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.physics.MonkhorstPack.asaverage" title="sisl.physics.MonkhorstPack.asaverage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asaverage</span></code></a></dt><dd><p>take the average (with k-weights) of the Brillouin zone</p>
-</dd>
-</dl>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="sisl.physics.MonkhorstPack.asnone">
-<span class="sig-name descname"><span class="pre">asnone</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.MonkhorstPack.asnone" title="Permalink to this definition"></a></dt>
-<dd><p>Return <em class="xref py py-obj">self</em> with None, this may be done for instance when wrapping the function calls.</p>
-<p>This forces the <a class="reference internal" href="#sisl.physics.MonkhorstPack.__call__" title="sisl.physics.MonkhorstPack.__call__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code></a> routine to return <code class="docutils literal notranslate"><span class="pre">None</span></code>. This usage is mainly intended when
-creating custom <em class="xref py py-obj">wrap</em> function calls.</p>
-<p class="rubric">Notes</p>
-<p>This method will be deprecated &gt;0.9.9.
-Please use <code class="docutils literal notranslate"><span class="pre">self.apply.none</span></code> instead.</p>
-<p>All invocations of sub-methods are added these keyword-only arguments:</p>
-<dl class="simple">
-<dt>eta<span class="classifier">bool, optional</span></dt><dd><p>if true a progress-bar is created, default false.</p>
-</dd>
-<dt>wrap<span class="classifier">callable, optional</span></dt><dd><p>a function that accepts the output of the given routine and post-process
-it. Defaults to <code class="docutils literal notranslate"><span class="pre">lambda</span> <span class="pre">x:</span> <span class="pre">x</span></code>.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span> <span class="o">=</span> <span class="n">BrillouinZone</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">asnone</span><span class="p">()</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">eta</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><a class="reference internal" href="#sisl.physics.MonkhorstPack.asyield" title="sisl.physics.MonkhorstPack.asyield"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asyield</span></code></a></dt><dd><p>all output returned through an iterator</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.physics.MonkhorstPack.asaverage" title="sisl.physics.MonkhorstPack.asaverage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asaverage</span></code></a></dt><dd><p>take the average (with k-weights) of the Brillouin zone</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.physics.MonkhorstPack.assum" title="sisl.physics.MonkhorstPack.assum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">assum</span></code></a></dt><dd><p>return the sum of values in the Brillouin zone</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.physics.MonkhorstPack.aslist" title="sisl.physics.MonkhorstPack.aslist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">aslist</span></code></a></dt><dd><p>all output returned as a Python list</p>
-</dd>
-</dl>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="sisl.physics.MonkhorstPack.assum">
-<span class="sig-name descname"><span class="pre">assum</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.MonkhorstPack.assum" title="Permalink to this definition"></a></dt>
-<dd><p>Return <em class="xref py py-obj">self</em> with summed quantities</p>
-<p>This forces the <a class="reference internal" href="#sisl.physics.MonkhorstPack.__call__" title="sisl.physics.MonkhorstPack.__call__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code></a> routine to return all k-point values summed.</p>
-<p class="rubric">Notes</p>
-<p>This method will be deprecated &gt;0.9.9.
-Please use <code class="docutils literal notranslate"><span class="pre">self.apply.sum</span></code> instead.</p>
-<p>All invocations of sub-methods are added these keyword-only arguments:</p>
-<dl class="simple">
-<dt>eta<span class="classifier">bool, optional</span></dt><dd><p>if true a progress-bar is created, default false.</p>
-</dd>
-<dt>wrap<span class="classifier">callable, optional</span></dt><dd><p>a function that accepts the output of the given routine and post-process
-it. Defaults to <code class="docutils literal notranslate"><span class="pre">lambda</span> <span class="pre">x:</span> <span class="pre">x</span></code>.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span> <span class="o">=</span> <span class="n">BrillouinZone</span><span class="p">(</span><span class="n">Hamiltonian</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">assum</span><span class="p">()</span><span class="o">.</span><span class="n">DOS</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span> <span class="o">=</span> <span class="n">BrillouinZone</span><span class="p">(</span><span class="n">Hamiltonian</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">assum</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">DOS</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">PDOS</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">eta</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dist</span> <span class="o">=</span> <span class="n">get_distribution</span><span class="p">(</span><span class="s1">&#39;gaussian&#39;</span><span class="p">,</span> <span class="n">smearing</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="n">es</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">weight</span><span class="p">):</span>
-<span class="gp">... </span>   <span class="n">DOS</span> <span class="o">=</span> <span class="n">es</span><span class="o">.</span><span class="n">DOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="n">dist</span><span class="p">)</span> <span class="o">*</span> <span class="n">weight</span>
-<span class="gp">... </span>   <span class="n">PDOS</span> <span class="o">=</span> <span class="n">es</span><span class="o">.</span><span class="n">PDOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="n">dist</span><span class="p">)</span> <span class="o">*</span> <span class="n">weight</span>
-<span class="gp">... </span>   <span class="n">occ</span> <span class="o">=</span> <span class="n">es</span><span class="o">.</span><span class="n">occupation</span><span class="p">()</span>
-<span class="gp">... </span>   <span class="n">spin_moment</span> <span class="o">=</span> <span class="p">(</span><span class="n">es</span><span class="o">.</span><span class="n">spin_moment</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="n">dist</span><span class="p">)</span> <span class="o">*</span> <span class="n">occ</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">weight</span>
-<span class="gp">... </span>   <span class="k">return</span> <span class="n">oplist</span><span class="p">([</span><span class="n">DOS</span><span class="p">,</span> <span class="n">PDOS</span><span class="p">,</span> <span class="n">spin_moment</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">bz</span> <span class="o">=</span> <span class="n">BrillouinZone</span><span class="p">(</span><span class="n">hamiltonian</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">DOS</span><span class="p">,</span> <span class="n">PDOS</span><span class="p">,</span> <span class="n">spin_moment</span> <span class="o">=</span> <span class="n">bz</span><span class="o">.</span><span class="n">assum</span><span class="p">()</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">(</span><span class="n">wrap</span><span class="o">=</span><span class="n">wrap</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><a class="reference internal" href="#sisl.physics.MonkhorstPack.asarray" title="sisl.physics.MonkhorstPack.asarray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asarray</span></code></a></dt><dd><p>all output as a single array</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.physics.MonkhorstPack.asyield" title="sisl.physics.MonkhorstPack.asyield"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asyield</span></code></a></dt><dd><p>all output returned through an iterator</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.physics.MonkhorstPack.asaverage" title="sisl.physics.MonkhorstPack.asaverage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asaverage</span></code></a></dt><dd><p>take the average (with k-weights) of the Brillouin zone</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.physics.MonkhorstPack.aslist" title="sisl.physics.MonkhorstPack.aslist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">aslist</span></code></a></dt><dd><p>all output returned as a Python list</p>
-</dd>
-</dl>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="sisl.physics.MonkhorstPack.asyield">
-<span class="sig-name descname"><span class="pre">asyield</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.MonkhorstPack.asyield" title="Permalink to this definition"></a></dt>
-<dd><p>Return <em class="xref py py-obj">self</em> with yielded quantities</p>
-<p>This forces the <a class="reference internal" href="#sisl.physics.MonkhorstPack.__call__" title="sisl.physics.MonkhorstPack.__call__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code></a> routine to return a an iterator which may
-yield the quantities calculated.</p>
-<p class="rubric">Notes</p>
-<p>This method will be deprecated &gt;0.9.9.
-Please use <code class="docutils literal notranslate"><span class="pre">self.apply.iter</span></code> instead.</p>
-<p>All invocations of sub-methods are added these keyword-only arguments:</p>
-<dl class="simple">
-<dt>eta<span class="classifier">bool, optional</span></dt><dd><p>if true a progress-bar is created, default false.</p>
-</dd>
-<dt>wrap<span class="classifier">callable, optional</span></dt><dd><p>a function that accepts the output of the given routine and post-process
-it. Defaults to <code class="docutils literal notranslate"><span class="pre">lambda</span> <span class="pre">x:</span> <span class="pre">x</span></code>.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span> <span class="o">=</span> <span class="n">BrillouinZone</span><span class="p">(</span><span class="n">Hamiltonian</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">asyield</span><span class="p">()</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">eta</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><a class="reference internal" href="#sisl.physics.MonkhorstPack.asarray" title="sisl.physics.MonkhorstPack.asarray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asarray</span></code></a></dt><dd><p>all output as a single array</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.physics.MonkhorstPack.asaverage" title="sisl.physics.MonkhorstPack.asaverage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asaverage</span></code></a></dt><dd><p>take the average (with k-weights) of the Brillouin zone</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.physics.MonkhorstPack.assum" title="sisl.physics.MonkhorstPack.assum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">assum</span></code></a></dt><dd><p>return the sum of values in the Brillouin zone</p>
-</dd>
-<dt><a class="reference internal" href="#sisl.physics.MonkhorstPack.aslist" title="sisl.physics.MonkhorstPack.aslist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">aslist</span></code></a></dt><dd><p>all output returned as a Python list</p>
-</dd>
-</dl>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="sisl.physics.MonkhorstPack.call">
-<span class="sig-name descname"><span class="pre">call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.MonkhorstPack.call" title="Permalink to this definition"></a></dt>
-<dd><p>Call the function <em class="xref py py-obj">func</em> and run as though the function has been called</p>
-<p>This is a wrapper to call user-defined functions not attached to the parent
-object.</p>
-<p>The below example shows that the equivalence of the call.</p>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">H</span> <span class="o">=</span> <span class="n">Hamiltonian</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">bz</span> <span class="o">=</span> <span class="n">BrillouinZone</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">bz</span><span class="o">.</span><span class="n">eigh</span><span class="p">()</span> <span class="o">==</span> <span class="n">bz</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">eigh</span><span class="p">)</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>func</strong> (<em>callable</em>) – method used</p></li>
-<li><p><strong>*args</strong> – arguments passed to func in the call sequence</p></li>
-<li><p><strong>**kwargs</strong> – keyword arguments passed to func in the call sequence</p></li>
-</ul>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py property">
@@ -755,7 +330,7 @@ object.</p>
 <dd class="field-even"><p>all k-points moved into the primitive cell</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -955,7 +530,7 @@ a 4x4x1 Monkhorst-Pack grid.</p>
 <dd class="field-even"><p>in units of 1/Ang</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -972,7 +547,7 @@ a 4x4x1 Monkhorst-Pack grid.</p>
 <dd class="field-even"><p>in units of reciprocal lattice vectors ]-0.5 ; 0.5] (if k is in the primitive cell)</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1033,7 +608,7 @@ For 0D it will return 0.</p></li>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

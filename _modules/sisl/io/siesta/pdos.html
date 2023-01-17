@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.pdos &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.io.siesta.pdos &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -128,18 +128,18 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">pdosSileSiesta</span><span class="p">(</span><span class="n">SileSiesta</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Projected DOS file with orbital information</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Projected DOS file with orbital information</span>
 
 <span class="sd">    Data file containing the PDOS as calculated by Siesta.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="pdosSileSiesta.read_geometry"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.pdosSileSiesta.html#sisl.io.siesta.pdosSileSiesta.read_geometry">[docs]</a>    <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Read the geometry with coordinates and correct orbital counts &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Read the geometry with coordinates and correct orbital counts &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_data</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="pdosSileSiesta.read_fermi_level"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.pdosSileSiesta.html#sisl.io.siesta.pdosSileSiesta.read_fermi_level">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">read_fermi_level</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns the fermi-level &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the fermi-level &quot;&quot;&quot;</span>
         <span class="c1"># Get the element-tree</span>
         <span class="n">root</span> <span class="o">=</span> <span class="n">xml_parse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="p">)</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span>
 
@@ -151,7 +151,7 @@
 
 <div class="viewcode-block" id="pdosSileSiesta.read_data"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.pdosSileSiesta.html#sisl.io.siesta.pdosSileSiesta.read_data">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">as_dataarray</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Returns data associated with the PDOS file</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Returns data associated with the PDOS file</span>
 
 <span class="sd">        For spin-polarized calculations the returned values are up/down, orbitals, energy.</span>
 <span class="sd">        For non-collinear calculations the returned values are sum/x/y/z, orbitals, energy.</span>
@@ -209,6 +209,12 @@
                 <span class="n">D</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
                 <span class="n">D</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[:]</span>
                 <span class="k">return</span> <span class="n">D</span>
+        <span class="k">elif</span> <span class="n">nspin</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="n">D</span><span class="p">):</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="n">D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">D</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="n">D</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="n">D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span>
+                <span class="k">return</span> <span class="n">D</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="n">D</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">D</span>
@@ -218,7 +224,7 @@
             <span class="k">if</span> <span class="n">nspin</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">spin</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sum&quot;</span><span class="p">]</span>
             <span class="k">elif</span> <span class="n">nspin</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-                <span class="n">spin</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;up&quot;</span><span class="p">,</span> <span class="s2">&quot;down&quot;</span><span class="p">]</span>
+                <span class="n">spin</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">]</span>
             <span class="k">elif</span> <span class="n">nspin</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
                 <span class="n">spin</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">]</span>
 
@@ -303,8 +309,6 @@
             <span class="k">return</span> <span class="n">D</span>
 
         <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">nspin</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">geom</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">D</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">geom</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">D</span></div>
 
     <span class="nd">@default_ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
@@ -333,7 +337,7 @@
 <span class="s2">will store the spin x/y components of all atoms in spin_x_all.dat/spin_y_all.dat, respectively.</span>
 <span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">ArgumentParser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns the arguments that is available for this Sile &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the arguments that is available for this Sile &quot;&quot;&quot;</span>
 
         <span class="c1"># We limit the import to occur here</span>
         <span class="kn">import</span> <span class="nn">argparse</span>
@@ -350,7 +354,7 @@
                     <span class="n">comment</span> <span class="o">=</span> <span class="s2">&quot;Fermi-level unknown&quot;</span>
 
         <span class="k">def</span> <span class="nf">norm</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">):</span>
-            <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Normalization factor depending on the input</span>
+<span class="w">            </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Normalization factor depending on the input</span>
 
 <span class="sd">            The normalization can be performed in one of the below methods.</span>
 <span class="sd">            In the following :math:`N` refers to the normalization constant</span>
@@ -400,13 +404,13 @@
             <span class="k">return</span> <span class="n">NORM</span>
 
         <span class="k">def</span> <span class="nf">_sum_filter</span><span class="p">(</span><span class="n">PDOS</span><span class="p">):</span>
-            <span class="sd">&quot;&quot;&quot; Default sum is the total DOS, no projection on directions &quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot; Default sum is the total DOS, no projection on directions &quot;&quot;&quot;</span>
             <span class="k">if</span> <span class="n">PDOS</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
                 <span class="c1"># non-polarized</span>
                 <span class="k">return</span> <span class="n">PDOS</span>
             <span class="k">elif</span> <span class="n">PDOS</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
                 <span class="c1"># polarized</span>
-                <span class="k">return</span> <span class="n">PDOS</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">PDOS</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">return</span> <span class="n">PDOS</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">namespace</span> <span class="o">=</span> <span class="n">default_namespace</span><span class="p">(</span><span class="n">_geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">,</span>
                                       <span class="n">_E</span><span class="o">=</span><span class="n">E</span><span class="p">,</span>
@@ -421,7 +425,7 @@
                                       <span class="n">_data_header</span><span class="o">=</span><span class="p">[])</span>
 
         <span class="k">def</span> <span class="nf">ensure_E</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-            <span class="sd">&quot;&quot;&quot; This decorater ensures that E is the first element in the _data container &quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot; This decorater ensures that E is the first element in the _data container &quot;&quot;&quot;</span>
 
             <span class="k">def</span> <span class="nf">assign_E</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
                 <span class="n">ns</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -487,21 +491,25 @@
                     <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;up&quot;</span><span class="p">,</span> <span class="s2">&quot;u&quot;</span><span class="p">):</span>
                         <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;up&quot;</span>
                         <span class="k">def</span> <span class="nf">_filter</span><span class="p">(</span><span class="n">PDOS</span><span class="p">):</span>
-                            <span class="k">return</span> <span class="n">PDOS</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                            <span class="k">return</span> <span class="p">(</span><span class="n">PDOS</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">PDOS</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
                     <span class="k">elif</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;down&quot;</span><span class="p">,</span> <span class="s2">&quot;dn&quot;</span><span class="p">,</span> <span class="s2">&quot;dw&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">):</span>
                         <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;down&quot;</span>
                         <span class="k">def</span> <span class="nf">_filter</span><span class="p">(</span><span class="n">PDOS</span><span class="p">):</span>
-                            <span class="k">return</span> <span class="n">PDOS</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                            <span class="k">return</span> <span class="p">(</span><span class="n">PDOS</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">PDOS</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
                     <span class="k">elif</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;total&quot;</span><span class="p">):</span>
                         <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;total&quot;</span>
                         <span class="k">def</span> <span class="nf">_filter</span><span class="p">(</span><span class="n">PDOS</span><span class="p">):</span>
-                            <span class="k">return</span> <span class="n">PDOS</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                            <span class="k">return</span> <span class="n">PDOS</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">elif</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="s2">&quot;spin&quot;</span><span class="p">):</span>
+                        <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;z&quot;</span>
+                        <span class="k">def</span> <span class="nf">_filter</span><span class="p">(</span><span class="n">PDOS</span><span class="p">):</span>
+                            <span class="k">return</span> <span class="n">PDOS</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Wrong argument for --spin [up, down, sum], found </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Wrong argument for --spin [up, down, sum, z], found </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                     <span class="n">ns</span><span class="o">.</span><span class="n">_PDOS_filter_name</span> <span class="o">=</span> <span class="n">name</span>
                     <span class="n">ns</span><span class="o">.</span><span class="n">_PDOS_filter</span> <span class="o">=</span> <span class="n">_filter</span>
             <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--spin&quot;</span><span class="p">,</span> <span class="s2">&quot;-S&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">Spin</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                           <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Which spin-component to store, up/u, down/d or sum/+/total&quot;</span><span class="p">)</span>
+                           <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Which spin-component to store, up/u, down/d, z/spin or sum/+/total&quot;</span><span class="p">)</span>
 
         <span class="k">elif</span> <span class="n">PDOS</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
             <span class="c1"># Add a spin-action</span>
@@ -738,7 +746,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.eig &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.io.siesta.eig &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -118,7 +118,7 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">eigSileSiesta</span><span class="p">(</span><span class="n">SileSiesta</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Eigenvalues as calculated in the SCF loop, easy plots using `sdata`</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Eigenvalues as calculated in the SCF loop, easy plots using `sdata`</span>
 
 <span class="sd">    The .EIG file from Siesta contains the eigenvalues for k-points used during the SCF.</span>
 <span class="sd">    Using the command-line utility `sdata` one may plot the eigenvalue spectrum to visualize the</span>
@@ -175,7 +175,7 @@
 
 <div class="viewcode-block" id="eigSileSiesta.read_fermi_level"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.eigSileSiesta.html#sisl.io.siesta.eigSileSiesta.read_fermi_level">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">read_fermi_level</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Query the Fermi-level contained in the file</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Query the Fermi-level contained in the file</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -185,7 +185,7 @@
 
 <div class="viewcode-block" id="eigSileSiesta.read_data"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.eigSileSiesta.html#sisl.io.siesta.eigSileSiesta.read_data">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Read eigenvalues, as calculated and written by Siesta</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Read eigenvalues, as calculated and written by Siesta</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -225,7 +225,7 @@
 
     <span class="nd">@default_ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Manipulate Siesta EIG file.&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">ArgumentParser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns the arguments that is available for this Sile &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the arguments that is available for this Sile &quot;&quot;&quot;</span>
         <span class="c1">#limit_args = kwargs.get(&quot;limit_arguments&quot;, True)</span>
         <span class="c1">#short = kwargs.get(&quot;short&quot;, False)</span>
 
@@ -380,7 +380,7 @@
         <span class="k">class</span> <span class="nc">Plot</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
 
             <span class="k">def</span> <span class="nf">_plot_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-                <span class="sd">&quot;&quot;&quot; Plot data as contained in ns._data &quot;&quot;&quot;</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot; Plot data as contained in ns._data &quot;&quot;&quot;</span>
                 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
                 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
 
@@ -487,7 +487,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

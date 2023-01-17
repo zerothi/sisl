@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.mixing.diis &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.mixing.diis &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -117,7 +117,7 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.mixing&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">DIISMixer</span><span class="p">(</span><span class="n">BaseHistoryMixer</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Direct inversion of the iterative subspace (DIIS mixing)</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Direct inversion of the iterative subspace (DIIS mixing)</span>
 
 <span class="sd">    This mixing method (also known as Pulay mixing) estimates the next</span>
 <span class="sd">    trial function given a set of previously inputs and derivatives of</span>
@@ -166,12 +166,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_metric</span> <span class="o">=</span> <span class="n">metric</span></div>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; String representation &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; String representation &quot;&quot;&quot;</span>
         <span class="n">hist</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  &quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">weight: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="s2">  </span><span class="si">{</span><span class="n">hist</span><span class="si">}</span><span class="se">\n}}</span><span class="s2">&quot;</span>
 
 <div class="viewcode-block" id="DIISMixer.solve_lagrange"><a class="viewcode-back" href="../../../api/generated/sisl.mixing.DIISMixer.html#sisl.mixing.DIISMixer.solve_lagrange">[docs]</a>    <span class="k">def</span> <span class="nf">solve_lagrange</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the coefficients according to Pulay&#39;s method, return everything + Lagrange multiplier &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the coefficients according to Pulay&#39;s method, return everything + Lagrange multiplier &quot;&quot;&quot;</span>
         <span class="n">hist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">history</span>
         <span class="n">n_h</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">hist</span><span class="p">)</span>
         <span class="n">metric</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metric</span>
@@ -219,12 +219,12 @@
             <span class="k">return</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">([</span><span class="mf">1.</span><span class="p">]),</span> <span class="n">last_metric</span></div>
 
 <div class="viewcode-block" id="DIISMixer.coefficients"><a class="viewcode-back" href="../../../api/generated/sisl.mixing.DIISMixer.html#sisl.mixing.DIISMixer.coefficients">[docs]</a>    <span class="k">def</span> <span class="nf">coefficients</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate coefficients of the Lagrangian &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate coefficients of the Lagrangian &quot;&quot;&quot;</span>
         <span class="n">c</span><span class="p">,</span> <span class="n">lagrange</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solve_lagrange</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">c</span></div>
 
 <div class="viewcode-block" id="DIISMixer.mix"><a class="viewcode-back" href="../../../api/generated/sisl.mixing.DIISMixer.html#sisl.mixing.DIISMixer.mix">[docs]</a>    <span class="k">def</span> <span class="nf">mix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coefficients</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate a new variable :math:`f&#39;` using history and input coefficients</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate a new variable :math:`f&#39;` using history and input coefficients</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -252,7 +252,7 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.mixing&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">AdaptiveDIISMixer</span><span class="p">(</span><span class="n">DIISMixer</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Adapt the mixing weight according to the Lagrange multiplier</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Adapt the mixing weight according to the Lagrange multiplier</span>
 
 <span class="sd">    The Lagrange multiplier calculated in a DIIS/Pulay mixing scheme</span>
 <span class="sd">    is the squared norm of the residual that is minimized using the</span>
@@ -274,7 +274,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_weight_delta</span> <span class="o">=</span> <span class="n">weight</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">weight</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="AdaptiveDIISMixer.adjust_weight"><a class="viewcode-back" href="../../../api/generated/sisl.mixing.AdaptiveDIISMixer.html#sisl.mixing.AdaptiveDIISMixer.adjust_weight">[docs]</a>    <span class="k">def</span> <span class="nf">adjust_weight</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lagrange</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">spread</span><span class="o">=</span><span class="mi">7</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Adjust the weight according to the Lagrange multiplier.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Adjust the weight according to the Lagrange multiplier.</span>
 
 <span class="sd">        Once close to convergence the Lagrange multiplier will be close to 0, otherwise it will go</span>
 <span class="sd">        towards infinity.</span>
@@ -285,7 +285,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_weight</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weight_min</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weight_delta</span> <span class="o">/</span> <span class="p">(</span><span class="n">exp_lag_log</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="AdaptiveDIISMixer.coefficients"><a class="viewcode-back" href="../../../api/generated/sisl.mixing.AdaptiveDIISMixer.html#sisl.mixing.AdaptiveDIISMixer.coefficients">[docs]</a>    <span class="k">def</span> <span class="nf">coefficients</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate coefficients and adjust weights according to a Lagrange multiplier &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate coefficients and adjust weights according to a Lagrange multiplier &quot;&quot;&quot;</span>
         <span class="n">c</span><span class="p">,</span> <span class="n">lagrange</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solve_lagrange</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">adjust_weight</span><span class="p">(</span><span class="n">lagrange</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">c</span></div>
@@ -301,7 +301,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

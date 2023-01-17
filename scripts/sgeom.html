@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sgeom &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sgeom &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -147,7 +147,7 @@
 <p>The <em class="xref py py-obj">sgeom</em> executable is a tool for reading and transforming general
 coordinate formats to other formats, or alter them.</p>
 <p>For a short help description of the possible uses do:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom --help
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom<span class="w"> </span>--help
 </pre></div>
 </div>
 <p>Here we list a few of the most frequent used commands.</p>
@@ -157,12 +157,12 @@ coordinate formats to other formats, or alter them.</p>
 <em class="xref py py-obj">sgeom</em> takes at least two mandatory arguments, the first being the
 input file format, and the second (and any third + argumets) the output
 file formats</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom &lt;<span class="k">in</span>&gt; &lt;out&gt; <span class="o">[</span>&lt;out2&gt;<span class="o">]</span> <span class="o">[[</span>&lt;out3&gt;<span class="o">]</span> ...<span class="o">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom<span class="w"> </span>&lt;<span class="k">in</span>&gt;<span class="w"> </span>&lt;out&gt;<span class="w"> </span><span class="o">[</span>&lt;out2&gt;<span class="o">]</span><span class="w"> </span><span class="o">[[</span>&lt;out3&gt;<span class="o">]</span><span class="w"> </span>...<span class="o">]</span>
 </pre></div>
 </div>
 <p>Hence to convert from an <strong>fdf</strong> Siesta input file to an <strong>xyz</strong> file
 for plotting in a GUI program one can do this:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom RUN.fdf RUN.xyz
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom<span class="w"> </span>RUN.fdf<span class="w"> </span>RUN.xyz
 </pre></div>
 </div>
 <p>and the <code class="docutils literal notranslate"><span class="pre">RUN.xyz</span></code> file will be created.</p>
@@ -180,7 +180,7 @@ the <code class="docutils literal notranslate"><span class="pre">read_geometry</
 <p>The <em class="xref py py-obj">sgeom</em> utility enables highly advanced creation of several geometry
 structures by invocing the arguments <em>in order</em>.</p>
 <p>I.e. if one performs:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom &lt;<span class="k">in</span>&gt; --repeat <span class="m">3</span> x repx3.xyz --repeat <span class="m">3</span> y repx3_repy3.xyz
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom<span class="w"> </span>&lt;<span class="k">in</span>&gt;<span class="w"> </span>--repeat<span class="w"> </span><span class="m">3</span><span class="w"> </span>x<span class="w"> </span>repx3.xyz<span class="w"> </span>--repeat<span class="w"> </span><span class="m">3</span><span class="w"> </span>y<span class="w"> </span>repx3_repy3.xyz
 </pre></div>
 </div>
 <p>will read <code class="docutils literal notranslate"><span class="pre">&lt;in&gt;</span></code>, repeat the geometry 3 times along the first unit-cell
@@ -192,26 +192,26 @@ the now <code class="docutils literal notranslate"><span class="pre">3x3</span><
 <p>One may use periodicity to create larger structures from a simpler structure.
 This is useful for creating larger bulk structures.
 To repeat a structure do</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom &lt;<span class="k">in</span>&gt; --repeat &lt;int&gt; <span class="o">[</span>ax<span class="p">|</span>yb<span class="p">|</span>zc<span class="o">]</span> &lt;out&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom<span class="w"> </span>&lt;<span class="k">in</span>&gt;<span class="w"> </span>--repeat<span class="w"> </span>&lt;int&gt;<span class="w"> </span><span class="o">[</span>ax<span class="p">|</span>yb<span class="p">|</span>zc<span class="o">]</span><span class="w"> </span>&lt;out&gt;
 </pre></div>
 </div>
 <p>which repeats the structure one atom at a time, <code class="docutils literal notranslate"><span class="pre">&lt;int&gt;</span></code> times, in the corresponding direction.
 Note that <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">a</span></code> correspond to the same cell direction (the first).</p>
 <p>To repeat the structure in <em>chunks</em> one can use the <code class="docutils literal notranslate"><span class="pre">--tile</span></code> option:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom &lt;<span class="k">in</span>&gt; --tile &lt;int&gt; <span class="o">[</span>ax<span class="p">|</span>yb<span class="p">|</span>zc<span class="o">]</span> &lt;out&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom<span class="w"> </span>&lt;<span class="k">in</span>&gt;<span class="w"> </span>--tile<span class="w"> </span>&lt;int&gt;<span class="w"> </span><span class="o">[</span>ax<span class="p">|</span>yb<span class="p">|</span>zc<span class="o">]</span><span class="w"> </span>&lt;out&gt;
 </pre></div>
 </div>
 <p>which results in the same structure as <code class="docutils literal notranslate"><span class="pre">--repeat</span></code> however with different atomic ordering.</p>
 <p>Both tiling and repeating have the shorter variants:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom &lt;<span class="k">in</span>&gt; -t<span class="o">[</span>xyz<span class="o">]</span> &lt;int&gt; -r<span class="o">[</span>xyz<span class="o">]</span> &lt;int&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom<span class="w"> </span>&lt;<span class="k">in</span>&gt;<span class="w"> </span>-t<span class="o">[</span>xyz<span class="o">]</span><span class="w"> </span>&lt;int&gt;<span class="w"> </span>-r<span class="o">[</span>xyz<span class="o">]</span><span class="w"> </span>&lt;int&gt;
 </pre></div>
 </div>
 <p>to ease the commands.</p>
 <p>To repeat a structure 4 times along the <em>x</em> cell direction:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom RUN.fdf --repeat <span class="m">4</span> x RUN4x.fdf
-sgeom RUN.fdf --repeat-x <span class="m">4</span> RUN4x.fdf
-sgeom RUN.fdf --tile <span class="m">4</span> x RUN4x.fdf
-sgeom RUN.fdf --tile-x <span class="m">4</span> RUN4x.fdf
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom<span class="w"> </span>RUN.fdf<span class="w"> </span>--repeat<span class="w"> </span><span class="m">4</span><span class="w"> </span>x<span class="w"> </span>RUN4x.fdf
+sgeom<span class="w"> </span>RUN.fdf<span class="w"> </span>--repeat-x<span class="w"> </span><span class="m">4</span><span class="w"> </span>RUN4x.fdf
+sgeom<span class="w"> </span>RUN.fdf<span class="w"> </span>--tile<span class="w"> </span><span class="m">4</span><span class="w"> </span>x<span class="w"> </span>RUN4x.fdf
+sgeom<span class="w"> </span>RUN.fdf<span class="w"> </span>--tile-x<span class="w"> </span><span class="m">4</span><span class="w"> </span>RUN4x.fdf
 </pre></div>
 </div>
 <p>where all the above yields the same structure, albeit with different orderings.</p>
@@ -219,14 +219,14 @@ sgeom RUN.fdf --tile-x <span class="m">4</span> RUN4x.fdf
 <section id="rotating-structure">
 <h3>Rotating structure<a class="headerlink" href="#rotating-structure" title="Permalink to this heading"></a></h3>
 <p>To rotate the structure around certain cell directions one can do:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom &lt;<span class="k">in</span>&gt; --rotate &lt;angle&gt; <span class="o">[</span>ax<span class="p">|</span>yb<span class="p">|</span>zc<span class="o">]</span> &lt;out&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom<span class="w"> </span>&lt;<span class="k">in</span>&gt;<span class="w"> </span>--rotate<span class="w"> </span>&lt;angle&gt;<span class="w"> </span><span class="o">[</span>ax<span class="p">|</span>yb<span class="p">|</span>zc<span class="o">]</span><span class="w"> </span>&lt;out&gt;
 </pre></div>
 </div>
 <p>which rotates the structure around the origin with a normal vector along the
 specified cell direction. The input angle is in degrees and <em>not</em> in radians.
 If one wish to use radians append an <code class="docutils literal notranslate"><span class="pre">r</span></code> in the angle specification.</p>
 <p>Again there are shorthand commands:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom &lt;<span class="k">in</span>&gt; -R<span class="o">[</span>xyz<span class="o">]</span> &lt;angle&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom<span class="w"> </span>&lt;<span class="k">in</span>&gt;<span class="w"> </span>-R<span class="o">[</span>xyz<span class="o">]</span><span class="w"> </span>&lt;angle&gt;
 </pre></div>
 </div>
 </section>
@@ -238,7 +238,7 @@ the order of the command lines determine the order of operations.</p>
 it will be different from, shift the structure, then rotate, then repeat.</p>
 <p>Be also aware that outputting structures are done <em>at the time in the command line order</em>.
 This means one can store the intermediate steps while performing the entire operation:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom &lt;<span class="k">in</span>&gt; --rotate &lt;angle&gt; --out &lt;rotated&gt; -tx <span class="m">2</span> --out &lt;rotate-tile-x&gt; --ty <span class="m">2</span> --out &lt;rotate-tile-y&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom<span class="w"> </span>&lt;<span class="k">in</span>&gt;<span class="w"> </span>--rotate<span class="w"> </span>&lt;angle&gt;<span class="w"> </span>--out<span class="w"> </span>&lt;rotated&gt;<span class="w"> </span>-tx<span class="w"> </span><span class="m">2</span><span class="w"> </span>--out<span class="w"> </span>&lt;rotate-tile-x&gt;<span class="w"> </span>--ty<span class="w"> </span><span class="m">2</span><span class="w"> </span>--out<span class="w"> </span>&lt;rotate-tile-y&gt;
 </pre></div>
 </div>
 </section>
@@ -256,7 +256,7 @@ This means one can store the intermediate steps while performing the entire oper
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

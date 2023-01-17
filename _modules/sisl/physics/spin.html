@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.spin &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.physics.spin &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -103,7 +103,6 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">deprecate_method</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Spin&#39;</span><span class="p">]</span>
@@ -111,7 +110,7 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Spin</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Spin class to determine configurations and spin components.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Spin class to determine configurations and spin components.</span>
 
 <span class="sd">    The basic class `Spin` implements a generic method to determine a spin configuration.</span>
 
@@ -220,61 +219,55 @@
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">spin-orbit, kind=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dkind</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
 
 <div class="viewcode-block" id="Spin.copy"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Spin.html#sisl.physics.Spin.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Create a copy of the spin-object &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Create a copy of the spin-object &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Spin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Data-type of the spin configuration &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Data-type of the spin configuration &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dkind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Data-type kind &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Data-type kind &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span><span class="o">.</span><span class="n">kind</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Number of elements to describe the spin-components &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span>
-
-    <span class="nd">@property</span>
-    <span class="nd">@deprecate_method</span><span class="p">(</span><span class="s2">&quot;Use Spin.size instead&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">spins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Number of elements to describe the spin-components &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Number of elements to describe the spin-components &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">spinor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Number of spinor components (1 or 2) &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Number of spinor components (1 or 2) &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">kind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; A unique ID for the kind of spin configuration &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; A unique ID for the kind of spin configuration &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kind</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_unpolarized</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; True if the configuration is not polarized &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; True if the configuration is not polarized &quot;&quot;&quot;</span>
         <span class="c1"># Regardless of data-type</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">Spin</span><span class="o">.</span><span class="n">UNPOLARIZED</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_polarized</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; True if the configuration is polarized &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; True if the configuration is polarized &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">Spin</span><span class="o">.</span><span class="n">POLARIZED</span>
 
     <span class="n">is_colinear</span> <span class="o">=</span> <span class="n">is_polarized</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_noncolinear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; True if the configuration non-collinear &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; True if the configuration non-collinear &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">Spin</span><span class="o">.</span><span class="n">NONCOLINEAR</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_diagonal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Whether the spin-box is only using the diagonal components</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Whether the spin-box is only using the diagonal components</span>
 
 <span class="sd">        This will return true for non-polarized and polarized spin configurations.</span>
 <span class="sd">        Otherwise false.</span>
@@ -282,14 +275,8 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Spin</span><span class="o">.</span><span class="n">UNPOLARIZED</span><span class="p">,</span> <span class="n">Spin</span><span class="o">.</span><span class="n">POLARIZED</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="nd">@deprecate_method</span><span class="p">(</span><span class="s2">&quot;Use &#39;not Spin.is_diagonal&#39; instead&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">has_noncolinear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; True if the configuration is non-collinear or spin-orbit &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">&gt;=</span> <span class="n">Spin</span><span class="o">.</span><span class="n">NONCOLINEAR</span>
-
-    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_spinorbit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; True if the configuration is spin-orbit &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; True if the configuration is spin-orbit &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">Spin</span><span class="o">.</span><span class="n">SPINORBIT</span>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -334,7 +321,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Siesta — graphene &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>Siesta — graphene &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -39,7 +39,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -408,6 +408,7 @@ Download IPython notebook <a href="https://raw.githubusercontent.com/zerothi/sis
 <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="s1">&#39;siesta_2&#39;</span><span class="p">)</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">sisl.viz</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="o">%</span><span class="k">matplotlib</span> inline
 </pre></div>
@@ -433,25 +434,15 @@ Download IPython notebook <a href="https://raw.githubusercontent.com/zerothi/sis
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span><span class="p">(</span><span class="n">graphene</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">graphene</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="s2">&quot;xy&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-&lt;AxesSubplot: xlabel=&#39;Ang&#39;, ylabel=&#39;Ang&#39;&gt;
-</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_tutorial_siesta_2_4_1.png" src="../_images/tutorials_tutorial_siesta_2_4_1.png" />
-</div>
+<script type="application/vnd.jupyter.widget-view+json">{"version_major": 2, "version_minor": 0, "model_id": "7090dcf1bdcc4dd59796b3c59624addc"}</script></div>
 </div>
 <p>Now we need to create the input fdf file for Siesta:</p>
 <div class="nbinput nblast docutils container">
@@ -533,7 +524,7 @@ Hamiltonian{non-zero: 5994, orthogonal: False,
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">nk</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">21</span><span class="p">,</span> <span class="mi">41</span><span class="p">,</span> <span class="mi">61</span><span class="p">,</span> <span class="mi">81</span><span class="p">]:</span>
     <span class="n">bz</span> <span class="o">=</span> <span class="n">MonkhorstPack</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="p">[</span><span class="n">nk</span><span class="p">,</span> <span class="n">nk</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">bz</span><span class="o">.</span><span class="n">apply</span><span class="o">.</span><span class="n">average</span><span class="o">.</span><span class="n">DOS</span><span class="p">(</span><span class="n">E</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;nk=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nk</span><span class="p">));</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">bz</span><span class="o">.</span><span class="n">apply</span><span class="o">.</span><span class="n">average</span><span class="o">.</span><span class="n">eigenvalue</span><span class="p">(</span><span class="n">wrap</span><span class="o">=</span><span class="k">lambda</span> <span class="n">ev</span><span class="p">:</span> <span class="n">ev</span><span class="o">.</span><span class="n">DOS</span><span class="p">(</span><span class="n">E</span><span class="p">)),</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;nk=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nk</span><span class="p">));</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="n">E</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">E</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]);</span> <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$E - E_F$ [eV]&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;DOS [1/eV]&#39;</span><span class="p">)</span>
@@ -572,12 +563,14 @@ Hamiltonian{non-zero: 5994, orthogonal: False,
 <span class="n">all_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">a2o</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">idx_s</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
 <span class="n">all_pxy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">a2o</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">idx_pxy</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
 <span class="n">all_pz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">a2o</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">idx_pz</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
-<span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="n">PDOS</span><span class="p">):</span>
+
+<span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="n">es</span><span class="p">):</span>
+    <span class="n">PDOS</span> <span class="o">=</span> <span class="n">es</span><span class="o">.</span><span class="n">PDOS</span><span class="p">(</span><span class="n">E</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">pdos_s</span> <span class="o">=</span> <span class="n">PDOS</span><span class="p">[</span><span class="n">all_s</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">pdos_pxy</span> <span class="o">=</span> <span class="n">PDOS</span><span class="p">[</span><span class="n">all_pxy</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">pdos_pz</span> <span class="o">=</span> <span class="n">PDOS</span><span class="p">[</span><span class="n">all_pz</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">((</span><span class="n">pdos_s</span><span class="p">,</span> <span class="n">pdos_pxy</span><span class="p">,</span> <span class="n">pdos_pz</span><span class="p">))</span>
-<span class="n">pDOS</span> <span class="o">=</span> <span class="n">bz</span><span class="o">.</span><span class="n">apply</span><span class="o">.</span><span class="n">average</span><span class="o">.</span><span class="n">PDOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="n">wrap</span><span class="p">)</span>
+<span class="n">pDOS</span> <span class="o">=</span> <span class="n">bz</span><span class="o">.</span><span class="n">apply</span><span class="o">.</span><span class="n">average</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">(</span><span class="n">wrap</span><span class="o">=</span><span class="n">wrap</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">pDOS</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;$s$&#39;</span><span class="p">);</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">pDOS</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;$p_x+p_y$&#39;</span><span class="p">);</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">pDOS</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:],</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$p_z$&#39;</span><span class="p">);</span>
@@ -754,7 +747,10 @@ Orbital index of p_z: [2]
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-info:0: SislInfo: wavefunction: k != Gamma is currently untested!
+info:0: SislInfo:
+
+wavefunction: k != Gamma is currently untested!
+
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -764,7 +760,9 @@ info:0: SislInfo: wavefunction: k != Gamma is currently untested!
 <img alt="../_images/tutorials_tutorial_siesta_2_21_1.png" src="../_images/tutorials_tutorial_siesta_2_21_1.png" />
 </div>
 </div>
-</section>
+<script type="application/vnd.jupyter.widget-state+json">
+{"state": {"7090dcf1bdcc4dd59796b3c59624addc": {"model_name": "FigureModel", "model_module": "jupyterlab-plotly", "model_module_version": "^5.12.0", "state": {"_config": {"plotlyServerURL": "https://plot.ly"}, "_data": [{"line": {"color": "#cccccc", "width": 3}, "mode": "lines", "name": "bonds", "opacity": 1, "x": [0.0, 1.44, null, 0.0, -0.7200000000000002, null, 0.0, -0.7200000000000002, null, 1.44, 2.16, null, 1.44, 2.16, null], "y": [0.0, 0.0, null, 0.0, -1.2470765814495914, null, 0.0, 1.2470765814495914, null, 0.0, -1.2470765814495914, null, 0.0, 1.2470765814495914, null], "type": "scatter", "uid": "cb5f1465-6ab3-48c1-9eb7-e608c4bdb95a"}, {"marker": {"color": ["grey", "grey"], "opacity": {"dtype": "float64", "shape": [2]}, "size": {"dtype": "float64", "shape": [2]}}, "mode": "markers", "name": "Atoms", "opacity": 1, "text": ["[0. 0. 0.]<br>0 (C)", "[1.44 0.   0.  ]<br>1 (C)"], "x": {"dtype": "float64", "shape": [2]}, "y": {"dtype": "float64", "shape": [2]}, "type": "scatter", "uid": "7a714c0e-fd50-409f-9407-735368019711"}, {"line": {"color": "green"}, "mode": "lines", "name": "Unit cell", "opacity": 1, "x": {"dtype": "float64", "shape": [19]}, "y": {"dtype": "float64", "shape": [19]}, "type": "scatter", "uid": "316dd0aa-4c6c-4315-bfd9-1c8bee6801ad"}], "_dom_classes": [], "_js2py_layoutDelta": {}, "_js2py_pointsCallback": {}, "_js2py_relayout": {}, "_js2py_restyle": {}, "_js2py_traceDeltas": {}, "_js2py_update": {}, "_last_layout_edit_id": 0, "_last_trace_edit_id": 0, "_layout": {"template": {"layout": {"hovermode": "closest", "paper_bgcolor": "white", "plot_bgcolor": "white", "scene": {"xaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "yaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "zaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}}, "xaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "yaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}}}, "xaxis": {"showgrid": false, "title": {"text": "X axis [Ang]"}, "zeroline": false}, "yaxis": {"scaleanchor": "x", "scaleratio": 1, "showgrid": false, "title": {"text": "Y axis [Ang]"}, "zeroline": false}}, "_model_module": "jupyterlab-plotly", "_model_module_version": "^5.12.0", "_model_name": "FigureModel", "_py2js_addTraces": {}, "_py2js_animate": {}, "_py2js_deleteTraces": {}, "_py2js_moveTraces": {}, "_py2js_relayout": {}, "_py2js_removeLayoutProps": {}, "_py2js_removeTraceProps": {}, "_py2js_restyle": {}, "_py2js_update": {}, "_view_count": 0, "_view_module": "jupyterlab-plotly", "_view_module_version": "^5.12.0", "_view_name": "FigureView"}, "buffers": [{"data": "AAAAAAAA8D8AAAAAAADwPw==", "encoding": "base64", "path": ["_data", 1, "marker", "opacity", "buffer"]}, {"data": "cT0K16NwJUBxPQrXo3AlQA==", "encoding": "base64", "path": ["_data", 1, "marker", "size", "buffer"]}, {"data": "AAAAAAAAAAAK16NwPQr3Pw==", "encoding": "base64", "path": ["_data", 1, "x", "buffer"]}, {"data": "AAAAAAAAAAAAAAAAAAAAAA==", "encoding": "base64", "path": ["_data", 1, "y", "buffer"]}, {"data": "AAAAAAAAAABI4XoUrkcBQEjhehSuRxFASOF6FK5HEUBI4XoUrkcBQEjhehSuRwFAAAAAAAAA+H9I4XoUrkcBQAAAAAAAAAAAAAAAAAAAAABI4XoUrkcBQEjhehSuRwFAAAAAAAAAAAAAAAAAAAD4f0jhehSuRxFASOF6FK5HAUAAAAAAAAD4f0jhehSuRxFASOF6FK5HAUA=", "encoding": "base64", "path": ["_data", 2, "x", "buffer"]}, {"data": "AAAAAAAAAACE786SBvTzPwAAAAAAAAAAAAAAAAAAAACE786SBvTzP4TvzpIG9PM/AAAAAAAA+H+E786SBvTzPwAAAAAAAAAAAAAAAAAAAACE786SBvTzv4TvzpIG9PO/AAAAAAAAAAAAAAAAAAD4fwAAAAAAAAAAhO/Okgb0878AAAAAAAD4fwAAAAAAAAAAhO/Okgb0878=", "encoding": "base64", "path": ["_data", 2, "y", "buffer"]}]}}, "version_major": 2, "version_minor": 0}
+</script></section>
 </section>
 
 
@@ -778,7 +776,7 @@ info:0: SislInfo: wavefunction: k != Gamma is currently untested!
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

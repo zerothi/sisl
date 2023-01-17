@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TranSiesta Hartree correction for FFT Poisson solver &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>TranSiesta Hartree correction for FFT Poisson solver &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -39,7 +39,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -158,7 +158,7 @@ as defined by the user.</p>
 <section id="command-line-tool">
 <h2>Command line tool<a class="headerlink" href="#command-line-tool" title="Permalink to this heading"></a></h2>
 <p>It may be called using</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>stoolbox ts-fft --help
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>stoolbox<span class="w"> </span>ts-fft<span class="w"> </span>--help
 </pre></div>
 </div>
 <p>which gives a lot of instructions.</p>
@@ -176,19 +176,19 @@ search for line <code class="docutils literal notranslate"><span class="pre">Ini
 of point 4.</p>
 <p>An example command line for a bulk system with transport along third lattice vector
 would look something like:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>stoolbox ts-fft --geometry siesta.TBT.nc -V Left <span class="m">0</span>.5 -V Right -0.5 <span class="se">\</span>
-       --shape <span class="m">300</span> <span class="m">200</span> <span class="m">100</span> --out fft-fix.TSV.nc <span class="se">\</span>
-       --boundary-condition-c d d
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>stoolbox<span class="w"> </span>ts-fft<span class="w"> </span>--geometry<span class="w"> </span>siesta.TBT.nc<span class="w"> </span>-V<span class="w"> </span>Left<span class="w"> </span><span class="m">0</span>.5<span class="w"> </span>-V<span class="w"> </span>Right<span class="w"> </span>-0.5<span class="w"> </span><span class="se">\</span>
+<span class="w">       </span>--shape<span class="w"> </span><span class="m">300</span><span class="w"> </span><span class="m">200</span><span class="w"> </span><span class="m">100</span><span class="w"> </span>--out<span class="w"> </span>fft-fix.TSV.nc<span class="w"> </span><span class="se">\</span>
+<span class="w">       </span>--boundary-condition-c<span class="w"> </span>d<span class="w"> </span>d
 </pre></div>
 </div>
 <p>Note the boundary conditions along the transport direction; here <code class="docutils literal notranslate"><span class="pre">d</span></code> means Dirichlet.</p>
 <p>For systems where there is no periodicity one can use Neumann boundaries. For a 1D chain
 one would do:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>stoolbox ts-fft --geometry siesta.TBT.nc -V Left <span class="m">0</span>.5 -V Right -0.5 <span class="se">\</span>
-       --shape <span class="m">300</span> <span class="m">200</span> <span class="m">100</span> --out fft-fix.TSV.nc <span class="se">\</span>
-       --boundary-condition-a n n <span class="se">\</span>
-       --boundary-condition-b n n <span class="se">\</span>
-       --boundary-condition-c d d
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>stoolbox<span class="w"> </span>ts-fft<span class="w"> </span>--geometry<span class="w"> </span>siesta.TBT.nc<span class="w"> </span>-V<span class="w"> </span>Left<span class="w"> </span><span class="m">0</span>.5<span class="w"> </span>-V<span class="w"> </span>Right<span class="w"> </span>-0.5<span class="w"> </span><span class="se">\</span>
+<span class="w">       </span>--shape<span class="w"> </span><span class="m">300</span><span class="w"> </span><span class="m">200</span><span class="w"> </span><span class="m">100</span><span class="w"> </span>--out<span class="w"> </span>fft-fix.TSV.nc<span class="w"> </span><span class="se">\</span>
+<span class="w">       </span>--boundary-condition-a<span class="w"> </span>n<span class="w"> </span>n<span class="w"> </span><span class="se">\</span>
+<span class="w">       </span>--boundary-condition-b<span class="w"> </span>n<span class="w"> </span>n<span class="w"> </span><span class="se">\</span>
+<span class="w">       </span>--boundary-condition-c<span class="w"> </span>d<span class="w"> </span>d
 </pre></div>
 </div>
 <p>Which uses Dirichlet for transport direction, otherwise Neumann.</p>
@@ -224,7 +224,7 @@ you are encouraged to use that instead.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

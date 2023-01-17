@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.HydrogenicOrbital &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.HydrogenicOrbital &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -27,7 +27,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="sisl.Atom" href="sisl.Atom.html" />
+    <link rel="next" title="sisl.GTOrbital" href="sisl.GTOrbital.html" />
     <link rel="prev" title="sisl.AtomicOrbital" href="sisl.AtomicOrbital.html" /> 
 </head>
 
@@ -39,7 +39,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -82,6 +82,8 @@
 <li class="toctree-l4"><a class="reference internal" href="sisl.SphericalOrbital.html">sisl.SphericalOrbital</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.AtomicOrbital.html">sisl.AtomicOrbital</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">sisl.HydrogenicOrbital</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.GTOrbital.html">sisl.GTOrbital</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.STOrbital.html">sisl.STOrbital</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.Atom.html">sisl.Atom</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.Atoms.html">sisl.Atoms</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.Geometry.html">sisl.Geometry</a></li>
@@ -163,6 +165,17 @@
 <p>A hydrogen-like atomic orbital defined by an effective atomic number Z in addition to the usual quantum numbers (n, l, m).</p>
 <p>A hydrogenic atom (Hydrogen-like) is an atom with a single valence electron.</p>
 <p>The returned orbital is properly normalized, see <a class="footnote-reference brackets" href="#id2" id="id1">1</a> for details.</p>
+<p>The orbital has the familiar spherical shape</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}Y^m_l(\theta,\varphi) &amp;= (-1)^m\sqrt{\frac{2l+1}{4\pi} \frac{(l-m)!}{(l+m)!}}
+     e^{i m \theta} P^m_l(\cos(\varphi))
+\\
+\phi_{lmn}(\mathbf r) &amp;= R_{nl}(|\mathbf r|) Y^m_l(\theta, \varphi)
+\\
+R_{nl}(|\mathbf r|) &amp;= -\sqrt{\big(\frac{2Z}{na_0}\big)^3 \frac{(n-l-1)!}{2n(n+l)!}
+   e^{-Zr/(na_0)} \big( \frac{2Zr}{na_0} \big)^l L_{n-l-1}^{(2l+1)}
+   \big( \frac{2Zr}{na_0} \big)\end{split}\]</div>
+<p>With <span class="math notranslate nohighlight">\(L_{n-l-1}^{(2l+1)}\)</span> is the generalized Laguerre polynomials.</p>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
 <dt class="label" id="id2"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
@@ -176,7 +189,7 @@
 <li><p><strong>l</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – angular momentum quantum number</p></li>
 <li><p><strong>m</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – magnetic quantum number</p></li>
 <li><p><strong>Z</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – effective atomic number</p></li>
-<li><p><strong>R</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – max range of the constructed orbital</p></li>
+<li><p><strong>R</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – max range of the constructed orbital, defaults to 10 Ang</p></li>
 </ul>
 </dd>
 </dl>
@@ -335,7 +348,7 @@
 <dd class="field-even"><p>basis function value at point <em class="xref py py-obj">r</em></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -359,7 +372,7 @@
 <dd class="field-even"><p>basis function value at point <em class="xref py py-obj">r</em></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -383,7 +396,7 @@
 <dd class="field-even"><p>radial orbital value at point <em class="xref py py-obj">r</em></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -418,7 +431,7 @@
 <dd class="field-even"><p>spherical harmonics at angles <span class="math notranslate nohighlight">\(\theta\)</span> and <span class="math notranslate nohighlight">\(\phi\)</span></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -439,7 +452,7 @@
 <li><p><strong>precision</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – used separation in the <a class="reference internal" href="sisl.Grid.html#sisl.Grid" title="sisl.Grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Grid</span></code></a> between voxels (in Ang)</p></li>
 <li><p><strong>c</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#complex" title="(in Python v3.11)"><em>complex</em></a><em>, </em><em>optional</em>) – coefficient for the orbital</p></li>
 <li><p><strong>R</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – box size of the grid (default to the orbital range)</p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.23)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the used separation in the <a class="reference internal" href="sisl.Grid.html#sisl.Grid" title="sisl.Grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Grid</span></code></a> between voxels</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the used separation in the <a class="reference internal" href="sisl.Grid.html#sisl.Grid" title="sisl.Grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Grid</span></code></a> between voxels</p></li>
 <li><p><strong>atom</strong> (<em>optional</em>) – atom associated with the grid; either an atom instance or
 something that <code class="docutils literal notranslate"><span class="pre">Atom(atom)</span></code> would convert to a proper atom.</p></li>
 </ul>
@@ -476,13 +489,13 @@ something that <code class="docutils literal notranslate"><span class="pre">Atom
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="sisl.AtomicOrbital.html" class="btn btn-neutral float-left" title="sisl.AtomicOrbital" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="sisl.Atom.html" class="btn btn-neutral float-right" title="sisl.Atom" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="sisl.GTOrbital.html" class="btn btn-neutral float-right" title="sisl.GTOrbital" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

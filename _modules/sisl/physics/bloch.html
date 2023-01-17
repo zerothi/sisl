@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.bloch &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.physics.bloch &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -123,7 +123,7 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Bloch</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Bloch&#39;s theorem object containing unfolding factors and unfolding algorithms</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Bloch&#39;s theorem object containing unfolding factors and unfolding algorithms</span>
 
 <span class="sd">    This class is a wrapper for expanding *any* matrix from a smaller matrix cell into</span>
 <span class="sd">    a larger, using Bloch&#39;s theorem.</span>
@@ -165,7 +165,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Bloch.__init__"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Bloch.html#sisl.physics.Bloch.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">bloch</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Create `Bloch` object &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Create `Bloch` object &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_bloch</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayi</span><span class="p">(</span><span class="n">bloch</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_bloch</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bloch</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bloch</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bloch</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
@@ -174,21 +174,21 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39; requires all unfoldings to be larger than 0&#39;</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return unfolded size &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return unfolded size &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bloch</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Representation of the Bloch model &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Representation of the Bloch model &quot;&quot;&quot;</span>
         <span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bloch</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="si">{</span><span class="n">B</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">B</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">B</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">bloch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Number of Bloch expansions along each lattice vector &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Number of Bloch expansions along each lattice vector &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bloch</span>
 
 <div class="viewcode-block" id="Bloch.unfold_points"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Bloch.html#sisl.physics.Bloch.unfold_points">[docs]</a>    <span class="k">def</span> <span class="nf">unfold_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Return a list of k-points to be evaluated for this objects unfolding</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Return a list of k-points to be evaluated for this objects unfolding</span>
 
 <span class="sd">        The k-point `k` is with respect to the unfolded geometry.</span>
 <span class="sd">        The return list of `k` points are the k-points required to be sampled in the</span>
@@ -217,7 +217,7 @@
         <span class="k">return</span> <span class="n">unfold</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Bloch.__call__"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Bloch.html#sisl.physics.Bloch.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return a functions return values as the Bloch unfolded equivalent according to this object</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return a functions return values as the Bloch unfolded equivalent according to this object</span>
 
 <span class="sd">        Calling the `Bloch` object is a shorthand for the manual use of the `Bloch.unfold_points` and `Bloch.unfold`</span>
 <span class="sd">        methods.</span>
@@ -260,7 +260,7 @@
         <span class="k">return</span> <span class="n">bloch_unfold</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bloch</span><span class="p">,</span> <span class="n">K_unfold</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Bloch.unfold"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Bloch.html#sisl.physics.Bloch.unfold">[docs]</a>    <span class="k">def</span> <span class="nf">unfold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">k_unfold</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Unfold the matrix list of matrices `M` into a corresponding k-point (unfolding k-points are `k_unfold`)</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Unfold the matrix list of matrices `M` into a corresponding k-point (unfolding k-points are `k_unfold`)</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -286,7 +286,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

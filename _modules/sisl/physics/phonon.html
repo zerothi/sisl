@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.phonon &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.physics.phonon &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -112,8 +112,6 @@
 
 <span class="sd">   DOS</span>
 <span class="sd">   PDOS</span>
-<span class="sd">   velocity</span>
-<span class="sd">   displacement</span>
 
 
 <span class="sd">Supporting classes</span>
@@ -132,8 +130,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">conj</span><span class="p">,</span> <span class="n">dot</span><span class="p">,</span> <span class="n">fabs</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">einsum</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">delete</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">fabs</span><span class="p">,</span> <span class="n">delete</span>
 
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">deprecate_method</span>
@@ -147,14 +144,14 @@
 <span class="kn">from</span> <span class="nn">.electron</span> <span class="kn">import</span> <span class="n">PDOS</span> <span class="k">as</span> <span class="n">electron_PDOS</span>
 
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;DOS&#39;</span><span class="p">,</span> <span class="s1">&#39;PDOS&#39;</span><span class="p">,</span> <span class="s1">&#39;velocity&#39;</span><span class="p">,</span> <span class="s1">&#39;displacement&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;DOS&#39;</span><span class="p">,</span> <span class="s1">&#39;PDOS&#39;</span><span class="p">]</span>
 <span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;CoefficientPhonon&#39;</span><span class="p">,</span> <span class="s1">&#39;ModePhonon&#39;</span><span class="p">,</span> <span class="s1">&#39;ModeCPhonon&#39;</span><span class="p">]</span>
 <span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;EigenvaluePhonon&#39;</span><span class="p">,</span> <span class="s1">&#39;EigenvectorPhonon&#39;</span><span class="p">,</span> <span class="s1">&#39;EigenmodePhonon&#39;</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="DOS"><a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.DOS.html#sisl.physics.phonon.DOS">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.phonon&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">DOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">hw</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the density of modes (DOS) for a set of energies, `E`, with a distribution function</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the density of modes (DOS) for a set of energies, `E`, with a distribution function</span>
 
 <span class="sd">    The :math:`\mathrm{DOS}(E)` is calculated as:</span>
 
@@ -190,7 +187,7 @@
 
 <div class="viewcode-block" id="PDOS"><a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.PDOS.html#sisl.physics.phonon.PDOS">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.phonon&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">PDOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">hw</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the projected density of modes (PDOS) onto each each atom and direction for a set of energies, `E`, with a distribution function</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the projected density of modes (PDOS) onto each each atom and direction for a set of energies, `E`, with a distribution function</span>
 
 <span class="sd">    The :math:`\mathrm{PDOS}(E)` is calculated as:</span>
 
@@ -226,187 +223,46 @@
 <span class="sd">    numpy.ndarray</span>
 <span class="sd">        projected DOS calculated at energies, has dimension ``(mode.shape[1], len(E))``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">electron_PDOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">hw</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="n">distribution</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="velocity"><a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.velocity.html#sisl.physics.phonon.velocity">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.phonon&quot;</span><span class="p">)</span>
-<span class="nd">@deprecate_method</span><span class="p">(</span><span class="s2">&quot;use DynamicalMatrix.eigenstate(...).velocity() instead&quot;</span><span class="p">,</span> <span class="s2">&quot;0.13.0&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="n">hw</span><span class="p">,</span> <span class="n">dDk</span><span class="p">,</span> <span class="n">degenerate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">project</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the velocity of a set of modes</span>
-
-<span class="sd">    These are calculated using the analytic expression (:math:`\alpha` corresponding to the Cartesian directions):</span>
-
-<span class="sd">    .. math::</span>
-
-<span class="sd">       \mathbf{v}_{i\alpha} = \frac1{2\hbar\omega} \langle \epsilon_i |</span>
-<span class="sd">                \frac{\partial}{\partial\mathbf k}_\alpha \mathbf D(\mathbf k) | \epsilon_i \rangle</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    mode : array_like</span>
-<span class="sd">       vectors describing the phonon modes, 2nd dimension contains the modes. In case of degenerate</span>
-<span class="sd">       modes the vectors *may* be rotated upon return.</span>
-<span class="sd">    hw : array_like</span>
-<span class="sd">       frequencies of the modes, for any negative frequency the velocity will be set to 0.</span>
-<span class="sd">    dDk : list of array_like</span>
-<span class="sd">       Dynamical matrix derivative with respect to :math:`\mathbf k`. This needs to be a tuple or</span>
-<span class="sd">       list of the dynamical matrix derivative along the 3 Cartesian directions.</span>
-<span class="sd">    degenerate : list of array_like, optional</span>
-<span class="sd">       a list containing the indices of degenerate modes. In that case a prior diagonalization</span>
-<span class="sd">       is required to decouple them. This is done 3 times along each of the Cartesian directions.</span>
-<span class="sd">    degenerate_dir : (3,), optional</span>
-<span class="sd">       a direction used for degenerate decoupling. The decoupling based on the velocity along this direction</span>
-<span class="sd">    project : bool, optional</span>
-<span class="sd">       if true, velocities will be returned projected per mode component</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    DynamicalMatrix.dDk : function for generating the dynamical matrix derivatives (`dDk` argument)</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    numpy.ndarray</span>
-<span class="sd">        if `project` is false; velocities per mode with final dimension ``(mode.shape[0], 3)``, the velocity unit is Ang/ps</span>
-<span class="sd">        Units *may* change in future releases.</span>
-<span class="sd">    numpy.ndarray</span>
-<span class="sd">        if `project` is true; velocities per mode with final dimension ``(mode.shape[0], mode.shape[1], 3)``, the velocity unit is Ang/ps</span>
-<span class="sd">        Units *may* change in future releases.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">mode</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">velocity</span><span class="p">(</span><span class="n">mode</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">hw</span><span class="p">,</span> <span class="n">dDk</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="p">,</span> <span class="n">project</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">_velocity</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="n">hw</span><span class="p">,</span> <span class="n">dDk</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="p">,</span> <span class="n">project</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">electron_PDOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">hw</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="n">distribution</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
 
 
 <span class="c1"># dDk is in [Ang * eV ** 2]</span>
 <span class="c1"># velocity units in Ang/ps</span>
-<span class="n">_velocity_const</span> <span class="o">=</span> <span class="n">units</span><span class="p">(</span><span class="s1">&#39;ps&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">)</span> <span class="o">/</span> <span class="n">constant</span><span class="o">.</span><span class="n">hbar</span><span class="p">(</span><span class="s1">&#39;eV s&#39;</span><span class="p">)</span>
+<span class="n">_velocity_const</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">constant</span><span class="o">.</span><span class="n">hbar</span><span class="p">(</span><span class="s1">&#39;eV ps&#39;</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_velocity</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="n">hw</span><span class="p">,</span> <span class="n">dDk</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="p">,</span> <span class="n">project</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; For modes in an orthogonal basis &quot;&quot;&quot;</span>
-    <span class="c1"># Decouple the degenerate modes</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">degenerate</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">degenerate_dir</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">degenerate_dir</span><span class="p">)</span>
-        <span class="n">degenerate_dir</span> <span class="o">/=</span> <span class="p">(</span><span class="n">degenerate_dir</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">**</span> <span class="mf">0.5</span>
-        <span class="n">deg_dDk</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">d</span><span class="o">*</span><span class="n">dd</span> <span class="k">for</span> <span class="n">d</span><span class="p">,</span> <span class="n">dd</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">degenerate_dir</span><span class="p">,</span> <span class="n">dDk</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">deg</span> <span class="ow">in</span> <span class="n">degenerate</span><span class="p">:</span>
-            <span class="c1"># Set the average frequency</span>
-            <span class="n">hw</span><span class="p">[</span><span class="n">deg</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">hw</span><span class="p">[</span><span class="n">deg</span><span class="p">])</span>
-
-            <span class="c1"># Now diagonalize to find the contributions from individual modes</span>
-            <span class="c1"># then re-construct the seperated degenerate modes</span>
-            <span class="c1"># Since we do this for all directions we should decouple them all</span>
-            <span class="n">mode</span><span class="p">[</span><span class="n">deg</span><span class="p">]</span> <span class="o">=</span> <span class="n">degenerate_decouple</span><span class="p">(</span><span class="n">mode</span><span class="p">[</span><span class="n">deg</span><span class="p">],</span> <span class="n">deg_dDk</span><span class="p">)</span>
-        <span class="k">del</span> <span class="n">deg_dDk</span>
-
-    <span class="n">cm</span> <span class="o">=</span> <span class="n">conj</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">project</span><span class="p">:</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="n">mode</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mode</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_complex_to_real</span><span class="p">(</span><span class="n">mode</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
-        <span class="n">v</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cm</span> <span class="o">*</span> <span class="n">dDk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">mode</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
-        <span class="n">v</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cm</span> <span class="o">*</span> <span class="n">dDk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">mode</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
-        <span class="n">v</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cm</span> <span class="o">*</span> <span class="n">dDk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">mode</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
-
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="n">mode</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_complex_to_real</span><span class="p">(</span><span class="n">mode</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
-        <span class="n">v</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ij,ji-&gt;i&#39;</span><span class="p">,</span> <span class="n">cm</span><span class="p">,</span> <span class="n">dDk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">mode</span><span class="o">.</span><span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">real</span>
-        <span class="n">v</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ij,ji-&gt;i&#39;</span><span class="p">,</span> <span class="n">cm</span><span class="p">,</span> <span class="n">dDk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">mode</span><span class="o">.</span><span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">real</span>
-        <span class="n">v</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;ij,ji-&gt;i&#39;</span><span class="p">,</span> <span class="n">cm</span><span class="p">,</span> <span class="n">dDk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">mode</span><span class="o">.</span><span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">real</span>
-
-    <span class="c1"># Set everything to zero for the negative frequencies</span>
-    <span class="n">v</span><span class="p">[</span><span class="n">hw</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-
-    <span class="k">if</span> <span class="n">project</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">v</span> <span class="o">*</span> <span class="n">_velocity_const</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">hw</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">v</span> <span class="o">*</span> <span class="n">_velocity_const</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">hw</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-
-
-<div class="viewcode-block" id="displacement"><a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.displacement.html#sisl.physics.phonon.displacement">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.phonon&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">displacement</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="n">hw</span><span class="p">,</span> <span class="n">mass</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate real-space displacements for a given mode (in units of the characteristic length)</span>
-
-<span class="sd">    The displacements per mode may be written as:</span>
-
-<span class="sd">    .. math::</span>
-
-<span class="sd">       \mathbf{u}_{i\alpha} = \epsilon_{i\alpha}\sqrt{\frac{\hbar}{m_i \omega}}</span>
-
-<span class="sd">    where :math:`i` is the atomic index.</span>
-
-<span class="sd">    Even for negative frequencies the characteristic length is calculated for use of non-equilibrium</span>
-<span class="sd">    modes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    mode : array_like</span>
-<span class="sd">       vectors describing the phonon modes, 2nd dimension contains the modes. In case of degenerate</span>
-<span class="sd">       modes the vectors *may* be rotated upon return.</span>
-<span class="sd">    hw : array_like</span>
-<span class="sd">       frequencies of the modes, for any negative frequency the returned displacement will be 0.</span>
-<span class="sd">    mass : array_like</span>
-<span class="sd">       masses for the atoms (has to have length ``mode.shape[1] // 3``</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    numpy.ndarray</span>
-<span class="sd">        displacements per mode with final dimension ``(mode.shape[0], 3)``, displacements are in Ang</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">mode</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">displacement</span><span class="p">(</span><span class="n">mode</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">hw</span><span class="p">,</span> <span class="n">mass</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-
-    <span class="k">return</span> <span class="n">_displacement</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="n">hw</span><span class="p">,</span> <span class="n">mass</span><span class="p">)</span></div>
-
-
-<span class="c1"># Rest mass in units of proton mass (the units we use for the atoms)</span>
-<span class="n">_displacement_const</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="s1">&#39;Ry&#39;</span><span class="p">,</span> <span class="s1">&#39;eV&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="n">constant</span><span class="o">.</span><span class="n">m_e</span><span class="p">(</span><span class="s1">&#39;amu&#39;</span><span class="p">))</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="s1">&#39;Bohr&#39;</span><span class="p">,</span> <span class="s1">&#39;Ang&#39;</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">_displacement</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="n">hw</span><span class="p">,</span> <span class="n">mass</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Real space displacements &quot;&quot;&quot;</span>
-    <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">hw</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">U</span> <span class="o">=</span> <span class="n">mode</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    <span class="n">U</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mf">0.</span>
-
-    <span class="c1"># Now create the remaining displacements</span>
-    <span class="n">idx</span> <span class="o">=</span> <span class="n">delete</span><span class="p">(</span><span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="n">mode</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">idx</span><span class="p">)</span>
-
-    <span class="c1"># Generate displacement factor</span>
-    <span class="n">factor</span> <span class="o">=</span> <span class="n">_displacement_const</span> <span class="o">/</span> <span class="n">fabs</span><span class="p">(</span><span class="n">hw</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
-
-    <span class="n">U</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">mode</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-    <span class="n">U</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">(</span><span class="n">mode</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">factor</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">mass</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span> <span class="o">/</span> <span class="n">mass</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
-
-    <span class="k">return</span> <span class="n">U</span>
+<span class="n">_displacement_const</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="s1">&#39;Ry&#39;</span><span class="p">,</span> <span class="s1">&#39;eV&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">constant</span><span class="o">.</span><span class="n">m_e</span> <span class="o">/</span> <span class="n">constant</span><span class="o">.</span><span class="n">m_p</span><span class="p">))</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="s1">&#39;Bohr&#39;</span><span class="p">,</span> <span class="s1">&#39;Ang&#39;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="CoefficientPhonon"><a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.CoefficientPhonon.html#sisl.physics.phonon.CoefficientPhonon">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.phonon&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">CoefficientPhonon</span><span class="p">(</span><span class="n">Coefficient</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Coefficients describing some physical quantity related to phonons &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Coefficients describing some physical quantity related to phonons &quot;&quot;&quot;</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span></div>
 
 
 <div class="viewcode-block" id="ModePhonon"><a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.ModePhonon.html#sisl.physics.phonon.ModePhonon">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.phonon&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">ModePhonon</span><span class="p">(</span><span class="n">State</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; A mode describing a physical quantity related to phonons &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; A mode describing a physical quantity related to phonons &quot;&quot;&quot;</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">mode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Eigenmodes (states) &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Eigenmodes (states) &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span></div>
 
 
 <div class="viewcode-block" id="ModeCPhonon"><a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.ModeCPhonon.html#sisl.physics.phonon.ModeCPhonon">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.phonon&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">ModeCPhonon</span><span class="p">(</span><span class="n">StateC</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; A mode describing a physical quantity related to phonons, with associated coefficients of the mode &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; A mode describing a physical quantity related to phonons, with associated coefficients of the mode &quot;&quot;&quot;</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">mode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Eigenmodes (states) &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Eigenmodes (states) &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span>
 
 <div class="viewcode-block" id="ModeCPhonon.velocity"><a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.ModeCPhonon.html#sisl.physics.phonon.ModeCPhonon.velocity">[docs]</a>    <span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate velocity of the modes</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate velocity of the modes</span>
 
 <span class="sd">        This routine calls `derivative` with appropriate arguments (1st order derivative)</span>
 <span class="sd">        and returns the velocity for the modes.</span>
@@ -427,15 +283,15 @@
 <span class="sd">        --------</span>
 <span class="sd">        derivative : for details of the implementation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
-        <span class="n">axes</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">ndim</span><span class="p">))</span>
-        <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">_velocity_const</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">axes</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">ndim</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">/</span> <span class="n">_velocity_const</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="p">(</span><span class="n">c</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">))</span></div></div>
 
 
 <div class="viewcode-block" id="EigenvaluePhonon"><a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.EigenvaluePhonon.html#sisl.physics.phonon.EigenvaluePhonon">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.phonon&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">EigenvaluePhonon</span><span class="p">(</span><span class="n">CoefficientPhonon</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Eigenvalues of phonon modes, no eigenmodes retained</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Eigenvalues of phonon modes, no eigenmodes retained</span>
 
 <span class="sd">    This holds routines that enable the calculation of density of states.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -443,11 +299,11 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">hw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Eigenmode values in units of :math:`\hbar \omega` [eV] &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Eigenmode values in units of :math:`\hbar \omega` [eV] &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
 
 <div class="viewcode-block" id="EigenvaluePhonon.occupation"><a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.EigenvaluePhonon.html#sisl.physics.phonon.EigenvaluePhonon.occupation">[docs]</a>    <span class="k">def</span> <span class="nf">occupation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s1">&#39;bose_einstein&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Calculate the occupations for the states according to a distribution function</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Calculate the occupations for the states according to a distribution function</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -464,7 +320,7 @@
         <span class="k">return</span> <span class="n">distribution</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hw</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="EigenvaluePhonon.DOS"><a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.EigenvaluePhonon.html#sisl.physics.phonon.EigenvaluePhonon.DOS">[docs]</a>    <span class="k">def</span> <span class="nf">DOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate DOS for provided energies, `E`.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate DOS for provided energies, `E`.</span>
 
 <span class="sd">        This routine calls `sisl.physics.phonon.DOS` with appropriate arguments</span>
 <span class="sd">        and returns the DOS.</span>
@@ -476,13 +332,13 @@
 
 <div class="viewcode-block" id="EigenvectorPhonon"><a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.EigenvectorPhonon.html#sisl.physics.phonon.EigenvectorPhonon">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.phonon&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">EigenvectorPhonon</span><span class="p">(</span><span class="n">ModePhonon</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Eigenvectors of phonon modes, no eigenvalues retained &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Eigenvectors of phonon modes, no eigenvalues retained &quot;&quot;&quot;</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span></div>
 
 
 <div class="viewcode-block" id="EigenmodePhonon"><a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.EigenmodePhonon.html#sisl.physics.phonon.EigenmodePhonon">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.phonon&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">EigenmodePhonon</span><span class="p">(</span><span class="n">ModeCPhonon</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Eigenmodes of phonons with eigenvectors and eigenvalues.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Eigenmodes of phonons with eigenvectors and eigenvalues.</span>
 
 <span class="sd">    This holds routines that enable the calculation of (projected) density of states.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -490,11 +346,11 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">hw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Eigenmode values in units of :math:`\hbar \omega` [eV] &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Eigenmode values in units of :math:`\hbar \omega` [eV] &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
 
 <div class="viewcode-block" id="EigenmodePhonon.occupation"><a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.EigenmodePhonon.html#sisl.physics.phonon.EigenmodePhonon.occupation">[docs]</a>    <span class="k">def</span> <span class="nf">occupation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s1">&#39;bose_einstein&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Calculate the occupations for the states according to a distribution function</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Calculate the occupations for the states according to a distribution function</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -511,7 +367,7 @@
         <span class="k">return</span> <span class="n">distribution</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hw</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="EigenmodePhonon.DOS"><a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.EigenmodePhonon.html#sisl.physics.phonon.EigenmodePhonon.DOS">[docs]</a>    <span class="k">def</span> <span class="nf">DOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate DOS for provided energies, `E`.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate DOS for provided energies, `E`.</span>
 
 <span class="sd">        This routine calls `sisl.physics.phonon.DOS` with appropriate arguments</span>
 <span class="sd">        and returns the DOS.</span>
@@ -521,7 +377,7 @@
         <span class="k">return</span> <span class="n">DOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hw</span><span class="p">,</span> <span class="n">distribution</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="EigenmodePhonon.PDOS"><a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.EigenmodePhonon.html#sisl.physics.phonon.EigenmodePhonon.PDOS">[docs]</a>    <span class="k">def</span> <span class="nf">PDOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate PDOS for provided energies, `E`.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate PDOS for provided energies, `E`.</span>
 
 <span class="sd">        This routine calls `~sisl.physics.phonon.PDOS` with appropriate arguments</span>
 <span class="sd">        and returns the PDOS.</span>
@@ -531,17 +387,49 @@
         <span class="k">return</span> <span class="n">PDOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hw</span><span class="p">,</span> <span class="n">distribution</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="EigenmodePhonon.displacement"><a class="viewcode-back" href="../../../api/generated/sisl.physics.phonon.EigenmodePhonon.html#sisl.physics.phonon.EigenmodePhonon.displacement">[docs]</a>    <span class="k">def</span> <span class="nf">displacement</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate displacements for the modes</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate real-space displacements for a given mode (in units of the characteristic length)</span>
 
-<span class="sd">        This routine calls `~sisl.physics.phonon.displacements` with appropriate arguments</span>
-<span class="sd">        and returns the real space displacements for the modes.</span>
+<span class="sd">        The displacements per mode may be written as:</span>
 
-<span class="sd">        Note that the coefficients associated with the `ModeCPhonon` *must* correspond</span>
-<span class="sd">        to the frequencies of the modes.</span>
+<span class="sd">        .. math::</span>
 
-<span class="sd">        See `~sisl.physics.phonon.displacement` for details.</span>
+<span class="sd">            \mathbf{u}_{i\alpha} = \epsilon_{i\alpha}\sqrt{\frac{\hbar}{m_i \omega}}</span>
+
+<span class="sd">        where :math:`i` is the atomic index.</span>
+
+<span class="sd">        Even for negative frequencies the characteristic length is calculated for use of non-equilibrium</span>
+<span class="sd">        modes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mode : array_like</span>
+<span class="sd">            vectors describing the phonon modes, 2nd dimension contains the modes. In case of degenerate</span>
+<span class="sd">            modes the vectors *may* be rotated upon return.</span>
+<span class="sd">        hw : array_like</span>
+<span class="sd">            frequencies of the modes, for any negative frequency the returned displacement will be 0.</span>
+<span class="sd">        mass : array_like</span>
+<span class="sd">            masses for the atoms (has to have length ``mode.shape[1] // 3``</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            displacements per mode with final dimension ``(3, mode.shape[0])``, displacements are in Ang</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">displacement</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span></div></div>
+        <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span>
+        <span class="n">U</span> <span class="o">=</span> <span class="n">mode</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">U</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mf">0.</span>
+
+        <span class="c1"># Now create the remaining displacements</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">delete</span><span class="p">(</span><span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="n">U</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">idx</span><span class="p">)</span>
+
+        <span class="c1"># Generate displacement factor</span>
+        <span class="n">factor</span> <span class="o">=</span> <span class="n">_displacement_const</span> <span class="o">/</span> <span class="n">fabs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
+
+        <span class="n">U</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">U</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">U</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">mode</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">factor</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mass</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
+        <span class="n">U</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">U</span></div></div>
 </pre></div>
 
            </div>
@@ -551,7 +439,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

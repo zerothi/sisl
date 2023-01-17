@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.orb_indx &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.io.siesta.orb_indx &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -118,11 +118,11 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">orbindxSileSiesta</span><span class="p">(</span><span class="n">SileSiesta</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Orbital information file &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Orbital information file &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="orbindxSileSiesta.read_supercell_nsc"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.orbindxSileSiesta.html#sisl.io.siesta.orbindxSileSiesta.read_supercell_nsc">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">read_supercell_nsc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Reads the supercell number of supercell information &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads the supercell number of supercell information &quot;&quot;&quot;</span>
         <span class="c1"># First line contains no no_s</span>
         <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
         <span class="n">no_s</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
@@ -147,7 +147,7 @@
 
 <div class="viewcode-block" id="orbindxSileSiesta.read_basis"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.orbindxSileSiesta.html#sisl.io.siesta.orbindxSileSiesta.read_basis">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">read_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a set of atoms corresponding to the basis-sets in the ORB_INDX file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a set of atoms corresponding to the basis-sets in the ORB_INDX file</span>
 
 <span class="sd">        The specie names have a short field in the ORB_INDX file, hence the name may</span>
 <span class="sd">        not necessarily be the same as provided in the species block</span>
@@ -182,11 +182,11 @@
         <span class="n">orbs</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">specs</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">ia</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">i_s</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">no</span><span class="p">):</span>
             <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
 
             <span class="n">i_a</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-            <span class="n">i_s</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span>
             <span class="n">spec</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">i_a</span> <span class="o">!=</span> <span class="n">ia</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">i_s</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">specs</span><span class="p">:</span>
@@ -194,6 +194,8 @@
                 <span class="n">specs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i_s</span><span class="p">)</span>
                 <span class="n">ia</span> <span class="o">=</span> <span class="n">i_a</span>
                 <span class="n">orbs</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="n">i_s</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span>
 
             <span class="k">if</span> <span class="n">i_s</span> <span class="ow">in</span> <span class="n">specs</span><span class="p">:</span>
                 <span class="k">continue</span>
@@ -222,7 +224,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

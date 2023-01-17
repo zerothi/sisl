@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.hamiltonian &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.physics.hamiltonian &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -104,7 +104,6 @@
 
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
-<span class="kn">from</span> <span class="nn">..messages</span> <span class="kn">import</span> <span class="n">deprecate_method</span>
 <span class="kn">from</span> <span class="nn">.distribution</span> <span class="kn">import</span> <span class="n">get_distribution</span>
 <span class="kn">from</span> <span class="nn">.electron</span> <span class="kn">import</span> <span class="n">EigenvalueElectron</span><span class="p">,</span> <span class="n">EigenstateElectron</span><span class="p">,</span> <span class="n">spin_squared</span>
 <span class="kn">from</span> <span class="nn">.sparse</span> <span class="kn">import</span> <span class="n">SparseOrbitalBZSpin</span>
@@ -115,7 +114,7 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Hamiltonian</span><span class="p">(</span><span class="n">SparseOrbitalBZSpin</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Sparse Hamiltonian matrix object</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Sparse Hamiltonian matrix object</span>
 
 <span class="sd">    Assigning or changing Hamiltonian elements is as easy as with standard `numpy` assignments:</span>
 
@@ -184,7 +183,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Hamiltonian.__init__"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nnzpr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Initialize Hamiltonian &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Initialize Hamiltonian &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">nnzpr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reset</span><span class="p">()</span></div>
 
@@ -196,12 +195,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">H</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Access the Hamiltonian elements &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Access the Hamiltonian elements &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_def_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">UP</span>
         <span class="k">return</span> <span class="bp">self</span>
 
 <div class="viewcode-block" id="Hamiltonian.Hk"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.Hk">[docs]</a>    <span class="k">def</span> <span class="nf">Hk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Setup the Hamiltonian for a given k-point</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Setup the Hamiltonian for a given k-point</span>
 
 <span class="sd">        Creation and return of the Hamiltonian for a given k-point (default to Gamma).</span>
 
@@ -258,7 +257,7 @@
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="Hamiltonian.dHk"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.dHk">[docs]</a>    <span class="k">def</span> <span class="nf">dHk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Setup the Hamiltonian derivative for a given k-point</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Setup the Hamiltonian derivative for a given k-point</span>
 
 <span class="sd">        Creation and return of the Hamiltonian derivative for a given k-point (default to Gamma).</span>
 
@@ -313,7 +312,7 @@
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="Hamiltonian.ddHk"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.ddHk">[docs]</a>    <span class="k">def</span> <span class="nf">ddHk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Setup the Hamiltonian double derivative for a given k-point</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Setup the Hamiltonian double derivative for a given k-point</span>
 
 <span class="sd">        Creation and return of the Hamiltonian double derivative for a given k-point (default to Gamma).</span>
 
@@ -368,7 +367,7 @@
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="Hamiltonian.shift"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.shift">[docs]</a>    <span class="k">def</span> <span class="nf">shift</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Shift the electronic structure by a constant energy</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Shift the electronic structure by a constant energy</span>
 
 <span class="sd">        This is equal to performing this operation:</span>
 
@@ -403,7 +402,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">S_idx</span><span class="p">]</span> <span class="o">*</span> <span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="Hamiltonian.eigenvalue"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.eigenvalue">[docs]</a>    <span class="k">def</span> <span class="nf">eigenvalue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">gauge</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Calculate the eigenvalues at `k` and return an `EigenvalueElectron` object containing all eigenvalues for a given `k`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Calculate the eigenvalues at `k` and return an `EigenvalueElectron` object containing all eigenvalues for a given `k`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -443,7 +442,7 @@
         <span class="k">return</span> <span class="n">EigenvalueElectron</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">info</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Hamiltonian.eigenstate"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.eigenstate">[docs]</a>    <span class="k">def</span> <span class="nf">eigenstate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">gauge</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Calculate the eigenstates at `k` and return an `EigenstateElectron` object containing all eigenstates</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Calculate the eigenstates at `k` and return an `EigenstateElectron` object containing all eigenstates</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -485,7 +484,7 @@
 
 <div class="viewcode-block" id="Hamiltonian.read"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.read">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Reads Hamiltonian from `Sile` using `read_hamiltonian`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads Hamiltonian from `Sile` using `read_hamiltonian`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -505,7 +504,7 @@
                 <span class="k">return</span> <span class="n">fh</span><span class="o">.</span><span class="n">read_hamiltonian</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Hamiltonian.write"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sile</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Writes a Hamiltonian to the `Sile` as implemented in the :code:`Sile.write_hamiltonian` method &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Writes a Hamiltonian to the `Sile` as implemented in the :code:`Sile.write_hamiltonian` method &quot;&quot;&quot;</span>
         <span class="c1"># This only works because, they *must*</span>
         <span class="c1"># have been imported previously</span>
         <span class="kn">from</span> <span class="nn">sisl.io</span> <span class="kn">import</span> <span class="n">get_sile</span><span class="p">,</span> <span class="n">BaseSile</span>
@@ -515,125 +514,8 @@
             <span class="k">with</span> <span class="n">get_sile</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
                 <span class="n">fh</span><span class="o">.</span><span class="n">write_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Hamiltonian.spin_squared"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.spin_squared">[docs]</a>    <span class="nd">@deprecate_method</span><span class="p">(</span><span class="s2">&quot;use Hamiltonian.eigenstate(...).spin_squared() instead&quot;</span><span class="p">,</span> <span class="s2">&quot;0.13.0&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">spin_squared</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">n_up</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_down</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate spin-squared expectation value, see `~sisl.physics.electron.spin_squared` for details</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        k : array_like, optional</span>
-<span class="sd">            k-point at which the spin-squared expectation value is</span>
-<span class="sd">        n_up : int, optional</span>
-<span class="sd">            number of states for spin up configuration, default to all. All states up to and including</span>
-<span class="sd">            `n_up`.</span>
-<span class="sd">        n_down : int, optional</span>
-<span class="sd">            same as `n_up` but for the spin-down configuration</span>
-<span class="sd">        **kwargs : optional</span>
-<span class="sd">            additional parameters passed to the `eigenstate` routine</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_polarized</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;.spin_squared requires as spin-polarized system&#39;</span><span class="p">)</span>
-        <span class="n">es_alpha</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">n_up</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">es_alpha</span> <span class="o">=</span> <span class="n">es_alpha</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n_up</span><span class="p">))</span>
-        <span class="n">es_beta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">n_down</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">es_beta</span> <span class="o">=</span> <span class="n">es_beta</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n_down</span><span class="p">))</span>
-        <span class="c1"># es_alpha.Sk should equal es_beta.Sk, so just pass one of them</span>
-        <span class="k">return</span> <span class="n">spin_squared</span><span class="p">(</span><span class="n">es_alpha</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="n">es_beta</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="n">es_alpha</span><span class="o">.</span><span class="n">Sk</span><span class="p">())</span></div>
-
-<div class="viewcode-block" id="Hamiltonian.velocity"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.velocity">[docs]</a>    <span class="nd">@deprecate_method</span><span class="p">(</span><span class="s2">&quot;use Hamiltonian.eigenstate(...).velocity() instead&quot;</span><span class="p">,</span> <span class="s2">&quot;0.13.0&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">matrix</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the velocity for the eigenstates for a given `k` point</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        k : array_like, optional</span>
-<span class="sd">            k-point at which the velocities are calculated</span>
-<span class="sd">        matrix : bool, optional</span>
-<span class="sd">            see `EigenstateElectron.velocity` for details and possible arguments</span>
-<span class="sd">        **kwargs : optional</span>
-<span class="sd">            additional parameters passed to the `eigenstate` routine</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        eigenstate : method used to calculate the eigenstates</span>
-<span class="sd">        EigenstateElectron.velocity : Underlying method used to calculate the velocity</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">velocity</span><span class="p">(</span><span class="n">matrix</span><span class="o">=</span><span class="n">matrix</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Hamiltonian.spin_moment"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.spin_moment">[docs]</a>    <span class="nd">@deprecate_method</span><span class="p">(</span><span class="s2">&quot;use Hamiltonian.eigenstate(...).spin_moment() instead&quot;</span><span class="p">,</span> <span class="s2">&quot;0.13.0&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">spin_moment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">project</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the spin moment for the eigenstates for a given `k` point</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        k : array_like, optional</span>
-<span class="sd">            k-point at which the spin moments are calculated</span>
-<span class="sd">        project : bool, optional</span>
-<span class="sd">           whether the moments are orbitally resolved or not</span>
-<span class="sd">        **kwargs : optional</span>
-<span class="sd">            additional parameters passed to the `eigenstate` routine</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        eigenstate : method used to calculate the eigenstates</span>
-<span class="sd">        EigenvalueElectron.spin_moment : Underlying method used to calculate the spin moment</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">spin_moment</span><span class="p">()</span></div>
-
-<div class="viewcode-block" id="Hamiltonian.DOS"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.DOS">[docs]</a>    <span class="nd">@deprecate_method</span><span class="p">(</span><span class="s2">&quot;use Hamiltonian.eigenstate(...).DOS() instead&quot;</span><span class="p">,</span> <span class="s2">&quot;0.13.0&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">DOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">distribution</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the DOS at the given energies for a specific `k` point</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        E : array_like</span>
-<span class="sd">            energies to calculate the DOS at</span>
-<span class="sd">        k : array_like, optional</span>
-<span class="sd">            k-point at which the DOS is calculated</span>
-<span class="sd">        distribution : func or str, optional</span>
-<span class="sd">            a function that accepts :math:`E-\epsilon` as argument and calculates the</span>
-<span class="sd">            distribution function.</span>
-<span class="sd">        **kwargs : optional</span>
-<span class="sd">            additional parameters passed to the `eigenvalue` routine</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        sisl.physics.distribution : setup a distribution function, see details regarding the `distribution` argument</span>
-<span class="sd">        eigenvalue : method used to calculate the eigenvalues</span>
-<span class="sd">        PDOS : Calculate projected DOS</span>
-<span class="sd">        EigenvalueElectron.DOS : Underlying method used to calculate the DOS</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigenvalue</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">DOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Hamiltonian.PDOS"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.PDOS">[docs]</a>    <span class="nd">@deprecate_method</span><span class="p">(</span><span class="s2">&quot;use Hamiltonian.eigenstate(...).PDOS() instead&quot;</span><span class="p">,</span> <span class="s2">&quot;0.13.0&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">PDOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">distribution</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the projected DOS at the given energies for a specific `k` point</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        E : array_like</span>
-<span class="sd">            energies to calculate the projected DOS at</span>
-<span class="sd">        k : array_like, optional</span>
-<span class="sd">            k-point at which the projected DOS is calculated</span>
-<span class="sd">        distribution : func or str, optional</span>
-<span class="sd">            a function that accepts :math:`E-\epsilon` as argument and calculates the</span>
-<span class="sd">            distribution function.</span>
-<span class="sd">        **kwargs : optional</span>
-<span class="sd">            additional parameters passed to the `eigenstate` routine</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        sisl.physics.distribution : setup a distribution function, see details regarding the `distribution` argument</span>
-<span class="sd">        eigenstate : method used to calculate the eigenstates</span>
-<span class="sd">        DOS : Calculate total DOS</span>
-<span class="sd">        EigenstateElectron.PDOS : Underlying method used to calculate the projected DOS</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">PDOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="p">)</span></div>
-
 <div class="viewcode-block" id="Hamiltonian.fermi_level"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.fermi_level">[docs]</a>    <span class="k">def</span> <span class="nf">fermi_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s1">&#39;fermi_dirac&#39;</span><span class="p">,</span> <span class="n">q_tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Calculate the Fermi-level using a Brillouinzone sampling and a target charge</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Calculate the Fermi-level using a Brillouinzone sampling and a target charge</span>
 
 <span class="sd">        The Fermi-level will be calculated using an iterative approach by first calculating all eigenvalues</span>
 <span class="sd">        and subsequently fitting the Fermi level to the final charge (`q`).</span>
@@ -741,7 +623,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

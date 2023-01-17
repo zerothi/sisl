@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>berry_phase &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>berry_phase &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -28,7 +28,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="berry_curvature" href="sisl.physics.electron.berry_curvature.html" />
-    <link rel="prev" title="velocity_matrix" href="sisl.physics.electron.velocity_matrix.html" /> 
+    <link rel="prev" title="COP" href="sisl.physics.electron.COP.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -39,7 +39,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -84,8 +84,6 @@
 <li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.DOS.html">DOS</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.PDOS.html">PDOS</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.COP.html">COP</a></li>
-<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.velocity.html">velocity</a></li>
-<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.velocity_matrix.html">velocity_matrix</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">berry_phase</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.berry_curvature.html">berry_curvature</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.conductivity.html">conductivity</a></li>
@@ -209,7 +207,7 @@ see <a class="footnote-reference brackets" href="#id5" id="id2">2</a>.</p>
 <p>For non-orthogonal basis sets it is not fully known how important the <span class="math notranslate nohighlight">\(\delta\mathbf k\)</span> spacing is since
 it relies on the Lowdin transformation of the states. However, one should be careful about choosing
 the correct bands for examination.</p>
-<p>The returned angles are _not_ placed in the interval <span class="math notranslate nohighlight">\(]-\pi;\pi]\)</span> as what <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.angle.html#numpy.angle" title="(in NumPy v1.23)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.angle</span></code></a> would do.
+<p>The returned angles are _not_ placed in the interval <span class="math notranslate nohighlight">\(]-\pi;\pi]\)</span> as what <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.angle.html#numpy.angle" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.angle</span></code></a> would do.
 This is to allow users to examine the quantities as is.</p>
 <p>For more understanding of the Berry-phase and its calculation <a class="footnote-reference brackets" href="#id6" id="id3">3</a> is a good reference.</p>
 <p class="rubric">Examples</p>
@@ -252,14 +250,14 @@ ensuring removal of singular vectors.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="sisl.physics.electron.velocity_matrix.html" class="btn btn-neutral float-left" title="velocity_matrix" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sisl.physics.electron.COP.html" class="btn btn-neutral float-left" title="COP" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="sisl.physics.electron.berry_curvature.html" class="btn btn-neutral float-right" title="berry_curvature" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

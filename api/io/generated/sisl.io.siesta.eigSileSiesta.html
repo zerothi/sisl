@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.eigSileSiesta &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.io.siesta.eigSileSiesta &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -39,7 +39,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -89,6 +89,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../fhiaims.html">FHIaims</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../gulp.html">GULP</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../openmx.html">OpenMX</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../orca.html">ORCA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../scaleup.html">ScaleUP</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="../siesta.html">Siesta</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="sisl.io.siesta.fdfSileSiesta.html">sisl.io.siesta.fdfSileSiesta</a></li>
@@ -115,8 +116,8 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../siesta.html#transiesta">TranSiesta</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../siesta.html#module-sisl.io.tbtrans">TBtrans</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../tbtrans.html">TBtrans</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tbtrans.html#phtrans">PHtrans</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../vasp.html">VASP</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../wannier90.html">Wannier90</a></li>
 </ul>
@@ -187,21 +188,21 @@
 Using the command-line utility <em class="xref py py-obj">sdata</em> one may plot the eigenvalue spectrum to visualize the
 spread of eigenvalues.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot the eigenspectrum</span>
-sdata siesta.EIG --plot
+sdata<span class="w"> </span>siesta.EIG<span class="w"> </span>--plot
 <span class="c1"># or to save to png file</span>
-sdata siesta.EIG --plot eig_spread.png
+sdata<span class="w"> </span>siesta.EIG<span class="w"> </span>--plot<span class="w"> </span>eig_spread.png
 </pre></div>
 </div>
 <p>One may also extract/plot the DOS using the eigenvalues and the k-point weights:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># plot the DOS using default values</span>
-sdata siesta.EIG --dos --plot
+sdata<span class="w"> </span>siesta.EIG<span class="w"> </span>--dos<span class="w"> </span>--plot
 <span class="c1"># change the energy spacing and plot it</span>
-sdata siesta.EIG --dos <span class="nv">dE</span><span class="o">=</span>1meV --plot
+sdata<span class="w"> </span>siesta.EIG<span class="w"> </span>--dos<span class="w"> </span><span class="nv">dE</span><span class="o">=</span>1meV<span class="w"> </span>--plot
 <span class="c1"># change the energy spacing;</span>
 <span class="c1"># plot two different temperatures</span>
-sdata siesta.EIG --dos <span class="nv">dE</span><span class="o">=</span>1meV <span class="nv">kT</span><span class="o">=</span>5K --dos <span class="nv">kT</span><span class="o">=</span>25K --plot
+sdata<span class="w"> </span>siesta.EIG<span class="w"> </span>--dos<span class="w"> </span><span class="nv">dE</span><span class="o">=</span>1meV<span class="w"> </span><span class="nv">kT</span><span class="o">=</span>5K<span class="w"> </span>--dos<span class="w"> </span><span class="nv">kT</span><span class="o">=</span>25K<span class="w"> </span>--plot
 <span class="c1"># store the data in a dos.dat (3 columns, E, kT=5, kT=25K)</span>
-sdata siesta.EIG --dos <span class="nv">dE</span><span class="o">=</span>1meV <span class="nv">kT</span><span class="o">=</span>5K --dos <span class="nv">kT</span><span class="o">=</span>25K --out dos.dat
+sdata<span class="w"> </span>siesta.EIG<span class="w"> </span>--dos<span class="w"> </span><span class="nv">dE</span><span class="o">=</span>1meV<span class="w"> </span><span class="nv">kT</span><span class="o">=</span>5K<span class="w"> </span>--dos<span class="w"> </span><span class="nv">kT</span><span class="o">=</span>25K<span class="w"> </span>--out<span class="w"> </span>dos.dat
 </pre></div>
 </div>
 <p>This will default to plot the DOS using these parameters:
@@ -209,15 +210,15 @@ dE = 5 meV, kT = 300 K (25 meV), Gaussian distribution and in the full energy-ra
 By default the k-point weights will be read in the <code class="docutils literal notranslate"><span class="pre">*.KP</span></code> file, however if the file does not
 exist one may use the option <code class="docutils literal notranslate"><span class="pre">--kp-file</span> <span class="pre">FILE</span></code> to read in the weights from <code class="docutils literal notranslate"><span class="pre">FILE</span></code>.</p>
 <p>To limit the shown energy region, simply use:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sdata siesta.EIG -E -10:10 --dos
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sdata<span class="w"> </span>siesta.EIG<span class="w"> </span>-E<span class="w"> </span>-10:10<span class="w"> </span>--dos
 </pre></div>
 </div>
 <p>to reduce to the -10 eV to 10 eV energy range.</p>
 <p>One may optionally choose the temperature smearing and the used distribution function:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># position dependent values</span>
-sdata siesta.EIG -E -10:10 --dos <span class="m">0</span>.01 <span class="m">0</span>.1 lorentzian
+sdata<span class="w"> </span>siesta.EIG<span class="w"> </span>-E<span class="w"> </span>-10:10<span class="w"> </span>--dos<span class="w"> </span><span class="m">0</span>.01<span class="w"> </span><span class="m">0</span>.1<span class="w"> </span>lorentzian
 <span class="c1"># key based values</span>
-sdata siesta.EIG -E -10:10 --dos <span class="nv">dE</span><span class="o">=</span><span class="m">0</span>.01 <span class="nv">kT</span><span class="o">=</span><span class="m">0</span>.1 <span class="nv">dist</span><span class="o">=</span>lorentzian
+sdata<span class="w"> </span>siesta.EIG<span class="w"> </span>-E<span class="w"> </span>-10:10<span class="w"> </span>--dos<span class="w"> </span><span class="nv">dE</span><span class="o">=</span><span class="m">0</span>.01<span class="w"> </span><span class="nv">kT</span><span class="o">=</span><span class="m">0</span>.1<span class="w"> </span><span class="nv">dist</span><span class="o">=</span>lorentzian
 </pre></div>
 </div>
 <p>which will calculate the DOS in steps of 10 meV, the temperature smearing is 0.1 eV and
@@ -358,7 +359,7 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

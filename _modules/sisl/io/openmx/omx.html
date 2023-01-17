@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.openmx.omx &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.io.openmx.omx &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -121,7 +121,7 @@
 
 
 <div class="viewcode-block" id="omxSileOpenMX"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.openmx.omxSileOpenMX.html#sisl.io.openmx.omxSileOpenMX">[docs]</a><span class="k">class</span> <span class="nc">omxSileOpenMX</span><span class="p">(</span><span class="n">SileOpenMX</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; OpenMX-input file</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; OpenMX-input file</span>
 
 <span class="sd">    By supplying base you can reference files in other directories.</span>
 <span class="sd">    By default the ``base`` is the directory given in the file name.</span>
@@ -152,11 +152,11 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return the current file name (without the directory prefix) &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return the current file name (without the directory prefix) &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file</span>
 
     <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Setup the `omxSileOpenMX` after initialization &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Setup the `omxSileOpenMX` after initialization &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="c1"># These are the comments</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_comment</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;#&#39;</span><span class="p">]</span>
@@ -179,7 +179,7 @@
         <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="nf">_seek</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Closes all files, and starts over from beginning &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Closes all files, and starts over from beginning &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_popfile</span><span class="p">():</span>
                 <span class="k">pass</span>
@@ -189,7 +189,7 @@
 
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">_read_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Try and read the first occurence of a key</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Try and read the first occurence of a key</span>
 
 <span class="sd">        This will take care of blocks, labels and piped in labels</span>
 
@@ -257,7 +257,7 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Determine the type by the value</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Determine the type by the value</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -293,7 +293,7 @@
 
 <div class="viewcode-block" id="omxSileOpenMX.type"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.openmx.omxSileOpenMX.html#sisl.io.openmx.omxSileOpenMX.type">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return the type of the fdf-keyword</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return the type of the fdf-keyword</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -305,7 +305,7 @@
 
 <div class="viewcode-block" id="omxSileOpenMX.get"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.openmx.omxSileOpenMX.html#sisl.io.openmx.omxSileOpenMX.get">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Retrieve keyword from the file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Retrieve keyword from the file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -350,7 +350,7 @@
         <span class="k">return</span> <span class="n">value</span></div>
 
 <div class="viewcode-block" id="omxSileOpenMX.read_basis"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.openmx.omxSileOpenMX.html#sisl.io.openmx.omxSileOpenMX.read_basis">[docs]</a>    <span class="k">def</span> <span class="nf">read_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Reads basis</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads basis</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -438,7 +438,7 @@
         <span class="k">return</span> <span class="n">atom</span>
 
 <div class="viewcode-block" id="omxSileOpenMX.read_supercell"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.openmx.omxSileOpenMX.html#sisl.io.openmx.omxSileOpenMX.read_supercell">[docs]</a>    <span class="k">def</span> <span class="nf">read_supercell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Reads supercell</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads supercell</span>
 
 <span class="sd">        One can limit the tried files to only one file by passing</span>
 <span class="sd">        only a single file ending.</span>
@@ -463,7 +463,7 @@
         <span class="k">return</span> <span class="kc">None</span></div>
 
     <span class="k">def</span> <span class="nf">_r_supercell_omx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns `SuperCell` object from the omx file &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns `SuperCell` object from the omx file &quot;&quot;&quot;</span>
         <span class="n">conv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Atoms.UnitVectors.Unit&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;Ang&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">conv</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;AU&#39;</span><span class="p">:</span>
             <span class="n">conv</span> <span class="o">=</span> <span class="n">units</span><span class="p">(</span><span class="s1">&#39;Bohr&#39;</span><span class="p">,</span> <span class="s1">&#39;Ang&#39;</span><span class="p">)</span>
@@ -486,7 +486,7 @@
     <span class="n">_r_supercell_dat</span> <span class="o">=</span> <span class="n">_r_supercell_omx</span>
 
 <div class="viewcode-block" id="omxSileOpenMX.read_geometry"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.openmx.omxSileOpenMX.html#sisl.io.openmx.omxSileOpenMX.read_geometry">[docs]</a>    <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns Geometry object</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns Geometry object</span>
 
 <span class="sd">        One can limit the tried files to only one file by passing</span>
 <span class="sd">        only a single file ending.</span>
@@ -511,7 +511,7 @@
         <span class="k">return</span> <span class="kc">None</span></div>
 
     <span class="k">def</span> <span class="nf">_r_geometry_omx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns `Geometry` &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns `Geometry` &quot;&quot;&quot;</span>
         <span class="n">sc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_supercell</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;omx&#39;</span><span class="p">])</span>
 
         <span class="n">na</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Atoms.Number&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -564,7 +564,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

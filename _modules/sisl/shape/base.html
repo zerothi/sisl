@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.shape.base &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.shape.base &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -116,7 +116,7 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.shape&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Shape</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot; Baseclass for all shapes. Logical operations are implemented on this class.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Baseclass for all shapes. Logical operations are implemented on this class.</span>
 
 <span class="sd">    **This class must be sub classed.**</span>
 
@@ -169,16 +169,16 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">center</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; The geometric center of the shape &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; The geometric center of the shape &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_center</span>
 
     <span class="nd">@center</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">center</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Set the geometric center of the shape &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Set the geometric center of the shape &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_center</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">center</span>
 
 <div class="viewcode-block" id="Shape.scale"><a class="viewcode-back" href="../../../api/generated/sisl.shape.Shape.html#sisl.shape.Shape.scale">[docs]</a>    <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scale</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return a new Shape with a scaled size &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return a new Shape with a scaled size &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.scale has not been implemented&quot;</span><span class="p">)</span></div>
 
     <span class="c1"># Define a dispatcher for converting Shapes</span>
@@ -194,19 +194,19 @@
     <span class="p">)</span>
 
 <div class="viewcode-block" id="Shape.toSphere"><a class="viewcode-back" href="../../../api/generated/sisl.shape.Shape.html#sisl.shape.Shape.toSphere">[docs]</a>    <span class="k">def</span> <span class="nf">toSphere</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Create a sphere which is surely encompassing the *full* shape &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Create a sphere which is surely encompassing the *full* shape &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.toSphere has not been implemented&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Shape.toEllipsoid"><a class="viewcode-back" href="../../../api/generated/sisl.shape.Shape.html#sisl.shape.Shape.toEllipsoid">[docs]</a>    <span class="k">def</span> <span class="nf">toEllipsoid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Create an ellipsoid which is surely encompassing the *full* shape &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Create an ellipsoid which is surely encompassing the *full* shape &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">toSphere</span><span class="p">()</span><span class="o">.</span><span class="n">toEllipsoid</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Shape.toCuboid"><a class="viewcode-back" href="../../../api/generated/sisl.shape.Shape.html#sisl.shape.Shape.toCuboid">[docs]</a>    <span class="k">def</span> <span class="nf">toCuboid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Create a cuboid which is surely encompassing the *full* shape &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Create a cuboid which is surely encompassing the *full* shape &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">toEllipsoid</span><span class="p">()</span><span class="o">.</span><span class="n">toCuboid</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Shape.within"><a class="viewcode-back" href="../../../api/generated/sisl.shape.Shape.html#sisl.shape.Shape.within">[docs]</a>    <span class="k">def</span> <span class="nf">within</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return ``True`` if `other` is fully within `self`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return ``True`` if `other` is fully within `self`</span>
 
 <span class="sd">        If `other` is an array, an array will be returned for each of these.</span>
 
@@ -232,11 +232,11 @@
         <span class="k">return</span> <span class="n">within</span></div>
 
 <div class="viewcode-block" id="Shape.within_index"><a class="viewcode-back" href="../../../api/generated/sisl.shape.Shape.html#sisl.shape.Shape.within_index">[docs]</a>    <span class="k">def</span> <span class="nf">within_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return indices of the elements of `other` that are within the shape &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return indices of the elements of `other` that are within the shape &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.within_index has not been implemented&quot;</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Checks whether all of `other` is within the shape &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Checks whether all of `other` is within the shape &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">within</span><span class="p">(</span><span class="n">other</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -265,7 +265,7 @@
 
 
 <span class="k">class</span> <span class="nc">ShapeToDispatcher</span><span class="p">(</span><span class="n">AbstractDispatch</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Base dispatcher from class passing from a Shape class &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Base dispatcher from class passing from a Shape class &quot;&quot;&quot;</span>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_ensure_object</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
@@ -288,7 +288,7 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.shape&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">CompositeShape</span><span class="p">(</span><span class="n">Shape</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; A composite shape consisting of two shapes, an abstract class</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; A composite shape consisting of two shapes, an abstract class</span>
 
 <span class="sd">    This should take 2 shapes as arguments.</span>
 
@@ -307,12 +307,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">center</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Average center of composite shapes &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Average center of composite shapes &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="o">.</span><span class="n">center</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">B</span><span class="o">.</span><span class="n">center</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">volume</span><span class="p">():</span>
-        <span class="sd">&quot;&quot;&quot; Volume of a composite shape is current undefined, so a negative number is returned (may change) &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Volume of a composite shape is current undefined, so a negative number is returned (may change) &quot;&quot;&quot;</span>
         <span class="c1"># The volume for these set operators cannot easily be defined, so</span>
         <span class="c1"># we should rather not do anything about it.</span>
         <span class="c1"># TODO we could *estimate* the volume by doing</span>
@@ -325,7 +325,7 @@
         <span class="k">return</span> <span class="o">-</span><span class="mf">1.</span>
 
     <span class="k">def</span> <span class="nf">toSphere</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Create a sphere which is surely encompassing the *full* shape &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Create a sphere which is surely encompassing the *full* shape &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.ellipsoid</span> <span class="kn">import</span> <span class="n">Sphere</span>
 
         <span class="c1"># Retrieve spheres</span>
@@ -365,7 +365,7 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.shape&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">OrShape</span><span class="p">(</span><span class="n">CompositeShape</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Boolean ``A | B`` shape &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Boolean ``A | B`` shape &quot;&quot;&quot;</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
     <span class="fm">__str__</span> <span class="o">=</span> <span class="n">_composite_name</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span>
 
@@ -377,7 +377,7 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.shape&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">XOrShape</span><span class="p">(</span><span class="n">CompositeShape</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Boolean ``A ^ B`` shape &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Boolean ``A ^ B`` shape &quot;&quot;&quot;</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
     <span class="fm">__str__</span> <span class="o">=</span> <span class="n">_composite_name</span><span class="p">(</span><span class="s2">&quot;^&quot;</span><span class="p">)</span>
 
@@ -389,7 +389,7 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.shape&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">SubShape</span><span class="p">(</span><span class="n">CompositeShape</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Boolean ``A - B`` shape &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Boolean ``A - B`` shape &quot;&quot;&quot;</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
     <span class="fm">__str__</span> <span class="o">=</span> <span class="n">_composite_name</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span>
 
@@ -401,12 +401,12 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.shape&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">AndShape</span><span class="p">(</span><span class="n">CompositeShape</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Boolean ``A &amp; B`` shape &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Boolean ``A &amp; B`` shape &quot;&quot;&quot;</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
     <span class="fm">__str__</span> <span class="o">=</span> <span class="n">_composite_name</span><span class="p">(</span><span class="s2">&quot;&amp;&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">toSphere</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Create a sphere which is surely encompassing the *full* shape &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Create a sphere which is surely encompassing the *full* shape &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.ellipsoid</span> <span class="kn">import</span> <span class="n">Sphere</span>
 
         <span class="c1"># Retrieve spheres</span>
@@ -471,7 +471,7 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.shape&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">PureShape</span><span class="p">(</span><span class="n">Shape</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Extension of the `Shape` class for additional well defined shapes</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Extension of the `Shape` class for additional well defined shapes</span>
 
 <span class="sd">    This shape should be used when subclassing shapes where the volume of the</span>
 <span class="sd">    shape is *exactly* known.</span>
@@ -485,13 +485,13 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.volume has not been implemented&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">expand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Expand the shape by a constant value &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Expand the shape by a constant value &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.expand has not been implemented&quot;</span><span class="p">)</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.shape&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">NullShape</span><span class="p">(</span><span class="n">PureShape</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; A unique shape which has no well-defined spatial volume or center</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; A unique shape which has no well-defined spatial volume or center</span>
 
 <span class="sd">    This special shape is used when composite shapes turns out to have</span>
 <span class="sd">    a null space.</span>
@@ -507,31 +507,31 @@
     <span class="n">to</span> <span class="o">=</span> <span class="n">PureShape</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
 <div class="viewcode-block" id="NullShape.__init__"><a class="viewcode-back" href="../../../api/generated/sisl.shape.NullShape.html#sisl.shape.NullShape.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Initialize a null-shape &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Initialize a null-shape &quot;&quot;&quot;</span>
         <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">max</span> <span class="o">/</span> <span class="mi">100</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">M</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">M</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="NullShape.within_index"><a class="viewcode-back" href="../../../api/generated/sisl.shape.NullShape.html#sisl.shape.NullShape.within_index">[docs]</a>    <span class="k">def</span> <span class="nf">within_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Always returns a zero length array &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Always returns a zero length array &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="NullShape.toEllipsoid"><a class="viewcode-back" href="../../../api/generated/sisl.shape.NullShape.html#sisl.shape.NullShape.toEllipsoid">[docs]</a>    <span class="k">def</span> <span class="nf">toEllipsoid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return an ellipsoid with radius of size 1e-64 &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return an ellipsoid with radius of size 1e-64 &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.ellipsoid</span> <span class="kn">import</span> <span class="n">Ellipsoid</span>
         <span class="k">return</span> <span class="n">Ellipsoid</span><span class="p">(</span><span class="mf">1.e-64</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="NullShape.toSphere"><a class="viewcode-back" href="../../../api/generated/sisl.shape.NullShape.html#sisl.shape.NullShape.toSphere">[docs]</a>    <span class="k">def</span> <span class="nf">toSphere</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return a sphere with radius of size 1e-64 &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return a sphere with radius of size 1e-64 &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.ellipsoid</span> <span class="kn">import</span> <span class="n">Sphere</span>
         <span class="k">return</span> <span class="n">Sphere</span><span class="p">(</span><span class="mf">1.e-64</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="NullShape.toCuboid"><a class="viewcode-back" href="../../../api/generated/sisl.shape.NullShape.html#sisl.shape.NullShape.toCuboid">[docs]</a>    <span class="k">def</span> <span class="nf">toCuboid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return a cuboid with side-lengths 1e-64 &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return a cuboid with side-lengths 1e-64 &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.prism4</span> <span class="kn">import</span> <span class="n">Cuboid</span>
         <span class="k">return</span> <span class="n">Cuboid</span><span class="p">(</span><span class="mf">1.e-64</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="NullShape.volume"><a class="viewcode-back" href="../../../api/generated/sisl.shape.NullShape.html#sisl.shape.NullShape.volume">[docs]</a>    <span class="k">def</span> <span class="nf">volume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; The volume of a null shape is exactly 0. &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; The volume of a null shape is exactly 0. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="mf">0.</span></div>
 
 
@@ -554,7 +554,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

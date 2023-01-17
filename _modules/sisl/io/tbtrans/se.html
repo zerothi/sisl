@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.tbtrans.se &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.io.tbtrans.se &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -126,7 +126,7 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.tbtrans&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">tbtsencSileTBtrans</span><span class="p">(</span><span class="n">_devncSileTBtrans</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; TBtrans self-energy file object with downfolded self-energies to the device region</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; TBtrans self-energy file object with downfolded self-energies to the device region</span>
 
 <span class="sd">    The :math:`\Sigma` object contains all self-energies on the specified k- and energy grid projected</span>
 <span class="sd">    into the device region.</span>
@@ -165,7 +165,7 @@
     <span class="n">_E2eV</span> <span class="o">=</span> <span class="n">Ry2eV</span>
 
 <div class="viewcode-block" id="tbtsencSileTBtrans.self_energy"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtsencSileTBtrans.html#sisl.io.tbtrans.tbtsencSileTBtrans.self_energy">[docs]</a>    <span class="k">def</span> <span class="nf">self_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return the self-energy from the electrode `elec`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return the self-energy from the electrode `elec`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -203,7 +203,7 @@
         <span class="k">return</span> <span class="n">SE</span></div>
 
 <div class="viewcode-block" id="tbtsencSileTBtrans.scattering_matrix"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtsencSileTBtrans.html#sisl.io.tbtrans.tbtsencSileTBtrans.scattering_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">scattering_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Return the scattering matrix from the electrode `elec`</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Return the scattering matrix from the electrode `elec`</span>
 
 <span class="sd">        The scattering matrix is calculated as:</span>
 
@@ -247,7 +247,7 @@
         <span class="k">return</span> <span class="n">G</span></div>
 
 <div class="viewcode-block" id="tbtsencSileTBtrans.self_energy_average"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtsencSileTBtrans.html#sisl.io.tbtrans.tbtsencSileTBtrans.self_energy_average">[docs]</a>    <span class="k">def</span> <span class="nf">self_energy_average</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return the k-averaged average self-energy from the electrode `elec`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return the k-averaged average self-energy from the electrode `elec`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -283,7 +283,7 @@
         <span class="k">return</span> <span class="n">SE</span></div>
 
 <div class="viewcode-block" id="tbtsencSileTBtrans.info"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtsencSileTBtrans.html#sisl.io.tbtrans.tbtsencSileTBtrans.info">[docs]</a>    <span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Information about the self-energy file available for extracting in this file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Information about the self-energy file available for extracting in this file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -368,7 +368,7 @@
 
     <span class="nd">@default_ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Show information about data in a TBT.SE.nc file&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">ArgumentParser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns the arguments that is available for this Sile &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the arguments that is available for this Sile &quot;&quot;&quot;</span>
 
         <span class="c1"># We limit the import to occur here</span>
         <span class="kn">import</span> <span class="nn">argparse</span>
@@ -376,7 +376,7 @@
         <span class="n">namespace</span> <span class="o">=</span> <span class="n">default_namespace</span><span class="p">(</span><span class="n">_tbtse</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">_geometry</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">geom</span><span class="p">)</span>
 
         <span class="k">class</span> <span class="nc">Info</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
-            <span class="sd">&quot;&quot;&quot; Action to print information contained in the TBT.SE.nc file, helpful before performing actions &quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot; Action to print information contained in the TBT.SE.nc file, helpful before performing actions &quot;&quot;&quot;</span>
 
             <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
                 <span class="c1"># First short-hand the file</span>
@@ -396,7 +396,7 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.phtrans&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">phtsencSilePHtrans</span><span class="p">(</span><span class="n">tbtsencSileTBtrans</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; PHtrans file object &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; PHtrans file object &quot;&quot;&quot;</span>
     <span class="n">_trans_type</span> <span class="o">=</span> <span class="s1">&#39;PHT&#39;</span>
     <span class="n">_E2eV</span> <span class="o">=</span> <span class="n">Ry2eV</span> <span class="o">**</span> <span class="mi">2</span>
 
@@ -411,7 +411,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.geom.surfaces &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.geom.surfaces &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -113,7 +113,7 @@
 
 
 <span class="k">def</span> <span class="nf">_layer2int</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">periodicity</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Convert layer specification to integer&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert layer specification to integer&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">layer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -122,7 +122,7 @@
 
 
 <span class="k">def</span> <span class="nf">_calc_info</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">layers</span><span class="p">,</span> <span class="n">periodicity</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Determine offset index from start or end specification&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Determine offset index from start or end specification&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">end</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only one of &#39;start&#39; or &#39;end&#39; may be supplied&quot;</span><span class="p">)</span>
 
@@ -194,7 +194,7 @@
 
 
 <span class="k">def</span> <span class="nf">_finish_slab</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">vacuum</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Move slab to the unit-cell and move it very slightly to</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Move slab to the unit-cell and move it very slightly to</span>
 <span class="sd">    stick to the lower side of the unit-cell borders.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">g</span> <span class="o">=</span> <span class="n">geometry2uc</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">lattice</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
@@ -207,7 +207,7 @@
 
 
 <span class="k">def</span> <span class="nf">_convert_miller</span><span class="p">(</span><span class="n">miller</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Convert miller specification to 3-tuple&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert miller specification to 3-tuple&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">miller</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
         <span class="n">miller</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">miller</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">miller</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -220,13 +220,13 @@
 
 
 <span class="k">def</span> <span class="nf">_slab_with_vacuum</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Function to wrap `func` with vacuum in between &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to wrap `func` with vacuum in between &quot;&quot;&quot;</span>
     <span class="n">layers</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;layers&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">layers</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layers</span><span class="p">,</span> <span class="n">Integral</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">is_vacuum</span><span class="p">(</span><span class="n">layer</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; A vacuum is defined by one of these variables:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; A vacuum is defined by one of these variables:</span>
 
 <span class="sd">        - None</span>
 <span class="sd">        - &#39; &#39;</span>
@@ -372,7 +372,7 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.geom&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">fcc_slab</span><span class="p">(</span><span class="n">alat</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">miller</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vacuum</span><span class="o">=</span><span class="mf">20.</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">orthogonal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Surface slab forming a face-centered cubic (FCC) crystal</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Surface slab forming a face-centered cubic (FCC) crystal</span>
 
 <span class="sd">    The slab layers are stacked along the :math:`z`-axis. The default stacking is the first</span>
 <span class="sd">    layer as an A-layer, defined as the plane containing an atom at :math:`(x,y)=(0,0)`.</span>
@@ -557,7 +557,7 @@
 
 
 <div class="viewcode-block" id="bcc_slab"><a class="viewcode-back" href="../../../api/generated/sisl.geom.bcc_slab.html#sisl.geom.bcc_slab">[docs]</a><span class="k">def</span> <span class="nf">bcc_slab</span><span class="p">(</span><span class="n">alat</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">miller</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vacuum</span><span class="o">=</span><span class="mf">20.</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">orthogonal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Construction of a surface slab from a body-centered cubic (BCC) crystal</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Construction of a surface slab from a body-centered cubic (BCC) crystal</span>
 
 <span class="sd">    The slab layers are stacked along the :math:`z`-axis. The default stacking is the first</span>
 <span class="sd">    layer as an A-layer, defined as the plane containing an atom at :math:`(x,y)=(0,0)`.</span>
@@ -702,7 +702,7 @@
 
 
 <div class="viewcode-block" id="rocksalt_slab"><a class="viewcode-back" href="../../../api/generated/sisl.geom.rocksalt_slab.html#sisl.geom.rocksalt_slab">[docs]</a><span class="k">def</span> <span class="nf">rocksalt_slab</span><span class="p">(</span><span class="n">alat</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">miller</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vacuum</span><span class="o">=</span><span class="mf">20.</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">orthogonal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Surface slab forming a rock-salt crystal (halite)</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Surface slab forming a rock-salt crystal (halite)</span>
 
 <span class="sd">    This structure is formed by two interlocked fcc crystals for each of the two elements.</span>
 
@@ -817,7 +817,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.self_energy &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.physics.self_energy &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -128,7 +128,7 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">SelfEnergy</span><span class="p">:</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Self-energy object able to calculate the dense self-energy for a given sparse matrix</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Self-energy object able to calculate the dense self-energy for a given sparse matrix</span>
 
 <span class="sd">    The self-energy object contains a `SparseGeometry` object which, in it-self</span>
 <span class="sd">    contains the geometry.</span>
@@ -137,16 +137,16 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="SelfEnergy.__init__"><a class="viewcode-back" href="../../../api/generated/sisl.physics.SelfEnergy.html#sisl.physics.SelfEnergy.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Self-energy class for constructing a self-energy. &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Self-energy class for constructing a self-energy. &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dimension of the self-energy&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dimension of the self-energy&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
 <div class="viewcode-block" id="SelfEnergy.se2scat"><a class="viewcode-back" href="../../../api/generated/sisl.physics.SelfEnergy.html#sisl.physics.SelfEnergy.se2scat">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">se2scat</span><span class="p">(</span><span class="n">SE</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the scattering matrix from the self-energy</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the scattering matrix from the self-energy</span>
 
 <span class="sd">        .. math::</span>
 <span class="sd">            \boldsymbol\Gamma = i(\boldsymbol\Sigma - \boldsymbol \Sigma ^\dagger)</span>
@@ -159,14 +159,14 @@
         <span class="k">return</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="p">(</span><span class="n">SE</span> <span class="o">-</span> <span class="n">conjugate</span><span class="p">(</span><span class="n">SE</span><span class="o">.</span><span class="n">T</span><span class="p">))</span></div>
 
     <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Class specific setup routine &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Class specific setup routine &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
 <div class="viewcode-block" id="SelfEnergy.self_energy"><a class="viewcode-back" href="../../../api/generated/sisl.physics.SelfEnergy.html#sisl.physics.SelfEnergy.self_energy">[docs]</a>    <span class="k">def</span> <span class="nf">self_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 <div class="viewcode-block" id="SelfEnergy.scattering_matrix"><a class="viewcode-back" href="../../../api/generated/sisl.physics.SelfEnergy.html#sisl.physics.SelfEnergy.scattering_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">scattering_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the scattering matrix by first calculating the self-energy</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the scattering matrix by first calculating the self-energy</span>
 
 <span class="sd">        Any arguments that is passed to this method is directly passed to `self_energy`.</span>
 
@@ -205,13 +205,13 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">se2scat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">self_energy</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span></div>
 
     <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Overload attributes from the hosting object &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Overload attributes from the hosting object &quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">WideBandSE</span><span class="p">(</span><span class="n">SelfEnergy</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Self-energy object with a wide-band electronic structure</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Self-energy object with a wide-band electronic structure</span>
 
 <span class="sd">    Such a self-energy only have imaginary components on the diagonal,</span>
 <span class="sd">    with all of them being equal to the `eta` value.</span>
@@ -232,11 +232,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">eta</span> <span class="o">=</span> <span class="n">eta</span></div>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dimension of the self-energy&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dimension of the self-energy&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_N</span>
 
 <div class="viewcode-block" id="WideBandSE.self_energy"><a class="viewcode-back" href="../../../api/generated/sisl.physics.WideBandSE.html#sisl.physics.WideBandSE.self_energy">[docs]</a>    <span class="k">def</span> <span class="nf">self_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Return a dense matrix with the self-energy</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Return a dense matrix with the self-energy</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -257,7 +257,7 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">SemiInfinite</span><span class="p">(</span><span class="n">SelfEnergy</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Self-energy object able to calculate the dense self-energy for a given `SparseGeometry` in a semi-infinite chain.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Self-energy object able to calculate the dense self-energy for a given `SparseGeometry` in a semi-infinite chain.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -270,7 +270,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="SemiInfinite.__init__"><a class="viewcode-back" href="../../../api/generated/sisl.physics.SemiInfinite.html#sisl.physics.SemiInfinite.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spgeom</span><span class="p">,</span> <span class="n">infinite</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Create a `SelfEnergy` object from any `SparseGeometry` &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Create a `SelfEnergy` object from any `SparseGeometry` &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eta</span> <span class="o">=</span> <span class="n">eta</span>
 
         <span class="c1"># Determine whether we are in plus/minus direction</span>
@@ -300,7 +300,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="n">spgeom</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; String representation of SemiInfinite &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; String representation of SemiInfinite &quot;&quot;&quot;</span>
         <span class="k">return</span>  <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">{{direction: </span><span class="si">{1}{2}</span><span class="s2">}}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
                                                   <span class="p">{</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;+&quot;</span><span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">semi_inf_dir</span><span class="p">),</span>
                                                   <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;C&quot;</span><span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">semi_inf</span><span class="p">))</span>
@@ -308,14 +308,14 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">RecursiveSI</span><span class="p">(</span><span class="n">SemiInfinite</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Self-energy object using the Lopez-Sancho Lopez-Sancho algorithm &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Self-energy object using the Lopez-Sancho Lopez-Sancho algorithm &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Overload attributes from the hosting object &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Overload attributes from the hosting object &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spgeom0</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Representation of the RecursiveSI model &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Representation of the RecursiveSI model &quot;&quot;&quot;</span>
         <span class="n">direction</span> <span class="o">=</span> <span class="p">{</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;+&quot;</span><span class="p">}</span>
         <span class="n">axis</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;C&quot;</span><span class="p">}</span>
         <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">{{direction: </span><span class="si">{1}{2}</span><span class="s2">,</span><span class="se">\n</span><span class="s2"> </span><span class="si">{3}</span><span class="se">\n</span><span class="s2">}}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
@@ -324,7 +324,7 @@
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spgeom</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Setup the Lopez-Sancho internals for easy axes &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Setup the Lopez-Sancho internals for easy axes &quot;&quot;&quot;</span>
 
         <span class="c1"># Create spgeom0 and spgeom1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spgeom0</span> <span class="o">=</span> <span class="n">spgeom</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -358,11 +358,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">spgeom1</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">delete_columns</span><span class="p">(</span><span class="n">cols</span><span class="p">,</span> <span class="n">keep_shape</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dimension of the self-energy&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dimension of the self-energy&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spgeom0</span><span class="p">)</span>
 
 <div class="viewcode-block" id="RecursiveSI.green"><a class="viewcode-back" href="../../../api/generated/sisl.physics.RecursiveSI.html#sisl.physics.RecursiveSI.green">[docs]</a>    <span class="k">def</span> <span class="nf">green</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-14</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Return a dense matrix with the bulk Green function at energy `E` and k-point `k` (default Gamma).</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Return a dense matrix with the bulk Green function at energy `E` and k-point `k` (default Gamma).</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -460,7 +460,7 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.green could not converge Green function calculation&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="RecursiveSI.self_energy"><a class="viewcode-back" href="../../../api/generated/sisl.physics.RecursiveSI.html#sisl.physics.RecursiveSI.self_energy">[docs]</a>    <span class="k">def</span> <span class="nf">self_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-14</span><span class="p">,</span> <span class="n">bulk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Return a dense matrix with the self-energy at energy `E` and k-point `k` (default Gamma).</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Return a dense matrix with the self-energy at energy `E` and k-point `k` (default Gamma).</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -562,7 +562,7 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: could not converge self-energy calculation&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="RecursiveSI.self_energy_lr"><a class="viewcode-back" href="../../../api/generated/sisl.physics.RecursiveSI.html#sisl.physics.RecursiveSI.self_energy_lr">[docs]</a>    <span class="k">def</span> <span class="nf">self_energy_lr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-14</span><span class="p">,</span> <span class="n">bulk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Return two dense matrices with the left/right self-energy at energy `E` and k-point `k` (default Gamma).</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Return two dense matrices with the left/right self-energy at energy `E` and k-point `k` (default Gamma).</span>
 
 <span class="sd">        Note calculating the LR self-energies simultaneously requires that their chemical potentials are the same.</span>
 <span class="sd">        I.e. only when the reference energy is equivalent in the left/right schemes does this make sense.</span>
@@ -678,7 +678,7 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">RealSpaceSE</span><span class="p">(</span><span class="n">SelfEnergy</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Bulk real-space self-energy (or Green function) for a given physical object with periodicity</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Bulk real-space self-energy (or Green function) for a given physical object with periodicity</span>
 
 <span class="sd">    The real-space self-energy is calculated via the k-averaged Green function:</span>
 
@@ -739,7 +739,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="RealSpaceSE.__init__"><a class="viewcode-back" href="../../../api/generated/sisl.physics.RealSpaceSE.html#sisl.physics.RealSpaceSE.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">semi_axis</span><span class="p">,</span> <span class="n">k_axes</span><span class="p">,</span> <span class="n">unfold</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Initialize real-space self-energy calculator &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Initialize real-space self-energy calculator &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
 
         <span class="c1"># Store axes</span>
@@ -777,11 +777,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dimension of the self-energy&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dimension of the self-energy&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unfold</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; String representation of RealSpaceSE &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; String representation of RealSpaceSE &quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">}</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
             <span class="n">d</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;u</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unfold</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
@@ -796,7 +796,7 @@
                  <span class="s2">&quot;</span><span class="si">{parent}</span><span class="se">\n</span><span class="s2">}}&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">d</span><span class="p">)</span>
 
 <div class="viewcode-block" id="RealSpaceSE.set_options"><a class="viewcode-back" href="../../../api/generated/sisl.physics.RealSpaceSE.html#sisl.physics.RealSpaceSE.set_options">[docs]</a>    <span class="k">def</span> <span class="nf">set_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Update options in the real-space self-energy</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Update options in the real-space self-energy</span>
 
 <span class="sd">        After updating options one should re-call `initialize` for consistency.</span>
 
@@ -818,7 +818,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">options</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="RealSpaceSE.real_space_parent"><a class="viewcode-back" href="../../../api/generated/sisl.physics.RealSpaceSE.html#sisl.physics.RealSpaceSE.real_space_parent">[docs]</a>    <span class="k">def</span> <span class="nf">real_space_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return the parent object in the real-space unfolded region &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return the parent object in the real-space unfolded region &quot;&quot;&quot;</span>
         <span class="n">s_ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_semi_axis</span>
         <span class="n">k_ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_k_axes</span>
         <span class="c1"># Always start with the semi-infinite direction, since we</span>
@@ -838,7 +838,7 @@
         <span class="k">return</span> <span class="n">P0</span></div>
 
 <div class="viewcode-block" id="RealSpaceSE.real_space_coupling"><a class="viewcode-back" href="../../../api/generated/sisl.physics.RealSpaceSE.html#sisl.physics.RealSpaceSE.real_space_coupling">[docs]</a>    <span class="k">def</span> <span class="nf">real_space_coupling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ret_indices</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Real-space coupling parent where sites fold into the parent real-space unit cell</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Real-space coupling parent where sites fold into the parent real-space unit cell</span>
 
 <span class="sd">        The resulting parent object only contains the inner-cell couplings for the elements that couple</span>
 <span class="sd">        out of the real-space matrix.</span>
@@ -909,7 +909,7 @@
         <span class="k">return</span> <span class="n">PC</span></div>
 
 <div class="viewcode-block" id="RealSpaceSE.initialize"><a class="viewcode-back" href="../../../api/generated/sisl.physics.RealSpaceSE.html#sisl.physics.RealSpaceSE.initialize">[docs]</a>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Initialize the internal data-arrays used for efficient calculation of the real-space quantities</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Initialize the internal data-arrays used for efficient calculation of the real-space quantities</span>
 
 <span class="sd">        This method should first be called *after* all options has been specified.</span>
 
@@ -947,7 +947,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="s2">&quot;bz&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MonkhorstPack</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">nk</span><span class="p">,</span> <span class="n">trs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="s2">&quot;trs&quot;</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="RealSpaceSE.self_energy"><a class="viewcode-back" href="../../../api/generated/sisl.physics.RealSpaceSE.html#sisl.physics.RealSpaceSE.self_energy">[docs]</a>    <span class="k">def</span> <span class="nf">self_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">bulk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">coupling</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the real-space self-energy</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the real-space self-energy</span>
 
 <span class="sd">        The real space self-energy is calculated via:</span>
 
@@ -1010,7 +1010,7 @@
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_calc</span><span class="p">[</span><span class="s2">&quot;S0&quot;</span><span class="p">](</span><span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span> <span class="o">*</span> <span class="n">E</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc</span><span class="p">[</span><span class="s2">&quot;P0&quot;</span><span class="p">](</span><span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span> <span class="o">-</span> <span class="n">inv</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="RealSpaceSE.green"><a class="viewcode-back" href="../../../api/generated/sisl.physics.RealSpaceSE.html#sisl.physics.RealSpaceSE.green">[docs]</a>    <span class="k">def</span> <span class="nf">green</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the real-space Green function</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the real-space Green function</span>
 
 <span class="sd">        The real space Green function is calculated via:</span>
 
@@ -1186,13 +1186,13 @@
         <span class="k">return</span> <span class="n">G</span></div>
 
 <div class="viewcode-block" id="RealSpaceSE.clear"><a class="viewcode-back" href="../../../api/generated/sisl.physics.RealSpaceSE.html#sisl.physics.RealSpaceSE.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Clears the internal arrays created in `initialize` &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Clears the internal arrays created in `initialize` &quot;&quot;&quot;</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc</span></div>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">RealSpaceSI</span><span class="p">(</span><span class="n">SelfEnergy</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Surface real-space self-energy (or Green function) for a given physical object with limited periodicity</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Surface real-space self-energy (or Green function) for a given physical object with limited periodicity</span>
 
 <span class="sd">    The surface real-space self-energy is calculated via the k-averaged Green function:</span>
 
@@ -1262,7 +1262,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="RealSpaceSI.__init__"><a class="viewcode-back" href="../../../api/generated/sisl.physics.RealSpaceSI.html#sisl.physics.RealSpaceSI.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">semi</span><span class="p">,</span> <span class="n">surface</span><span class="p">,</span> <span class="n">k_axes</span><span class="p">,</span> <span class="n">unfold</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Initialize real-space self-energy calculator &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Initialize real-space self-energy calculator &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">semi</span> <span class="o">=</span> <span class="n">semi</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">surface</span> <span class="o">=</span> <span class="n">surface</span>
 
@@ -1340,7 +1340,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; String representation of RealSpaceSI &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; String representation of RealSpaceSI &quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">}</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
             <span class="n">d</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;u</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unfold</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
@@ -1356,7 +1356,7 @@
                  <span class="s2">&quot;surface:</span><span class="se">\n</span><span class="s2">  </span><span class="si">{surface}</span><span class="se">\n</span><span class="s2">}}&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">d</span><span class="p">)</span>
 
 <div class="viewcode-block" id="RealSpaceSI.set_options"><a class="viewcode-back" href="../../../api/generated/sisl.physics.RealSpaceSI.html#sisl.physics.RealSpaceSI.set_options">[docs]</a>    <span class="k">def</span> <span class="nf">set_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Update options in the real-space self-energy</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Update options in the real-space self-energy</span>
 
 <span class="sd">        After updating options one should re-call `initialize` for consistency.</span>
 
@@ -1380,7 +1380,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">options</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="RealSpaceSI.real_space_parent"><a class="viewcode-back" href="../../../api/generated/sisl.physics.RealSpaceSI.html#sisl.physics.RealSpaceSI.real_space_parent">[docs]</a>    <span class="k">def</span> <span class="nf">real_space_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Fully expanded real-space surface parent</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Fully expanded real-space surface parent</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
@@ -1400,7 +1400,7 @@
         <span class="k">return</span> <span class="n">P0</span></div>
 
 <div class="viewcode-block" id="RealSpaceSI.real_space_coupling"><a class="viewcode-back" href="../../../api/generated/sisl.physics.RealSpaceSI.html#sisl.physics.RealSpaceSI.real_space_coupling">[docs]</a>    <span class="k">def</span> <span class="nf">real_space_coupling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ret_indices</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Real-space coupling surface where the outside fold into the surface real-space unit cell</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Real-space coupling surface where the outside fold into the surface real-space unit cell</span>
 
 <span class="sd">        The resulting parent object only contains the inner-cell couplings for the elements that couple</span>
 <span class="sd">        out of the real-space matrix.</span>
@@ -1512,7 +1512,7 @@
         <span class="k">return</span> <span class="n">PC</span></div>
 
 <div class="viewcode-block" id="RealSpaceSI.initialize"><a class="viewcode-back" href="../../../api/generated/sisl.physics.RealSpaceSI.html#sisl.physics.RealSpaceSI.initialize">[docs]</a>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Initialize the internal data-arrays used for efficient calculation of the real-space quantities</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Initialize the internal data-arrays used for efficient calculation of the real-space quantities</span>
 
 <span class="sd">        This method should first be called *after* all options has been specified.</span>
 
@@ -1542,7 +1542,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="s2">&quot;bz&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MonkhorstPack</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">nk</span><span class="p">,</span> <span class="n">trs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="p">[</span><span class="s2">&quot;trs&quot;</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="RealSpaceSI.self_energy"><a class="viewcode-back" href="../../../api/generated/sisl.physics.RealSpaceSI.html#sisl.physics.RealSpaceSI.self_energy">[docs]</a>    <span class="k">def</span> <span class="nf">self_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">bulk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">coupling</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate real-space surface self-energy</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate real-space surface self-energy</span>
 
 <span class="sd">        The real space self-energy is calculated via:</span>
 
@@ -1605,7 +1605,7 @@
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_calc</span><span class="p">[</span><span class="s2">&quot;S0&quot;</span><span class="p">](</span><span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span> <span class="o">*</span> <span class="n">E</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc</span><span class="p">[</span><span class="s2">&quot;P0&quot;</span><span class="p">](</span><span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span> <span class="o">-</span> <span class="n">inv</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="RealSpaceSI.green"><a class="viewcode-back" href="../../../api/generated/sisl.physics.RealSpaceSI.html#sisl.physics.RealSpaceSI.green">[docs]</a>    <span class="k">def</span> <span class="nf">green</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the real-space Green function</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the real-space Green function</span>
 
 <span class="sd">        The real space Green function is calculated via:</span>
 
@@ -1724,7 +1724,7 @@
         <span class="k">return</span> <span class="n">G</span></div>
 
 <div class="viewcode-block" id="RealSpaceSI.clear"><a class="viewcode-back" href="../../../api/generated/sisl.physics.RealSpaceSI.html#sisl.physics.RealSpaceSI.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Clears the internal arrays created in `initialize` &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Clears the internal arrays created in `initialize` &quot;&quot;&quot;</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc</span></div>
 </pre></div>
 
@@ -1735,7 +1735,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installation &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>Installation &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -168,11 +168,11 @@ be considered by developers of Cython modules.</p>
 <section id="pip">
 <span id="installation-pip"></span><h2>pip<a class="headerlink" href="#pip" title="Permalink to this heading"></a></h2>
 <p>Installing sisl using PyPi can be done using</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 -m pip install sisl
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>sisl
 <span class="c1"># for better analysis</span>
-python3 -m pip install sisl<span class="o">[</span>analysis<span class="o">]</span>
+python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>sisl<span class="o">[</span>analysis<span class="o">]</span>
 <span class="c1"># for advanced plotting functionality</span>
-python3 -m pip install sisl<span class="o">[</span>viz<span class="o">]</span>
+python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>sisl<span class="o">[</span>viz<span class="o">]</span>
 </pre></div>
 </div>
 <p><code class="code docutils literal notranslate"><span class="pre">pip</span></code> will automatically install the required dependencies. The optional dependencies
@@ -181,7 +181,7 @@ will be used if later installed.</p>
 extended analysis methods. These are not required and may be installed later if their usage
 is desired.</p>
 <p>When wanting to pass options to <code class="code docutils literal notranslate"><span class="pre">pip</span></code> simply use the following</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 -m pip install --install-option<span class="o">=</span><span class="s2">&quot;--compiler=intelem&quot;</span> --install-option<span class="o">=</span><span class="s2">&quot;--fcompiler-intelem&quot;</span> sisl
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--install-option<span class="o">=</span><span class="s2">&quot;--compiler=intelem&quot;</span><span class="w"> </span>--install-option<span class="o">=</span><span class="s2">&quot;--fcompiler-intelem&quot;</span><span class="w"> </span>sisl
 </pre></div>
 </div>
 <p>note that options are accummulated.</p>
@@ -201,10 +201,10 @@ able to install the latest development version from <a class="reference external
 <section id="stable">
 <h3>Stable<a class="headerlink" href="#stable" title="Permalink to this heading"></a></h3>
 <p>Installing the stable sisl release in conda all that is needed is:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda create -n sisl
-conda activate sisl
-conda config --add channels conda-forge
-conda install -c conda-forge <span class="nv">python</span><span class="o">=</span><span class="m">3</span>.9 scipy matplotlib plotly netcdf4 sisl
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>sisl
+conda<span class="w"> </span>activate<span class="w"> </span>sisl
+conda<span class="w"> </span>config<span class="w"> </span>--add<span class="w"> </span>channels<span class="w"> </span>conda-forge
+conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.9<span class="w"> </span>scipy<span class="w"> </span>matplotlib<span class="w"> </span>plotly<span class="w"> </span>netcdf4<span class="w"> </span>sisl
 </pre></div>
 </div>
 <p>which will install all dependencies including the graphical visualization
@@ -214,11 +214,11 @@ capabilities of sisl.</p>
 <h3>Development<a class="headerlink" href="#development" title="Permalink to this heading"></a></h3>
 <p>Installing the development version of sisl requires some other basic packages
 while also using <code class="code docutils literal notranslate"><span class="pre">pip</span></code> to install sisl, the procedure would be:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda create -n sisl-dev
-conda activate sisl-dev
-conda config --add channels conda-forge
-conda install -c conda-forge fortran-compiler c-compiler <span class="nv">python</span><span class="o">=</span><span class="m">3</span>.9
-conda install -c conda-forge scipy netcdf4 cftime plotly matplotlib
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>sisl-dev
+conda<span class="w"> </span>activate<span class="w"> </span>sisl-dev
+conda<span class="w"> </span>config<span class="w"> </span>--add<span class="w"> </span>channels<span class="w"> </span>conda-forge
+conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>fortran-compiler<span class="w"> </span>c-compiler<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.9
+conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>scipy<span class="w"> </span>netcdf4<span class="w"> </span>cftime<span class="w"> </span>plotly<span class="w"> </span>matplotlib
 </pre></div>
 </div>
 <p>Subsequent installation of sisl in your conda enviroment would follow <a class="reference internal" href="#installation-development"><span class="std std-ref">Development version</span></a>.</p>
@@ -230,21 +230,21 @@ conda install -c conda-forge scipy netcdf4 cftime plotly matplotlib
 tarballs.</p>
 <p>Simply download the release tar from <a class="reference external" href="https://github.com/zerothi/sisl/releases">this page</a>, or clone
 the <a class="reference external" href="https://github.com/zerothi/sisl/">git repository</a> for the latest developments</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 -m pip install . --prefix<span class="o">=</span>&lt;prefix&gt;
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>.<span class="w"> </span>--prefix<span class="o">=</span>&lt;prefix&gt;
 </pre></div>
 </div>
 <section id="windows">
 <h3>Windows<a class="headerlink" href="#windows" title="Permalink to this heading"></a></h3>
 <p>To install <a class="reference internal" href="api/index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> on Windows one will require a specification of
 the compilers used. Typically one may do</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 -m pip install . --prefix<span class="o">=</span>&lt;prefix&gt; --install-option<span class="o">=</span><span class="s1">&#39;--fcompiler=gfortran&#39;</span> --install-option<span class="o">=</span><span class="s1">&#39;--compiler=mingw32&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>.<span class="w"> </span>--prefix<span class="o">=</span>&lt;prefix&gt;<span class="w"> </span>--install-option<span class="o">=</span><span class="s1">&#39;--fcompiler=gfortran&#39;</span><span class="w"> </span>--install-option<span class="o">=</span><span class="s1">&#39;--compiler=mingw32&#39;</span>
 </pre></div>
 </div>
 <p>but sometimes <code class="docutils literal notranslate"><span class="pre">setuptools</span></code> does not intercept the flags in the build process.
 To remedy this please ensure <code class="docutils literal notranslate"><span class="pre">%HOME%\pydistutils.cfg</span></code> contains the build options:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>build<span class="o">]</span>
-<span class="nv">compiler</span> <span class="o">=</span> mingw32
-<span class="nv">fcompiler</span> <span class="o">=</span> gfortran
+<span class="nv">compiler</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>mingw32
+<span class="nv">fcompiler</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>gfortran
 </pre></div>
 </div>
 <p>Adapt to compilers. For an explanation, see <a class="reference external" href="https://docs.python.org/3/install/index.html#location-and-names-of-config-files">here</a>
@@ -257,15 +257,15 @@ or the <a class="reference external" href="https://github.com/zerothi/sisl/issue
 to perform the shipped tests to ensure everything got installed correctly.</p>
 <p>Note that <a class="reference external" href="https://docs.pytest.org/en/stable/">pytest</a> needs to be installed to run the tests.
 Testing the installation may be done by:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pytest --pyargs sisl
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pytest<span class="w"> </span>--pyargs<span class="w"> </span>sisl
 </pre></div>
 </div>
 <p>The above will run the default test-suite which covers most of the <a class="reference internal" href="api/index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> tool-box.
 Additional tests may be runned by cloning the <a class="reference external" href="https://github.com/zerothi/sisl-files">sisl-files</a>
 and setting the environment variable <em class="xref py py-obj">SISL_FILES_TESTS</em> as the <code class="docutils literal notranslate"><span class="pre">tests</span></code> path to the repository.</p>
 <p>A basic procedure would be:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/zerothi/sisl-files.git
-<span class="nv">SISL_FILES_TESTS</span><span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/sisl-files/tests pytest --pyargs sisl
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/zerothi/sisl-files.git
+<span class="nv">SISL_FILES_TESTS</span><span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/sisl-files/tests<span class="w"> </span>pytest<span class="w"> </span>--pyargs<span class="w"> </span>sisl
 </pre></div>
 </div>
 </section>
@@ -278,16 +278,16 @@ and setting the environment variable <em class="xref py py-obj">SISL_FILES_TESTS
 <li><p>fortran compiler</p></li>
 </ul>
 <p>To install the development version using <code class="code docutils literal notranslate"><span class="pre">pip</span></code> you may use the URL command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 -m pip install -U git+https://github.com/zerothi/sisl.git
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>git+https://github.com/zerothi/sisl.git
 </pre></div>
 </div>
 <p>Otherwise follow the manual installation by cloning the <a class="reference external" href="https://github.com/zerothi/sisl/">git repository</a>.
 Remark that the <code class="code docutils literal notranslate"><span class="pre">git+https</span></code> protocol is buggy (as of pip v19.0.3) because you cannot pass compiler
 options to <code class="code docutils literal notranslate"><span class="pre">setuptools</span></code>. If you want to install the development version with e.g.
 the Intel compilers you should do:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone git+https://github.com/zerothi/sisl.git
-<span class="nb">cd</span> sisl
-python3 -m pip install . -U --build-option<span class="o">=</span><span class="s2">&quot;--compiler=intelem&quot;</span> --build-option<span class="o">=</span><span class="s2">&quot;--fcompiler=intelem&quot;</span> .
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git+https://github.com/zerothi/sisl.git
+<span class="nb">cd</span><span class="w"> </span>sisl
+python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>.<span class="w"> </span>-U<span class="w"> </span>--build-option<span class="o">=</span><span class="s2">&quot;--compiler=intelem&quot;</span><span class="w"> </span>--build-option<span class="o">=</span><span class="s2">&quot;--fcompiler=intelem&quot;</span><span class="w"> </span>.
 </pre></div>
 </div>
 <p>which will pass the correct options to the build system.</p>
@@ -306,7 +306,7 @@ python3 -m pip install . -U --build-option<span class="o">=</span><span class="s
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

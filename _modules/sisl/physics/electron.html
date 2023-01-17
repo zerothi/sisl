@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.electron &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.physics.electron &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -114,8 +114,6 @@
 <span class="sd">   DOS</span>
 <span class="sd">   PDOS</span>
 <span class="sd">   COP</span>
-<span class="sd">   velocity</span>
-<span class="sd">   velocity_matrix</span>
 <span class="sd">   berry_phase</span>
 <span class="sd">   berry_curvature</span>
 <span class="sd">   conductivity</span>
@@ -151,8 +149,8 @@
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">floor</span><span class="p">,</span> <span class="n">ceil</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">conj</span><span class="p">,</span> <span class="n">dot</span><span class="p">,</span> <span class="n">ogrid</span><span class="p">,</span> <span class="n">einsum</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">cos</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">pi</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">add</span><span class="p">,</span> <span class="n">argsort</span><span class="p">,</span> <span class="n">sort</span>
-<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">isspmatrix</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">add</span><span class="p">,</span> <span class="n">sort</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">identity</span><span class="p">,</span> <span class="n">csr_matrix</span><span class="p">,</span> <span class="n">hstack</span><span class="p">,</span> <span class="n">isspmatrix</span>
 
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">units</span><span class="p">,</span> <span class="n">constant</span>
@@ -164,7 +162,7 @@
 <span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
 <span class="kn">from</span> <span class="nn">sisl.linalg</span> <span class="kn">import</span> <span class="n">det</span><span class="p">,</span> <span class="n">sqrth</span><span class="p">,</span> <span class="n">svd_destroy</span>
 <span class="kn">from</span> <span class="nn">sisl.linalg</span> <span class="kn">import</span> <span class="n">eigvals</span> <span class="k">as</span> <span class="n">la_eigvals</span>
-<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">info</span><span class="p">,</span> <span class="n">warn</span><span class="p">,</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">progressbar</span><span class="p">,</span> <span class="n">deprecate_method</span>
+<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">info</span><span class="p">,</span> <span class="n">warn</span><span class="p">,</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">progressbar</span>
 <span class="kn">from</span> <span class="nn">sisl._help</span> <span class="kn">import</span> <span class="n">dtype_complex_to_real</span><span class="p">,</span> <span class="n">dtype_real_to_complex</span>
 <span class="kn">from</span> <span class="nn">.distribution</span> <span class="kn">import</span> <span class="n">get_distribution</span>
 <span class="kn">from</span> <span class="nn">.spin</span> <span class="kn">import</span> <span class="n">Spin</span>
@@ -173,7 +171,6 @@
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;DOS&quot;</span><span class="p">,</span> <span class="s2">&quot;PDOS&quot;</span><span class="p">,</span> <span class="s2">&quot;COP&quot;</span><span class="p">]</span>
-<span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;velocity&quot;</span><span class="p">,</span> <span class="s2">&quot;velocity_matrix&quot;</span><span class="p">]</span>
 <span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;spin_moment&quot;</span><span class="p">,</span> <span class="s2">&quot;spin_squared&quot;</span><span class="p">]</span>
 <span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;berry_phase&quot;</span><span class="p">,</span> <span class="s2">&quot;berry_curvature&quot;</span><span class="p">]</span>
 <span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;conductivity&quot;</span><span class="p">]</span>
@@ -184,7 +181,7 @@
 
 <div class="viewcode-block" id="DOS"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.DOS.html#sisl.physics.electron.DOS">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">DOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">eig</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the density of states (DOS) for a set of energies, `E`, with a distribution function</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the density of states (DOS) for a set of energies, `E`, with a distribution function</span>
 
 <span class="sd">    The :math:`\mathrm{DOS}(E)` is calculated as:</span>
 
@@ -225,7 +222,7 @@
 
 <div class="viewcode-block" id="PDOS"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.PDOS.html#sisl.physics.electron.PDOS">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">PDOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">eig</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">S</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the projected density of states (PDOS) for a set of energies, `E`, with a distribution function</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the projected density of states (PDOS) for a set of energies, `E`, with a distribution function</span>
 
 <span class="sd">    The :math:`\mathrm{PDOS}(E)` is calculated as:</span>
 
@@ -294,7 +291,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    numpy.ndarray</span>
-<span class="sd">        projected DOS calculated at energies, has dimension ``(state.shape[1], len(E))``.</span>
+<span class="sd">        projected DOS calculated at energies, has dimension ``(1, state.shape[1], len(E))``.</span>
 <span class="sd">        For non-colinear calculations it will be ``(4, state.shape[1] // 2, len(E))``, ordered as</span>
 <span class="sd">        indicated in the above list.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -326,7 +323,7 @@
             <span class="n">S</span> <span class="o">=</span> <span class="n">S</span><span class="p">[::</span><span class="mi">2</span><span class="p">,</span> <span class="p">::</span><span class="mi">2</span><span class="p">]</span>
 
         <span class="c1"># Initialize data</span>
-        <span class="n">PDOS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_complex_to_real</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
+        <span class="n">PDOS</span> <span class="o">=</span> <span class="n">empty</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_complex_to_real</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
 
         <span class="c1"># Do spin-box calculations:</span>
         <span class="c1">#  PDOS[0] = total DOS (diagonal)</span>
@@ -359,16 +356,18 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">PDOS</span> <span class="o">=</span> <span class="p">(</span><span class="n">conj</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">S</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> \
                <span class="o">*</span> <span class="n">distribution</span><span class="p">(</span><span class="n">E</span> <span class="o">-</span> <span class="n">eig</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">eig</span><span class="p">)):</span>
-            <span class="n">PDOS</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="p">(</span><span class="n">conj</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">*</span> <span class="n">S</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> \
-                          <span class="o">*</span> <span class="n">distribution</span><span class="p">(</span><span class="n">E</span> <span class="o">-</span> <span class="n">eig</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">PDOS</span> <span class="o">+=</span> <span class="p">(</span><span class="n">conj</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">*</span> <span class="n">S</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> \
+                <span class="o">*</span> <span class="n">distribution</span><span class="p">(</span><span class="n">E</span> <span class="o">-</span> <span class="n">eig</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">PDOS</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">PDOS</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">PDOS</span></div>
 
 
 <div class="viewcode-block" id="COP"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.COP.html#sisl.physics.electron.COP">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">COP</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">eig</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the Crystal Orbital Population for a set of energies, `E`, with a distribution function</span>
+<span class="k">def</span> <span class="nf">COP</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">eig</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the Crystal Orbital Population for a set of energies, `E`, with a distribution function</span>
 
 <span class="sd">    The :math:`\mathrm{COP}(E)` is calculated as:</span>
 
@@ -396,6 +395,10 @@
 <span class="sd">    distribution : func or str, optional</span>
 <span class="sd">       a function that accepts :math:`E-\epsilon` as argument and calculates the</span>
 <span class="sd">       distribution function.</span>
+<span class="sd">    tol : float, optional</span>
+<span class="sd">       tolerance for considering an eigenstate to contribute to an energy point,</span>
+<span class="sd">       a higher value means that more energy points are discarded and so the calculation</span>
+<span class="sd">       is faster.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
@@ -421,31 +424,85 @@
 
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">eig</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">state</span><span class="p">),</span> <span class="s2">&quot;COP: number of eigenvalues and states are not consistent&quot;</span>
 
+    <span class="c1"># get default dtype</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype_complex_to_real</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+    <span class="c1"># initialize the COP values</span>
+    <span class="n">no</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">n_s</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">calc_cop</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">n_s</span><span class="p">):</span>
-        <span class="n">state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span> <span class="n">state</span><span class="p">),</span> <span class="n">n_s</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">M</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">state</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">_FakeMatrix</span><span class="p">):</span>
 
-    <span class="c1"># now calculate the COP curves for the different energies</span>
-    <span class="n">cop</span> <span class="o">=</span> <span class="n">oplist</span><span class="p">([</span><span class="mf">0.</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">))</span>
-    <span class="k">if</span> <span class="n">isspmatrix</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+        <span class="c1"># A fake matrix equals the identity matrix.</span>
+        <span class="c1"># Hence we can do all calculations only on the diagonal,</span>
+        <span class="c1"># then finally we recreate the full matrix dimensions.</span>
+        <span class="n">cop</span> <span class="o">=</span> <span class="n">oplist</span><span class="p">(</span><span class="n">zeros</span><span class="p">(</span><span class="n">no</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">)))</span>
+
+        <span class="k">def</span> <span class="nf">new_list</span><span class="p">(</span><span class="n">bools</span><span class="p">,</span> <span class="n">tmp</span><span class="p">,</span> <span class="n">we</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">bl</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bools</span><span class="p">,</span> <span class="n">we</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">bl</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">tmp</span> <span class="o">*</span> <span class="n">w</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="mf">0.</span>
+
         <span class="k">for</span> <span class="n">e</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">eig</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
             <span class="c1"># calculate contribution from this state</span>
             <span class="n">we</span> <span class="o">=</span> <span class="n">distribution</span><span class="p">(</span><span class="n">E</span> <span class="o">-</span> <span class="n">e</span><span class="p">)</span>
-            <span class="n">tmp</span> <span class="o">=</span> <span class="n">calc_cop</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">n_s</span><span class="p">)</span>
-            <span class="n">cop</span> <span class="o">+=</span> <span class="p">[</span><span class="n">tmp</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">we</span><span class="p">]</span>
+            <span class="n">bools</span> <span class="o">=</span> <span class="n">we</span> <span class="o">&gt;=</span> <span class="n">tol</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">bools</span><span class="p">):</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span> <span class="o">*</span> <span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+                <span class="n">cop</span> <span class="o">+=</span> <span class="n">new_list</span><span class="p">(</span><span class="n">bools</span><span class="p">,</span> <span class="n">tmp</span><span class="p">,</span> <span class="n">we</span><span class="p">)</span>
+
+        <span class="c1"># Now recreate the full size (in sparse form)</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">no</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">tosize</span><span class="p">(</span><span class="n">diag</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">csr_matrix</span><span class="p">((</span><span class="n">diag</span><span class="p">,</span> <span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">idx</span><span class="p">)),</span> <span class="n">shape</span><span class="o">=</span><span class="n">M</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+        <span class="n">cop</span> <span class="o">=</span> <span class="n">oplist</span><span class="p">(</span><span class="n">tosize</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">cop</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">isspmatrix</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+
+        <span class="c1"># create the new list</span>
+        <span class="n">cop0</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="mf">0.</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+        <span class="n">cop</span> <span class="o">=</span> <span class="n">oplist</span><span class="p">(</span><span class="n">cop0</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">)))</span>
+        <span class="k">del</span> <span class="n">cop0</span>
+
+        <span class="c1"># split M, then we will rejoin afterwards</span>
+        <span class="n">Ms</span> <span class="o">=</span> <span class="p">[</span><span class="n">M</span><span class="p">[:,</span> <span class="n">i</span><span class="o">*</span><span class="n">no</span><span class="p">:(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">no</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_s</span><span class="p">)]</span>
+
+        <span class="k">def</span> <span class="nf">new_list</span><span class="p">(</span><span class="n">bools</span><span class="p">,</span> <span class="n">tmp</span><span class="p">,</span> <span class="n">we</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">bl</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bools</span><span class="p">,</span> <span class="n">we</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">bl</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">tmp</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="mf">0.</span>
+
+        <span class="k">for</span> <span class="n">e</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">eig</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+            <span class="c1"># calculate contribution from this state</span>
+            <span class="n">we</span> <span class="o">=</span> <span class="n">distribution</span><span class="p">(</span><span class="n">E</span> <span class="o">-</span> <span class="n">e</span><span class="p">)</span>
+            <span class="n">bools</span> <span class="o">=</span> <span class="n">we</span> <span class="o">&gt;=</span> <span class="n">tol</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">bools</span><span class="p">):</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span> <span class="n">s</span><span class="p">)</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="n">hstack</span><span class="p">([</span><span class="n">m</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">real</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">Ms</span><span class="p">])</span>
+                <span class="n">cop</span> <span class="o">+=</span> <span class="n">new_list</span><span class="p">(</span><span class="n">bools</span><span class="p">,</span> <span class="n">tmp</span><span class="p">,</span> <span class="n">we</span><span class="p">)</span>
+
     <span class="k">else</span><span class="p">:</span>
+        <span class="n">old_shape</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">Ms</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">old_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">n_s</span><span class="p">,</span> <span class="n">old_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">cop</span> <span class="o">=</span> <span class="n">oplist</span><span class="p">(</span><span class="n">zeros</span><span class="p">(</span><span class="n">old_shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">)))</span>
+
         <span class="k">for</span> <span class="n">e</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">eig</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
             <span class="n">we</span> <span class="o">=</span> <span class="n">distribution</span><span class="p">(</span><span class="n">E</span> <span class="o">-</span> <span class="n">e</span><span class="p">)</span>
-            <span class="n">cop</span> <span class="o">+=</span> <span class="n">we</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">calc_cop</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">n_s</span><span class="p">)</span>
+            <span class="c1"># expand the state and do multiplication</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span> <span class="n">s</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="n">cop</span> <span class="o">+=</span> <span class="n">we</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">Ms</span> <span class="o">*</span> <span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">old_shape</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">cop</span></div>
 
 
 <div class="viewcode-block" id="spin_moment"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.spin_moment.html#sisl.physics.electron.spin_moment">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">spin_moment</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">S</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">project</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Spin magnetic moment (spin texture) and optionally orbitally resolved moments</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Spin magnetic moment (spin texture) and optionally orbitally resolved moments</span>
 
 <span class="sd">    This calculation only makes sense for non-colinear calculations.</span>
 
@@ -492,7 +549,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    numpy.ndarray</span>
-<span class="sd">        spin moments per state with final dimension ``(state.shape[0], 3)``, or ``(state.shape[0], state.shape[1]//2, 3)`` if project is true</span>
+<span class="sd">        spin moments per state with final dimension ``(3, state.shape[0])``, or ``(3, state.shape[0], state.shape[1]//2)`` if project is true</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">spin_moment</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">S</span><span class="p">,</span> <span class="n">project</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
@@ -511,20 +568,20 @@
     <span class="c1"># see PDOS for details related to the spin-box calculations</span>
 
     <span class="k">if</span> <span class="n">project</span><span class="p">:</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_complex_to_real</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">empty</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_complex_to_real</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">state</span><span class="p">)):</span>
             <span class="n">cs</span> <span class="o">=</span> <span class="n">conj</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
             <span class="n">Sstate</span> <span class="o">=</span> <span class="n">S</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
             <span class="n">D1</span> <span class="o">=</span> <span class="p">(</span><span class="n">cs</span> <span class="o">*</span> <span class="n">Sstate</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
-            <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">D1</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">D1</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">D1</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">D1</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
             <span class="n">D1</span> <span class="o">=</span> <span class="n">cs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">Sstate</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
             <span class="n">D2</span> <span class="o">=</span> <span class="n">cs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">Sstate</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
-            <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">D1</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="n">D2</span><span class="o">.</span><span class="n">real</span>
-            <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">D2</span><span class="o">.</span><span class="n">imag</span> <span class="o">-</span> <span class="n">D1</span><span class="o">.</span><span class="n">imag</span>
+            <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">D1</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="n">D2</span><span class="o">.</span><span class="n">real</span>
+            <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">D2</span><span class="o">.</span><span class="n">imag</span> <span class="o">-</span> <span class="n">D1</span><span class="o">.</span><span class="n">imag</span>
 
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_complex_to_real</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">empty</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_complex_to_real</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
 
         <span class="c1"># TODO consider doing this all in a few lines</span>
         <span class="c1"># TODO Since there are no energy dependencies here we can actually do all</span>
@@ -534,16 +591,16 @@
             <span class="n">cs</span> <span class="o">=</span> <span class="n">conj</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
             <span class="n">Sstate</span> <span class="o">=</span> <span class="n">S</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
             <span class="n">D</span> <span class="o">=</span> <span class="n">cs</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">Sstate</span>
-            <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">real</span> <span class="o">-</span> <span class="n">D</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">real</span>
-            <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="n">D</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">real</span>
-            <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imag</span> <span class="o">-</span> <span class="n">D</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imag</span>
+            <span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">real</span> <span class="o">-</span> <span class="n">D</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">real</span>
+            <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="n">D</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">real</span>
+            <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">imag</span> <span class="o">-</span> <span class="n">D</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">imag</span>
 
     <span class="k">return</span> <span class="n">s</span></div>
 
 
 <div class="viewcode-block" id="spin_squared"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.spin_squared.html#sisl.physics.electron.spin_squared">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">spin_squared</span><span class="p">(</span><span class="n">state_alpha</span><span class="p">,</span> <span class="n">state_beta</span><span class="p">,</span> <span class="n">S</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the spin squared expectation value between two spin states</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the spin squared expectation value between two spin states</span>
 
 <span class="sd">    This calculation only makes sense for spin-polarized calculations.</span>
 
@@ -627,237 +684,17 @@
     <span class="k">return</span> <span class="n">oplist</span><span class="p">((</span><span class="n">Sa</span><span class="p">,</span> <span class="n">Sb</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="velocity"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.velocity.html#sisl.physics.electron.velocity">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">dHk</span><span class="p">,</span> <span class="n">energy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dSk</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">degenerate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">project</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the velocity of a set of states</span>
-
-<span class="sd">    These are calculated using the analytic expression (:math:`\alpha` corresponding to the Cartesian directions):</span>
-
-<span class="sd">    .. math::</span>
-
-<span class="sd">       \mathbf{v}^\alpha_{i} = \frac1\hbar \langle \psi_i |</span>
-<span class="sd">                \frac{\partial}{\partial\mathbf k_\alpha} \mathbf H(\mathbf k) | \psi_i \rangle</span>
-
-<span class="sd">    In case of non-orthogonal basis the equations substitutes :math:`\mathbf H(\mathbf k)` by</span>
-<span class="sd">    :math:`\mathbf H(\mathbf k) - \epsilon_i\mathbf S(\mathbf k)`.</span>
-
-<span class="sd">    In case the user requests to project the velocities (`project` is True) the equation follows that</span>
-<span class="sd">    of `PDOS` with the same changes.</span>
-<span class="sd">    In case of non-colinear spin the velocities will be returned also for each spin-direction.</span>
-
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    The velocities are calculated without the Berry curvature contribution see Eq. (2) in [1]_.</span>
-<span class="sd">    The missing contribution may be added in later editions, for completeness sake, it is:</span>
-
-<span class="sd">    .. math::</span>
-<span class="sd">        \delta \mathbf v = - \mathbf k\times \Omega_i(\mathbf k)</span>
-
-<span class="sd">    where :math:`\Omega_i` is the Berry curvature for state :math:`i`.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    state : array_like</span>
-<span class="sd">       vectors describing the electronic states, 2nd dimension contains the states. In case of degenerate</span>
-<span class="sd">       states the vectors *may* be rotated upon return.</span>
-<span class="sd">    dHk : list of array_like</span>
-<span class="sd">       Hamiltonian derivative with respect to :math:`\mathbf k`. This needs to be a tuple or</span>
-<span class="sd">       list of the Hamiltonian derivative along the 3 Cartesian directions.</span>
-<span class="sd">    energy : array_like, optional</span>
-<span class="sd">       energies of the states. Required for non-orthogonal basis together with `dSk`. In case of degenerate</span>
-<span class="sd">       states the eigenvalues of the states will be averaged in the degenerate sub-space.</span>
-<span class="sd">    dSk : list of array_like, optional</span>
-<span class="sd">       :math:`\delta \mathbf S_k` matrix required for non-orthogonal basis. This and `energy` *must* both be</span>
-<span class="sd">       provided in a non-orthogonal basis (otherwise the results will be wrong).</span>
-<span class="sd">       Same derivative as `dHk`</span>
-<span class="sd">    degenerate : list of array_like, optional</span>
-<span class="sd">       a list containing the indices of degenerate states. In that case a prior diagonalization</span>
-<span class="sd">       is required to decouple them. See `degenerate_dir` for the sum of directions.</span>
-<span class="sd">    degenerate_dir : (3,), optional</span>
-<span class="sd">       a direction used for degenerate decoupling. The decoupling based on the velocity along this direction</span>
-<span class="sd">    project : bool, optional</span>
-<span class="sd">       whether the velocities will be returned projected per orbital</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    Hamiltonian.dHk : function for generating the Hamiltonian derivatives (`dHk` argument)</span>
-<span class="sd">    Hamiltonian.dSk : function for generating the Hamiltonian derivatives (`dSk` argument)</span>
-
-<span class="sd">    References</span>
-<span class="sd">    ----------</span>
-<span class="sd">    .. [1] :doi:`X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, &quot;Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation&quot;, PRB **74**, 195118 (2006) &lt;10.1103/PhysRevB.74.195118&gt;`</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    numpy.ndarray</span>
-<span class="sd">        if `project` is false, velocities per state with final dimension ``(state.shape[0], 3)``, the velocity unit is Ang/ps. Units *may* change in future releases.</span>
-<span class="sd">    numpy.ndarray</span>
-<span class="sd">        if `project` is true, velocities per state with final dimension ``(state.shape[0], state.shape[1], 3)``, the velocity unit is Ang/ps. Units *may* change in future releases.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">velocity</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">dHk</span><span class="p">,</span> <span class="n">energy</span><span class="p">,</span> <span class="n">dSk</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="p">,</span> <span class="n">project</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-
-    <span class="k">if</span> <span class="n">dSk</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">_velocity_ortho</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">dHk</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="p">,</span> <span class="n">project</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">_velocity_non_ortho</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">dHk</span><span class="p">,</span> <span class="n">energy</span><span class="p">,</span> <span class="n">dSk</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="p">,</span> <span class="n">project</span><span class="p">)</span></div>
-
-
 <span class="c1"># dHk is in [Ang eV]</span>
 <span class="c1"># velocity units in [Ang/ps]</span>
 <span class="n">_velocity_const</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">constant</span><span class="o">.</span><span class="n">hbar</span><span class="p">(</span><span class="s2">&quot;eV ps&quot;</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_velocity_non_ortho</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">dHk</span><span class="p">,</span> <span class="n">energy</span><span class="p">,</span> <span class="n">dSk</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="p">,</span> <span class="n">project</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; For states in a non-orthogonal basis &quot;&quot;&quot;</span>
-    <span class="c1"># Decouple the degenerate states</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">degenerate</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">degenerate_dir</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">degenerate_dir</span><span class="p">)</span>
-        <span class="n">degenerate_dir</span> <span class="o">/=</span> <span class="p">(</span><span class="n">degenerate_dir</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">**</span> <span class="mf">0.5</span>
-        <span class="n">deg_dHk</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">d</span><span class="o">*</span><span class="n">dh</span> <span class="k">for</span> <span class="n">d</span><span class="p">,</span> <span class="n">dh</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">degenerate_dir</span><span class="p">,</span> <span class="n">dHk</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">deg</span> <span class="ow">in</span> <span class="n">degenerate</span><span class="p">:</span>
-            <span class="c1"># Set the average energy</span>
-            <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">energy</span><span class="p">[</span><span class="n">deg</span><span class="p">])</span>
-            <span class="n">energy</span><span class="p">[</span><span class="n">deg</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span>
-
-            <span class="c1"># Now diagonalize to find the contributions from individual states</span>
-            <span class="c1"># then re-construct the seperated degenerate states</span>
-            <span class="c1"># Since we do this for all directions we should decouple them all</span>
-            <span class="n">state</span><span class="p">[</span><span class="n">deg</span><span class="p">]</span> <span class="o">=</span> <span class="n">degenerate_decouple</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">deg</span><span class="p">],</span> <span class="n">deg_dHk</span> <span class="o">-</span> <span class="nb">sum</span><span class="p">(</span><span class="n">d</span> <span class="o">*</span> <span class="n">e</span> <span class="o">*</span> <span class="n">ds</span> <span class="k">for</span> <span class="n">d</span><span class="p">,</span> <span class="n">ds</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">degenerate_dir</span><span class="p">,</span> <span class="n">dSk</span><span class="p">)))</span>
-        <span class="k">del</span> <span class="n">deg_dHk</span>
-
-    <span class="k">if</span> <span class="n">project</span><span class="p">:</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_complex_to_real</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
-        <span class="c1"># Since they depend on the state energies and dSk we have to loop them individually.</span>
-        <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">energy</span><span class="p">):</span>
-            <span class="n">cs</span> <span class="o">=</span> <span class="n">conj</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span>
-            <span class="c1"># Since dHk *may* be a csr_matrix or sparse, we have to do it like</span>
-            <span class="c1"># this. A sparse matrix cannot be re-shaped with an extra dimension.</span>
-            <span class="n">v</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cs</span> <span class="o">*</span> <span class="p">(</span><span class="n">dHk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">dSk</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">]))</span><span class="o">.</span><span class="n">real</span>
-            <span class="n">v</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cs</span> <span class="o">*</span> <span class="p">(</span><span class="n">dHk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">dSk</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">]))</span><span class="o">.</span><span class="n">real</span>
-            <span class="n">v</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cs</span> <span class="o">*</span> <span class="p">(</span><span class="n">dHk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">dSk</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">]))</span><span class="o">.</span><span class="n">real</span>
-
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_complex_to_real</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">energy</span><span class="p">):</span>
-            <span class="n">cs</span> <span class="o">=</span> <span class="n">conj</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span>
-            <span class="n">v</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">cs</span><span class="o">.</span><span class="n">dot</span><span class="p">((</span><span class="n">dHk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">dSk</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">]))</span><span class="o">.</span><span class="n">real</span>
-            <span class="n">v</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">cs</span><span class="o">.</span><span class="n">dot</span><span class="p">((</span><span class="n">dHk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">dSk</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">]))</span><span class="o">.</span><span class="n">real</span>
-            <span class="n">v</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">cs</span><span class="o">.</span><span class="n">dot</span><span class="p">((</span><span class="n">dHk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">dSk</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">]))</span><span class="o">.</span><span class="n">real</span>
-
-    <span class="k">return</span> <span class="n">v</span> <span class="o">*</span> <span class="n">_velocity_const</span>
-
-
-<span class="k">def</span> <span class="nf">_velocity_ortho</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">dHk</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="p">,</span> <span class="n">project</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; For states in an orthogonal basis &quot;&quot;&quot;</span>
-    <span class="c1"># Decouple the degenerate states</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">degenerate</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">degenerate_dir</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">degenerate_dir</span><span class="p">)</span>
-        <span class="n">degenerate_dir</span> <span class="o">/=</span> <span class="p">(</span><span class="n">degenerate_dir</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">**</span> <span class="mf">0.5</span>
-        <span class="n">deg_dHk</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">d</span><span class="o">*</span><span class="n">dh</span> <span class="k">for</span> <span class="n">d</span><span class="p">,</span> <span class="n">dh</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">degenerate_dir</span><span class="p">,</span> <span class="n">dHk</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">deg</span> <span class="ow">in</span> <span class="n">degenerate</span><span class="p">:</span>
-            <span class="c1"># Now diagonalize to find the contributions from individual states</span>
-            <span class="c1"># then re-construct the seperated degenerate states</span>
-            <span class="c1"># Since we do this for all directions we should decouple them all</span>
-            <span class="n">state</span><span class="p">[</span><span class="n">deg</span><span class="p">]</span> <span class="o">=</span> <span class="n">degenerate_decouple</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">deg</span><span class="p">],</span> <span class="n">deg_dHk</span><span class="p">)</span>
-        <span class="k">del</span> <span class="n">deg_dHk</span>
-
-    <span class="n">cs</span> <span class="o">=</span> <span class="n">conj</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">project</span><span class="p">:</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_complex_to_real</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
-
-        <span class="n">v</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cs</span> <span class="o">*</span> <span class="n">dHk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
-        <span class="n">v</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cs</span> <span class="o">*</span> <span class="n">dHk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
-        <span class="n">v</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cs</span> <span class="o">*</span> <span class="n">dHk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
-
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_complex_to_real</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
-
-        <span class="n">v</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ji-&gt;i&quot;</span><span class="p">,</span> <span class="n">cs</span><span class="p">,</span> <span class="n">dHk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">real</span>
-        <span class="n">v</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ji-&gt;i&quot;</span><span class="p">,</span> <span class="n">cs</span><span class="p">,</span> <span class="n">dHk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">real</span>
-        <span class="n">v</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ji-&gt;i&quot;</span><span class="p">,</span> <span class="n">cs</span><span class="p">,</span> <span class="n">dHk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">real</span>
-
-    <span class="k">return</span> <span class="n">v</span> <span class="o">*</span> <span class="n">_velocity_const</span>
-
-
-<div class="viewcode-block" id="velocity_matrix"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.velocity_matrix.html#sisl.physics.electron.velocity_matrix">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">velocity_matrix</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">dHk</span><span class="p">,</span> <span class="n">energy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dSk</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">degenerate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the velocity matrix of a set of states</span>
-
-<span class="sd">    These are calculated using the analytic expression (:math:`\alpha` corresponding to the Cartesian directions):</span>
-
-<span class="sd">    .. math::</span>
-
-<span class="sd">       \mathbf{v}^\alpha_{ij} = \frac1\hbar \langle \psi_j |</span>
-<span class="sd">                \frac{\partial}{\partial\mathbf k_\alpha} \mathbf H(\mathbf k) | \psi_i \rangle</span>
-
-<span class="sd">    In case of non-orthogonal basis the equations substitutes :math:`\mathbf H(\mathbf k)` by</span>
-<span class="sd">    :math:`\mathbf H(\mathbf k) - \epsilon_i\mathbf S(\mathbf k)`.</span>
-
-<span class="sd">    Although the matrix :math:`\mathbf v` should be Hermitian it is not checked, and we explicitly calculate</span>
-<span class="sd">    all elements.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    state : array_like</span>
-<span class="sd">       vectors describing the electronic states, 2nd dimension contains the states. In case of degenerate</span>
-<span class="sd">       states the vectors *may* be rotated upon return.</span>
-<span class="sd">    dHk : list of array_like</span>
-<span class="sd">       Hamiltonian derivative with respect to :math:`\mathbf k`. This needs to be a tuple or</span>
-<span class="sd">       list of the Hamiltonian derivative along the 3 Cartesian directions.</span>
-<span class="sd">    energy : array_like, optional</span>
-<span class="sd">       energies of the states. Required for non-orthogonal basis together with `dSk`. In case of degenerate</span>
-<span class="sd">       states the eigenvalues of the states will be averaged in the degenerate sub-space.</span>
-<span class="sd">    dSk : list of array_like, optional</span>
-<span class="sd">       :math:`\delta \mathbf S_k` matrix required for non-orthogonal basis. This and `energy` *must* both be</span>
-<span class="sd">       provided in a non-orthogonal basis (otherwise the results will be wrong).</span>
-<span class="sd">       Same derivative as `dHk`</span>
-<span class="sd">    degenerate : list of array_like, optional</span>
-<span class="sd">       a list containing the indices of degenerate states. In that case a prior diagonalization</span>
-<span class="sd">       is required to decouple them. See `degenerate_dir` for details.</span>
-<span class="sd">    degenerate_dir : (3,), optional</span>
-<span class="sd">       a direction used for degenerate decoupling. The decoupling based on the velocity along this direction</span>
-
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    velocity : only calculate the diagonal components of this matrix</span>
-<span class="sd">    Hamiltonian.dHk : function for generating the Hamiltonian derivatives (`dHk` argument)</span>
-<span class="sd">    Hamiltonian.dSk : function for generating the Hamiltonian derivatives (`dSk` argument)</span>
-
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    The velocities are calculated without the Berry curvature contribution see Eq. (2) in [1]_.</span>
-<span class="sd">    The missing contribution may be added in later editions, for completeness sake, it is:</span>
-
-<span class="sd">    .. math::</span>
-<span class="sd">        \delta \mathbf v = - \mathbf k\times \Omega_i(\mathbf k)</span>
-
-<span class="sd">    where :math:`\Omega_i` is the Berry curvature for state :math:`i`.</span>
-
-<span class="sd">    References</span>
-<span class="sd">    ----------</span>
-<span class="sd">    .. [1] :doi:`X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, &quot;Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation&quot;, PRB **74**, 195118 (2006) &lt;10.1103/PhysRevB.74.195118&gt;`</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    numpy.ndarray</span>
-<span class="sd">        velocity matrix state with final dimension ``(state.shape[0], state.shape[0], 3)``, the velocity unit is Ang/ps. Units *may* change in future releases.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">velocity_matrix</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">dHk</span><span class="p">,</span> <span class="n">energy</span><span class="p">,</span> <span class="n">dSk</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="p">)</span>
-
-    <span class="n">dtype</span> <span class="o">=</span> <span class="n">find_common_type</span><span class="p">([</span><span class="n">state</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">dHk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">dtype_real_to_complex</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">dtype</span><span class="p">)],</span> <span class="p">[])</span>
-    <span class="k">if</span> <span class="n">dSk</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">_velocity_matrix_ortho</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">dHk</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">_velocity_matrix_non_ortho</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">dHk</span><span class="p">,</span> <span class="n">energy</span><span class="p">,</span> <span class="n">dSk</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span></div>
-
-
 <span class="k">def</span> <span class="nf">_velocity_matrix_non_ortho</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">dHk</span><span class="p">,</span> <span class="n">energy</span><span class="p">,</span> <span class="n">dSk</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; For states in a non-orthogonal basis &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; For states in a non-orthogonal basis &quot;&quot;&quot;</span>
 
     <span class="c1"># All matrix elements along the 3 directions</span>
     <span class="n">n</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">empty</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
     <span class="c1"># Decouple the degenerate states</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">degenerate</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -881,19 +718,20 @@
 
         <span class="c1"># Since dHk *may* be a csr_matrix or sparse, we have to do it like</span>
         <span class="c1"># this. A sparse matrix cannot be re-shaped with an extra dimension.</span>
-        <span class="n">v</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">cs</span><span class="o">.</span><span class="n">dot</span><span class="p">((</span><span class="n">dHk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">dSk</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">]))</span>
-        <span class="n">v</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">cs</span><span class="o">.</span><span class="n">dot</span><span class="p">((</span><span class="n">dHk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">dSk</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">]))</span>
-        <span class="n">v</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">cs</span><span class="o">.</span><span class="n">dot</span><span class="p">((</span><span class="n">dHk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">dSk</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">]))</span>
+        <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">cs</span> <span class="o">@</span> <span class="p">(</span><span class="n">dHk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">dSk</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span>
+        <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">cs</span> <span class="o">@</span> <span class="p">(</span><span class="n">dHk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">dSk</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span>
+        <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">cs</span> <span class="o">@</span> <span class="p">(</span><span class="n">dHk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span> <span class="o">*</span> <span class="n">dSk</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span>
 
-    <span class="k">return</span> <span class="n">v</span> <span class="o">*</span> <span class="n">_velocity_const</span>
+    <span class="n">v</span> <span class="o">*=</span> <span class="n">_velocity_const</span>
+    <span class="k">return</span> <span class="n">v</span>
 
 
 <span class="k">def</span> <span class="nf">_velocity_matrix_ortho</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">dHk</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; For states in an orthogonal basis &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; For states in an orthogonal basis &quot;&quot;&quot;</span>
 
     <span class="c1"># All matrix elements along the 3 directions</span>
     <span class="n">n</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">empty</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
     <span class="c1"># Decouple the degenerate states</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">degenerate</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -909,24 +747,25 @@
 
     <span class="n">cs</span> <span class="o">=</span> <span class="n">conj</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-        <span class="n">v</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">cs</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">dHk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:]))</span>
-        <span class="n">v</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">cs</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">dHk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:]))</span>
-        <span class="n">v</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">cs</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">dHk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:]))</span>
+        <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">cs</span> <span class="o">@</span> <span class="n">dHk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span>
+        <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">cs</span> <span class="o">@</span> <span class="n">dHk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span>
+        <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">cs</span> <span class="o">@</span> <span class="n">dHk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="n">s</span><span class="p">])</span>
 
-    <span class="k">return</span> <span class="n">v</span> <span class="o">*</span> <span class="n">_velocity_const</span>
+    <span class="n">v</span> <span class="o">*=</span> <span class="n">_velocity_const</span>
+    <span class="k">return</span> <span class="n">v</span>
 
 
 <div class="viewcode-block" id="berry_curvature"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.berry_curvature.html#sisl.physics.electron.berry_curvature">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">berry_curvature</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">energy</span><span class="p">,</span> <span class="n">dHk</span><span class="p">,</span> <span class="n">dSk</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">degenerate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the Berry curvature matrix for a set of states (using Kubo)</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the Berry curvature matrix for a set of states (using Kubo)</span>
 
 <span class="sd">    The Berry curvature is calculated using the following expression</span>
 <span class="sd">    (:math:`\alpha`, :math:`\beta` corresponding to Cartesian directions):</span>
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       \boldsymbol\Omega_{i,\alpha\beta} = - \frac2{\hbar^2}\Im\sum_{j\neq i}</span>
+<span class="sd">       \boldsymbol\Omega_{\alpha\beta,i} = - \frac2{\hbar^2}\Im\sum_{j\neq i}</span>
 <span class="sd">                \frac{v^\alpha_{ij} v^\beta_{ji}}</span>
 <span class="sd">                     {[\epsilon_j - \epsilon_i]^2}</span>
 
@@ -968,7 +807,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    numpy.ndarray</span>
-<span class="sd">        Berry flux with final dimension ``(state.shape[0], 3, 3)``</span>
+<span class="sd">        Berry flux with final dimension ``(3, 3, state.shape[0])``</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">berry_curvature</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">energy</span><span class="p">,</span> <span class="n">dHk</span><span class="p">,</span> <span class="n">dSk</span><span class="p">,</span> <span class="n">degenerate</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
@@ -987,15 +826,14 @@
 
 
 <span class="k">def</span> <span class="nf">_berry_curvature</span><span class="p">(</span><span class="n">v_M</span><span class="p">,</span> <span class="n">energy</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate Berry curvature for a given velocity matrix &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate Berry curvature for a given velocity matrix &quot;&quot;&quot;</span>
 
     <span class="c1"># All matrix elements along the 3 directions</span>
-    <span class="n">N</span> <span class="o">=</span> <span class="n">v_M</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">v_M</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="c1"># For cases where all states are degenerate then we would not be able</span>
     <span class="c1"># to calculate anything. Hence we need to initialize as zero</span>
-    <span class="c1"># This is a vector of matrices</span>
-    <span class="c1">#   \Omega_{n, \alpha \beta}</span>
-    <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">N</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_complex_to_real</span><span class="p">(</span><span class="n">v_M</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
+    <span class="c1">#   \Omega_{\alpha \beta, n}</span>
+    <span class="n">sigma</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">N</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_complex_to_real</span><span class="p">(</span><span class="n">v_M</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
 
     <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">energy</span><span class="p">):</span>
         <span class="n">de</span> <span class="o">=</span> <span class="p">(</span><span class="n">energy</span> <span class="o">-</span> <span class="n">e</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
@@ -1004,10 +842,11 @@
         <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">de</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="p">(</span><span class="n">de</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">),</span> <span class="n">out</span><span class="o">=</span><span class="n">de</span><span class="p">)</span>
 
         <span class="c1"># Calculate the berry-curvature</span>
-        <span class="n">sigma</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="p">((</span><span class="n">de</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">v_M</span><span class="p">[</span><span class="n">s</span><span class="p">])</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">v_M</span><span class="p">[:,</span> <span class="n">s</span><span class="p">])</span><span class="o">.</span><span class="n">imag</span>
+        <span class="n">sigma</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="p">((</span><span class="n">de</span> <span class="o">*</span> <span class="n">v_M</span><span class="p">[:,</span> <span class="n">s</span><span class="p">])</span> <span class="o">@</span> <span class="n">v_M</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">s</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">imag</span>
 
     <span class="c1"># negative here</span>
-    <span class="k">return</span> <span class="n">sigma</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span> <span class="n">_berry_curvature_const</span><span class="p">)</span>
+    <span class="n">sigma</span> <span class="o">*=</span> <span class="o">-</span> <span class="n">_berry_curvature_const</span>
+    <span class="k">return</span> <span class="n">sigma</span>
 
 
 <div class="viewcode-block" id="conductivity"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.conductivity.html#sisl.physics.electron.conductivity">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
@@ -1015,7 +854,7 @@
                  <span class="n">degenerate</span><span class="o">=</span><span class="mf">1.e-5</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
                  <span class="o">*</span><span class="p">,</span>
                  <span class="n">eigenstate_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Electronic conductivity for a given `BrillouinZone` integral</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Electronic conductivity for a given `BrillouinZone` integral</span>
 
 <span class="sd">    Currently the *only* implemented method is the anomalous Hall conductivity (AHC, see [1]_)</span>
 <span class="sd">    which may be calculated as:</span>
@@ -1076,7 +915,7 @@
         <span class="k">def</span> <span class="nf">_ahc</span><span class="p">(</span><span class="n">es</span><span class="p">):</span>
             <span class="n">occ</span> <span class="o">=</span> <span class="n">distribution</span><span class="p">(</span><span class="n">es</span><span class="o">.</span><span class="n">eig</span><span class="p">)</span>
             <span class="n">bc</span> <span class="o">=</span> <span class="n">es</span><span class="o">.</span><span class="n">berry_curvature</span><span class="p">(</span><span class="n">degenerate</span><span class="o">=</span><span class="n">degenerate</span><span class="p">,</span> <span class="n">degenerate_dir</span><span class="o">=</span><span class="n">degenerate_dir</span><span class="p">)</span>
-            <span class="k">return</span> <span class="p">(</span><span class="n">bc</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">occ</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+            <span class="k">return</span> <span class="n">bc</span> <span class="o">@</span> <span class="n">occ</span>
 
         <span class="n">vol</span><span class="p">,</span> <span class="n">dim</span> <span class="o">=</span> <span class="n">bz</span><span class="o">.</span><span class="n">volume</span><span class="p">(</span><span class="n">ret_dim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -1100,7 +939,7 @@
 <span class="k">def</span> <span class="nf">berry_phase</span><span class="p">(</span><span class="n">contour</span><span class="p">,</span> <span class="n">sub</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">eigvals</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">closed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;berry&quot;</span><span class="p">,</span>
                 <span class="o">*</span><span class="p">,</span>
                 <span class="n">eigenstate_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ret_overlap</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the Berry-phase on a loop path</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the Berry-phase on a loop path</span>
 
 <span class="sd">    The Berry phase for a single Bloch state is calculated using the discretized formula:</span>
 
@@ -1207,7 +1046,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">gauge</span> <span class="o">=</span> <span class="n">eigenstate_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gauge&quot;</span><span class="p">,</span> <span class="s2">&quot;R&quot;</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">_lowdin</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
-            <span class="sd">&quot;&quot;&quot; change state to the lowdin state, assuming everything is in R gauge</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot; change state to the lowdin state, assuming everything is in R gauge</span>
 <span class="sd">            So needs to be done before changing gauge &quot;&quot;&quot;</span>
             <span class="n">S12</span> <span class="o">=</span> <span class="n">sqrth</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">Sk</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;k&quot;</span><span class="p">],</span>
                                         <span class="n">gauge</span><span class="o">=</span><span class="n">gauge</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;array&quot;</span><span class="p">),</span>
@@ -1291,7 +1130,7 @@
 
 <div class="viewcode-block" id="wavefunction"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.wavefunction.html#sisl.physics.electron.wavefunction">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">wavefunction</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spinor</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Add the wave-function (`Orbital.psi`) component of each orbital to the grid</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Add the wave-function (`Orbital.psi`) component of each orbital to the grid</span>
 
 <span class="sd">    This routine calculates the real-space wave-function components in the</span>
 <span class="sd">    specified grid.</span>
@@ -1432,7 +1271,7 @@
 
     <span class="n">addouter</span> <span class="o">=</span> <span class="n">add</span><span class="o">.</span><span class="n">outer</span>
     <span class="k">def</span> <span class="nf">idx2spherical</span><span class="p">(</span><span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">,</span> <span class="n">iz</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">dc</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Calculate the spherical coordinates from indices &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Calculate the spherical coordinates from indices &quot;&quot;&quot;</span>
         <span class="n">rx</span> <span class="o">=</span> <span class="n">addouter</span><span class="p">(</span><span class="n">addouter</span><span class="p">(</span><span class="n">ix</span> <span class="o">*</span> <span class="n">dc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">iy</span> <span class="o">*</span> <span class="n">dc</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span> <span class="n">iz</span> <span class="o">*</span> <span class="n">dc</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">offset</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
         <span class="n">ry</span> <span class="o">=</span> <span class="n">addouter</span><span class="p">(</span><span class="n">addouter</span><span class="p">(</span><span class="n">ix</span> <span class="o">*</span> <span class="n">dc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">iy</span> <span class="o">*</span> <span class="n">dc</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">iz</span> <span class="o">*</span> <span class="n">dc</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">offset</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
         <span class="n">rz</span> <span class="o">=</span> <span class="n">addouter</span><span class="p">(</span><span class="n">addouter</span><span class="p">(</span><span class="n">ix</span> <span class="o">*</span> <span class="n">dc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">iy</span> <span class="o">*</span> <span class="n">dc</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]),</span> <span class="n">iz</span> <span class="o">*</span> <span class="n">dc</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">offset</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
@@ -1646,14 +1485,14 @@
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">__is_nc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Internal routine to check whether this is a non-colinear calculation &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Internal routine to check whether this is a non-colinear calculation &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_diagonal</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="nf">Sk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Retrieve the overlap matrix corresponding to the originating parent structure.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Retrieve the overlap matrix corresponding to the originating parent structure.</span>
 
 <span class="sd">        When ``self.parent`` is a Hamiltonian this will return :math:`\mathbf S(k)` for the</span>
 <span class="sd">        :math:`k`-point these eigenstates originate from</span>
@@ -1694,7 +1533,7 @@
         <span class="k">return</span> <span class="n">_FakeMatrix</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">norm2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">sum</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Return a vector with the norm of each state :math:`\langle\psi|\mathbf S|\psi\rangle`</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Return a vector with the norm of each state :math:`\langle\psi|\mathbf S|\psi\rangle`</span>
 
 <span class="sd">        :math:`\mathbf S` is the overlap matrix (or basis), for orthogonal basis</span>
 <span class="sd">        :math:`\mathbf S \equiv \mathbf I`.</span>
@@ -1718,7 +1557,7 @@
         <span class="k">return</span> <span class="n">conj</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">)</span> <span class="o">*</span> <span class="n">S</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
 
     <span class="k">def</span> <span class="nf">spin_moment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">project</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate spin moment from the states</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate spin moment from the states</span>
 
 <span class="sd">        This routine calls `~sisl.physics.electron.spin_moment` with appropriate arguments</span>
 <span class="sd">        and returns the spin moment for the states.</span>
@@ -1733,7 +1572,7 @@
         <span class="k">return</span> <span class="n">spin_moment</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Sk</span><span class="p">(),</span> <span class="n">project</span><span class="o">=</span><span class="n">project</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">wavefunction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">spinor</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Expand the coefficients as the wavefunction on `grid` *as-is*</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Expand the coefficients as the wavefunction on `grid` *as-is*</span>
 
 <span class="sd">        See `~sisl.physics.electron.wavefunction` for argument details, the arguments not present</span>
 <span class="sd">        in this method are automatically passed from this object.</span>
@@ -1756,23 +1595,23 @@
 
 <div class="viewcode-block" id="CoefficientElectron"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.CoefficientElectron.html#sisl.physics.electron.CoefficientElectron">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">CoefficientElectron</span><span class="p">(</span><span class="n">Coefficient</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Coefficients describing some physical quantity related to electrons &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Coefficients describing some physical quantity related to electrons &quot;&quot;&quot;</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span></div>
 
 
 <div class="viewcode-block" id="StateElectron"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.StateElectron.html#sisl.physics.electron.StateElectron">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">StateElectron</span><span class="p">(</span><span class="n">_electron_State</span><span class="p">,</span> <span class="n">State</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; A state describing a physical quantity related to electrons &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; A state describing a physical quantity related to electrons &quot;&quot;&quot;</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span></div>
 
 
 <div class="viewcode-block" id="StateCElectron"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">StateCElectron</span><span class="p">(</span><span class="n">_electron_State</span><span class="p">,</span> <span class="n">StateC</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; A state describing a physical quantity related to electrons, with associated coefficients of the state &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; A state describing a physical quantity related to electrons, with associated coefficients of the state &quot;&quot;&quot;</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[]</span>
 
 <div class="viewcode-block" id="StateCElectron.velocity"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron.velocity">[docs]</a>    <span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate velocity for the states</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate velocity for the states</span>
 
 <span class="sd">        This routine calls ``derivative(1, *args, **kwargs)`` and returns the velocity for the states.</span>
 
@@ -1783,16 +1622,32 @@
 <span class="sd">        -----</span>
 <span class="sd">        The states and energies for the states *may* have changed after calling this routine.</span>
 <span class="sd">        This is because of the velocity un-folding for degenerate modes. I.e. calling</span>
-<span class="sd">        `displacement` and/or `PDOS` after this method *may* change the result.</span>
+<span class="sd">        `PDOS` after this method *may* change the result.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        The velocities are calculated without the Berry curvature contribution see Eq. (2) in [1]_.</span>
+<span class="sd">        The missing contribution may be added in later editions, for completeness sake, it is:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">           \delta \mathbf v = - \mathbf k\times \Omega_i(\mathbf k)</span>
+
+<span class="sd">        where :math:`\Omega_i` is the Berry curvature for state :math:`i`.</span>
+
+<span class="sd">        References</span>
+<span class="sd">        ----------</span>
+<span class="sd">        .. [1] :doi:`X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, &quot;Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation&quot;, PRB **74**, 195118 (2006) &lt;10.1103/PhysRevB.74.195118&gt;`</span>
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
 <span class="sd">        derivative : for details of the implementation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">real</span> <span class="o">*</span> <span class="n">_velocity_const</span></div>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">v</span> <span class="o">*=</span> <span class="n">_velocity_const</span>
+        <span class="k">return</span> <span class="n">v</span></div>
 
 <div class="viewcode-block" id="StateCElectron.berry_curvature"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron.berry_curvature">[docs]</a>    <span class="k">def</span> <span class="nf">berry_curvature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate Berry curvature for the states</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate Berry curvature for the states</span>
 
 <span class="sd">        This routine calls ``derivative(1, *args, **kwargs, matrix=True)`` and</span>
 <span class="sd">        returns the Berry curvature for the states.</span>
@@ -1809,7 +1664,7 @@
         <span class="k">return</span> <span class="n">_berry_curvature</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="StateCElectron.effective_mass"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron.effective_mass">[docs]</a>    <span class="k">def</span> <span class="nf">effective_mass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate effective mass tensor for the states</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate effective mass tensor for the states</span>
 
 <span class="sd">        This routine calls ``derivative(2, *args, **kwargs)`` and</span>
 <span class="sd">        returns the effective mass for all states.</span>
@@ -1843,7 +1698,7 @@
 
 <div class="viewcode-block" id="EigenvalueElectron"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.EigenvalueElectron.html#sisl.physics.electron.EigenvalueElectron">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">EigenvalueElectron</span><span class="p">(</span><span class="n">CoefficientElectron</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Eigenvalues of electronic states, no eigenvectors retained</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Eigenvalues of electronic states, no eigenvectors retained</span>
 
 <span class="sd">    This holds routines that enable the calculation of density of states.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1851,11 +1706,11 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">eig</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Eigenvalues &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Eigenvalues &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
 
 <div class="viewcode-block" id="EigenvalueElectron.occupation"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.EigenvalueElectron.html#sisl.physics.electron.EigenvalueElectron.occupation">[docs]</a>    <span class="k">def</span> <span class="nf">occupation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;fermi_dirac&quot;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the occupations for the states according to a distribution function</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the occupations for the states according to a distribution function</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1872,7 +1727,7 @@
         <span class="k">return</span> <span class="n">distribution</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eig</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="EigenvalueElectron.DOS"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.EigenvalueElectron.html#sisl.physics.electron.EigenvalueElectron.DOS">[docs]</a>    <span class="k">def</span> <span class="nf">DOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate DOS for provided energies, `E`.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate DOS for provided energies, `E`.</span>
 
 <span class="sd">        This routine calls `sisl.physics.electron.DOS` with appropriate arguments</span>
 <span class="sd">        and returns the DOS.</span>
@@ -1884,7 +1739,7 @@
 
 <div class="viewcode-block" id="EigenvectorElectron"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.EigenvectorElectron.html#sisl.physics.electron.EigenvectorElectron">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">EigenvectorElectron</span><span class="p">(</span><span class="n">StateElectron</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Eigenvectors of electronic states, no eigenvalues retained</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Eigenvectors of electronic states, no eigenvalues retained</span>
 
 <span class="sd">    This holds routines that enable the calculation of spin moments.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1893,7 +1748,7 @@
 
 <div class="viewcode-block" id="EigenstateElectron"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron">[docs]</a><span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics.electron&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">EigenstateElectron</span><span class="p">(</span><span class="n">StateCElectron</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Eigen states of electrons with eigenvectors and eigenvalues.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Eigen states of electrons with eigenvectors and eigenvalues.</span>
 
 <span class="sd">    This holds routines that enable the calculation of (projected) density of states,</span>
 <span class="sd">    spin moments (spin texture).</span>
@@ -1902,11 +1757,11 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">eig</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Eigenvalues for each state &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Eigenvalues for each state &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
 
 <div class="viewcode-block" id="EigenstateElectron.occupation"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron.occupation">[docs]</a>    <span class="k">def</span> <span class="nf">occupation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;fermi_dirac&quot;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the occupations for the states according to a distribution function</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the occupations for the states according to a distribution function</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1923,7 +1778,7 @@
         <span class="k">return</span> <span class="n">distribution</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eig</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="EigenstateElectron.DOS"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron.DOS">[docs]</a>    <span class="k">def</span> <span class="nf">DOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate DOS for provided energies, `E`.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate DOS for provided energies, `E`.</span>
 
 <span class="sd">        This routine calls `sisl.physics.electron.DOS` with appropriate arguments</span>
 <span class="sd">        and returns the DOS.</span>
@@ -1933,7 +1788,7 @@
         <span class="k">return</span> <span class="n">DOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">,</span> <span class="n">distribution</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="EigenstateElectron.PDOS"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron.PDOS">[docs]</a>    <span class="k">def</span> <span class="nf">PDOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate PDOS for provided energies, `E`.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate PDOS for provided energies, `E`.</span>
 
 <span class="sd">        This routine calls `~sisl.physics.electron.PDOS` with appropriate arguments</span>
 <span class="sd">        and returns the PDOS.</span>
@@ -1942,30 +1797,30 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">PDOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Sk</span><span class="p">(),</span> <span class="n">distribution</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="EigenstateElectron.COP"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron.COP">[docs]</a>    <span class="k">def</span> <span class="nf">COP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate COP for provided energies, `E` using matrix `M`</span>
+<div class="viewcode-block" id="EigenstateElectron.COP"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron.COP">[docs]</a>    <span class="k">def</span> <span class="nf">COP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate COP for provided energies, `E` using matrix `M`</span>
 
 <span class="sd">        This routine calls `~sisl.physics.electron.COP` with appropriate arguments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">COP</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">distribution</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">COP</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="EigenstateElectron.COOP"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron.COOP">[docs]</a>    <span class="k">def</span> <span class="nf">COOP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate COOP for provided energies, `E`.</span>
-
-<span class="sd">        This routine calls `~sisl.physics.electron.COP` with appropriate arguments.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Get Sk in full format</span>
-        <span class="n">Sk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Sk</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;sc:csr&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">COP</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="n">Sk</span><span class="p">,</span> <span class="n">distribution</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="EigenstateElectron.COHP"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron.COHP">[docs]</a>    <span class="k">def</span> <span class="nf">COHP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate COHP for provided energies, `E`.</span>
+<div class="viewcode-block" id="EigenstateElectron.COOP"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron.COOP">[docs]</a>    <span class="k">def</span> <span class="nf">COOP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate COOP for provided energies, `E`.</span>
 
 <span class="sd">        This routine calls `~sisl.physics.electron.COP` with appropriate arguments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Get Hk in full format</span>
-        <span class="n">Hk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">Hk</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;sc:csr&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">COP</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="n">Hk</span><span class="p">,</span> <span class="n">distribution</span><span class="p">)</span></div></div>
+        <span class="nb">format</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;format&quot;</span><span class="p">,</span> <span class="s2">&quot;csr&quot;</span><span class="p">)</span>
+        <span class="n">Sk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Sk</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;sc:</span><span class="si">{</span><span class="nb">format</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">COP</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="n">Sk</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="EigenstateElectron.COHP"><a class="viewcode-back" href="../../../api/generated/sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron.COHP">[docs]</a>    <span class="k">def</span> <span class="nf">COHP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate COHP for provided energies, `E`.</span>
+
+<span class="sd">        This routine calls `~sisl.physics.electron.COP` with appropriate arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">format</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;format&quot;</span><span class="p">,</span> <span class="s2">&quot;csr&quot;</span><span class="p">)</span>
+        <span class="n">Hk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">Hk</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;sc:</span><span class="si">{</span><span class="nb">format</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">COP</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="n">Hk</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
@@ -1975,7 +1830,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.scaleup.orbocc &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.io.scaleup.orbocc &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -111,11 +111,11 @@
 
 
 <div class="viewcode-block" id="orboccSileScaleUp"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.scaleup.orboccSileScaleUp.html#sisl.io.scaleup.orboccSileScaleUp">[docs]</a><span class="k">class</span> <span class="nc">orboccSileScaleUp</span><span class="p">(</span><span class="n">SileScaleUp</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; orbocc file object for ScaleUp &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; orbocc file object for ScaleUp &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="orboccSileScaleUp.read_atom"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.scaleup.orboccSileScaleUp.html#sisl.io.scaleup.orboccSileScaleUp.read_atom">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">read_atom</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Reads a the atoms and returns an `Atoms` object &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads a the atoms and returns an `Atoms` object &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">ns</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[:</span><span class="mi">2</span><span class="p">])</span>
         <span class="n">species</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[:</span><span class="n">ns</span><span class="p">]</span> <span class="c1"># species</span>
@@ -134,7 +134,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

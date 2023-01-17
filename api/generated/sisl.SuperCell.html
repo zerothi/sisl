@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.SuperCell &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.SuperCell &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -39,7 +39,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -82,6 +82,8 @@
 <li class="toctree-l4"><a class="reference internal" href="sisl.SphericalOrbital.html">sisl.SphericalOrbital</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.AtomicOrbital.html">sisl.AtomicOrbital</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.HydrogenicOrbital.html">sisl.HydrogenicOrbital</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.GTOrbital.html">sisl.GTOrbital</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.STOrbital.html">sisl.STOrbital</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.Atom.html">sisl.Atom</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.Atoms.html">sisl.Atoms</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.Geometry.html">sisl.Geometry</a></li>
@@ -208,103 +210,97 @@ is returned from <a class="reference internal" href="#sisl.SuperCell.tocell" tit
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.copy" title="sisl.SuperCell.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>([cell, origin])</p></td>
 <td><p>A deepcopy of the object</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.cut" title="sisl.SuperCell.cut"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cut</span></code></a>(reps, axis)</p></td>
-<td><p>Reverses a <a class="reference internal" href="#sisl.SuperCell.tile" title="sisl.SuperCell.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell.tile</span></code></a> and returns the segmented version</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.equal" title="sisl.SuperCell.equal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">equal</span></code></a>(other[, tol])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.equal" title="sisl.SuperCell.equal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">equal</span></code></a>(other[, tol])</p></td>
 <td><p>Check whether two supercell are equivalent</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.fit" title="sisl.SuperCell.fit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code></a>(xyz[, axis, tol])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.fit" title="sisl.SuperCell.fit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code></a>(xyz[, axis, tol])</p></td>
 <td><p>Fit the supercell to <em class="xref py py-obj">xyz</em> such that the unit-cell becomes periodic in the specified directions</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.is_cartesian" title="sisl.SuperCell.is_cartesian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_cartesian</span></code></a>([tol])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.is_cartesian" title="sisl.SuperCell.is_cartesian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_cartesian</span></code></a>([tol])</p></td>
 <td><p>Checks if cell vectors a,b,c are multiples of the cartesian axis vectors (x, y, z)</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.is_orthogonal" title="sisl.SuperCell.is_orthogonal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_orthogonal</span></code></a>([tol])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.is_orthogonal" title="sisl.SuperCell.is_orthogonal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_orthogonal</span></code></a>([tol])</p></td>
 <td><p>Returns true if the cell vectors are orthogonal.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.move" title="sisl.SuperCell.move"><code class="xref py py-obj docutils literal notranslate"><span class="pre">move</span></code></a>(v)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.move" title="sisl.SuperCell.move"><code class="xref py py-obj docutils literal notranslate"><span class="pre">move</span></code></a>(v)</p></td>
 <td><p>Appends additional space to the object</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.offset" title="sisl.SuperCell.offset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">offset</span></code></a>([isc])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.offset" title="sisl.SuperCell.offset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">offset</span></code></a>([isc])</p></td>
 <td><p>Returns the supercell offset of the supercell index</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.parallel" title="sisl.SuperCell.parallel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parallel</span></code></a>(other[, axis])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.parallel" title="sisl.SuperCell.parallel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parallel</span></code></a>(other[, axis])</p></td>
 <td><p>Returns true if the cell vectors are parallel to <em class="xref py py-obj">other</em></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.parameters" title="sisl.SuperCell.parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parameters</span></code></a>([rad])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.parameters" title="sisl.SuperCell.parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parameters</span></code></a>([rad])</p></td>
 <td><p>Cell parameters of this cell in 3 lengths and 3 angles</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.plane" title="sisl.SuperCell.plane"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plane</span></code></a>(ax1, ax2[, origin])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.plane" title="sisl.SuperCell.plane"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plane</span></code></a>(ax1, ax2[, origin])</p></td>
 <td><p>Query point and plane-normal for the plane spanning <em class="xref py py-obj">ax1</em> and <em class="xref py py-obj">ax2</em></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.prepend" title="sisl.SuperCell.prepend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepend</span></code></a>(other, axis)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.prepend" title="sisl.SuperCell.prepend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepend</span></code></a>(other, axis)</p></td>
 <td><p>Prepends other <a class="reference internal" href="#sisl.SuperCell" title="sisl.SuperCell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell</span></code></a> to this grid along axis</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.read" title="sisl.SuperCell.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(sile, *args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.read" title="sisl.SuperCell.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(sile, *args, **kwargs)</p></td>
 <td><p>Reads the supercell from the <code class="xref py py-obj docutils literal notranslate"><span class="pre">Sile</span></code> using <code class="docutils literal notranslate"><span class="pre">Sile.read_supercell</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.repeat" title="sisl.SuperCell.repeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat</span></code></a>(reps, axis)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.repeat" title="sisl.SuperCell.repeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat</span></code></a>(reps, axis)</p></td>
 <td><p>Extend the unit-cell <em class="xref py py-obj">reps</em> times along the <em class="xref py py-obj">axis</em> lattice vector</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.rotate" title="sisl.SuperCell.rotate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotate</span></code></a>(angle, v[, only, rad])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.rotate" title="sisl.SuperCell.rotate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotate</span></code></a>(angle, v[, only, rad])</p></td>
 <td><p>Rotates the supercell, in-place by the angle around the vector</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.sc_index" title="sisl.SuperCell.sc_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sc_index</span></code></a>(sc_off)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.sc_index" title="sisl.SuperCell.sc_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sc_index</span></code></a>(sc_off)</p></td>
 <td><p>Returns the integer index in the sc_off list that corresponds to <a class="reference internal" href="#sisl.SuperCell.sc_off" title="sisl.SuperCell.sc_off"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sc_off</span></code></a></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.scale" title="sisl.SuperCell.scale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale</span></code></a>(scale[, what])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.scale" title="sisl.SuperCell.scale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale</span></code></a>(scale[, what])</p></td>
 <td><p>Scale lattice vectors</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.set_nsc" title="sisl.SuperCell.set_nsc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_nsc</span></code></a>([nsc, a, b, c])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.set_nsc" title="sisl.SuperCell.set_nsc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_nsc</span></code></a>([nsc, a, b, c])</p></td>
 <td><p>Sets the number of supercells in the 3 different cell directions</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.swapaxes" title="sisl.SuperCell.swapaxes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">swapaxes</span></code></a>(a, b)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.swapaxes" title="sisl.SuperCell.swapaxes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">swapaxes</span></code></a>(a, b)</p></td>
 <td><p>Swap axis <em class="xref py py-obj">a</em> and <em class="xref py py-obj">b</em> in a new <a class="reference internal" href="#sisl.SuperCell" title="sisl.SuperCell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell</span></code></a></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.tile" title="sisl.SuperCell.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a>(reps, axis)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.tile" title="sisl.SuperCell.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a>(reps, axis)</p></td>
 <td><p>Extend the unit-cell <em class="xref py py-obj">reps</em> times along the <em class="xref py py-obj">axis</em> lattice vector</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.toCuboid" title="sisl.SuperCell.toCuboid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toCuboid</span></code></a>([orthogonal])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.toCuboid" title="sisl.SuperCell.toCuboid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toCuboid</span></code></a>([orthogonal])</p></td>
 <td><p>A cuboid with vectors as this unit-cell and center with respect to its origin</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.tocell" title="sisl.SuperCell.tocell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tocell</span></code></a>(*args)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.tocell" title="sisl.SuperCell.tocell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tocell</span></code></a>(*args)</p></td>
 <td><p>Returns a 3x3 unit-cell dependent on the input</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.translate" title="sisl.SuperCell.translate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate</span></code></a>(v)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.translate" title="sisl.SuperCell.translate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate</span></code></a>(v)</p></td>
 <td><p>Appends additional space to the object</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.unrepeat" title="sisl.SuperCell.unrepeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unrepeat</span></code></a>(reps, axis)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.unrepeat" title="sisl.SuperCell.unrepeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unrepeat</span></code></a>(reps, axis)</p></td>
 <td><p>Reverses a <a class="reference internal" href="#sisl.SuperCell.tile" title="sisl.SuperCell.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell.tile</span></code></a> and returns the segmented version</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.untile" title="sisl.SuperCell.untile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">untile</span></code></a>(reps, axis)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.untile" title="sisl.SuperCell.untile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">untile</span></code></a>(reps, axis)</p></td>
 <td><p>Reverses a <a class="reference internal" href="#sisl.SuperCell.tile" title="sisl.SuperCell.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell.tile</span></code></a> and returns the segmented version</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.vertices" title="sisl.SuperCell.vertices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vertices</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.vertices" title="sisl.SuperCell.vertices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vertices</span></code></a>()</p></td>
 <td><p>Vertices of the cell</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.cell" title="sisl.SuperCell.cell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cell</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.cell" title="sisl.SuperCell.cell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cell</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.nsc" title="sisl.SuperCell.nsc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nsc</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.nsc" title="sisl.SuperCell.nsc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nsc</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.n_s" title="sisl.SuperCell.n_s"><code class="xref py py-obj docutils literal notranslate"><span class="pre">n_s</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.n_s" title="sisl.SuperCell.n_s"><code class="xref py py-obj docutils literal notranslate"><span class="pre">n_s</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.icell" title="sisl.SuperCell.icell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">icell</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.icell" title="sisl.SuperCell.icell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">icell</span></code></a></p></td>
 <td><p>Returns the reciprocal (inverse) cell for the <a class="reference internal" href="#sisl.SuperCell" title="sisl.SuperCell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell</span></code></a>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.isc_off" title="sisl.SuperCell.isc_off"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isc_off</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.isc_off" title="sisl.SuperCell.isc_off"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isc_off</span></code></a></p></td>
 <td><p>Internal indexed supercell <code class="docutils literal notranslate"><span class="pre">[ia,</span> <span class="pre">ib,</span> <span class="pre">ic]</span> <span class="pre">==</span> <span class="pre">i</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.length" title="sisl.SuperCell.length"><code class="xref py py-obj docutils literal notranslate"><span class="pre">length</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.length" title="sisl.SuperCell.length"><code class="xref py py-obj docutils literal notranslate"><span class="pre">length</span></code></a></p></td>
 <td><p>Length of each lattice vector</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.origin" title="sisl.SuperCell.origin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">origin</span></code></a></p></td>
-<td><p>Origin for the cell</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.origo" title="sisl.SuperCell.origo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">origo</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SuperCell.origin" title="sisl.SuperCell.origin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">origin</span></code></a></p></td>
 <td><p>Origin for the cell</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.SuperCell.rcell" title="sisl.SuperCell.rcell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rcell</span></code></a></p></td>
@@ -382,7 +378,7 @@ is returned from <a class="reference internal" href="#sisl.SuperCell.tocell" tit
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.SuperCell.cell2length">
-<span class="sig-name descname"><span class="pre">cell2length</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">1,</span> <span class="pre">2)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../../_modules/sisl/supercell.html#SuperCell.cell2length"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SuperCell.cell2length" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">cell2length</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">1,</span> <span class="pre">2)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../../_modules/sisl/supercell.html#SuperCell.cell2length"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SuperCell.cell2length" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate cell vectors such that they each have length <a class="reference internal" href="#sisl.SuperCell.length" title="sisl.SuperCell.length"><code class="xref py py-obj docutils literal notranslate"><span class="pre">length</span></code></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -396,7 +392,7 @@ vectors and it must have length equal to <em class="xref py py-obj">axes</em></p
 <dd class="field-even"><p>cell-vectors with prescribed length, same order as <em class="xref py py-obj">axes</em></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -419,19 +415,6 @@ vectors and it must have length equal to <em class="xref py py-obj">axes</em></p
 </ul>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="sisl.SuperCell.cut">
-<span class="sig-name descname"><span class="pre">cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SuperCell.cut" title="Permalink to this definition"></a></dt>
-<dd><p>Reverses a <a class="reference internal" href="#sisl.SuperCell.tile" title="sisl.SuperCell.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell.tile</span></code></a> and returns the segmented version</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><a class="reference internal" href="#sisl.SuperCell.tile" title="sisl.SuperCell.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a></dt><dd><p>opposite of this method</p>
-</dd>
-</dl>
-</div>
 </dd></dl>
 
 <dl class="py method">
@@ -502,13 +485,13 @@ and not as returned by an inverse LAPACK algorithm.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.SuperCell.isc_off">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">isc_off</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.SuperCell.isc_off" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">isc_off</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.SuperCell.isc_off" title="Permalink to this definition"></a></dt>
 <dd><p>Internal indexed supercell <code class="docutils literal notranslate"><span class="pre">[ia,</span> <span class="pre">ib,</span> <span class="pre">ic]</span> <span class="pre">==</span> <span class="pre">i</span></code></p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.SuperCell.length">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">length</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.SuperCell.length" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">length</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.SuperCell.length" title="Permalink to this definition"></a></dt>
 <dd><p>Length of each lattice vector</p>
 </dd></dl>
 
@@ -536,13 +519,7 @@ and not as returned by an inverse LAPACK algorithm.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.SuperCell.origin">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">origin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.SuperCell.origin" title="Permalink to this definition"></a></dt>
-<dd><p>Origin for the cell</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="sisl.SuperCell.origo">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">origo</span></span><a class="headerlink" href="#sisl.SuperCell.origo" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">origin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.SuperCell.origin" title="Permalink to this definition"></a></dt>
 <dd><p>Origin for the cell</p>
 </dd></dl>
 
@@ -715,7 +692,7 @@ along that axis is returned.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.SuperCell.sc_off">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sc_off</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.SuperCell.sc_off" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sc_off</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.SuperCell.sc_off" title="Permalink to this definition"></a></dt>
 <dd><p>Integer supercell offsets</p>
 </dd></dl>
 
@@ -886,7 +863,7 @@ correspond to each cell axis (off, on), and the last one contains the xyz coordi
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

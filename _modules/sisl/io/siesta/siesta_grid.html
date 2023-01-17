@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.siesta_grid &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.io.siesta.siesta_grid &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -122,13 +122,13 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">gridncSileSiesta</span><span class="p">(</span><span class="n">SileCDFSiesta</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; NetCDF real-space grid file</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; NetCDF real-space grid file</span>
 
 <span class="sd">    The grid sile will automatically convert the units from Siesta units (Bohr, Ry) to sisl units (Ang, eV) provided the correct extension is present.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="gridncSileSiesta.read_supercell"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.gridncSileSiesta.html#sisl.io.siesta.gridncSileSiesta.read_supercell">[docs]</a>    <span class="k">def</span> <span class="nf">read_supercell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a SuperCell object from a Siesta.grid.nc file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a SuperCell object from a Siesta.grid.nc file</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">(</span><span class="s1">&#39;cell&#39;</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
         <span class="c1"># Yes, this is ugly, I really should implement my unit-conversion tool</span>
@@ -138,7 +138,7 @@
         <span class="k">return</span> <span class="n">SuperCell</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="gridncSileSiesta.write_supercell"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.gridncSileSiesta.html#sisl.io.siesta.gridncSileSiesta.write_supercell">[docs]</a>    <span class="k">def</span> <span class="nf">write_supercell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sc</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Write a supercell to the grid.nc file &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Write a supercell to the grid.nc file &quot;&quot;&quot;</span>
         <span class="n">sile_raise_write</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
         <span class="c1"># Create initial dimensions</span>
@@ -151,7 +151,7 @@
         <span class="n">v</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">/</span> <span class="n">Bohr2Ang</span></div>
 
 <div class="viewcode-block" id="gridncSileSiesta.read_grid"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.gridncSileSiesta.html#sisl.io.siesta.gridncSileSiesta.read_grid">[docs]</a>    <span class="k">def</span> <span class="nf">read_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;gridfunc&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Reads a grid in the current Siesta.grid.nc file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads a grid in the current Siesta.grid.nc file</span>
 
 <span class="sd">        Enables the reading and processing of the grids created by Siesta</span>
 
@@ -237,7 +237,7 @@
         <span class="k">return</span> <span class="n">grid</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="gridncSileSiesta.write_grid"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.gridncSileSiesta.html#sisl.io.siesta.gridncSileSiesta.write_grid">[docs]</a>    <span class="k">def</span> <span class="nf">write_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nspin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Write a grid to the grid.nc file &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Write a grid to the grid.nc file &quot;&quot;&quot;</span>
         <span class="n">sile_raise_write</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="c1"># Default to *index* variable</span>
         <span class="n">spin</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="n">spin</span><span class="p">)</span>
@@ -273,7 +273,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

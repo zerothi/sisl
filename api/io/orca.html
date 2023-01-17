@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>displacement &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>ORCA &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -22,13 +22,11 @@
         <script src="../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
-        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-        <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="sisl.physics.phonon.CoefficientPhonon" href="sisl.physics.phonon.CoefficientPhonon.html" />
-    <link rel="prev" title="velocity" href="sisl.physics.phonon.velocity.html" /> 
+    <link rel="next" title="sisl.io.orca.outputSileORCA" href="generated/sisl.io.orca.outputSileORCA.html" />
+    <link rel="prev" title="sisl.io.openmx.omxSileOpenMX" href="generated/sisl.io.openmx.omxSileOpenMX.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -39,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -77,27 +75,32 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">API documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../basic.html">Basic classes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../default_geom.html">Common geometries</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../physics.html">Physical objects</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../physics.brillouinzone.html">Brillouin zone</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../physics.matrix.html">Physical quantites</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../physics.electron.html">Electron related functions</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="../physics.phonon.html">Phonon related functions</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="sisl.physics.phonon.DOS.html">DOS</a></li>
-<li class="toctree-l4"><a class="reference internal" href="sisl.physics.phonon.PDOS.html">PDOS</a></li>
-<li class="toctree-l4"><a class="reference internal" href="sisl.physics.phonon.velocity.html">velocity</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">displacement</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../physics.phonon.html#supporting-classes">Supporting classes</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="../physics.distribution.html">Distribution functions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../physics.html#low-level-objects">Low level objects</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="../physics.html">Physical objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mixing.html">Mixing self-consistent quantities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../viz/index.html">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../unit_constant.html">Units and constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Input/Output</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="basic.html">Basic IO methods/classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generic.html">Generic files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bigdft.html">BigDFT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fhiaims.html">FHIaims</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gulp.html">GULP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="openmx.html">OpenMX</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">ORCA</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.io.orca.outputSileORCA.html">sisl.io.orca.outputSileORCA</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.io.orca.txtSileORCA.html">sisl.io.orca.txtSileORCA</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="scaleup.html">ScaleUP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="siesta.html">Siesta</a></li>
+<li class="toctree-l3"><a class="reference internal" href="siesta.html#transiesta">TranSiesta</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tbtrans.html">TBtrans</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tbtrans.html#phtrans">PHtrans</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vasp.html">VASP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wannier90.html">Wannier90</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -117,11 +120,10 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">API documentation</a></li>
-          <li class="breadcrumb-item"><a href="../physics.html">Physical objects</a></li>
-          <li class="breadcrumb-item"><a href="../physics.phonon.html">Phonon related functions</a></li>
-      <li class="breadcrumb-item active">displacement</li>
+          <li class="breadcrumb-item"><a href="index.html">Input/Output</a></li>
+      <li class="breadcrumb-item active">ORCA</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../_sources/api/generated/sisl.physics.phonon.displacement.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/api/io/orca.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -153,50 +155,36 @@
     text-align: unset;
 }
 </style>
-<section id="displacement">
-<h1>displacement<a class="headerlink" href="#displacement" title="Permalink to this heading"></a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="sisl.physics.phonon.displacement">
-<span class="sig-prename descclassname"><span class="pre">sisl.physics.phonon.</span></span><span class="sig-name descname"><span class="pre">displacement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/phonon.html#displacement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.phonon.displacement" title="Permalink to this definition"></a></dt>
-<dd><p>Calculate real-space displacements for a given mode (in units of the characteristic length)</p>
-<p>The displacements per mode may be written as:</p>
-<div class="math notranslate nohighlight">
-\[\mathbf{u}_{i\alpha} = \epsilon_{i\alpha}\sqrt{\frac{\hbar}{m_i \omega}}\]</div>
-<p>where <span class="math notranslate nohighlight">\(i\)</span> is the atomic index.</p>
-<p>Even for negative frequencies the characteristic length is calculated for use of non-equilibrium
-modes.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>mode</strong> (<em>array_like</em>) – vectors describing the phonon modes, 2nd dimension contains the modes. In case of degenerate
-modes the vectors <em>may</em> be rotated upon return.</p></li>
-<li><p><strong>hw</strong> (<em>array_like</em>) – frequencies of the modes, for any negative frequency the returned displacement will be 0.</p></li>
-<li><p><strong>mass</strong> (<em>array_like</em>) – masses for the atoms (has to have length <code class="docutils literal notranslate"><span class="pre">mode.shape[1]</span> <span class="pre">//</span> <span class="pre">3</span></code></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>displacements per mode with final dimension <code class="docutils literal notranslate"><span class="pre">(mode.shape[0],</span> <span class="pre">3)</span></code>, displacements are in Ang</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)">numpy.ndarray</a></p>
-</dd>
-</dl>
-</dd></dl>
-
+<section id="module-sisl.io.orca">
+<span id="orca"></span><span id="io-orca"></span><h1>ORCA<a class="headerlink" href="#module-sisl.io.orca" title="Permalink to this heading"></a></h1>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.io.orca.outputSileORCA.html#sisl.io.orca.outputSileORCA" title="sisl.io.orca.outputSileORCA"><code class="xref py py-obj docutils literal notranslate"><span class="pre">outputSileORCA</span></code></a>(filename, *args, **kwargs)</p></td>
+<td><p>Output file from ORCA</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.io.orca.txtSileORCA.html#sisl.io.orca.txtSileORCA" title="sisl.io.orca.txtSileORCA"><code class="xref py py-obj docutils literal notranslate"><span class="pre">txtSileORCA</span></code></a>(filename, *args, **kwargs)</p></td>
+<td><p>Output from the ORCA property.txt file</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="sisl.physics.phonon.velocity.html" class="btn btn-neutral float-left" title="velocity" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="sisl.physics.phonon.CoefficientPhonon.html" class="btn btn-neutral float-right" title="sisl.physics.phonon.CoefficientPhonon" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="generated/sisl.io.openmx.omxSileOpenMX.html" class="btn btn-neutral float-left" title="sisl.io.openmx.omxSileOpenMX" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="generated/sisl.io.orca.outputSileORCA.html" class="btn btn-neutral float-right" title="sisl.io.orca.outputSileORCA" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

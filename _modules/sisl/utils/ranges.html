@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.utils.ranges &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.utils.ranges &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -109,7 +109,7 @@
 
 <span class="c1"># Function to change a string to a range of integers</span>
 <div class="viewcode-block" id="strmap"><a class="viewcode-back" href="../../../api/generated/sisl.utils.strmap.html#sisl.utils.strmap">[docs]</a><span class="k">def</span> <span class="nf">strmap</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Parse a string as though it was a slice and map all entries using ``func``.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Parse a string as though it was a slice and map all entries using ``func``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -199,7 +199,7 @@
 
 
 <div class="viewcode-block" id="strseq"><a class="viewcode-back" href="../../../api/generated/sisl.utils.strseq.html#sisl.utils.strseq">[docs]</a><span class="k">def</span> <span class="nf">strseq</span><span class="p">(</span><span class="n">cast</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Accept a string and return the casted tuples of content based on ranges.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Accept a string and return the casted tuples of content based on ranges.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -254,14 +254,14 @@
 
 
 <div class="viewcode-block" id="erange"><a class="viewcode-back" href="../../../api/generated/sisl.utils.erange.html#sisl.utils.erange">[docs]</a><span class="k">def</span> <span class="nf">erange</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Returns the range with both ends includede &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Returns the range with both ends includede &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">step</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="lstranges"><a class="viewcode-back" href="../../../api/generated/sisl.utils.lstranges.html#sisl.utils.lstranges">[docs]</a><span class="k">def</span> <span class="nf">lstranges</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span> <span class="n">cast</span><span class="o">=</span><span class="n">erange</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Convert a `strmap` list into expanded ranges &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Convert a `strmap` list into expanded ranges &quot;&quot;&quot;</span>
     <span class="n">l</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="c1"># If an entry is a tuple, it means it is either</span>
     <span class="c1"># a range 0-1 == tuple(0, 1), or</span>
@@ -296,7 +296,7 @@
 
 
 <div class="viewcode-block" id="list2str"><a class="viewcode-back" href="../../../api/generated/sisl.utils.list2str.html#sisl.utils.list2str">[docs]</a><span class="k">def</span> <span class="nf">list2str</span><span class="p">(</span><span class="n">lst</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Convert a list of elements into a string of ranges</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Convert a list of elements into a string of ranges</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -335,7 +335,7 @@
 <span class="c1">#   file[0-1] returns</span>
 <span class="c1">#     file, [0,1]</span>
 <div class="viewcode-block" id="fileindex"><a class="viewcode-back" href="../../../api/generated/sisl.utils.fileindex.html#sisl.utils.fileindex">[docs]</a><span class="k">def</span> <span class="nf">fileindex</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">cast</span><span class="o">=</span><span class="nb">int</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Parses a filename string into the filename and the indices.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Parses a filename string into the filename and the indices.</span>
 
 <span class="sd">    This range can be formatted like this:</span>
 <span class="sd">      file[1,2,3-6]</span>
@@ -381,7 +381,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

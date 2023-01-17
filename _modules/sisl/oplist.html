@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.oplist &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.oplist &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -109,62 +109,78 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">zip_longest</span>
 <span class="kn">import</span> <span class="nn">operator</span> <span class="k">as</span> <span class="nn">op</span>
 
 <span class="kn">from</span> <span class="nn">._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span> <span class="nn">._help</span> <span class="kn">import</span> <span class="n">isiterable</span>
 
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;oplist&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;oplist&quot;</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">only_self</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">only_self</span><span class="p">:</span>
-        <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">yield_oplist</span><span class="p">(</span><span class="n">oplist_</span><span class="p">,</span> <span class="n">rhs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Yield elements from `oplist_` and `rhs`</span>
+
+<span class="sd">    This also ensures that ``len(oplist_)`` and ``len(rhs)`` are the same.</span>
+
+<span class="sd">    We cannot use `len` on `rhs` since it might be an iterator.</span>
+<span class="sd">    Since `oplist` might be used for heavy lifting it is better to</span>
+<span class="sd">    circumvent this by directly using the element when requested by the</span>
+<span class="sd">    iterator. This should limit memory usage in most cases.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n_lhs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">oplist_</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">zip_longest</span><span class="p">(</span><span class="n">oplist_</span><span class="p">,</span> <span class="n">rhs</span><span class="p">,</span> <span class="n">fillvalue</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">n_lhs</span> <span class="o">&gt;=</span> <span class="n">n</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span>
+
+    <span class="k">if</span> <span class="n">n_lhs</span> <span class="o">!=</span> <span class="n">n</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">oplist_</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> requires other data to contain same number of elements (or a scalar).&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">unitary</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">unitary</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">func_op</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">op</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">func_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">isiterable</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> requires other data to contain same number of elements (or a scalar).&quot;</span><span class="p">)</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">op</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">o</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">))</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">op</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">yield_oplist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">))</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">op</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">_</span>
+    <span class="k">return</span> <span class="n">func_op</span>
 
 
 <span class="k">def</span> <span class="nf">_crt_rop</span><span class="p">(</span><span class="n">op</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">func_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">isiterable</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> requires other data to contain same number of elements (or a scalar).&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">op</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">o</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">op</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">yield_oplist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">_</span>
+    <span class="k">return</span> <span class="n">func_op</span>
 
 
-<span class="k">def</span> <span class="nf">_crt_iop</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">only_self</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">only_self</span><span class="p">:</span>
-        <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_crt_iop</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">unitary</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">unitary</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">func_op</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span> <span class="c1"># pylint: disable=C0200</span>
                 <span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
             <span class="k">return</span> <span class="bp">self</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">func_op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">isiterable</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> requires other data to contain same number of elements (or a scalar).&quot;</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span> <span class="c1"># pylint: disable=C0200</span>
-                    <span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">other</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">o</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">yield_oplist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)):</span>
+                    <span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">o</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span> <span class="c1"># pylint: disable=C0200</span>
                     <span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">other</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">self</span>
-    <span class="k">return</span> <span class="n">_</span>
+    <span class="k">return</span> <span class="n">func_op</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">oplist</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; list with element-wise operations</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; list with element-wise operations</span>
 
 <span class="sd">    List-inherited class implementing direct element operations instead of list-extensions/compressions.</span>
 <span class="sd">    When having multiple lists and one wishes to create a sum of individual elements, thus</span>
@@ -231,7 +247,7 @@
 
 <div class="viewcode-block" id="oplist.decorate"><a class="viewcode-back" href="../../api/generated/sisl.oplist.oplist.html#sisl.oplist.oplist.decorate">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">decorate</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Decorate a function to always return an `oplist`, regardless of return values from `func`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Decorate a function to always return an `oplist`, regardless of return values from `func`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -271,7 +287,7 @@
         <span class="k">return</span> <span class="n">wrap_func</span></div>
 
     <span class="c1"># Implement math operations</span>
-    <span class="fm">__abs__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">abs</span><span class="p">,</span> <span class="n">only_self</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="fm">__abs__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">abs</span><span class="p">,</span> <span class="n">unitary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="fm">__add__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">add</span><span class="p">)</span>
     <span class="fm">__radd__</span> <span class="o">=</span> <span class="n">_crt_rop</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">add</span><span class="p">)</span>
     <span class="fm">__iadd__</span> <span class="o">=</span> <span class="n">_crt_iop</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">iadd</span><span class="p">)</span>
@@ -285,8 +301,8 @@
     <span class="fm">__rmul__</span> <span class="o">=</span> <span class="n">_crt_rop</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">mul</span><span class="p">)</span>
     <span class="fm">__matmul__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">matmul</span><span class="p">)</span>
     <span class="fm">__imatmul__</span> <span class="o">=</span> <span class="n">_crt_iop</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">imatmul</span><span class="p">)</span>
-    <span class="fm">__neg__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">neg</span><span class="p">,</span> <span class="n">only_self</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="fm">__pos__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">pos</span><span class="p">,</span> <span class="n">only_self</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="fm">__neg__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">neg</span><span class="p">,</span> <span class="n">unitary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="fm">__pos__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">pos</span><span class="p">,</span> <span class="n">unitary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="fm">__pow__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">pow</span><span class="p">)</span>
     <span class="fm">__ipow__</span> <span class="o">=</span> <span class="n">_crt_iop</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">ipow</span><span class="p">)</span>
     <span class="fm">__rpow__</span> <span class="o">=</span> <span class="n">_crt_rop</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">pow</span><span class="p">)</span>
@@ -303,7 +319,7 @@
     <span class="fm">__le__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">le</span><span class="p">)</span>
     <span class="fm">__ge__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">ge</span><span class="p">)</span>
     <span class="fm">__gt__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">gt</span><span class="p">)</span>
-    <span class="n">__not__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">not_</span><span class="p">,</span> <span class="n">only_self</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">__not__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">not_</span><span class="p">,</span> <span class="n">unitary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="fm">__and__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">and_</span><span class="p">)</span>
     <span class="fm">__iand__</span> <span class="o">=</span> <span class="n">_crt_iop</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">iand</span><span class="p">)</span>
     <span class="fm">__or__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">or_</span><span class="p">)</span>
@@ -318,7 +334,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

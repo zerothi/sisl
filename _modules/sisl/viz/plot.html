@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.viz.plot &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.viz.plot &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -141,7 +141,7 @@
 <span class="k">class</span> <span class="nc">PlotMeta</span><span class="p">(</span><span class="n">ConfigurableMeta</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; This method decides what to return when the plot class is instantiated.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; This method decides what to return when the plot class is instantiated.</span>
 
 <span class="sd">        It is supposed to help the users by making the plot class very functional</span>
 <span class="sd">        without the need for the users to use extra methods.</span>
@@ -210,7 +210,7 @@
 
 
 <div class="viewcode-block" id="Plot"><a class="viewcode-back" href="../../../api/viz/generated/sisl.viz.Plot.html#sisl.viz.Plot">[docs]</a><span class="k">class</span> <span class="nc">Plot</span><span class="p">(</span><span class="n">ShortCutable</span><span class="p">,</span> <span class="n">Configurable</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">PlotMeta</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Parent class of all plot classes</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Parent class of all plot classes</span>
 
 <span class="sd">    Implements general things needed by all plots such as settings and shortcut</span>
 <span class="sd">    management.</span>
@@ -313,7 +313,7 @@
         <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;_after_get_figure&quot;</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_update_methods</span><span class="p">[</span><span class="s2">&quot;get_figure&quot;</span><span class="p">]]</span>
 
     <span class="k">def</span> <span class="nf">_parse_update_funcs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func_names</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Decides which functions to run when the settings of the plot are updated</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Decides which functions to run when the settings of the plot are updated</span>
 
 <span class="sd">        This is called in self._run_updates as a final oportunity to decide what functions to run.</span>
 
@@ -366,7 +366,7 @@
 
 <div class="viewcode-block" id="Plot.from_plotly"><a class="viewcode-back" href="../../../api/viz/generated/sisl.viz.Plot.html#sisl.viz.Plot.from_plotly">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_plotly</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">plotly_fig</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Converts a plotly plot to a Plot object</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Converts a plotly plot to a Plot object</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        -----------</span>
@@ -385,12 +385,12 @@
 
 <div class="viewcode-block" id="Plot.plot_name"><a class="viewcode-back" href="../../../api/viz/generated/sisl.viz.Plot.html#sisl.viz.Plot.plot_name">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">plot_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; The name of the plot. Used to be displayed in the GUI, for example &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; The name of the plot. Used to be displayed in the GUI, for example &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;_plot_type&quot;</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Plot.suffix"><a class="viewcode-back" href="../../../api/viz/generated/sisl.viz.Plot.html#sisl.viz.Plot.suffix">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">suffix</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get the suffix that this class adds to plotting functions</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Get the suffix that this class adds to plotting functions</span>
 
 <span class="sd">        See sisl/viz/_plotables.py and particularly the `register_plotable`</span>
 <span class="sd">        function to understand this better.</span>
@@ -401,7 +401,7 @@
 
 <div class="viewcode-block" id="Plot.entry_points_help"><a class="viewcode-back" href="../../../api/viz/generated/sisl.viz.Plot.html#sisl.viz.Plot.entry_points_help">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">entry_points_help</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Generates a helpful message about the entry points of the plot class &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Generates a helpful message about the entry points of the plot class &quot;&quot;&quot;</span>
         <span class="n">string</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
         <span class="k">for</span> <span class="n">entry_point</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">entry_points</span><span class="p">:</span>
@@ -417,7 +417,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_innotebook</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Boolean indicating whether this plot is being used in a notebook</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Boolean indicating whether this plot is being used in a notebook</span>
 
 <span class="sd">        Used to understand how we should display the plot.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -425,12 +425,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Dictionary that informs of which jupyter notebook widgets are available &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Dictionary that informs of which jupyter notebook widgets are available &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">check_widgets</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Plot.multiple"><a class="viewcode-back" href="../../../api/viz/generated/sisl.viz.Plot.html#sisl.viz.Plot.multiple">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">multiple</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">fixed</span><span class="o">=</span><span class="p">{},</span> <span class="n">template_plot</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">merge_method</span><span class="o">=</span><span class="s1">&#39;together&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Creates a multiple plot out of a class</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Creates a multiple plot out of a class</span>
 
 <span class="sd">        This class method returns a multiple plot that contains several plots of the same class.</span>
 <span class="sd">        It is a general method that serves as a common denominator for building MultiplePlot, SubPlot</span>
@@ -530,7 +530,7 @@
 
 <div class="viewcode-block" id="Plot.subplots"><a class="viewcode-back" href="../../../api/viz/generated/sisl.viz.Plot.html#sisl.viz.Plot.subplots">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">subplots</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">fixed</span><span class="o">=</span><span class="p">{},</span> <span class="n">template_plot</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">arrange</span><span class="o">=</span><span class="s2">&quot;rows&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Creates subplots where each plot has different settings</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Creates subplots where each plot has different settings</span>
 
 <span class="sd">        Mainly, it uses the `multiple` method to generate them.</span>
 
@@ -597,7 +597,7 @@
 
 <div class="viewcode-block" id="Plot.animated"><a class="viewcode-back" href="../../../api/viz/generated/sisl.viz.Plot.html#sisl.viz.Plot.animated">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">animated</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">fixed</span><span class="o">=</span><span class="p">{},</span> <span class="n">frame_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">template_plot</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Creates an animation out of a class</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Creates an animation out of a class</span>
 
 <span class="sd">        This class method returns an animation with frames belonging to a given plot class.</span>
 
@@ -680,7 +680,7 @@
                             <span class="n">frame_names</span><span class="o">=</span><span class="n">frame_names</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">__init_subclass__</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Whenever a plot class is defined, this method is called</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Whenever a plot class is defined, this method is called</span>
 
 <span class="sd">        We will use this opportunity to:</span>
 <span class="sd">            - Register entry points.</span>
@@ -793,7 +793,7 @@
             <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The plot has been initialized correctly, but the current settings were not enough to generate the figure.</span><span class="se">\n</span><span class="s2">Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Information to print about the plot &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Information to print about the plot &quot;&quot;&quot;</span>
         <span class="n">string</span> <span class="o">=</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s1">&#39;Plot class: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">    Plot type: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">plot_name</span><span class="p">()</span><span class="si">}</span><span class="se">\n\n</span><span class="s1">&#39;</span>
             <span class="s1">&#39;Settings:</span><span class="se">\n</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">- </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">items</span><span class="p">()]))</span>
@@ -802,7 +802,7 @@
         <span class="k">return</span> <span class="n">string</span>
 
     <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; This method is executed only after python has found that there is no such attribute in the instance</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; This method is executed only after python has found that there is no such attribute in the instance</span>
 
 <span class="sd">        So let&#39;s try to find it elsewhere. There are two options:</span>
 <span class="sd">            - The attribute is in the backend object (self._backend)</span>
@@ -822,7 +822,7 @@
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The attribute &#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39; was not found either in the plot, its backend, or in shared attributes.&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        If is a childplot and it has the attribute `_SHOULD_SHARE_WITH_SIBLINGS` set to True, we will submit the attribute to the shared store.</span>
 <span class="sd">        This happens in animations/multiple plots. There&#39;s a &quot;leading plot&quot; that reads the data and then shares it with the rest</span>
 <span class="sd">        so that they don&#39;t need to read it again, in a collective effort to save memory and time.</span>
@@ -835,12 +835,12 @@
             <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Getting an item from plot returns the trace(s) that correspond to the requested indices &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Getting an item from plot returns the trace(s) that correspond to the requested indices &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">slice</span><span class="p">)):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">_general_plot_shortcuts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; In this method we set the shortcuts that are general to all plots</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; In this method we set the shortcuts that are general to all plots</span>
 
 <span class="sd">        This is called in `__init__`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -851,7 +851,7 @@
     <span class="nd">@repeat_if_children</span>
     <span class="nd">@vizplotly_settings</span><span class="p">(</span><span class="s1">&#39;before&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">update_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; This method is responsible for organizing the data-reading step</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; This method is responsible for organizing the data-reading step</span>
 
 <span class="sd">        If everything is done succesfully, it calls the next step (`set_data`)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -880,7 +880,7 @@
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="nf">_read_from_sources</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry_points_order</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Tries to read the data from the different available entry points in the plot class</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Tries to read the data from the different available entry points in the plot class</span>
 
 <span class="sd">        If it fails to read from all entry points, it raises an exception.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -914,7 +914,7 @@
                              <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">errors</span><span class="p">)))</span>
 
 <div class="viewcode-block" id="Plot.follow"><a class="viewcode-back" href="../../../api/viz/generated/sisl.viz.Plot.html#sisl.viz.Plot.follow">[docs]</a>    <span class="k">def</span> <span class="nf">follow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">files</span><span class="p">,</span> <span class="n">to_abs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">unfollow</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Makes sure that the object knows which files to follow in order to trigger updates</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Makes sure that the object knows which files to follow in order to trigger updates</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -935,7 +935,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_files_to_follow</span> <span class="o">=</span> <span class="n">new_files</span> <span class="k">if</span> <span class="n">unfollow</span> <span class="k">else</span> <span class="p">[</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_files_to_follow</span><span class="p">,</span> <span class="o">*</span><span class="n">new_files</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="Plot.get_sile"><a class="viewcode-back" href="../../../api/viz/generated/sisl.viz.Plot.html#sisl.viz.Plot.get_sile">[docs]</a>    <span class="k">def</span> <span class="nf">get_sile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">results_path</span><span class="p">,</span> <span class="n">root_fdf</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">follow</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">follow_kwargs</span><span class="o">=</span><span class="p">{},</span> <span class="n">file_contents</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; A wrapper around get_sile so that the reading of the file is registered</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; A wrapper around get_sile so that the reading of the file is registered</span>
 
 <span class="sd">        It has to main functions:</span>
 <span class="sd">            - Automatically following files that are read, so that you don&#39;t neet to go always like:</span>
@@ -984,7 +984,7 @@
                         <span class="k">pass</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tried to infer </span><span class="si">{</span><span class="n">setting_key</span><span class="si">}</span><span class="s2"> from the &#39;root_fdf&#39;, &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;but didn&#39;t find any </span><span class="si">{</span><span class="n">sile_type</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">fdf_sile</span><span class="o">.</span><span class="n">_directory</span><span class="p">)</span> <span class="o">/</span> <span class="n">results_path</span> <span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="sa">f</span><span class="s2">&quot;but didn&#39;t find any </span><span class="si">{</span><span class="n">sile_type</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">Path</span><span class="p">(</span><span class="n">fdf_sile</span><span class="o">.</span><span class="n">_directory</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">results_path</span><span class="w"> </span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">follow</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">follow</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="o">**</span><span class="n">follow_kwargs</span><span class="p">)</span>
@@ -992,7 +992,7 @@
         <span class="k">return</span> <span class="n">sisl</span><span class="o">.</span><span class="n">get_sile</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Plot.updates_available"><a class="viewcode-back" href="../../../api/viz/generated/sisl.viz.Plot.html#sisl.viz.Plot.updates_available">[docs]</a>    <span class="k">def</span> <span class="nf">updates_available</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; This function checks whether the read files have changed</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; This function checks whether the read files have changed</span>
 
 <span class="sd">        For it to work properly, one should specify the files that have been read by</span>
 <span class="sd">        their reading methods (usually, the entry points). This is done by using the </span>
@@ -1011,7 +1011,7 @@
 
 <div class="viewcode-block" id="Plot.listen"><a class="viewcode-back" href="../../../api/viz/generated/sisl.viz.Plot.html#sisl.viz.Plot.listen">[docs]</a>    <span class="k">def</span> <span class="nf">listen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">forever</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">as_animation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">return_animation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_figWidget</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                <span class="n">clear_previous</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">notify</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">speak</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">notify_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">notify_message</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">speak_message</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fig_widget</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Listens for updates in the followed files (see the `updates_available` method)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Listens for updates in the followed files (see the `updates_available` method)</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ---------</span>
@@ -1102,7 +1102,7 @@
 
                         <span class="k">if</span> <span class="n">notify</span><span class="p">:</span>
                             <span class="n">title</span> <span class="o">=</span> <span class="n">notify_title</span> <span class="ow">or</span> <span class="s2">&quot;SISL PLOT UPDATE&quot;</span>
-                            <span class="n">message</span> <span class="o">=</span> <span class="n">notify_message</span> <span class="ow">or</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;struct&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> updated&quot;</span>
+                            <span class="n">message</span> <span class="o">=</span> <span class="n">notify_message</span> <span class="ow">or</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;struct&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> updated&quot;</span>
                             <span class="n">trigger_notification</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
                         <span class="k">if</span> <span class="n">speak</span><span class="p">:</span>
                             <span class="n">spoken_message</span><span class="p">(</span><span class="n">speak_message</span> <span class="k">if</span> <span class="n">speak_message</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;Your </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> is updated. Check it out&quot;</span><span class="p">)</span>
@@ -1126,7 +1126,7 @@
             <span class="k">return</span> <span class="n">fig_widget</span></div>
 
     <span class="k">def</span> <span class="nf">_listening_shortcut</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig_widget</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Adds the shortcut to start listening for updates</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Adds the shortcut to start listening for updates</span>
 
 <span class="sd">        This is done here and not in `_general_plot_settings` because</span>
 <span class="sd">        we need to be able to toggle this shortcut each time the plot</span>
@@ -1142,7 +1142,7 @@
         <span class="p">)</span>
 
 <div class="viewcode-block" id="Plot.stop_listening"><a class="viewcode-back" href="../../../api/viz/generated/sisl.viz.Plot.html#sisl.viz.Plot.stop_listening">[docs]</a>    <span class="k">def</span> <span class="nf">stop_listening</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig_widget</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Makes the plot stop listening for updates</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Makes the plot stop listening for updates</span>
 
 <span class="sd">        Using this method only makes sense if you have previously made the plot listen</span>
 <span class="sd">        either through `Plot.listen()` or `Plot.show(listen=True)`</span>
@@ -1168,7 +1168,7 @@
 
 <div class="viewcode-block" id="Plot.setup_hamiltonian"><a class="viewcode-back" href="../../../api/viz/generated/sisl.viz.Plot.html#sisl.viz.Plot.setup_hamiltonian">[docs]</a>    <span class="nd">@vizplotly_settings</span><span class="p">(</span><span class="s1">&#39;before&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">setup_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Sets up the hamiltonian for calculations with sisl &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Sets up the hamiltonian for calculations with sisl &quot;&quot;&quot;</span>
         <span class="n">NEW_FDF</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">settings_history</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">NEW_FDF</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings_history</span><span class="o">.</span><span class="n">was_updated</span><span class="p">(</span><span class="s2">&quot;root_fdf&quot;</span><span class="p">)</span>
@@ -1199,7 +1199,7 @@
     <span class="nd">@repeat_if_children</span>
     <span class="nd">@vizplotly_settings</span><span class="p">(</span><span class="s1">&#39;before&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">update_fig</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Method to process the data that has been read beforehand by read_data() and prepare the figure</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Method to process the data that has been read beforehand by read_data() and prepare the figure</span>
 
 <span class="sd">        If everything is succesful, it calls the next step in plotting (`get_figure`)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1212,7 +1212,7 @@
         <span class="k">return</span> <span class="bp">self</span>
 
 <div class="viewcode-block" id="Plot.get_figure"><a class="viewcode-back" href="../../../api/viz/generated/sisl.viz.Plot.html#sisl.viz.Plot.get_figure">[docs]</a>    <span class="k">def</span> <span class="nf">get_figure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backend</span><span class="p">,</span> <span class="n">clear_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generates a figure out of the already processed data.</span>
 
 <span class="sd">        Parameters</span>
@@ -1249,7 +1249,7 @@
     <span class="c1">#-------------------------------------------</span>
 
 <div class="viewcode-block" id="Plot.show"><a class="viewcode-back" href="../../../api/viz/generated/sisl.viz.Plot.html#sisl.viz.Plot.show">[docs]</a>    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">listen</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">return_figWidget</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Displays the plot</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Displays the plot</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ------</span>
@@ -1275,7 +1275,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_backend</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_ipython_display_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">return_figWidget</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Handles all things needed to display the plot in a jupyter notebook</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Handles all things needed to display the plot in a jupyter notebook</span>
 
 <span class="sd">        Plotly already knows how to show a plot in the jupyter notebook, however</span>
 <span class="sd">        here we try to extend it to support shortcuts if the appropiate widget is </span>
@@ -1323,7 +1323,7 @@
             <span class="n">_try_backend</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_ipython_display_with_shortcuts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig_widget</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        If the appropiate widget is there (ipyevents, https://github.com/mwcraig/ipyevents),</span>
 <span class="sd">        we extend plotly&#39;s FigureWidget to support keypress events so that we can trigger</span>
 <span class="sd">        shortcuts from the notebook.</span>
@@ -1413,7 +1413,7 @@
     <span class="c1">#-------------------------------------------</span>
 
 <div class="viewcode-block" id="Plot.merge"><a class="viewcode-back" href="../../../api/viz/generated/sisl.viz.Plot.html#sisl.viz.Plot.merge">[docs]</a>    <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">others</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="s2">&quot;multiple&quot;</span><span class="p">,</span> <span class="n">extend_multiples</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Merges this plot&#39;s instance with the list of plots provided</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Merges this plot&#39;s instance with the list of plots provided</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        -------</span>
@@ -1458,7 +1458,7 @@
         <span class="k">return</span> <span class="n">PlotClass</span><span class="p">(</span><span class="n">plots</span><span class="o">=</span><span class="n">children</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Plot.copy"><a class="viewcode-back" href="../../../api/viz/generated/sisl.viz.Plot.html#sisl.viz.Plot.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a copy of the plot</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a copy of the plot</span>
 
 <span class="sd">        If you want a plot with the exact plot configuration but newly initialized,</span>
 <span class="sd">        use `clone()` instead.</span>
@@ -1466,7 +1466,7 @@
         <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Plot.clone"><a class="viewcode-back" href="../../../api/viz/generated/sisl.viz.Plot.html#sisl.viz.Plot.clone">[docs]</a>    <span class="k">def</span> <span class="nf">clone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Gets you and exact clone of this plot</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Gets you and exact clone of this plot</span>
 
 <span class="sd">        You can pass extra args that will overwrite the previous parameters though, if you don&#39;t want it to be that exact.</span>
 
@@ -1482,7 +1482,7 @@
     <span class="c1">#-------------------------------------------</span>
 
 <div class="viewcode-block" id="Plot.dispatch_event"><a class="viewcode-back" href="../../../api/viz/generated/sisl.viz.Plot.html#sisl.viz.Plot.dispatch_event">[docs]</a>    <span class="k">def</span> <span class="nf">dispatch_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Not functional yet &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Not functional yet &quot;&quot;&quot;</span>
         <span class="n">warn</span><span class="p">((</span><span class="n">event</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">))</span>
         <span class="c1"># Of course this needs to be done</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
@@ -1491,7 +1491,7 @@
     <span class="c1">#       DATA TRANSFER/STORAGE METHODS</span>
     <span class="c1">#-------------------------------------------</span>
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns the object to be pickled&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the object to be pickled&quot;&quot;&quot;</span>
         <span class="c1"># We just simply remove any sile from the settings history (as they are not pickleable)</span>
         <span class="c1"># and replace it with a posix path. Note that this does not fix the problem if there are</span>
         <span class="c1"># nested siles.</span>
@@ -1500,7 +1500,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span>
 
 <div class="viewcode-block" id="Plot.save"><a class="viewcode-back" href="../../../api/viz/generated/sisl.viz.Plot.html#sisl.viz.Plot.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Saves the plot so that it can be loaded in the future</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Saves the plot so that it can be loaded in the future</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ---------</span>
@@ -1534,7 +1534,7 @@
 
 
 <span class="k">def</span> <span class="nf">entry_point</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">sort_key</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Helps registering entry points for plots</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Helps registering entry points for plots</span>
 
 <span class="sd">    See the usage section to get a fast intuitive way of how to use it.</span>
 
@@ -1576,7 +1576,7 @@
 
 
 <div class="viewcode-block" id="MultiplePlot"><a class="viewcode-back" href="../../../api/viz/generated/sisl.viz.MultiplePlot.html#sisl.viz.MultiplePlot">[docs]</a><span class="k">class</span> <span class="nc">MultiplePlot</span><span class="p">(</span><span class="n">Plot</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; General handler of a group of plots that need to be rendered together</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; General handler of a group of plots that need to be rendered together</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1610,7 +1610,7 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Gets a given child plot &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Gets a given child plot &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
     <span class="nd">@staticmethod</span>
@@ -1627,7 +1627,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_attrs_for_children</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns all the attributes that its children should have &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns all the attributes that its children should have &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="s1">&#39;isChildPlot&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
             <span class="s1">&#39;_get_shared_attr&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">key</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">shared_attr</span><span class="p">(</span><span class="n">key</span><span class="p">),</span>
@@ -1635,7 +1635,7 @@
         <span class="p">}</span>
 
 <div class="viewcode-block" id="MultiplePlot.init_all_plots"><a class="viewcode-back" href="../../../api/viz/generated/sisl.viz.MultiplePlot.html#sisl.viz.MultiplePlot.init_all_plots">[docs]</a>    <span class="k">def</span> <span class="nf">init_all_plots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">update_fig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">try_sharing</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Initializes all child plots</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Initializes all child plots</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        -----------</span>
@@ -1717,7 +1717,7 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="MultiplePlot.update_children_settings"><a class="viewcode-back" href="../../../api/viz/generated/sisl.viz.MultiplePlot.html#sisl.viz.MultiplePlot.update_children_settings">[docs]</a>    <span class="k">def</span> <span class="nf">update_children_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">children_sel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Updates the settings of all child plots</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Updates the settings of all child plots</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        -----------</span>
@@ -1730,7 +1730,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="n">on_children</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">on_parent_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">children_sel</span><span class="o">=</span><span class="n">children_sel</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_update_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on_children</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">on_parent_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">children_sel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; This method takes into account that on plots that contain children, one may want to update only the parent settings or all the child&#39;s settings.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; This method takes into account that on plots that contain children, one may want to update only the parent settings or all the child&#39;s settings.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        -----------</span>
@@ -1753,7 +1753,7 @@
         <span class="k">return</span> <span class="bp">self</span>
 
 <div class="viewcode-block" id="MultiplePlot.set_children"><a class="viewcode-back" href="../../../api/viz/generated/sisl.viz.MultiplePlot.html#sisl.viz.MultiplePlot.set_children">[docs]</a>    <span class="k">def</span> <span class="nf">set_children</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plots</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Sets the children of a multiple plot</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Sets the children of a multiple plot</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        --------</span>
@@ -1773,7 +1773,7 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="MultiplePlot.add_children"><a class="viewcode-back" href="../../../api/viz/generated/sisl.viz.MultiplePlot.html#sisl.viz.MultiplePlot.add_children">[docs]</a>    <span class="k">def</span> <span class="nf">add_children</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">plots</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Append children to the existing ones</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Append children to the existing ones</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        -----------</span>
@@ -1783,7 +1783,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">set_children</span><span class="p">(</span><span class="n">plots</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MultiplePlot.insert_childplot"><a class="viewcode-back" href="../../../api/viz/generated/sisl.viz.MultiplePlot.html#sisl.viz.MultiplePlot.insert_childplot">[docs]</a>    <span class="k">def</span> <span class="nf">insert_childplot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">plot</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Inserts a plot in a given position of the children list</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Inserts a plot in a given position of the children list</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1795,7 +1795,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">plot</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MultiplePlot.shared_attr"><a class="viewcode-back" href="../../../api/viz/generated/sisl.viz.MultiplePlot.html#sisl.viz.MultiplePlot.shared_attr">[docs]</a>    <span class="k">def</span> <span class="nf">shared_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Gets an attribute that is located in the shared storage of the MultiplePlot</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Gets an attribute that is located in the shared storage of the MultiplePlot</span>
 
 <span class="sd">        This method will be given to all children so that they can retreive the shared</span>
 <span class="sd">        attributes. This is done in `set_children`.</span>
@@ -1818,7 +1818,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">shared</span><span class="p">[</span><span class="n">key</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="MultiplePlot.set_shared_attr"><a class="viewcode-back" href="../../../api/viz/generated/sisl.viz.MultiplePlot.html#sisl.viz.MultiplePlot.set_shared_attr">[docs]</a>    <span class="k">def</span> <span class="nf">set_shared_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Sets the value of a shared attribute</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Sets the value of a shared attribute</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ------------</span>
@@ -1838,7 +1838,7 @@
 
 
 <div class="viewcode-block" id="Animation"><a class="viewcode-back" href="../../../api/viz/generated/sisl.viz.Animation.html#sisl.viz.Animation">[docs]</a><span class="k">class</span> <span class="nc">Animation</span><span class="p">(</span><span class="n">MultiplePlot</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Version of MultiplePlot that renders each plot in a different animation frame</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Version of MultiplePlot that renders each plot in a different animation frame</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1953,7 +1953,7 @@
 
 
 <div class="viewcode-block" id="SubPlots"><a class="viewcode-back" href="../../../api/viz/generated/sisl.viz.SubPlots.html#sisl.viz.SubPlots">[docs]</a><span class="k">class</span> <span class="nc">SubPlots</span><span class="p">(</span><span class="n">MultiplePlot</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Version of MultiplePlot that renders each plot in a separate subplot</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Version of MultiplePlot that renders each plot in a separate subplot</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    -----------</span>
@@ -2027,7 +2027,7 @@
     <span class="p">)</span>
 
 <div class="viewcode-block" id="SubPlots.get_figure"><a class="viewcode-back" href="../../../api/viz/generated/sisl.viz.SubPlots.html#sisl.viz.SubPlots.get_figure">[docs]</a>    <span class="k">def</span> <span class="nf">get_figure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backend</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="n">arrange</span><span class="p">,</span> <span class="n">make_subplots_kwargs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Builds the subplots layout from the child plots&#39; data &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Builds the subplots layout from the child plots&#39; data &quot;&quot;&quot;</span>
         <span class="n">nplots</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">rows</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">cols</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">arrange</span> <span class="o">==</span> <span class="s1">&#39;rows&#39;</span><span class="p">:</span>
@@ -2052,7 +2052,7 @@
         <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">rows</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">cols</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">cols</span> <span class="o">*</span> <span class="n">rows</span> <span class="o">&lt;</span> <span class="n">nplots</span><span class="p">:</span>
-            <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;requested </span><span class="si">{</span><span class="n">nplots</span><span class="si">}</span><span class="s2"> on a </span><span class="si">{</span><span class="n">rows</span><span class="si">}</span><span class="s2">x</span><span class="si">{</span><span class="n">cols</span><span class="si">}</span><span class="s2"> grid layout. </span><span class="si">{</span><span class="n">nplots</span> <span class="o">-</span> <span class="n">cols</span><span class="o">*</span><span class="n">rows</span><span class="si">}</span><span class="s2"> plots will be missing.&quot;</span><span class="p">)</span>
+            <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;requested </span><span class="si">{</span><span class="n">nplots</span><span class="si">}</span><span class="s2"> on a </span><span class="si">{</span><span class="n">rows</span><span class="si">}</span><span class="s2">x</span><span class="si">{</span><span class="n">cols</span><span class="si">}</span><span class="s2"> grid layout. </span><span class="si">{</span><span class="n">nplots</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">cols</span><span class="o">*</span><span class="n">rows</span><span class="si">}</span><span class="s2"> plots will be missing.&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_for_backend</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;rows&quot;</span><span class="p">:</span> <span class="n">rows</span><span class="p">,</span>
@@ -2070,7 +2070,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.table &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.io.table &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -113,7 +113,7 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">tableSile</span><span class="p">(</span><span class="n">Sile</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; ASCII tabular formatted data</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; ASCII tabular formatted data</span>
 
 <span class="sd">    A generic table data which will easily accommodate the most common write-outs of data</span>
 
@@ -169,13 +169,13 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Setup the `tableSile` after initialization &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Setup the `tableSile` after initialization &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_comment</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;#&#39;</span><span class="p">]</span>
 
 <div class="viewcode-block" id="tableSile.write_data"><a class="viewcode-back" href="../../../api/io/generated/sisl.io.tableSile.html#sisl.io.tableSile.write_data">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">write_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Write tabular data to the file with optional header.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Write tabular data to the file with optional header.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -224,7 +224,7 @@
         <span class="n">_com</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comment</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="k">def</span> <span class="nf">comment_newline</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
-            <span class="sd">&quot;&quot;&quot; Converts a list of str arguments into nicely formatted commented</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot; Converts a list of str arguments into nicely formatted commented</span>
 <span class="sd">            and newlined output &quot;&quot;&quot;</span>
             <span class="k">nonlocal</span> <span class="n">_com</span>
             <span class="n">line</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">newline</span><span class="p">))</span>
@@ -305,7 +305,7 @@
 
 <div class="viewcode-block" id="tableSile.read_data"><a class="viewcode-back" href="../../../api/io/generated/sisl.io.tableSile.html#sisl.io.tableSile.read_data">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Read tabular data from the file.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Read tabular data from the file.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -413,7 +413,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

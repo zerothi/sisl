@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.shape.ellipsoid &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.shape.ellipsoid &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -117,7 +117,7 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.shape&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Ellipsoid</span><span class="p">(</span><span class="n">PureShape</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; 3D Ellipsoid shape</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; 3D Ellipsoid shape</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -173,11 +173,11 @@
                                           <span class="s1">&#39;r(</span><span class="si">{3:.2f}</span><span class="s1"> </span><span class="si">{4:.2f}</span><span class="s1"> </span><span class="si">{5:.2f}</span><span class="s1">)}}&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">cr</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span>
 
 <div class="viewcode-block" id="Ellipsoid.volume"><a class="viewcode-back" href="../../../api/generated/sisl.shape.Ellipsoid.html#sisl.shape.Ellipsoid.volume">[docs]</a>    <span class="k">def</span> <span class="nf">volume</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return the volume of the shape &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return the volume of the shape &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="mf">4.</span> <span class="o">/</span> <span class="mf">3.</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">*</span> <span class="n">product3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Ellipsoid.scale"><a class="viewcode-back" href="../../../api/generated/sisl.shape.Ellipsoid.html#sisl.shape.Ellipsoid.scale">[docs]</a>    <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scale</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return a new shape with a larger corresponding to `scale`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return a new shape with a larger corresponding to `scale`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -190,7 +190,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_v</span> <span class="o">*</span> <span class="n">scale</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Ellipsoid.expand"><a class="viewcode-back" href="../../../api/generated/sisl.shape.Ellipsoid.html#sisl.shape.Ellipsoid.expand">[docs]</a>    <span class="k">def</span> <span class="nf">expand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Expand ellipsoid by a constant value along each radial vector</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Expand ellipsoid by a constant value along each radial vector</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -211,21 +211,21 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">v0</span><span class="p">,</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Ellipsoid.toEllipsoid"><a class="viewcode-back" href="../../../api/generated/sisl.shape.Ellipsoid.html#sisl.shape.Ellipsoid.toEllipsoid">[docs]</a>    <span class="k">def</span> <span class="nf">toEllipsoid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return an ellipsoid that encompass this shape (a copy) &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return an ellipsoid that encompass this shape (a copy) &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Ellipsoid.toSphere"><a class="viewcode-back" href="../../../api/generated/sisl.shape.Ellipsoid.html#sisl.shape.Ellipsoid.toSphere">[docs]</a>    <span class="k">def</span> <span class="nf">toSphere</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return a sphere with a radius equal to the largest radial vector &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return a sphere with a radius equal to the largest radial vector &quot;&quot;&quot;</span>
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">Sphere</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Ellipsoid.toCuboid"><a class="viewcode-back" href="../../../api/generated/sisl.shape.Ellipsoid.html#sisl.shape.Ellipsoid.toCuboid">[docs]</a>    <span class="k">def</span> <span class="nf">toCuboid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return a cuboid with side lengths equal to the diameter of each ellipsoid vectors &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return a cuboid with side lengths equal to the diameter of each ellipsoid vectors &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.prism4</span> <span class="kn">import</span> <span class="n">Cuboid</span>
         <span class="k">return</span> <span class="n">Cuboid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_v</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Ellipsoid.within_index"><a class="viewcode-back" href="../../../api/generated/sisl.shape.Ellipsoid.html#sisl.shape.Ellipsoid.within_index">[docs]</a>    <span class="k">def</span> <span class="nf">within_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1.e-8</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Return indices of the points that are within the shape</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Return indices of the points that are within the shape</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -247,7 +247,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">radius</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return the radius of the Ellipsoid &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return the radius of the Ellipsoid &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">fnorm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_v</span><span class="p">)</span>
 
 
@@ -285,7 +285,7 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.shape&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Sphere</span><span class="p">(</span><span class="n">Ellipsoid</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; 3D Sphere</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; 3D Sphere</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -309,11 +309,11 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Sphere.volume"><a class="viewcode-back" href="../../../api/generated/sisl.shape.Sphere.html#sisl.shape.Sphere.volume">[docs]</a>    <span class="k">def</span> <span class="nf">volume</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return the volume of the sphere &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return the volume of the sphere &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="mf">4.</span> <span class="o">/</span> <span class="mf">3.</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">**</span> <span class="mi">3</span></div>
 
 <div class="viewcode-block" id="Sphere.scale"><a class="viewcode-back" href="../../../api/generated/sisl.shape.Sphere.html#sisl.shape.Sphere.scale">[docs]</a>    <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scale</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return a new sphere with a larger radius</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return a new sphere with a larger radius</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -323,7 +323,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">*</span> <span class="n">scale</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Sphere.expand"><a class="viewcode-back" href="../../../api/generated/sisl.shape.Sphere.html#sisl.shape.Sphere.expand">[docs]</a>    <span class="k">def</span> <span class="nf">expand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Expand sphere by a constant radius</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Expand sphere by a constant radius</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -334,15 +334,15 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">radius</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return the radius of the Sphere &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return the radius of the Sphere &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_v</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
 
 <div class="viewcode-block" id="Sphere.toSphere"><a class="viewcode-back" href="../../../api/generated/sisl.shape.Sphere.html#sisl.shape.Sphere.toSphere">[docs]</a>    <span class="k">def</span> <span class="nf">toSphere</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return a copy of it-self &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return a copy of it-self &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Sphere.toEllipsoid"><a class="viewcode-back" href="../../../api/generated/sisl.shape.Sphere.html#sisl.shape.Sphere.toEllipsoid">[docs]</a>    <span class="k">def</span> <span class="nf">toEllipsoid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Convert this sphere into an ellipsoid &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Convert this sphere into an ellipsoid &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Ellipsoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">)</span></div>
 </pre></div>
 
@@ -353,7 +353,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.tbtrans.tbtproj &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.io.tbtrans.tbtproj &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -128,12 +128,12 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.tbtrans&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">tbtprojncSileTBtrans</span><span class="p">(</span><span class="n">tbtncSileTBtrans</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; TBtrans projection file object &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; TBtrans projection file object &quot;&quot;&quot;</span>
     <span class="n">_trans_type</span> <span class="o">=</span> <span class="s1">&#39;TBT.Proj&#39;</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_mol_proj_elec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_mol_proj</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Parse the electrode-molecule-projection str/tuple into the molecule-projected-electrode</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Parse the electrode-molecule-projection str/tuple into the molecule-projected-electrode</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -150,7 +150,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">elecs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; List of electrodes &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; List of electrodes &quot;&quot;&quot;</span>
         <span class="n">elecs</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="c1"># in cases of not calculating all</span>
@@ -165,7 +165,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">molecules</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; List of regions where state projections may happen &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; List of regions where state projections may happen &quot;&quot;&quot;</span>
         <span class="n">mols</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">mol</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">mol</span><span class="p">]</span><span class="o">.</span><span class="n">groups</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -174,7 +174,7 @@
         <span class="k">return</span> <span class="n">mols</span>
 
 <div class="viewcode-block" id="tbtprojncSileTBtrans.projections"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtprojncSileTBtrans.html#sisl.io.tbtrans.tbtprojncSileTBtrans.projections">[docs]</a>    <span class="k">def</span> <span class="nf">projections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">molecule</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; List of projections on `molecule`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; List of projections on `molecule`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -185,7 +185,7 @@
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="tbtprojncSileTBtrans.ADOS"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtprojncSileTBtrans.html#sisl.io.tbtrans.tbtprojncSileTBtrans.ADOS">[docs]</a>    <span class="k">def</span> <span class="nf">ADOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_mol_proj</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">sum</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Projected spectral density of states (DOS) (1/eV)</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Projected spectral density of states (DOS) (1/eV)</span>
 
 <span class="sd">        Extract the projected spectral DOS from electrode `elec` on a selected subset of atoms/orbitals in the device region</span>
 
@@ -220,7 +220,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_DOS</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value_E</span><span class="p">(</span><span class="s1">&#39;ADOS&#39;</span><span class="p">,</span> <span class="n">mol_proj_elec</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="n">kavg</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="n">E</span><span class="p">),</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">,</span> <span class="nb">sum</span><span class="p">,</span> <span class="n">norm</span><span class="p">)</span> <span class="o">*</span> <span class="n">eV2Ry</span></div>
 
 <div class="viewcode-block" id="tbtprojncSileTBtrans.transmission"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtprojncSileTBtrans.html#sisl.io.tbtrans.tbtprojncSileTBtrans.transmission">[docs]</a>    <span class="k">def</span> <span class="nf">transmission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_mol_proj_from</span><span class="p">,</span> <span class="n">elec_mol_proj_to</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Transmission from `mol_proj_elec_from` to `mol_proj_elec_to`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Transmission from `mol_proj_elec_from` to `mol_proj_elec_to`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -242,7 +242,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_avg</span><span class="p">(</span><span class="n">elec_mol_proj_to</span> <span class="o">+</span> <span class="s1">&#39;.T&#39;</span><span class="p">,</span> <span class="n">mol_proj_elec</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="n">kavg</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="tbtprojncSileTBtrans.transmission_eig"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtprojncSileTBtrans.html#sisl.io.tbtrans.tbtprojncSileTBtrans.transmission_eig">[docs]</a>    <span class="k">def</span> <span class="nf">transmission_eig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_mol_proj_from</span><span class="p">,</span> <span class="n">elec_mol_proj_to</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Transmission eigenvalues from `elec_mol_proj_from` to `elec_mol_proj_to`</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Transmission eigenvalues from `elec_mol_proj_from` to `elec_mol_proj_to`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -264,7 +264,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_avg</span><span class="p">(</span><span class="n">elec_mol_proj_to</span> <span class="o">+</span> <span class="s1">&#39;.T.Eig&#39;</span><span class="p">,</span> <span class="n">mol_proj_elec</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="n">kavg</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="tbtprojncSileTBtrans.Adensity_matrix"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtprojncSileTBtrans.html#sisl.io.tbtrans.tbtprojncSileTBtrans.Adensity_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">Adensity_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_mol_proj</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Projected spectral function density matrix at energy `E` (1/eV)</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Projected spectral function density matrix at energy `E` (1/eV)</span>
 
 <span class="sd">        The projected density matrix can be used to calculate the LDOS in real-space.</span>
 
@@ -320,7 +320,7 @@
         <span class="k">return</span> <span class="n">DM</span></div>
 
 <div class="viewcode-block" id="tbtprojncSileTBtrans.orbital_ACOOP"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtprojncSileTBtrans.html#sisl.io.tbtrans.tbtprojncSileTBtrans.orbital_ACOOP">[docs]</a>    <span class="k">def</span> <span class="nf">orbital_ACOOP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_mol_proj</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Orbital COOP analysis of the projected spectral function</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Orbital COOP analysis of the projected spectral function</span>
 
 <span class="sd">        This will return a sparse matrix, see `~scipy.sparse.csr_matrix` for details.</span>
 <span class="sd">        Each matrix element of the sparse matrix corresponds to the COOP of the</span>
@@ -386,7 +386,7 @@
         <span class="k">return</span> <span class="n">COOP</span></div>
 
 <div class="viewcode-block" id="tbtprojncSileTBtrans.orbital_ACOHP"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtprojncSileTBtrans.html#sisl.io.tbtrans.tbtprojncSileTBtrans.orbital_ACOHP">[docs]</a>    <span class="k">def</span> <span class="nf">orbital_ACOHP</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec_mol_proj</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Orbital COHP analysis of the projected spectral function</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Orbital COHP analysis of the projected spectral function</span>
 
 <span class="sd">        This will return a sparse matrix, see ``scipy.sparse.csr_matrix`` for details.</span>
 <span class="sd">        Each matrix element of the sparse matrix corresponds to the COHP of the</span>
@@ -431,14 +431,14 @@
 
     <span class="nd">@default_ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Extract data from a TBT.Proj.nc file&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">ArgumentParser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns the arguments that is available for this Sile &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the arguments that is available for this Sile &quot;&quot;&quot;</span>
         <span class="n">p</span><span class="p">,</span> <span class="n">namespace</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># We limit the import to occur here</span>
         <span class="kn">import</span> <span class="nn">argparse</span>
 
         <span class="k">def</span> <span class="nf">ensure_E</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-            <span class="sd">&quot;&quot;&quot; This decorater ensures that E is the first element in the _data container &quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot; This decorater ensures that E is the first element in the _data container &quot;&quot;&quot;</span>
 
             <span class="k">def</span> <span class="nf">assign_E</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
                 <span class="n">ns</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -523,7 +523,7 @@
         <span class="k">return</span> <span class="n">p</span><span class="p">,</span> <span class="n">namespace</span>
 
 <div class="viewcode-block" id="tbtprojncSileTBtrans.info"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtprojncSileTBtrans.html#sisl.io.tbtrans.tbtprojncSileTBtrans.info">[docs]</a>    <span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">molecule</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Information about the calculated quantities available for extracting in this file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Information about the calculated quantities available for extracting in this file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -715,7 +715,7 @@
         <span class="k">return</span> <span class="n">s</span></div>
 
 <div class="viewcode-block" id="tbtprojncSileTBtrans.eigenstate"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtprojncSileTBtrans.html#sisl.io.tbtrans.tbtprojncSileTBtrans.eigenstate">[docs]</a>    <span class="k">def</span> <span class="nf">eigenstate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Return the eigenstate on the projected `molecule`</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Return the eigenstate on the projected `molecule`</span>
 
 <span class="sd">        The eigenstate object will contain the geometry as the parent object.</span>
 <span class="sd">        The eigenstate will be in the Lowdin basis:</span>
@@ -788,7 +788,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

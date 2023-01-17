@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.cube &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.io.cube &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -116,7 +116,7 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">cubeSile</span><span class="p">(</span><span class="n">Sile</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; CUBE file object</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; CUBE file object</span>
 
 <span class="sd">    By default the cube file is written using Bohr units.</span>
 <span class="sd">    one can define the units by passing a respective unit argument.</span>
@@ -128,7 +128,7 @@
     <span class="k">def</span> <span class="nf">write_supercell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sc</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;15.10e&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;Bohr&quot;</span><span class="p">,</span>
                         <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Writes `SuperCell` object attached to this grid</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Writes `SuperCell` object attached to this grid</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -172,7 +172,7 @@
     <span class="k">def</span> <span class="nf">write_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;15.10e&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                        <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;Bohr&quot;</span><span class="p">,</span>
                        <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Writes `Geometry` object attached to this grid</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Writes `Geometry` object attached to this grid</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -220,7 +220,7 @@
 
 <div class="viewcode-block" id="cubeSile.write_grid"><a class="viewcode-back" href="../../../api/io/generated/sisl.io.cubeSile.html#sisl.io.cubeSile.write_grid">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">write_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;.5e&quot;</span><span class="p">,</span> <span class="n">imag</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;Bohr&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Write `Grid` to the contained file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Write `Grid` to the contained file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -277,7 +277,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_r_header_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Reads the header of the file &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads the header of the file &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
         <span class="n">header</span> <span class="o">=</span> <span class="n">header_to_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
@@ -286,7 +286,7 @@
 
 <div class="viewcode-block" id="cubeSile.read_supercell"><a class="viewcode-back" href="../../../api/io/generated/sisl.io.cubeSile.html#sisl.io.cubeSile.read_supercell">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">read_supercell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">na</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns `SuperCell` object from the CUBE file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns `SuperCell` object from the CUBE file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -315,7 +315,7 @@
 
 <div class="viewcode-block" id="cubeSile.read_geometry"><a class="viewcode-back" href="../../../api/io/generated/sisl.io.cubeSile.html#sisl.io.cubeSile.read_geometry">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns `Geometry` object from the CUBE file &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns `Geometry` object from the CUBE file &quot;&quot;&quot;</span>
         <span class="n">unit2Ang</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_header_dict</span><span class="p">()[</span><span class="s2">&quot;unit&quot;</span><span class="p">]</span>
         <span class="n">na</span><span class="p">,</span> <span class="n">sc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_supercell</span><span class="p">(</span><span class="n">na</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -336,7 +336,7 @@
 
 <div class="viewcode-block" id="cubeSile.read_grid"><a class="viewcode-back" href="../../../api/io/generated/sisl.io.cubeSile.html#sisl.io.cubeSile.read_grid">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">read_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imag</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns `Grid` object from the CUBE file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns `Grid` object from the CUBE file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -408,7 +408,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.vasp.out &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.io.vasp.out &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -112,10 +112,10 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.vasp&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">outSileVASP</span><span class="p">(</span><span class="n">SileVASP</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Output file from VASP &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Output file from VASP &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Ensure the class has a _completed tag &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Ensure the class has a _completed tag &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_completed</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -127,14 +127,14 @@
 
 <div class="viewcode-block" id="outSileVASP.completed"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.vasp.outSileVASP.html#sisl.io.vasp.outSileVASP.completed">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">completed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; True if the line &quot;General timing and accounting&quot; was found. &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; True if the line &quot;General timing and accounting&quot; was found. &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_completed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_completed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;General timing and accounting&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_completed</span></div>
 
 <div class="viewcode-block" id="outSileVASP.cpu_time"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.vasp.outSileVASP.html#sisl.io.vasp.outSileVASP.cpu_time">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">cpu_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag</span><span class="o">=</span><span class="s2">&quot;General timing and accounting&quot;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns the consumed cpu time (in seconds) from a given section &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the consumed cpu time (in seconds) from a given section &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">flag</span> <span class="o">==</span> <span class="s2">&quot;General timing and accounting&quot;</span><span class="p">:</span>
             <span class="n">nskip</span><span class="p">,</span> <span class="n">iplace</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span>
         <span class="k">else</span><span class="p">:</span>
@@ -150,12 +150,12 @@
 
 <div class="viewcode-block" id="outSileVASP.accuracy_reached"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.vasp.outSileVASP.html#sisl.io.vasp.outSileVASP.accuracy_reached">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">accuracy_reached</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; True if the line &quot;reached required accuracy&quot; was found. &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; True if the line &quot;reached required accuracy&quot; was found. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;reached required accuracy&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="outSileVASP.read_energy"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.vasp.outSileVASP.html#sisl.io.vasp.outSileVASP.read_energy">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">read_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Reads the energy specification from OUTCAR and returns energy dictionary in units of eV</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads the energy specification from OUTCAR and returns energy dictionary in units of eV</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
@@ -253,7 +253,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

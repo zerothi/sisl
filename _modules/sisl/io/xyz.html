@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.xyz &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.io.xyz &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -120,11 +120,11 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">xyzSile</span><span class="p">(</span><span class="n">Sile</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; XYZ file object &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; XYZ file object &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="xyzSile.write_geometry"><a class="viewcode-back" href="../../../api/io/generated/sisl.io.xyzSile.html#sisl.io.xyzSile.write_geometry">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">write_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;.8f&#39;</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Writes the geometry to the contained file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Writes the geometry to the contained file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -157,7 +157,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">fmt_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="o">*</span><span class="n">geometry</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">ia</span><span class="p">,</span> <span class="p">:]))</span></div>
 
     <span class="k">def</span> <span class="nf">_r_geometry_sisl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">na</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">sp</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">sc</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Read the geometry as though it was created with sisl &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Read the geometry as though it was created with sisl &quot;&quot;&quot;</span>
         <span class="c1"># Default version of the header is 1</span>
         <span class="c1">#v = int(header.get(&quot;sisl-version&quot;, 1))</span>
         <span class="n">nsc</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">header</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;nsc&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
@@ -167,7 +167,7 @@
         <span class="k">return</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="n">sp</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="n">sc</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_r_geometry_ase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">na</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">sp</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">sc</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Read the geometry as though it was created with ASE &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Read the geometry as though it was created with ASE &quot;&quot;&quot;</span>
         <span class="c1"># Convert F T to nsc</span>
         <span class="c1">#  F = 1</span>
         <span class="c1">#  T = 3</span>
@@ -179,7 +179,7 @@
         <span class="k">return</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="n">sp</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="n">sc</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_r_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">na</span><span class="p">,</span> <span class="n">sp</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">sc</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Read the geometry for a generic xyz file (not sisl, nor ASE) &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Read the geometry for a generic xyz file (not sisl, nor ASE) &quot;&quot;&quot;</span>
         <span class="c1"># The cell dimensions isn&#39;t defined, we are going to create a molecule box</span>
         <span class="n">cell</span> <span class="o">=</span> <span class="n">xyz</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">xyz</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mf">10.</span>
         <span class="k">if</span> <span class="n">sc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -188,7 +188,7 @@
 
 <div class="viewcode-block" id="xyzSile.read_geometry"><a class="viewcode-back" href="../../../api/io/generated/sisl.io.xyzSile.html#sisl.io.xyzSile.read_geometry">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns Geometry object from the XYZ file</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns Geometry object from the XYZ file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -229,7 +229,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_geometry</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">sp</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">sc</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">ArgumentParser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns the arguments that is available for this Sile &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the arguments that is available for this Sile &quot;&quot;&quot;</span>
         <span class="n">newkw</span> <span class="o">=</span> <span class="n">Geometry</span><span class="o">.</span><span class="n">_ArgumentParser_args_single</span><span class="p">()</span>
         <span class="n">newkw</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_geometry</span><span class="p">()</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">newkw</span><span class="p">)</span>
@@ -245,7 +245,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.sparse &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sisl.physics.sparse &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -126,7 +126,7 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">SparseOrbitalBZ</span><span class="p">(</span><span class="n">SparseOrbital</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Sparse object containing the orbital connections in a Brillouin zone</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Sparse object containing the orbital connections in a Brillouin zone</span>
 
 <span class="sd">    It contains an intrinsic sparse matrix of the physical elements.</span>
 
@@ -171,7 +171,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_reset</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="nf">_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Reset object according to the options, please refer to `SparseOrbital.reset` for details &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Reset object according to the options, please refer to `SparseOrbital.reset` for details &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">Sk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Sk_diagonal</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">S_idx</span> <span class="o">=</span> <span class="o">-</span><span class="mi">100</span>
@@ -192,20 +192,20 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">orthogonal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; True if the object is using an orthogonal basis &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; True if the object is using an orthogonal basis &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orthogonal</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">non_orthogonal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; True if the object is using a non-orthogonal basis &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; True if the object is using a non-orthogonal basis &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orthogonal</span>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Returns number of rows in the basis (if non-collinear or spin-orbit, twice the number of orbitals) &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Returns number of rows in the basis (if non-collinear or spin-orbit, twice the number of orbitals) &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Representation of the model &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Representation of the model &quot;&quot;&quot;</span>
         <span class="n">s</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">dim: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="si">}</span><span class="s2">, non-zero: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nnz</span><span class="si">}</span><span class="s2">, orthogonal: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">orthogonal</span><span class="si">}</span><span class="se">\n</span><span class="s2"> &quot;</span>
         <span class="n">s</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> &quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">s</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">}&quot;</span>
@@ -216,7 +216,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">S</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Access the overlap elements associated with the sparse matrix &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Access the overlap elements associated with the sparse matrix &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_def_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">S_idx</span>
@@ -224,7 +224,7 @@
 
 <div class="viewcode-block" id="SparseOrbitalBZ.fromsp"><a class="viewcode-back" href="../../../api/generated/sisl.physics.SparseOrbitalBZ.html#sisl.physics.SparseOrbitalBZ.fromsp">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">fromsp</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">S</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Create a sparse model from a preset `Geometry` and a list of sparse matrices</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Create a sparse model from a preset `Geometry` and a list of sparse matrices</span>
 
 <span class="sd">        The passed sparse matrices are in one of `scipy.sparse` formats.</span>
 
@@ -269,7 +269,7 @@
         <span class="k">return</span> <span class="n">p</span></div>
 
 <div class="viewcode-block" id="SparseOrbitalBZ.iter_orbitals"><a class="viewcode-back" href="../../../api/generated/sisl.physics.SparseOrbitalBZ.html#sisl.physics.SparseOrbitalBZ.iter_orbitals">[docs]</a>    <span class="k">def</span> <span class="nf">iter_orbitals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Iterations of the orbital space in the geometry, two indices from loop</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Iterations of the orbital space in the geometry, two indices from loop</span>
 
 <span class="sd">        An iterator returning the current atomic index and the corresponding</span>
 <span class="sd">        orbital index.</span>
@@ -302,7 +302,7 @@
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">iter_orbitals</span><span class="p">(</span><span class="n">atoms</span><span class="o">=</span><span class="n">atoms</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="n">local</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_Pk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span> <span class="n">_dim</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a polarized system</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a polarized system</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -317,7 +317,7 @@
         <span class="k">return</span> <span class="n">matrix_k</span><span class="p">(</span><span class="n">gauge</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="nb">format</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_dPk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span> <span class="n">_dim</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Sparse matrix (``scipy.sparse.csr_matrix``) at `k` differentiated with respect to `k` for a polarized system</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Sparse matrix (``scipy.sparse.csr_matrix``) at `k` differentiated with respect to `k` for a polarized system</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -332,7 +332,7 @@
         <span class="k">return</span> <span class="n">matrix_dk</span><span class="p">(</span><span class="n">gauge</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="nb">format</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_ddPk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span> <span class="n">_dim</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Sparse matrix (``scipy.sparse.csr_matrix``) at `k` double differentiated with respect to `k` for a polarized system</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Sparse matrix (``scipy.sparse.csr_matrix``) at `k` double differentiated with respect to `k` for a polarized system</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -347,7 +347,7 @@
         <span class="k">return</span> <span class="n">matrix_ddk</span><span class="p">(</span><span class="n">gauge</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="nb">format</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SparseOrbitalBZ.Sk"><a class="viewcode-back" href="../../../api/generated/sisl.physics.SparseOrbitalBZ.html#sisl.physics.SparseOrbitalBZ.Sk">[docs]</a>    <span class="k">def</span> <span class="nf">Sk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span> <span class="c1"># pylint: disable=E0202</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Setup the overlap matrix for a given k-point</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Setup the overlap matrix for a given k-point</span>
 
 <span class="sd">        Creation and return of the overlap matrix for a given k-point (default to Gamma).</span>
 
@@ -400,7 +400,7 @@
         <span class="k">pass</span></div>
 
     <span class="k">def</span> <span class="nf">_Sk_diagonal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; For an orthogonal case we always return the identity matrix &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; For an orthogonal case we always return the identity matrix &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span>
         <span class="n">nr</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -424,7 +424,7 @@
         <span class="k">return</span> <span class="n">S</span><span class="o">.</span><span class="n">asformat</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_Sk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Overlap matrix in a ``scipy.sparse.csr_matrix`` at `k`.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Overlap matrix in a ``scipy.sparse.csr_matrix`` at `k`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -438,7 +438,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Pk</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="n">gauge</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span> <span class="n">_dim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">S_idx</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SparseOrbitalBZ.dSk"><a class="viewcode-back" href="../../../api/generated/sisl.physics.SparseOrbitalBZ.html#sisl.physics.SparseOrbitalBZ.dSk">[docs]</a>    <span class="k">def</span> <span class="nf">dSk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Setup the :math:`k`-derivatie of the overlap matrix for a given k-point</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Setup the :math:`k`-derivatie of the overlap matrix for a given k-point</span>
 
 <span class="sd">        Creation and return of the derivative of the overlap matrix for a given k-point (default to Gamma).</span>
 
@@ -489,7 +489,7 @@
         <span class="k">pass</span></div>
 
     <span class="k">def</span> <span class="nf">_dSk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Overlap matrix in a ``scipy.sparse.csr_matrix`` at `k` differentiated with respect to `k`</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Overlap matrix in a ``scipy.sparse.csr_matrix`` at `k` differentiated with respect to `k`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -503,7 +503,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dPk</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="n">gauge</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span> <span class="n">_dim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">S_idx</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_dSk_non_colinear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Overlap matrix in a ``scipy.sparse.csr_matrix`` at `k` for non-collinear spin, differentiated with respect to `k`</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Overlap matrix in a ``scipy.sparse.csr_matrix`` at `k` for non-collinear spin, differentiated with respect to `k`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -518,7 +518,7 @@
         <span class="k">return</span> <span class="n">matrix_dk_nc_diag</span><span class="p">(</span><span class="n">gauge</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">S_idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="nb">format</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SparseOrbitalBZ.ddSk"><a class="viewcode-back" href="../../../api/generated/sisl.physics.SparseOrbitalBZ.html#sisl.physics.SparseOrbitalBZ.ddSk">[docs]</a>    <span class="k">def</span> <span class="nf">ddSk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span> <span class="c1"># pylint: disable=E0202</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Setup the double :math:`k`-derivatie of the overlap matrix for a given k-point</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Setup the double :math:`k`-derivatie of the overlap matrix for a given k-point</span>
 
 <span class="sd">        Creation and return of the double derivative of the overlap matrix for a given k-point (default to Gamma).</span>
 
@@ -569,7 +569,7 @@
         <span class="k">pass</span></div>
 
     <span class="k">def</span> <span class="nf">_ddSk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Overlap matrix in a ``scipy.sparse.csr_matrix`` at `k` double differentiated with respect to `k`</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Overlap matrix in a ``scipy.sparse.csr_matrix`` at `k` double differentiated with respect to `k`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -583,7 +583,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ddPk</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="n">gauge</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span> <span class="n">_dim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">S_idx</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_ddSk_non_colinear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Overlap matrix in a ``scipy.sparse.csr_matrix`` at `k` for non-collinear spin, differentiated with respect to `k`</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Overlap matrix in a ``scipy.sparse.csr_matrix`` at `k` for non-collinear spin, differentiated with respect to `k`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -598,7 +598,7 @@
         <span class="k">return</span> <span class="n">matrix_ddk_nc_diag</span><span class="p">(</span><span class="n">gauge</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">S_idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="nb">format</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SparseOrbitalBZ.eig"><a class="viewcode-back" href="../../../api/generated/sisl.physics.SparseOrbitalBZ.html#sisl.physics.SparseOrbitalBZ.eig">[docs]</a>    <span class="k">def</span> <span class="nf">eig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">eigvals_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Returns the eigenvalues of the physical quantity (using the non-Hermitian solver)</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Returns the eigenvalues of the physical quantity (using the non-Hermitian solver)</span>
 
 <span class="sd">        Setup the system and overlap matrix with respect to</span>
 <span class="sd">        the given k-point and calculate the eigenvalues.</span>
@@ -618,7 +618,7 @@
         <span class="k">return</span> <span class="n">lin</span><span class="o">.</span><span class="n">eig_destroy</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SparseOrbitalBZ.eigh"><a class="viewcode-back" href="../../../api/generated/sisl.physics.SparseOrbitalBZ.html#sisl.physics.SparseOrbitalBZ.eigh">[docs]</a>    <span class="k">def</span> <span class="nf">eigh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">eigvals_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Returns the eigenvalues of the physical quantity</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Returns the eigenvalues of the physical quantity</span>
 
 <span class="sd">        Setup the system and overlap matrix with respect to</span>
 <span class="sd">        the given k-point and calculate the eigenvalues.</span>
@@ -634,7 +634,7 @@
         <span class="k">return</span> <span class="n">lin</span><span class="o">.</span><span class="n">eigh_destroy</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">eigvals_only</span><span class="o">=</span><span class="n">eigvals_only</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SparseOrbitalBZ.eigsh"><a class="viewcode-back" href="../../../api/generated/sisl.physics.SparseOrbitalBZ.html#sisl.physics.SparseOrbitalBZ.eigsh">[docs]</a>    <span class="k">def</span> <span class="nf">eigsh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">eigvals_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculates a subset of eigenvalues of the physical quantity  (default 10)</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculates a subset of eigenvalues of the physical quantity  (default 10)</span>
 
 <span class="sd">        Setup the quantity and overlap matrix with respect to</span>
 <span class="sd">        the given k-point and calculate a subset of the eigenvalues using the sparse algorithms.</span>
@@ -666,7 +666,7 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">SparseOrbitalBZSpin</span><span class="p">(</span><span class="n">SparseOrbitalBZ</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Sparse object containing the orbital connections in a Brillouin zone with possible spin-components</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Sparse object containing the orbital connections in a Brillouin zone with possible spin-components</span>
 
 <span class="sd">    It contains an intrinsic sparse matrix of the physical elements.</span>
 
@@ -718,7 +718,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_reset</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="nf">_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Reset object according to the options, please refer to `SparseOrbital.reset` for details &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Reset object according to the options, please refer to `SparseOrbital.reset` for details &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_reset</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_unpolarized</span><span class="p">:</span>
@@ -791,11 +791,11 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">spin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Associated spin class &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Associated spin class &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spin</span>
 
 <div class="viewcode-block" id="SparseOrbitalBZSpin.create_construct"><a class="viewcode-back" href="../../../api/generated/sisl.physics.SparseOrbitalBZSpin.html#sisl.physics.SparseOrbitalBZSpin.create_construct">[docs]</a>    <span class="k">def</span> <span class="nf">create_construct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">param</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Create a simple function for passing to the `construct` function.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Create a simple function for passing to the `construct` function.</span>
 
 <span class="sd">        This is to relieve the creation of simplistic</span>
 <span class="sd">        functions needed for setting up sparse elements.</span>
@@ -909,13 +909,13 @@
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">create_construct</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Returns number of rows in the basis (if non-collinear or spin-orbit, twice the number of orbitals) &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Returns number of rows in the basis (if non-collinear or spin-orbit, twice the number of orbitals) &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_diagonal</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span> <span class="o">*</span> <span class="mi">2</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Representation of the model &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Representation of the model &quot;&quot;&quot;</span>
         <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">{{</span><span class="s2">non-zero: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nnz</span><span class="si">}</span><span class="s2">, orthogonal: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">orthogonal</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="s2"> &quot;</span>
         <span class="n">s</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> &quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;,</span><span class="se">\n</span><span class="s2"> &quot;</span>
         <span class="n">s</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> &quot;</span><span class="p">)</span>
@@ -932,7 +932,7 @@
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> na=</span><span class="si">{</span><span class="n">g</span><span class="o">.</span><span class="n">na</span><span class="si">}</span><span class="s2">, no=</span><span class="si">{</span><span class="n">g</span><span class="o">.</span><span class="n">no</span><span class="si">}</span><span class="s2">, nsc=</span><span class="si">{</span><span class="n">g</span><span class="o">.</span><span class="n">nsc</span><span class="si">}</span><span class="s2">, dim=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="si">}</span><span class="s2">, nnz=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nnz</span><span class="si">}</span><span class="s2">, spin=</span><span class="si">{</span><span class="n">spin</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_Pk_unpolarized</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Sparse matrix (``scipy.sparse.csr_matrix``) at `k`</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Sparse matrix (``scipy.sparse.csr_matrix``) at `k`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -946,7 +946,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Pk</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="n">gauge</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_Pk_polarized</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">spin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a polarized system</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a polarized system</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -962,7 +962,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Pk</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="n">gauge</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span> <span class="n">_dim</span><span class="o">=</span><span class="n">spin</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_Pk_non_colinear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -977,7 +977,7 @@
         <span class="k">return</span> <span class="n">matrix_k_nc</span><span class="p">(</span><span class="n">gauge</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="nb">format</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_Pk_spin_orbit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a spin-orbit system</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a spin-orbit system</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -992,7 +992,7 @@
         <span class="k">return</span> <span class="n">matrix_k_so</span><span class="p">(</span><span class="n">gauge</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="nb">format</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_dPk_unpolarized</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Tuple of sparse matrix (``scipy.sparse.csr_matrix``) at `k`, differentiated with respect to `k`</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Tuple of sparse matrix (``scipy.sparse.csr_matrix``) at `k`, differentiated with respect to `k`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1006,7 +1006,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dPk</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="n">gauge</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_dPk_polarized</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">spin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Tuple of sparse matrix (``scipy.sparse.csr_matrix``) at `k`, differentiated with respect to `k`</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Tuple of sparse matrix (``scipy.sparse.csr_matrix``) at `k`, differentiated with respect to `k`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1022,7 +1022,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dPk</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="n">gauge</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span> <span class="n">_dim</span><span class="o">=</span><span class="n">spin</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_dPk_non_colinear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Tuple of sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system, differentiated with respect to `k`</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Tuple of sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system, differentiated with respect to `k`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1037,7 +1037,7 @@
         <span class="k">return</span> <span class="n">matrix_dk_nc</span><span class="p">(</span><span class="n">gauge</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="nb">format</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_dPk_spin_orbit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Tuple of sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system, differentiated with respect to `k`</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Tuple of sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system, differentiated with respect to `k`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1052,7 +1052,7 @@
         <span class="k">return</span> <span class="n">matrix_dk_so</span><span class="p">(</span><span class="n">gauge</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="nb">format</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_ddPk_non_colinear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Tuple of sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system, differentiated with respect to `k` twice</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Tuple of sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system, differentiated with respect to `k` twice</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1067,7 +1067,7 @@
         <span class="k">return</span> <span class="n">matrix_ddk_nc</span><span class="p">(</span><span class="n">gauge</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="nb">format</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_ddPk_spin_orbit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Tuple of sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system, differentiated with respect to `k`</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Tuple of sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system, differentiated with respect to `k`</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1082,7 +1082,7 @@
         <span class="k">return</span> <span class="n">matrix_ddk_so</span><span class="p">(</span><span class="n">gauge</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="nb">format</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_Sk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Overlap matrix in a ``scipy.sparse.csr_matrix`` at `k`.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Overlap matrix in a ``scipy.sparse.csr_matrix`` at `k`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1096,7 +1096,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Pk</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="n">gauge</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span> <span class="n">_dim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">S_idx</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_Sk_non_colinear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Overlap matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Overlap matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1111,7 +1111,7 @@
         <span class="k">return</span> <span class="n">matrix_k_nc_diag</span><span class="p">(</span><span class="n">gauge</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">S_idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="nb">format</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_dSk_non_colinear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Overlap matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Overlap matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1126,7 +1126,7 @@
         <span class="k">return</span> <span class="n">matrix_dk_nc_diag</span><span class="p">(</span><span class="n">gauge</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">S_idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="nb">format</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SparseOrbitalBZSpin.eig"><a class="viewcode-back" href="../../../api/generated/sisl.physics.SparseOrbitalBZSpin.html#sisl.physics.SparseOrbitalBZSpin.eig">[docs]</a>    <span class="k">def</span> <span class="nf">eig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">eigvals_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Returns the eigenvalues of the physical quantity (using the non-Hermitian solver)</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Returns the eigenvalues of the physical quantity (using the non-Hermitian solver)</span>
 
 <span class="sd">        Setup the system and overlap matrix with respect to</span>
 <span class="sd">        the given k-point and calculate the eigenvalues.</span>
@@ -1158,7 +1158,7 @@
         <span class="k">return</span> <span class="n">lin</span><span class="o">.</span><span class="n">eig_destroy</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SparseOrbitalBZSpin.eigh"><a class="viewcode-back" href="../../../api/generated/sisl.physics.SparseOrbitalBZSpin.html#sisl.physics.SparseOrbitalBZSpin.eigh">[docs]</a>    <span class="k">def</span> <span class="nf">eigh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">eigvals_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Returns the eigenvalues of the physical quantity</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Returns the eigenvalues of the physical quantity</span>
 
 <span class="sd">        Setup the system and overlap matrix with respect to</span>
 <span class="sd">        the given k-point and calculate the eigenvalues.</span>
@@ -1186,7 +1186,7 @@
         <span class="k">return</span> <span class="n">lin</span><span class="o">.</span><span class="n">eigh_destroy</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">eigvals_only</span><span class="o">=</span><span class="n">eigvals_only</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SparseOrbitalBZSpin.eigsh"><a class="viewcode-back" href="../../../api/generated/sisl.physics.SparseOrbitalBZSpin.html#sisl.physics.SparseOrbitalBZSpin.eigsh">[docs]</a>    <span class="k">def</span> <span class="nf">eigsh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="n">eigvals_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculates a subset of eigenvalues of the physical quantity  (default 10)</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculates a subset of eigenvalues of the physical quantity  (default 10)</span>
 
 <span class="sd">        Setup the quantity and overlap matrix with respect to</span>
 <span class="sd">        the given k-point and calculate a subset of the eigenvalues using the sparse algorithms.</span>
@@ -1214,7 +1214,7 @@
         <span class="k">return</span> <span class="n">lin</span><span class="o">.</span><span class="n">eigsh</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">M</span><span class="o">=</span><span class="n">S</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">return_eigenvectors</span><span class="o">=</span><span class="ow">not</span> <span class="n">eigvals_only</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SparseOrbitalBZSpin.transpose"><a class="viewcode-back" href="../../../api/generated/sisl.physics.SparseOrbitalBZSpin.html#sisl.physics.SparseOrbitalBZSpin.transpose">[docs]</a>    <span class="k">def</span> <span class="nf">transpose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hermitian</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; A transpose copy of this object, possibly apply the Hermitian conjugate as well</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; A transpose copy of this object, possibly apply the Hermitian conjugate as well</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1278,7 +1278,7 @@
         <span class="k">return</span> <span class="n">new</span></div>
 
 <div class="viewcode-block" id="SparseOrbitalBZSpin.trs"><a class="viewcode-back" href="../../../api/generated/sisl.physics.SparseOrbitalBZSpin.html#sisl.physics.SparseOrbitalBZSpin.trs">[docs]</a>    <span class="k">def</span> <span class="nf">trs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Create a new matrix with applied time-reversal-symmetry</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Create a new matrix with applied time-reversal-symmetry</span>
 
 <span class="sd">        Time reversal symmetry is applied using the following equality:</span>
 
@@ -1314,7 +1314,7 @@
         <span class="k">return</span> <span class="n">new</span></div>
 
 <div class="viewcode-block" id="SparseOrbitalBZSpin.transform"><a class="viewcode-back" href="../../../api/generated/sisl.physics.SparseOrbitalBZSpin.html#sisl.physics.SparseOrbitalBZSpin.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orthogonal</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Transform the matrix by either a matrix or new spin configuration</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Transform the matrix by either a matrix or new spin configuration</span>
 
 <span class="sd">        1. General transformation:</span>
 <span class="sd">        * If `matrix` is provided, a linear transformation :math:`R^n \rightarrow R^m` is applied</span>
@@ -1451,7 +1451,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

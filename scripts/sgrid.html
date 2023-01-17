@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sgrid &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>sgrid &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -39,7 +39,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -145,7 +145,7 @@
 it into CUBE format for plotting 3D data in, <em>e.g.</em> VMD or XCrySDen.</p>
 <p>Any <em class="xref py py-obj">Sile</em> which implements a <code class="docutils literal notranslate"><span class="pre">read_grid</span></code> method can be used to post-process data.</p>
 <p>For a short help description of the possible uses do:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid --help
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid<span class="w"> </span>--help
 </pre></div>
 </div>
 <p>Here we list a few of the most frequent used commands.
@@ -153,7 +153,7 @@ Note that all commands are available via Python scripts and the <em class="xref 
 <section id="creating-cube-files">
 <h2>Creating CUBE files<a class="headerlink" href="#creating-cube-files" title="Permalink to this heading"></a></h2>
 <p>The simplest usage is converting a grid file to CUBE file using</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid Rho.grid.nc Rho.cube
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid<span class="w"> </span>Rho.grid.nc<span class="w"> </span>Rho.cube
 </pre></div>
 </div>
 <p>which converts a Siesta grid file of the electron density into a corresponding
@@ -161,7 +161,7 @@ CUBE file. The CUBE file writeout is implemented in <em class="xref py py-obj">C
 <p>Conveniently CUBE files can accomodate geometries and species for inclusion in the 3D
 plot and this can be added to the file via the <code class="docutils literal notranslate"><span class="pre">--geometry</span></code> flag, any geometry format
 implemented in <a class="reference internal" href="../api/index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> are also compatible with <em class="xref py py-obj">sgrid</em>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid Rho.grid.nc --geometry RUN.fdf Rho.cube
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid<span class="w"> </span>Rho.grid.nc<span class="w"> </span>--geometry<span class="w"> </span>RUN.fdf<span class="w"> </span>Rho.cube
 </pre></div>
 </div>
 <p>the shorthand flag for <code class="docutils literal notranslate"><span class="pre">-geometry</span></code> is <code class="docutils literal notranslate"><span class="pre">-G</span></code>.</p>
@@ -170,13 +170,13 @@ implemented in <a class="reference internal" href="../api/index.html#module-sisl
 <h2>Grid differences<a class="headerlink" href="#grid-differences" title="Permalink to this heading"></a></h2>
 <p>To easily obtain differences between two grids one may use the <code class="docutils literal notranslate"><span class="pre">--diff</span></code> flag which
 takes one additional grid file for the difference. I.e.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid Rho.grid.nc<span class="o">{</span><span class="m">0</span><span class="o">}</span> -G RUN.fdf --diff Rho.grid.nc<span class="o">{</span><span class="m">1</span><span class="o">}</span> diff_up-down.cube
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid<span class="w"> </span>Rho.grid.nc<span class="o">{</span><span class="m">0</span><span class="o">}</span><span class="w"> </span>-G<span class="w"> </span>RUN.fdf<span class="w"> </span>--diff<span class="w"> </span>Rho.grid.nc<span class="o">{</span><span class="m">1</span><span class="o">}</span><span class="w"> </span>diff_up-down.cube
 </pre></div>
 </div>
 <p>which takes the difference between the spin up and spin down in the same <code class="docutils literal notranslate"><span class="pre">Rho.grid.nc</span></code> file.
 The spin (index) specification takes either a single integer or a list of floating point values, as can be
 seen in the below and shorter equivalent syntax:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid <span class="s2">&quot;Rho.grid.nc{1.,-1.}&quot;</span> -G RUN.fdf diff_up-down.cube
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid<span class="w"> </span><span class="s2">&quot;Rho.grid.nc{1.,-1.}&quot;</span><span class="w"> </span>-G<span class="w"> </span>RUN.fdf<span class="w"> </span>diff_up-down.cube
 </pre></div>
 </div>
 <p>The bracketed specification is an array of the fractions for each spin-component, so here we take the
@@ -184,8 +184,8 @@ first spin-component and subtract the second spin-component.
 The quotation marks are typically required due to Python’s <a class="reference external" href="https://docs.python.org/3/library/argparse.html#module-argparse" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">argparse</span></code></a> module.</p>
 <p>Note that these spin specifications <em>only</em> work for files that contain <strong>all</strong> spin relevant quantities.</p>
 <p>The above is largely equivalent to this small snippet:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">geom</span> <span class="o">=</span> sisl.get_sile<span class="o">(</span><span class="s1">&#39;RUN.fdf&#39;</span><span class="o">)</span>.read_geometry<span class="o">()</span>
-<span class="nv">diff</span> <span class="o">=</span> sisl.get_sile<span class="o">(</span><span class="s1">&#39;Rho.grid.nc&#39;</span><span class="o">)</span>.read_grid<span class="o">(</span><span class="nv">index</span><span class="o">=[</span><span class="m">1</span>, -1<span class="o">])</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">geom</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>sisl.get_sile<span class="o">(</span><span class="s1">&#39;RUN.fdf&#39;</span><span class="o">)</span>.read_geometry<span class="o">()</span>
+<span class="nv">diff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>sisl.get_sile<span class="o">(</span><span class="s1">&#39;Rho.grid.nc&#39;</span><span class="o">)</span>.read_grid<span class="o">(</span><span class="nv">index</span><span class="o">=[</span><span class="m">1</span>,<span class="w"> </span>-1<span class="o">])</span>
 diff.set_geometry<span class="o">(</span>geom<span class="o">)</span>
 diff.write<span class="o">(</span><span class="s1">&#39;diff_up-down.cube&#39;</span><span class="o">)</span>
 </pre></div>
@@ -197,13 +197,13 @@ diff.write<span class="o">(</span><span class="s1">&#39;diff_up-down.cube&#39;</
 One can remove certain parts of the grid after reading, before writing. This will greatly decrease
 the output file <em>and</em> greatly speed-up the process as writing huge ASCII files is <em>extremely</em> time
 consuming. There are two methods for reducing grids:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid &lt;file&gt; --sub &lt;pos<span class="p">|</span>&lt;frac&gt;f&gt; x
-sgrid &lt;file&gt; --remove <span class="o">[</span>+-<span class="o">]</span>&lt;pos<span class="p">|</span>&lt;frac&gt;f&gt; x
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid<span class="w"> </span>&lt;file&gt;<span class="w"> </span>--sub<span class="w"> </span>&lt;pos<span class="p">|</span>&lt;frac&gt;f&gt;<span class="w"> </span>x
+sgrid<span class="w"> </span>&lt;file&gt;<span class="w"> </span>--remove<span class="w"> </span><span class="o">[</span>+-<span class="o">]</span>&lt;pos<span class="p">|</span>&lt;frac&gt;f&gt;<span class="w"> </span>x
 </pre></div>
 </div>
 <p>This needs an example, say the unit cell is an orthogonal unit-cell with side lengths 10x10x20 Angstrom.
 To reduce the cell to a middle square of 5x5x5 Angstrom you can do:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid Rho.grid.nc --sub <span class="m">2</span>.5:7.5 x --sub <span class="m">2</span>.5:7.5 y --sub <span class="m">7</span>.5:12.5 z 5x5x5.cube
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid<span class="w"> </span>Rho.grid.nc<span class="w"> </span>--sub<span class="w"> </span><span class="m">2</span>.5:7.5<span class="w"> </span>x<span class="w"> </span>--sub<span class="w"> </span><span class="m">2</span>.5:7.5<span class="w"> </span>y<span class="w"> </span>--sub<span class="w"> </span><span class="m">7</span>.5:12.5<span class="w"> </span>z<span class="w"> </span>5x5x5.cube
 </pre></div>
 </div>
 <p>note that the order of the reductions are made in the order of appearence. So <em>two</em> subsequent sub/remove
@@ -221,8 +221,8 @@ The length unit for the position is <em>always</em> in Ångstrøm, unless an opt
 forces the unit to be in fractional position (must be between 0 and 1).</p>
 <p>When combining grid reductions with grid differences the order is also important, the following two
 commands are not equivalent:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid Rho.grid.nc --sub <span class="m">2</span>.5:7.5 x --diff Other.Rho.grid.nc --out test.cube
-sgrid Rho.grid.nc --diff Other.Rho.grid.nc --sub <span class="m">2</span>.5:7.5 x --out test.cube
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid<span class="w"> </span>Rho.grid.nc<span class="w"> </span>--sub<span class="w"> </span><span class="m">2</span>.5:7.5<span class="w"> </span>x<span class="w"> </span>--diff<span class="w"> </span>Other.Rho.grid.nc<span class="w"> </span>--out<span class="w"> </span>test.cube
+sgrid<span class="w"> </span>Rho.grid.nc<span class="w"> </span>--diff<span class="w"> </span>Other.Rho.grid.nc<span class="w"> </span>--sub<span class="w"> </span><span class="m">2</span>.5:7.5<span class="w"> </span>x<span class="w"> </span>--out<span class="w"> </span>test.cube
 </pre></div>
 </div>
 <p>where the first command assumes <code class="docutils literal notranslate"><span class="pre">Other.Rho.grid.nc</span></code> matches the shape of <code class="docutils literal notranslate"><span class="pre">Rho.grid.nc</span></code> <em>after</em> it has
@@ -232,8 +232,8 @@ shape, then the reduction will be performed on the grid difference.</p>
 <section id="averaging-and-summing">
 <h2>Averaging and summing<a class="headerlink" href="#averaging-and-summing" title="Permalink to this heading"></a></h2>
 <p>Sometimes it is convenient to average or sum grids along cell directions:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid Rho.grid.nc --average x meanx.cube
-sgrid Rho.grid.nc --sum x sumx.cube
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid<span class="w"> </span>Rho.grid.nc<span class="w"> </span>--average<span class="w"> </span>x<span class="w"> </span>meanx.cube
+sgrid<span class="w"> </span>Rho.grid.nc<span class="w"> </span>--sum<span class="w"> </span>x<span class="w"> </span>sumx.cube
 </pre></div>
 </div>
 <p>which takes the average or the sum along the first cell direction, respectively. Note that this results
@@ -241,7 +241,7 @@ in the number of partitions along that direction to be 1 (not all 3D software is
 CUBE file).</p>
 <p>If one averages along two directions the resulting grid will be a 1D array and one can save it in a table
 with the first column being the remaining dimensions position (in Ång).</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid Rho.grid.nc --average x --average y z_charge.dat
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgrid<span class="w"> </span>Rho.grid.nc<span class="w"> </span>--average<span class="w"> </span>x<span class="w"> </span>--average<span class="w"> </span>y<span class="w"> </span>z_charge.dat
 </pre></div>
 </div>
 <p>will create a two-column data file with <span class="math notranslate nohighlight">\(z\)</span> coordinate and the plane-averaged charge-density.</p>
@@ -265,7 +265,7 @@ For inspiration you can check the <em class="xref py py-obj">sgrid</em> executab
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

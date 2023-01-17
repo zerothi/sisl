@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.io.orca.output &mdash; sisl 0.1.dev1+g6039537 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                0.1.dev1+g6039537
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cite.html">Citing sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../publications.html">Publications using sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/index.html">API documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">sisl.io.orca.output</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sisl.io.orca.output</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
+<span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
+<span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileORCA</span>
+<span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_fh_open</span>
+
+<span class="kn">from</span> <span class="nn">sisl.utils</span> <span class="kn">import</span> <span class="n">PropertyDict</span>
+<span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span> <span class="nn">sisl.unit</span> <span class="kn">import</span> <span class="n">units</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;outputSileORCA&#39;</span><span class="p">]</span>
+
+
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.orca&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">outputSileORCA</span><span class="p">(</span><span class="n">SileORCA</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Output file from ORCA &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Ensure the class has essential tags &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_completed</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_na</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_no</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">readline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">readline</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_completed</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;ORCA TERMINATED NORMALLY&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_completed</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_na</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;Number of atoms&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_na</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_no</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;Number of basis functions&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_no</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">line</span>
+
+    <span class="n">readline</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">SileORCA</span><span class="o">.</span><span class="n">readline</span><span class="o">.</span><span class="vm">__doc__</span>
+
+<div class="viewcode-block" id="outputSileORCA.completed"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.orca.outputSileORCA.html#sisl.io.orca.outputSileORCA.completed">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">completed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; True if the full file has been read and &quot;ORCA TERMINATED NORMALLY&quot; was found. &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_completed</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">completed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;ORCA TERMINATED NORMALLY&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">completed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_completed</span>
+        <span class="k">if</span> <span class="n">completed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_completed</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="n">completed</span></div>
+
+    <span class="nd">@property</span>
+    <span class="nd">@sile_fh_open</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">na</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Number of atoms &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_na</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;Number of atoms&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_na</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_na</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@sile_fh_open</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">no</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Number of orbitals (basis functions) &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_no</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;Number of basis functions&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_no</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_no</span>
+
+<div class="viewcode-block" id="outputSileORCA.read_electrons"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.orca.outputSileORCA.html#sisl.io.orca.outputSileORCA.read_electrons">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">read_electrons</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Read number of electrons (alpha, beta)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        all : bool, optional</span>
+<span class="sd">            return electron numbers from all steps (instead of last)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ndarray or list of ndarrays : alpha and beta electrons</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">readE</span><span class="p">(</span><span class="n">itt</span><span class="p">):</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;N(Alpha)&quot;</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">alpha</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+                <span class="n">beta</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">return</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span>
+
+        <span class="n">itt</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="n">readE</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">e</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">E</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="n">readE</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">all</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">E</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="outputSileORCA.read_charge"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.orca.outputSileORCA.html#sisl.io.orca.outputSileORCA.read_charge">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">read_charge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;mulliken&#39;</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;orbital&#39;</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">reduced</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads from charge (or spin) population analysis</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : {&#39;mulliken&#39;, &#39;loewdin&#39;}</span>
+<span class="sd">            name of the charge scheme to be read</span>
+<span class="sd">        projection : {&#39;orbital&#39;, &#39;atom&#39;}</span>
+<span class="sd">            whether to get orbital- or atom-resolved quantities</span>
+<span class="sd">        orbitals : str, optional</span>
+<span class="sd">            allows to extract the atom-resolved orbitals matching this keyword</span>
+<span class="sd">        reduced : bool, optional</span>
+<span class="sd">            whether to search for full or reduced orbital projections</span>
+<span class="sd">        spin : bool, optional</span>
+<span class="sd">            whether to return the spin block instead of charge</span>
+<span class="sd">        all: bool, optional</span>
+<span class="sd">            return a list of all population analysis blocks instead of the last one</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        PropertyDicts or ndarray or lists : atom/orbital-resolved charge (or spin) data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;mulliken&#39;</span><span class="p">,</span> <span class="s1">&#39;m&#39;</span><span class="p">]:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;mulliken&#39;</span>
+        <span class="k">elif</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;loewdin&#39;</span><span class="p">,</span> <span class="s1">&#39;lowdin&#39;</span><span class="p">,</span> <span class="s1">&#39;löwdin&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">]:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;loewdin&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;name=</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> is not implemented&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">projection</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;atom&#39;</span><span class="p">,</span> <span class="s1">&#39;atoms&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">]:</span>
+            <span class="n">projection</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
+        <span class="k">elif</span> <span class="n">projection</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;orbital&#39;</span><span class="p">,</span> <span class="s1">&#39;orbitals&#39;</span><span class="p">,</span> <span class="s1">&#39;orb&#39;</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">]:</span>
+            <span class="n">projection</span> <span class="o">=</span> <span class="s1">&#39;orbital&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Projection must be atom or orbital&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">projection</span> <span class="o">==</span> <span class="s1">&#39;atom&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;mulliken&#39;</span><span class="p">:</span>
+                <span class="n">step_to</span> <span class="o">=</span> <span class="s2">&quot;MULLIKEN ATOMIC CHARGES&quot;</span>
+            <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;loewdin&#39;</span><span class="p">:</span>
+                <span class="n">step_to</span> <span class="o">=</span> <span class="s2">&quot;LOEWDIN ATOMIC CHARGES&quot;</span>
+
+            <span class="k">def</span> <span class="nf">read_block</span><span class="p">(</span><span class="n">itt</span><span class="p">,</span> <span class="n">step_to</span><span class="p">):</span>
+                <span class="n">f</span><span class="p">,</span> <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="n">step_to</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+                <span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span> <span class="c1"># skip ---</span>
+                <span class="k">if</span> <span class="s2">&quot;SPIN&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="n">spin_block</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">spin_block</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">na</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">ia</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">na</span><span class="p">):</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span>
+                    <span class="n">v</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">spin_block</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">spin</span><span class="p">:</span>
+                        <span class="n">A</span><span class="p">[</span><span class="n">ia</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+                    <span class="k">elif</span> <span class="ow">not</span> <span class="n">spin_block</span> <span class="ow">and</span> <span class="n">spin</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="kc">None</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">A</span><span class="p">[</span><span class="n">ia</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">return</span> <span class="n">A</span>
+
+        <span class="k">elif</span> <span class="n">projection</span> <span class="o">==</span> <span class="s1">&#39;orbital&#39;</span> <span class="ow">and</span> <span class="n">reduced</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;mulliken&#39;</span><span class="p">:</span>
+                <span class="n">step_to</span> <span class="o">=</span> <span class="s2">&quot;MULLIKEN REDUCED ORBITAL CHARGES&quot;</span>
+            <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;loewdin&#39;</span><span class="p">:</span>
+                <span class="n">step_to</span> <span class="o">=</span> <span class="s2">&quot;LOEWDIN REDUCED ORBITAL CHARGES&quot;</span>
+
+            <span class="k">def</span> <span class="nf">read_reduced_orbital_block</span><span class="p">(</span><span class="n">itt</span><span class="p">):</span>
+                <span class="n">D</span> <span class="o">=</span> <span class="n">PropertyDict</span><span class="p">()</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
+                        <span class="n">ia</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                        <span class="n">D</span><span class="p">[(</span><span class="n">ia</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">])]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+                        <span class="n">D</span><span class="p">[(</span><span class="n">ia</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="mi">5</span><span class="p">])]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span>
+                    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+                        <span class="n">D</span><span class="p">[(</span><span class="n">ia</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+                        <span class="n">D</span><span class="p">[(</span><span class="n">ia</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">])]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">D</span><span class="p">[(</span><span class="n">ia</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+                    <span class="n">v</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">D</span>
+
+            <span class="k">def</span> <span class="nf">read_block</span><span class="p">(</span><span class="n">itt</span><span class="p">,</span> <span class="n">step_to</span><span class="p">):</span>
+                <span class="n">f</span><span class="p">,</span> <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="n">step_to</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+                <span class="k">if</span> <span class="s2">&quot;SPIN&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="n">spin_block</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">spin_block</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">if</span> <span class="n">spin_block</span> <span class="ow">and</span> <span class="n">spin</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;SPIN&quot;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">spin_block</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;CHARGE&quot;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="ow">not</span> <span class="n">spin</span><span class="p">:</span>
+                    <span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span> <span class="c1"># skip ---</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+                <span class="n">D</span> <span class="o">=</span> <span class="n">read_reduced_orbital_block</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">orbitals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">D</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">Da</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">na</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="p">(</span><span class="n">ia</span><span class="p">,</span> <span class="n">orb</span><span class="p">),</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">D</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                        <span class="k">if</span> <span class="n">orb</span> <span class="o">==</span> <span class="n">orbitals</span><span class="p">:</span>
+                            <span class="n">Da</span><span class="p">[</span><span class="n">ia</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span>
+                    <span class="k">return</span> <span class="n">Da</span>
+
+        <span class="k">elif</span> <span class="n">projection</span> <span class="o">==</span> <span class="s1">&#39;orbital&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">reduced</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;mulliken&#39;</span><span class="p">:</span>
+                <span class="n">step_to</span> <span class="o">=</span> <span class="s2">&quot;MULLIKEN ORBITAL CHARGES&quot;</span>
+            <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;loewdin&#39;</span><span class="p">:</span>
+                <span class="n">step_to</span> <span class="o">=</span> <span class="s2">&quot;LOEWDIN ORBITAL CHARGES&quot;</span>
+
+            <span class="k">def</span> <span class="nf">read_block</span><span class="p">(</span><span class="n">itt</span><span class="p">,</span> <span class="n">step_to</span><span class="p">):</span>
+                <span class="n">f</span><span class="p">,</span> <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="n">step_to</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s2">&quot;SPIN&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="n">spin_block</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">spin_block</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+                <span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span> <span class="c1"># skip ---</span>
+                <span class="k">if</span> <span class="s2">&quot;MULLIKEN&quot;</span> <span class="ow">in</span> <span class="n">step_to</span><span class="p">:</span>
+                    <span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span> <span class="c1"># skip line &quot;The uncorrected...&quot;</span>
+                <span class="n">Do</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">no</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="c1"># orbital-resolved</span>
+                <span class="n">Da</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">na</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="c1"># atom-resolved</span>
+                <span class="k">for</span> <span class="n">io</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">no</span><span class="p">):</span>
+                    <span class="n">v</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="c1"># io, ia+element, orb, chg, (spin)</span>
+                    <span class="c1"># split atom number and element from v[1]</span>
+                    <span class="n">ia</span><span class="p">,</span> <span class="n">element</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span>
+                    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                        <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+                            <span class="n">ia</span> <span class="o">+=</span> <span class="n">s</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">element</span> <span class="o">+=</span> <span class="n">s</span>
+                    <span class="n">ia</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ia</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">spin_block</span> <span class="ow">and</span> <span class="n">spin</span><span class="p">:</span>
+                        <span class="n">Do</span><span class="p">[</span><span class="n">io</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+                    <span class="k">elif</span> <span class="ow">not</span> <span class="n">spin_block</span> <span class="ow">and</span> <span class="n">spin</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="kc">None</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">Do</span><span class="p">[</span><span class="n">io</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">orbitals</span><span class="p">:</span>
+                        <span class="n">Da</span><span class="p">[</span><span class="n">ia</span><span class="p">]</span> <span class="o">+=</span> <span class="n">Do</span><span class="p">[</span><span class="n">io</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">orbitals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">Do</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">Da</span>
+
+        <span class="n">itt</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">blocks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">block</span> <span class="o">=</span> <span class="n">read_block</span><span class="p">(</span><span class="n">itt</span><span class="p">,</span> <span class="n">step_to</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">block</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">blocks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>
+            <span class="n">block</span> <span class="o">=</span> <span class="n">read_block</span><span class="p">(</span><span class="n">itt</span><span class="p">,</span> <span class="n">step_to</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">all</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">blocks</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">blocks</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">blocks</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="outputSileORCA.read_energy"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.orca.outputSileORCA.html#sisl.io.orca.outputSileORCA.read_energy">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">read_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads the energy blocks</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        all : bool, optional</span>
+<span class="sd">            return a list of dictionaries from each step (instead of the last)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        PropertyDict or list of PropertyDict : all energy data (in eV) from the &quot;TOTAL SCF ENERGY&quot; and &quot;DFT DISPERSION CORRECTION&quot; blocks</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">readE</span><span class="p">(</span><span class="n">itt</span><span class="p">,</span> <span class="n">vdw</span><span class="p">,</span> <span class="n">reopen</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;TOTAL SCF ENERGY&quot;</span><span class="p">,</span> <span class="n">reopen</span><span class="o">=</span><span class="n">reopen</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+            <span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span> <span class="c1"># skip ---</span>
+            <span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span> <span class="c1"># skip blank line</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span>
+            <span class="n">E</span> <span class="o">=</span> <span class="n">PropertyDict</span><span class="p">()</span>
+            <span class="k">while</span> <span class="s2">&quot;----&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                <span class="k">if</span> <span class="s2">&quot;Total Energy&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="n">E</span><span class="p">[</span><span class="s2">&quot;total&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">])</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="s1">&#39;Ha&#39;</span><span class="p">,</span> <span class="s1">&#39;eV&#39;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="s2">&quot;E(X)&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="n">E</span><span class="p">[</span><span class="s2">&quot;exchange&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="s1">&#39;Ha&#39;</span><span class="p">,</span> <span class="s1">&#39;eV&#39;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="s2">&quot;E(C)&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="n">E</span><span class="p">[</span><span class="s2">&quot;correlation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="s1">&#39;Ha&#39;</span><span class="p">,</span> <span class="s1">&#39;eV&#39;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="s2">&quot;E(XC)&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="n">E</span><span class="p">[</span><span class="s2">&quot;xc&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="s1">&#39;Ha&#39;</span><span class="p">,</span> <span class="s1">&#39;eV&#39;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="s2">&quot;DFET-embed. en.&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="n">E</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="s1">&#39;Ha&#39;</span><span class="p">,</span> <span class="s1">&#39;eV&#39;</span><span class="p">)</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">vdw</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;DFT DISPERSION CORRECTION&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;Dispersion correction&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                <span class="n">E</span><span class="p">[</span><span class="s2">&quot;vdw&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="s1">&#39;Ha&#39;</span><span class="p">,</span> <span class="s1">&#39;eV&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">E</span>
+
+        <span class="c1"># check if vdw block is present</span>
+        <span class="n">vdw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;DFT DISPERSION CORRECTION&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">itt</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="n">readE</span><span class="p">(</span><span class="n">itt</span><span class="p">,</span> <span class="n">vdw</span><span class="p">,</span> <span class="n">reopen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">e</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">E</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="n">readE</span><span class="p">(</span><span class="n">itt</span><span class="p">,</span> <span class="n">vdw</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">all</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">E</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">E</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="outputSileORCA.read_orbital_energies"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.orca.outputSileORCA.html#sisl.io.orca.outputSileORCA.read_orbital_energies">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">read_orbital_energies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads the &quot;ORBITAL ENERGIES&quot; blocks</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        all : bool, optional</span>
+<span class="sd">            return a list of ndarrays from each step (instead of the last)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ndarray or list : orbital energies (in eV) from the &quot;ORBITAL ENERGIES&quot; blocks</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">readE</span><span class="p">(</span><span class="n">itt</span><span class="p">):</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;ORBITAL ENERGIES&quot;</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+            <span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span> <span class="c1"># skip ---</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;SPIN UP ORBITALS&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="n">spin</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">spin</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span> <span class="c1"># Skip &quot;NO OCC&quot; header line</span>
+            <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">no</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">spin</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">E</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+
+            <span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span> <span class="c1"># skip &quot;SPIN DOWN ORBITALS&quot;</span>
+            <span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span> <span class="c1"># Skip &quot;NO OCC&quot; header line</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="s1">&#39;---&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">E</span>
+
+        <span class="n">itt</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="n">readE</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">e</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">E</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="n">readE</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">all</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">E</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">E</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;output&#39;</span><span class="p">,</span> <span class="n">outputSileORCA</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

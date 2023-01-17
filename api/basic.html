@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Basic classes &mdash; sisl 0.1.dev1+gdb0fc67 documentation</title>
+  <title>Basic classes &mdash; sisl 0.1.dev1+g6039537 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -39,7 +39,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+gdb0fc67
+                0.1.dev1+g6039537
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -82,6 +82,8 @@
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.SphericalOrbital.html">sisl.SphericalOrbital</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.AtomicOrbital.html">sisl.AtomicOrbital</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.HydrogenicOrbital.html">sisl.HydrogenicOrbital</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.GTOrbital.html">sisl.GTOrbital</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.STOrbital.html">sisl.STOrbital</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.Atom.html">sisl.Atom</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.Atoms.html">sisl.Atoms</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.Geometry.html">sisl.Geometry</a></li>
@@ -182,13 +184,19 @@ unit cells and grid functions.</p>
 <td><p>Base class for orbital information.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.SphericalOrbital.html#sisl.SphericalOrbital" title="sisl.SphericalOrbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SphericalOrbital</span></code></a>(l, rf_or_func[, q0, tag])</p></td>
-<td><p>An <em>arbitrary</em> orbital class where <span class="math notranslate nohighlight">\(\phi(\mathbf r)=f(|\mathbf r|)Y_l^m(\theta,\varphi)\)</span></p></td>
+<td><p>An <em>arbitrary</em> orbital class which only contains the harmonical part of the wavefunction  where <span class="math notranslate nohighlight">\(\phi(\mathbf r)=f(|\mathbf r|)Y_l^m(\theta,\varphi)\)</span></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.AtomicOrbital.html#sisl.AtomicOrbital" title="sisl.AtomicOrbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomicOrbital</span></code></a>(*args, **kwargs)</p></td>
 <td><p>A projected atomic orbital consisting of real harmonics</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.HydrogenicOrbital.html#sisl.HydrogenicOrbital" title="sisl.HydrogenicOrbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HydrogenicOrbital</span></code></a>(n, l, m, Z, **kwargs)</p></td>
 <td><p>A hydrogen-like atomic orbital defined by an effective atomic number Z in addition to the usual quantum numbers (n, l, m).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.GTOrbital.html#sisl.GTOrbital" title="sisl.GTOrbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GTOrbital</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Gaussian type orbital</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.STOrbital.html#sisl.STOrbital" title="sisl.STOrbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">STOrbital</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Slater type orbital</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.Atom.html#sisl.Atom" title="sisl.Atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Atom</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Atomic information, mass, name number of orbitals and ranges</p></td>
@@ -224,7 +232,7 @@ in <a class="reference internal" href="physics.matrix.html#physics-matrix"><span
 <td><p>Quaternion object to enable easy rotational quantities.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.SparseCSR.html#sisl.SparseCSR" title="sisl.SparseCSR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SparseCSR</span></code></a>(arg1[, dim, dtype, nnzpr, nnz])</p></td>
-<td><p>A compressed sparse row matrix, slightly different than <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.9.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a>.</p></td>
+<td><p>A compressed sparse row matrix, slightly different than <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.10.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.SparseAtom.html#sisl.SparseAtom" title="sisl.SparseAtom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SparseAtom</span></code></a>(geometry[, dim, dtype, nnzpr])</p></td>
 <td><p>Sparse object with number of rows equal to the total number of atoms in the <a class="reference internal" href="generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code></a></p></td>
@@ -269,7 +277,7 @@ and using them will be encouraged in combination with sisl.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2015-2022, Nick Papior.</p>
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
