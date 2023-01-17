@@ -188,7 +188,7 @@ def cold(E, kT=0.1, mu=0.):
 
     References
     ----------
-    .. [1] :doi:`N. Marzari, D. Vanderbilt, A. de Vita, M.C. Payne "Thermal Contraction and Disordering of the Al(110) Surface", PRL **82**, 16 (1999) <10.1103/PhysRevLett.82.3296>`
+    .. [1] : :doi:`N. Marzari, D. Vanderbilt, A. de Vita, M.C. Payne "Thermal Contraction and Disordering of the Al(110) Surface", PRL **82**, 16 (1999) <10.1103/PhysRevLett.82.3296>`
 
     Returns
     -------
