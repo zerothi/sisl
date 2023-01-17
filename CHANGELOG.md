@@ -8,6 +8,7 @@ we hit release version 1.0.0.
 ## [0.13.0] - YYYY-MM-DD
 
 ### Added
+- `Geometry.apply` apply functions to slices of data depending on the geometry
 - enabled Gaussian and Slater type orbitals, #463
 	Please give feedback!
 - deltancSileTBtrans.merge allowing easy merging of several delta

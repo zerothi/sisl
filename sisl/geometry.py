@@ -4381,6 +4381,75 @@ class Geometry(SuperCellChild):
         # infinite supercell indices
         return self.sc2uc(idx), xyz, isc
 
+    def apply(self, data, func, mapper, axis=0, segments="atoms"):
+        r"""Apply a function `func` to the data along axis `axis` using the method specified
+
+        This can be useful for applying conversions from orbital data to atomic data through
+        sums or other functions.
+
+        The data may be of any shape but it is expected the function can handle arguments as
+        ``func(data, axis=axis)``.
+
+        Parameters
+        ----------
+        data : array_like
+            the data to be converted
+        func :
+            a callable function that transforms the data in some way
+        mapper : func, optional
+            a function transforming the `segments` into some other segments that
+            is present in `data`.
+        axis : int, optional
+            axis selector for `data` along which `func` will be applied
+        segments : {"atoms", "orbitals", "all"} or iterator, optional
+            which segments the `mapper` will recieve, if atoms, each atom
+            index will be passed to the `mapper(ia)`.
+
+        Notes
+        -----
+
+        This will likely be moved to a separate function since it in principle has nothing to
+        do with the Geometry class.
+
+        Examples
+        --------
+        Convert orbital data into summed atomic data
+
+        >>> g = sisl.geom.diamond(atoms=sisl.Atom(6, R=(1, 2)))
+        >>> orbital_data = np.random.rand(10, g.no, 3)
+        >>> atomic_data = g.apply(orbital_data, np.sum, mapper=g.a2o, axis=1)
+
+        The same can be accomblished by passing an explicit segment iterator,
+        note that ``iter(g) == range(g.na)``
+
+        >>> atomic_data = g.apply(orbital_data, np.sum, mapper=g.a2o, axis=1,
+        ...                       segments=iter(g))
+
+        To only take out every 2nd orbital:
+
+        >>> alternate_data = g.apply(orbital_data, np.sum, mapper=lambda idx: idx[::2], axis=1,
+        ...                          segments="all")
+
+        """
+        if isinstance(segments, str):
+            if segments == "atoms":
+                segments = range(self.na)
+            elif segments == "orbitals":
+                segments = range(self.no)
+            elif segments == "all":
+                segments = [np.arange(data.shape[axis])]
+            else:
+                raise ValueError(f"{self.__class__}.apply got wrong argument 'segments'={segments}")
+
+        # handle the data
+        new_data = [
+            # execute func on the segmented data
+            func(np.take(data, mapper(segment), axis), axis=axis)
+            # loop each segment
+            for segment in segments]
+
+        return np.stack(new_data, axis=axis)
+
     # Create pickling routines
     def __getstate__(self):
         """ Returns the state of this object """
