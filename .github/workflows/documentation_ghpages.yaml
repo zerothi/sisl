@@ -75,7 +75,7 @@ jobs:
 
       # Deploy to github pages
       - name: Deploy to github pages
-        uses: JamesIves/github-pages-deploy-action@4.4.1
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
           BRANCH: gh-pages
           FOLDER: docs/build/html
