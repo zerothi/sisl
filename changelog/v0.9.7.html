@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>0.9.7 &mdash; sisl 0.1.dev1+g6039537 documentation</title>
+  <title>0.9.7 &mdash; sisl 0.1.dev1+g322196d documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g6039537
+                0.1.dev1+g322196d
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -174,36 +174,22 @@ names contributed a patch for the first time.</p>
 <li><p>Bug-fix for reading geometries in outSiesta</p></li>
 <li><p>Enabled reading the fermi level from the output, fixes #126</p></li>
 <li><p>Enabled Siesta STM and STS output</p></li>
-<li><dl class="simple">
-<dt>Fixed an inheritance issue in <em class="xref py py-obj">axsfSile</em> which meant it was unusable until</dt><dd><p>now</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Maintenance fix for looping sparse matrices.</dt><dd><p>Now the default is to loop the sparse non-zero elements.</p>
-</dd>
-</dl>
-<p>If one wishes to loop all atoms/orbitals one should use <em class="xref py py-obj">iter_orbitals()</em>
-NOTE: This <em>may</em> break some codes if they used loops on sparse matrices</p>
-</li>
+<li><p>Fixed an inheritance issue in <em class="xref py py-obj">axsfSile</em> which meant it was unusable until
+now</p></li>
+<li><p>Maintenance fix for looping sparse matrices.
+Now the default is to loop the sparse non-zero elements.
+If one wishes to loop all atoms/orbitals one should use <em class="xref py py-obj">iter_orbitals()</em>
+NOTE: This <em>may</em> break some codes if they used loops on sparse matrices</p></li>
 <li><p>Fixed reading VASP CAR files with constraints (thanks to T. Frederiksen)</p></li>
-<li><dl class="simple">
-<dt>Added <em class="xref py py-obj">overlap</em> method to <em class="xref py py-obj">Geometry</em> to find overlapping atoms</dt><dd><p>between two geometries.</p>
-</dd>
-</dl>
-</li>
+<li><p>Added <em class="xref py py-obj">overlap</em> method to <em class="xref py py-obj">Geometry</em> to find overlapping atoms
+between two geometries.</p></li>
 <li><p>Added Siesta LDOS charge handling</p></li>
-<li><dl>
-<dt>Changed edges method to not exclude it-self by default.</dt><dd><p>This is because it is not intuitive given the default exclude=None</p>
+<li><p>Changed edges method to not exclude it-self by default.
+This is because it is not intuitive given the default exclude=None</p>
 <p>Note: this may break compatibility with other software/scripts.</p>
-</dd>
-</dl>
 </li>
-<li><dl class="simple">
-<dt>Added mulliken charge calculations and orbital angular momentum</dt><dd><p>for SO DM, fixes #136</p>
-</dd>
-</dl>
-</li>
+<li><p>Added mulliken charge calculations and orbital angular momentum
+for SO DM, fixes #136</p></li>
 <li><p>Fixed reading overlap matrix in conjunction with DM from fdf-sile</p></li>
 <li><p>Performance increase for the real-space self-energy calculations</p></li>
 <li><p>Fixed transposing of the spin-box for NC and SO matrices</p></li>
@@ -212,30 +198,18 @@ NOTE: This <em>may</em> break some codes if they used loops on sparse matrices</
 <li><p>Upgraded documentation to a layout that obeys numpydoc</p></li>
 <li><p>Fixed reading ASE xyz outputs, thanksto JL. Bertelsen,</p></li>
 <li><p>Fixed a typo in fdf reading onlyS, thanks to JL. Bertelsen, #135</p></li>
-<li><dl class="simple">
-<dt>Enabled reading arbitrary self-energy by requesting an energy and k-point</dt><dd><p>from TSGF files.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Upgraded handling of TBT.*.nc files to conform with the &gt;=Siesta-4.1-b5</dt><dd><p>releases where all files contain the same device + electrode meta-data.</p>
-</dd>
-</dl>
-</li>
+<li><p>Enabled reading arbitrary self-energy by requesting an energy and k-point
+from TSGF files.</p></li>
+<li><p>Upgraded handling of TBT.*.nc files to conform with the &gt;=Siesta-4.1-b5
+releases where all files contain the same device + electrode meta-data.</p></li>
 <li><p>Deprecated TBTGFSileTBtrans (use tbtgfSileTBtrans instead)</p></li>
 <li><p>Forced align=False in inner such that users should take care of this</p></li>
-<li><dl class="simple">
-<dt>Added align_norm to swap states such that they more or less</dt><dd><p>correspond to the same band (which should have a closer residual</p>
-</dd>
-</dl>
-<p>for on-site coefficients).</p>
-</li>
-<li><dl class="simple">
-<dt>Removed norm2 and made norm equal to norm2 for states. This is</dt><dd><p>the more natural thing, besides. Doing norm() ** 0.5 shouldn’t be</p>
-</dd>
-</dl>
-<p>too much of a problem.</p>
-</li>
+<li><p>Added align_norm to swap states such that they more or less
+correspond to the same band (which should have a closer residual
+for on-site coefficients).</p></li>
+<li><p>Removed norm2 and made norm equal to norm2 for states. This is
+the more natural thing, besides. Doing norm() ** 0.5 shouldn’t be
+too much of a problem.</p></li>
 </ul>
 </section>
 </section>

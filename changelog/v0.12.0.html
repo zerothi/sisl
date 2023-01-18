@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>0.12.0 &mdash; sisl 0.1.dev1+g6039537 documentation</title>
+  <title>0.12.0 &mdash; sisl 0.1.dev1+g322196d documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g6039537
+                0.1.dev1+g322196d
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -226,11 +226,8 @@ names contributed a patch for the first time.</p>
 <h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this heading"></a></h3>
 <ul class="simple">
 <li><p><em class="xref py py-obj">sub_orbital</em> allows lists of orbitals</p></li>
-<li><dl class="simple">
-<dt><em class="xref py py-obj">berry_phase</em> now works for non-orthogonal basis sets (uses Lowdin transformation)</dt><dd><p>This may require sufficiently small dk for accurateness.</p>
-</dd>
-</dl>
-</li>
+<li><p><em class="xref py py-obj">berry_phase</em> now works for non-orthogonal basis sets (uses Lowdin transformation)
+This may require sufficiently small dk for accurateness.</p></li>
 <li><p><em class="xref py py-obj">degenerate</em> argument for <em class="xref py py-obj">conductivity</em> to enable decoupling of states</p></li>
 <li><p>BandStructure.lineark now always starts from 0</p></li>
 <li><p>reading coordinates from siesta.out when bands are calculated #362</p></li>
@@ -254,11 +251,8 @@ names contributed a patch for the first time.</p>
 <li><p>removed <em class="xref py py-obj">Sile.exist</em>, refer to <em class="xref py py-obj">Sile.file</em> which always will be a <a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pathlib.Path</span></code></a> instance</p></li>
 <li><p><em class="xref py py-obj">berry_phase</em> now uses the gauge=R convention, the code became much simpler</p></li>
 <li><p><em class="xref py py-obj">BrillouinZone.parametrize</em> function changed interface to allow more dimensions</p></li>
-<li><dl class="simple">
-<dt><em class="xref py py-obj">EigenStateElectron.inner</em> does not use the overlap matrix by default, norm2 is for</dt><dd><p>exactly this behaviour</p>
-</dd>
-</dl>
-</li>
+<li><p><em class="xref py py-obj">EigenStateElectron.inner</em> does not use the overlap matrix by default, norm2 is for
+exactly this behaviour</p></li>
 <li><p>changed license to MPLv2 makes toolboxes easier to contribute under different license</p></li>
 <li><p>renamed origo to origin, see #365</p></li>
 <li><p>default parallel calculations are disabled</p></li>

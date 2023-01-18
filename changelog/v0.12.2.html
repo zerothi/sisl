@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>0.12.2 &mdash; sisl 0.1.dev1+g6039537 documentation</title>
+  <title>0.12.2 &mdash; sisl 0.1.dev1+g322196d documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g6039537
+                0.1.dev1+g322196d
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -203,19 +203,14 @@ names contributed a patch for the first time.</p>
 </section>
 <section id="changed">
 <h3>Changed<a class="headerlink" href="#changed" title="Permalink to this heading"></a></h3>
-<ul>
+<ul class="simple">
 <li><p>State*.outer corrected to the same interface as State*.inner</p></li>
 <li><p>all <a class="reference internal" href="../api/default_geom.html#module-sisl.geom" title="sisl.geom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.geom</span></code></a> geometries are now calling <em class="xref py py-obj">optimize_nsc</em> if needed</p></li>
 <li><p><em class="xref py py-obj">SparseGeometry.cut</em> -&gt; <em class="xref py py-obj">SparseGeometry.untile</em>
 * much faster
-* many more checks to warn about wrong usage</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><em class="xref py py-obj">cut</em> is now deprecated (removed in 0.13)</p></li>
-<li><p>changed the –cut flag in <em class="xref py py-obj">sgeom</em> to <em class="xref py py-obj">–untile</em>, deprecated flag</p></li>
-</ul>
-</div></blockquote>
-</li>
+* many more checks to warn about wrong usage
+* <em class="xref py py-obj">cut</em> is now deprecated (removed in 0.13)
+* changed the –cut flag in <em class="xref py py-obj">sgeom</em> to <em class="xref py py-obj">–untile</em>, deprecated flag</p></li>
 <li><p>enabled in/out arguments to tbt siles (easier to remember meaning)</p></li>
 </ul>
 </section>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>0.10.0 &mdash; sisl 0.1.dev1+g6039537 documentation</title>
+  <title>0.10.0 &mdash; sisl 0.1.dev1+g322196d documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g6039537
+                0.1.dev1+g322196d
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -176,29 +176,17 @@ names contributed a patch for the first time.</p>
 <li><p>#212: Moved a parenthesis that went unnoticed during pathlib conversion</p></li>
 <li><p>#215: ENH: added first Dispatcher method</p></li>
 <li><p>#226: ufunc on SparseCSR and derived types</p></li>
-<li><dl class="simple">
-<dt>Exposing sisl_toolbox as a module for external contributions</dt><dd><p>Now stuff contributed from 3rd parties can easily be included
-in a toolbox which is a separate module.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Changed asarray (as*) methods for SparseGeometry</dt><dd><p>Now we have a dispatch class which enables one
-to store the behaviour as variables and then post-process</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Using <em class="xref py py-obj">*.geom</em> or <em class="xref py py-obj">geometry.atom</em> is now deprecated, use</dt><dd><p><em class="xref py py-obj">*.geometry</em> and <em class="xref py py-obj">geometry.atoms</em> instead (respectively)</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Added spin-rotation for density matrices, this will</dt><dd><p>enable sisl to manipulate DM and write them for
-Siesta calculations</p>
-</dd>
-</dl>
-</li>
+<li><p>Exposing sisl_toolbox as a module for external contributions
+Now stuff contributed from 3rd parties can easily be included
+in a toolbox which is a separate module.</p></li>
+<li><p>Changed asarray (as*) methods for SparseGeometry
+Now we have a dispatch class which enables one
+to store the behaviour as variables and then post-process</p></li>
+<li><p>Using <em class="xref py py-obj">*.geom</em> or <em class="xref py py-obj">geometry.atom</em> is now deprecated, use
+<em class="xref py py-obj">*.geometry</em> and <em class="xref py py-obj">geometry.atoms</em> instead (respectively)</p></li>
+<li><p>Added spin-rotation for density matrices, this will
+enable sisl to manipulate DM and write them for
+Siesta calculations</p></li>
 <li><p>Enabled all numpy.ufuncs (np.exp(H))</p></li>
 <li><p>Added nanoribbons construction (&#64;tfrederiksen)</p></li>
 <li><p>Internal change to pathlib for files and paths</p></li>
@@ -211,16 +199,10 @@ control, fixes #191, #197</p></li>
 <li><p>Enabled VASP <em class="xref py py-obj">*CAR</em> files to write/read dynamic specifications #185</p></li>
 <li><p>Enabled <a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2022.12.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a> returning from BrillouinZone objects #182</p></li>
 <li><p>Several improvements to outSileSiesta.read_scf #174, #180</p></li>
-<li><dl class="simple">
-<dt>A huge performance increase for data extraction in tbtncSileTbtrans</dt><dd><p>(thanks to Gaetano Calogero for finding the bottleneck)</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Added preliminary usage of Mixers, primarily intented for extending</dt><dd><p>sisl operations where SCF are used (may heavily change).</p>
-</dd>
-</dl>
-</li>
+<li><p>A huge performance increase for data extraction in tbtncSileTbtrans
+(thanks to Gaetano Calogero for finding the bottleneck)</p></li>
+<li><p>Added preliminary usage of Mixers, primarily intented for extending
+sisl operations where SCF are used (may heavily change).</p></li>
 <li><p>Lots of small bug-fixes</p></li>
 <li><p>Now sisl is Python &gt;=3.6 only, #162</p></li>
 </ul>

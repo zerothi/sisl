@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>0.9.4 &mdash; sisl 0.1.dev1+g6039537 documentation</title>
+  <title>0.9.4 &mdash; sisl 0.1.dev1+g322196d documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g6039537
+                0.1.dev1+g322196d
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -184,26 +184,17 @@ names contributed a patch for the first time.</p>
 </li>
 <li><p>Changed Hessian to DynamicalMatrix to clarify the units</p></li>
 <li><p>Added new units class to handle complex units.</p></li>
-<li><dl class="simple">
-<dt>Enabled a Phonon class to calculate group velocities of phonons, DOS and PDOS,</dt><dd><p>displacements</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Bug-fixes for Siesta binary writes, now the supercell format is <em>always</em></dt><dd><p>Siesta compliant.</p>
-</dd>
-</dl>
-</li>
+<li><p>Enabled a Phonon class to calculate group velocities of phonons, DOS and PDOS,
+displacements</p></li>
+<li><p>Bug-fixes for Siesta binary writes, now the supercell format is <em>always</em>
+Siesta compliant.</p></li>
 <li><p>Enabled replacing k-points in MonkhorstPack grids.</p></li>
 <li><p>Enabled calculation of band-velocities from eigenstates</p></li>
 <li><p>Made better progress-bars. Using eta= now relies on tqdm
 It is however still an optional dependency.</p></li>
-<li><dl class="simple">
-<dt>Fixed Gamma-point periodic wavefunction storage.</dt><dd><p>Creating grids with wave-functions is fully functional
-for arbitrarily big supercells.</p>
-</dd>
-</dl>
-</li>
+<li><p>Fixed Gamma-point periodic wavefunction storage.
+Creating grids with wave-functions is fully functional
+for arbitrarily big supercells.</p></li>
 <li><p>BrillouinZone objects:</p>
 <ul class="simple">
 <li><p>Renamed PathBZ to BandStructure</p></li>
@@ -234,30 +225,21 @@ I.e. the voxel spacing.</p>
 <li><p>Enabled plotting charge density on grids.</p></li>
 </ul>
 </li>
-<li><dl class="simple">
-<dt>Enabled tqdm usage for progressbar. It is fast and easy to use</dt><dd><p>and a small requirement. (still optional)</p>
-</dd>
-</dl>
-</li>
+<li><p>Enabled tqdm usage for progressbar. It is fast and easy to use
+and a small requirement. (still optional)</p></li>
 <li><p>Added intrinsic Sisl exceptions which will be used throughout
 (at some point)</p></li>
 <li><p>Removed deprecated TightBinding class (use Hamiltonian instead)</p></li>
-<li><dl class="simple">
-<dt>Added many SislWarning raises which are used to notify the user of</dt><dd><p>potentially important things (say if sisl knows there should be a unit
-associated but it couldn’t find it).</p>
-</dd>
-</dl>
-</li>
+<li><p>Added many SislWarning raises which are used to notify the user of
+potentially important things (say if sisl knows there should be a unit
+associated but it couldn’t find it).</p></li>
 <li><p>Added TSDE file reading in sisl.</p></li>
-<li><dl class="simple">
-<dt>Siesta reading of grid-related data is now much <em>smarter</em>. It will</dt><dd><p>try and recognize the units of the data so the units become sisl
+<li><p>Siesta reading of grid-related data is now much <em>smarter</em>. It will
+try and recognize the units of the data so the units become sisl
 intrinsics (Ry -&gt; eV, Bohr -&gt; Ang, etc.).
 This means that typically one does not need to do manual unit-conversion.
 There are however a few cases where sisl cannot figure out the
-units. Particularly if the files are renamed.</p>
-</dd>
-</dl>
-</li>
+units. Particularly if the files are renamed.</p></li>
 <li><p>Added a new class EigenSystem which holds information regarding
 eigenvalues and eigenvectors.</p>
 <ul class="simple">
@@ -265,29 +247,21 @@ eigenvalues and eigenvectors.</p>
 be used to calculate wavefunctions, DOS, PDOS and more to come.</p></li>
 </ul>
 </li>
-<li><dl>
-<dt>Fixed lots of bugs in fdf-reading quantities.</dt><dd><p>Now one is also able to read Hamiltonian and other physical
+<li><p>Fixed lots of bugs in fdf-reading quantities.
+Now one is also able to read Hamiltonian and other physical
 quantities from the fdf-object directly. There is pre-defined
 orders of which files to read from if there are multiple files
 eligeble.</p>
 <p>Reading the geometry now defaults to the fdf file, but one can query
 the output files by a boolean.</p>
-</dd>
-</dl>
 </li>
-<li><dl class="simple">
-<dt>Enabled PDOS calculations for the Hamiltonian. Together</dt><dd><p>with the MonkhorstPack class one can easily calculate
-k-averaged PDOS quantities.</p>
-</dd>
-</dl>
-</li>
+<li><p>Enabled PDOS calculations for the Hamiltonian. Together
+with the MonkhorstPack class one can easily calculate
+k-averaged PDOS quantities.</p></li>
 <li><p>Fixed cube reading/writing of multi-column data.</p></li>
 <li><p>Added siesta PDOS xml parsing, currently this is only scriptable
-but it manages easy extraction of quantities without the PDOSXML utility.</p>
-<blockquote>
-<div><p>This also enables retrieving the PDOS as an xarray.DataArray.</p>
-</div></blockquote>
-</li>
+but it manages easy extraction of quantities without the PDOSXML utility.
+This also enables retrieving the PDOS as an xarray.DataArray.</p></li>
 <li><p>Fixed a bug in writing XV files (only for -100/-200 species)</p></li>
 <li><p>TBtrans / TBT.nc file:</p>
 <ul class="simple">
