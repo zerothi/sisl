@@ -1,3 +1,4 @@
+---
 name: wheel creation
 
 # Change this to whatever you want
@@ -75,7 +76,7 @@ jobs:
 
           # Linux 64 bit manylinux2010
           # NumPy on Python 3.10 only supports 64bit and is only available with manylinux2014
-	  # hence 310 and 311 are not added here
+          # hence 310 and 311 are not added here
           - os: ubuntu-latest
             python: 37
             bitness: 64
