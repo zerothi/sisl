@@ -62,8 +62,20 @@ jobs:
             bitness: 64
             platform_id: manylinux_x86_64
             manylinux_image: manylinux2014
+          - os: ubuntu-latest
+            python: 310
+            bitness: 64
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux2014
+          - os: ubuntu-latest
+            python: 311
+            bitness: 64
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux2014
 
           # Linux 64 bit manylinux2010
+          # NumPy on Python 3.10 only supports 64bit and is only available with manylinux2014
+	  # hence 310 and 311 are not added here
           - os: ubuntu-latest
             python: 37
             bitness: 64
@@ -80,12 +92,6 @@ jobs:
             platform_id: manylinux_x86_64
             manylinux_image: manylinux2010
 
-          # NumPy on Python 3.10 only supports 64bit and is only available with manylinux2014
-          - os: ubuntu-latest
-            python: 310
-            bitness: 64
-            platform_id: manylinux_x86_64
-            manylinux_image: manylinux2014
 
           # MacOS x86_64
           - os: macos-latest
@@ -104,20 +110,10 @@ jobs:
             bitness: 64
             python: 310
             platform_id: macosx_x86_64
-
-          # MacOS arm64
-          # - os: macos-latest
-          #   bitness: 64
-          #   python: 38
-          #   platform_id: macosx_arm64
-          # - os: macos-latest
-          #   bitness: 64
-          #   python: 39
-          #   platform_id: macosx_arm64
-          # - os: macos-latest
-          #   bitness: 64
-          #   python: 310
-          #   platform_id: macosx_arm64
+          - os: macos-latest
+            bitness: 64
+            python: 311
+            platform_id: macosx_x86_64
 
     steps:
       - uses: actions/checkout@v3
