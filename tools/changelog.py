@@ -39,6 +39,7 @@ From the bash command line with $GITHUB token::
 import os
 import sys
 import re
+import time
 import datetime
 from git import Repo
 from github import Github
@@ -71,13 +72,19 @@ def get_authors(revision_range):
     pre = set(re.findall(pat, this_repo.git.shortlog("-s", lst_release), re.M))
 
     # Homu is the author of auto merges, clean him out.
-    cur.discard("Homu")
-    pre.discard("Homu")
+    for discard_author in ("Homu", "lgtm-com[bot]"):
+        cur.discard(discard_author)
+        pre.discard(discard_author)
 
     # Append '+' to new authors.
     authors = [s + " +" for s in cur - pre] + [s for s in cur & pre]
     authors.sort()
     return authors
+
+
+def get_commit_date(repo, rev):
+    """ Retrive the object that defines the revision """
+    return datetime.datetime.fromtimestamp(repo.commit(rev).committed_date)
 
 
 def get_pull_requests(repo, revision_range):
@@ -113,6 +120,8 @@ def read_changelog(prior_rel, current_rel, format="md"):
     md_item = re.compile(r"^\s*-")
 
     # when to capture the content
+    is_first = True
+    is_head = current_rel == "HEAD"
     print_out = False
     # for getting the date
     date = None
@@ -126,11 +135,19 @@ def read_changelog(prior_rel, current_rel, format="md"):
         if len(line.strip()) == 0:
             line = "\n"
 
-        if f"## [{current_rel}]" in line:
+        if is_head and line.startswith("##") and is_first:
+            is_first = False
+            print_out = True
+            date = line.split("-", 1)[1].strip()
+            continue
+
+        elif f"## [{current_rel}]" in line:
+            is_first = False
             print_out = True
             date = line.split("-", 1)[1].strip()
             continue
         elif f"## [{prior_rel}]" in line:
+            is_first = False
             break
         elif not print_out:
             continue
@@ -160,15 +177,27 @@ def read_changelog(prior_rel, current_rel, format="md"):
 
     # parse the date into an iso date
     if date is not None:
-        date = datetime.date(*[int(x) for x in date.split("-")])
-        date = date.strftime("%d of %B %Y")
-        if date[0] == "0":
-            date = date[1:]
+        try:
+            date = date2format(datetime.date(*[int(x) for x in date.split("-")]))
+        except ValueError:
+            pass
             
     return "".join(out).strip(), date
 
+
+def date2format(date):
+    """ Convert the date to the output format we require """
+    date = date.strftime("%d of %B %Y")
+    if date[0] == "0":
+        date = date[1:]
+    return date
+
+
 def main(token, revision_range, format="md"):
     prior_rel, current_rel = [r.strip() for r in revision_range.split("..")]
+
+    prior_rel_date = get_commit_date(this_repo, prior_rel)
+    current_rel_date = get_commit_date(this_repo, current_rel)
 
     # Also add the CHANGELOG.md information
     if prior_rel.startswith("v"):
@@ -178,11 +207,13 @@ def main(token, revision_range, format="md"):
     if current_rel.startswith("v"):
         current_rel = current_rel[1:]
         current_version = current_rel
-    elif cur_release == "HEAD":
-        current_rel = "Unreleased"
+    elif current_rel == "HEAD":
         current_version = "TBD"
 
     changelog, date = read_changelog(prior_rel, current_rel, format=format)
+
+    # overwrite the date with the actual date of the commit
+    date = date2format(current_rel_date)
 
     if format == "rst" and current_version != "TBD":
         print("*" * len(current_version))
