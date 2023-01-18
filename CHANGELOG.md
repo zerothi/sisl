@@ -10,22 +10,22 @@ we hit release version 1.0.0.
 ### Added
 - `Geometry.apply` apply functions to slices of data depending on the geometry
 - enabled Gaussian and Slater type orbitals, #463
-	Please give feedback!
+  Please give feedback!
 - deltancSileTBtrans.merge allowing easy merging of several delta
-	siles, #513
+  siles, #513
 - implemented reading of output files from ORCA, #500
 - HydrogenicOrbital is added for simple handling of 1-valence electron
-	orbitals, #499
+  orbitals, #499
 - Bohr radius to constants
 - enabled ASCII siles to read from file-handles and buffers, #484
 - enabled unit specification for lengths in cube-files
 - added `kwargs` passed to eigenstate functions in `berry_phase`
-	and `conductivity`
+  and `conductivity`
 - ensured that non-orthogonal `transform` will copy over overlap matrix
-	in case the matrix is only touching the non-overlap elements
+  in case the matrix is only touching the non-overlap elements
 - enabled dictionary entries for the `Atoms` initialization
-	in place of `atoms` argument. Both in the list-like entry, or
-	as the only argument.
+  in place of `atoms` argument. Both in the list-like entry, or
+  as the only argument.
 
 ### Fixed
 - rare compiler bug, #512
@@ -34,7 +34,7 @@ we hit release version 1.0.0.
 - regression from 80f27b05, reading version 0 HSX content, #492
 - delta-files (netCDF) would always have diagonal components,
   this has now been removed since it only needs the elements with
-	values
+  values
 - Siesta sparse matrices could in some cases set wrong diagonal
   components
 - too large energies in Siesta files could result in crash, #482
@@ -47,13 +47,13 @@ we hit release version 1.0.0.
 - removed all deprecated routines, #495
 - oplist now can do in-place operations on generators
 - significant performance improvement for COOP calculations,
-	thanks to Susanne Leitherer for discovering the issue
+  thanks to Susanne Leitherer for discovering the issue
 - changed argument order of ElectronState.COP
 - index ordering of spin and coordinate quantities are now changed to
   have these as the first indices. This ensures consistency across
-	return types and allows easier handling.
-	Note that non-polarized PDOS calculations now has an extra dimension
-	for coherence with non-colinear spin.	(see #501)
+  return types and allows easier handling.
+  Note that non-polarized PDOS calculations now has an extra dimension
+  for coherence with non-colinear spin.  (see #501)
 - ensured all units are now CODATA-2018 values
 - `cell_length` changed to `cell2length` with new axes argument
 - enabled orbitals up to the h-shell, #491
@@ -61,15 +61,15 @@ we hit release version 1.0.0.
   lattice vectors, to ensure the vectors are following right-hand-rule, #488
 - changed DIIS solver to assume the matrix is symmetric (it is)
 - tbtncSileTBtrans and its derivates has changed, drastically.
-	This will accommodate changes related to #477 and #478.
-	Now `*_transmission` refers to energy resolved transmissions
+  This will accommodate changes related to #477 and #478.
+  Now `*_transmission` refers to energy resolved transmissions
   and `*_current` reflects bias-window integrated quantities.
-	The defaults and argument order has changed drastically, so
+  The defaults and argument order has changed drastically, so
   users should adapt their scripts depending on `sisl` version.
-	A check can be made, `if sisl.__version_tuple__[:3] >= (0, 13, 0):`
+  A check can be made, `if sisl.__version_tuple__[:3] >= (0, 13, 0):`
 - To streamline argument order the `*_ACO[OH]P` routines have changed
-	`elec` and `E` argument order. This makes them compatible with
-	`orbital_transmission` etc.
+  `elec` and `E` argument order. This makes them compatible with
+  `orbital_transmission` etc.
 
 
 ## [0.12.2] - 2022-5-2
@@ -98,8 +98,8 @@ we hit release version 1.0.0.
 - `SparseGeometry.cut` -> `SparseGeometry.untile`
   - much faster
   - many more checks to warn about wrong usage
-	- `cut` is now deprecated (removed in 0.13)
-	- changed the --cut flag in `sgeom` to `--untile`, deprecated flag
+  - `cut` is now deprecated (removed in 0.13)
+  - changed the --cut flag in `sgeom` to `--untile`, deprecated flag
 - enabled in/out arguments to tbt siles (easier to remember meaning)
 
 
@@ -148,7 +148,7 @@ we hit release version 1.0.0.
 ### Fixed
 - `sub_orbital` allows lists of orbitals
 - `berry_phase` now works for non-orthogonal basis sets (uses Lowdin transformation)
-	This may require sufficiently small dk for accurateness.
+  This may require sufficiently small dk for accurateness.
 - `degenerate` argument for `conductivity` to enable decoupling of states
 - BandStructure.lineark now always starts from 0
 - reading coordinates from siesta.out when bands are calculated #362
@@ -170,7 +170,7 @@ we hit release version 1.0.0.
 - `berry_phase` now uses the gauge=R convention, the code became much simpler
 - `BrillouinZone.parametrize` function changed interface to allow more dimensions
 - `EigenStateElectron.inner` does not use the overlap matrix by default, norm2 is for
-	exactly this behaviour
+  exactly this behaviour
 - changed license to MPLv2 makes toolboxes easier to contribute under different license
 - renamed origo to origin, see #365
 - default parallel calculations are disabled
@@ -190,11 +190,11 @@ we hit release version 1.0.0.
 ## [0.11.0] - 2021-2-17
 
 - **Major addition**: plotly backend for plotting and interaction with
-	output. This is still a work in progress made by Pol Febrer.
-	Many thanks to @pfebrer!
+  output. This is still a work in progress made by Pol Febrer.
+  Many thanks to @pfebrer!
 
 - Added unzip argument to BZ.apply methods to unzip multiple
-	return values, also added documentation to reflect this
+  return values, also added documentation to reflect this
 
 - Fixed reading data-arrays from Siesta-PDOS files
 
@@ -203,21 +203,21 @@ we hit release version 1.0.0.
 - Enabled plotting grids using the command-line
 
 - Bug in how non-colinear matrices are dealt with, now fixed
-	Thanks to Xe Hu for discovering this.
+  Thanks to Xe Hu for discovering this.
 
 - Allowed reading the geometry for supercell HSX files
-	Atomic coordinates and nsc are determined from xij arrays
+  Atomic coordinates and nsc are determined from xij arrays
 
 - Basic implementation of Hermitian construct.
-	It now ensures a correct Hermitian matrix for simple cases
+  It now ensures a correct Hermitian matrix for simple cases
 
 - Added more return from close/within, supercell offsets
-	may be queried (ret_isc)
+  may be queried (ret_isc)
 
 - Added more transposing functionality for spin matrices
 
 - Fixed wfsxSileSiesta returning proper k-points if a geometry
-	is passed (i.e. reduced k-points). Otherwise warns users
+  is passed (i.e. reduced k-points). Otherwise warns users
 
 - Huge performance increase for finalizing very large structures
 
@@ -228,10 +228,10 @@ we hit release version 1.0.0.
 - Cleaned siesta and VASP reading of completed jobs, #287
 
 - added Geometry.new allowing easy type-lookups to convert to Geometry
-	e.g. Geometry.new("RUN.fdf") and Geometry.new(ase_atoms) automatically
-	figures out which method to call and how to interpret the objects.
+  e.g. Geometry.new("RUN.fdf") and Geometry.new(ase_atoms) automatically
+  figures out which method to call and how to interpret the objects.
   added Geometry.to allowing easy type-lookups to convert to other objects
-	#282
+  #282
 
 - enabled calculating supercell matrices with phases, format=sc:<format>
   returns in supercell matrix form (no, no_s)
@@ -241,7 +241,7 @@ we hit release version 1.0.0.
 - Enabled `sgrid` to write tables of data
 
 - Merged spin_orbital_moment(deleted) and spin_moment with
-	optional argument project
+  optional argument project
 
 - Enabled orbital resolved velocities
 
@@ -249,7 +249,7 @@ we hit release version 1.0.0.
   (works both as a property (`energy.fermi`) and a dictionary (`energy["fermi"]`)
 
 - Ensured ghost atoms in Siesta are handled with separate
-	class, AtomGhost, #249
+  class, AtomGhost, #249
 
 - Using `si.RealspaceSI` with `unfold=(1,1,1)` no longer results in `nsc` on
     the given surface hamiltonian being set to `(1,1,1)`.
@@ -257,12 +257,12 @@ we hit release version 1.0.0.
 - Added calculation of isosurfaces, #246
 
 - Added `sisl.WideBandSE` for self-energies with constant
-	diagonals
+  diagonals
 
 - Enabled more user control over categories, #242
 
 - Improved interpolation function for Grid's, and also
-	added filters
+  added filters
 
 - Bugfix for periodic directions for ASE conversion, #231
 
@@ -275,8 +275,8 @@ we hit release version 1.0.0.
 - Added tiling to Grid, #238
 
 - Added Atoms.group_data which nicely splits an array holding
-	orbital information into atomic contributions (a list since
-	each sub-list may be unequal in length)
+  orbital information into atomic contributions (a list since
+  each sub-list may be unequal in length)
 
 - Many small bug-fixes and performance improvements
 
@@ -284,19 +284,19 @@ we hit release version 1.0.0.
 ## [0.10.0] - 2020-6-9
 
 - Exposing sisl_toolbox as a module for external contributions
-	Now stuff contributed from 3rd parties can easily be included
-	in a toolbox which is a separate module.
+  Now stuff contributed from 3rd parties can easily be included
+  in a toolbox which is a separate module.
 
 - Changed asarray (as*) methods for SparseGeometry
-	Now we have a dispatch class which enables one
-	to store the behaviour as variables and then post-process
+  Now we have a dispatch class which enables one
+  to store the behaviour as variables and then post-process
 
 - Using `*.geom` or `geometry.atom` is now deprecated, use
-	`*.geometry` and `geometry.atoms` instead (respectively)
+  `*.geometry` and `geometry.atoms` instead (respectively)
 
 - Added spin-rotation for density matrices, this will
-	enable sisl to manipulate DM and write them for
-	Siesta calculations
+  enable sisl to manipulate DM and write them for
+  Siesta calculations
 
 - Enabled all numpy.ufuncs (np.exp(H))
 
@@ -321,10 +321,10 @@ we hit release version 1.0.0.
 - Several improvements to outSileSiesta.read_scf #174, #180
 
 - A huge performance increase for data extraction in tbtncSileTbtrans
-	(thanks to Gaetano Calogero for finding the bottleneck)
+  (thanks to Gaetano Calogero for finding the bottleneck)
 
 - Added preliminary usage of Mixers, primarily intented for extending
-	sisl operations where SCF are used (may heavily change).
+  sisl operations where SCF are used (may heavily change).
 
 - Lots of small bug-fixes
 
@@ -351,7 +351,7 @@ This release was helped by the following committers (THANKS):
 - added Berry curvature calculations `berry_flux` (not tested)
 
 - added Overlap class to directly use overlap matrices (without having a
-	second matrix).
+  second matrix).
 
 - fixed geometry align issue when reading geometries from Siesta output #153
 
@@ -377,27 +377,27 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
 - Enabled Siesta STM and STS output
 
 - Fixed an inheritance issue in `axsfSile` which meant it was unusable until
-	now
+  now
 
 - Maintenance fix for looping sparse matrices.
-	Now the default is to loop the sparse non-zero elements.
+  Now the default is to loop the sparse non-zero elements.
   If one wishes to loop all atoms/orbitals one should use `iter_orbitals()`
   NOTE: This *may* break some codes if they used loops on sparse matrices
 
 - Fixed reading VASP CAR files with constraints (thanks to T. Frederiksen)
 
 - Added `overlap` method to `Geometry` to find overlapping atoms
-	between two geometries.
+  between two geometries.
 
 - Added Siesta LDOS charge handling
 
 - Changed edges method to not exclude it-self by default.
-	This is because it is not intuitive given the default exclude=None
+  This is because it is not intuitive given the default exclude=None
 
-	Note: this may break compatibility with other software/scripts.
+  Note: this may break compatibility with other software/scripts.
 
 - Added mulliken charge calculations and orbital angular momentum
-	for SO DM, fixes #136
+  for SO DM, fixes #136
 
 - Fixed reading overlap matrix in conjunction with DM from fdf-sile
 
@@ -416,21 +416,21 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
 - Fixed a typo in fdf reading onlyS, thanks to JL. Bertelsen, #135
 
 - Enabled reading arbitrary self-energy by requesting an energy and k-point
-	from TSGF files.
+  from TSGF files.
 
 - Upgraded handling of TBT.*.nc files to conform with the >=Siesta-4.1-b5
-	releases where all files contain the same device + electrode meta-data.
+  releases where all files contain the same device + electrode meta-data.
 
 - Deprecated TBTGFSileTBtrans (use tbtgfSileTBtrans instead)
 
 - Forced align=False in inner such that users should take care of this
 
 - Added align_norm to swap states such that they more or less
-	correspond to the same band (which should have a closer residual
+  correspond to the same band (which should have a closer residual
   for on-site coefficients).
 
 - Removed norm2 and made norm equal to norm2 for states. This is
-	the more natural thing, besides. Doing norm() ** 0.5 shouldn't be
+  the more natural thing, besides. Doing norm() ** 0.5 shouldn't be
   too much of a problem.
 
 
@@ -443,19 +443,19 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
 - Bugfix for reading MD output from Siesta out-files #130
 
 - Bugfix for tbtse files when requesting pivoting indices using this
-	combination ``in_device=True, sort=False`` which in most cases
-	return wrong indices, thanks to J. Bertelsen for bug-find!
+  combination ``in_device=True, sort=False`` which in most cases
+  return wrong indices, thanks to J. Bertelsen for bug-find!
 
 - Added several routines for retrieving transposed coupling elements.
-	When having connections `i -> j` it may be beneficial to easily get
-	the transposed connection `j -> i` by taking into account the
-	supercell. `Geometry.a2transpose` enables this functionality making
-	construct functions much simpler when having edges/boundaries.
+  When having connections `i -> j` it may be beneficial to easily get
+  the transposed connection `j -> i` by taking into account the
+  supercell. `Geometry.a2transpose` enables this functionality making
+  construct functions much simpler when having edges/boundaries.
 
 - Bug-fix for reading white-space prefixed keywords in XSF files, #127
 
 - Performance increase for self-energy calculations for very small
-	systems
+  systems
 
 - Huge memory reduction for `Geometry.o2a` with very large system
 
@@ -464,21 +464,21 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
 - Added `spin_moment` to `Hamiltonian`
 
 - Removed ``rotate[abc]`` methods since they were cluttering the name-space
-	Codes should simply replace with:
+  Codes should simply replace with:
 
-	   >>> geometry.rotate(angle, geometry.cell[{012}, :], *)
+     >>> geometry.rotate(angle, geometry.cell[{012}, :], *)
 
   for the same effect.
 
 - Finally removed deprecated `write_geom` from the API
 
 - Enabled calculation of ``<S^2>`` for spin-polarized calculations, this
-	may be used for calculating spin-contaminations
+  may be used for calculating spin-contaminations
 
 - added checks for `SparseCSR` to disallow out-of-bounds keys
 
 - Bug fixed for reading POSCAR files from VASP (only when multiple species are
-	used in a non-ordered fashion)
+  used in a non-ordered fashion)
 
 - added `sisl` command line utility, it is exactly the same as `sdata`
 
@@ -487,23 +487,23 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
 - Performance increase for sparse matrix handling
 
 - Fixed a problem with Fortran IO + Jupyter notebooks, now the file-handles
-	are re-used if a code block is terminated before closing the file
+  are re-used if a code block is terminated before closing the file
 
 - Added `SparseOrbital` `append` + `transpose`
-	This enables appending Hamiltonian's (append) and makes hermiticity
-	checks possible (transpose)
+  This enables appending Hamiltonian's (append) and makes hermiticity
+  checks possible (transpose)
 
 - Enabled complex averaged calculations using `oplist`
-	The `oplist` object is a container allowing inter-element operations
+  The `oplist` object is a container allowing inter-element operations
 
-	    >>> l1 = oplist([0, 1])
-		  >>> l2 = oplist([2, 3])
-			>>> l = l1 + l2
-			>>> print(l)
-			[2, 4]
+      >>> l1 = oplist([0, 1])
+      >>> l2 = oplist([2, 3])
+      >>> l = l1 + l2
+      >>> print(l)
+      [2, 4]
 
   This is extremely handy for `BrillouinZone.asaverage`/`assum` when calculating
-	multiple values using `eigenstate` objects.
+  multiple values using `eigenstate` objects.
 
 - Added reflection calculation to `tbtncSileTBtrans`
 
@@ -512,10 +512,10 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
 - Removed numpy deprecated class numpy.matrix, now everything is array
 
 - Removed possibility of using `kavg=list(...)` due to complexity, now single
-	`kavg` requests are *not* k-averaged.
+  `kavg` requests are *not* k-averaged.
 
 - Bugfix in calculating `shot_noise`, `noise_power` and `fano` factors in `tbtncSileSiesta`
-	They were only correct for Gamma-point calculations
+  They were only correct for Gamma-point calculations
 
 - Fixed *.EIG `sdata` processing when using --dos
 
@@ -524,7 +524,7 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
 - Toolboxes:
 
   * Added a toolbox to calculate the Poisson solution for arbitrary
-		electrodes for TranSiesta
+    electrodes for TranSiesta
 
 
 ## [0.9.5] - 2018-11-12
@@ -547,7 +547,7 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
 
 - self-energy calculations:
   - Much faster
-	- enabled left/right self-energies in one method
+  - enabled left/right self-energies in one method
 
 - fixed AtomicOrbital copies
 
@@ -595,10 +595,10 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
 - Added new units class to handle complex units.
 
 - Enabled a Phonon class to calculate group velocities of phonons, DOS and PDOS,
-	displacements
+  displacements
 
 - Bug-fixes for Siesta binary writes, now the supercell format is *always*
-	Siesta compliant.
+  Siesta compliant.
 
 - Enabled replacing k-points in MonkhorstPack grids.
 
@@ -608,8 +608,8 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
   It is however still an optional dependency.
 
 - Fixed Gamma-point periodic wavefunction storage.
-	Creating grids with wave-functions is fully functional
-	for arbitrarily big supercells.
+  Creating grids with wave-functions is fully functional
+  for arbitrarily big supercells.
 
 - BrillouinZone objects:
 
@@ -646,7 +646,7 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
   - Enabled plotting charge density on grids.
 
 - Enabled tqdm usage for progressbar. It is fast and easy to use
-	and a small requirement. (still optional)
+  and a small requirement. (still optional)
 
 - Added intrinsic Sisl exceptions which will be used throughout
   (at some point)
@@ -654,17 +654,17 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
 - Removed deprecated TightBinding class (use Hamiltonian instead)
 
 - Added many SislWarning raises which are used to notify the user of
-	potentially important things (say if sisl knows there should be a unit
-	associated but it couldn't find it).
+  potentially important things (say if sisl knows there should be a unit
+  associated but it couldn't find it).
 
 - Added TSDE file reading in sisl.
 
 - Siesta reading of grid-related data is now much *smarter*. It will
-	try and recognize the units of the data so the units become sisl
-	intrinsics (Ry -> eV, Bohr -> Ang, etc.).
-	This means that typically one does not need to do manual unit-conversion.
-	There are however a few cases where sisl cannot figure out the
-	units. Particularly if the files are renamed.
+  try and recognize the units of the data so the units become sisl
+  intrinsics (Ry -> eV, Bohr -> Ang, etc.).
+  This means that typically one does not need to do manual unit-conversion.
+  There are however a few cases where sisl cannot figure out the
+  units. Particularly if the files are renamed.
 
 - Added a new class EigenSystem which holds information regarding
   eigenvalues and eigenvectors.
@@ -673,23 +673,23 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
     be used to calculate wavefunctions, DOS, PDOS and more to come.
 
 - Fixed lots of bugs in fdf-reading quantities.
-	Now one is also able to read Hamiltonian and other physical
-	quantities from the fdf-object directly. There is pre-defined
-	orders of which files to read from if there are multiple files
-	eligeble.
+  Now one is also able to read Hamiltonian and other physical
+  quantities from the fdf-object directly. There is pre-defined
+  orders of which files to read from if there are multiple files
+  eligeble.
 
-	Reading the geometry now defaults to the fdf file, but one can query
-	the output files by a boolean.
+  Reading the geometry now defaults to the fdf file, but one can query
+  the output files by a boolean.
 
 - Enabled PDOS calculations for the Hamiltonian. Together
-	with the MonkhorstPack class one can easily calculate
-	k-averaged PDOS quantities.
+  with the MonkhorstPack class one can easily calculate
+  k-averaged PDOS quantities.
 
 - Fixed cube reading/writing of multi-column data.
 
 - Added siesta PDOS xml parsing, currently this is only scriptable
   but it manages easy extraction of quantities without the PDOSXML utility.
-	This also enables retrieving the PDOS as an xarray.DataArray.
+  This also enables retrieving the PDOS as an xarray.DataArray.
 
 - Fixed a bug in writing XV files (only for -100/-200 species)
 

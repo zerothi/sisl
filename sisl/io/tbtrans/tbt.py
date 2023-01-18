@@ -1401,7 +1401,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         References
         ----------
-        .. [1] :doi:`Papior, N. R., "Computational Tools and Studies of Graphene Nanostructures", PhD. thesis, Technical University of Denmark (2016) <10.11581/DTU:00000025>`
+        .. [1] : :doi:`Papior, N. R., "Computational Tools and Studies of Graphene Nanostructures", PhD. thesis, Technical University of Denmark (2016) <10.11581/DTU:00000025>`
 
         See Also
         --------

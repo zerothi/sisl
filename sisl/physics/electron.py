@@ -702,8 +702,8 @@ def berry_curvature(state, energy, dHk, dSk=None,
 
     References
     ----------
-    .. [1] :doi:`X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, "Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation", PRB **74**, 195118 (2006) <10.1103/PhysRevB.74.195118>`
-    .. [2] :doi:`J. K. Asboth, L. Oroslany, A. Palyi, "A Short Course on Topological Insulators", arXiv *1509.02295* (2015) <10.1007/978-3-319-25607-8>`
+    .. [1] : :doi:`X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, "Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation", PRB **74**, 195118 (2006) <10.1103/PhysRevB.74.195118>`
+    .. [2] : :doi:`J. K. Asboth, L. Oroslany, A. Palyi, "A Short Course on Topological Insulators", arXiv *1509.02295* (2015) <10.1007/978-3-319-25607-8>`
 
     Returns
     -------
@@ -788,7 +788,7 @@ def conductivity(bz, distribution="fermi-dirac", method="ahc",
 
     References
     ----------
-    .. [1] :doi:`X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, "Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation", PRB **74**, 195118 (2006) <10.1103/PhysRevB.74.195118>`
+    .. [1] : :doi:`X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, "Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation", PRB **74**, 195118 (2006) <10.1103/PhysRevB.74.195118>`
 
     Returns
     -------
@@ -929,9 +929,9 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method="berry",
 
     References
     ----------
-    .. [1] :doi:`J. Zak, "Berry's phase for energy bands in solids", PRL **62**, 2747 (1989) <10.1103/PhysRevLett.62.2747>`
-    .. [2] :doi:`R. Resta, "Manifestations of Berry's phase in molecules and condensed matter", JPCM **12**, R107 (2000) <10.1088/0953-8984/12/9/201>`
-    .. [3] :doi:`Tutorial: Computing Topological Invariants in 2D Photonic Crystals <10.1002/qute.201900117>`
+    .. [1] : :doi:`J. Zak, "Berry's phase for energy bands in solids", PRL **62**, 2747 (1989) <10.1103/PhysRevLett.62.2747>`
+    .. [2] : :doi:`R. Resta, "Manifestations of Berry's phase in molecules and condensed matter", JPCM **12**, R107 (2000) <10.1088/0953-8984/12/9/201>`
+    .. [3] : :doi:`Tutorial: Computing Topological Invariants in 2D Photonic Crystals <10.1002/qute.201900117>`
     """
     from .hamiltonian import Hamiltonian
     # Currently we require the Berry phase calculation to *only* accept Hamiltonians
@@ -1537,7 +1537,7 @@ class StateCElectron(_electron_State, StateC):
 
         References
         ----------
-        .. [1] :doi:`X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, "Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation", PRB **74**, 195118 (2006) <10.1103/PhysRevB.74.195118>`
+        .. [1] : :doi:`X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, "Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation", PRB **74**, 195118 (2006) <10.1103/PhysRevB.74.195118>`
 
         See Also
         --------

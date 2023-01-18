@@ -31,19 +31,19 @@ A total of 8 pull requests were merged for this release.
 * #226: ufunc on SparseCSR and derived types
 
 * Exposing sisl_toolbox as a module for external contributions
-	Now stuff contributed from 3rd parties can easily be included
-	in a toolbox which is a separate module.
+  Now stuff contributed from 3rd parties can easily be included
+  in a toolbox which is a separate module.
 
 * Changed asarray (as*) methods for SparseGeometry
-	Now we have a dispatch class which enables one
-	to store the behaviour as variables and then post-process
+  Now we have a dispatch class which enables one
+  to store the behaviour as variables and then post-process
 
 * Using `*.geom` or `geometry.atom` is now deprecated, use
-	`*.geometry` and `geometry.atoms` instead (respectively)
+  `*.geometry` and `geometry.atoms` instead (respectively)
 
 * Added spin-rotation for density matrices, this will
-	enable sisl to manipulate DM and write them for
-	Siesta calculations
+  enable sisl to manipulate DM and write them for
+  Siesta calculations
 
 * Enabled all numpy.ufuncs (np.exp(H))
 
@@ -68,10 +68,10 @@ A total of 8 pull requests were merged for this release.
 * Several improvements to outSileSiesta.read_scf #174, #180
 
 * A huge performance increase for data extraction in tbtncSileTbtrans
-	(thanks to Gaetano Calogero for finding the bottleneck)
+  (thanks to Gaetano Calogero for finding the bottleneck)
 
 * Added preliminary usage of Mixers, primarily intented for extending
-	sisl operations where SCF are used (may heavily change).
+  sisl operations where SCF are used (may heavily change).
 
 * Lots of small bug-fixes
 

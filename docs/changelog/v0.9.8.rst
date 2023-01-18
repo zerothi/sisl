@@ -34,7 +34,7 @@ A total of 2 pull requests were merged for this release.
 * added Berry curvature calculations `berry_flux` (not tested)
 
 * added Overlap class to directly use overlap matrices (without having a
-	second matrix).
+  second matrix).
 
 * fixed geometry align issue when reading geometries from Siesta output #153
 

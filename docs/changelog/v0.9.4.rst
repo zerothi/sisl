@@ -52,10 +52,10 @@ A total of 0 pull requests were merged for this release.
 * Added new units class to handle complex units.
 
 * Enabled a Phonon class to calculate group velocities of phonons, DOS and PDOS,
-	displacements
+  displacements
 
 * Bug-fixes for Siesta binary writes, now the supercell format is *always*
-	Siesta compliant.
+  Siesta compliant.
 
 * Enabled replacing k-points in MonkhorstPack grids.
 
@@ -65,8 +65,8 @@ A total of 0 pull requests were merged for this release.
   It is however still an optional dependency.
 
 * Fixed Gamma-point periodic wavefunction storage.
-	Creating grids with wave-functions is fully functional
-	for arbitrarily big supercells.
+  Creating grids with wave-functions is fully functional
+  for arbitrarily big supercells.
 
 * BrillouinZone objects:
 
@@ -103,7 +103,7 @@ A total of 0 pull requests were merged for this release.
   * Enabled plotting charge density on grids.
 
 * Enabled tqdm usage for progressbar. It is fast and easy to use
-	and a small requirement. (still optional)
+  and a small requirement. (still optional)
 
 * Added intrinsic Sisl exceptions which will be used throughout
   (at some point)
@@ -111,17 +111,17 @@ A total of 0 pull requests were merged for this release.
 * Removed deprecated TightBinding class (use Hamiltonian instead)
 
 * Added many SislWarning raises which are used to notify the user of
-	potentially important things (say if sisl knows there should be a unit
-	associated but it couldn't find it).
+  potentially important things (say if sisl knows there should be a unit
+  associated but it couldn't find it).
 
 * Added TSDE file reading in sisl.
 
 * Siesta reading of grid-related data is now much *smarter*. It will
-	try and recognize the units of the data so the units become sisl
-	intrinsics (Ry -> eV, Bohr -> Ang, etc.).
-	This means that typically one does not need to do manual unit-conversion.
-	There are however a few cases where sisl cannot figure out the
-	units. Particularly if the files are renamed.
+  try and recognize the units of the data so the units become sisl
+  intrinsics (Ry -> eV, Bohr -> Ang, etc.).
+  This means that typically one does not need to do manual unit-conversion.
+  There are however a few cases where sisl cannot figure out the
+  units. Particularly if the files are renamed.
 
 * Added a new class EigenSystem which holds information regarding
   eigenvalues and eigenvectors.
@@ -130,23 +130,23 @@ A total of 0 pull requests were merged for this release.
     be used to calculate wavefunctions, DOS, PDOS and more to come.
 
 * Fixed lots of bugs in fdf-reading quantities.
-	Now one is also able to read Hamiltonian and other physical
-	quantities from the fdf-object directly. There is pre-defined
-	orders of which files to read from if there are multiple files
-	eligeble.
+  Now one is also able to read Hamiltonian and other physical
+  quantities from the fdf-object directly. There is pre-defined
+  orders of which files to read from if there are multiple files
+  eligeble.
 
-	Reading the geometry now defaults to the fdf file, but one can query
-	the output files by a boolean.
+  Reading the geometry now defaults to the fdf file, but one can query
+  the output files by a boolean.
 
 * Enabled PDOS calculations for the Hamiltonian. Together
-	with the MonkhorstPack class one can easily calculate
-	k-averaged PDOS quantities.
+  with the MonkhorstPack class one can easily calculate
+  k-averaged PDOS quantities.
 
 * Fixed cube reading/writing of multi-column data.
 
 * Added siesta PDOS xml parsing, currently this is only scriptable
   but it manages easy extraction of quantities without the PDOSXML utility.
-	This also enables retrieving the PDOS as an xarray.DataArray.
+  This also enables retrieving the PDOS as an xarray.DataArray.
 
 * Fixed a bug in writing XV files (only for -100/-200 species)
 

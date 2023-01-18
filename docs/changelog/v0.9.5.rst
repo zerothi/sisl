@@ -40,7 +40,7 @@ A total of 2 pull requests were merged for this release.
 
 * self-energy calculations:
   * Much faster
-	* enabled left/right self-energies in one method
+  * enabled left/right self-energies in one method
 
 * fixed AtomicOrbital copies
 

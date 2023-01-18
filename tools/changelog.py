@@ -110,6 +110,8 @@ def read_changelog(prior_rel, current_rel, format="md"):
     date = None
     out = []
     for line in open("../CHANGELOG.md", 'r'):
+        # ensure no tabs are present
+        line = line.replace("\t", "  ")
         if f"## [{current_rel}]" in line:
             print_out = True
             date = line.split("-", 1)[1].strip()

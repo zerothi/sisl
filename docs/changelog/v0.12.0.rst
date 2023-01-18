@@ -69,7 +69,7 @@ Fixed
 ^^^^^^
 * `sub_orbital` allows lists of orbitals
 * `berry_phase` now works for non-orthogonal basis sets (uses Lowdin transformation)
-	This may require sufficiently small dk for accurateness.
+  This may require sufficiently small dk for accurateness.
 * `degenerate` argument for `conductivity` to enable decoupling of states
 * BandStructure.lineark now always starts from 0
 * reading coordinates from siesta.out when bands are calculated #362
@@ -92,7 +92,7 @@ Changed
 * `berry_phase` now uses the gauge=R convention, the code became much simpler
 * `BrillouinZone.parametrize` function changed interface to allow more dimensions
 * `EigenStateElectron.inner` does not use the overlap matrix by default, norm2 is for
-	exactly this behaviour
+  exactly this behaviour
 * changed license to MPLv2 makes toolboxes easier to contribute under different license
 * renamed origo to origin, see #365
 * default parallel calculations are disabled

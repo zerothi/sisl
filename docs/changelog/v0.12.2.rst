@@ -52,6 +52,6 @@ Changed
 * `SparseGeometry.cut` -> `SparseGeometry.untile`
   * much faster
   * many more checks to warn about wrong usage
-	* `cut` is now deprecated (removed in 0.13)
-	* changed the --cut flag in `sgeom` to `--untile`, deprecated flag
+  * `cut` is now deprecated (removed in 0.13)
+  * changed the --cut flag in `sgeom` to `--untile`, deprecated flag
 * enabled in/out arguments to tbt siles (easier to remember meaning)
