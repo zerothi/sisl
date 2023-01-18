@@ -811,6 +811,7 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
 ## [0.8.5] - 2017-7-21
 
 - Added the following routines:
+
   * `SuperCell.fit` routine to determine a new supercell object
     such that a given set of coordinates are all within AND
     periodic in the new supercell.
@@ -825,7 +826,7 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
   * `Hamiltonian.shift` enables the shift of the entire electronic structure
     Fermi-level.
   * Added new flag to `Hamiltonian.Hk` routines
-     ``format={'csr', 'array', 'dense', ...}``
+    ``format={'csr', 'array', 'dense', ...}``
     to ensure a consistent return of the data-type.
 
 - Bug fix for dHncSileSiesta for multiple levels.
@@ -928,8 +929,8 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
 
   Which makes many things much easier.
   If this is used, you are encouraged to assert that the math is correct.
-  Currently are the routines largely untested. _Assistance is greatly appreciated
-  in creating `nosetests`_.
+  Currently are the routines largely untested. Assistance is greatly appreciated
+  in creating tests.
 
 - Geometries now _always_ create a supercell. This was not the case when
   an atom with no defined orbital radius was used. Now this returns a
@@ -965,6 +966,7 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
   between atomic indices and pivoting orbitals.
 
   For this:
+
   * a2p
     returns the pivoting indices for the given atoms (complete set)
   * o2p
@@ -1121,6 +1123,7 @@ Here is a compressed list of changes:
   Secondly, the sdata command uses "position dependent" options.
   This means that changing the order of options may change the output.
 - tbtncSile
+
   * Correct vector currents (for xsf files)
   * bug-fix for Gamma-only calculations
   * returned DOS is now correctly in 1/eV (older versions returned 1/Ry)
@@ -1131,6 +1134,7 @@ Here is a compressed list of changes:
   * When storing tables in sdata this now adds information regarding
     each column at the top (instead of at the bottom).
     Furthermore, the information is more descriptive
+
 - Changed all `square` named arguments to `orthogonal`
 - Added nsc field to xyz files (to retain number of supercells)
 - Added `move` function for geometry (same as translate)
@@ -1138,8 +1142,10 @@ Here is a compressed list of changes:
   atoms in the beginning instead of the end
 - Fixed many bugs related to the use of Python-ranges (as opposed to numpy ranges)
 - SparseCSR now enables operations:
-    a = SparseCSR(...)
-    a = a * 2 + 2
+
+      a = SparseCSR(...)
+      a = a * 2 + 2
+
   is now viable. This enables easy scaling, translation etc. using the
   sparse matrix format (very handy for magnetic fields).
 - Enabled `del` for SparseCSR, i.e. `del SparseCSR(..)[0, 1]` will
@@ -1152,10 +1158,14 @@ Here is a compressed list of changes:
 - Hamiltonian.construct now takes a single argument which is the function
   for the inner loop.
   The old behaviour may be achieved by doing either:
-  >>> func = Hamiltonian.create_construct(R, param)
-  >>> Hamiltonian.construct(func)
+
+      >>> func = Hamiltonian.create_construct(R, param)
+      >>> Hamiltonian.construct(func)
+
   or
-  >>> Hamiltonian.construct((R, param))
+
+      >>> Hamiltonian.construct((R, param))
+
 - The atoms contained in the Geometry are now not duplicated in case of many
   similar Atom objects. This should reduce overhead and increase throughput.
   However, the efficiency is not optimal yet.

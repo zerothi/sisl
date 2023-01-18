@@ -58,6 +58,10 @@ A total of %d pull requests were merged for this release.
 """
 
 
+def eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
+
+
 def get_authors(revision_range):
     pat = "^.*\\t(.*)$"
     lst_release, cur_release = [r.strip() for r in revision_range.split("..")]
@@ -97,6 +101,10 @@ def get_pull_requests(repo, revision_range):
 
     # get PR data from github repo
     prnums.sort()
+    if 1 in prnums:
+        # there is a problem in the repo about referencing the first
+        # pr (which is actually an issue). So we jush let it go.
+        del prnums[0]
     prs = [repo.get_pull(n) for n in prnums]
     return prs
 
@@ -110,8 +118,14 @@ def read_changelog(prior_rel, current_rel, format="md"):
     date = None
     out = []
     for line in open("../CHANGELOG.md", 'r'):
+
         # ensure no tabs are present
         line = line.replace("\t", "  ")
+
+        # Also ensure lines have no spaces for empty lines
+        if len(line.strip()) == 0:
+            line = "\n"
+
         if f"## [{current_rel}]" in line:
             print_out = True
             date = line.split("-", 1)[1].strip()

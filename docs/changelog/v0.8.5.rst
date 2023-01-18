@@ -20,6 +20,7 @@ A total of 0 pull requests were merged for this release.
 
 
 * Added the following routines:
+
   * `SuperCell.fit` routine to determine a new supercell object
     such that a given set of coordinates are all within AND
     periodic in the new supercell.
@@ -34,7 +35,7 @@ A total of 0 pull requests were merged for this release.
   * `Hamiltonian.shift` enables the shift of the entire electronic structure
     Fermi-level.
   * Added new flag to `Hamiltonian.Hk` routines
-     ``format={'csr', 'array', 'dense', ...}``
+    ``format={'csr', 'array', 'dense', ...}``
     to ensure a consistent return of the data-type.
 
 * Bug fix for dHncSileSiesta for multiple levels.

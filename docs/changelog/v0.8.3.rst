@@ -32,8 +32,8 @@ A total of 0 pull requests were merged for this release.
 
   Which makes many things much easier.
   If this is used, you are encouraged to assert that the math is correct.
-  Currently are the routines largely untested. _Assistance is greatly appreciated
-  in creating `nosetests`_.
+  Currently are the routines largely untested. Assistance is greatly appreciated
+  in creating tests.
 
 * Geometries now _always_ create a supercell. This was not the case when
   an atom with no defined orbital radius was used. Now this returns a

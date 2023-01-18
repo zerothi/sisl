@@ -46,6 +46,7 @@ A total of 0 pull requests were merged for this release.
   between atomic indices and pivoting orbitals.
 
   For this:
+
   * a2p
     returns the pivoting indices for the given atoms (complete set)
   * o2p
