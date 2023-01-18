@@ -111,10 +111,11 @@ jobs:
             bitness: 64
             python: 310
             platform_id: macosx_x86_64
-          - os: macos-latest
-            bitness: 64
-            python: 311
-            platform_id: macosx_x86_64
+          # scikit-image does not build on macos with 3.11, so disabled
+          #- os: macos-latest
+          #  bitness: 64
+          #  python: 311
+          #  platform_id: macosx_x86_64
 
     steps:
       - uses: actions/checkout@v3
