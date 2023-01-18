@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>0.8.5 &mdash; sisl 0.1.dev1+g322196d documentation</title>
+  <title>0.8.5 &mdash; sisl 0.13.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g322196d
+                0.13.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -50,6 +50,7 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Release notes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="v0.13.0.html">0.13.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="v0.12.2.html">0.12.2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="v0.12.1.html">0.12.1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="v0.12.0.html">0.12.0</a></li>
@@ -165,13 +166,11 @@ names contributed a patch for the first time.</p>
 <h2>Pull requests merged<a class="headerlink" href="#pull-requests-merged" title="Permalink to this heading"></a></h2>
 <p>A total of 0 pull requests were merged for this release.</p>
 <ul>
-<li><p>Added the following routines:
-* <em class="xref py py-obj">SuperCell.fit</em> routine to determine a new supercell object</p>
-<blockquote>
-<div><p>such that a given set of coordinates are all within AND
-periodic in the new supercell.</p>
-</div></blockquote>
-<ul>
+<li><p>Added the following routines:</p>
+<ul class="simple">
+<li><p><em class="xref py py-obj">SuperCell.fit</em> routine to determine a new supercell object
+such that a given set of coordinates are all within AND
+periodic in the new supercell.</p></li>
 <li><p><em class="xref py py-obj">SuperCell.parallel</em> to check whether two objects have parallel
 latticevectors.</p></li>
 <li><p><em class="xref py py-obj">Geometry.distance</em> returns a list of distances from a given
@@ -182,12 +181,9 @@ neighbouring atoms in a common fashion.</p></li>
 one is not sure of the interaction range.</p></li>
 <li><p><em class="xref py py-obj">Hamiltonian.shift</em> enables the shift of the entire electronic structure
 Fermi-level.</p></li>
-<li><dl class="simple">
-<dt>Added new flag to <em class="xref py py-obj">Hamiltonian.Hk</em> routines</dt><dd><p><code class="docutils literal notranslate"><span class="pre">format={'csr',</span> <span class="pre">'array',</span> <span class="pre">'dense',</span> <span class="pre">...}</span></code></p>
-</dd>
-</dl>
-<p>to ensure a consistent return of the data-type.</p>
-</li>
+<li><p>Added new flag to <em class="xref py py-obj">Hamiltonian.Hk</em> routines
+<code class="docutils literal notranslate"><span class="pre">format={'csr',</span> <span class="pre">'array',</span> <span class="pre">'dense',</span> <span class="pre">...}</span></code>
+to ensure a consistent return of the data-type.</p></li>
 </ul>
 </li>
 <li><p>Bug fix for dHncSileSiesta for multiple levels.</p></li>

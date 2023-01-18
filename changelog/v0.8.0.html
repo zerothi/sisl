@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>0.8.0 &mdash; sisl 0.1.dev1+g322196d documentation</title>
+  <title>0.8.0 &mdash; sisl 0.13.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g322196d
+                0.13.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -50,6 +50,7 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Release notes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="v0.13.0.html">0.13.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="v0.12.2.html">0.12.2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="v0.12.1.html">0.12.1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="v0.12.0.html">0.12.0</a></li>
@@ -174,15 +175,13 @@ It first reads the input and output files, in a first run, then
 it determines the options for the given set of files.
 Secondly, the sdata command uses “position dependent” options.
 This means that changing the order of options may change the output.</p></li>
-<li><p>tbtncSile
-* Correct vector currents (for xsf files)
-* bug-fix for Gamma-only calculations
-* returned DOS is now correctly in 1/eV (older versions returned 1/Ry)
-* fixed sdata atomic[orbital] ranges such that, e.g. <em class="xref py py-obj">–atom [1-2][3-5]</em></p>
-<blockquote>
-<div><p>(for atom 1 and 2 and only orbitals 3, 4 and 5 on those atoms.)</p>
-</div></blockquote>
+<li><p>tbtncSile</p>
 <ul class="simple">
+<li><p>Correct vector currents (for xsf files)</p></li>
+<li><p>bug-fix for Gamma-only calculations</p></li>
+<li><p>returned DOS is now correctly in 1/eV (older versions returned 1/Ry)</p></li>
+<li><p>fixed sdata atomic[orbital] ranges such that, e.g. <em class="xref py py-obj">–atom [1-2][3-5]</em>
+(for atom 1 and 2 and only orbitals 3, 4 and 5 on those atoms.)</p></li>
 <li><p>DOS queries now has an extra argument (E) which returns only for the
 given energy.</p></li>
 <li><p>When storing tables in sdata this now adds information regarding
@@ -196,11 +195,11 @@ Furthermore, the information is more descriptive</p></li>
 <li><p>Added <em class="xref py py-obj">prepend</em> function, equivalent to <em class="xref py py-obj">append</em>, but adding the
 atoms in the beginning instead of the end</p></li>
 <li><p>Fixed many bugs related to the use of Python-ranges (as opposed to numpy ranges)</p></li>
-<li><dl class="simple">
-<dt>SparseCSR now enables operations:</dt><dd><p>a = SparseCSR(…)
+<li><p>SparseCSR now enables operations:</p>
+<blockquote>
+<div><p>a = SparseCSR(…)
 a = a * 2 + 2</p>
-</dd>
-</dl>
+</div></blockquote>
 <p>is now viable. This enables easy scaling, translation etc. using the
 sparse matrix format (very handy for magnetic fields).</p>
 </li>
@@ -213,11 +212,16 @@ with SIESTA.</p></li>
 and one may import and use the commands as their command-line equivalents.</p></li>
 <li><p>Hamiltonian.construct now takes a single argument which is the function
 for the inner loop.
-The old behaviour may be achieved by doing either:
-&gt;&gt;&gt; func = Hamiltonian.create_construct(R, param)
-&gt;&gt;&gt; Hamiltonian.construct(func)
-or
-&gt;&gt;&gt; Hamiltonian.construct((R, param))</p></li>
+The old behaviour may be achieved by doing either:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">func</span> <span class="o">=</span> <span class="n">Hamiltonian</span><span class="o">.</span><span class="n">create_construct</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Hamiltonian</span><span class="o">.</span><span class="n">construct</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>or</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Hamiltonian</span><span class="o">.</span><span class="n">construct</span><span class="p">((</span><span class="n">R</span><span class="p">,</span> <span class="n">param</span><span class="p">))</span>
+</pre></div>
+</div>
+</li>
 <li><p>The atoms contained in the Geometry are now not duplicated in case of many
 similar Atom objects. This should reduce overhead and increase throughput.
 However, the efficiency is not optimal yet.</p></li>

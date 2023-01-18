@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>0.9.6 &mdash; sisl 0.1.dev1+g322196d documentation</title>
+  <title>0.9.6 &mdash; sisl 0.13.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g322196d
+                0.13.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -50,6 +50,7 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Release notes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="v0.13.0.html">0.13.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="v0.12.2.html">0.12.2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="v0.12.1.html">0.12.1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="v0.12.0.html">0.12.0</a></li>
@@ -59,6 +60,7 @@
 <li class="toctree-l2"><a class="reference internal" href="v0.9.7.html">0.9.7</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">0.9.6</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#contributors">Contributors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pull-requests-merged">Pull requests merged</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="v0.9.5.html">0.9.5</a></li>
@@ -159,6 +161,84 @@ names contributed a patch for the first time.</p>
 <ul class="simple">
 <li><p>Jonas Lundholm Bertelsen +</p></li>
 <li><p>Nick Papior</p></li>
+</ul>
+</section>
+<section id="pull-requests-merged">
+<h2>Pull requests merged<a class="headerlink" href="#pull-requests-merged" title="Permalink to this heading"></a></h2>
+<p>A total of 7 pull requests were merged for this release.</p>
+<ul>
+<li><p>#94: Added option to plot atom indices in sisl.plot(Geometry)</p></li>
+<li><p>#105: Minor fix on rotate documentation: degrees/rads</p></li>
+<li><p>#107: Sub orbital</p></li>
+<li><p>#108: travis: fixing build-system</p></li>
+<li><p>#111: Added rudimentary support for Path objects in get_sile</p></li>
+<li><p>#113: Added some noisy files to gitignore</p></li>
+<li><p>#116: Adding geometries preserves named regions</p></li>
+<li><p>Officially added real-space self-energy calculations</p></li>
+<li><p>Cleaned TBT vs. PHT for class name structures</p></li>
+<li><p>Bugfix for reading MD output from Siesta out-files #130</p></li>
+<li><p>Bugfix for tbtse files when requesting pivoting indices using this
+combination <code class="docutils literal notranslate"><span class="pre">in_device=True,</span> <span class="pre">sort=False</span></code> which in most cases
+return wrong indices, thanks to J. Bertelsen for bug-find!</p></li>
+<li><p>Added several routines for retrieving transposed coupling elements.
+When having connections <em class="xref py py-obj">i -&gt; j</em> it may be beneficial to easily get
+the transposed connection <em class="xref py py-obj">j -&gt; i</em> by taking into account the
+supercell. <em class="xref py py-obj">Geometry.a2transpose</em> enables this functionality making
+construct functions much simpler when having edges/boundaries.</p></li>
+<li><p>Bug-fix for reading white-space prefixed keywords in XSF files, #127</p></li>
+<li><p>Performance increase for self-energy calculations for very small
+systems</p></li>
+<li><p>Huge memory reduction for <em class="xref py py-obj">Geometry.o2a</em> with very large system</p></li>
+<li><p>Enabled pickling on <em class="xref py py-obj">BrillouinZone</em> objects</p></li>
+<li><p>Added <em class="xref py py-obj">spin_moment</em> to <em class="xref py py-obj">Hamiltonian</em></p></li>
+<li><p>Removed <code class="docutils literal notranslate"><span class="pre">rotate[abc]</span></code> methods since they were cluttering the name-space
+Codes should simply replace with:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">geometry</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">geometry</span><span class="o">.</span><span class="n">cell</span><span class="p">[{</span><span class="mi">012</span><span class="p">},</span> <span class="p">:],</span> <span class="o">*</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>for the same effect.</p>
+</li>
+<li><p>Finally removed deprecated <em class="xref py py-obj">write_geom</em> from the API</p></li>
+<li><p>Enabled calculation of <code class="docutils literal notranslate"><span class="pre">&lt;S^2&gt;</span></code> for spin-polarized calculations, this
+may be used for calculating spin-contaminations</p></li>
+<li><p>added checks for <em class="xref py py-obj">SparseCSR</em> to disallow out-of-bounds keys</p></li>
+<li><p>Bug fixed for reading POSCAR files from VASP (only when multiple species are
+used in a non-ordered fashion)</p></li>
+<li><p>added <a class="reference internal" href="../api/index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> command line utility, it is exactly the same as <em class="xref py py-obj">sdata</em></p></li>
+<li><p>Enabled pickling sparse matrices, this allows dask usage of sparse matrices</p></li>
+<li><p>Performance increase for sparse matrix handling</p></li>
+<li><p>Fixed a problem with Fortran IO + Jupyter notebooks, now the file-handles
+are re-used if a code block is terminated before closing the file</p></li>
+<li><p>Added <em class="xref py py-obj">SparseOrbital</em> <em class="xref py py-obj">append</em> + <em class="xref py py-obj">transpose</em>
+This enables appending Hamiltonian’s (append) and makes hermiticity
+checks possible (transpose)</p></li>
+<li><p>Enabled complex averaged calculations using <em class="xref py py-obj">oplist</em>
+The <em class="xref py py-obj">oplist</em> object is a container allowing inter-element operations</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">l1</span> <span class="o">=</span> <span class="n">oplist</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">l2</span> <span class="o">=</span> <span class="n">oplist</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">l</span> <span class="o">=</span> <span class="n">l1</span> <span class="o">+</span> <span class="n">l2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+<span class="go">[2, 4]</span>
+</pre></div>
+</div>
+<p>This is extremely handy for <em class="xref py py-obj">BrillouinZone.asaverage</em>/<em class="xref py py-obj">assum</em> when calculating
+multiple values using <em class="xref py py-obj">eigenstate</em> objects.</p>
+</li>
+<li><p>Added reflection calculation to <em class="xref py py-obj">tbtncSileTBtrans</em></p></li>
+<li><p>Added more distribution functions (step and heaviside)</p></li>
+<li><p>Removed numpy deprecated class numpy.matrix, now everything is array</p></li>
+<li><p>Removed possibility of using <em class="xref py py-obj">kavg=list(…)</em> due to complexity, now single
+<em class="xref py py-obj">kavg</em> requests are <em>not</em> k-averaged.</p></li>
+<li><p>Bugfix in calculating <em class="xref py py-obj">shot_noise</em>, <em class="xref py py-obj">noise_power</em> and <em class="xref py py-obj">fano</em> factors in <em class="xref py py-obj">tbtncSileSiesta</em>
+They were only correct for Gamma-point calculations</p></li>
+<li><p>Fixed <a href="#id2"><span class="problematic" id="id3">*</span></a>.EIG <em class="xref py py-obj">sdata</em> processing when using –dos</p></li>
+<li><p>Fixed reading geometries from grids from VASP (grid values were correct)</p></li>
+<li><p>Toolboxes:</p>
+<ul class="simple">
+<li><p>Added a toolbox to calculate the Poisson solution for arbitrary
+electrodes for TranSiesta</p></li>
+</ul>
+</li>
 </ul>
 </section>
 </section>
