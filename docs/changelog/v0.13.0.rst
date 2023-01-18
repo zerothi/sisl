@@ -1,0 +1,109 @@
+******
+0.13.0
+******
+
+Released 18 of January 2023.
+
+
+Contributors
+============
+
+A total of 5 people contributed to this release.  People with a "+" by their
+names contributed a patch for the first time.
+
+* A.H. Kole
+* Nick Papior
+* Nils Wittemeier +
+* Pol Febrer
+* Thomas Frederiksen
+
+Pull requests merged
+====================
+
+A total of 18 pull requests were merged for this release.
+
+* #487: Fix issue 486 - in correct sign of the y component of the spin...
+* #489: bug: fixed #488 with the cell order
+* #494: enh: enabling reading of file-handles and StringIO
+* #498: 495 deprecation
+* #499: Easy construction of hydrogenic orbitals
+* #500: Reading output from ORCA
+* #503: Plotly is incompatible with ipywidgets 8.x
+* #504: Allow reading forces from transiesta in output file
+* #508: New keywords in `step_to()`
+* #510: Add CodeQL workflow for GitHub code scanning
+* #511: Possible bug: within_inf with periodic=False returns sc atoms...
+* #514: Surface slab geometries: clarify `vacuum=None` as a possibility...
+* #515: doc: fixed indices in sums
+* #516: mnt: changed index ordering of spin-charge quantities
+* #519: Fix reading of basis
+* #520: ORCA API
+* #521: Minor fixes for IO-API
+* #526: bug: reading the EDM from fdf did not read geometry automatically
+
+Added
+^^^^^^
+* `Geometry.apply` apply functions to slices of data depending on the geometry
+* enabled Gaussian and Slater type orbitals, #463
+  Please give feedback!
+* deltancSileTBtrans.merge allowing easy merging of several delta
+  siles, #513
+* implemented reading of output files from ORCA, #500
+* HydrogenicOrbital is added for simple handling of 1-valence electron
+  orbitals, #499
+* Bohr radius to constants
+* enabled ASCII siles to read from file-handles and buffers, #484
+* enabled unit specification for lengths in cube-files
+* added `kwargs` passed to eigenstate functions in `berry_phase`
+  and `conductivity`
+* ensured that non-orthogonal `transform` will copy over overlap matrix
+  in case the matrix is only touching the non-overlap elements
+* enabled dictionary entries for the `Atoms` initialization
+  in place of `atoms` argument. Both in the list-like entry, or
+  as the only argument.
+
+Fixed
+^^^^^^
+* rare compiler bug, #512
+* `within_inf` with periodic arguments, #511
+* reading TranSiesta data from outSileSiesta
+* regression from 80f27b05, reading version 0 HSX content, #492
+* delta-files (netCDF) would always have diagonal components,
+  this has now been removed since it only needs the elements with
+  values
+* Siesta sparse matrices could in some cases set wrong diagonal
+  components
+* too large energies in Siesta files could result in crash, #482
+* orbital quantum numbers from HSX file was wrong in v1, #462
+* corrected sign for spin-Y direction, `PDOS`, `spin_moment`, #486
+* RealSpaceSI for right semi-infinite directions, #475
+* tbtrans files now have a separate entry in the documentation
+
+Changed
+^^^^^^^^
+* removed all deprecated routines, #495
+* oplist now can do in-place operations on generators
+* significant performance improvement for COOP calculations,
+  thanks to Susanne Leitherer for discovering the issue
+* changed argument order of ElectronState.COP
+* index ordering of spin and coordinate quantities are now changed to
+  have these as the first indices. This ensures consistency across
+  return types and allows easier handling.
+  Note that non-polarized PDOS calculations now has an extra dimension
+  for coherence with non-colinear spin.  (see #501)
+* ensured all units are now CODATA-2018 values
+* `cell_length` changed to `cell2length` with new axes argument
+* enabled orbitals up to the h-shell, #491
+* swapped order of `honeycomb` (`graphene` derivatives)
+  lattice vectors, to ensure the vectors are following right-hand-rule, #488
+* changed DIIS solver to assume the matrix is symmetric (it is)
+* tbtncSileTBtrans and its derivates has changed, drastically.
+  This will accommodate changes related to #477 and #478.
+  Now `*_transmission` refers to energy resolved transmissions
+  and `*_current` reflects bias-window integrated quantities.
+  The defaults and argument order has changed drastically, so
+  users should adapt their scripts depending on `sisl` version.
+  A check can be made, `if sisl.__version_tuple__[:3] >= (0, 13, 0):`
+* To streamline argument order the `*_ACO[OH]P` routines have changed
+  `elec` and `E` argument order. This makes them compatible with
+  `orbital_transmission` etc.
