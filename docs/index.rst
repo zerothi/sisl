@@ -61,7 +61,7 @@ one would do::
     H = sisl.get_sile('RUN.fdf').read_hamiltonian()
     mp = sisl.MonkhorstPack(H, [13, 13, 13])
     E = np.linspace(-4, 4, 500)
-    DOS = mp.apply.average.DOS(E)
+    DOS = mp.apply.average.eigenvalue(wrap=lambda ev: ev.DOS(E))
     from matplotlib import pyplot as plt
     plt.plot(E, DOS)
 
