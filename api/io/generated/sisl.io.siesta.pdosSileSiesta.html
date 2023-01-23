@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.pdosSileSiesta &mdash; sisl 0.13.0 documentation</title>
+  <title>sisl.io.siesta.pdosSileSiesta &mdash; sisl 0.1.dev1+g851d78c documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -39,7 +39,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.13.0
+                0.1.dev1+g851d78c
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -275,7 +275,7 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 For non-collinear calculations the returned values are sum/x/y/z, orbitals, energy.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>as_dataarray</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If True the returned PDOS is a <a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2022.12.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a> with energy, spin
+<dd class="field-odd"><p><strong>as_dataarray</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If True the returned PDOS is a <a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2023.1.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a> with energy, spin
 and orbital information as coordinates in the data.
 The geometry, unit and Fermi level are stored as attributes in the
 DataArray.</p>
@@ -285,7 +285,7 @@ DataArray.</p>
 <li><p><strong>geom</strong> (<em>Geometry instance with positions, atoms and orbitals.</em>)</p></li>
 <li><p><strong>E</strong> (the energies at which the PDOS has been evaluated at (if Fermi-level present in file energies are shifted to <span class="math notranslate nohighlight">\(E - E_F = 0\)</span>).)</p></li>
 <li><p><strong>PDOS</strong> (an array of DOS with dimensions <code class="docutils literal notranslate"><span class="pre">(nspin,</span> <span class="pre">geom.no,</span> <span class="pre">len(E))</span></code> (with different spin-components) or <code class="docutils literal notranslate"><span class="pre">(geom.no,</span> <span class="pre">len(E))</span></code> (spin-symmetric).)</p></li>
-<li><p><strong>DataArray</strong> (if <em class="xref py py-obj">as_dataarray</em> is True, only this data array is returned, in this case all data can be post-processed using the <a class="reference external" href="https://docs.xarray.dev/en/stable/index.html#module-xarray" title="(in xarray v2022.12.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray</span></code></a> selection routines.)</p></li>
+<li><p><strong>DataArray</strong> (if <em class="xref py py-obj">as_dataarray</em> is True, only this data array is returned, in this case all data can be post-processed using the <a class="reference external" href="https://docs.xarray.dev/en/stable/index.html#module-xarray" title="(in xarray v2023.1.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray</span></code></a> selection routines.)</p></li>
 </ul>
 </p>
 </dd>
