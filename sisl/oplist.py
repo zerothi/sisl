@@ -175,8 +175,6 @@ class oplist(list):
         @wraps(func)
         def wrap_func(*args, **kwargs):
             val = func(*args, **kwargs)
-            if isinstance(val, oplist):
-                return val
             if isinstance(val, cls):
                 return val
             if isinstance(val, (tuple, list)):
