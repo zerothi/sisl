@@ -1,6 +1,12 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+import sys
+if sys.version_info >= (3, 11):
+    from typing import Self
+else:
+    from typing_extensions import Self
+
 import numpy as np
 
 from sisl._internal import set_module
@@ -83,7 +89,7 @@ class Overlap(SparseOrbitalBZ):
         return super().fromsp(geometry, P=P, S=None, **kwargs)
 
     @staticmethod
-    def read(sile, *args, **kwargs):
+    def read(sile, *args, **kwargs) -> Self:
         """ Reads Overlap from `Sile` using `read_overlap`.
 
         Parameters
@@ -98,14 +104,14 @@ class Overlap(SparseOrbitalBZ):
         if isinstance(sile, BaseSile):
             return sile.read_overlap(*args, **kwargs)
         else:
-            with get_sile(sile) as fh:
+            with get_sile(sile, mode='r') as fh:
                 return fh.read_overlap(*args, **kwargs)
 
-    def write(self, sile, *args, **kwargs):
+    def write(self, sile, *args, **kwargs) -> None:
         """ Writes the Overlap to the `Sile` as implemented in the :code:`Sile.write_overlap` method """
         from sisl.io import get_sile, BaseSile
         if isinstance(sile, BaseSile):
             sile.write_overlap(self, *args, **kwargs)
         else:
-            with get_sile(sile, 'w') as fh:
+            with get_sile(sile, mode='w') as fh:
                 fh.write_overlap(self, *args, **kwargs)

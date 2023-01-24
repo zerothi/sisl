@@ -9,6 +9,11 @@ from itertools import product
 from collections import OrderedDict
 from pathlib import Path
 import warnings
+import sys
+if sys.version_info >= (3, 11):
+    from typing import Self
+else:
+    from typing_extensions import Self
 
 import numpy as np
 from numpy import ndarray, int32, bool_
@@ -423,7 +428,7 @@ class Geometry(SuperCellChild):
             return np.add.outer(self.firsto[atom], orbs).ravel()
         return np.concatenate(tuple(conv(atom, orbs) for atom, orbs in orbitals.items()))
 
-    def as_primary(self, na_primary, axes=(0, 1, 2), ret_super: bool=False) -> Geometry:
+    def as_primary(self, na_primary, axes=(0, 1, 2), ret_super: bool=False) -> Self:
         """ Try and reduce the geometry to the primary unit-cell comprising `na_primary` atoms
 
         This will basically try and find the tiling/repetitions required for the geometry to only have
@@ -638,7 +643,7 @@ class Geometry(SuperCellChild):
         return self.Rij(self.o2a(orbitals1), self.o2a(orbitals2))
 
     @staticmethod
-    def read(sile, *args, **kwargs) -> Geometry:
+    def read(sile, *args, **kwargs) -> Self:
         """ Reads geometry from the `Sile` using `Sile.read_geometry`
 
         Parameters
@@ -657,10 +662,10 @@ class Geometry(SuperCellChild):
         if isinstance(sile, BaseSile):
             return sile.read_geometry(*args, **kwargs)
         else:
-            with get_sile(sile) as fh:
+            with get_sile(sile, mode='r') as fh:
                 return fh.read_geometry(*args, **kwargs)
 
-    def write(self, sile, *args, **kwargs):
+    def write(self, sile, *args, **kwargs) -> None:
         """ Writes geometry to the `Sile` using `sile.write_geometry`
 
         Parameters
@@ -682,7 +687,7 @@ class Geometry(SuperCellChild):
         if isinstance(sile, BaseSile):
             sile.write_geometry(self, *args, **kwargs)
         else:
-            with get_sile(sile, 'w') as fh:
+            with get_sile(sile, mode='w') as fh:
                 fh.write_geometry(self, *args, **kwargs)
 
     def __str__(self) -> str:

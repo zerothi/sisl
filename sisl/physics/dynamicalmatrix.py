@@ -1,6 +1,12 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+import sys
+if sys.version_info >= (3, 11):
+    from typing import Self
+else:
+    from typing_extensions import Self
+
 import numpy as np
 from scipy.sparse import lil_matrix
 
@@ -314,7 +320,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
         return EigenmodePhonon(v.T, _correct_hw(hw), self, **info)
 
     @staticmethod
-    def read(sile, *args, **kwargs):
+    def read(sile, *args, **kwargs) -> Self:
         """ Reads dynamical matrix from `Sile` using `read_dynamical_matrix`.
 
         Parameters
@@ -330,10 +336,10 @@ class DynamicalMatrix(SparseOrbitalBZ):
         if isinstance(sile, BaseSile):
             return sile.read_dynamical_matrix(*args, **kwargs)
         else:
-            with get_sile(sile) as fh:
+            with get_sile(sile, mode='r') as fh:
                 return fh.read_dynamical_matrix(*args, **kwargs)
 
-    def write(self, sile, *args, **kwargs):
+    def write(self, sile, *args, **kwargs) -> None:
         """ Writes a dynamical matrix to the `Sile` as implemented in the :code:`Sile.write_dynamical_matrix` method """
         # This only works because, they *must*
         # have been imported previously
@@ -341,5 +347,5 @@ class DynamicalMatrix(SparseOrbitalBZ):
         if isinstance(sile, BaseSile):
             sile.write_dynamical_matrix(self, *args, **kwargs)
         else:
-            with get_sile(sile, 'w') as fh:
+            with get_sile(sile, mode='w') as fh:
                 fh.write_dynamical_matrix(self, *args, **kwargs)

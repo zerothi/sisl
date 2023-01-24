@@ -1,6 +1,12 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+import sys
+if sys.version_info >= (3, 11):
+    from typing import Self
+else:
+    from typing_extensions import Self
+
 import numpy as np
 
 from sisl._internal import set_module
@@ -300,7 +306,7 @@ class EnergyDensityMatrix(_densitymatrix):
             self._csr._D[:, i] += DM._csr._D[:, i] * E[i]
 
     @staticmethod
-    def read(sile, *args, **kwargs):
+    def read(sile, *args, **kwargs) -> Self:
         """ Reads density matrix from `Sile` using `read_energy_density_matrix`.
 
         Parameters
@@ -317,10 +323,10 @@ class EnergyDensityMatrix(_densitymatrix):
         if isinstance(sile, BaseSile):
             return sile.read_energy_density_matrix(*args, **kwargs)
         else:
-            with get_sile(sile) as fh:
+            with get_sile(sile, mode='r') as fh:
                 return fh.read_energy_density_matrix(*args, **kwargs)
 
-    def write(self, sile, *args, **kwargs):
+    def write(self, sile, *args, **kwargs) -> None:
         """ Writes a density matrix to the `Sile` as implemented in the :code:`Sile.write_energy_density_matrix` method """
         # This only works because, they *must*
         # have been imported previously
@@ -328,5 +334,5 @@ class EnergyDensityMatrix(_densitymatrix):
         if isinstance(sile, BaseSile):
             sile.write_energy_density_matrix(self, *args, **kwargs)
         else:
-            with get_sile(sile, 'w') as fh:
+            with get_sile(sile, mode='w') as fh:
                 fh.write_energy_density_matrix(self, *args, **kwargs)

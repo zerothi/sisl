@@ -7,6 +7,12 @@ This class is the basis of many different objects.
 """
 import math
 import warnings
+import sys
+if sys.version_info >= (3, 11):
+    from typing import Self
+else:
+    from typing_extensions import Self
+
 from numbers import Integral
 import numpy as np
 from numpy import ndarray, dot
@@ -937,7 +943,7 @@ class SuperCell:
         return math.degrees(ang)
 
     @staticmethod
-    def read(sile, *args, **kwargs):
+    def read(sile, *args, **kwargs) -> Self:
         """ Reads the supercell from the `Sile` using ``Sile.read_supercell``
 
         Parameters
@@ -952,7 +958,7 @@ class SuperCell:
         if isinstance(sile, BaseSile):
             return sile.read_supercell(*args, **kwargs)
         else:
-            with get_sile(sile) as fh:
+            with get_sile(sile, mode='r') as fh:
                 return fh.read_supercell(*args, **kwargs)
 
     def equal(self, other, tol=1e-4):
@@ -965,8 +971,7 @@ class SuperCell:
         """
         if not isinstance(other, (SuperCell, SuperCellChild)):
             return False
-        for tol in [1e-2, 1e-3, 1e-4]:
-            same = np.allclose(self.cell, other.cell, atol=tol)
+        same = np.allclose(self.cell, other.cell, atol=tol)
         same = same and np.allclose(self.nsc, other.nsc)
         same = same and np.allclose(self.origin, other.origin, atol=tol)
         return same

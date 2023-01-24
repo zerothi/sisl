@@ -1,6 +1,12 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+import sys
+if sys.version_info >= (3, 11):
+    from typing import Self
+else:
+    from typing_extensions import Self
+
 import numpy as np
 
 from sisl._internal import set_module
@@ -384,7 +390,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         return EigenstateElectron(v.T, e, self, **info)
 
     @staticmethod
-    def read(sile, *args, **kwargs):
+    def read(sile, *args, **kwargs) -> Self:
         """ Reads Hamiltonian from `Sile` using `read_hamiltonian`.
 
         Parameters
@@ -401,10 +407,10 @@ class Hamiltonian(SparseOrbitalBZSpin):
         if isinstance(sile, BaseSile):
             return sile.read_hamiltonian(*args, **kwargs)
         else:
-            with get_sile(sile) as fh:
+            with get_sile(sile, mode='r') as fh:
                 return fh.read_hamiltonian(*args, **kwargs)
 
-    def write(self, sile, *args, **kwargs):
+    def write(self, sile, *args, **kwargs) -> None:
         """ Writes a Hamiltonian to the `Sile` as implemented in the :code:`Sile.write_hamiltonian` method """
         # This only works because, they *must*
         # have been imported previously
@@ -412,7 +418,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         if isinstance(sile, BaseSile):
             sile.write_hamiltonian(self, *args, **kwargs)
         else:
-            with get_sile(sile, 'w') as fh:
+            with get_sile(sile, mode='w') as fh:
                 fh.write_hamiltonian(self, *args, **kwargs)
 
     def fermi_level(self, bz=None, q=None, distribution='fermi_dirac', q_tol=1e-10):

@@ -3,11 +3,17 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from numbers import Integral
 import math as m
-from scipy.sparse import csr_matrix, triu, tril
-from scipy.sparse import hstack as ss_hstack
+import sys
+if sys.version_info >= (3, 11):
+    from typing import Self
+else:
+    from typing_extensions import Self
+
 import numpy as np
 from numpy import repeat, logical_and
 from numpy import dot, unique, add, subtract
+from scipy.sparse import csr_matrix, triu, tril
+from scipy.sparse import hstack as ss_hstack
 
 from sisl._internal import set_module
 from sisl.geometry import Geometry
@@ -1263,7 +1269,7 @@ class DensityMatrix(_densitymatrix):
         pass
 
     @staticmethod
-    def read(sile, *args, **kwargs):
+    def read(sile, *args, **kwargs) -> Self:
         """ Reads density matrix from `Sile` using `read_density_matrix`.
 
         Parameters
@@ -1280,10 +1286,10 @@ class DensityMatrix(_densitymatrix):
         if isinstance(sile, BaseSile):
             return sile.read_density_matrix(*args, **kwargs)
         else:
-            with get_sile(sile) as fh:
+            with get_sile(sile, mode='r') as fh:
                 return fh.read_density_matrix(*args, **kwargs)
 
-    def write(self, sile, *args, **kwargs):
+    def write(self, sile, *args, **kwargs) -> None:
         """ Writes a density matrix to the `Sile` as implemented in the :code:`Sile.write_density_matrix` method """
         # This only works because, they *must*
         # have been imported previously
@@ -1291,5 +1297,5 @@ class DensityMatrix(_densitymatrix):
         if isinstance(sile, BaseSile):
             sile.write_density_matrix(self, *args, **kwargs)
         else:
-            with get_sile(sile, 'w') as fh:
+            with get_sile(sile, mode='w') as fh:
                 fh.write_density_matrix(self, *args, **kwargs)

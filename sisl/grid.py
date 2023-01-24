@@ -3,6 +3,11 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from numbers import Integral, Real
 from math import pi
+import sys
+if sys.version_info >= (3, 11):
+    from typing import Self
+else:
+    from typing_extensions import Self
 
 import numpy as np
 from numpy import int32
@@ -890,7 +895,7 @@ class Grid(SuperCellChild):
         return self.__class__(shape, bc=np.copy(self.bc), **d)
 
     @staticmethod
-    def read(sile, *args, **kwargs):
+    def read(sile, *args, **kwargs) -> Self:
         """ Reads grid from the `Sile` using `read_grid`
 
         Parameters
@@ -913,10 +918,10 @@ class Grid(SuperCellChild):
                     kwargs['index'] = list(map(float, spec.split(',')))
                 else:
                     kwargs['index'] = int(spec)
-            with get_sile(sile) as fh:
+            with get_sile(sile, mode='r') as fh:
                 return fh.read_grid(*args, **kwargs)
 
-    def write(self, sile, *args, **kwargs):
+    def write(self, sile, *args, **kwargs) -> None:
         """ Writes grid to the `Sile` using `write_grid`
 
         Parameters
@@ -932,7 +937,7 @@ class Grid(SuperCellChild):
         if isinstance(sile, BaseSile):
             sile.write_grid(self, *args, **kwargs)
         else:
-            with get_sile(sile, 'w') as fh:
+            with get_sile(sile, mode='w') as fh:
                 fh.write_grid(self, *args, **kwargs)
 
     def __str__(self):
@@ -1713,20 +1718,7 @@ This may be unexpected but enables one to do advanced manipulations.
             stdout_grid = False
             grid = Grid(0.1, geometry=Geometry([0] * 3, sc=1))
         else:
-            # Extract specification of the input file
-            input_file, spec = str_spec(input_file)
-            if spec is not None:
-                if ',' in spec:
-                    kwargs['index'] = list(map(float, spec.split(',')))
-                else:
-                    kwargs['index'] = int(spec)
-
-            if isfile(input_file):
-                grid = get_sile(input_file).read_grid(**kwargs)
-
-            elif not isfile(input_file):
-                from .messages import info
-                info(f"Cannot find file '{input_file}'!")
+            grid = Grid.read(input_file)
 
     elif isinstance(grid, BaseSile):
         # Store the input file...
