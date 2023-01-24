@@ -2,6 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from numbers import Integral, Real
+from collections import Counter
 from collections.abc import Iterable
 
 import numpy as np
@@ -1627,6 +1628,36 @@ class Atoms:
 
         atoms._update_orbitals()
         return atoms
+
+    def formula(self, system="Hill"):
+        """Return the chemical formula for the species in this object
+
+        Parameters
+        ----------
+        system : {"Hill"}, optional
+           which notation system to use
+           Is not case-sensitive
+        """
+        # loop different species
+        c = Counter()
+        for atom, indices in self.iter(species=True):
+            if len(indices) > 0:
+                c[atom.symbol] += len(indices)
+
+        # now we have all elements, and the counts of them
+        systeml = system.lower()
+        if systeml == "hill":
+            # sort lexographically
+            symbols = sorted(c.keys())
+            def parse(symbol_c):
+                symbol, c = symbol_c
+                if c == 1:
+                    return symbol
+                return f"{symbol}{c}"
+
+            return "".join(map(parse, sorted(c.items())))
+
+        raise ValueError(f"{self.__class__.__name__}.formula got unrecognized argument 'system' {system}")
 
     def reduce(self, in_place=False):
         """ Returns a new `Atoms` object by removing non-used atoms """

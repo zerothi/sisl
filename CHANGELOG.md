@@ -7,6 +7,9 @@ we hit release version 1.0.0.
 
 ## [X.Y.Z] - YYYY-MM-DD
 
+### Added
+- `Atoms.formula` to get a chemical formula, currently only Hill notation
+
 
 ## [0.13.0] - 2023-1-18
 

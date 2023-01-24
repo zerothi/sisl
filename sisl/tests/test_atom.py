@@ -284,6 +284,19 @@ def test_atoms_init_tags():
     assert a.atom[0].tag == "hello"
 
 
+def test_atoms_formula():
+    a = Atoms([dict(Z="H", tag="hello"), "B", "H"])
+    assert len(a) == 3
+    assert len(a.atom) == 3
+    assert a.formula() == "BH2"
+
+
+def test_atoms_formula_unknown_system():
+    a = Atoms([dict(Z="H", tag="hello"), "B", "H"])
+    with pytest.raises(ValueError):
+        assert a.formula("not_known")
+
+
 def test_atom_orbitals():
     a = Atom(5, ["x", "y"])
     assert len(a) == 2
