@@ -9,6 +9,8 @@ we hit release version 1.0.0.
 
 ### Added
 - `Atoms.formula` to get a chemical formula, currently only Hill notation
+- unified the index reading of Grids, `read_grid`, this influences
+  Siesta and VASP grid reads.
 
 
 ## [0.13.0] - 2023-1-18

@@ -7,6 +7,7 @@ import numpy as np
 from .sile import SileVASP
 from ..sile import add_sile, sile_fh_open
 from .car import carSileVASP
+from .._help import grid_reduce_indices
 
 from sisl._internal import set_module
 from sisl import Grid
@@ -23,7 +24,7 @@ class locpotSileVASP(carSileVASP):
     """
 
     @sile_fh_open(True)
-    def read_grid(self, index=0, dtype=np.float64):
+    def read_grid(self, index=0, dtype=np.float64, **kwargs):
         """ Reads the potential (in eV) from the file and returns with a grid (plus geometry)
 
         Parameters
@@ -36,11 +37,14 @@ class locpotSileVASP(carSileVASP):
            contributions for each corresponding index.
         dtype : numpy.dtype, optional
            grid stored dtype
+        spin : optional
+           same as `index` argument. `spin` argument has precedence.
 
         Returns
         -------
         Grid : potential with associated geometry
         """
+        index = kwargs.get("spin", index)
         geom = self.read_geometry()
         V = geom.sc.volume
 
@@ -82,9 +86,7 @@ class locpotSileVASP(carSileVASP):
             val = vals[n * index:n * (index + 1)].reshape(nz, ny, nx)
         else:
             vals = vals[:n * max_index].reshape(-1, nz, ny, nx)
-            val = vals[0] * index[0]
-            for i, scale in enumerate(index[1:]):
-                val += vals[i + 1] * scale
+            val = grid_reduce_indices(vals, index, axis=0)
         del vals
 
         # Make it C-ordered with nx, ny, nz

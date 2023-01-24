@@ -18,7 +18,6 @@ from .sile import SileBinSiesta
 from sisl._internal import set_module
 from sisl.messages import info, warn, SislError
 
-from ._help import *
 import sisl._array as _a
 from sisl import Geometry, Atom, Atoms, SuperCell, Grid, SparseCSR
 from sisl import AtomicOrbital
@@ -29,6 +28,8 @@ from sisl.physics import Hamiltonian, DensityMatrix, EnergyDensityMatrix
 from sisl.physics import BrillouinZone
 from sisl.physics.overlap import Overlap
 from sisl.physics.electron import EigenstateElectron
+from .._help import grid_reduce_indices
+from ._help import *
 
 
 __all__ = ["tshsSileSiesta", "onlysSileSiesta", "tsdeSileSiesta"]
@@ -1730,6 +1731,8 @@ class _gridSileSiesta(SileBinSiesta):
            Default to the first component.
         dtype : numpy.float64, optional
            default data-type precision
+        spin : optional
+           same as `index` argument. `spin` argument has precedence.
         """
         index = kwargs.get("spin", index)
         # Read the sizes and cell
@@ -1741,14 +1744,7 @@ class _gridSileSiesta(SileBinSiesta):
         if isinstance(index, Integral):
             grid = grid[:, :, :, index]
         else:
-            if len(index) > grid.shape[0]:
-                raise ValueError(f"{self.__class__.__name__}.read_grid requires spin to be an integer or "
-                                 "an array of length equal to the number of spin components.")
-            # It is F-contiguous, hence the last index
-            g = grid[:, :, :, 0] * index[0]
-            for i, scale in enumerate(index[1:]):
-                g += grid[:, :, :, 1+i] * scale
-            grid = g
+            grid = grid_reduce_indices(grid, index, axis=len(grid.shape) - 1)
 
         # Simply create the grid (with no information)
         # We will overwrite the actual grid

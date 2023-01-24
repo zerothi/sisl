@@ -51,22 +51,27 @@ class gridncSileSiesta(SileCDFSiesta):
         v.unit = 'Bohr'
         v[:, :] = sc.cell[:, :] / Bohr2Ang
 
-    def read_grid(self, spin=0, name='gridfunc', *args, **kwargs):
+    def read_grid(self, index=0, name='gridfunc', *args, **kwargs):
         """ Reads a grid in the current Siesta.grid.nc file
 
         Enables the reading and processing of the grids created by Siesta
 
         Parameters
         ----------
-        spin : int or array_like, optional
-            specify the retrieved values
+        index : int or array_like, optional
+           the spin-index for retrieving one of the components. If a vector
+           is passed it refers to the fraction per indexed component. I.e.
+           ``[0.5, 0.5]`` will return sum of half the first two components.
+           Default to the first component.
         name : str, optional
             the name for the grid-function (do not supply for standard Siesta output)
         geometry: Geometry, optional
             add the Geometry to the Grid
+        spin : optional
+           same as `index` argument. `spin` argument has precedence.
         """
         # Default to *index* variable
-        spin = kwargs.get('index', spin)
+        index = kwargs.get("spin", index)
         # Determine the name of this file
         f = osp.basename(self.file)
 
@@ -120,15 +125,11 @@ class gridncSileSiesta(SileCDFSiesta):
 
         if v.ndim == 3:
             grid.grid[:, :, :] = v[:, :, :] * unit
-        elif isinstance(spin, Integral):
-            grid.grid[:, :, :] = v[spin, :, :, :] * unit
+        elif isinstance(index, Integral):
+            grid.grid[:, :, :] = v[index, :, :, :] * unit
         else:
-            if len(spin) > v.shape[0]:
-                raise SileError(f"{self.__class__.__name__}.read_grid requires spin to be an integer or "
-                                "an array of length equal to the number of spin components.")
-            grid.grid[:, :, :] = v[0, :, :, :] * spin[0] * unit
-            for i, scale in enumerate(spin[1:]):
-                grid.grid[:, :, :] += v[1+i, :, :, :] * scale * unit
+            grid_reduce_indices(v, np.array(index) * unit, axis=0, out=grid.grid)
+
         if show_info:
             info(f"{self.__class__.__name__}.read_grid cannot determine the units of the grid. "
                  "The units may not be in sisl units.")

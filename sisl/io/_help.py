@@ -3,8 +3,11 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from re import compile as re_compile
 
+import numpy as np
 
-__all__ = ["starts_with_list", "header_to_dict"]
+
+__all__ = ["starts_with_list", "header_to_dict",
+           "grid_reduce_indices"]
 
 
 def starts_with_list(l, comments):
@@ -32,3 +35,24 @@ def header_to_dict(header):
         d[key] = val
 
     return d
+
+
+def grid_reduce_indices(grids, factors, axis=0, out=None):
+    """ Reduce `grids` into a single `grid` value along `axis` by summing the `factors`
+
+    If `out` is defined the data will be stored there.
+    """
+    if len(factors) > grids.shape[axis]:
+        raise ValueError(f"Trying to reduce a grid with too many factors: {len(factors)} > {grids.shape[axis]}")
+
+    if out is not None:
+        grid = out
+        np.take(grids, 0, axis=axis, out=grid)
+        grid *= factors[0]
+    else:
+        grid = np.take(grids, 0, axis=axis) * factors[0]
+
+    for idx, factor in enumerate(factors[1:], start=1):
+        grid += np.take(grids, idx, axis=axis) * factor
+
+    return grid
