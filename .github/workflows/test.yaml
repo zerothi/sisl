@@ -101,7 +101,7 @@ jobs:
 
     - name: Upload code-coverage
       if: ${{ github.event.inputs.marks == '' }}
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v3
       with:
         directory: ./sisl-test-dir/
         verbose: true
