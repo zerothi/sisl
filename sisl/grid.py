@@ -3,11 +3,6 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from numbers import Integral, Real
 from math import pi
-import sys
-if sys.version_info >= (3, 11):
-    from typing import Self
-else:
-    from typing_extensions import Self
 
 import numpy as np
 from numpy import int32
@@ -895,7 +890,7 @@ class Grid(SuperCellChild):
         return self.__class__(shape, bc=np.copy(self.bc), **d)
 
     @staticmethod
-    def read(sile, *args, **kwargs) -> Self:
+    def read(sile, *args, **kwargs):
         """ Reads grid from the `Sile` using `read_grid`
 
         Parameters

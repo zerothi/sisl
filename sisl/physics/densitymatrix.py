@@ -3,11 +3,6 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from numbers import Integral
 import math as m
-import sys
-if sys.version_info >= (3, 11):
-    from typing import Self
-else:
-    from typing_extensions import Self
 
 import numpy as np
 from numpy import repeat, logical_and
@@ -1269,7 +1264,7 @@ class DensityMatrix(_densitymatrix):
         pass
 
     @staticmethod
-    def read(sile, *args, **kwargs) -> Self:
+    def read(sile, *args, **kwargs):
         """ Reads density matrix from `Sile` using `read_density_matrix`.
 
         Parameters

@@ -7,11 +7,6 @@ This class is the basis of many different objects.
 """
 import math
 import warnings
-import sys
-if sys.version_info >= (3, 11):
-    from typing import Self
-else:
-    from typing_extensions import Self
 
 from numbers import Integral
 import numpy as np
@@ -943,7 +938,7 @@ class SuperCell:
         return math.degrees(ang)
 
     @staticmethod
-    def read(sile, *args, **kwargs) -> Self:
+    def read(sile, *args, **kwargs):
         """ Reads the supercell from the `Sile` using ``Sile.read_supercell``
 
         Parameters

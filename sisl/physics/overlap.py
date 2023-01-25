@@ -1,12 +1,6 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-import sys
-if sys.version_info >= (3, 11):
-    from typing import Self
-else:
-    from typing_extensions import Self
-
 import numpy as np
 
 from sisl._internal import set_module
@@ -89,7 +83,7 @@ class Overlap(SparseOrbitalBZ):
         return super().fromsp(geometry, P=P, S=None, **kwargs)
 
     @staticmethod
-    def read(sile, *args, **kwargs) -> Self:
+    def read(sile, *args, **kwargs):
         """ Reads Overlap from `Sile` using `read_overlap`.
 
         Parameters
