@@ -18,13 +18,15 @@ The release cycle should be performed like this:
 
 1. Update released versions in `CHANGELOG.md` and `CITATION.cff`
 
-2. Commit changes.
+2. Insert correct dates in `CITATION.cff` (for Zenodo)
 
-3. Tag the commit with:
+3. Commit changes.
+
+4. Tag the commit with:
 
 		git tag -a "vVERSION" -m "Releasing vVERSION"
 
-4. Create tarballs and wheels and upload them
+5. Create tarballs and wheels and upload them
 
 		python3 -m pip install --upgrade build
 		python3 -m build
@@ -38,9 +40,9 @@ The release cycle should be performed like this:
         # once checked, upload to pypi
 		python3 -m twine upload dist/sisl-0.12.0.tar.gz
 
-5. Make release notes by using `tools/changelog.py` to create the output
+6. Make release notes by using `tools/changelog.py` to create the output
 
-6. Create conda uploads.
+7. Create conda uploads.
 
    The conda uploads are based on conda-forge and an associated
    sisl-feedstock is used. To update it, follow these steps:
