@@ -718,7 +718,7 @@ class outSileSiesta(SileSiesta):
             if imd == 0:
                 raise ValueError(f"{self.__class__.__name__}.read_scf requires imd argument to *not* be 0!")
         def reset_d(d, line):
-            if line.startswith('SCF cycle converged'):
+            if line.startswith('SCF cycle converged') or line.startswith('SCF_NOT_CONV'):
                 if len(d['data']) > 0:
                     d['_final_iscf'] = 1
             elif line.startswith('SCF cycle continued'):
