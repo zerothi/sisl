@@ -40,7 +40,7 @@ dependencies = [
 
 
 name = "sisl"
-description = "Manipulation of DFT output, geometries and creating tight-binding parameter sets for NEGF transport"
+description = "Manipulation and post-processing of DFT output and creating tight-binding models for NEGF transport"
 readme = "README.md"
 license = {text = "MPL-2.0"}
 keywords = ["tight-binding", "DFT", "LCAO", "NEGF", "physics"]
