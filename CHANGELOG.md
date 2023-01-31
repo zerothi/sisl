@@ -12,6 +12,11 @@ we hit release version 1.0.0.
 - unified the index reading of Grids, `read_grid`, this influences
   Siesta and VASP grid reads.
 
+### Changed
+- `SelfEnergy.scattering_matrix` is changed to `SelfEnergy.broadening_matrix`
+	since the scattering matrix is an S-matrix usage.
+	Also changed `se2scat` to `se2broadening` #529
+
 
 ## [0.13.0] - 2023-1-18
 

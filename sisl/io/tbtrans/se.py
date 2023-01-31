@@ -103,10 +103,10 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
 
         return SE
 
-    def scattering_matrix(self, elec, E, k=0, sort=False):
-        r""" Return the scattering matrix from the electrode `elec`
+    def broadening_matrix(self, elec, E, k=0, sort=False):
+        r""" Return the broadening matrix from the electrode `elec`
 
-        The scattering matrix is calculated as:
+        The broadening matrix is calculated as:
 
         .. math::
             \Gamma(E) = i [\Sigma(E) - \Sigma^\dagger(E)]
@@ -114,16 +114,16 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         Parameters
         ----------
         elec : str or int
-           the corresponding electrode to return the scattering matrix from
+           the corresponding electrode to return the broadening matrix from
         E : float or int
-           energy to retrieve the scattering matrix at, if a floating point the closest
+           energy to retrieve the broadening matrix at, if a floating point the closest
            energy value will be found and returned, if an integer it will correspond
            to the exact index
         k : array_like or int
            k-point to retrieve, if an integer it is the k-index in the file
         sort : bool, optional
-           if ``True`` the returned scattering matrix will be sorted according to the order of
-           the orbitals in the non-pivoted geometry, otherwise the scattering matrix will
+           if ``True`` the returned broadening matrix will be sorted according to the order of
+           the orbitals in the non-pivoted geometry, otherwise the broadening matrix will
            be returned according to the pivoted orbitals in the device region.
         """
         tree = self._elec(elec)

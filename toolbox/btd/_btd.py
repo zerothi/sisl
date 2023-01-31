@@ -136,12 +136,12 @@ class PivotSelfEnergy(si.physics.SelfEnergy):
             def se_func(*args, **kwargs):
                 return self._se.self_energy(self.name, *args, **kwargs)
             def scat_func(*args, **kwargs):
-                return self._se.scattering_matrix(self.name, *args, **kwargs)
+                return self._se.broadening_matrix(self.name, *args, **kwargs)
         else:
             def se_func(*args, **kwargs):
                 return self._se.self_energy(*args, **kwargs)
             def scat_func(*args, **kwargs):
-                return self._se.scattering_matrix(*args, **kwargs)
+                return self._se.broadening_matrix(*args, **kwargs)
 
         # Store the pivoting for faster indexing
         if pivot is None:
@@ -188,7 +188,7 @@ class PivotSelfEnergy(si.physics.SelfEnergy):
     def self_energy(self, *args, **kwargs):
         return self._se_func(*args, **kwargs)
 
-    def scattering_matrix(self, *args, **kwargs):
+    def broadening_matrix(self, *args, **kwargs):
         return self._scat_func(*args, **kwargs)
 
 
@@ -208,7 +208,7 @@ class DownfoldSelfEnergy(PivotSelfEnergy):
 
         # To re-create the downfoldable self-energies we need a few things:
         # pivot == for pivoting indices and BTD downfolding region
-        # se == SelfEnergy for calculating self-energies and scattering matrix
+        # se == SelfEnergy for calculating self-energies and broadening matrix
         # Hdevice == device H for downfolding the electrode self-energy
         # bulk == whether the electrode self-energy argument should be passed bulk
         #         or not
@@ -336,7 +336,7 @@ class DownfoldSelfEnergy(PivotSelfEnergy):
 
         return Mr
 
-    def scattering_matrix(self, *args, **kwargs):
+    def broadening_matrix(self, *args, **kwargs):
         return self.se2scat(self.self_energy(*args, **kwargs))
 
 

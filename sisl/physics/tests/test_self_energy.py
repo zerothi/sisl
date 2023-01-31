@@ -92,9 +92,9 @@ def test_sancho_non_orthogonal(setup):
     assert not np.allclose(SE.self_energy(0.1), SE.self_energy(0.1, bulk=True))
 
 
-def test_sancho_scattering_matrix(setup):
+def test_sancho_broadening_matrix(setup):
     SE = RecursiveSI(setup.HS, '-A')
-    assert np.allclose(SE.scattering_matrix(0.1), SE.se2scat(SE.self_energy(0.1)))
+    assert np.allclose(SE.broadening_matrix(0.1), SE.se2broadening(SE.self_energy(0.1)))
 
 
 def test_sancho_non_orthogonal_dtype(setup):
@@ -161,10 +161,10 @@ def test_wideband_1(setup):
     assert SE.self_energy().shape == (10, 10)
     assert np.allclose(np.diag(SE.self_energy()), -1j*1e-2)
     assert np.allclose(np.diag(SE.self_energy(eta=1)), -1j*1.)
-    assert np.allclose(np.diag(SE.scattering_matrix(eta=1)), 2.)
+    assert np.allclose(np.diag(SE.broadening_matrix(eta=1)), 2.)
     # ensure our custom function works!
-    assert np.allclose(SE.scattering_matrix(eta=1),
-                       SE.se2scat(SE.self_energy(eta=1)))
+    assert np.allclose(SE.broadening_matrix(eta=1),
+                       SE.se2broadening(SE.self_energy(eta=1)))
 
 
 @pytest.mark.parametrize("k_axes", [0, 1])

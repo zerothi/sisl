@@ -46,8 +46,8 @@ class SelfEnergy:
         raise NotImplementedError
 
     @staticmethod
-    def se2scat(SE):
-        r""" Calculate the scattering matrix from the self-energy
+    def se2broadening(SE):
+        r""" Calculate the broadening matrix from the self-energy
 
         .. math::
             \boldsymbol\Gamma = i(\boldsymbol\Sigma - \boldsymbol \Sigma ^\dagger)
@@ -66,8 +66,8 @@ class SelfEnergy:
     def self_energy(self, *args, **kwargs):
         raise NotImplementedError
 
-    def scattering_matrix(self, *args, **kwargs):
-        r""" Calculate the scattering matrix by first calculating the self-energy
+    def broadening_matrix(self, *args, **kwargs):
+        r""" Calculate the broadening matrix by first calculating the self-energy
 
         Any arguments that is passed to this method is directly passed to `self_energy`.
 
@@ -81,29 +81,29 @@ class SelfEnergy:
         Examples
         --------
 
-        Calculating both the self-energy and the scattering matrix.
+        Calculating both the self-energy and the broadening matrix.
 
         >>> SE = SelfEnergy(...)
         >>> self_energy = SE.self_energy(0.1)
-        >>> gamma = SE.scattering_matrix(0.1)
+        >>> gamma = SE.broadening_matrix(0.1)
 
         For a huge performance boost, please do:
 
         >>> SE = SelfEnergy(...)
         >>> self_energy = SE.self_energy(0.1)
-        >>> gamma = SE.se2scat(self_energy)
+        >>> gamma = SE.se2broadening(self_energy)
 
         Notes
         -----
-        When using *both* the self-energy *and* the scattering matrix please use `se2scat` after having
+        When using *both* the self-energy *and* the broadening matrix please use `se2broadening` after having
         calculated the self-energy, this will be *much*, *MUCH* faster!
 
         See Also
         --------
-        se2scat : converting the self-energy to the scattering matrix
-        self_energy : the used routine to calculate the self-energy before calculating the scattering matrix
+        se2broadening : converting the self-energy to the broadening matrix
+        self_energy : the used routine to calculate the self-energy before calculating the broadening matrix
         """
-        return self.se2scat(self.self_energy(*args, **kwargs))
+        return self.se2broadening(self.self_energy(*args, **kwargs))
 
     def __getattr__(self, attr):
         r""" Overload attributes from the hosting object """
@@ -148,12 +148,12 @@ class WideBandSE(SelfEnergy):
         eta = - kwargs.get("eta", self.eta)
         return np.diag(np.repeat(1j*eta, self._N))
 
-    def scattering_matrix(self, E=0., *args, **kwargs):
+    def broadening_matrix(self, E=0., *args, **kwargs):
         # note the sign (+)
         eta = kwargs.get("eta", self.eta)
         return np.diag(np.repeat(np.complex128(2*eta), self._N))
 
-    scattering_matrix.__doc__ = SelfEnergy.scattering_matrix.__doc__
+    broadening_matrix.__doc__ = SelfEnergy.broadening_matrix.__doc__
 
 
 @set_module("sisl.physics")
