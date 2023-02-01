@@ -41,6 +41,8 @@ Advanced classes
    Selector
 
 """
+import datetime
+year = datetime.datetime.now().year
 
 __author__ = "Nick Papior"
 __license__ = "MPL-2.0"
@@ -52,13 +54,13 @@ __bibtex__ = f"""# BibTeX information if people wish to cite
 @misc{{zerothi_sisl,
     author = {{Papior, Nick}},
     title  = {{sisl: v{__version__}}},
-    year   = {{2021}},
+    year   = {{ {year} }},
     doi    = {{10.5281/zenodo.597181}},
     url    = {{https://doi.org/10.5281/zenodo.597181}},
 }}"""
 
 # do not expose this helper package
-del _version
+del _version, year, datetime
 
 import sisl._environ as _environ
 
