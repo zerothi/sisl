@@ -529,7 +529,7 @@ class DeviceGreen:
         return f"{ret}\n}}"
 
     @classmethod
-    def from_fdf(cls, fdf, prefix="TBT", use_tbt_se=False):
+    def from_fdf(cls, fdf, prefix="TBT", use_tbt_se=False, eta=None):
         """ Return a new `DeviceGreen` using information gathered from the fdf
 
         Parameters
@@ -672,12 +672,13 @@ class DeviceGreen:
         elec_data = {}
         eta_dev = 1e123
         for elec in tbt.elecs:
+            # read from the block
             data = read_electrode(f"Elec.{elec}")
             elec_data[elec] = data
 
-            # check content!
-            eta = tbt.eta(elec)
-            if not np.allclose(eta, data.eta):
+            # read from the TBT file (to check if the user has changed the input file)
+            elec_eta = tbt.eta(elec)
+            if not np.allclose(elec_eta, data.eta):
                 warn(f"{cls.__name__}.from_fdf(electrode={elec}) found inconsistent "
                      f"imaginary eta from the fdf vs. TBT output, will use fdf value.\n"
                      f"  {tbt} = {eta} eV\n  {fdf} = {data.eta} eV")
@@ -701,7 +702,12 @@ class DeviceGreen:
             eta_dev = fdf.get("TBT.Contours.Eta", eta_dev, unit="eV")
         else:
             eta_dev = fdf.get("TS.Contours.nEq.Eta", eta_dev, unit="eV")
-        if not np.allclose(eta_dev, eta_dev_tbt):
+
+        if eta is not None:
+            # use passed option
+            eta_dev = eta
+
+        elif not np.allclose(eta_dev, eta_dev_tbt):
             warn(f"{cls.__name__}.from_fdf found inconsistent "
                  f"imaginary eta from the fdf vs. TBT output, will use fdf value.\n"
                  f"  {tbt} = {eta_dev_tbt} eV\n  {fdf} = {eta_dev} eV")
@@ -1187,27 +1193,24 @@ class DeviceGreen:
         tY = self._data.tY
         for b in blocks:
             # Find the indices in the block
-            i = idx[c[b] <= idx].copy()
+            i = idx[c[b] <= idx]
             i = i[i < c[b + 1]].astype(np.int32)
 
-            c_idx = arangei(c[b], c[b + 1]).reshape(-1, 1)
-            b_idx = indices_only(c_idx.ravel(), i)
-            # Subtract the first block to put it only in the sub-part
-            c_idx -= c[blocks[0]]
+            b_idx = indices_only(arangei(c[b], c[b + 1]), i)
 
             if b == blocks[0]:
                 sl = slice(0, btd[b])
-                r_idx = arangei(len(b_idx))
+                c_idx = arangei(len(b_idx))
             else:
                 sl = slice(btd[blocks[0]], btd[blocks[0]] + btd[b])
-                r_idx = arangei(len(idx) - len(b_idx), len(idx))
+                c_idx = arangei(len(idx) - len(b_idx), len(idx))
 
             if b == 0:
-                G[sl, r_idx] = inv_destroy(A[b] - C[b + 1] @ tX[b])[:, b_idx]
+                G[sl, c_idx] = inv_destroy(A[b] - C[b + 1] @ tX[b])[:, b_idx]
             elif b == nbm1:
-                G[sl, r_idx] = inv_destroy(A[b] - B[b - 1] @ tY[b])[:, b_idx]
+                G[sl, c_idx] = inv_destroy(A[b] - B[b - 1] @ tY[b])[:, b_idx]
             else:
-                G[sl, r_idx] = inv_destroy(A[b] - B[b - 1] @ tY[b] - C[b + 1] @ tX[b])[:, b_idx]
+                G[sl, c_idx] = inv_destroy(A[b] - B[b - 1] @ tY[b] - C[b + 1] @ tX[b])[:, b_idx]
 
             if len(blocks) == 1:
                 break
@@ -1216,11 +1219,11 @@ class DeviceGreen:
             if b == blocks[0]:
                 # Calculate below
                 slp = slice(btd[b], btd[b] + btd[blocks[1]])
-                G[slp, r_idx] = - tX[b] @ G[sl, r_idx]
+                G[slp, c_idx] = - tX[b] @ G[sl, c_idx]
             else:
                 # Calculate above
                 slp = slice(0, btd[blocks[0]])
-                G[slp, r_idx] = - tY[b] @ G[sl, r_idx]
+                G[slp, c_idx] = - tY[b] @ G[sl, c_idx]
 
         return blocks, G
 
@@ -1250,35 +1253,35 @@ class DeviceGreen:
             i = idx[c[b] <= idx]
             i = i[i < c[b + 1]].astype(np.int32)
 
-            c_idx = arangei(c[b], c[b + 1]).reshape(-1, 1)
-            b_idx = indices_only(c_idx.ravel(), i)
+            b_idx = indices_only(arangei(c[b], c[b + 1]), i)
 
             if b == blocks[0]:
-                r_idx = arangei(len(b_idx))
+                c_idx = arangei(len(b_idx))
             else:
-                r_idx = arangei(len(idx) - len(b_idx), len(idx))
+                c_idx = arangei(len(idx) - len(b_idx), len(idx))
 
             sl = slice(c[b], c[b + 1])
             if b == 0:
-                G[sl, r_idx] = inv_destroy(A[b] - C[b + 1] @ tX[b])[:, b_idx]
+                G[sl, c_idx] = inv_destroy(A[b] - C[b + 1] @ tX[b])[:, b_idx]
             elif b == nbm1:
-                G[sl, r_idx] = inv_destroy(A[b] - B[b - 1] @ tY[b])[:, b_idx]
+                G[sl, c_idx] = inv_destroy(A[b] - B[b - 1] @ tY[b])[:, b_idx]
             else:
-                G[sl, r_idx] = inv_destroy(A[b] - B[b - 1] @ tY[b] - C[b + 1] @ tX[b])[:, b_idx]
+                G[sl, c_idx] = inv_destroy(A[b] - B[b - 1] @ tY[b] - C[b + 1] @ tX[b])[:, b_idx]
 
             if len(blocks) == 1:
                 break
 
-            # Now calculate the thing (above below)
+            # Now calculate above/below
+
             sl = slice(c[b], c[b + 1])
             if b == blocks[0] and b < nb - 1:
                 # Calculate below
                 slp = slice(c[b + 1], c[b + 2])
-                G[slp, r_idx] = - tX[b] @ G[sl, r_idx]
+                G[slp, c_idx] = - tX[b] @ G[sl, c_idx]
             elif b > 0:
                 # Calculate above
                 slp = slice(c[b - 1], c[b])
-                G[slp, r_idx] = - tY[b] @ G[sl, r_idx]
+                G[slp, c_idx] = - tY[b] @ G[sl, c_idx]
 
         # Now we can calculate the Gf column above
         b = blocks[0]
