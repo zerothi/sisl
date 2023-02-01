@@ -43,7 +43,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
         Parameters
         ----------
         angles : (3,)
-           angle to rotate spin boxes, :math:`x`, :math:`y` and :math`z`, respectively
+           angle to rotate spin boxes, :math:`x`, :math:`y` and :math:`z`, respectively
         rad : bool, optional
            Determines the unit of `angles`, for true it is in radians
 
