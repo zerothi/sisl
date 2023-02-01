@@ -33,6 +33,7 @@ import sisl as si
 from sisl.messages import warn
 from sisl import _array as _a
 from sisl.linalg import (
+    eigh,
     eigh_destroy, svd_destroy, inv_destroy,
     signsqrt,
     cholesky, solve
@@ -135,12 +136,12 @@ class PivotSelfEnergy(si.physics.SelfEnergy):
         if isinstance(se, si.io.tbtrans.tbtsencSileTBtrans):
             def se_func(*args, **kwargs):
                 return self._se.self_energy(self.name, *args, **kwargs)
-            def scat_func(*args, **kwargs):
+            def broad_func(*args, **kwargs):
                 return self._se.broadening_matrix(self.name, *args, **kwargs)
         else:
             def se_func(*args, **kwargs):
                 return self._se.self_energy(*args, **kwargs)
-            def scat_func(*args, **kwargs):
+            def broad_func(*args, **kwargs):
                 return self._se.broadening_matrix(*args, **kwargs)
 
         # Store the pivoting for faster indexing
@@ -177,7 +178,7 @@ class PivotSelfEnergy(si.physics.SelfEnergy):
         #self.pvt_btd_sort = arangei(o)
 
         self._se_func = se_func
-        self._scat_func = scat_func
+        self._broad_func = broad_func
 
     def __str__(self):
         return f"{self.__class__.__name__}{{no: {len(self)}}}"
@@ -189,7 +190,7 @@ class PivotSelfEnergy(si.physics.SelfEnergy):
         return self._se_func(*args, **kwargs)
 
     def broadening_matrix(self, *args, **kwargs):
-        return self._scat_func(*args, **kwargs)
+        return self._broad_func(*args, **kwargs)
 
 
 class DownfoldSelfEnergy(PivotSelfEnergy):
@@ -337,7 +338,7 @@ class DownfoldSelfEnergy(PivotSelfEnergy):
         return Mr
 
     def broadening_matrix(self, *args, **kwargs):
-        return self.se2scat(self.self_energy(*args, **kwargs))
+        return self.se2broadening(self.self_energy(*args, **kwargs))
 
 
 class BlockMatrixIndexer:
@@ -783,7 +784,7 @@ class DeviceGreen:
 
         return False
 
-    def _prepare_se(self, E, k=(0, 0, 0)):
+    def _prepare_se(self, E, k):
         if self._check_Ek(E, k):
             return
         E = self._data.E
@@ -796,11 +797,33 @@ class DeviceGreen:
             # Insert values
             SE = elec.self_energy(E, k)
             se.append(SE)
-            gamma.append(elec.se2scat(SE))
+            gamma.append(elec.se2broadening(SE))
         self._data.se = se
         self._data.gamma = gamma
 
-    def _prepare(self, E, k=(0, 0, 0)):
+    def _prepare_tgamma(self, E, k, cutoff):
+        if self._check_Ek(E, k) and hasattr(self._data, "tgamma"):
+            if abs(cutoff - self._data.tgamma_cutoff) < 1e-13:
+                return
+
+        # ensure we have the self-energies
+        self._prepare_se(E, k)
+
+        # Get the sqrt of the level broadening matrix
+        def eigh_sqrt(gam, cutoff):
+            eig, U = eigh(gam)
+            idx = (eig >= cutoff).nonzero()[0]
+            eig = np.emath.sqrt(eig[idx])
+            return eig * U.T[idx].T
+
+        tgamma = []
+        for gam in self._data.gamma:
+            tgamma.append(eigh_sqrt(gam, cutoff))
+
+        self._data.tgamma = tgamma
+        self._data.tgamma_cutoff = cutoff
+
+    def _prepare(self, E, k):
         if self._check_Ek(E, k) and hasattr(self._data, "A"):
             return
 
@@ -822,7 +845,7 @@ class DeviceGreen:
             # Insert values
             SE = elec.self_energy(E, k)
             inv_G[elec.pvt_dev, elec.pvt_dev.T] -= SE
-            gamma.append(elec.se2scat(SE))
+            gamma.append(elec.se2broadening(SE))
         del SE
         data.gamma = gamma
 
@@ -1841,6 +1864,93 @@ class DeviceGreen:
         )
         return si.physics.StateCElectron(A.T, DOS, self, **info)
 
+    def scattering_matrix(self, elec_from, elec_to, E, k=(0, 0, 0), cutoff=0.):
+        r""" Calculate the scattering matrix (S-matrix) between `elec_from` and `elec_to`
+
+        The scattering matrix is calculated as
+
+        .. math::
+            \mathbf S_{\mathfrak{e_{\mathrm{to}}\mathfrak{e_{\mathrm{from}} }(E, \mathbf) &= -\delta_{\alpha\beta} + i
+               \tilde\boldsymbol\Gamma_{\mathfrak{e_{\mathrm{to}}}}
+               \mathbf G
+               \tilde\boldsymbol\Gamma_{\mathfrak{e_{\mathrm{from}}}}
+
+        Here the :math:`\tilde\boldsymbol\Gamma` is defined as:
+
+        .. math::
+            \boldsymbol\Gamma(E,\mathbf k) \mathbf U &= \lambda \mathbf U
+            \\
+            \tilde\boldsymbol\Gamma(E,\mathbf k) &= \operatorname{diag}\{ \lambda \} \mathbf U
+
+        Once the scattering matrices have been calculated one can calculate the full transmission
+        function
+
+        .. math::
+            T_{\mathfrak{e_{\mathrm{from}}\mathfrak{e_{\mathrm{to}} }(E, \mathbf k) = \operatorname{Tr}\big[
+              \mathbf S_{\mathfrak{e_{\mathrm{to}}\mathfrak{e_{\mathrm{from}} }^\dagger
+              \mathbf S_{\mathfrak{e_{\mathrm{to}}\mathfrak{e_{\mathrm{from}} }\big]
+
+
+        Parameters
+        ----------
+        elec_from : str or int
+           the electrode where the scattering matrix originates from
+        elec_to : str or int (list or not)
+           where the scattering matrix ends in.
+        E : float
+           the energy to calculate at, may be a complex value.
+        k : array_like, optional
+           k-point to calculate the scattering matrix at
+        cutoff : float, optional
+           cutoff the eigen states of the broadening matrix that are below this value.
+           I.e. only :math:`\lambda` values above this value will be used.
+           A too high value will remove too many eigen states and results will be wrong.
+           A small value improves precision at the cost of bigger matrices.
+
+        Returns
+        -------
+        scat_matrix : numpy.ndarray or tupel of numpy.ndarray
+           for each `elec_to` a scattering matrix will be returned. Its dimensions will be
+           depending on the `cutoff` value at the cost of precision.
+        """
+        # Calculate the full column green function
+        elec_from = self._elec(elec_from)
+
+        is_single = False
+        if isinstance(elec_to, (Integral, str, PivotSelfEnergy)):
+            is_single = True
+            elec_to = [elec_to]
+        # convert to indices
+        elec_to = [self._elec(e) for e in elec_to]
+
+        # Prepare calculation @ E and k
+        self._prepare(E, k)
+        self._prepare_tgamma(E, k, cutoff)
+
+        # Get full G in column of 'from'
+        G = self._green_column(self.elecs_pvt_dev[elec_from].ravel())
+
+        # the \tilde \Gamma functions
+        tG = self._data.tgamma
+
+        # Now calculate the S matrices
+        def calc_S(elec_from, jtgam_from, elec_to, tgam_to, G):
+            pvt = self.elecs_pvt_dev[elec_to].ravel()
+            g = G[pvt, :]
+            ret = dagger(tgam_to) @ g @ jtgam_from
+            if elec_from == elec_to:
+                min_n = min(ret.shape)
+                np.add.at(ret, (np.arange(min_n), np.arange(min_n)), -1)
+            return ret
+
+        tgam_from = 1j * tG[elec_from]
+        S = tuple(calc_S(elec_from, tgam_from, elec, tG[elec], G)
+             for elec in elec_to)
+
+        if is_single:
+            return S[0]
+        return S
+
     def eigenchannel(self, state, elec_to, ret_coeff=False):
         r""" Calculate the eigen channel from scattering states entering electrodes `elec_to`
 
@@ -1863,7 +1973,7 @@ class DeviceGreen:
         ----------
         state : sisl.physics.StateCElectron
             the scattering states as obtained from `scattering_state`
-        elec_to : str, or list
+        elec_to : str or int (list or not)
             which electrodes to consider for the transmission eigenchannel
             decomposition (the sum in the above equation)
         ret_coeff : bool, optional

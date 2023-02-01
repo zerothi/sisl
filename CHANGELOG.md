@@ -18,6 +18,11 @@ we hit release version 1.0.0.
 	Also changed `se2scat` to `se2broadening` #529
 
 
+### toolbox.btd
+#### Added
+- calculation of scattering matrices
+
+
 ## [0.13.0] - 2023-1-18
 
 ### Added
