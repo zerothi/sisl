@@ -1970,7 +1970,7 @@ class DeviceGreen:
 
         where the eigenvectors of :math:`\mathbf t_{\mathbf u}` is the coefficients of the
         DOS weighted scattering states (:math:`\sqrt{2\pi a_i} u_i`) for the individual eigen channels.
-        The eigenvalues are the transmission eigenvalues. Further details may be found in [1]_.
+        The eigenvalues are the transmission eigenvalues. Further details may be found in [#c1]_.
 
         Parameters
         ----------
@@ -1995,7 +1995,7 @@ class DeviceGreen:
 
         References
         ----------
-        .. [1] :doi:`M. Paulsson and M. Brandbyge, "Transmission eigenchannels from non-equilibrium Green's functions", PRB **76**, 115117 (2007) <10.1103/PhysRevB.76.115117>`
+        .. [#c1] :doi:`M. Paulsson and M. Brandbyge, "Transmission eigenchannels from non-equilibrium Green's functions", PRB **76**, 115117 (2007) <10.1103/PhysRevB.76.115117>`
         """
         self._prepare_se(state.info["E"], state.info["k"])
         if isinstance(elec_to, (Integral, str, PivotSelfEnergy)):

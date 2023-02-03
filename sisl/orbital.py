@@ -1136,7 +1136,7 @@ class HydrogenicOrbital(AtomicOrbital):
 
     A hydrogenic atom (Hydrogen-like) is an atom with a single valence electron.
 
-    The returned orbital is properly normalized, see [1]_ for details.
+    The returned orbital is properly normalized, see [#c1]_ for details.
 
     The orbital has the familiar spherical shape
 
@@ -1146,7 +1146,7 @@ class HydrogenicOrbital(AtomicOrbital):
         \\
         \phi_{lmn}(\mathbf r) &= R_{nl}(|\mathbf r|) Y^m_l(\theta, \varphi)
         \\
-        R_{nl}(|\mathbf r|) &= -\sqrt{\big(\frac{2Z}{na_0}\big)^3 \frac{(n-l-1)!}{2n(n+l)!}
+        R_{nl}(|\mathbf r|) &= -\sqrt{\big(\frac{2Z}{na_0}\big)^3 \frac{(n-l-1)!}{2n(n+l)!}}
            e^{-Zr/(na_0)} \big( \frac{2Zr}{na_0} \big)^l L_{n-l-1}^{(2l+1)}
            \big( \frac{2Zr}{na_0} \big)
 
@@ -1155,7 +1155,7 @@ class HydrogenicOrbital(AtomicOrbital):
 
     References
     ----------
-    .. [1] : https://en.wikipedia.org/wiki/Hydrogen-like_atom
+    .. [#c1] : https://en.wikipedia.org/wiki/Hydrogen-like_atom
 
 
     Parameters

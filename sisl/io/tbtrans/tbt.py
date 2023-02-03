@@ -1359,7 +1359,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         not necessarily flow along the transport direction.
 
         For correct interpretation of the orbital transmissions it is vital that one integrates the full
-        Brillouin zone without any symmetry operations, see Section 5.4 in [1]_.
+        Brillouin zone without any symmetry operations, see Section 5.4 in [#c1]_.
 
         Parameters
         ----------
@@ -1401,7 +1401,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         References
         ----------
-        .. [1] : :doi:`Papior, N. R., "Computational Tools and Studies of Graphene Nanostructures", PhD. thesis, Technical University of Denmark (2016) <10.11581/DTU:00000025>`
+        .. [#c1] : :doi:`Papior, N. R., "Computational Tools and Studies of Graphene Nanostructures", PhD. thesis, Technical University of Denmark (2016) <10.11581/DTU:00000025>`
 
         See Also
         --------
