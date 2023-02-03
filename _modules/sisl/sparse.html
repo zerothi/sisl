@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.sparse &mdash; sisl 0.1.dev1+g851d78c documentation</title>
+  <title>sisl.sparse &mdash; sisl 0.1.dev1+ge294a9a documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g851d78c
+                0.1.dev1+ge294a9a
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -200,15 +200,6 @@
 <span class="sd">    nnz : int, optional</span>
 <span class="sd">       initial total number of non-zero elements</span>
 <span class="sd">       This quantity has precedence over `nnzpr`</span>
-
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
-<span class="sd">    ncol : int-array, ``self.shape[0]``</span>
-<span class="sd">       number of entries per row</span>
-<span class="sd">    ptr : int-array, ``self.shape[0]+1``</span>
-<span class="sd">       pointer index in the 1D column indices of the corresponding row</span>
-<span class="sd">    col : int-array</span>
-<span class="sd">       column indices of the sparse elements</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># We don&#39;t really need slots, but it is useful</span>
     <span class="c1"># to keep a good overview of which variables are present</span>
@@ -269,8 +260,17 @@
 
                 <span class="c1"># Copy data to the arrays</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">ptr</span> <span class="o">=</span> <span class="n">arg1</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">int32</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot; int-array, ``self.shape[0]+1``</span>
+<span class="sd">pointer index in the 1D column indices of the corresponding row</span>
+<span class="sd">                &quot;&quot;&quot;</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">ncol</span> <span class="o">=</span> <span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ptr</span><span class="p">)</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot; int-array, ``self.shape[0]``</span>
+<span class="sd">number of entries per row</span>
+<span class="sd">                &quot;&quot;&quot;</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">col</span> <span class="o">=</span> <span class="n">arg1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">int32</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot; int-array</span>
+<span class="sd">column indices of the sparse elements</span>
+<span class="sd">                &quot;&quot;&quot;</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_nnz</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">col</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_D</span> <span class="o">=</span> <span class="n">empty</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">arg1</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arg1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>0.8.1 &mdash; sisl 0.1.dev1+g851d78c documentation</title>
+  <title>0.8.1 &mdash; sisl 0.1.dev1+ge294a9a documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g851d78c
+                0.1.dev1+ge294a9a
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -168,14 +168,9 @@ names contributed a patch for the first time.</p>
 <ul>
 <li><p>Fix a bug when reading non-Gamma TSHS files, now the
 supercell information is correct.</p></li>
-<li><dl class="simple">
-<dt>tbtncSileSiesta now distinguishes between:</dt><dd><p>electronic_temperature [K]</p>
-</dd>
-<dt>and</dt><dd><p>kT [eV]</p>
-</dd>
-</dl>
-<p>where the units are not the same.</p>
-</li>
+<li><p>tbtncSileSiesta now distinguishes between:
+electronic_temperature [K] and kT [eV]
+where the units are not the same.</p></li>
 <li><p>Fixed TBT_DN.nc TBT_UP.nc detection as a <em class="xref py py-obj">Sile</em></p></li>
 <li><p>Added information printout for the TBT.nc files</p>
 <blockquote>
@@ -197,7 +192,7 @@ fdf flags via:</p>
 <li><p>Changed default output precision for TXT files to .8f.
 Additionally one may use flag <em class="xref py py-obj">–format</em> in <em class="xref py py-obj">sgeom</em> to
 define the precision.</p></li>
-<li><p><a href="#id2"><span class="problematic" id="id3">`</span></a>Shape`s have been added. There are now several Shapes
+<li><p><em class="xref py py-obj">Shape</em> has been added. There are now several Shapes
 which may be used to easily find atoms within a given Shape.
 This should in principle allow construction of very complex Shapes
 and easier construction of complex Hamiltonians</p></li>

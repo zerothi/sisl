@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.electron.StateCElectron &mdash; sisl 0.1.dev1+g851d78c documentation</title>
+  <title>sisl.physics.electron.StateCElectron &mdash; sisl 0.1.dev1+ge294a9a documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -39,7 +39,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g851d78c
+                0.1.dev1+ge294a9a
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -588,13 +588,14 @@ The order of the IPR is defaulted to <span class="math notranslate nohighlight">
 The IPR may be used to distinguish Anderson localization and extended
 states:</p>
 <div class="math notranslate nohighlight" id="equation-ipr2">
-\begin{align}
-\lim_{L\to\infty} I_{2,i} = \left\{\begin{aligned}
-     1/L^d &amp; \text{extended state}
+ \begin{align}
+  \lim_{L\to\infty} I_{2,i} = \left\{
+    \begin{aligned}
+     1/L^d &amp;\quad \text{extended state}
      \\
-     const. &amp; \text{localized state}
-    \end{aligned}
-\end{align}</div><p>For further details see <a href="#id5"><span class="problematic" id="id1">[1]_</span></a>. Note that for eigen states the IPR reduces to:</p>
+     \text{const.} &amp;\quad \text{localized state}
+    \end{aligned}\right.
+ \end{align}</div><p>For further details see <a href="#id5"><span class="problematic" id="id1">[#c1]_</span></a>. Note that for eigen states the IPR reduces to:</p>
 <div class="math notranslate nohighlight">
 \[I_{q,i} = \sum_\nu |\psi_{i\nu}|^{2q}\]</div>
 <p>since the denominator is <span class="math notranslate nohighlight">\(1^{q} = 1\)</span>.</p>
@@ -605,7 +606,7 @@ states:</p>
 </dl>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
-<dt class="label" id="id2"><span class="brackets">1</span></dt>
+<dt class="label" id="c1"><span class="brackets">1</span></dt>
 <dd><p>: <a class="reference external" href="https://doi.org/10.1103/PhysRevB.83.184206">N. C. Murphy *et.al.*, “Generalized inverse participation ratio as a possible measure of localization for interacting systems”, PRB **83**, 184206 (2011)</a></p>
 </dd>
 </dl>
@@ -885,14 +886,14 @@ to the energies of the states.</p>
 This is because of the velocity un-folding for degenerate modes. I.e. calling
 <a class="reference internal" href="sisl.physics.electron.PDOS.html#sisl.physics.electron.PDOS" title="sisl.physics.electron.PDOS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PDOS</span></code></a> after this method <em>may</em> change the result.</p>
 <p class="rubric">Notes</p>
-<p>The velocities are calculated without the Berry curvature contribution see Eq. (2) in <a href="#id6"><span class="problematic" id="id3">[1]_</span></a>.
+<p>The velocities are calculated without the Berry curvature contribution see Eq. (2) in <a href="#id6"><span class="problematic" id="id2">[#c1]_</span></a>.
 The missing contribution may be added in later editions, for completeness sake, it is:</p>
 <div class="math notranslate nohighlight">
 \[\delta \mathbf v = - \mathbf k\times \Omega_i(\mathbf k)\]</div>
 <p>where <span class="math notranslate nohighlight">\(\Omega_i\)</span> is the Berry curvature for state <span class="math notranslate nohighlight">\(i\)</span>.</p>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
-<dt class="label" id="id4"><span class="brackets">1</span></dt>
+<dt class="label" id="id3"><span class="brackets">2</span></dt>
 <dd><p>: <a class="reference external" href="https://doi.org/10.1103/PhysRevB.74.195118">X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, “Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation”, PRB **74**, 195118 (2006)</a></p>
 </dd>
 </dl>

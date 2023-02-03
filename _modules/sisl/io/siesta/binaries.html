@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.binaries &mdash; sisl 0.1.dev1+g851d78c documentation</title>
+  <title>sisl.io.siesta.binaries &mdash; sisl 0.1.dev1+ge294a9a documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g851d78c
+                0.1.dev1+ge294a9a
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -117,7 +117,6 @@
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">info</span><span class="p">,</span> <span class="n">warn</span><span class="p">,</span> <span class="n">SislError</span>
 
-<span class="kn">from</span> <span class="nn">._help</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
 <span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">Atoms</span><span class="p">,</span> <span class="n">SuperCell</span><span class="p">,</span> <span class="n">Grid</span><span class="p">,</span> <span class="n">SparseCSR</span>
 <span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">AtomicOrbital</span>
@@ -128,6 +127,8 @@
 <span class="kn">from</span> <span class="nn">sisl.physics</span> <span class="kn">import</span> <span class="n">BrillouinZone</span>
 <span class="kn">from</span> <span class="nn">sisl.physics.overlap</span> <span class="kn">import</span> <span class="n">Overlap</span>
 <span class="kn">from</span> <span class="nn">sisl.physics.electron</span> <span class="kn">import</span> <span class="n">EigenstateElectron</span>
+<span class="kn">from</span> <span class="nn">.._help</span> <span class="kn">import</span> <span class="n">grid_reduce_indices</span>
+<span class="kn">from</span> <span class="nn">._help</span> <span class="kn">import</span> <span class="o">*</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;tshsSileSiesta&quot;</span><span class="p">,</span> <span class="s2">&quot;onlysSileSiesta&quot;</span><span class="p">,</span> <span class="s2">&quot;tsdeSileSiesta&quot;</span><span class="p">]</span>
@@ -1829,6 +1830,8 @@
 <span class="sd">           Default to the first component.</span>
 <span class="sd">        dtype : numpy.float64, optional</span>
 <span class="sd">           default data-type precision</span>
+<span class="sd">        spin : optional</span>
+<span class="sd">           same as `index` argument. `spin` argument has precedence.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">index</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
         <span class="c1"># Read the sizes and cell</span>
@@ -1840,14 +1843,7 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">Integral</span><span class="p">):</span>
             <span class="n">grid</span> <span class="o">=</span> <span class="n">grid</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="n">index</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.read_grid requires spin to be an integer or &quot;</span>
-                                 <span class="s2">&quot;an array of length equal to the number of spin components.&quot;</span><span class="p">)</span>
-            <span class="c1"># It is F-contiguous, hence the last index</span>
-            <span class="n">g</span> <span class="o">=</span> <span class="n">grid</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">scale</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
-                <span class="n">g</span> <span class="o">+=</span> <span class="n">grid</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="o">+</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">scale</span>
-            <span class="n">grid</span> <span class="o">=</span> <span class="n">g</span>
+            <span class="n">grid</span> <span class="o">=</span> <span class="n">grid_reduce_indices</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 
         <span class="c1"># Simply create the grid (with no information)</span>
         <span class="c1"># We will overwrite the actual grid</span>

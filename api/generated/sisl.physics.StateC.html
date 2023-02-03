@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.StateC &mdash; sisl 0.1.dev1+g851d78c documentation</title>
+  <title>sisl.physics.StateC &mdash; sisl 0.1.dev1+ge294a9a documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -39,7 +39,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g851d78c
+                0.1.dev1+ge294a9a
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -155,51 +155,7 @@
 <dt class="sig sig-object py" id="sisl.physics.StateC">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.physics.</span></span><span class="sig-name descname"><span class="pre">StateC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.StateC" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State"><code class="xref py py-class docutils literal notranslate"><span class="pre">State</span></code></a></p>
-<p>An object handling a set of vectors describing a given <em>state</em> with associated coefficients <a class="reference internal" href="#id0" title="sisl.physics.StateC.c"><code class="xref py py-obj docutils literal notranslate"><span class="pre">c</span></code></a></p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="sisl.physics.StateC.c">
-<span class="sig-name descname"><span class="pre">c</span></span><a class="headerlink" href="#sisl.physics.StateC.c" title="Permalink to this definition"></a></dt>
-<dd><p>coefficients assigned to each state</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="sisl.physics.StateC.state">
-<span class="sig-name descname"><span class="pre">state</span></span><a class="headerlink" href="#sisl.physics.StateC.state" title="Permalink to this definition"></a></dt>
-<dd><p>state coefficients</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="sisl.physics.StateC.info">
-<span class="sig-name descname"><span class="pre">info</span></span><a class="headerlink" href="#sisl.physics.StateC.info" title="Permalink to this definition"></a></dt>
-<dd><p>information regarding the creation of the states</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)">dict</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="sisl.physics.StateC.parent">
-<span class="sig-name descname"><span class="pre">parent</span></span><a class="headerlink" href="#sisl.physics.StateC.parent" title="Permalink to this definition"></a></dt>
-<dd><p>object from where the states has been calculated, in one way or the other</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>obj</p>
-</dd>
-</dl>
-</dd></dl>
-
+<p>An object handling a set of vectors describing a given <em>state</em> with associated coefficients <a class="reference internal" href="#sisl.physics.StateC.c" title="sisl.physics.StateC.c"><code class="xref py py-obj docutils literal notranslate"><span class="pre">c</span></code></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -207,7 +163,7 @@
 <li><p><strong>c</strong> (<em>array_like</em>) – coefficients for the states <code class="docutils literal notranslate"><span class="pre">c[i]</span></code> containing the i’th coefficient</p></li>
 <li><p><strong>parent</strong> (<em>obj</em><em>, </em><em>optional</em>) – a parent object that defines the origin of the state.</p></li>
 <li><p><strong>**info</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – an info dictionary that turns into an attribute on the object.
-This <a class="reference internal" href="#id1" title="sisl.physics.StateC.info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">info</span></code></a> may contain anything that may be relevant for the state.</p></li>
+This <a class="reference internal" href="#sisl.physics.StateC.info" title="sisl.physics.StateC.info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">info</span></code></a> may contain anything that may be relevant for the state.</p></li>
 </ul>
 </dd>
 </dl>
@@ -286,7 +242,7 @@ This <a class="reference internal" href="#id1" title="sisl.physics.StateC.info">
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.StateC.translate" title="sisl.physics.StateC.translate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate</span></code></a>(isc)</p></td>
 <td><p>Translate the vectors to a new unit-cell position</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#id0" title="sisl.physics.StateC.c"><code class="xref py py-obj docutils literal notranslate"><span class="pre">c</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.StateC.c" title="sisl.physics.StateC.c"><code class="xref py py-obj docutils literal notranslate"><span class="pre">c</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.StateC.dkind" title="sisl.physics.StateC.dkind"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dkind</span></code></a></p></td>
@@ -295,16 +251,16 @@ This <a class="reference internal" href="#id1" title="sisl.physics.StateC.info">
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.StateC.dtype" title="sisl.physics.StateC.dtype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dtype</span></code></a></p></td>
 <td><p>Data-type for the state</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#id1" title="sisl.physics.StateC.info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">info</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.StateC.info" title="sisl.physics.StateC.info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">info</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#id4" title="sisl.physics.StateC.parent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parent</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.StateC.parent" title="sisl.physics.StateC.parent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parent</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.StateC.shape" title="sisl.physics.StateC.shape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shape</span></code></a></p></td>
 <td><p>Returns the shape of the state</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#id5" title="sisl.physics.StateC.state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">state</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.StateC.state" title="sisl.physics.StateC.state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">state</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -387,8 +343,8 @@ Only if <em class="xref py py-obj">inplace</em> is False and <em class="xref py 
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id0">
-<span class="sig-name descname"><span class="pre">c</span></span><a class="headerlink" href="#id0" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="sisl.physics.StateC.c">
+<span class="sig-name descname"><span class="pre">c</span></span><a class="headerlink" href="#sisl.physics.StateC.c" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -506,8 +462,8 @@ Only returned for <code class="docutils literal notranslate"><span class="pre">o
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id1">
-<span class="sig-name descname"><span class="pre">info</span></span><a class="headerlink" href="#id1" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="sisl.physics.StateC.info">
+<span class="sig-name descname"><span class="pre">info</span></span><a class="headerlink" href="#sisl.physics.StateC.info" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -553,13 +509,14 @@ The order of the IPR is defaulted to <span class="math notranslate nohighlight">
 The IPR may be used to distinguish Anderson localization and extended
 states:</p>
 <div class="math notranslate nohighlight" id="equation-ipr2">
-\begin{align}
-\lim_{L\to\infty} I_{2,i} = \left\{\begin{aligned}
-     1/L^d &amp; \text{extended state}
+ \begin{align}
+  \lim_{L\to\infty} I_{2,i} = \left\{
+    \begin{aligned}
+     1/L^d &amp;\quad \text{extended state}
      \\
-     const. &amp; \text{localized state}
-    \end{aligned}
-\end{align}</div><p>For further details see <a class="footnote-reference brackets" href="#id3" id="id2">1</a>. Note that for eigen states the IPR reduces to:</p>
+     \text{const.} &amp;\quad \text{localized state}
+    \end{aligned}\right.
+ \end{align}</div><p>For further details see <a class="footnote-reference brackets" href="#c1" id="id1">1</a>. Note that for eigen states the IPR reduces to:</p>
 <div class="math notranslate nohighlight">
 \[I_{q,i} = \sum_\nu |\psi_{i\nu}|^{2q}\]</div>
 <p>since the denominator is <span class="math notranslate nohighlight">\(1^{q} = 1\)</span>.</p>
@@ -570,7 +527,7 @@ states:</p>
 </dl>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
-<dt class="label" id="id3"><span class="brackets"><a class="fn-backref" href="#id2">1</a></span></dt>
+<dt class="label" id="c1"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
 <dd><p>: <a class="reference external" href="https://doi.org/10.1103/PhysRevB.83.184206">N. C. Murphy *et.al.*, “Generalized inverse participation ratio as a possible measure of localization for interacting systems”, PRB **83**, 184206 (2011)</a></p>
 </dd>
 </dl>
@@ -674,8 +631,8 @@ product with itself. The object itself will always be the bra <span class="math 
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id4">
-<span class="sig-name descname"><span class="pre">parent</span></span><a class="headerlink" href="#id4" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="sisl.physics.StateC.parent">
+<span class="sig-name descname"><span class="pre">parent</span></span><a class="headerlink" href="#sisl.physics.StateC.parent" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -750,8 +707,8 @@ and <span class="math notranslate nohighlight">\(\phi\)</span> is the angle to a
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id5">
-<span class="sig-name descname"><span class="pre">state</span></span><a class="headerlink" href="#id5" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="sisl.physics.StateC.state">
+<span class="sig-name descname"><span class="pre">state</span></span><a class="headerlink" href="#sisl.physics.StateC.state" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">

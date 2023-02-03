@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.siesta_nc &mdash; sisl 0.1.dev1+g851d78c documentation</title>
+  <title>sisl.io.siesta.siesta_nc &mdash; sisl 0.1.dev1+ge294a9a documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g851d78c
+                0.1.dev1+ge294a9a
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -117,6 +117,7 @@
 <span class="kn">from</span> <span class="nn">sisl.physics</span> <span class="kn">import</span> <span class="n">DynamicalMatrix</span>
 <span class="kn">from</span> <span class="nn">sisl.physics</span> <span class="kn">import</span> <span class="n">Hamiltonian</span>
 <span class="kn">from</span> <span class="nn">sisl.physics.overlap</span> <span class="kn">import</span> <span class="n">Overlap</span>
+<span class="kn">from</span> <span class="nn">.._help</span> <span class="kn">import</span> <span class="n">grid_reduce_indices</span>
 <span class="kn">from</span> <span class="nn">._help</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_siesta</span>
@@ -429,7 +430,7 @@
 
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="s1">&#39;GRID&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ncSileSiesta.read_grid"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.read_grid">[docs]</a>    <span class="k">def</span> <span class="nf">read_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="ncSileSiesta.read_grid"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.ncSileSiesta.html#sisl.io.siesta.ncSileSiesta.read_grid">[docs]</a>    <span class="k">def</span> <span class="nf">read_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads a grid in the current Siesta.nc file</span>
 
 <span class="sd">        Enables the reading and processing of the grids created by Siesta</span>
@@ -438,13 +439,15 @@
 <span class="sd">        ----------</span>
 <span class="sd">        name : str</span>
 <span class="sd">           name of the grid variable to read</span>
-<span class="sd">        spin : int or array_like, optional</span>
+<span class="sd">        index : int or array_like, optional</span>
 <span class="sd">           the spin-index for retrieving one of the components. If a vector</span>
 <span class="sd">           is passed it refers to the fraction per indexed component. I.e.</span>
 <span class="sd">           ``[0.5, 0.5]`` will return sum of half the first two components.</span>
 <span class="sd">           Default to the first component.</span>
+<span class="sd">        spin : optional</span>
+<span class="sd">           same as `index` argument. `spin` argument has precedence.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">spin</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="n">spin</span><span class="p">)</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
         <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_geometry</span><span class="p">()</span>
 
         <span class="c1"># Shorthand</span>
@@ -475,15 +478,10 @@
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">[:]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
             <span class="n">grid</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">v</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">unit</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spin</span><span class="p">,</span> <span class="n">Integral</span><span class="p">):</span>
-            <span class="n">grid</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="n">spin</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">unit</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">Integral</span><span class="p">):</span>
+            <span class="n">grid</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">unit</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spin</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-                <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1">.read_grid requires spin to be an integer or &#39;</span>
-                                <span class="s1">&#39;an array of length equal to the number of spin components.&#39;</span><span class="p">)</span>
-            <span class="n">grid</span><span class="o">.</span><span class="n">grid</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">*</span> <span class="p">(</span><span class="n">spin</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">unit</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">scale</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">spin</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
-                <span class="n">grid</span><span class="o">.</span><span class="n">grid</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="o">+</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">*</span> <span class="p">(</span><span class="n">scale</span> <span class="o">*</span> <span class="n">unit</span><span class="p">)</span>
+            <span class="n">grid_reduce_indices</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">*</span> <span class="n">unit</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">grid</span><span class="o">.</span><span class="n">grid</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">unit</span> <span class="o">==</span> <span class="s1">&#39;Ry&#39;</span><span class="p">:</span>

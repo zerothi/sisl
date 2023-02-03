@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl_toolbox.btd.DownfoldSelfEnergy &mdash; sisl 0.1.dev1+ge294a9a documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="sisl_toolbox.btd.DeviceGreen" href="sisl_toolbox.btd.DeviceGreen.html" />
+    <link rel="prev" title="sisl_toolbox.btd.PivotSelfEnergy" href="sisl_toolbox.btd.PivotSelfEnergy.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                0.1.dev1+ge294a9a
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cite.html">Citing sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../publications.html">Publications using sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Toolboxes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../siesta/atom_plot.html">Plotting <em class="xref py py-obj">atom</em> output</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../btd.html">Block-tri-diagonal inversion algorithms</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="sisl_toolbox.btd.PivotSelfEnergy.html">sisl_toolbox.btd.PivotSelfEnergy</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">sisl_toolbox.btd.DownfoldSelfEnergy</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#sisl_toolbox.btd.DownfoldSelfEnergy"><code class="docutils literal notranslate"><span class="pre">DownfoldSelfEnergy</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sisl_toolbox.btd.DeviceGreen.html">sisl_toolbox.btd.DeviceGreen</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Toolboxes</a></li>
+          <li class="breadcrumb-item"><a href="../btd.html">Block-tri-diagonal inversion algorithms</a></li>
+      <li class="breadcrumb-item active">sisl_toolbox.btd.DownfoldSelfEnergy</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/toolbox/btd/generated/sisl_toolbox.btd.DownfoldSelfEnergy.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="sisl-toolbox-btd-downfoldselfenergy">
+<h1>sisl_toolbox.btd.DownfoldSelfEnergy<a class="headerlink" href="#sisl-toolbox-btd-downfoldselfenergy" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="sisl_toolbox.btd.DownfoldSelfEnergy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl_toolbox.btd.</span></span><span class="sig-name descname"><span class="pre">DownfoldSelfEnergy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">se</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pivot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Hdevice</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta_device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bulk</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bloch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl_toolbox/btd/_btd.html#DownfoldSelfEnergy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl_toolbox.btd.DownfoldSelfEnergy" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="sisl_toolbox.btd.PivotSelfEnergy.html#sisl_toolbox.btd.PivotSelfEnergy" title="sisl_toolbox.btd._btd.PivotSelfEnergy"><code class="xref py py-class docutils literal notranslate"><span class="pre">PivotSelfEnergy</span></code></a></p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl_toolbox.btd.DownfoldSelfEnergy.broadening_matrix" title="sisl_toolbox.btd.DownfoldSelfEnergy.broadening_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">broadening_matrix</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Calculate the broadening matrix by first calculating the self-energy</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl_toolbox.btd.DownfoldSelfEnergy.se2broadening" title="sisl_toolbox.btd.DownfoldSelfEnergy.se2broadening"><code class="xref py py-obj docutils literal notranslate"><span class="pre">se2broadening</span></code></a>(SE)</p></td>
+<td><p>Calculate the broadening matrix from the self-energy</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl_toolbox.btd.DownfoldSelfEnergy.self_energy" title="sisl_toolbox.btd.DownfoldSelfEnergy.self_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">self_energy</span></code></a>(E[, k])</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl_toolbox.btd.DownfoldSelfEnergy.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">se</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pivot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Hdevice</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta_device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bulk</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bloch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl_toolbox/btd/_btd.html#DownfoldSelfEnergy.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl_toolbox.btd.DownfoldSelfEnergy.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Self-energy class for constructing a self-energy.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl_toolbox.btd.DownfoldSelfEnergy.broadening_matrix">
+<span class="sig-name descname"><span class="pre">broadening_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl_toolbox/btd/_btd.html#DownfoldSelfEnergy.broadening_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl_toolbox.btd.DownfoldSelfEnergy.broadening_matrix" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the broadening matrix by first calculating the self-energy</p>
+<p>Any arguments that is passed to this method is directly passed to <a class="reference internal" href="#sisl_toolbox.btd.DownfoldSelfEnergy.self_energy" title="sisl_toolbox.btd.DownfoldSelfEnergy.self_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">self_energy</span></code></a>.</p>
+<p>See <a class="reference internal" href="#sisl_toolbox.btd.DownfoldSelfEnergy.self_energy" title="sisl_toolbox.btd.DownfoldSelfEnergy.self_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">self_energy</span></code></a> for details.</p>
+<p>This corresponds to:</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol\Gamma = i(\boldsymbol\Sigma - \boldsymbol \Sigma ^\dagger)\]</div>
+<p class="rubric">Examples</p>
+<p>Calculating both the self-energy and the broadening matrix.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SE</span> <span class="o">=</span> <span class="n">SelfEnergy</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">self_energy</span> <span class="o">=</span> <span class="n">SE</span><span class="o">.</span><span class="n">self_energy</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gamma</span> <span class="o">=</span> <span class="n">SE</span><span class="o">.</span><span class="n">broadening_matrix</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For a huge performance boost, please do:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SE</span> <span class="o">=</span> <span class="n">SelfEnergy</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">self_energy</span> <span class="o">=</span> <span class="n">SE</span><span class="o">.</span><span class="n">self_energy</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gamma</span> <span class="o">=</span> <span class="n">SE</span><span class="o">.</span><span class="n">se2broadening</span><span class="p">(</span><span class="n">self_energy</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="rubric">Notes</p>
+<p>When using <em>both</em> the self-energy <em>and</em> the broadening matrix please use <a class="reference internal" href="#sisl_toolbox.btd.DownfoldSelfEnergy.se2broadening" title="sisl_toolbox.btd.DownfoldSelfEnergy.se2broadening"><code class="xref py py-obj docutils literal notranslate"><span class="pre">se2broadening</span></code></a> after having
+calculated the self-energy, this will be <em>much</em>, <em>MUCH</em> faster!</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl_toolbox.btd.DownfoldSelfEnergy.se2broadening" title="sisl_toolbox.btd.DownfoldSelfEnergy.se2broadening"><code class="xref py py-obj docutils literal notranslate"><span class="pre">se2broadening</span></code></a></dt><dd><p>converting the self-energy to the broadening matrix</p>
+</dd>
+<dt><a class="reference internal" href="#sisl_toolbox.btd.DownfoldSelfEnergy.self_energy" title="sisl_toolbox.btd.DownfoldSelfEnergy.self_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">self_energy</span></code></a></dt><dd><p>the used routine to calculate the self-energy before calculating the broadening matrix</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl_toolbox.btd.DownfoldSelfEnergy.se2broadening">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">se2broadening</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">SE</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl_toolbox.btd.DownfoldSelfEnergy.se2broadening" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the broadening matrix from the self-energy</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol\Gamma = i(\boldsymbol\Sigma - \boldsymbol \Sigma ^\dagger)\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>SE</strong> (<em>matrix</em>) – self-energy matrix</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl_toolbox.btd.DownfoldSelfEnergy.self_energy">
+<span class="sig-name descname"><span class="pre">self_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl_toolbox/btd/_btd.html#DownfoldSelfEnergy.self_energy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl_toolbox.btd.DownfoldSelfEnergy.self_energy" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sisl_toolbox.btd.PivotSelfEnergy.html" class="btn btn-neutral float-left" title="sisl_toolbox.btd.PivotSelfEnergy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sisl_toolbox.btd.DeviceGreen.html" class="btn btn-neutral float-right" title="sisl_toolbox.btd.DeviceGreen" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

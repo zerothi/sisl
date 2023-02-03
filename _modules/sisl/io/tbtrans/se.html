@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.tbtrans.se &mdash; sisl 0.1.dev1+g851d78c documentation</title>
+  <title>sisl.io.tbtrans.se &mdash; sisl 0.1.dev1+ge294a9a documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g851d78c
+                0.1.dev1+ge294a9a
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -202,10 +202,10 @@
 
         <span class="k">return</span> <span class="n">SE</span></div>
 
-<div class="viewcode-block" id="tbtsencSileTBtrans.scattering_matrix"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtsencSileTBtrans.html#sisl.io.tbtrans.tbtsencSileTBtrans.scattering_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">scattering_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Return the scattering matrix from the electrode `elec`</span>
+<div class="viewcode-block" id="tbtsencSileTBtrans.broadening_matrix"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtsencSileTBtrans.html#sisl.io.tbtrans.tbtsencSileTBtrans.broadening_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">broadening_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Return the broadening matrix from the electrode `elec`</span>
 
-<span class="sd">        The scattering matrix is calculated as:</span>
+<span class="sd">        The broadening matrix is calculated as:</span>
 
 <span class="sd">        .. math::</span>
 <span class="sd">            \Gamma(E) = i [\Sigma(E) - \Sigma^\dagger(E)]</span>
@@ -213,16 +213,16 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        elec : str or int</span>
-<span class="sd">           the corresponding electrode to return the scattering matrix from</span>
+<span class="sd">           the corresponding electrode to return the broadening matrix from</span>
 <span class="sd">        E : float or int</span>
-<span class="sd">           energy to retrieve the scattering matrix at, if a floating point the closest</span>
+<span class="sd">           energy to retrieve the broadening matrix at, if a floating point the closest</span>
 <span class="sd">           energy value will be found and returned, if an integer it will correspond</span>
 <span class="sd">           to the exact index</span>
 <span class="sd">        k : array_like or int</span>
 <span class="sd">           k-point to retrieve, if an integer it is the k-index in the file</span>
 <span class="sd">        sort : bool, optional</span>
-<span class="sd">           if ``True`` the returned scattering matrix will be sorted according to the order of</span>
-<span class="sd">           the orbitals in the non-pivoted geometry, otherwise the scattering matrix will</span>
+<span class="sd">           if ``True`` the returned broadening matrix will be sorted according to the order of</span>
+<span class="sd">           the orbitals in the non-pivoted geometry, otherwise the broadening matrix will</span>
 <span class="sd">           be returned according to the pivoted orbitals in the device region.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">tree</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elec</span><span class="p">(</span><span class="n">elec</span><span class="p">)</span>

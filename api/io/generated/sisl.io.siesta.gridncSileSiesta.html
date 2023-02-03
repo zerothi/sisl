@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.gridncSileSiesta &mdash; sisl 0.1.dev1+g851d78c documentation</title>
+  <title>sisl.io.siesta.gridncSileSiesta &mdash; sisl 0.1.dev1+ge294a9a documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g851d78c
+                0.1.dev1+ge294a9a
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -202,7 +202,7 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.gridncSileSiesta.read" title="sisl.io.siesta.gridncSileSiesta.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Generic read method which should be overloaded in child-classes</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.gridncSileSiesta.read_grid" title="sisl.io.siesta.gridncSileSiesta.read_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_grid</span></code></a>([spin, name])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.gridncSileSiesta.read_grid" title="sisl.io.siesta.gridncSileSiesta.read_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_grid</span></code></a>([index, name])</p></td>
 <td><p>Reads a grid in the current Siesta.grid.nc file</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.gridncSileSiesta.read_supercell" title="sisl.io.siesta.gridncSileSiesta.read_supercell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_supercell</span></code></a>()</p></td>
@@ -314,15 +314,19 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.siesta.gridncSileSiesta.read_grid">
-<span class="sig-name descname"><span class="pre">read_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gridfunc'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/siesta_grid.html#gridncSileSiesta.read_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.gridncSileSiesta.read_grid" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">read_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gridfunc'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/siesta_grid.html#gridncSileSiesta.read_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.gridncSileSiesta.read_grid" title="Permalink to this definition"></a></dt>
 <dd><p>Reads a grid in the current Siesta.grid.nc file</p>
 <p>Enables the reading and processing of the grids created by Siesta</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>spin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>array_like</em><em>, </em><em>optional</em>) – specify the retrieved values</p></li>
+<li><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>array_like</em><em>, </em><em>optional</em>) – the spin-index for retrieving one of the components. If a vector
+is passed it refers to the fraction per indexed component. I.e.
+<code class="docutils literal notranslate"><span class="pre">[0.5,</span> <span class="pre">0.5]</span></code> will return sum of half the first two components.
+Default to the first component.</p></li>
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – the name for the grid-function (do not supply for standard Siesta output)</p></li>
 <li><p><strong>geometry</strong> (<a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a><em>, </em><em>optional</em>) – add the Geometry to the Grid</p></li>
+<li><p><strong>spin</strong> (<em>optional</em>) – same as <em class="xref py py-obj">index</em> argument. <em class="xref py py-obj">spin</em> argument has precedence.</p></li>
 </ul>
 </dd>
 </dl>

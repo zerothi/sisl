@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl_toolbox.btd.DeviceGreen &mdash; sisl 0.1.dev1+ge294a9a documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="ASE" href="../../../visualization/ase/index.html" />
+    <link rel="prev" title="sisl_toolbox.btd.DownfoldSelfEnergy" href="sisl_toolbox.btd.DownfoldSelfEnergy.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                0.1.dev1+ge294a9a
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cite.html">Citing sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../publications.html">Publications using sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Toolboxes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../siesta/atom_plot.html">Plotting <em class="xref py py-obj">atom</em> output</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../btd.html">Block-tri-diagonal inversion algorithms</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="sisl_toolbox.btd.PivotSelfEnergy.html">sisl_toolbox.btd.PivotSelfEnergy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sisl_toolbox.btd.DownfoldSelfEnergy.html">sisl_toolbox.btd.DownfoldSelfEnergy</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">sisl_toolbox.btd.DeviceGreen</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#sisl_toolbox.btd.DeviceGreen"><code class="docutils literal notranslate"><span class="pre">DeviceGreen</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Toolboxes</a></li>
+          <li class="breadcrumb-item"><a href="../btd.html">Block-tri-diagonal inversion algorithms</a></li>
+      <li class="breadcrumb-item active">sisl_toolbox.btd.DeviceGreen</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/toolbox/btd/generated/sisl_toolbox.btd.DeviceGreen.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="sisl-toolbox-btd-devicegreen">
+<h1>sisl_toolbox.btd.DeviceGreen<a class="headerlink" href="#sisl-toolbox-btd-devicegreen" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="sisl_toolbox.btd.DeviceGreen">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl_toolbox.btd.</span></span><span class="sig-name descname"><span class="pre">DeviceGreen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">H</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elecs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pivot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl_toolbox/btd/_btd.html#DeviceGreen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl_toolbox.btd.DeviceGreen" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Block-tri-diagonal Green function calculator</p>
+<p>This class enables the extraction and calculation of some important
+quantities not currently accessible in TBtrans.</p>
+<p>For instance it may be used to calculate scattering states from
+the Green function.
+Once scattering states have been calculated one may also calculate
+the eigenchannels.</p>
+<p>Both calculations are very efficient and uses very little memory
+compared to the full matrices normally used.</p>
+<p>Consider a regular 2 electrode setup with transport direction
+along the 3rd lattice vector. Then the following example may
+be used to calculate the eigen-channels:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sisl</span>
+<span class="kn">from</span> <span class="nn">sisl_toolbox.btd</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="c1"># First read in the required data</span>
+<span class="n">H_elec</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">Hamiltonian</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s2">&quot;ELECTRODE.nc&quot;</span><span class="p">)</span>
+<span class="n">H</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">Hamiltonian</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s2">&quot;DEVICE.nc&quot;</span><span class="p">)</span>
+<span class="c1"># remove couplings along the self-energy direction</span>
+<span class="c1"># to ensure no fake couplings.</span>
+<span class="n">H</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Read in a single tbtrans output which contains the BTD matrices</span>
+<span class="c1"># and instructs this class how it should pivot the matrix to obtain</span>
+<span class="c1"># a BTD matrix.</span>
+<span class="n">tbt</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">get_sile</span><span class="p">(</span><span class="s2">&quot;siesta.TBT.nc&quot;</span><span class="p">)</span>
+
+<span class="c1"># Define the self-energy calculators which will downfold the</span>
+<span class="c1"># self-energies into the device region.</span>
+<span class="c1"># Since a downfolding will be done it requires the device Hamiltonian.</span>
+<span class="n">H_elec</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="n">tbt</span><span class="o">.</span><span class="n">mu</span><span class="p">(</span><span class="s2">&quot;Left&quot;</span><span class="p">))</span>
+<span class="n">left</span> <span class="o">=</span> <span class="n">DownfoldSelfEnergy</span><span class="p">(</span><span class="s2">&quot;Left&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">RecursiveSI</span><span class="p">(</span><span class="n">H_elec</span><span class="p">,</span> <span class="s2">&quot;-C&quot;</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="n">tbt</span><span class="o">.</span><span class="n">eta</span><span class="p">(</span><span class="s2">&quot;Left&quot;</span><span class="p">),</span>
+                          <span class="n">tbt</span><span class="p">,</span> <span class="n">H</span><span class="p">)</span>
+<span class="n">H_elec</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="n">tbt</span><span class="o">.</span><span class="n">mu</span><span class="p">(</span><span class="s2">&quot;Right&quot;</span><span class="p">)</span> <span class="o">-</span> <span class="n">tbt</span><span class="o">.</span><span class="n">mu</span><span class="p">(</span><span class="s2">&quot;Left&quot;</span><span class="p">))</span>
+<span class="n">left</span> <span class="o">=</span> <span class="n">DownfoldSelfEnergy</span><span class="p">(</span><span class="s2">&quot;Right&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">RecursiveSI</span><span class="p">(</span><span class="n">H_elec</span><span class="p">,</span> <span class="s2">&quot;+C&quot;</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="n">tbt</span><span class="o">.</span><span class="n">eta</span><span class="p">(</span><span class="s2">&quot;Right&quot;</span><span class="p">),</span>
+                          <span class="n">tbt</span><span class="p">,</span> <span class="n">H</span><span class="p">)</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">DeviceGreen</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="p">[</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">],</span> <span class="n">tbt</span><span class="p">)</span>
+
+<span class="c1"># Calculate the scattering state from the left electrode</span>
+<span class="c1"># and then the eigen channels to the right electrode</span>
+<span class="n">state</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">scattering_state</span><span class="p">(</span><span class="s2">&quot;Left&quot;</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">eig_channel</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">eigenchannel</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="s2">&quot;Right&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To make this easier there exists a short-hand version that does the
+above:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">G</span> <span class="o">=</span> <span class="n">DeviceGreen</span><span class="o">.</span><span class="n">from_fdf</span><span class="p">(</span><span class="s2">&quot;RUN.fdf&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>which reads all variables from the FDF file and parses them accordingly.
+This does not take all things into consideration, but should cover most problems.</p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl_toolbox.btd.DeviceGreen.Hk" title="sisl_toolbox.btd.DeviceGreen.Hk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Hk</span></code></a>(*args, **kwargs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl_toolbox.btd.DeviceGreen.Sk" title="sisl_toolbox.btd.DeviceGreen.Sk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Sk</span></code></a>(*args, **kwargs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl_toolbox.btd.DeviceGreen.eigenchannel" title="sisl_toolbox.btd.DeviceGreen.eigenchannel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eigenchannel</span></code></a>(state, elec_to[, ret_coeff])</p></td>
+<td><p>Calculate the eigen channel from scattering states entering electrodes <em class="xref py py-obj">elec_to</em></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl_toolbox.btd.DeviceGreen.from_fdf" title="sisl_toolbox.btd.DeviceGreen.from_fdf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_fdf</span></code></a>(fdf[, prefix, use_tbt_se, eta])</p></td>
+<td><p>Return a new <a class="reference internal" href="#sisl_toolbox.btd.DeviceGreen" title="sisl_toolbox.btd.DeviceGreen"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DeviceGreen</span></code></a> using information gathered from the fdf</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl_toolbox.btd.DeviceGreen.green" title="sisl_toolbox.btd.DeviceGreen.green"><code class="xref py py-obj docutils literal notranslate"><span class="pre">green</span></code></a>(E[, k, format])</p></td>
+<td><p>Calculate the Green function for a given <em class="xref py py-obj">E</em> and <em class="xref py py-obj">k</em> point</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl_toolbox.btd.DeviceGreen.reset" title="sisl_toolbox.btd.DeviceGreen.reset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reset</span></code></a>()</p></td>
+<td><p>Clean any memory used by this object</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl_toolbox.btd.DeviceGreen.scattering_matrix" title="sisl_toolbox.btd.DeviceGreen.scattering_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scattering_matrix</span></code></a>(elec_from, elec_to, E[, ...])</p></td>
+<td><p>Calculate the scattering matrix (S-matrix) between <em class="xref py py-obj">elec_from</em> and <em class="xref py py-obj">elec_to</em></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl_toolbox.btd.DeviceGreen.scattering_state" title="sisl_toolbox.btd.DeviceGreen.scattering_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scattering_state</span></code></a>(elec, E[, k, cutoff, method])</p></td>
+<td><p>Calculate the scattering states for a given <em class="xref py py-obj">E</em> and <em class="xref py py-obj">k</em> point from a given electrode</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl_toolbox.btd.DeviceGreen.spectral" title="sisl_toolbox.btd.DeviceGreen.spectral"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spectral</span></code></a>(elec, E[, k, format, method, herm])</p></td>
+<td><p>Calculate the spectral function for a given <em class="xref py py-obj">E</em> and <em class="xref py py-obj">k</em> point from a given electrode</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl_toolbox.btd.DeviceGreen.Hk">
+<span class="sig-name descname"><span class="pre">Hk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl_toolbox/btd/_btd.html#DeviceGreen.Hk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl_toolbox.btd.DeviceGreen.Hk" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl_toolbox.btd.DeviceGreen.Sk">
+<span class="sig-name descname"><span class="pre">Sk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl_toolbox/btd/_btd.html#DeviceGreen.Sk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl_toolbox.btd.DeviceGreen.Sk" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl_toolbox.btd.DeviceGreen.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">H</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elecs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pivot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl_toolbox/btd/_btd.html#DeviceGreen.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl_toolbox.btd.DeviceGreen.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Create Green function with Hamiltonian and BTD matrix elements</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl_toolbox.btd.DeviceGreen.eigenchannel">
+<span class="sig-name descname"><span class="pre">eigenchannel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elec_to</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret_coeff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl_toolbox/btd/_btd.html#DeviceGreen.eigenchannel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl_toolbox.btd.DeviceGreen.eigenchannel" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the eigen channel from scattering states entering electrodes <em class="xref py py-obj">elec_to</em></p>
+<p>The energy and k-point is inferred from the <em class="xref py py-obj">state</em> object as returned from
+<a class="reference internal" href="#sisl_toolbox.btd.DeviceGreen.scattering_state" title="sisl_toolbox.btd.DeviceGreen.scattering_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scattering_state</span></code></a>.</p>
+<p>The eigenchannels are the eigen states of the transmission matrix in the
+DOS weighted scattering states:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathbf A_{\mathfrak{e}}(E,\mathbf k) \mathbf u &amp;= 2\pi\mathbf a \mathbf u
+\\
+\mathbf t_{\mathbf u} &amp;= \sum \langle \mathbf u | \boldsymbol\Gamma_{\mathfrak{e\to}} | \mathbf u\rangle\end{split}\]</div>
+<p>where the eigenvectors of <span class="math notranslate nohighlight">\(\mathbf t_{\mathbf u}\)</span> is the coefficients of the
+DOS weighted scattering states (<span class="math notranslate nohighlight">\(\sqrt{2\pi a_i} u_i\)</span>) for the individual eigen channels.
+The eigenvalues are the transmission eigenvalues. Further details may be found in <a class="footnote-reference brackets" href="#c1" id="id1">1</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>state</strong> (<em>sisl.physics.StateCElectron</em>) – the scattering states as obtained from <a class="reference internal" href="#sisl_toolbox.btd.DeviceGreen.scattering_state" title="sisl_toolbox.btd.DeviceGreen.scattering_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scattering_state</span></code></a></p></li>
+<li><p><strong>elec_to</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> (</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> or </em><em>not</em><em>)</em>) – which electrodes to consider for the transmission eigenchannel
+decomposition (the sum in the above equation)</p></li>
+<li><p><strong>ret_coeff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – return also the scattering state coefficients</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>T_eig</strong> (<em>sisl.physics.StateCElectron</em>) – the transmission eigenchannels, the <code class="docutils literal notranslate"><span class="pre">T_eig.c</span></code> contains the transmission
+eigenvalues.</p></li>
+<li><p><strong>coeff</strong> (<em>sisl.physics.StateElectron</em>) – coefficients of <em class="xref py py-obj">state</em> that creates the transmission eigenchannels
+Only returned if <em class="xref py py-obj">ret_coeff</em> is True. There is a one-to-one correspondance
+between <code class="docutils literal notranslate"><span class="pre">coeff</span></code> and <code class="docutils literal notranslate"><span class="pre">T_eig</span></code> (with a prefactor of <span class="math notranslate nohighlight">\(\sqrt{2\pi}\)</span>).
+This is equivalent to the <code class="docutils literal notranslate"><span class="pre">T_eig</span></code> states in the scattering state basis.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<dl class="footnote brackets">
+<dt class="label" id="c1"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><p><a class="reference external" href="https://doi.org/10.1103/PhysRevB.76.115117">M. Paulsson and M. Brandbyge, “Transmission eigenchannels from non-equilibrium Green’s functions”, PRB **76**, 115117 (2007)</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl_toolbox.btd.DeviceGreen.from_fdf">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_fdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fdf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'TBT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_tbt_se</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl_toolbox/btd/_btd.html#DeviceGreen.from_fdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl_toolbox.btd.DeviceGreen.from_fdf" title="Permalink to this definition"></a></dt>
+<dd><p>Return a new <a class="reference internal" href="#sisl_toolbox.btd.DeviceGreen" title="sisl_toolbox.btd.DeviceGreen"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DeviceGreen</span></code></a> using information gathered from the fdf</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fdf</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference internal" href="../../../api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta" title="sisl.io.siesta.fdfSileSiesta"><em>fdfSileSiesta</em></a>) – fdf file to read the parameters from</p></li>
+<li><p><strong>prefix</strong> (<em>{&quot;TBT&quot;</em><em>, </em><em>&quot;TS&quot;}</em>) – which prefix to use, if TBT it will prefer TBT prefix, but fall back
+to TS prefixes.
+If TS, only these prefixes will be used.</p></li>
+<li><p><strong>use_tbt_se</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether to use the TBT.SE.nc files for self-energies
+or calculate them on the fly.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl_toolbox.btd.DeviceGreen.green">
+<span class="sig-name descname"><span class="pre">green</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'array'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl_toolbox/btd/_btd.html#DeviceGreen.green"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl_toolbox.btd.DeviceGreen.green" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the Green function for a given <em class="xref py py-obj">E</em> and <em class="xref py py-obj">k</em> point</p>
+<p>The Green function is calculated as:</p>
+<div class="math notranslate nohighlight">
+\[\mathbf G(E,\mathbf k) = \big[\mathbf S(\mathbf k) E - \mathbf H(\mathbf k)
+      - \sum \boldsymbol \Sigma(E,\mathbf k)\big]^{-1}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – the energy to calculate at, may be a complex value.</p></li>
+<li><p><strong>k</strong> (<em>array_like</em><em>, </em><em>optional</em>) – k-point to calculate the Green function at</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl_toolbox.btd.DeviceGreen.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl_toolbox/btd/_btd.html#DeviceGreen.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl_toolbox.btd.DeviceGreen.reset" title="Permalink to this definition"></a></dt>
+<dd><p>Clean any memory used by this object</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl_toolbox.btd.DeviceGreen.scattering_matrix">
+<span class="sig-name descname"><span class="pre">scattering_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec_from</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elec_to</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl_toolbox/btd/_btd.html#DeviceGreen.scattering_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl_toolbox.btd.DeviceGreen.scattering_matrix" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the scattering matrix (S-matrix) between <em class="xref py py-obj">elec_from</em> and <em class="xref py py-obj">elec_to</em></p>
+<p>The scattering matrix is calculated as</p>
+<div class="math notranslate nohighlight">
+\[\mathbf S_{\mathfrak{e_{\mathrm{to}}\mathfrak{e_{\mathrm{from}} }(E, \mathbf) &amp;= -\delta_{\alpha\beta} + i
+   \tilde\boldsymbol\Gamma_{\mathfrak{e_{\mathrm{to}}}}
+   \mathbf G
+   \tilde\boldsymbol\Gamma_{\mathfrak{e_{\mathrm{from}}}}\]</div>
+<p>Here the <span class="math notranslate nohighlight">\(\tilde\boldsymbol\Gamma\)</span> is defined as:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\boldsymbol\Gamma(E,\mathbf k) \mathbf U &amp;= \lambda \mathbf U
+\\
+\tilde\boldsymbol\Gamma(E,\mathbf k) &amp;= \operatorname{diag}\{ \lambda \} \mathbf U\end{split}\]</div>
+<p>Once the scattering matrices have been calculated one can calculate the full transmission
+function</p>
+<div class="math notranslate nohighlight">
+\[T_{\mathfrak{e_{\mathrm{from}}\mathfrak{e_{\mathrm{to}} }(E, \mathbf k) = \operatorname{Tr}\big[
+  \mathbf S_{\mathfrak{e_{\mathrm{to}}\mathfrak{e_{\mathrm{from}} }^\dagger
+  \mathbf S_{\mathfrak{e_{\mathrm{to}}\mathfrak{e_{\mathrm{from}} }\big]\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>elec_from</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the electrode where the scattering matrix originates from</p></li>
+<li><p><strong>elec_to</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> (</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> or </em><em>not</em><em>)</em>) – where the scattering matrix ends in.</p></li>
+<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – the energy to calculate at, may be a complex value.</p></li>
+<li><p><strong>k</strong> (<em>array_like</em><em>, </em><em>optional</em>) – k-point to calculate the scattering matrix at</p></li>
+<li><p><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – cutoff the eigen states of the broadening matrix that are below this value.
+I.e. only <span class="math notranslate nohighlight">\(\lambda\)</span> values above this value will be used.
+A too high value will remove too many eigen states and results will be wrong.
+A small value improves precision at the cost of bigger matrices.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>scat_matrix</strong> – for each <em class="xref py py-obj">elec_to</em> a scattering matrix will be returned. Its dimensions will be
+depending on the <em class="xref py py-obj">cutoff</em> value at the cost of precision.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a> or tupel of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl_toolbox.btd.DeviceGreen.scattering_state">
+<span class="sig-name descname"><span class="pre">scattering_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'svd:gamma'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl_toolbox/btd/_btd.html#DeviceGreen.scattering_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl_toolbox.btd.DeviceGreen.scattering_state" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the scattering states for a given <em class="xref py py-obj">E</em> and <em class="xref py py-obj">k</em> point from a given electrode</p>
+<p>The scattering states are the eigen states of the spectral function:</p>
+<div class="math notranslate nohighlight">
+\[\mathbf A_{\mathfrak{e}}(E,\mathbf k) \mathbf u = 2\pi\mathbf a \mathbf u\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathbf a_i\)</span> is the DOS carried by the <span class="math notranslate nohighlight">\(i\)</span>’th scattering
+state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the electrode to calculate the spectral function from</p></li>
+<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – the energy to calculate at, may be a complex value.</p></li>
+<li><p><strong>k</strong> (<em>array_like</em><em>, </em><em>optional</em>) – k-point to calculate the spectral function at</p></li>
+<li><p><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – cutoff the returned scattering states at some DOS value. Any scattering states
+with normalized eigenvalues lower than <em class="xref py py-obj">cutoff</em> are discarded.
+The normalization is done by dividing the eigenvalue with the number of orbitals
+in the device region. This normalization ensures the same cutoff value has roughly
+the same meaning for different size devices.
+Values above or close to 1e-5 should be used with care.</p></li>
+<li><p><strong>method</strong> (<em>{&quot;svd:gamma&quot;</em><em>, </em><em>&quot;svd:A&quot;</em><em>, </em><em>&quot;full&quot;}</em>) – which method to use for calculating the scattering states.
+Use only the <code class="docutils literal notranslate"><span class="pre">full</span></code> method for testing purposes as it is extremely slow
+and requires a substantial amount of memory.
+The <code class="docutils literal notranslate"><span class="pre">svd:gamma</span></code> is the fastests while retaining complete precision.
+The <code class="docutils literal notranslate"><span class="pre">svd:A</span></code> may be even faster for very large systems with
+very little loss of precision, since it diagonalizes <span class="math notranslate nohighlight">\(\mathbf A\)</span> in
+the subspace of the electrode <em class="xref py py-obj">elec</em> and reduces the propagated part of the spectral
+matrix.</p></li>
+<li><p><strong>cutoff_elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – Only used for <code class="docutils literal notranslate"><span class="pre">method=svd:A</span></code>. The initial block of the spectral function is
+diagonalized and only eigenvectors with eigenvalues <code class="docutils literal notranslate"><span class="pre">&gt;=cutoff_elec</span></code> are retained,
+thus reducing the initial propagated modes. The normalization explained for <em class="xref py py-obj">cutoff</em>
+also applies here.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>scat</strong> – the scattering states from the spectral function. The <code class="docutils literal notranslate"><span class="pre">scat.state</span></code> contains
+the scattering state vectors (eigenvectors of the spectral function).
+<code class="docutils literal notranslate"><span class="pre">scat.c</span></code> contains the DOS of the scattering states scaled by <span class="math notranslate nohighlight">\(1/(2\pi)\)</span>
+so ensure correct density of states.
+One may recreate the spectral function with <code class="docutils literal notranslate"><span class="pre">scat.outer(matrix=scat.c</span> <span class="pre">*</span> <span class="pre">2</span> <span class="pre">*</span> <span class="pre">pi)</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="../../../api/generated/sisl.physics.electron.StateCElectron.html#sisl.physics.electron.StateCElectron" title="sisl.physics.electron.StateCElectron">StateCElectron</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl_toolbox.btd.DeviceGreen.spectral">
+<span class="sig-name descname"><span class="pre">spectral</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'array'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'column'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">herm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl_toolbox/btd/_btd.html#DeviceGreen.spectral"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl_toolbox.btd.DeviceGreen.spectral" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the spectral function for a given <em class="xref py py-obj">E</em> and <em class="xref py py-obj">k</em> point from a given electrode</p>
+<p>The spectral function is calculated as:</p>
+<div class="math notranslate nohighlight">
+\[\mathbf A_{\mathfrak{e}}(E,\mathbf k) = \mathbf G(E,\mathbf k)\boldsymbol\Gamma_{\mathfrak{e}}(E,\mathbf k)
+       \mathbf G^\dagger(E,\mathbf k)\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the electrode to calculate the spectral function from</p></li>
+<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – the energy to calculate at, may be a complex value.</p></li>
+<li><p><strong>k</strong> (<em>array_like</em><em>, </em><em>optional</em>) – k-point to calculate the spectral function at</p></li>
+<li><p><strong>method</strong> (<em>{&quot;column&quot;</em><em>, </em><em>&quot;propagate&quot;}</em>) – which method to use for calculating the spectral function.
+Depending on the size of the BTD blocks one may be faster than the
+other. For large systems you are recommended to time the different methods
+and stick with the fastest one, they are numerically identical.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sisl_toolbox.btd.DownfoldSelfEnergy.html" class="btn btn-neutral float-left" title="sisl_toolbox.btd.DownfoldSelfEnergy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../../visualization/ase/index.html" class="btn btn-neutral float-right" title="ASE" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

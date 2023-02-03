@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.Coefficient &mdash; sisl 0.1.dev1+g851d78c documentation</title>
+  <title>sisl.physics.Coefficient &mdash; sisl 0.1.dev1+ge294a9a documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g851d78c
+                0.1.dev1+ge294a9a
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -154,46 +154,13 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.physics.</span></span><span class="sig-name descname"><span class="pre">Coefficient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.Coefficient" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ParentContainer</span></code></p>
 <p>An object holding coefficients for a parent with info</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="sisl.physics.Coefficient.c">
-<span class="sig-name descname"><span class="pre">c</span></span><a class="headerlink" href="#sisl.physics.Coefficient.c" title="Permalink to this definition"></a></dt>
-<dd><p>coefficients</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="sisl.physics.Coefficient.info">
-<span class="sig-name descname"><span class="pre">info</span></span><a class="headerlink" href="#sisl.physics.Coefficient.info" title="Permalink to this definition"></a></dt>
-<dd><p>information regarding the creation of these coefficients</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)">dict</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="sisl.physics.Coefficient.parent">
-<span class="sig-name descname"><span class="pre">parent</span></span><a class="headerlink" href="#sisl.physics.Coefficient.parent" title="Permalink to this definition"></a></dt>
-<dd><p>object from where the coefficients has been calculated, in one way or the other</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>obj</p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>c</strong> (<em>array_like</em>) – coefficients</p></li>
 <li><p><strong>parent</strong> (<em>obj</em><em>, </em><em>optional</em>) – a parent object that defines the origin of the coefficient</p></li>
 <li><p><strong>**info</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – an info dictionary that turns into an attribute on the object.
-This <a class="reference internal" href="#id1" title="sisl.physics.Coefficient.info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">info</span></code></a> may contain anything that may be relevant for the coefficient.</p></li>
+This <a class="reference internal" href="#sisl.physics.Coefficient.info" title="sisl.physics.Coefficient.info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">info</span></code></a> may contain anything that may be relevant for the coefficient.</p></li>
 </ul>
 </dd>
 </dl>
@@ -219,7 +186,7 @@ This <a class="reference internal" href="#id1" title="sisl.physics.Coefficient.i
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.Coefficient.sub" title="sisl.physics.Coefficient.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub</span></code></a>(idx[, inplace])</p></td>
 <td><p>Return a new coefficient with only the specified coefficients</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#id0" title="sisl.physics.Coefficient.c"><code class="xref py py-obj docutils literal notranslate"><span class="pre">c</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.Coefficient.c" title="sisl.physics.Coefficient.c"><code class="xref py py-obj docutils literal notranslate"><span class="pre">c</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.Coefficient.dkind" title="sisl.physics.Coefficient.dkind"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dkind</span></code></a></p></td>
@@ -228,10 +195,10 @@ This <a class="reference internal" href="#id1" title="sisl.physics.Coefficient.i
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.Coefficient.dtype" title="sisl.physics.Coefficient.dtype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dtype</span></code></a></p></td>
 <td><p>Data-type for the coefficients</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#id1" title="sisl.physics.Coefficient.info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">info</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.Coefficient.info" title="sisl.physics.Coefficient.info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">info</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#id2" title="sisl.physics.Coefficient.parent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parent</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.Coefficient.parent" title="sisl.physics.Coefficient.parent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parent</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.Coefficient.shape" title="sisl.physics.Coefficient.shape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shape</span></code></a></p></td>
@@ -245,8 +212,8 @@ This <a class="reference internal" href="#id1" title="sisl.physics.Coefficient.i
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id0">
-<span class="sig-name descname"><span class="pre">c</span></span><a class="headerlink" href="#id0" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="sisl.physics.Coefficient.c">
+<span class="sig-name descname"><span class="pre">c</span></span><a class="headerlink" href="#sisl.physics.Coefficient.c" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -285,8 +252,8 @@ This <a class="reference internal" href="#id1" title="sisl.physics.Coefficient.i
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id1">
-<span class="sig-name descname"><span class="pre">info</span></span><a class="headerlink" href="#id1" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="sisl.physics.Coefficient.info">
+<span class="sig-name descname"><span class="pre">info</span></span><a class="headerlink" href="#sisl.physics.Coefficient.info" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -308,8 +275,8 @@ Otherwise an equivalent object is yielded.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id2">
-<span class="sig-name descname"><span class="pre">parent</span></span><a class="headerlink" href="#id2" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="sisl.physics.Coefficient.parent">
+<span class="sig-name descname"><span class="pre">parent</span></span><a class="headerlink" href="#sisl.physics.Coefficient.parent" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">

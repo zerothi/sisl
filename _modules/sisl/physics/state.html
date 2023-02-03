@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.state &mdash; sisl 0.1.dev1+g851d78c documentation</title>
+  <title>sisl.physics.state &mdash; sisl 0.1.dev1+ge294a9a documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g851d78c
+                0.1.dev1+ge294a9a
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -196,7 +196,13 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="o">**</span><span class="n">info</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; object</span>
+<span class="sd">the object from where the contained information comes from</span>
+<span class="sd">&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="n">info</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; dict</span>
+<span class="sd">information regarding the creation of the object</span>
+<span class="sd">&quot;&quot;&quot;</span>
 
     <span class="nd">@singledispatchmethod</span>
     <span class="k">def</span> <span class="nf">_sanitize_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
@@ -222,15 +228,6 @@
 <span class="k">class</span> <span class="nc">Coefficient</span><span class="p">(</span><span class="n">ParentContainer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; An object holding coefficients for a parent with info</span>
 
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
-<span class="sd">    c : numpy.ndarray</span>
-<span class="sd">        coefficients</span>
-<span class="sd">    info : dict</span>
-<span class="sd">        information regarding the creation of these coefficients</span>
-<span class="sd">    parent : obj</span>
-<span class="sd">        object from where the coefficients has been calculated, in one way or the other</span>
-
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    c : array_like</span>
@@ -245,7 +242,10 @@
 
 <div class="viewcode-block" id="Coefficient.__init__"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Coefficient.html#sisl.physics.Coefficient.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">info</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="o">**</span><span class="n">info</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">c</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; c : numpy.ndarray</span>
+<span class="sd">coefficients retained in this object</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; The string representation of this object &quot;&quot;&quot;</span>
@@ -397,15 +397,6 @@
 <span class="k">class</span> <span class="nc">State</span><span class="p">(</span><span class="n">ParentContainer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; An object handling a set of vectors describing a given *state*</span>
 
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
-<span class="sd">    state : numpy.ndarray</span>
-<span class="sd">        state coefficients</span>
-<span class="sd">    info : dict</span>
-<span class="sd">        information regarding the creation of the states</span>
-<span class="sd">    parent : obj</span>
-<span class="sd">        object from where the states has been calculated, in one way or the other</span>
-
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    state : array_like</span>
@@ -425,7 +416,10 @@
 <div class="viewcode-block" id="State.__init__"><a class="viewcode-back" href="../../../api/generated/sisl.physics.State.html#sisl.physics.State.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">info</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Define a state container with a given set of states &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="o">**</span><span class="n">info</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">state</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; numpy.ndarray</span>
+<span class="sd">state coefficients</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; The string representation of this object &quot;&quot;&quot;</span>
@@ -685,18 +679,19 @@
 <span class="sd">        states:</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">           :nowrap:</span>
 <span class="sd">           :label: ipr2</span>
+<span class="sd">           :nowrap:</span>
 
-<span class="sd">           \begin{align}</span>
-<span class="sd">           \lim_{L\to\infty} I_{2,i} = \left\{\begin{aligned}</span>
-<span class="sd">                1/L^d &amp; \text{extended state}</span>
+<span class="sd">            \begin{align}</span>
+<span class="sd">             \lim_{L\to\infty} I_{2,i} = \left\{</span>
+<span class="sd">               \begin{aligned}</span>
+<span class="sd">                1/L^d &amp;\quad \text{extended state}</span>
 <span class="sd">                \\</span>
-<span class="sd">                const. &amp; \text{localized state}</span>
-<span class="sd">               \end{aligned}</span>
-<span class="sd">           \end{align}</span>
+<span class="sd">                \text{const.} &amp;\quad \text{localized state}</span>
+<span class="sd">               \end{aligned}\right.</span>
+<span class="sd">            \end{align}</span>
 
-<span class="sd">        For further details see [1]_. Note that for eigen states the IPR reduces to:</span>
+<span class="sd">        For further details see [#c1]_. Note that for eigen states the IPR reduces to:</span>
 
 <span class="sd">        .. math::</span>
 <span class="sd">            I_{q,i} = \sum_\nu |\psi_{i\nu}|^{2q}</span>
@@ -710,7 +705,7 @@
 
 <span class="sd">        References</span>
 <span class="sd">        ----------</span>
-<span class="sd">        .. [1] : :doi:`N. C. Murphy *et.al.*, &quot;Generalized inverse participation ratio as a possible measure of localization for interacting systems&quot;, PRB **83**, 184206 (2011) &lt;10.1103/PhysRevB.83.184206&gt;`</span>
+<span class="sd">        .. [#c1] : :doi:`N. C. Murphy *et.al.*, &quot;Generalized inverse participation ratio as a possible measure of localization for interacting systems&quot;, PRB **83**, 184206 (2011) &lt;10.1103/PhysRevB.83.184206&gt;`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># This *has* to be a real value C * C^* == real</span>
         <span class="n">state_abs2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm2</span><span class="p">(</span><span class="nb">sum</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
@@ -1148,17 +1143,6 @@
 <span class="k">class</span> <span class="nc">StateC</span><span class="p">(</span><span class="n">State</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; An object handling a set of vectors describing a given *state* with associated coefficients `c`</span>
 
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
-<span class="sd">    c : numpy.ndarray</span>
-<span class="sd">        coefficients assigned to each state</span>
-<span class="sd">    state : numpy.ndarray</span>
-<span class="sd">        state coefficients</span>
-<span class="sd">    info : dict</span>
-<span class="sd">        information regarding the creation of the states</span>
-<span class="sd">    parent : obj</span>
-<span class="sd">        object from where the states has been calculated, in one way or the other</span>
-
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    state : array_like</span>
@@ -1181,6 +1165,10 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Define a state container with a given set of states and coefficients for the states &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="o">**</span><span class="n">info</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; numpy.ndarray</span>
+<span class="sd">coefficients assigned to each state</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> could not be created with coefficients and states &quot;</span>
                              <span class="s2">&quot;having unequal length.&quot;</span><span class="p">)</span></div>

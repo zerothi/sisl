@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.self_energy &mdash; sisl 0.1.dev1+g851d78c documentation</title>
+  <title>sisl.physics.self_energy &mdash; sisl 0.1.dev1+ge294a9a documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g851d78c
+                0.1.dev1+ge294a9a
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -144,9 +144,9 @@
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dimension of the self-energy&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
-<div class="viewcode-block" id="SelfEnergy.se2scat"><a class="viewcode-back" href="../../../api/generated/sisl.physics.SelfEnergy.html#sisl.physics.SelfEnergy.se2scat">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">se2scat</span><span class="p">(</span><span class="n">SE</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the scattering matrix from the self-energy</span>
+<div class="viewcode-block" id="SelfEnergy.se2broadening"><a class="viewcode-back" href="../../../api/generated/sisl.physics.SelfEnergy.html#sisl.physics.SelfEnergy.se2broadening">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">se2broadening</span><span class="p">(</span><span class="n">SE</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the broadening matrix from the self-energy</span>
 
 <span class="sd">        .. math::</span>
 <span class="sd">            \boldsymbol\Gamma = i(\boldsymbol\Sigma - \boldsymbol \Sigma ^\dagger)</span>
@@ -165,8 +165,8 @@
 <div class="viewcode-block" id="SelfEnergy.self_energy"><a class="viewcode-back" href="../../../api/generated/sisl.physics.SelfEnergy.html#sisl.physics.SelfEnergy.self_energy">[docs]</a>    <span class="k">def</span> <span class="nf">self_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-<div class="viewcode-block" id="SelfEnergy.scattering_matrix"><a class="viewcode-back" href="../../../api/generated/sisl.physics.SelfEnergy.html#sisl.physics.SelfEnergy.scattering_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">scattering_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the scattering matrix by first calculating the self-energy</span>
+<div class="viewcode-block" id="SelfEnergy.broadening_matrix"><a class="viewcode-back" href="../../../api/generated/sisl.physics.SelfEnergy.html#sisl.physics.SelfEnergy.broadening_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">broadening_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the broadening matrix by first calculating the self-energy</span>
 
 <span class="sd">        Any arguments that is passed to this method is directly passed to `self_energy`.</span>
 
@@ -180,29 +180,29 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 
-<span class="sd">        Calculating both the self-energy and the scattering matrix.</span>
+<span class="sd">        Calculating both the self-energy and the broadening matrix.</span>
 
 <span class="sd">        &gt;&gt;&gt; SE = SelfEnergy(...)</span>
 <span class="sd">        &gt;&gt;&gt; self_energy = SE.self_energy(0.1)</span>
-<span class="sd">        &gt;&gt;&gt; gamma = SE.scattering_matrix(0.1)</span>
+<span class="sd">        &gt;&gt;&gt; gamma = SE.broadening_matrix(0.1)</span>
 
 <span class="sd">        For a huge performance boost, please do:</span>
 
 <span class="sd">        &gt;&gt;&gt; SE = SelfEnergy(...)</span>
 <span class="sd">        &gt;&gt;&gt; self_energy = SE.self_energy(0.1)</span>
-<span class="sd">        &gt;&gt;&gt; gamma = SE.se2scat(self_energy)</span>
+<span class="sd">        &gt;&gt;&gt; gamma = SE.se2broadening(self_energy)</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
-<span class="sd">        When using *both* the self-energy *and* the scattering matrix please use `se2scat` after having</span>
+<span class="sd">        When using *both* the self-energy *and* the broadening matrix please use `se2broadening` after having</span>
 <span class="sd">        calculated the self-energy, this will be *much*, *MUCH* faster!</span>
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
-<span class="sd">        se2scat : converting the self-energy to the scattering matrix</span>
-<span class="sd">        self_energy : the used routine to calculate the self-energy before calculating the scattering matrix</span>
+<span class="sd">        se2broadening : converting the self-energy to the broadening matrix</span>
+<span class="sd">        self_energy : the used routine to calculate the self-energy before calculating the broadening matrix</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">se2scat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">self_energy</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">se2broadening</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">self_energy</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span></div>
 
     <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Overload attributes from the hosting object &quot;&quot;&quot;</span>
@@ -247,12 +247,12 @@
         <span class="n">eta</span> <span class="o">=</span> <span class="o">-</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;eta&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">eta</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">eta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_N</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="WideBandSE.scattering_matrix"><a class="viewcode-back" href="../../../api/generated/sisl.physics.WideBandSE.html#sisl.physics.WideBandSE.scattering_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">scattering_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="WideBandSE.broadening_matrix"><a class="viewcode-back" href="../../../api/generated/sisl.physics.WideBandSE.html#sisl.physics.WideBandSE.broadening_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">broadening_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># note the sign (+)</span>
         <span class="n">eta</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;eta&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">eta</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">eta</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_N</span><span class="p">))</span></div>
 
-    <span class="n">scattering_matrix</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">SelfEnergy</span><span class="o">.</span><span class="n">scattering_matrix</span><span class="o">.</span><span class="vm">__doc__</span>
+    <span class="n">broadening_matrix</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">SelfEnergy</span><span class="o">.</span><span class="n">broadening_matrix</span><span class="o">.</span><span class="vm">__doc__</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics&quot;</span><span class="p">)</span>

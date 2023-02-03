@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.SparseCSR &mdash; sisl 0.1.dev1+g851d78c documentation</title>
+  <title>sisl.SparseCSR &mdash; sisl 0.1.dev1+ge294a9a documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -39,7 +39,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g851d78c
+                0.1.dev1+ge294a9a
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -194,39 +194,6 @@ This quantity has precedence over <em class="xref py py-obj">nnzpr</em></p></li>
 </ul>
 </dd>
 </dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="sisl.SparseCSR.ncol">
-<span class="sig-name descname"><span class="pre">ncol</span></span><a class="headerlink" href="#sisl.SparseCSR.ncol" title="Permalink to this definition"></a></dt>
-<dd><p>number of entries per row</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>int-array, <code class="docutils literal notranslate"><span class="pre">self.shape[0]</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="sisl.SparseCSR.ptr">
-<span class="sig-name descname"><span class="pre">ptr</span></span><a class="headerlink" href="#sisl.SparseCSR.ptr" title="Permalink to this definition"></a></dt>
-<dd><p>pointer index in the 1D column indices of the corresponding row</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>int-array, <code class="docutils literal notranslate"><span class="pre">self.shape[0]+1</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="sisl.SparseCSR.col">
-<span class="sig-name descname"><span class="pre">col</span></span><a class="headerlink" href="#sisl.SparseCSR.col" title="Permalink to this definition"></a></dt>
-<dd><p>column indices of the sparse elements</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>int-array</p>
-</dd>
-</dl>
-</dd></dl>
-
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <colgroup>
@@ -300,13 +267,13 @@ This quantity has precedence over <em class="xref py py-obj">nnzpr</em></p></li>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseCSR.transpose" title="sisl.SparseCSR.transpose"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transpose</span></code></a>([sort])</p></td>
 <td><p>Create the transposed sparse matrix</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#id2" title="sisl.SparseCSR.ptr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ptr</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseCSR.ptr" title="sisl.SparseCSR.ptr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ptr</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#id1" title="sisl.SparseCSR.ncol"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ncol</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseCSR.ncol" title="sisl.SparseCSR.ncol"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ncol</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#id0" title="sisl.SparseCSR.col"><code class="xref py py-obj docutils literal notranslate"><span class="pre">col</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseCSR.col" title="sisl.SparseCSR.col"><code class="xref py py-obj docutils literal notranslate"><span class="pre">col</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseCSR.data" title="sisl.SparseCSR.data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">data</span></code></a></p></td>
@@ -354,8 +321,8 @@ object.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id0">
-<span class="sig-name descname"><span class="pre">col</span></span><a class="headerlink" href="#id0" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="sisl.SparseCSR.col">
+<span class="sig-name descname"><span class="pre">col</span></span><a class="headerlink" href="#sisl.SparseCSR.col" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -536,8 +503,8 @@ passed sparse matrices</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id1">
-<span class="sig-name descname"><span class="pre">ncol</span></span><a class="headerlink" href="#id1" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="sisl.SparseCSR.ncol">
+<span class="sig-name descname"><span class="pre">ncol</span></span><a class="headerlink" href="#sisl.SparseCSR.ncol" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
@@ -561,8 +528,8 @@ passed sparse matrices</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id2">
-<span class="sig-name descname"><span class="pre">ptr</span></span><a class="headerlink" href="#id2" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="sisl.SparseCSR.ptr">
+<span class="sig-name descname"><span class="pre">ptr</span></span><a class="headerlink" href="#sisl.SparseCSR.ptr" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">

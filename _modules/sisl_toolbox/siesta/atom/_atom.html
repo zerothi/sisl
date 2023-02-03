@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl_toolbox.siesta.atom._atom &mdash; sisl 0.1.dev1+ge294a9a documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                0.1.dev1+ge294a9a
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cite.html">Citing sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../publications.html">Publications using sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/index.html">API documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">sisl_toolbox.siesta.atom._atom</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sisl_toolbox.siesta.atom._atom</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
+<span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
+<span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot; Atom input/output writer</span>
+
+<span class="sd">Developer: Nick Papior</span>
+<span class="sd">Contact: nickpapior &lt;at&gt; gmail.com</span>
+<span class="sd">sisl-version: &gt;0.10.0</span>
+
+<span class="sd">This enables reading input files for atom and also helps in parsing output files.</span>
+
+<span class="sd">To read in an input file one can do:</span>
+
+<span class="sd">&gt;&gt;&gt; atom = AtomInput.from_input(&quot;INP&quot;)</span>
+<span class="sd">&gt;&gt;&gt; atom.pg(&quot;OUT&quot;)</span>
+
+<span class="sd">which will read and write the same file.</span>
+<span class="sd">One can also plot output from `atom` using:</span>
+
+<span class="sd">&gt;&gt;&gt; atom.plot()</span>
+
+<span class="sd">which will show 4 plots for different sections. A command-line tool is also</span>
+<span class="sd">made available through the `stoolbox`.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Iterable</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
+<span class="kn">import</span> <span class="nn">sisl</span> <span class="k">as</span> <span class="nn">si</span>
+<span class="kn">from</span> <span class="nn">sisl.utils</span> <span class="kn">import</span> <span class="n">PropertyDict</span><span class="p">,</span> <span class="n">NotNonePropertyDict</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;AtomInput&quot;</span><span class="p">,</span> <span class="s2">&quot;atom_plot_cli&quot;</span><span class="p">]</span>
+
+
+<span class="n">_script</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">name</span>
+
+<span class="c1"># We don&#39;t use the Siesta units here...</span>
+<span class="n">_Ang2Bohr</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s2">&quot;Ang&quot;</span><span class="p">,</span> <span class="s2">&quot;Bohr&quot;</span><span class="p">)</span>
+
+<span class="c1"># Atom/Siesta uses this order of occupation for</span>
+<span class="c1"># core electrons</span>
+<span class="c1"># idx | shell | electrons | cum. electrons | noble gas</span>
+<span class="c1">#  1  |  1s   |    2      |       2        |   [He]</span>
+<span class="c1">#  2  |  2s   |    2      |       4        |   [He]2s2</span>
+<span class="c1">#  3  |  2p   |    6      |      10        |   [Ne]</span>
+<span class="c1">#  4  |  3s   |    2      |      12        |   [Ne]3s</span>
+<span class="c1">#  5  |  3p   |    6      |      18        |   [Ar]</span>
+<span class="c1">#  6  |  3d   |   10      |      28        |   [Ar]3d10</span>
+<span class="c1">#  7  |  4s   |    2      |      30        |   [Ar]3d10 2s2</span>
+<span class="c1">#  8  |  4p   |    6      |      36        |   [Kr]</span>
+<span class="c1">#  9  |  4d   |   10      |      46        |   [Kr]4d10</span>
+<span class="c1"># 10  |  5s   |    2      |      48        |   [Kr]4d10 5s2</span>
+<span class="c1"># 11  |  5p   |    6      |      54        |   [Xe]</span>
+<span class="c1"># 12  |  4f   |   14      |      68        |   [Xe]4f14</span>
+<span class="c1"># 13  |  5d   |   10      |      78        |   [Xe]4f14 5d10</span>
+<span class="c1"># 14  |  6s   |    2      |      80        |   [Xe]4f14 5d10 6s2</span>
+<span class="c1"># 15  |  6p   |    6      |      86        |   [Rn]</span>
+<span class="c1"># 16  |  7s   |    2      |      88        |   [Rn]7s2</span>
+<span class="c1"># 17  |  5f   |   14      |     102        |   [Rn]7s2 5f14</span>
+<span class="c1"># 18  |  6d   |   10      |     112        |   [Rn]7s2 5f14 6d10</span>
+<span class="c1"># 19  |  7p   |    6      |     118        |   [Og]</span>
+<span class="n">_shell_order</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="c1"># Occupation shell order</span>
+    <span class="s1">&#39;1s&#39;</span><span class="p">,</span> <span class="c1"># [He]</span>
+    <span class="s1">&#39;2s&#39;</span><span class="p">,</span> <span class="s1">&#39;2p&#39;</span><span class="p">,</span> <span class="c1"># [Ne]</span>
+    <span class="s1">&#39;3s&#39;</span><span class="p">,</span> <span class="s1">&#39;3p&#39;</span><span class="p">,</span> <span class="c1"># [Ar]</span>
+    <span class="s1">&#39;3d&#39;</span><span class="p">,</span> <span class="s1">&#39;4s&#39;</span><span class="p">,</span> <span class="s1">&#39;4p&#39;</span><span class="p">,</span> <span class="c1"># [Kr]</span>
+    <span class="s1">&#39;4d&#39;</span><span class="p">,</span> <span class="s1">&#39;5s&#39;</span><span class="p">,</span> <span class="s1">&#39;5p&#39;</span><span class="p">,</span> <span class="c1"># [Xe]</span>
+    <span class="s1">&#39;4f&#39;</span><span class="p">,</span> <span class="s1">&#39;5d&#39;</span><span class="p">,</span> <span class="s1">&#39;6s&#39;</span><span class="p">,</span> <span class="s1">&#39;6p&#39;</span><span class="p">,</span> <span class="c1"># [Rn]</span>
+    <span class="s1">&#39;7s&#39;</span><span class="p">,</span> <span class="s1">&#39;5f&#39;</span><span class="p">,</span> <span class="s1">&#39;6d&#39;</span><span class="p">,</span> <span class="s1">&#39;7p&#39;</span> <span class="c1"># [Og]</span>
+<span class="p">]</span>
+<span class="n">_spdfgh</span> <span class="o">=</span> <span class="s1">&#39;spdfgh&#39;</span>
+
+
+<div class="viewcode-block" id="AtomInput"><a class="viewcode-back" href="../../../../toolbox/siesta/generated/sisl_toolbox.siesta.atom.AtomInput.html#sisl_toolbox.siesta.atom.AtomInput">[docs]</a><span class="k">class</span> <span class="nc">AtomInput</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Input for the ``atom`` program see [#c1]_</span>
+
+<span class="sd">    This class enables the construction of the ``INP`` file to be fed to ``atom``.</span>
+
+
+<span class="sd">    # Example input for ATOM</span>
+<span class="sd">    #</span>
+<span class="sd">    #  Comments allowed here</span>
+<span class="sd">    #</span>
+<span class="sd">    #   ae Si ground state all-electron</span>
+<span class="sd">    #   Si   car</span>
+<span class="sd">    #       0.0</span>
+<span class="sd">    #    3    2</span>
+<span class="sd">    #    3    0      2.00      0.00</span>
+<span class="sd">    #    3    1      2.00      0.00</span>
+<span class="sd">    #</span>
+<span class="sd">    # Comments allowed here</span>
+<span class="sd">    #</span>
+<span class="sd">    #2345678901234567890123456789012345678901234567890      Ruler</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [#c1] : https://siesta.icmab.es/SIESTA_MATERIAL/Pseudos/atom_licence.html</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AtomInput.__init__"><a class="viewcode-back" href="../../../../toolbox/siesta/generated/sisl_toolbox.siesta.atom.AtomInput.html#sisl_toolbox.siesta.atom.AtomInput.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">,</span>
+                 <span class="n">define</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;NEW_CC&#39;</span><span class="p">,</span> <span class="s1">&#39;FREE_FORMAT_RC_INPUT&#39;</span><span class="p">,</span> <span class="s1">&#39;NO_PS_CUTOFFS&#39;</span><span class="p">),</span>
+                 <span class="o">**</span><span class="n">opts</span><span class="p">):</span>
+        <span class="c1"># opts = {</span>
+        <span class="c1">#   &quot;flavor&quot;: &quot;tm2&quot;,</span>
+        <span class="c1">#   &quot;xc&quot;: &quot;pb&quot;,</span>
+        <span class="c1">#  optionally libxc</span>
+        <span class="c1">#   &quot;equation&quot;: &quot;r&quot;,</span>
+        <span class="c1">#   &quot;logr&quot;: 2.</span>
+        <span class="c1">#   &quot;cc&quot;: False,</span>
+        <span class="c1">#   &quot;rcore&quot;: 2.</span>
+        <span class="c1"># }</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="n">atom</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">si</span><span class="o">.</span><span class="n">Atom</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;.&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">tag</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The atom &#39;tag&#39; must not contain a &#39;.&#39;!&quot;</span><span class="p">)</span>
+
+        <span class="c1"># We need to check that atom has 4 orbitals, with increasing l</span>
+        <span class="c1"># We don&#39;t care about n or any other stuff, so these could be</span>
+        <span class="c1"># SphericalOrbital, for that matter</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">orb</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">orb</span><span class="o">.</span><span class="n">l</span> <span class="o">!=</span> <span class="n">l</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> atom argument does not have &quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot;increasing l quantum number index </span><span class="si">{</span><span class="n">l</span><span class="si">}</span><span class="s2"> has l=</span><span class="si">{</span><span class="n">orb</span><span class="o">.</span><span class="n">l</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">l</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">l</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> atom argument must have 4 orbitals. &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;One for each s-p-d-f shell&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">opts</span> <span class="o">=</span> <span class="n">PropertyDict</span><span class="p">(</span><span class="o">**</span><span class="n">opts</span><span class="p">)</span>
+
+        <span class="c1"># Check options passed and define defaults</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;equation&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">equation</span> <span class="ow">not</span> <span class="ow">in</span> <span class="s1">&#39; rs&#39;</span><span class="p">:</span>
+            <span class="c1"># &#39; &#39; == non-polarized</span>
+            <span class="c1"># s == polarized</span>
+            <span class="c1"># r == relativistic</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> failed to initialize; opts</span><span class="si">{</span><span class="s1">&#39;equation&#39;</span><span class="si">:</span><span class="s2"> &lt;v&gt;</span><span class="si">}</span><span class="s2"> has wrong value, should be [ rs].&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">equation</span> <span class="o">==</span> <span class="s1">&#39;s&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> does not implement spin-polarized option (use relativistic)&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;flavor&quot;</span><span class="p">,</span> <span class="s2">&quot;tm2&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">flavor</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;hsc&#39;</span><span class="p">,</span> <span class="s1">&#39;ker&#39;</span><span class="p">,</span> <span class="s1">&#39;tm2&#39;</span><span class="p">):</span>
+            <span class="c1"># hsc == Hamann-Schluter-Chiang</span>
+            <span class="c1"># ker == Kerker</span>
+            <span class="c1"># tm2 == Troullier-Martins</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> failed to initialize; opts</span><span class="si">{</span><span class="s1">&#39;flavor&#39;</span><span class="si">:</span><span class="s2"> &lt;v&gt;</span><span class="si">}</span><span class="s2"> has wrong value, should be [hsc|ker|tm2].&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;logr&quot;</span><span class="p">,</span> <span class="mf">2.</span><span class="p">)</span>
+
+        <span class="c1"># default to true if set</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;cc&quot;</span><span class="p">,</span> <span class="s2">&quot;rcore&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">)</span>
+        <span class="c1"># rcore only used if cc is True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;rcore&quot;</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;xc&quot;</span><span class="p">,</span> <span class="s2">&quot;pb&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Read in the core valence shells for this atom</span>
+        <span class="c1"># figure out what the default value is.</span>
+        <span class="c1"># We do this my finding the minimum index of valence shells</span>
+        <span class="c1"># in the _shell_order list, then we use that as the default number</span>
+        <span class="c1"># of core-shells occpupied</span>
+        <span class="c1"># e.g if the minimum valence shell is 2p, it would mean that</span>
+        <span class="c1">#  _shell_order.index(&quot;2p&quot;) == 2</span>
+        <span class="c1"># which has 1s and 2s occupied.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">core</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="nb">min</span><span class="p">,</span> <span class="p">(</span><span class="n">_shell_order</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">orb</span><span class="o">.</span><span class="n">n</span><span class="si">}{</span><span class="n">_spdfgh</span><span class="p">[</span><span class="n">orb</span><span class="o">.</span><span class="n">l</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                                <span class="k">for</span> <span class="n">orb</span> <span class="ow">in</span> <span class="n">atom</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">_shell_order</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">core</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;core&quot;</span><span class="p">,</span> <span class="n">core</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">core</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Default value for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">symbol</span><span class="si">}</span><span class="s2"> not added, please add core= at instantiation&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Store the defined names</span>
+        <span class="k">if</span> <span class="n">define</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">define</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">define</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">define</span> <span class="o">=</span> <span class="p">[</span><span class="n">define</span><span class="p">]</span>
+        <span class="c1"># store</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">define</span> <span class="o">=</span> <span class="n">define</span></div>
+
+<div class="viewcode-block" id="AtomInput.from_input"><a class="viewcode-back" href="../../../../toolbox/siesta/generated/sisl_toolbox.siesta.atom.AtomInput.html#sisl_toolbox.siesta.atom.AtomInput.from_input">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_input</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">inp</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return atom object respecting the input</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        inp : list or str</span>
+<span class="sd">           create `AtomInput` from the content of `inp`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">_get_content</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+                <span class="k">return</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+            <span class="c1"># it is already in correct format</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">)):</span>
+            <span class="c1"># convert to path</span>
+            <span class="n">inp</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span>
+
+            <span class="c1"># Check if it is a path or an input</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="n">_get_content</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">content</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">content</span> <span class="o">=</span> <span class="n">_get_content</span><span class="p">(</span><span class="n">inp</span> <span class="o">/</span> <span class="s2">&quot;INP&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">content</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find any input file in </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span><span class="si">}</span><span class="s2"> or </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">inp</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="s1">&#39;INP&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">inp</span> <span class="o">=</span> <span class="n">content</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown input format inp=</span><span class="si">{</span><span class="n">inp</span><span class="si">}</span><span class="s2">?&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Now read lines</span>
+        <span class="n">defines</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">opts</span> <span class="o">=</span> <span class="n">PropertyDict</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">bypass_comments</span><span class="p">(</span><span class="n">inp</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">inp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">):</span>
+                <span class="n">inp</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">bypass_comments</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">bypass</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">defines</span><span class="p">):</span>
+            <span class="n">bypass_comments</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">inp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">efine&quot;</span><span class="p">):</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">inp</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">defines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+                <span class="n">bypass</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">defines</span><span class="p">)</span>
+
+        <span class="n">bypass</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">defines</span><span class="p">)</span>
+
+        <span class="c1"># Now prepare reading</span>
+        <span class="c1"># First line has to contain the *type* of calculation</span>
+        <span class="c1"># pg|pe|ae|pt &lt;comment&gt;</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">inp</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;pg&quot;</span><span class="p">):</span>
+            <span class="n">opts</span><span class="o">.</span><span class="n">cc</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;pe&quot;</span><span class="p">):</span>
+            <span class="n">opts</span><span class="o">.</span><span class="n">cc</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># &lt;flavor&gt; logr?</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">inp</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="n">opts</span><span class="o">.</span><span class="n">flavor</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">opts</span><span class="o">.</span><span class="n">logr</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">_Ang2Bohr</span>
+
+        <span class="c1"># &lt;element&gt; &lt;xc&gt;&#39; rs&#39;?</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">inp</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">symbol</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># now get xc equation</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">11</span><span class="p">:</span>
+            <span class="n">opts</span><span class="o">.</span><span class="n">equation</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">10</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+        <span class="n">opts</span><span class="o">.</span><span class="n">xc</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">opts</span><span class="o">.</span><span class="n">libxc</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+        <span class="c1"># currently not used line</span>
+        <span class="n">inp</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># core, valence</span>
+        <span class="n">core</span><span class="p">,</span> <span class="n">valence</span> <span class="o">=</span> <span class="n">inp</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="n">opts</span><span class="o">.</span><span class="n">core</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">core</span><span class="p">)</span>
+        <span class="n">valence</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">valence</span><span class="p">)</span>
+
+        <span class="n">orbs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">valence</span><span class="p">):</span>
+            <span class="n">n</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="o">*</span><span class="n">occ</span> <span class="o">=</span> <span class="n">inp</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="n">orb</span> <span class="o">=</span> <span class="n">PropertyDict</span><span class="p">()</span>
+            <span class="n">orb</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+            <span class="n">orb</span><span class="o">.</span><span class="n">l</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+            <span class="c1"># currently we don&#39;t distinguish between up/down</span>
+            <span class="n">orb</span><span class="o">.</span><span class="n">q0</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">occ</span><span class="p">))</span>
+            <span class="n">orbs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">orb</span><span class="p">)</span>
+
+        <span class="c1"># now we read the line with rc&#39;s and core-correction</span>
+        <span class="n">rcs</span> <span class="o">=</span> <span class="n">inp</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">rcs</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">6</span><span class="p">:</span>
+            <span class="c1"># core-correction</span>
+            <span class="n">opts</span><span class="o">.</span><span class="n">rcore</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">rcs</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span> <span class="o">/</span> <span class="n">_Ang2Bohr</span>
+
+        <span class="k">for</span> <span class="n">orb</span> <span class="ow">in</span> <span class="n">orbs</span><span class="p">:</span>
+            <span class="n">orb</span><span class="o">.</span><span class="n">R</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">rcs</span><span class="p">[</span><span class="n">orb</span><span class="o">.</span><span class="n">l</span><span class="p">])</span> <span class="o">/</span> <span class="n">_Ang2Bohr</span>
+
+        <span class="c1"># Now create orbitals</span>
+        <span class="n">orbs</span> <span class="o">=</span> <span class="p">[</span><span class="n">si</span><span class="o">.</span><span class="n">AtomicOrbital</span><span class="p">(</span><span class="o">**</span><span class="n">orb</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">zeta</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">orb</span> <span class="ow">in</span> <span class="n">orbs</span><span class="p">]</span>
+        <span class="c1"># now re-arrange ensuring we have correct order of l shells</span>
+        <span class="n">orbs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">orbs</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">orb</span><span class="p">:</span> <span class="n">orb</span><span class="o">.</span><span class="n">l</span><span class="p">)</span>
+        <span class="n">atom</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">Atom</span><span class="p">(</span><span class="n">symbol</span><span class="p">,</span> <span class="n">orbs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">defines</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AtomInput.from_yaml"><a class="viewcode-back" href="../../../../toolbox/siesta/generated/sisl_toolbox.siesta.atom.AtomInput.html#sisl_toolbox.siesta.atom.AtomInput.from_yaml">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="p">()):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Parse the yaml file &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">sisl_toolbox.siesta.minimizer._yaml_reader</span> <span class="kn">import</span> <span class="n">read_yaml</span><span class="p">,</span> <span class="n">parse_variable</span>
+        <span class="n">dic</span> <span class="o">=</span> <span class="n">read_yaml</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">nodes</span><span class="p">)</span>
+
+        <span class="n">element</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;element&quot;</span><span class="p">]</span>
+        <span class="n">tag</span> <span class="o">=</span> <span class="n">dic</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tag&quot;</span><span class="p">)</span>
+        <span class="n">mass</span> <span class="o">=</span> <span class="n">dic</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mass&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># get default options for pseudo</span>
+        <span class="n">opts</span> <span class="o">=</span> <span class="n">NotNonePropertyDict</span><span class="p">()</span>
+        <span class="n">pseudo</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;pseudo&quot;</span><span class="p">]</span>
+        <span class="n">opts</span><span class="p">[</span><span class="s2">&quot;logr&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">parse_variable</span><span class="p">(</span><span class="n">pseudo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;log-radii&quot;</span><span class="p">),</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;Ang&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">opts</span><span class="p">[</span><span class="s2">&quot;rcore&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">parse_variable</span><span class="p">(</span><span class="n">pseudo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;core-correction&quot;</span><span class="p">),</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;Ang&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">opts</span><span class="p">[</span><span class="s2">&quot;xc&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pseudo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;xc&quot;</span><span class="p">)</span>
+        <span class="n">opts</span><span class="p">[</span><span class="s2">&quot;equation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pseudo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;equation&quot;</span><span class="p">)</span>
+        <span class="n">opts</span><span class="p">[</span><span class="s2">&quot;flavor&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pseudo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;flavor&quot;</span><span class="p">)</span>
+        <span class="n">define</span> <span class="o">=</span> <span class="n">pseudo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;define&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;NEW_CC&#39;</span><span class="p">,</span> <span class="s1">&#39;FREE_FORMAT_RC_INPUT&#39;</span><span class="p">,</span> <span class="s1">&#39;NO_PS_CUTOFFS&#39;</span><span class="p">))</span>
+
+        <span class="c1"># Now on to parsing the valence shells</span>
+        <span class="n">orbs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_shell_order</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Now we know the occupation is a shell</span>
+            <span class="n">pseudo</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pseudo&quot;</span><span class="p">,</span> <span class="p">{})</span>
+            <span class="n">cutoff</span> <span class="o">=</span> <span class="n">parse_variable</span><span class="p">(</span><span class="n">pseudo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cutoff&quot;</span><span class="p">),</span> <span class="mf">2.1</span><span class="p">,</span> <span class="s2">&quot;Ang&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+            <span class="n">charge</span> <span class="o">=</span> <span class="n">parse_variable</span><span class="p">(</span><span class="n">pseudo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;charge&quot;</span><span class="p">),</span> <span class="mf">0.</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+            <span class="n">orbs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">si</span><span class="o">.</span><span class="n">AtomicOrbital</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="n">cutoff</span><span class="p">,</span> <span class="n">q0</span><span class="o">=</span><span class="n">charge</span><span class="p">))</span>
+
+        <span class="n">atom</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">Atom</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">orbs</span><span class="p">,</span> <span class="n">mass</span><span class="o">=</span><span class="n">mass</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="n">tag</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">define</span><span class="p">,</span> <span class="o">**</span><span class="n">opts</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AtomInput.write_header"><a class="viewcode-back" href="../../../../toolbox/siesta/generated/sisl_toolbox.siesta.atom.AtomInput.html#sisl_toolbox.siesta.atom.AtomInput.write_header">[docs]</a>    <span class="k">def</span> <span class="nf">write_header</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;# This file is generated by sisl pseudo</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="c1"># Define all names</span>
+        <span class="k">for</span> <span class="n">define</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">define</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;%define </span><span class="si">{</span><span class="n">define</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AtomInput.write_generation"><a class="viewcode-back" href="../../../../toolbox/siesta/generated/sisl_toolbox.siesta.atom.AtomInput.html#sisl_toolbox.siesta.atom.AtomInput.write_generation">[docs]</a>    <span class="k">def</span> <span class="nf">write_generation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">cc</span><span class="p">:</span>
+            <span class="c1"># use core corrections</span>
+            <span class="n">pg</span> <span class="o">=</span> <span class="s2">&quot;pe&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># do not use core corrections</span>
+            <span class="n">pg</span> <span class="o">=</span> <span class="s2">&quot;pg&quot;</span>
+        <span class="n">logr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">logr</span> <span class="o">*</span> <span class="n">_Ang2Bohr</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   </span><span class="si">{</span><span class="n">pg</span><span class="si">:</span><span class="s2">2s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">symbol</span><span class="si">}</span><span class="s2"> pseudo potential</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">logr</span> <span class="o">&lt;</span> <span class="mf">0.</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;        </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">flavor</span><span class="si">:</span><span class="s2">3s</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;        </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">flavor</span><span class="si">:</span><span class="s2">3s</span><span class="si">}{</span><span class="n">logr</span><span class="si">:</span><span class="s2">9.3f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">xc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">xc</span>
+        <span class="n">equation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">equation</span>
+        <span class="n">rcore</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">rcore</span> <span class="o">*</span> <span class="n">_Ang2Bohr</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">symbol</span><span class="si">:</span><span class="s2">2s</span><span class="si">}</span><span class="s2">   </span><span class="si">{</span><span class="n">xc</span><span class="si">:</span><span class="s2">2s</span><span class="si">}{</span><span class="n">equation</span><span class="si">:</span><span class="s2">1s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;libxc&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">libxc</span><span class="si">:</span><span class="s2">8d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  </span><span class="si">{</span><span class="mf">0.0</span><span class="si">:</span><span class="s2">5.1f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="c1"># now extract the charges for each orbital</span>
+        <span class="n">atom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom</span>
+        <span class="n">core</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">core</span>
+        <span class="n">valence</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
+
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">core</span><span class="si">:</span><span class="s2">5d</span><span class="si">}{</span><span class="n">valence</span><span class="si">:</span><span class="s2">5d</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">Rs</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span> <span class="c1"># always 4: s, p, d, f</span>
+        <span class="k">for</span> <span class="n">orb</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">orbitals</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">l</span><span class="p">):</span>
+            <span class="c1"># Write the configuration of this orbital</span>
+            <span class="n">n</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">orb</span><span class="o">.</span><span class="n">l</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">n</span><span class="si">:</span><span class="s2">5d</span><span class="si">}{</span><span class="n">l</span><span class="si">:</span><span class="s2">5d</span><span class="si">}{</span><span class="n">orb</span><span class="o">.</span><span class="n">q0</span><span class="si">:</span><span class="s2">10.3f</span><span class="si">}{</span><span class="mf">0.0</span><span class="si">:</span><span class="s2">10.3f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">Rs</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">R</span> <span class="o">*</span> <span class="n">_Ang2Bohr</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Rs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">10.7f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">Rs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">10.7f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">Rs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">:</span><span class="s2">10.7f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">Rs</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="si">:</span><span class="s2">10.7f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="mf">0.0</span><span class="si">:</span><span class="s2">10.7f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">rcore</span><span class="si">:</span><span class="s2">10.7f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AtomInput.write_all_electron"><a class="viewcode-back" href="../../../../toolbox/siesta/generated/sisl_toolbox.siesta.atom.AtomInput.html#sisl_toolbox.siesta.atom.AtomInput.write_all_electron">[docs]</a>    <span class="k">def</span> <span class="nf">write_all_electron</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">charges</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,)):</span>
+        <span class="n">q0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">q0</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="n">xc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">xc</span>
+        <span class="n">equation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">equation</span>
+        <span class="n">core</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">core</span>
+        <span class="k">for</span> <span class="n">charge</span> <span class="ow">in</span> <span class="n">charges</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">charge</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">excite</span><span class="p">(</span><span class="o">**</span><span class="n">charge</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">excite</span><span class="p">(</span><span class="n">charge</span><span class="p">)</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">q0</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   ae </span><span class="si">{</span><span class="n">out</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">symbol</span><span class="si">}</span><span class="s2"> # all-electron q=</span><span class="si">{</span><span class="n">q0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">q</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   </span><span class="si">{</span><span class="n">out</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">symbol</span><span class="si">:</span><span class="s2">2s</span><span class="si">}</span><span class="s2">   </span><span class="si">{</span><span class="n">xc</span><span class="si">:</span><span class="s2">2s</span><span class="si">}{</span><span class="n">equation</span><span class="si">:</span><span class="s2">1s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;libxc&quot;</span> <span class="ow">in</span> <span class="n">out</span><span class="o">.</span><span class="n">opts</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">out</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">libxc</span><span class="si">:</span><span class="s2">8d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  </span><span class="si">{</span><span class="mf">0.0</span><span class="si">:</span><span class="s2">5.1f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="c1"># now extract the charges for each orbital</span>
+            <span class="n">atom</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">atom</span>
+            <span class="n">valence</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
+
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">core</span><span class="si">:</span><span class="s2">5d</span><span class="si">}{</span><span class="n">valence</span><span class="si">:</span><span class="s2">5d</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">orb</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">orbitals</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">l</span><span class="p">):</span>
+                <span class="n">n</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">orb</span><span class="o">.</span><span class="n">l</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">n</span><span class="si">:</span><span class="s2">5d</span><span class="si">}{</span><span class="n">l</span><span class="si">:</span><span class="s2">5d</span><span class="si">}{</span><span class="n">orb</span><span class="o">.</span><span class="n">q0</span><span class="si">:</span><span class="s2">10.3f</span><span class="si">}{</span><span class="mf">0.0</span><span class="si">:</span><span class="s2">10.3f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AtomInput.write_test"><a class="viewcode-back" href="../../../../toolbox/siesta/generated/sisl_toolbox.siesta.atom.AtomInput.html#sisl_toolbox.siesta.atom.AtomInput.write_test">[docs]</a>    <span class="k">def</span> <span class="nf">write_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">charges</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)):</span>
+        <span class="n">q0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">q0</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="n">xc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">xc</span>
+        <span class="n">equation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">equation</span>
+        <span class="n">core</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">core</span>
+        <span class="k">for</span> <span class="n">charge</span> <span class="ow">in</span> <span class="n">charges</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">charge</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">excite</span><span class="p">(</span><span class="o">**</span><span class="n">charge</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">excite</span><span class="p">(</span><span class="n">charge</span><span class="p">)</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">q0</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   pt </span><span class="si">{</span><span class="n">out</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">symbol</span><span class="si">}</span><span class="s2"> # pseudo test q=</span><span class="si">{</span><span class="n">q0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">q</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   </span><span class="si">{</span><span class="n">out</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">symbol</span><span class="si">:</span><span class="s2">2s</span><span class="si">}</span><span class="s2">   </span><span class="si">{</span><span class="n">xc</span><span class="si">:</span><span class="s2">2s</span><span class="si">}{</span><span class="n">equation</span><span class="si">:</span><span class="s2">1s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;libxc&quot;</span> <span class="ow">in</span> <span class="n">out</span><span class="o">.</span><span class="n">opts</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">out</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">libxc</span><span class="si">:</span><span class="s2">8d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  </span><span class="si">{</span><span class="mf">0.0</span><span class="si">:</span><span class="s2">5.1f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="c1"># now extract the charges for each orbital</span>
+            <span class="n">atom</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">atom</span>
+            <span class="n">valence</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
+
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">core</span><span class="si">:</span><span class="s2">5d</span><span class="si">}{</span><span class="n">valence</span><span class="si">:</span><span class="s2">5d</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">orb</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">orbitals</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">l</span><span class="p">):</span>
+                <span class="n">n</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">orb</span><span class="o">.</span><span class="n">l</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">n</span><span class="si">:</span><span class="s2">5d</span><span class="si">}{</span><span class="n">l</span><span class="si">:</span><span class="s2">5d</span><span class="si">}{</span><span class="n">orb</span><span class="o">.</span><span class="n">q0</span><span class="si">:</span><span class="s2">10.3f</span><span class="si">}{</span><span class="mf">0.0</span><span class="si">:</span><span class="s2">10.3f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_out</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">/</span> <span class="n">Path</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AtomInput.__call__"><a class="viewcode-back" href="../../../../toolbox/siesta/generated/sisl_toolbox.siesta.atom.AtomInput.html#sisl_toolbox.siesta.atom.AtomInput.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;INP&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Open a file and return self &quot;&quot;&quot;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_out</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_enter</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_enter&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enter</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_enter&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enter</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enter</span>
+
+<div class="viewcode-block" id="AtomInput.ae"><a class="viewcode-back" href="../../../../toolbox/siesta/generated/sisl_toolbox.siesta.atom.AtomInput.html#sisl_toolbox.siesta.atom.AtomInput.ae">[docs]</a>    <span class="k">def</span> <span class="nf">ae</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;INP&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_header</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_all_electron</span><span class="p">(</span><span class="n">f</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AtomInput.pg"><a class="viewcode-back" href="../../../../toolbox/siesta/generated/sisl_toolbox.siesta.atom.AtomInput.html#sisl_toolbox.siesta.atom.AtomInput.pg">[docs]</a>    <span class="k">def</span> <span class="nf">pg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;INP&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_header</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_generation</span><span class="p">(</span><span class="n">f</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AtomInput.excite"><a class="viewcode-back" href="../../../../toolbox/siesta/generated/sisl_toolbox.siesta.atom.AtomInput.html#sisl_toolbox.siesta.atom.AtomInput.excite">[docs]</a>    <span class="k">def</span> <span class="nf">excite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">charge</span><span class="p">,</span> <span class="o">**</span><span class="n">lq</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Excite contained atom to another charge</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        This is charge, _not_ electrons.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">charge</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.excite takes only &quot;</span>
+                             <span class="s2">&quot;a single argument or [spdf]=charge arguments&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">charge</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">charge</span> <span class="o">=</span> <span class="n">charge</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s2">&quot;charge&quot;</span> <span class="ow">in</span> <span class="n">lq</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.excite does not accept &quot;</span>
+                                 <span class="s2">&quot;both charge as argument and keyword argument&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">charge</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">charge</span> <span class="o">=</span> <span class="n">lq</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;charge&quot;</span><span class="p">,</span> <span class="n">charge</span><span class="p">)</span>
+        <span class="c1"># get indices of the orders</span>
+        <span class="n">shell_idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">_shell_order</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">orb</span><span class="o">.</span><span class="n">n</span><span class="si">}{</span><span class="n">_spdfgh</span><span class="p">[</span><span class="n">orb</span><span class="o">.</span><span class="n">l</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                     <span class="k">for</span> <span class="n">orb</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom</span><span class="p">]</span>
+        <span class="k">def</span> <span class="nf">_charge</span><span class="p">(</span><span class="n">idx</span><span class="p">):</span>
+            <span class="c1"># while the g and h shells are never used, we just have them...</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;s&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">:</span> <span class="mi">14</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">:</span> <span class="mi">22</span><span class="p">}[</span><span class="n">_shell_order</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="n">orig_charge</span> <span class="o">=</span> <span class="p">[</span><span class="n">_charge</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">shell_idx</span><span class="p">]</span>
+        <span class="n">atom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="c1"># find order of orbitals (from highest index to lowest)</span>
+        <span class="c1"># depending on the sign of charge</span>
+        <span class="n">shell_sort</span> <span class="o">=</span> <span class="n">shell_idx</span><span class="p">[:]</span>
+        <span class="n">shell_sort</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">reverse</span><span class="o">=</span><span class="n">charge</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">lq</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">l</span> <span class="o">=</span> <span class="n">_spdfgh</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">orb</span> <span class="ow">in</span> <span class="n">atom</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">orb</span><span class="o">.</span><span class="n">l</span> <span class="o">==</span> <span class="n">l</span><span class="p">:</span>
+                    <span class="n">orb</span><span class="o">.</span><span class="n">_q0</span> <span class="o">-=</span> <span class="n">q</span>
+                    <span class="k">assert</span> <span class="n">orb</span><span class="o">.</span><span class="n">q0</span> <span class="o">&gt;=</span> <span class="mf">0.</span>
+
+        <span class="c1"># now finalize the charge</span>
+        <span class="k">while</span> <span class="nb">abs</span><span class="p">(</span><span class="n">charge</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1e-9</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">idx_sort</span> <span class="ow">in</span> <span class="n">shell_sort</span><span class="p">:</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">shell_idx</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">idx_sort</span><span class="p">)</span>
+                <span class="n">orb</span> <span class="o">=</span> <span class="n">atom</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">charge</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">orb</span><span class="o">.</span><span class="n">q0</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">dq</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">orb</span><span class="o">.</span><span class="n">q0</span><span class="p">,</span> <span class="n">charge</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">charge</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">orb</span><span class="o">.</span><span class="n">q0</span> <span class="o">&lt;</span> <span class="n">orig_charge</span><span class="p">[</span><span class="n">idx</span><span class="p">]:</span>
+                    <span class="n">dq</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">orb</span><span class="o">.</span><span class="n">q0</span> <span class="o">-</span> <span class="n">orig_charge</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">charge</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">dq</span> <span class="o">=</span> <span class="mf">0.</span>
+                <span class="n">orb</span><span class="o">.</span><span class="n">_q0</span> <span class="o">-=</span> <span class="n">dq</span>
+                <span class="n">charge</span> <span class="o">-=</span> <span class="n">dq</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">define</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AtomInput.plot"><a class="viewcode-back" href="../../../../toolbox/siesta/generated/sisl_toolbox.siesta.atom.AtomInput.html#sisl_toolbox.siesta.atom.AtomInput.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+             <span class="n">plot</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;wavefunction&#39;</span><span class="p">,</span> <span class="s1">&#39;charge&#39;</span><span class="p">,</span> <span class="s1">&#39;log&#39;</span><span class="p">,</span> <span class="s1">&#39;potential&#39;</span><span class="p">),</span>
+             <span class="n">l</span><span class="o">=</span><span class="s1">&#39;spdf&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Plot everything related to this psf file</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : str or pathlib.Path, optional</span>
+<span class="sd">           from which directory should files be read</span>
+<span class="sd">        plot : list-like of str, optional</span>
+<span class="sd">           which data to plot</span>
+<span class="sd">        l : list-like, optional</span>
+<span class="sd">           which l-shells to plot (for those that have l-shell decompositions)</span>
+<span class="sd">        show : bool, optional</span>
+<span class="sd">           call `matplotlib.pyplot.show()` at the end</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        fig : figure for axes</span>
+<span class="sd">        axs : axes used for plotting</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+        <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">get_xy</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">yfactors</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot; Return x, y data from file `f` with y being calculated as the factors between the columns &quot;&quot;&quot;</span>
+            <span class="k">nonlocal</span> <span class="n">path</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">path</span> <span class="o">/</span> <span class="n">f</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find file: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="n">ncol</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">yfactors</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">yfactors</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">yfactors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">yfactors</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">ncol</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">yfactors</span><span class="p">)),</span> <span class="n">constant_values</span><span class="o">=</span><span class="mf">0.</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span> <span class="o">*</span> <span class="n">yfactors</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
+
+        <span class="n">l2i</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;s&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s1">&#39;p&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="s1">&#39;f&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+            <span class="s1">&#39;g&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="c1"># never used</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Get this atoms default calculated binding length</span>
+        <span class="c1"># We use this one since there are many missing elements</span>
+        <span class="c1"># in vdw table.</span>
+        <span class="c1"># And convert to Bohr</span>
+        <span class="n">atom_r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">radius</span><span class="p">(</span><span class="s2">&quot;calc&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="n">_Ang2Bohr</span>
+
+        <span class="k">def</span> <span class="nf">plot_wavefunction</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
+            <span class="c1"># somewhat similar to ae.gplot</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Wavefunction&quot;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Radius [Bohr]&quot;</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">shell</span> <span class="ow">in</span> <span class="n">l</span><span class="p">:</span>
+                <span class="n">il</span> <span class="o">=</span> <span class="n">l2i</span><span class="p">[</span><span class="n">shell</span><span class="p">]</span>
+                <span class="n">orb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">orbitals</span><span class="p">[</span><span class="n">il</span><span class="p">]</span>
+
+                <span class="n">r</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">get_xy</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AEWFNR</span><span class="si">{</span><span class="n">il</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">p</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;AE </span><span class="si">{</span><span class="n">_spdfgh</span><span class="p">[</span><span class="n">il</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">color</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_color</span><span class="p">()</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">orb</span><span class="o">.</span><span class="n">R</span> <span class="o">*</span> <span class="n">_Ang2Bohr</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+                <span class="n">r</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">get_xy</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PSWFNR</span><span class="si">{</span><span class="n">il</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;PS </span><span class="si">{</span><span class="n">_spdfgh</span><span class="p">[</span><span class="n">il</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">atom_r</span> <span class="o">*</span> <span class="mi">5</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">autoscale</span><span class="p">(</span><span class="n">enable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">tight</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">plot_charge</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Charge&quot;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Radius [Bohr]&quot;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;(4.pi.r^2) Charge [electrons/Bohr]&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Get current core-correction length</span>
+            <span class="n">ae_r</span><span class="p">,</span> <span class="n">ae_cc</span> <span class="o">=</span> <span class="n">get_xy</span><span class="p">(</span><span class="s2">&quot;AECHARGE&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">ae_vc</span> <span class="o">=</span> <span class="n">get_xy</span><span class="p">(</span><span class="s2">&quot;AECHARGE&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">ae_cc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ae_r</span><span class="p">,</span> <span class="n">ae_cc</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;AE core&quot;</span><span class="p">)</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_color</span><span class="p">()</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cc&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">rcore</span> <span class="o">*</span> <span class="n">_Ang2Bohr</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ae_r</span><span class="p">,</span> <span class="n">ae_vc</span><span class="p">,</span> <span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;AE valence&quot;</span><span class="p">)</span>
+
+            <span class="n">ps_r</span><span class="p">,</span> <span class="n">ps_cc</span> <span class="o">=</span> <span class="n">get_xy</span><span class="p">(</span><span class="s2">&quot;PSCHARGE&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">ps_vc</span> <span class="o">=</span> <span class="n">get_xy</span><span class="p">(</span><span class="s2">&quot;PSCHARGE&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">ps_r</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ps_r</span><span class="p">,</span> <span class="n">ps_cc</span><span class="p">,</span> <span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;PS core&quot;</span><span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ps_r</span><span class="p">,</span> <span class="n">ps_vc</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;PS valence&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Now determine the overlap between all-electron core-charge</span>
+            <span class="c1"># and the pseudopotential valence charge</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">ae_r</span><span class="p">,</span> <span class="n">ps_r</span><span class="p">):</span>
+                <span class="c1"># Determine dR</span>
+                <span class="c1">#dr = ae_r[1] - ae_r[0]</span>
+
+                <span class="c1"># Integrate number of core-electrons and valence electrons</span>
+                <span class="n">core_c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">ae_cc</span><span class="p">,</span> <span class="n">ae_r</span><span class="p">)</span>
+                <span class="n">valence_c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">ps_vc</span><span class="p">,</span> <span class="n">ps_r</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total charge in atom: </span><span class="si">{</span><span class="n">core_c</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">valence_c</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">overlap_c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trapz</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">ae_cc</span><span class="p">,</span> <span class="n">ps_vc</span><span class="p">),</span> <span class="n">ae_r</span><span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Charge: int(min(AE_cc, PS_vc)) = </span><span class="si">{</span><span class="n">overlap_c</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> e&quot;</span><span class="p">)</span>
+
+                <span class="c1"># We will try and *guess-stimate* a good position for rc for core-corrections</span>
+                <span class="c1"># Javier Junquera&#39;s document says:</span>
+                <span class="c1"># r_pc has to be chosen such that the valence charge density is negligeable compared to</span>
+                <span class="c1"># the core one for r &lt; r_pc.</span>
+                <span class="c1"># Tests show that it might be located where the core charge density is from 1 to 2 times</span>
+                <span class="c1"># larger than the valence charge density</span>
+                <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">):</span>
+                    <span class="n">fraction</span> <span class="o">=</span> <span class="n">ae_cc</span> <span class="o">/</span> <span class="n">ps_vc</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">fraction</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+                <span class="n">ax2</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">twinx</span><span class="p">()</span> <span class="c1"># instantiate a second axes that shares the same x-axis</span>
+                <span class="n">ax2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ae_r</span><span class="p">,</span> <span class="n">fraction</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;c/v&#39;</span><span class="p">)</span>
+
+                <span class="n">marks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">])</span>
+                <span class="n">min_x</span> <span class="o">=</span> <span class="p">(</span><span class="n">ae_r</span> <span class="o">&gt;</span> <span class="mf">0.2</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+                <span class="n">max_x</span> <span class="o">=</span> <span class="p">(</span><span class="n">fraction</span><span class="p">[</span><span class="n">min_x</span><span class="p">:]</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="n">min_x</span>
+
+                <span class="n">r_marks</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">fraction</span><span class="p">[</span><span class="n">min_x</span><span class="p">:</span><span class="n">max_x</span><span class="p">],</span> <span class="n">ae_r</span><span class="p">[</span><span class="n">min_x</span><span class="p">:</span><span class="n">max_x</span><span class="p">])(</span><span class="n">marks</span><span class="p">)</span>
+                <span class="n">ax2</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">r_marks</span><span class="p">,</span> <span class="n">marks</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+                <span class="n">ax2</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Core-correction r_pc </span><span class="si">{</span><span class="n">marks</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">r_marks</span><span class="si">}</span><span class="s2"> Bohr&quot;</span><span class="p">)</span>
+
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">atom_r</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">plot_log</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;d-log of wavefunction&quot;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Energy [Ry]&quot;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Derivative of wavefunction&quot;</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">shell</span> <span class="ow">in</span> <span class="n">l</span><span class="p">:</span>
+                <span class="n">il</span> <span class="o">=</span> <span class="n">l2i</span><span class="p">[</span><span class="n">shell</span><span class="p">]</span>
+
+                <span class="n">e</span><span class="p">,</span> <span class="n">log</span> <span class="o">=</span> <span class="n">get_xy</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AELOGD</span><span class="si">{</span><span class="n">il</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">emark</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;AEEV</span><span class="si">{</span><span class="n">il</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">emark</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">emark</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">emark</span> <span class="o">=</span> <span class="n">emark</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">e</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">p</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;AE </span><span class="si">{</span><span class="n">_spdfgh</span><span class="p">[</span><span class="n">il</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                    <span class="n">idx_mark</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">emark</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                                <span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">emark</span><span class="p">,</span> <span class="n">log</span><span class="p">[</span><span class="n">idx_mark</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_color</span><span class="p">(),</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+                <span class="c1"># And now PS</span>
+                <span class="n">e</span><span class="p">,</span> <span class="n">log</span> <span class="o">=</span> <span class="n">get_xy</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PSLOGD</span><span class="si">{</span><span class="n">il</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">emark</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;PSEV</span><span class="si">{</span><span class="n">il</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">emark</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">emark</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">emark</span> <span class="o">=</span> <span class="n">emark</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">e</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">p</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;PS </span><span class="si">{</span><span class="n">_spdfgh</span><span class="p">[</span><span class="n">il</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                    <span class="n">idx_mark</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">emark</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                                <span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">emark</span><span class="p">,</span> <span class="n">log</span><span class="p">[</span><span class="n">idx_mark</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_color</span><span class="p">(),</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+            <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">plot_potential</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Pseudopotential&quot;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Radius [Bohr]&quot;</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Potential [Ry]&quot;</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">shell</span> <span class="ow">in</span> <span class="n">l</span><span class="p">:</span>
+                <span class="n">il</span> <span class="o">=</span> <span class="n">l2i</span><span class="p">[</span><span class="n">shell</span><span class="p">]</span>
+                <span class="n">orb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">orbitals</span><span class="p">[</span><span class="n">il</span><span class="p">]</span>
+
+                <span class="n">r</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">get_xy</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PSPOTR</span><span class="si">{</span><span class="n">il</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">r</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">p</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;PS </span><span class="si">{</span><span class="n">_spdfgh</span><span class="p">[</span><span class="n">il</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">color</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_color</span><span class="p">()</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">orb</span><span class="o">.</span><span class="n">R</span> <span class="o">*</span> <span class="n">_Ang2Bohr</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">atom_r</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+        <span class="n">nrows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="n">ncols</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">//</span> <span class="n">nrows</span>
+        <span class="k">if</span> <span class="n">nrows</span> <span class="o">*</span> <span class="n">ncols</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">):</span>
+            <span class="n">ncols</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="p">,</span> <span class="n">ncols</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+
+        <span class="k">def</span> <span class="nf">next_rc</span><span class="p">(</span><span class="n">ir</span><span class="p">,</span> <span class="n">ic</span><span class="p">,</span> <span class="n">nrows</span><span class="p">,</span> <span class="n">ncols</span><span class="p">):</span>
+            <span class="n">ic</span> <span class="o">=</span> <span class="n">ic</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">ic</span> <span class="o">==</span> <span class="n">ncols</span><span class="p">:</span>
+                <span class="n">ic</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">ir</span> <span class="o">=</span> <span class="n">ir</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">return</span> <span class="n">ir</span><span class="p">,</span> <span class="n">ic</span>
+
+        <span class="n">ir</span><span class="p">,</span> <span class="n">ic</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">this_plot</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">plot</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">this_plot</span> <span class="o">==</span> <span class="s2">&quot;wavefunction&quot;</span><span class="p">:</span>
+                <span class="n">plot_wavefunction</span><span class="p">(</span><span class="n">axs</span><span class="p">[</span><span class="n">ir</span><span class="p">][</span><span class="n">ic</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">this_plot</span> <span class="o">==</span> <span class="s2">&quot;log&quot;</span><span class="p">:</span>
+                <span class="n">plot_log</span><span class="p">(</span><span class="n">axs</span><span class="p">[</span><span class="n">ir</span><span class="p">][</span><span class="n">ic</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">this_plot</span> <span class="o">==</span> <span class="s2">&quot;charge&quot;</span><span class="p">:</span>
+                <span class="n">plot_charge</span><span class="p">(</span><span class="n">axs</span><span class="p">[</span><span class="n">ir</span><span class="p">][</span><span class="n">ic</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">this_plot</span> <span class="o">==</span> <span class="s2">&quot;potential&quot;</span><span class="p">:</span>
+                <span class="n">plot_potential</span><span class="p">(</span><span class="n">axs</span><span class="p">[</span><span class="n">ir</span><span class="p">][</span><span class="n">ic</span><span class="p">])</span>
+
+            <span class="n">ir</span><span class="p">,</span> <span class="n">ic</span> <span class="o">=</span> <span class="n">next_rc</span><span class="p">(</span><span class="n">ir</span><span class="p">,</span> <span class="n">ic</span><span class="p">,</span> <span class="n">nrows</span><span class="p">,</span> <span class="n">ncols</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span></div></div>
+
+
+<span class="k">def</span> <span class="nf">atom_plot_cli</span><span class="p">(</span><span class="n">subp</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Run plotting command for the output of atom &quot;&quot;&quot;</span>
+
+    <span class="n">is_sub</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">subp</span> <span class="ow">is</span> <span class="kc">None</span>
+
+    <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Plotting facility for atom output (run in the atom output directory)&quot;</span>
+    <span class="k">if</span> <span class="n">is_sub</span><span class="p">:</span>
+        <span class="k">global</span> <span class="n">_script</span>
+        <span class="n">_script</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_script</span><span class="si">}</span><span class="s2"> atom-plot&quot;</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">subp</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="s2">&quot;atom-plot&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">argparse</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+
+    <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--plot&quot;</span><span class="p">,</span> <span class="s1">&#39;-P&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;append&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+                   <span class="n">choices</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;wavefunction&#39;</span><span class="p">,</span> <span class="s1">&#39;charge&#39;</span><span class="p">,</span> <span class="s1">&#39;log&#39;</span><span class="p">,</span> <span class="s1">&#39;potential&#39;</span><span class="p">),</span>
+                   <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Determine what to plot&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-l&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;spdf&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+                   <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Which l shells to plot&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--save&quot;</span><span class="p">,</span> <span class="s2">&quot;-S&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Save output plots to file.&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--show&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+                   <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Force showing the plot (only if --save is specified)&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;input&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;INP&quot;</span><span class="p">,</span>
+                   <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Input file name (default INP)&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">is_sub</span><span class="p">:</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">runner</span><span class="o">=</span><span class="n">atom_plot</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">atom_plot</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">parse_args</span><span class="p">())</span>
+
+
+<span class="k">def</span> <span class="nf">atom_plot</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+    <span class="nb">input</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">input</span><span class="p">)</span>
+    <span class="n">atom</span> <span class="o">=</span> <span class="n">AtomInput</span><span class="o">.</span><span class="n">from_input</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+
+    <span class="c1"># If the specified input is a file, use the parent</span>
+    <span class="c1"># Otherwise use the input *as is*.</span>
+    <span class="k">if</span> <span class="nb">input</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">parent</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="nb">input</span>
+
+    <span class="c1"># if users have not specified what to plot, we plot everything</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">plot</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">plot</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;wavefunction&#39;</span><span class="p">,</span> <span class="s1">&#39;charge&#39;</span><span class="p">,</span> <span class="s1">&#39;log&#39;</span><span class="p">,</span> <span class="s1">&#39;potential&#39;</span><span class="p">)</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">plot</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">l</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">save</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">save</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">show</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
