@@ -1,6 +1,9 @@
 
 .. _toc-tool-atom-plot:
 
+.. module:: sisl_toolbox.siesta.atom
+
+
 Plotting `atom` output
 ======================
 
@@ -80,3 +83,9 @@ will be used to generate the input file.
    # write the INP file in current directory
    atom_input.pg()
 
+
+
+.. autosummary::
+   :toctree: generated/
+
+   AtomInput
