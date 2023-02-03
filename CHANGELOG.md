@@ -14,8 +14,8 @@ we hit release version 1.0.0.
 
 ### Changed
 - `SelfEnergy.scattering_matrix` is changed to `SelfEnergy.broadening_matrix`
-	since the scattering matrix is an S-matrix usage.
-	Also changed `se2scat` to `se2broadening` #529
+  ince the scattering matrix is an S-matrix usage.
+  Also changed `se2scat` to `se2broadening` #529
 
 
 ### toolbox.btd
@@ -535,7 +535,7 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
 - Bugfix in calculating `shot_noise`, `noise_power` and `fano` factors in `tbtncSileSiesta`
   They were only correct for Gamma-point calculations
 
-- Fixed *.EIG `sdata` processing when using --dos
+- Fixed `*.EIG` `sdata` processing when using `--dos`
 
 - Fixed reading geometries from grids from VASP (grid values were correct)
 
@@ -1092,9 +1092,7 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
   supercell information is correct.
 
 - tbtncSileSiesta now distinguishes between:
-    electronic_temperature [K]
-  and
-    kT [eV]
+  electronic_temperature [K] and kT [eV]
   where the units are not the same.
 
 - Fixed TBT_DN.nc TBT_UP.nc detection as a `Sile`
@@ -1120,7 +1118,7 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
   Additionally one may use flag `--format` in `sgeom` to
   define the precision.
 
-- `Shape`s have been added. There are now several Shapes
+- `Shape` have been added. There are now several Shapes
   which may be used to easily find atoms within a given Shape.
   This should in principle allow construction of very complex Shapes
   and easier construction of complex Hamiltonians

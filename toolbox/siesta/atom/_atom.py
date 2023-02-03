@@ -77,7 +77,7 @@ _spdfgh = 'spdfgh'
 
 
 class AtomInput:
-    """Input for the ``atom`` program see `[1]`_
+    """Input for the ``atom`` program see [1]_
 
     This class enables the construction of the ``INP`` file to be fed to ``atom``.
 
@@ -97,7 +97,9 @@ class AtomInput:
     #
     #2345678901234567890123456789012345678901234567890      Ruler
 
-    .. [1]: https://siesta.icmab.es/SIESTA_MATERIAL/Pseudos/atom_licence.html
+    References
+    ----------
+    .. [1] : https://siesta.icmab.es/SIESTA_MATERIAL/Pseudos/atom_licence.html
     """
 
     def __init__(self, atom,

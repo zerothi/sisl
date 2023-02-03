@@ -97,7 +97,13 @@ class ParentContainer:
 
     def __init__(self, parent, **info):
         self.parent = parent
+        """ object
+the object from where the contained information comes from
+"""
         self.info = info
+        """ dict
+information regarding the creation of the object
+"""
 
     @singledispatchmethod
     def _sanitize_index(self, idx):
@@ -123,15 +129,6 @@ class ParentContainer:
 class Coefficient(ParentContainer):
     """ An object holding coefficients for a parent with info
 
-    Attributes
-    ----------
-    c : numpy.ndarray
-        coefficients
-    info : dict
-        information regarding the creation of these coefficients
-    parent : obj
-        object from where the coefficients has been calculated, in one way or the other
-
     Parameters
     ----------
     c : array_like
@@ -147,6 +144,9 @@ class Coefficient(ParentContainer):
     def __init__(self, c, parent=None, **info):
         super().__init__(parent, **info)
         self.c = np.atleast_1d(c)
+        """ c : numpy.ndarray
+coefficients retained in this object
+        """
 
     def __str__(self):
         """ The string representation of this object """
@@ -298,15 +298,6 @@ class Coefficient(ParentContainer):
 class State(ParentContainer):
     """ An object handling a set of vectors describing a given *state*
 
-    Attributes
-    ----------
-    state : numpy.ndarray
-        state coefficients
-    info : dict
-        information regarding the creation of the states
-    parent : obj
-        object from where the states has been calculated, in one way or the other
-
     Parameters
     ----------
     state : array_like
@@ -327,6 +318,9 @@ class State(ParentContainer):
         """ Define a state container with a given set of states """
         super().__init__(parent, **info)
         self.state = np.atleast_2d(state)
+        """ numpy.ndarray
+state coefficients
+        """
 
     def __str__(self):
         """ The string representation of this object """
@@ -586,16 +580,17 @@ class State(ParentContainer):
         states:
 
         .. math::
-           :nowrap:
            :label: ipr2
+           :nowrap:
 
-           \begin{align}
-           \lim_{L\to\infty} I_{2,i} = \left\{\begin{aligned}
-                1/L^d & \text{extended state}
+            \begin{align}
+             \lim_{L\to\infty} I_{2,i} = \left\{
+               \begin{aligned}
+                1/L^d &\quad \text{extended state}
                 \\
-                const. & \text{localized state}
-               \end{aligned}
-           \end{align}
+                \text{const.} &\quad \text{localized state}
+               \end{aligned}\right.
+            \end{align}
 
         For further details see [1]_. Note that for eigen states the IPR reduces to:
 
@@ -1049,17 +1044,6 @@ class State(ParentContainer):
 class StateC(State):
     """ An object handling a set of vectors describing a given *state* with associated coefficients `c`
 
-    Attributes
-    ----------
-    c : numpy.ndarray
-        coefficients assigned to each state
-    state : numpy.ndarray
-        state coefficients
-    info : dict
-        information regarding the creation of the states
-    parent : obj
-        object from where the states has been calculated, in one way or the other
-
     Parameters
     ----------
     state : array_like
@@ -1082,6 +1066,10 @@ class StateC(State):
         """ Define a state container with a given set of states and coefficients for the states """
         super().__init__(state, parent, **info)
         self.c = np.atleast_1d(c)
+        """ numpy.ndarray
+coefficients assigned to each state
+        """
+
         if len(self.c) != len(self.state):
             raise ValueError(f"{self.__class__.__name__} could not be created with coefficients and states "
                              "having unequal length.")

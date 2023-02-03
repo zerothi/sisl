@@ -101,15 +101,6 @@ class SparseCSR(NDArrayOperatorsMixin):
     nnz : int, optional
        initial total number of non-zero elements
        This quantity has precedence over `nnzpr`
-
-    Attributes
-    ----------
-    ncol : int-array, ``self.shape[0]``
-       number of entries per row
-    ptr : int-array, ``self.shape[0]+1``
-       pointer index in the 1D column indices of the corresponding row
-    col : int-array
-       column indices of the sparse elements
     """
     # We don't really need slots, but it is useful
     # to keep a good overview of which variables are present
@@ -170,8 +161,17 @@ class SparseCSR(NDArrayOperatorsMixin):
 
                 # Copy data to the arrays
                 self.ptr = arg1[2].astype(int32, copy=False)
+                """ int-array, ``self.shape[0]+1``
+pointer index in the 1D column indices of the corresponding row
+                """
                 self.ncol = diff(self.ptr)
+                """ int-array, ``self.shape[0]``
+number of entries per row
+                """
                 self.col = arg1[1].astype(int32, copy=False)
+                """ int-array
+column indices of the sparse elements
+                """
                 self._nnz = len(self.col)
                 self._D = empty([len(arg1[1]), self.shape[-1]], dtype=self.dtype)
                 if len(arg1[0].shape) == 2:

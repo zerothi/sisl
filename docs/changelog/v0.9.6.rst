@@ -108,7 +108,7 @@ A total of 7 pull requests were merged for this release.
 * Bugfix in calculating `shot_noise`, `noise_power` and `fano` factors in `tbtncSileSiesta`
   They were only correct for Gamma-point calculations
 
-* Fixed *.EIG `sdata` processing when using --dos
+* Fixed `*.EIG` `sdata` processing when using `--dos`
 
 * Fixed reading geometries from grids from VASP (grid values were correct)
 

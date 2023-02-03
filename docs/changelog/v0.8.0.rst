@@ -82,16 +82,3 @@ Here is a compressed list of changes:
 
   I would really like help with creating more tests!
   Please help if you can!
-
-<!--
-Local Variables:
-=================
-mode: text
-===========
-comment-column: 0
-==================
-tab-width: 2
-=============
-End:
-=====
-*->

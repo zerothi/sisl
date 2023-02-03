@@ -23,9 +23,7 @@ A total of 0 pull requests were merged for this release.
   supercell information is correct.
 
 * tbtncSileSiesta now distinguishes between:
-    electronic_temperature [K]
-  and
-    kT [eV]
+  electronic_temperature [K] and kT [eV]
   where the units are not the same.
 
 * Fixed TBT_DN.nc TBT_UP.nc detection as a `Sile`
@@ -51,7 +49,7 @@ A total of 0 pull requests were merged for this release.
   Additionally one may use flag `--format` in `sgeom` to
   define the precision.
 
-* `Shape`s have been added. There are now several Shapes
+* `Shape` has been added. There are now several Shapes
   which may be used to easily find atoms within a given Shape.
   This should in principle allow construction of very complex Shapes
   and easier construction of complex Hamiltonians
