@@ -25,5 +25,6 @@ The implemented toolboxes are listed here:
 .. toctree::
    :maxdepth: 1
 
-   ts_fft
-   atom_plot
+   transiesta/ts_fft
+   siesta/atom_plot
+   btd/btd
