@@ -82,7 +82,7 @@ by writing an email to `nickpapior AT gmail.com <mailto:nickpapior@gmail.com>`_.
 
 #. D. Li, J.L. Bertelsen, N. Papior, A. Smogunov, M. Brandbyge,
    *Surface states and related quantum interference in ab initio electron transport*,
-   :doi`Physical Review Research **3**, 033017 (2021) <10.1103/PhysRevResearch.3.033017>`
+   :doi:`Physical Review Research **3**, 033017 (2021) <10.1103/PhysRevResearch.3.033017>`
 
 #. S.A. Sozykin,
    *GUI4dft --- A SIESTA oriented GUI*,
@@ -126,99 +126,99 @@ by writing an email to `nickpapior AT gmail.com <mailto:nickpapior@gmail.com>`_.
 
 #. T. Schmitt, S. Bourelle, N. Tye, G. Soavi, A.D. Bond, S. Feldmann, T. Boubacar, C. Katan, J. Even, S.E. Dutton, F. Deschler,
    *Control of Crystal Symmetry Breaking with Halogen-Substituted Benzylammonium in Layered Hybrid Metal-Halide Perovskites*,
-   Journal of the American Chemical Society **142**, `11 (2020) <https://doi.org/10.1021/jacs.9b11809>`_
+   :doi:`Journal of the American Chemical Society **142**, (2020) <10.1021/jacs.9b11809>`
 
 #. J. Brand, S. Leitherer, N. Papior, N. Neel, Y. Lei, M. Brandbyge and J. Kroger,
    *Nonequilibrium Bond Forces in Single-Molecule Junctions*,
-   Nano Letters **19** `11 (2019) <https://doi.org/10.1021/acs.nanolett.9b02845>`_
+   :doi:`Nano Letters **19** 11 (2019) <10.1021/acs.nanolett.9b02845>`
 
 #. F. Schindler, M. Brzezinska, W.A. Benalcazar, M. Iraola, A. Bouhon, S.S. Tsirkin, M.G. Vergniory, T. Neupert,
    *Fractional corner charges in spin-orbit coupled crystals*,
-   Physical Rev. Research **1**, `033074 (2019) <https://journals.aps.org/prresearch/abstract/10.1103/PhysRevResearch.1.033074>`_
+   :doi:`Physical Rev. Research **1**, 033074 (2019) <10.1103/PhysRevResearch.1.033074>`
 
 #. G. Singh, K. Kumar, R.K. Moudgil,
    *Alloying-induced Spin Seebeck Effect and Spin Figure of Merit in Pt-based Bimetallic Atomic Wires of Noble Metals*,
-   Physical Chemistry Chemical Physics **21** `20965 (2019) <https://doi.org/10.1039/C9CP01671F>`_
+   :doi:`Physical Chemistry Chemical Physics **21** 20965 (2019) <10.1039/C9CP01671F>`
 
 #. L. Oroszlány, J. Ferrer, A. Deak, L. Udvardi and L. Szunyogh,
    *Exchange interactions from a nonorthogonal basis set: From bulk ferromagnetsto the magnetism in low-dimensional graphene systems*,
-   Physical Review B **99**, `224412 (2019) <https://journals.aps.org/prb/abstract/10.1103/PhysRevB.99.224412>`_
+   :doi:`Physical Review B **99**, 224412 (2019) <10.1103/PhysRevB.99.224412>`
 
 #. G. Calogero, I. Alcon, N. Papior, A-P Jauho, M. Brandbyge,
    *Quantum interference engineering of nanoporous graphene for carbon nanocircuitry*,
-   Journal of the American Chemical Society `141 (2019) <https://doi.org/10.1021/jacs.9b04649>`_
+   :doi:`Journal of the American Chemical Society 141 (2019) <10.1021/jacs.9b04649>`
 
 #. S. Leitherer, N. Papior, M. Brandbyge,
    *Current-induced atomic forces in gated graphene nanoconstrictions*,
-   Physical Review B **100**, `035415 (2019) <https://journals.aps.org/prb/abstract/10.1103/PhysRevB.100.035415>`_
+   :doi:`Physical Review B **100**, 035415 (2019) <10.1103/PhysRevB.100.035415>`
 
 #. G. Singh, K. Kumar, B. Singh, R.K. Moudgil,
    *Ballistic phonon thermal transport across nano-junctions on aluminum and platinum nanowires*,
-   AIP Conference Proceedings **2093**, `020029 (2019) <https://doi.org/10.1063/1.5097098>`_
+   :doi:`AIP Conference Proceedings **2093**, 020029 (2019) <10.1063/1.5097098>`
 
 #. G. Calogero, N. Papior, M. Koleini, M.H.L. Larsen and M. Brandbyge,
    *Multi-scale approach to first-principles electron transport beyond 100 nm*,
-   Nanoscale **11**, `6153 (2019) <https://www.doi.org/10.1039/C9NR00866G>`_
+   :doi:`Nanoscale **11**, 6153 (2019) <10.1039/C9NR00866G>`
 
 #. G. Singh, K. Kumar and R.K. Moudgil,
    *On topology-tuned thermoelectric properties of noble metal atomic wires*,
-   Physica E: Low-dimensional Systems and Nanostructures **109**, `114 (2019) <https://doi.org/10.1016/j.physe.2019.01.007>`_
+   :doi:`Physica E: Low-dimensional Systems and Nanostructures **109**, 114 (2019) <10.1016/j.physe.2019.01.007>`
 
 #. J. Li, S. Sanz, M. Corso, D.J. Choi, D. Pena, T. Frederiksen and J.I. Pascual,
    *Single spin localization and manipulation in graphene open-shell nanostructures*,
-   Nature Communications **10**, `200 (2019) <https://www.nature.com/articles/s41467-018-08060-6>`_
+   :doi:`Nature Communications **10**, 200 (2019) <10.1038/s41467-018-08060-6>`
 
 #. G. Calogero, N. Papior, B. Kretz, A. Garcia-Lekue, T. Frederiksen and M. Brandbyge,
    *Electron Transport in Nanoporous Graphene: Probing the Talbot Effect*,
-   Nano Letters **19**, `1 (2019) <https://www.doi.org/10.1021/acs.nanolett.8b04616>`_
+   :doi:`Nano Letters **19**, 1 (2019) <10.1021/acs.nanolett.8b04616>`
 
 #. D. Perera and J. Rohrer,
    *Structure sensitivity of electronic transport across graphene grain boundaries*,
-   Physical Review B **98**, `155432 (2018) <https://journals.aps.org/prb/abstract/10.1103/PhysRevB.98.155432>`_
+   :doi:`Physical Review B **98**, 155432 (2018) <10.1103/PhysRevB.98.155432>`
 
 #. Z. Nourbakhsh and R. Asgari,
    *Phosphorene as nanoelectromechanical material*,
-   Physical Review B **98**, `125427 (2018) <https://journals.aps.org/prb/abstract/10.1103/PhysRevB.98.125427>`_
+   :doi:`Physical Review B **98**, 125427 (2018) <10.1103/PhysRevB.98.125427>`
 
 #. G. Calogero, N. Papior, P. Bøggild and M. Brandbyge,
    *Large-scale tight-binding simulations of quantum transport in ballistic graphene*,
-   Journal of Physics: Condensed Matter, **36**, `36 (2018) <http://iopscience.iop.org/article/10.1088/1361-648X/aad6f1>`_
+   :doi:`Journal of Physics: Condensed Matter, **36**, 36 (2018) <10.1088/1361-648X/aad6f1>`
 
 #. B. Fülöp, Z. Tajkov, J. Pető, P. Kun, J. Koltai, L. Oroszlány, E. Tóvári, H. Murakawa, Y. Tokura, S. Bordács, L. Tapasztó and S. Csonka,
    *Exfoliation of single layer BiTeI flakes*,
-   2D Materials **5**, `3 (2018) <http://stacks.iop.org/2053-1583/5/i=3/a=031013>`_.
+   :doi:`2D Materials **5**, 3 (2018) <10.1088/2053-1583/aac652>`
 
 #. Z. Nourbakhsh and R. Asgari,
    *Charge transport in doped zigzag phosphorene nanoribbons*,
-   Physical Review B **97**, `235406 (2018) <https://journals.aps.org/prb/abstract/10.1103/PhysRevB.97.235406>`_
+   :doi:`Physical Review B **97**, 235406 (2018) <10.1103/PhysRevB.97.235406>`
 
 #. N. Papior, G. Calogero and M. Brandbyge,
    *Simple and efficient LCAO basis sets for the diffuse states in carbon nanostructures*,
-   Journal of Physics: Condensed Matter **30**, `25 (2018) <http://iopscience.iop.org/article/10.1088/1361-648X/aac4dd>`_
+   :doi:`Journal of Physics: Condensed Matter **30**, 25 (2018) <10.1088/1361-648X/aac4dd>`
 
 #. C. Moreno, M. Vila-Varela, B. Kretz, A. Garcia-Lekue, M.V. Costache, M. Paradinas, M. Panighel, G. Ceballos, S.O. Valenzuela, D. Pena and A.M. Mugarza,
    *Bottom-up synthesis of multifunctional nanoporous graphene*,
-   Science **360**, `6385 (2018) <http://www.sciencemag.org/lookup/doi/10.1126/science.aar2009>`_
+   :doi:`Science **360**, 6385 (2018) <10.1126/science.aar2009>`
 
 #. P. Bøggild, J.M. Caridad, C. Stampfer, G. Calogero, N.R. Papior and M. Brandbyge,
    *A two-dimensional Dirac fermion microscope*,
-   Nature Communications **8**, `15783 (2017) <http://www.nature.com/doifinder/10.1038/ncomms15783>`_
+   :doi:`Nature Communications **8**, 15783 (2017) <10.1038/ncomms15783>`
 
 #. P. Brandimarte, M. Engelund, N. Papior, A. Garcia-Lekue, T. Frederiksen and D. Sanchez-Portal,
    *A tunable electronic beam splitter realized with crossed graphene nanoribbons*,
-   Journal of Chemical Physics **146**, `092318 (2017) <http://aip.scitation.org/doi/10.1063/1.4974895>`_
+   :doi:`Journal of Chemical Physics **146**, 092318 (2017) <10.1063/1.4974895>`
 
 #. V. Obersteiner, G. Huhs, N. Papior and E. Zojer,
    *Unconventional Current Scaling and Edge Effects for Charge Transport through Molecular Clusters*,
-   Nano Letters **17**, `12 (2017) <https://pubs.acs.org/doi/10.1021/acs.nanolett.7b03066>`_
+   :doi:`Nano Letters **17**, 12 (2017) <10.1021/acs.nanolett.7b03066>`
    
 #. T. Groizard, N.R. Papior, B. Le Guennic, V. Robert and M. Kepenekian,
    *Enhanced Cooperativity in Supported Spin-Crossover Metal-Organic Frameworks*,
-   Journal of Physical Chemistry Letters **8**, `3415 (2017) <http://pubs.acs.org/doi/abs/10.1021/acs.jpclett.7b01248>`_
+   :doi:`Journal of Physical Chemistry Letters **8**, 3415 (2017) <10.1021/acs.jpclett.7b01248>`
 
 #. N. Papior, N. Lorente, T. Frederiksen, A. Garcia and M. Brandbyge,
    *Improvements on non-equilibrium and transport Green function techniques: The next-generation TranSiesta*,
-   Computer Physics Communications **212**, `8 (2017) <https://doi.org/10.1016/j.cpc.2016.09.022>`_
+   :doi:`Computer Physics Communications **212**, 8 (2017) <10.1016/j.cpc.2016.09.022>`
 
 
 arXiv publications
