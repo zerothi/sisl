@@ -170,7 +170,9 @@ def bose_einstein(E, kT=0.1, mu=0.):
 
 @set_module("sisl.physics")
 def cold(E, kT=0.1, mu=0.):
-    r""" Cold smearing function, see [Marzari1999]_
+    r""" Cold smearing function
+
+    For more details see :cite:`Marzari1999`.
 
     .. math::
         C(E,k_BT,\mu) = \frac12 &+ \mathrm{erf}\Big(-\frac{E-\mu}{k_BT}-\frac1{\sqrt2}\Big)
@@ -185,10 +187,6 @@ def cold(E, kT=0.1, mu=0.):
         temperature broadening
     mu : float, optional
         chemical potential
-
-    References
-    ----------
-    .. [Marzari1999] :doi:`N. Marzari, D. Vanderbilt, A. de Vita, M.C. Payne "Thermal Contraction and Disordering of the Al(110) Surface", PRL 82, 16 (1999) <10.1103/PhysRevLett.82.3296>`
 
     Returns
     -------

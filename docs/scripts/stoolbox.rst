@@ -20,7 +20,7 @@ For a short description of the possible toolboxes do:
 
    stoolbox --help
 
-For available toolboxes, please see :ref:`toc-toolbox`.
+For available toolboxes, please see :ref:`Toolboxes <toc-toolbox>`.
 
 
 Have an idea?

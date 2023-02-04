@@ -17,6 +17,9 @@ we hit release version 1.0.0.
   ince the scattering matrix is an S-matrix usage.
   Also changed `se2scat` to `se2broadening` #529
 
+### Fixed
+- Documentation now uses global references
+
 
 ### toolbox.btd
 #### Added

@@ -81,25 +81,26 @@ class AtomInput:
 
     This class enables the construction of the ``INP`` file to be fed to ``atom``.
 
+    ::
 
-    # Example input for ATOM
-    #
-    #  Comments allowed here
-    #
-    #   ae Si ground state all-electron
-    #   Si   car
-    #       0.0
-    #    3    2
-    #    3    0      2.00      0.00
-    #    3    1      2.00      0.00
-    #
-    # Comments allowed here
-    #
-    #2345678901234567890123456789012345678901234567890      Ruler
+        # Example input for ATOM
+        #
+        #  Comments allowed here
+        #
+        #   ae Si ground state all-electron
+        #   Si   car
+        #       0.0
+        #    3    2
+        #    3    0      2.00      0.00
+        #    3    1      2.00      0.00
+        #
+        # Comments allowed here
+        #
+        #2345678901234567890123456789012345678901234567890      Ruler
 
     References
     ----------
-    .. [AtomLicence] https://siesta.icmab.es/SIESTA_MATERIAL/Pseudos/atom_licence.html
+    .. [AtomLicense] https://siesta.icmab.es/SIESTA_MATERIAL/Pseudos/atom_licence.html
     """
 
     def __init__(self, atom,
@@ -460,7 +461,7 @@ class AtomInput:
 
         Notes
         -----
-        This is charge, _not_ electrons.
+        This is charge, *not* electrons.
         """
         if len(charge) > 1:
             raise ValueError(f"{self.__class__.__name__}.excite takes only "
