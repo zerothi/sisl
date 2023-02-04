@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>conductivity &mdash; sisl 0.1.dev1+ge294a9a documentation</title>
+  <title>conductivity &mdash; sisl 0.1.dev1+g435a6ac documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -39,7 +39,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+ge294a9a
+                0.1.dev1+g435a6ac
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -164,7 +164,7 @@
 <dt class="sig sig-object py" id="sisl.physics.electron.conductivity">
 <span class="sig-prename descclassname"><span class="pre">sisl.physics.electron.</span></span><span class="sig-name descname"><span class="pre">conductivity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distribution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fermi-dirac'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ahc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degenerate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degenerate_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eigenstate_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/electron.html#conductivity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.electron.conductivity" title="Permalink to this definition"></a></dt>
 <dd><p>Electronic conductivity for a given <em class="xref py py-obj">BrillouinZone</em> integral</p>
-<p>Currently the <em>only</em> implemented method is the anomalous Hall conductivity (AHC, see <a class="footnote-reference brackets" href="#c1" id="id1">1</a>)
+<p>Currently the <em>only</em> implemented method is the anomalous Hall conductivity (AHC, see <a class="reference internal" href="#wang2009" id="id1"><span>[Wang2009]</span></a>)
 which may be calculated as:</p>
 <div class="math notranslate nohighlight">
 \[\sigma_{\alpha\beta} = \frac{-e^2}{\hbar}\int\,\mathrm d\mathbf k\sum_i f_i\Omega_{i,\alpha\beta}(\mathbf k)\]</div>
@@ -187,9 +187,9 @@ already used.</p></li>
 </dd>
 </dl>
 <p class="rubric">References</p>
-<dl class="footnote brackets">
-<dt class="label" id="c1"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
-<dd><p>: <a class="reference external" href="https://doi.org/10.1103/PhysRevB.74.195118">X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, “Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation”, PRB **74**, 195118 (2006)</a></p>
+<dl class="citation">
+<dt class="label" id="wang2009"><span class="brackets"><a class="fn-backref" href="#id1">Wang2009</a></span></dt>
+<dd><p><a class="reference external" href="https://doi.org/10.1103/PhysRevB.74.195118">X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, “Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation”, PRB 74, 195118 (2006)</a></p>
 </dd>
 </dl>
 <dl class="field-list simple">

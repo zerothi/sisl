@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl_toolbox.btd._btd &mdash; sisl 0.1.dev1+ge294a9a documentation</title>
+  <title>sisl_toolbox.btd._btd &mdash; sisl 0.1.dev1+g435a6ac documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+ge294a9a
+                0.1.dev1+g435a6ac
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -2069,7 +2069,7 @@
 
 <span class="sd">        where the eigenvectors of :math:`\mathbf t_{\mathbf u}` is the coefficients of the</span>
 <span class="sd">        DOS weighted scattering states (:math:`\sqrt{2\pi a_i} u_i`) for the individual eigen channels.</span>
-<span class="sd">        The eigenvalues are the transmission eigenvalues. Further details may be found in [#c1]_.</span>
+<span class="sd">        The eigenvalues are the transmission eigenvalues. Further details may be found in [Paulsson2007]_.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -2094,7 +2094,7 @@
 
 <span class="sd">        References</span>
 <span class="sd">        ----------</span>
-<span class="sd">        .. [#c1] :doi:`M. Paulsson and M. Brandbyge, &quot;Transmission eigenchannels from non-equilibrium Green&#39;s functions&quot;, PRB **76**, 115117 (2007) &lt;10.1103/PhysRevB.76.115117&gt;`</span>
+<span class="sd">        .. [Paulsson2007] :doi:`M. Paulsson and M. Brandbyge, &quot;Transmission eigenchannels from non-equilibrium Green&#39;s functions&quot;, PRB 76, 115117 (2007) &lt;10.1103/PhysRevB.76.115117&gt;`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_se</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;E&quot;</span><span class="p">],</span> <span class="n">state</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;k&quot;</span><span class="p">])</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elec_to</span><span class="p">,</span> <span class="p">(</span><span class="n">Integral</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">PivotSelfEnergy</span><span class="p">)):</span>
