@@ -10,7 +10,7 @@ sisl-version: >=0.11.0
 Sometimes it may be nice to minimize a metric based on the basis set for
 a Siesta calculation.
 
-This tool is based on work done by Rivero et. al. [Rivero2015]_ and Javier Junquera.
+This tool is based on work done by :cite:author:`Rivero2015` :cite:`Rivero2015` and Javier Junquera.
 
 It is however very different in its use and what it can do.
 
@@ -92,10 +92,6 @@ that this file is read by Siesta.
 This far from covers everything here but should give some ideas of what to do.
 There is also a class that optimizes the pseudopotential, but so far this is
 not as tested as the other one.
-
-References
-----------
-.. [Rivero2015] :doi:`P. Rivero, V.M. García-Suárez, D. Pereñiguez, K. Utt, Y. Yang, L. Bellaiche, K. Park, J. Ferrer, S. Barraza-Lopez, "Systematic pseudopotentials from reference eigenvalue sets for DFT calculations", Computational Materials Science, 98, 372-389 (2015) <10.1016/j.commatsci.2014.11.026>`
 """
 from ._atom_pseudo import *
 from ._atom_basis import *

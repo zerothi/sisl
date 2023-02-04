@@ -17,7 +17,7 @@ def bilayer(bond=1.42, bottom_atoms=None, top_atoms=None, stacking='AB',
             twist=(0, 0), separation=3.35, ret_angle=False, layer='both'):
     r""" Commensurate unit cell of a hexagonal bilayer structure, possibly with a twist angle.
 
-    This routine follows the prescription of twisted bilayer graphene found in [Trambly2010]_.
+    This routine follows the prescription of twisted bilayer graphene found in :cite:`Trambly2010`.
 
     Notes
     -----
@@ -46,10 +46,6 @@ def bilayer(bond=1.42, bottom_atoms=None, top_atoms=None, stacking='AB',
     --------
     honeycomb: honeycomb lattices
     graphene: graphene geometry
-
-    References
-    ----------
-    .. [Trambly2010] :doi:`G. Trambly de Laissardiere, D. Mayou, L. Magaud, "Localization of Dirac Electrons in Rotated Graphene Bilayers", Nano Letters 10, 804-808 (2010) <10.1021/nl902948m>`
     """
     if bottom_atoms is None:
         bottom_atoms = top_atoms

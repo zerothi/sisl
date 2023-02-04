@@ -75,6 +75,8 @@ extensions = [
     'sphinx.ext.inheritance_diagram',
     'nbsphinx',
     'sphinx_gallery.load_style',
+    # bibtex stuff
+    'sphinxcontrib.bibtex',
 ]
 napoleon_numpy_docstring = True
 
@@ -392,6 +394,55 @@ intersphinx_mapping = {
     'skimage': ('https://scikit-image.org/docs/stable', None),
     'pandas': ('https://pandas.pydata.org/pandas-docs/stable', None),
 }
+
+
+# ---------------------
+# BibTeX information
+# ---------------------
+bibtex_bibfiles = ["references.bib", "sisl_uses.bib"]
+bibtex_default_style = "plain"
+bibtex_tooltips = True
+
+# Allow a year-month-author sorting
+import calendar
+
+from pybtex.style.formatting.plain import Style as PlainStyle
+from pybtex.style.sorting.author_year_title import SortingStyle as AYTSortingStyle
+
+
+class YearMonthAuthorSortStyle(AYTSortingStyle):
+
+    def sorting_key(self, entry):
+        ayt = super().sorting_key(entry)
+
+        year = self._year_number(entry)
+        month = self._month_number(entry)
+
+        return (-year, -month , ayt[0], ayt[2])
+
+    def _year_number(self, entry):
+        year = entry.fields.get("year", 0)
+        try:
+            return int(year)
+        except ValueError:
+            pass
+        return 0
+
+    def _month_number(self, entry):
+        month = entry.fields.get("month", "")
+        for ext in ("abbr", "name"):
+            lst = getattr(calendar, f"month_{ext}")[:]
+            if month in lst:
+                return lst.index(month)
+        return 0
+
+
+class RevYearPlain(PlainStyle):
+    default_sorting_style = "sort_rev_year"
+
+import pybtex
+pybtex.plugin.register_plugin('pybtex.style.sorting', 'sort_rev_year', YearMonthAuthorSortStyle)
+pybtex.plugin.register_plugin('pybtex.style.formatting', 'rev_year', RevYearPlain)
 
 # Tell nbsphinx to wait, at least X seconds for each cell
 nbsphinx_timeout = 600

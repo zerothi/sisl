@@ -99,6 +99,8 @@ of places to search/ask for answers:
    other
    cite
    publications
+   references
+	      
 
 .. toctree::
    :maxdepth: 2

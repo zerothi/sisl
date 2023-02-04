@@ -1,5 +1,7 @@
 # Minimal makefile for Sphinx documentation
 #
+default: html
+	make html
 
 # You can set these variables from the command line.
 SPHINXOPTS    =

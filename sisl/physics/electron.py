@@ -670,7 +670,7 @@ def berry_curvature(state, energy, dHk, dSk=None,
                 \frac{v^\alpha_{ij} v^\beta_{ji}}
                      {[\epsilon_j - \epsilon_i]^2}
 
-    For details see Eq. (11) in [Wang2009]_ or Eq. (2.59) in [Asboth2015]_.
+    For details see Eq. (11) in :cite:`Wang2006` or Eq. (2.59) in :cite:`TopInvCourse`.
 
     Parameters
     ----------
@@ -699,11 +699,6 @@ def berry_curvature(state, energy, dHk, dSk=None,
     velocity_matrix : calculate state velocities between all states
     Hamiltonian.dHk : function for generating the Hamiltonian derivatives (`dHk` argument)
     Hamiltonian.dSk : function for generating the Hamiltonian derivatives (`dSk` argument)
-
-    References
-    ----------
-    .. [Wang2009] :doi:`X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, "Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation", PRB 74, 195118 (2006) <10.1103/PhysRevB.74.195118>`
-    .. [Asboth2015] :doi:`J. K. Asboth, L. Oroslany, A. Palyi, "A Short Course on Topological Insulators", arXiv 1509.02295 (2015) <10.1007/978-3-319-25607-8>`
 
     Returns
     -------
@@ -757,7 +752,7 @@ def conductivity(bz, distribution="fermi-dirac", method="ahc",
                  eigenstate_kwargs=None):
     r""" Electronic conductivity for a given `BrillouinZone` integral
 
-    Currently the *only* implemented method is the anomalous Hall conductivity (AHC, see [Wang2009]_)
+    Currently the *only* implemented method is the anomalous Hall conductivity (AHC, see :cite:`Wang2006`)
     which may be calculated as:
 
     .. math::
@@ -785,10 +780,6 @@ def conductivity(bz, distribution="fermi-dirac", method="ahc",
        keyword arguments passed directly to the ``contour.eigenstate`` method.
        One should *not* pass a ``k`` or a ``wrap`` keyword argument as they are
        already used.
-
-    References
-    ----------
-    .. [Wang2009] :doi:`X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, "Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation", PRB 74, 195118 (2006) <10.1103/PhysRevB.74.195118>`
 
     Returns
     -------
@@ -875,7 +866,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method="berry",
     method : {"berry", "zak"}
        "berry" will return the usual integral of the Berry connection over the specified contour
        "zak" will compute the Zak phase for 1D systems by performing
-       a closed loop integration, see [Zak1989]_.
+       a closed loop integration, see :cite:`Zak1989`.
        Additionally, one may do the Berry-phase calculation using the SVD method of the
        overlap matrices. Simply append ":svd" to the chosen method, e.g. "berry:svd".
     eigenstate_kwargs : dict, optional
@@ -894,7 +885,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method="berry",
     For systems with band-crossings or degenerate states there is an arbitrariness to the definition
     of the Berry phase for *individual* bands. However, the total phase (i.e., sum over filled bands) is
     invariant and unaffected by this arbitrariness as long as the filled and empty bands do not intersect,
-    see [Resta2000]_.
+    see :cite:`Resta2000`.
 
     For non-orthogonal basis sets it is not fully known how important the :math:`\delta\mathbf k` spacing is since
     it relies on the Lowdin transformation of the states. However, one should be careful about choosing
@@ -903,7 +894,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method="berry",
     The returned angles are _not_ placed in the interval :math:`]-\pi;\pi]` as what `numpy.angle` would do.
     This is to allow users to examine the quantities as is.
 
-    For more understanding of the Berry-phase and its calculation [Paz2019]_ is a good reference.
+    For more understanding of the Berry-phase and its calculation :cite:`TopInvTut` is a good reference.
 
     Examples
     --------
@@ -926,12 +917,6 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method="berry",
     >>> origin = [1/3, 2/3, 0]
     >>> bz = BrillouinZone.param_circle(H, N, kR, normal, origin)
     >>> phase = berry_phase(bz, method="berry:svd")
-
-    References
-    ----------
-    .. [Zak1989] :doi:`J. Zak, "Berry's phase for energy bands in solids", PRL 62, 2747 (1989) <10.1103/PhysRevLett.62.2747>`
-    .. [Resta2000] :doi:`R. Resta, "Manifestations of Berry's phase in molecules and condensed matter", JPCM 12, R107 (2000) <10.1088/0953-8984/12/9/201>`
-    .. [Paz2019] :doi:`Tutorial: Computing Topological Invariants in 2D Photonic Crystals <10.1002/qute.201900117>`
     """
     from .hamiltonian import Hamiltonian
     # Currently we require the Berry phase calculation to *only* accept Hamiltonians
@@ -1527,17 +1512,13 @@ class StateCElectron(_electron_State, StateC):
 
         Notes
         -----
-        The velocities are calculated without the Berry curvature contribution see Eq. (2) in [Wang2006]_.
+        The velocities are calculated without the Berry curvature contribution see Eq. (2) in :cite:`Wang2006`.
         The missing contribution may be added in later editions, for completeness sake, it is:
 
         .. math::
            \delta \mathbf v = - \mathbf k\times \Omega_i(\mathbf k)
 
         where :math:`\Omega_i` is the Berry curvature for state :math:`i`.
-
-        References
-        ----------
-        .. [Wang2006] :doi:`X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, "Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation", PRB 74, 195118 (2006) <10.1103/PhysRevB.74.195118>`
 
         See Also
         --------
