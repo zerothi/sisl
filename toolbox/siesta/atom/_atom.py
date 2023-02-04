@@ -77,7 +77,7 @@ _spdfgh = 'spdfgh'
 
 
 class AtomInput:
-    """Input for the ``atom`` program see [#c1]_
+    """Input for the ``atom`` program see [AtomLicense]_
 
     This class enables the construction of the ``INP`` file to be fed to ``atom``.
 
@@ -99,7 +99,7 @@ class AtomInput:
 
     References
     ----------
-    .. [#c1] : https://siesta.icmab.es/SIESTA_MATERIAL/Pseudos/atom_licence.html
+    .. [AtomLicence] https://siesta.icmab.es/SIESTA_MATERIAL/Pseudos/atom_licence.html
     """
 
     def __init__(self, atom,

@@ -592,7 +592,7 @@ state coefficients
                \end{aligned}\right.
             \end{align}
 
-        For further details see [#c1]_. Note that for eigen states the IPR reduces to:
+        For further details see [Murphy2011]_. Note that for eigen states the IPR reduces to:
 
         .. math::
             I_{q,i} = \sum_\nu |\psi_{i\nu}|^{2q}
@@ -606,7 +606,7 @@ state coefficients
 
         References
         ----------
-        .. [#c1] : :doi:`N. C. Murphy *et.al.*, "Generalized inverse participation ratio as a possible measure of localization for interacting systems", PRB **83**, 184206 (2011) <10.1103/PhysRevB.83.184206>`
+        .. [Murphy2011] :doi:`N. C. Murphy et.al., "Generalized inverse participation ratio as a possible measure of localization for interacting systems", PRB 83, 184206 (2011) <10.1103/PhysRevB.83.184206>`
         """
         # This *has* to be a real value C * C^* == real
         state_abs2 = self.norm2(sum=False).real
