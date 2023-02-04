@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl_toolbox.siesta.atom.AtomInput &mdash; sisl 0.1.dev1+g435a6ac documentation</title>
+  <title>sisl_toolbox.siesta.atom.AtomInput &mdash; sisl 0.1.dev1+g17089dc documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g435a6ac
+                0.1.dev1+g17089dc
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -64,6 +64,7 @@
 <p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Toolboxes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../transiesta/ts_fft.html">TranSiesta Hartree correction for FFT Poisson solver</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../atom_plot.html">Plotting <em class="xref py py-obj">atom</em> output</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../atom_plot.html#command-line-tool">Command line tool</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="../atom_plot.html#input-generation">Input generation</a><ul class="current">
@@ -142,25 +143,27 @@
 <dt class="sig sig-object py" id="sisl_toolbox.siesta.atom.AtomInput">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl_toolbox.siesta.atom.</span></span><span class="sig-name descname"><span class="pre">AtomInput</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">define</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('NEW_CC',</span> <span class="pre">'FREE_FORMAT_RC_INPUT',</span> <span class="pre">'NO_PS_CUTOFFS')</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">opts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl_toolbox/siesta/atom/_atom.html#AtomInput"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl_toolbox.siesta.atom.AtomInput" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>Input for the <code class="docutils literal notranslate"><span class="pre">atom</span></code> program see <span id="id1">[AtomLicense]</span></p>
+<p>Input for the <code class="docutils literal notranslate"><span class="pre">atom</span></code> program see <a class="reference internal" href="#atomlicense" id="id1"><span>[AtomLicense]</span></a></p>
 <p>This class enables the construction of the <code class="docutils literal notranslate"><span class="pre">INP</span></code> file to be fed to <code class="docutils literal notranslate"><span class="pre">atom</span></code>.</p>
-<p># Example input for ATOM
-#
-#  Comments allowed here
-#
-#   ae Si ground state all-electron
-#   Si   car
-#       0.0
-#    3    2
-#    3    0      2.00      0.00
-#    3    1      2.00      0.00
-#
-# Comments allowed here
-#
-#2345678901234567890123456789012345678901234567890      Ruler</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example input for ATOM</span>
+<span class="c1">#</span>
+<span class="c1">#  Comments allowed here</span>
+<span class="c1">#</span>
+<span class="c1">#   ae Si ground state all-electron</span>
+<span class="c1">#   Si   car</span>
+<span class="c1">#       0.0</span>
+<span class="c1">#    3    2</span>
+<span class="c1">#    3    0      2.00      0.00</span>
+<span class="c1">#    3    1      2.00      0.00</span>
+<span class="c1">#</span>
+<span class="c1"># Comments allowed here</span>
+<span class="c1">#</span>
+<span class="c1">#2345678901234567890123456789012345678901234567890      Ruler</span>
+</pre></div>
+</div>
 <p class="rubric">References</p>
 <dl class="citation">
-<dt class="label" id="atomlicence"><span class="brackets">AtomLicence</span></dt>
+<dt class="label" id="atomlicense"><span class="brackets"><a class="fn-backref" href="#id1">AtomLicense</a></span></dt>
 <dd><p><a class="reference external" href="https://siesta.icmab.es/SIESTA_MATERIAL/Pseudos/atom_licence.html">https://siesta.icmab.es/SIESTA_MATERIAL/Pseudos/atom_licence.html</a></p>
 </dd>
 </dl>
@@ -224,7 +227,7 @@
 <span class="sig-name descname"><span class="pre">excite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">charge</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">lq</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl_toolbox/siesta/atom/_atom.html#AtomInput.excite"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl_toolbox.siesta.atom.AtomInput.excite" title="Permalink to this definition"></a></dt>
 <dd><p>Excite contained atom to another charge</p>
 <p class="rubric">Notes</p>
-<p>This is charge, _not_ electrons.</p>
+<p>This is charge, <em>not</em> electrons.</p>
 </dd></dl>
 
 <dl class="py method">

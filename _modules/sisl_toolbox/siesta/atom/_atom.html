@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl_toolbox.siesta.atom._atom &mdash; sisl 0.1.dev1+g435a6ac documentation</title>
+  <title>sisl_toolbox.siesta.atom._atom &mdash; sisl 0.1.dev1+g17089dc documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -34,7 +34,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g435a6ac
+                0.1.dev1+g17089dc
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -180,25 +180,26 @@
 
 <span class="sd">    This class enables the construction of the ``INP`` file to be fed to ``atom``.</span>
 
+<span class="sd">    ::</span>
 
-<span class="sd">    # Example input for ATOM</span>
-<span class="sd">    #</span>
-<span class="sd">    #  Comments allowed here</span>
-<span class="sd">    #</span>
-<span class="sd">    #   ae Si ground state all-electron</span>
-<span class="sd">    #   Si   car</span>
-<span class="sd">    #       0.0</span>
-<span class="sd">    #    3    2</span>
-<span class="sd">    #    3    0      2.00      0.00</span>
-<span class="sd">    #    3    1      2.00      0.00</span>
-<span class="sd">    #</span>
-<span class="sd">    # Comments allowed here</span>
-<span class="sd">    #</span>
-<span class="sd">    #2345678901234567890123456789012345678901234567890      Ruler</span>
+<span class="sd">        # Example input for ATOM</span>
+<span class="sd">        #</span>
+<span class="sd">        #  Comments allowed here</span>
+<span class="sd">        #</span>
+<span class="sd">        #   ae Si ground state all-electron</span>
+<span class="sd">        #   Si   car</span>
+<span class="sd">        #       0.0</span>
+<span class="sd">        #    3    2</span>
+<span class="sd">        #    3    0      2.00      0.00</span>
+<span class="sd">        #    3    1      2.00      0.00</span>
+<span class="sd">        #</span>
+<span class="sd">        # Comments allowed here</span>
+<span class="sd">        #</span>
+<span class="sd">        #2345678901234567890123456789012345678901234567890      Ruler</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
-<span class="sd">    .. [AtomLicence] https://siesta.icmab.es/SIESTA_MATERIAL/Pseudos/atom_licence.html</span>
+<span class="sd">    .. [AtomLicense] https://siesta.icmab.es/SIESTA_MATERIAL/Pseudos/atom_licence.html</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="AtomInput.__init__"><a class="viewcode-back" href="../../../../toolbox/siesta/generated/sisl_toolbox.siesta.atom.AtomInput.html#sisl_toolbox.siesta.atom.AtomInput.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">,</span>
@@ -559,7 +560,7 @@
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
-<span class="sd">        This is charge, _not_ electrons.</span>
+<span class="sd">        This is charge, *not* electrons.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">charge</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.excite takes only &quot;</span>
