@@ -1,6 +1,8 @@
 
 .. _toc-toolbox:
 
+.. module:: sisl_toolbox
+
 Toolboxes
 =========
 
