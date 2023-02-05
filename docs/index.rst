@@ -109,6 +109,7 @@ of places to search/ask for answers:
    installation
    tutorials.rst
    scripts/scripts
+   nodes/nodes_intro
 
 .. toctree::
    :maxdepth: 2
