@@ -15,10 +15,13 @@ dill>=0.3.2
 pathos
 xarray>=0.10.0
 scikit-image
-plotly
+plotly>=5.12.0
 sphinx-gallery
 sphinx-rtd-theme
 tqdm
-ipywidgets==7.7.1 # Plotly is incompatible with ipywidgets 8.x
-jupyterlab-widgets==1.1.1
+ipywidgets
+jupyterlab-widgets
 kaleido
+# Visualizing nodes
+networkx
+pyvis

@@ -6,6 +6,9 @@ which sphinx-build
 
 # Ensure single-core
 export SISL_NUM_PROCS=1
+# Inform to the workflow visualization function that the 
+# notebooks are to be exported to html
+export SISL_NODES_EXPORT_VIS=1
 
 # First make clean
 make clean
