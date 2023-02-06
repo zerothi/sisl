@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nodes and workflows &mdash; sisl 0.1.dev1+g53ece69 documentation</title>
+  <title>Nodes and workflows &mdash; sisl 0.1.dev1+gd93b38d documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -39,7 +39,7 @@
             <a href="../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g53ece69
+                0.1.dev1+gd93b38d
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -446,7 +446,7 @@ creating “workchains” from a GUI by providing only simple inputs.</p></li>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;sisl.nodes.node.my_sum at 0x7fbec5a0a430&gt;
+&lt;sisl.nodes.node.my_sum at 0x7fdf1ca5a550&gt;
 </pre></div></div>
 </div>
 <p>It is only when you call <code class="docutils literal notranslate"><span class="pre">.get()</span></code> on it that it will compute its result.</p>
@@ -511,7 +511,7 @@ SUMMING 2 + 5
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;sisl.nodes.node.my_sum at 0x7fbec5a0a220&gt;
+&lt;sisl.nodes.node.my_sum at 0x7fdf1ca5a040&gt;
 </pre></div></div>
 </div>
 <p>And now, when you need the value again, it will understand that the stored output is outdated and recompute:</p>
@@ -567,7 +567,7 @@ SUMMING 8 + 5
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;sisl.nodes.node.my_sum at 0x7fbec5a0acd0&gt;
+&lt;sisl.nodes.node.my_sum at 0x7fdf1ca5ad60&gt;
 </pre></div></div>
 </div>
 <p>And now comes the most useful thing about nodes. If you pass a node as an input to another node, the <strong>nodes are recursively resolved</strong> until they reach a leaf that is not a node.</p>
@@ -719,7 +719,7 @@ SUMMING 12 + 5
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;sisl.nodes.node.my_sum at 0x7fbec5a0aca0&gt;
+&lt;sisl.nodes.node.my_sum at 0x7fdf1ca5abe0&gt;
 </pre></div></div>
 </div>
 <p>This might be useful to create “event listeners” that enable live updating naturally. We might introduce “async” nodes at some point (?).</p>
@@ -778,7 +778,7 @@ warn:0: SislWarning: Decorators are ignored for now on workflow creation. Ignori
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;sisl.nodes.workflow.WorkflowNodes at 0x7fbefc5edac0&gt;
+&lt;sisl.nodes.workflow.WorkflowNodes at 0x7fdf54639220&gt;
 </pre></div></div>
 </div>
 <p>You can print them to get an idea of the nodes that you have there:</p>
@@ -795,11 +795,11 @@ warn:0: SislWarning: Decorators are ignored for now on workflow creation. Ignori
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Inputs: {&#39;a&#39;: &lt;sisl.nodes.workflow.WorkflowInput object at 0x7fbefc5edb20&gt;, &#39;b&#39;: &lt;sisl.nodes.workflow.WorkflowInput object at 0x7fbefc5eda00&gt;, &#39;c&#39;: &lt;sisl.nodes.workflow.WorkflowInput object at 0x7fbefc5ed9d0&gt;}
+Inputs: {&#39;a&#39;: &lt;sisl.nodes.workflow.WorkflowInput object at 0x7fdf54626ee0&gt;, &#39;b&#39;: &lt;sisl.nodes.workflow.WorkflowInput object at 0x7fdf54626670&gt;, &#39;c&#39;: &lt;sisl.nodes.workflow.WorkflowInput object at 0x7fdf546267f0&gt;}
 
-Workers: {&#39;my_sum&#39;: &lt;sisl.nodes.node.my_sum object at 0x7fbefc5f71f0&gt;, &#39;my_sum_1&#39;: &lt;sisl.nodes.node.my_sum object at 0x7fbec5a0a340&gt;}
+Workers: {&#39;my_sum&#39;: &lt;sisl.nodes.node.my_sum object at 0x7fdf54626460&gt;, &#39;my_sum_1&#39;: &lt;sisl.nodes.node.my_sum object at 0x7fdf1ca5ae20&gt;}
 
-Output: &lt;sisl.nodes.workflow.WorkflowOutput object at 0x7fbefc5f7fd0&gt;
+Output: &lt;sisl.nodes.workflow.WorkflowOutput object at 0x7fdf54626f70&gt;
 
 Named nodes: {&#39;first_val&#39;: &#39;my_sum&#39;}
 </pre></div></div>
@@ -820,7 +820,7 @@ Named nodes: {&#39;first_val&#39;: &#39;my_sum&#39;}
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;sisl.nodes.node.my_sum at 0x7fbefc5f71f0&gt;
+&lt;sisl.nodes.node.my_sum at 0x7fdf54626460&gt;
 </pre></div></div>
 </div>
 <p>Accessing nodes of the workflows is nice, but often it is <strong>difficult to get an idea of the whole workflow</strong> if it gets a bit complex.</p>
@@ -833,20 +833,29 @@ Named nodes: {&#39;first_val&#39;: &#39;my_sum&#39;}
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/opt/hostedtoolcache/Python/3.9.16/x64/lib/python3.9/site-packages/IPython/core/display.py:431: UserWarning: Consider using IPython.display.IFrame instead
+  warnings.warn(&#34;Consider using IPython.display.IFrame instead&#34;)
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<div style="height:600px"><html>
-    <head>
-        <meta charset="utf-8">
+<iframe height='600px' srcdoc="&lt;html&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot;&gt;
 
-            <script>function neighbourhoodHighlight(params) {
-  // console.log("in nieghbourhoodhighlight");
-  allNodes = nodes.get({ returnType: "Object" });
+            &lt;script&gt;function neighbourhoodHighlight(params) {
+  // console.log(&quot;in nieghbourhoodhighlight&quot;);
+  allNodes = nodes.get({ returnType: &quot;Object&quot; });
   // originalNodes = JSON.parse(JSON.stringify(allNodes));
   // if something is selected:
-  if (params.nodes.length > 0) {
+  if (params.nodes.length &gt; 0) {
     highlightActive = true;
     var i, j;
     var selectedNode = params.nodes[0];
@@ -855,7 +864,7 @@ Named nodes: {&#39;first_val&#39;: &#39;my_sum&#39;}
     // mark all nodes as hard to read.
     for (let nodeId in allNodes) {
       // nodeColors[nodeId] = allNodes[nodeId].color;
-      allNodes[nodeId].color = "rgba(200,200,200,0.5)";
+      allNodes[nodeId].color = &quot;rgba(200,200,200,0.5)&quot;;
       if (allNodes[nodeId].hiddenLabel === undefined) {
         allNodes[nodeId].hiddenLabel = allNodes[nodeId].label;
         allNodes[nodeId].label = undefined;
@@ -865,8 +874,8 @@ Named nodes: {&#39;first_val&#39;: &#39;my_sum&#39;}
     var allConnectedNodes = [];
 
     // get the second degree nodes
-    for (i = 1; i < degrees; i++) {
-      for (j = 0; j < connectedNodes.length; j++) {
+    for (i = 1; i &lt; degrees; i++) {
+      for (j = 0; j &lt; connectedNodes.length; j++) {
         allConnectedNodes = allConnectedNodes.concat(
           network.getConnectedNodes(connectedNodes[j])
         );
@@ -874,9 +883,9 @@ Named nodes: {&#39;first_val&#39;: &#39;my_sum&#39;}
     }
 
     // all second degree nodes get a different color and their label back
-    for (i = 0; i < allConnectedNodes.length; i++) {
-      // allNodes[allConnectedNodes[i]].color = "pink";
-      allNodes[allConnectedNodes[i]].color = "rgba(150,150,150,0.75)";
+    for (i = 0; i &lt; allConnectedNodes.length; i++) {
+      // allNodes[allConnectedNodes[i]].color = &quot;pink&quot;;
+      allNodes[allConnectedNodes[i]].color = &quot;rgba(150,150,150,0.75)&quot;;
       if (allNodes[allConnectedNodes[i]].hiddenLabel !== undefined) {
         allNodes[allConnectedNodes[i]].label =
           allNodes[allConnectedNodes[i]].hiddenLabel;
@@ -885,7 +894,7 @@ Named nodes: {&#39;first_val&#39;: &#39;my_sum&#39;}
     }
 
     // all first degree nodes get their own color and their label back
-    for (i = 0; i < connectedNodes.length; i++) {
+    for (i = 0; i &lt; connectedNodes.length; i++) {
       // allNodes[connectedNodes[i]].color = undefined;
       allNodes[connectedNodes[i]].color = nodeColors[connectedNodes[i]];
       if (allNodes[connectedNodes[i]].hiddenLabel !== undefined) {
@@ -903,10 +912,10 @@ Named nodes: {&#39;first_val&#39;: &#39;my_sum&#39;}
       allNodes[selectedNode].hiddenLabel = undefined;
     }
   } else if (highlightActive === true) {
-    // console.log("highlightActive was true");
+    // console.log(&quot;highlightActive was true&quot;);
     // reset all nodes
     for (let nodeId in allNodes) {
-      // allNodes[nodeId].color = "purple";
+      // allNodes[nodeId].color = &quot;purple&quot;;
       allNodes[nodeId].color = nodeColors[nodeId];
       // delete allNodes[nodeId].color;
       if (allNodes[nodeId].hiddenLabel !== undefined) {
@@ -919,7 +928,7 @@ Named nodes: {&#39;first_val&#39;: &#39;my_sum&#39;}
 
   // transform the object into an array
   var updateArray = [];
-  if (params.nodes.length > 0) {
+  if (params.nodes.length &gt; 0) {
     for (let nodeId in allNodes) {
       if (allNodes.hasOwnProperty(nodeId)) {
         // console.log(allNodes[nodeId]);
@@ -928,7 +937,7 @@ Named nodes: {&#39;first_val&#39;: &#39;my_sum&#39;}
     }
     nodes.update(updateArray);
   } else {
-    // console.log("Nothing was selected");
+    // console.log(&quot;Nothing was selected&quot;);
     for (let nodeId in allNodes) {
       if (allNodes.hasOwnProperty(nodeId)) {
         // console.log(allNodes[nodeId]);
@@ -941,9 +950,9 @@ Named nodes: {&#39;first_val&#39;: &#39;my_sum&#39;}
 }
 
 function filterHighlight(params) {
-  allNodes = nodes.get({ returnType: "Object" });
+  allNodes = nodes.get({ returnType: &quot;Object&quot; });
   // if something is selected:
-  if (params.nodes.length > 0) {
+  if (params.nodes.length &gt; 0) {
     filterActive = true;
     let selectedNodes = params.nodes;
 
@@ -956,7 +965,7 @@ function filterHighlight(params) {
       }
     }
 
-    for (let i=0; i < selectedNodes.length; i++) {
+    for (let i=0; i &lt; selectedNodes.length; i++) {
       allNodes[selectedNodes[i]].hidden = false;
       if (allNodes[selectedNodes[i]].savedLabel !== undefined) {
         allNodes[selectedNodes[i]].label = allNodes[selectedNodes[i]].savedLabel;
@@ -978,7 +987,7 @@ function filterHighlight(params) {
 
   // transform the object into an array
   var updateArray = [];
-  if (params.nodes.length > 0) {
+  if (params.nodes.length &gt; 0) {
     for (let nodeId in allNodes) {
       if (allNodes.hasOwnProperty(nodeId)) {
         updateArray.push(allNodes[nodeId]);
@@ -1009,29 +1018,29 @@ function selectNodes(nodes) {
 
 function highlightFilter(filter) {
   let selectedNodes = []
-  let selectedProp = filter['property']
-  if (filter['item'] === 'node') {
-    let allNodes = nodes.get({ returnType: "Object" });
+  let selectedProp = filter[&#x27;property&#x27;]
+  if (filter[&#x27;item&#x27;] === &#x27;node&#x27;) {
+    let allNodes = nodes.get({ returnType: &quot;Object&quot; });
     for (let nodeId in allNodes) {
-      if (allNodes[nodeId][selectedProp] && filter['value'].includes((allNodes[nodeId][selectedProp]).toString())) {
+      if (allNodes[nodeId][selectedProp] &amp;&amp; filter[&#x27;value&#x27;].includes((allNodes[nodeId][selectedProp]).toString())) {
         selectedNodes.push(nodeId)
       }
     }
   }
-  else if (filter['item'] === 'edge'){
-    let allEdges = edges.get({returnType: 'object'});
+  else if (filter[&#x27;item&#x27;] === &#x27;edge&#x27;){
+    let allEdges = edges.get({returnType: &#x27;object&#x27;});
     // check if the selected property exists for selected edge and select the nodes connected to the edge
     for (let edge in allEdges) {
-      if (allEdges[edge][selectedProp] && filter['value'].includes((allEdges[edge][selectedProp]).toString())) {
-        selectedNodes.push(allEdges[edge]['from'])
-        selectedNodes.push(allEdges[edge]['to'])
+      if (allEdges[edge][selectedProp] &amp;&amp; filter[&#x27;value&#x27;].includes((allEdges[edge][selectedProp]).toString())) {
+        selectedNodes.push(allEdges[edge][&#x27;from&#x27;])
+        selectedNodes.push(allEdges[edge][&#x27;to&#x27;])
       }
     }
   }
   selectNodes(selectedNodes)
-}</script>
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+}&lt;/script&gt;
+            &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css&quot; integrity=&quot;sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==&quot; crossorigin=&quot;anonymous&quot; referrerpolicy=&quot;no-referrer&quot; /&gt;
+            &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js&quot; integrity=&quot;sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==&quot; crossorigin=&quot;anonymous&quot; referrerpolicy=&quot;no-referrer&quot;&gt;&lt;/script&gt;
 
 
 
@@ -1040,29 +1049,29 @@ function highlightFilter(filter) {
 
 
 
-<center>
-<h1></h1>
-</center>
+&lt;center&gt;
+&lt;h1&gt;&lt;/h1&gt;
+&lt;/center&gt;
 
-<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
-<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
-        <link
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
-          crossorigin="anonymous"
-        />
-        <script
-          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
-          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
-          crossorigin="anonymous"
-        ></script>
+&lt;!-- &lt;link rel=&quot;stylesheet&quot; href=&quot;../node_modules/vis/dist/vis.min.css&quot; type=&quot;text/css&quot; /&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;../node_modules/vis/dist/vis.js&quot;&gt; &lt;/script&gt;--&gt;
+        &lt;link
+          href=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css&quot;
+          rel=&quot;stylesheet&quot;
+          integrity=&quot;sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6&quot;
+          crossorigin=&quot;anonymous&quot;
+        /&gt;
+        &lt;script
+          src=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js&quot;
+          integrity=&quot;sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf&quot;
+          crossorigin=&quot;anonymous&quot;
+        &gt;&lt;/script&gt;
 
 
-        <center>
-          <h1></h1>
-        </center>
-        <style type="text/css">
+        &lt;center&gt;
+          &lt;h1&gt;&lt;/h1&gt;
+        &lt;/center&gt;
+        &lt;style type=&quot;text/css&quot;&gt;
 
              #mynetwork {
                  width: 100%;
@@ -1078,21 +1087,21 @@ function highlightFilter(filter) {
 
 
 
-        </style>
-    </head>
+        &lt;/style&gt;
+    &lt;/head&gt;
 
 
-    <body>
-        <div class="card" style="width: 100%">
+    &lt;body&gt;
+        &lt;div class=&quot;card&quot; style=&quot;width: 100%&quot;&gt;
 
 
-            <div id="mynetwork" class="card-body"></div>
-        </div>
+            &lt;div id=&quot;mynetwork&quot; class=&quot;card-body&quot;&gt;&lt;/div&gt;
+        &lt;/div&gt;
 
 
 
 
-        <script type="text/javascript">
+        &lt;script type=&quot;text/javascript&quot;&gt;
 
               // initialize global variables.
               var edges;
@@ -1105,8 +1114,8 @@ function highlightFilter(filter) {
               var container;
               var options, data;
               var filter = {
-                  item : '',
-                  property : '',
+                  item : &#x27;&#x27;,
+                  property : &#x27;&#x27;,
                   value : []
               };
 
@@ -1116,62 +1125,62 @@ function highlightFilter(filter) {
 
               // This method is responsible for drawing the graph, returns the drawn network
               function drawGraph() {
-                  var container = document.getElementById('mynetwork');
+                  var container = document.getElementById(&#x27;mynetwork&#x27;);
 
 
 
                   // parsing and collecting nodes and edges from the python
-                  nodes = new vis.DataSet([{"color": "#fde725", "font": {}, "id": "my_sum_1", "label": "my_sum_1", "level": 3.0, "mass": 2, "shape": "circle", "size": 10, "title": "Node class: my_sum\nNo documentation\n............................................\nautomatic_recalc = False\na = Linked( my_sum.output )\nb = Linked( triple_sum.c )\n"}, {"color": "pink", "font": {"color": "black"}, "id": "output", "label": "Output", "level": 4.0, "mass": 2, "shape": "box", "size": 10, "title": "Node class: WorkflowOutput\nNo documentation\n............................................\nautomatic_recalc = False\nvalue = Linked( my_sum_1.output )\n"}, {"color": "#ccc", "font": {"color": "black"}, "id": "a", "label": "Input(a)", "level": 1.0, "mass": 2, "shape": "box", "size": 10, "title": "Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7fbec5f9a860\u003e\nautomatic_recalc = False\ninput_key = a\n"}, {"color": "#440154", "font": {"color": "white"}, "id": "my_sum", "label": "first_val", "level": 2.0, "mass": 2, "shape": "circle", "size": 10, "title": "Node class: my_sum\nNo documentation\n............................................\nautomatic_recalc = False\na = Linked( triple_sum.a )\nb = Linked( triple_sum.b )\n"}, {"color": "#ccc", "font": {"color": "black"}, "id": "b", "label": "Input(b)", "level": 1.0, "mass": 2, "shape": "box", "size": 10, "title": "Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7fbec5f9a860\u003e\nautomatic_recalc = False\ninput_key = b\n"}, {"color": "#ccc", "font": {"color": "black"}, "id": "c", "label": "Input(c)", "level": 2.0, "mass": 2, "shape": "box", "size": 10, "title": "Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7fbec5f9a860\u003e\nautomatic_recalc = False\ninput_key = c\n"}]);
-                  edges = new vis.DataSet([{"arrows": "to", "from": "my_sum_1", "label": "value", "title": "my_sum() -\u003e WorkflowOutput.value", "to": "output", "width": 1}, {"arrows": "to", "from": "a", "label": "a", "title": "WorkflowInput() -\u003e my_sum.a", "to": "my_sum", "width": 1}, {"arrows": "to", "from": "my_sum", "label": "a", "title": "my_sum() -\u003e my_sum.a", "to": "my_sum_1", "width": 1}, {"arrows": "to", "from": "b", "label": "b", "title": "WorkflowInput() -\u003e my_sum.b", "to": "my_sum", "width": 1}, {"arrows": "to", "from": "c", "label": "b", "title": "WorkflowInput() -\u003e my_sum.b", "to": "my_sum_1", "width": 1}]);
+                  nodes = new vis.DataSet([{&quot;color&quot;: &quot;#fde725&quot;, &quot;font&quot;: {}, &quot;id&quot;: &quot;my_sum_1&quot;, &quot;label&quot;: &quot;my_sum_1&quot;, &quot;level&quot;: 3.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;circle&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: my_sum\nNo documentation\n............................................\nautomatic_recalc = False\na = Linked( my_sum.output )\nb = Linked( triple_sum.c )\n&quot;}, {&quot;color&quot;: &quot;pink&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;output&quot;, &quot;label&quot;: &quot;Output&quot;, &quot;level&quot;: 4.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowOutput\nNo documentation\n............................................\nautomatic_recalc = False\nvalue = Linked( my_sum_1.output )\n&quot;}, {&quot;color&quot;: &quot;#ccc&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;a&quot;, &quot;label&quot;: &quot;Input(a)&quot;, &quot;level&quot;: 1.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7fdf1cfeb860\u003e\nautomatic_recalc = False\ninput_key = a\n&quot;}, {&quot;color&quot;: &quot;#440154&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;white&quot;}, &quot;id&quot;: &quot;my_sum&quot;, &quot;label&quot;: &quot;first_val&quot;, &quot;level&quot;: 2.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;circle&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: my_sum\nNo documentation\n............................................\nautomatic_recalc = False\na = Linked( triple_sum.a )\nb = Linked( triple_sum.b )\n&quot;}, {&quot;color&quot;: &quot;#ccc&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;b&quot;, &quot;label&quot;: &quot;Input(b)&quot;, &quot;level&quot;: 1.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7fdf1cfeb860\u003e\nautomatic_recalc = False\ninput_key = b\n&quot;}, {&quot;color&quot;: &quot;#ccc&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;c&quot;, &quot;label&quot;: &quot;Input(c)&quot;, &quot;level&quot;: 2.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7fdf1cfeb860\u003e\nautomatic_recalc = False\ninput_key = c\n&quot;}]);
+                  edges = new vis.DataSet([{&quot;arrows&quot;: &quot;to&quot;, &quot;from&quot;: &quot;my_sum_1&quot;, &quot;label&quot;: &quot;value&quot;, &quot;title&quot;: &quot;my_sum() -\u003e WorkflowOutput.value&quot;, &quot;to&quot;: &quot;output&quot;, &quot;width&quot;: 1}, {&quot;arrows&quot;: &quot;to&quot;, &quot;from&quot;: &quot;a&quot;, &quot;label&quot;: &quot;a&quot;, &quot;title&quot;: &quot;WorkflowInput() -\u003e my_sum.a&quot;, &quot;to&quot;: &quot;my_sum&quot;, &quot;width&quot;: 1}, {&quot;arrows&quot;: &quot;to&quot;, &quot;from&quot;: &quot;my_sum&quot;, &quot;label&quot;: &quot;a&quot;, &quot;title&quot;: &quot;my_sum() -\u003e my_sum.a&quot;, &quot;to&quot;: &quot;my_sum_1&quot;, &quot;width&quot;: 1}, {&quot;arrows&quot;: &quot;to&quot;, &quot;from&quot;: &quot;b&quot;, &quot;label&quot;: &quot;b&quot;, &quot;title&quot;: &quot;WorkflowInput() -\u003e my_sum.b&quot;, &quot;to&quot;: &quot;my_sum&quot;, &quot;width&quot;: 1}, {&quot;arrows&quot;: &quot;to&quot;, &quot;from&quot;: &quot;c&quot;, &quot;label&quot;: &quot;b&quot;, &quot;title&quot;: &quot;WorkflowInput() -\u003e my_sum.b&quot;, &quot;to&quot;: &quot;my_sum_1&quot;, &quot;width&quot;: 1}]);
 
                   nodeColors = {};
-                  allNodes = nodes.get({ returnType: "Object" });
+                  allNodes = nodes.get({ returnType: &quot;Object&quot; });
                   for (nodeId in allNodes) {
                     nodeColors[nodeId] = allNodes[nodeId].color;
                   }
-                  allEdges = edges.get({ returnType: "Object" });
+                  allEdges = edges.get({ returnType: &quot;Object&quot; });
                   // adding nodes and edges to the graph
                   data = {nodes: nodes, edges: edges};
 
                   var options = {
-    "configure": {
-        "enabled": false
+    &quot;configure&quot;: {
+        &quot;enabled&quot;: false
     },
-    "edges": {
-        "color": {
-            "inherit": true
+    &quot;edges&quot;: {
+        &quot;color&quot;: {
+            &quot;inherit&quot;: true
         },
-        "smooth": {
-            "enabled": true,
-            "type": "dynamic"
+        &quot;smooth&quot;: {
+            &quot;enabled&quot;: true,
+            &quot;type&quot;: &quot;dynamic&quot;
         }
     },
-    "interaction": {
-        "dragNodes": true,
-        "hideEdgesOnDrag": false,
-        "hideNodesOnDrag": false
+    &quot;interaction&quot;: {
+        &quot;dragNodes&quot;: true,
+        &quot;hideEdgesOnDrag&quot;: false,
+        &quot;hideNodesOnDrag&quot;: false
     },
-    "layout": {
-        "hierarchical": {
-            "blockShifting": true,
-            "edgeMinimization": true,
-            "enabled": true,
-            "levelSeparation": 150,
-            "parentCentralization": true,
-            "sortMethod": "hubsize",
-            "treeSpacing": 200
+    &quot;layout&quot;: {
+        &quot;hierarchical&quot;: {
+            &quot;blockShifting&quot;: true,
+            &quot;edgeMinimization&quot;: true,
+            &quot;enabled&quot;: true,
+            &quot;levelSeparation&quot;: 150,
+            &quot;parentCentralization&quot;: true,
+            &quot;sortMethod&quot;: &quot;hubsize&quot;,
+            &quot;treeSpacing&quot;: 200
         },
-        "improvedLayout": true,
-        "randomSeed": 0
+        &quot;improvedLayout&quot;: true,
+        &quot;randomSeed&quot;: 0
     },
-    "physics": {
-        "enabled": true,
-        "stabilization": {
-            "enabled": true,
-            "fit": true,
-            "iterations": 1000,
-            "onlyDynamicEdges": false,
-            "updateInterval": 50
+    &quot;physics&quot;: {
+        &quot;enabled&quot;: true,
+        &quot;stabilization&quot;: {
+            &quot;enabled&quot;: true,
+            &quot;fit&quot;: true,
+            &quot;iterations&quot;: 1000,
+            &quot;onlyDynamicEdges&quot;: false,
+            &quot;updateInterval&quot;: 50
         }
     }
 };
@@ -1196,9 +1205,9 @@ function highlightFilter(filter) {
 
               }
               drawGraph();
-        </script>
-    </body>
-</html></div></div>
+        &lt;/script&gt;
+    &lt;/body&gt;
+&lt;/html&gt;" style="width:100%"></iframe></div>
 </div>
 <p>There are many tweaks that you can try on the visualization, but we are not going to enter into the details. You can play with it to find the most appropiate representation!</p>
 <p>Workflows are just a way of organizing nodes, so they work exactly the same. By default, they are lazy, so calling your workflow class will just get you an instance:</p>
@@ -1218,7 +1227,7 @@ function highlightFilter(filter) {
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;sisl.nodes.node.triple_sum at 0x7fbec5a20040&gt;
+&lt;sisl.nodes.node.triple_sum at 0x7fdf1ca5ae80&gt;
 </pre></div></div>
 </div>
 <p>And then whenever you ask for the value, the workflow runs.</p>
@@ -1263,7 +1272,7 @@ SUMMING 5 + 4
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;sisl.nodes.node.triple_sum at 0x7fbec5a20040&gt;
+&lt;sisl.nodes.node.triple_sum at 0x7fdf1ca5ae80&gt;
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -1306,7 +1315,7 @@ SUMMING 5 + 8
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;sisl.nodes.workflow.WorkflowNodes at 0x7fbec54a7d90&gt;
+&lt;sisl.nodes.workflow.WorkflowNodes at 0x7fdf1c4fa580&gt;
 </pre></div></div>
 </div>
 <p>One can imagine <strong>reusing their result for something else</strong>.</p>
@@ -1344,7 +1353,7 @@ VALUE CHANGED, it now is 13
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;sisl.nodes.node.triple_sum at 0x7fbec5a20040&gt;
+&lt;sisl.nodes.node.triple_sum at 0x7fdf1ca5ae80&gt;
 </pre></div></div>
 </div>
 <p>It sometimes might be useful to provide methods for a workflow. For that case, workflows can also be defined with class syntax, passing the workflow as a static method in the <code class="docutils literal notranslate"><span class="pre">_workflow</span></code> method.</p>
@@ -1460,16 +1469,16 @@ warn:0: SislWarning: Decorators are ignored for now on workflow creation. Ignori
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<div style="height:600px"><html>
-    <head>
-        <meta charset="utf-8">
+<iframe height='600px' srcdoc="&lt;html&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot;&gt;
 
-            <script>function neighbourhoodHighlight(params) {
-  // console.log("in nieghbourhoodhighlight");
-  allNodes = nodes.get({ returnType: "Object" });
+            &lt;script&gt;function neighbourhoodHighlight(params) {
+  // console.log(&quot;in nieghbourhoodhighlight&quot;);
+  allNodes = nodes.get({ returnType: &quot;Object&quot; });
   // originalNodes = JSON.parse(JSON.stringify(allNodes));
   // if something is selected:
-  if (params.nodes.length > 0) {
+  if (params.nodes.length &gt; 0) {
     highlightActive = true;
     var i, j;
     var selectedNode = params.nodes[0];
@@ -1478,7 +1487,7 @@ warn:0: SislWarning: Decorators are ignored for now on workflow creation. Ignori
     // mark all nodes as hard to read.
     for (let nodeId in allNodes) {
       // nodeColors[nodeId] = allNodes[nodeId].color;
-      allNodes[nodeId].color = "rgba(200,200,200,0.5)";
+      allNodes[nodeId].color = &quot;rgba(200,200,200,0.5)&quot;;
       if (allNodes[nodeId].hiddenLabel === undefined) {
         allNodes[nodeId].hiddenLabel = allNodes[nodeId].label;
         allNodes[nodeId].label = undefined;
@@ -1488,8 +1497,8 @@ warn:0: SislWarning: Decorators are ignored for now on workflow creation. Ignori
     var allConnectedNodes = [];
 
     // get the second degree nodes
-    for (i = 1; i < degrees; i++) {
-      for (j = 0; j < connectedNodes.length; j++) {
+    for (i = 1; i &lt; degrees; i++) {
+      for (j = 0; j &lt; connectedNodes.length; j++) {
         allConnectedNodes = allConnectedNodes.concat(
           network.getConnectedNodes(connectedNodes[j])
         );
@@ -1497,9 +1506,9 @@ warn:0: SislWarning: Decorators are ignored for now on workflow creation. Ignori
     }
 
     // all second degree nodes get a different color and their label back
-    for (i = 0; i < allConnectedNodes.length; i++) {
-      // allNodes[allConnectedNodes[i]].color = "pink";
-      allNodes[allConnectedNodes[i]].color = "rgba(150,150,150,0.75)";
+    for (i = 0; i &lt; allConnectedNodes.length; i++) {
+      // allNodes[allConnectedNodes[i]].color = &quot;pink&quot;;
+      allNodes[allConnectedNodes[i]].color = &quot;rgba(150,150,150,0.75)&quot;;
       if (allNodes[allConnectedNodes[i]].hiddenLabel !== undefined) {
         allNodes[allConnectedNodes[i]].label =
           allNodes[allConnectedNodes[i]].hiddenLabel;
@@ -1508,7 +1517,7 @@ warn:0: SislWarning: Decorators are ignored for now on workflow creation. Ignori
     }
 
     // all first degree nodes get their own color and their label back
-    for (i = 0; i < connectedNodes.length; i++) {
+    for (i = 0; i &lt; connectedNodes.length; i++) {
       // allNodes[connectedNodes[i]].color = undefined;
       allNodes[connectedNodes[i]].color = nodeColors[connectedNodes[i]];
       if (allNodes[connectedNodes[i]].hiddenLabel !== undefined) {
@@ -1526,10 +1535,10 @@ warn:0: SislWarning: Decorators are ignored for now on workflow creation. Ignori
       allNodes[selectedNode].hiddenLabel = undefined;
     }
   } else if (highlightActive === true) {
-    // console.log("highlightActive was true");
+    // console.log(&quot;highlightActive was true&quot;);
     // reset all nodes
     for (let nodeId in allNodes) {
-      // allNodes[nodeId].color = "purple";
+      // allNodes[nodeId].color = &quot;purple&quot;;
       allNodes[nodeId].color = nodeColors[nodeId];
       // delete allNodes[nodeId].color;
       if (allNodes[nodeId].hiddenLabel !== undefined) {
@@ -1542,7 +1551,7 @@ warn:0: SislWarning: Decorators are ignored for now on workflow creation. Ignori
 
   // transform the object into an array
   var updateArray = [];
-  if (params.nodes.length > 0) {
+  if (params.nodes.length &gt; 0) {
     for (let nodeId in allNodes) {
       if (allNodes.hasOwnProperty(nodeId)) {
         // console.log(allNodes[nodeId]);
@@ -1551,7 +1560,7 @@ warn:0: SislWarning: Decorators are ignored for now on workflow creation. Ignori
     }
     nodes.update(updateArray);
   } else {
-    // console.log("Nothing was selected");
+    // console.log(&quot;Nothing was selected&quot;);
     for (let nodeId in allNodes) {
       if (allNodes.hasOwnProperty(nodeId)) {
         // console.log(allNodes[nodeId]);
@@ -1564,9 +1573,9 @@ warn:0: SislWarning: Decorators are ignored for now on workflow creation. Ignori
 }
 
 function filterHighlight(params) {
-  allNodes = nodes.get({ returnType: "Object" });
+  allNodes = nodes.get({ returnType: &quot;Object&quot; });
   // if something is selected:
-  if (params.nodes.length > 0) {
+  if (params.nodes.length &gt; 0) {
     filterActive = true;
     let selectedNodes = params.nodes;
 
@@ -1579,7 +1588,7 @@ function filterHighlight(params) {
       }
     }
 
-    for (let i=0; i < selectedNodes.length; i++) {
+    for (let i=0; i &lt; selectedNodes.length; i++) {
       allNodes[selectedNodes[i]].hidden = false;
       if (allNodes[selectedNodes[i]].savedLabel !== undefined) {
         allNodes[selectedNodes[i]].label = allNodes[selectedNodes[i]].savedLabel;
@@ -1601,7 +1610,7 @@ function filterHighlight(params) {
 
   // transform the object into an array
   var updateArray = [];
-  if (params.nodes.length > 0) {
+  if (params.nodes.length &gt; 0) {
     for (let nodeId in allNodes) {
       if (allNodes.hasOwnProperty(nodeId)) {
         updateArray.push(allNodes[nodeId]);
@@ -1632,29 +1641,29 @@ function selectNodes(nodes) {
 
 function highlightFilter(filter) {
   let selectedNodes = []
-  let selectedProp = filter['property']
-  if (filter['item'] === 'node') {
-    let allNodes = nodes.get({ returnType: "Object" });
+  let selectedProp = filter[&#x27;property&#x27;]
+  if (filter[&#x27;item&#x27;] === &#x27;node&#x27;) {
+    let allNodes = nodes.get({ returnType: &quot;Object&quot; });
     for (let nodeId in allNodes) {
-      if (allNodes[nodeId][selectedProp] && filter['value'].includes((allNodes[nodeId][selectedProp]).toString())) {
+      if (allNodes[nodeId][selectedProp] &amp;&amp; filter[&#x27;value&#x27;].includes((allNodes[nodeId][selectedProp]).toString())) {
         selectedNodes.push(nodeId)
       }
     }
   }
-  else if (filter['item'] === 'edge'){
-    let allEdges = edges.get({returnType: 'object'});
+  else if (filter[&#x27;item&#x27;] === &#x27;edge&#x27;){
+    let allEdges = edges.get({returnType: &#x27;object&#x27;});
     // check if the selected property exists for selected edge and select the nodes connected to the edge
     for (let edge in allEdges) {
-      if (allEdges[edge][selectedProp] && filter['value'].includes((allEdges[edge][selectedProp]).toString())) {
-        selectedNodes.push(allEdges[edge]['from'])
-        selectedNodes.push(allEdges[edge]['to'])
+      if (allEdges[edge][selectedProp] &amp;&amp; filter[&#x27;value&#x27;].includes((allEdges[edge][selectedProp]).toString())) {
+        selectedNodes.push(allEdges[edge][&#x27;from&#x27;])
+        selectedNodes.push(allEdges[edge][&#x27;to&#x27;])
       }
     }
   }
   selectNodes(selectedNodes)
-}</script>
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+}&lt;/script&gt;
+            &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css&quot; integrity=&quot;sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==&quot; crossorigin=&quot;anonymous&quot; referrerpolicy=&quot;no-referrer&quot; /&gt;
+            &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js&quot; integrity=&quot;sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==&quot; crossorigin=&quot;anonymous&quot; referrerpolicy=&quot;no-referrer&quot;&gt;&lt;/script&gt;
 
 
 
@@ -1663,29 +1672,29 @@ function highlightFilter(filter) {
 
 
 
-<center>
-<h1></h1>
-</center>
+&lt;center&gt;
+&lt;h1&gt;&lt;/h1&gt;
+&lt;/center&gt;
 
-<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
-<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
-        <link
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
-          crossorigin="anonymous"
-        />
-        <script
-          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
-          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
-          crossorigin="anonymous"
-        ></script>
+&lt;!-- &lt;link rel=&quot;stylesheet&quot; href=&quot;../node_modules/vis/dist/vis.min.css&quot; type=&quot;text/css&quot; /&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;../node_modules/vis/dist/vis.js&quot;&gt; &lt;/script&gt;--&gt;
+        &lt;link
+          href=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css&quot;
+          rel=&quot;stylesheet&quot;
+          integrity=&quot;sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6&quot;
+          crossorigin=&quot;anonymous&quot;
+        /&gt;
+        &lt;script
+          src=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js&quot;
+          integrity=&quot;sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf&quot;
+          crossorigin=&quot;anonymous&quot;
+        &gt;&lt;/script&gt;
 
 
-        <center>
-          <h1></h1>
-        </center>
-        <style type="text/css">
+        &lt;center&gt;
+          &lt;h1&gt;&lt;/h1&gt;
+        &lt;/center&gt;
+        &lt;style type=&quot;text/css&quot;&gt;
 
              #mynetwork {
                  width: 100%;
@@ -1701,21 +1710,21 @@ function highlightFilter(filter) {
 
 
 
-        </style>
-    </head>
+        &lt;/style&gt;
+    &lt;/head&gt;
 
 
-    <body>
-        <div class="card" style="width: 100%">
+    &lt;body&gt;
+        &lt;div class=&quot;card&quot; style=&quot;width: 100%&quot;&gt;
 
 
-            <div id="mynetwork" class="card-body"></div>
-        </div>
+            &lt;div id=&quot;mynetwork&quot; class=&quot;card-body&quot;&gt;&lt;/div&gt;
+        &lt;/div&gt;
 
 
 
 
-        <script type="text/javascript">
+        &lt;script type=&quot;text/javascript&quot;&gt;
 
               // initialize global variables.
               var edges;
@@ -1728,8 +1737,8 @@ function highlightFilter(filter) {
               var container;
               var options, data;
               var filter = {
-                  item : '',
-                  property : '',
+                  item : &#x27;&#x27;,
+                  property : &#x27;&#x27;,
                   value : []
               };
 
@@ -1739,62 +1748,62 @@ function highlightFilter(filter) {
 
               // This method is responsible for drawing the graph, returns the drawn network
               function drawGraph() {
-                  var container = document.getElementById('mynetwork');
+                  var container = document.getElementById(&#x27;mynetwork&#x27;);
 
 
 
                   // parsing and collecting nodes and edges from the python
-                  nodes = new vis.DataSet([{"color": "#fde725", "font": {}, "id": "UfuncNode_1", "label": "val", "level": 3.0, "mass": 2, "shape": "circle", "size": 10, "title": "Node class: UfuncNode\nNo documentation\n............................................\nautomatic_recalc = False\nkwargs = {\u0027input_0\u0027: \u0027Linked( UfuncNode.output )\u0027, \u0027input_1\u0027: \u0027Linked( sum_triple.c )\u0027}\nufunc = \u003cufunc \u0027add\u0027\u003e\nmethod = __call__\ninput_kwargs = {}\n"}, {"color": "pink", "font": {"color": "black"}, "id": "output", "label": "Output", "level": 4.0, "mass": 2, "shape": "box", "size": 10, "title": "Node class: WorkflowOutput\nNo documentation\n............................................\nautomatic_recalc = False\nvalue = Linked( UfuncNode_1.output )\n"}, {"color": "#ccc", "font": {"color": "black"}, "id": "a", "label": "Input(a)", "level": 1.0, "mass": 2, "shape": "box", "size": 10, "title": "Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7fbec5f9a860\u003e\nautomatic_recalc = False\ninput_key = a\n"}, {"color": "#440154", "font": {"color": "white"}, "id": "UfuncNode", "label": "UfuncNode", "level": 2.0, "mass": 2, "shape": "circle", "size": 10, "title": "Node class: UfuncNode\nNo documentation\n............................................\nautomatic_recalc = False\nkwargs = {\u0027input_0\u0027: \u0027Linked( sum_triple.a )\u0027, \u0027input_1\u0027: \u0027Linked( sum_triple.b )\u0027}\nufunc = \u003cufunc \u0027add\u0027\u003e\nmethod = __call__\ninput_kwargs = {}\n"}, {"color": "#ccc", "font": {"color": "black"}, "id": "b", "label": "Input(b)", "level": 1.0, "mass": 2, "shape": "box", "size": 10, "title": "Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7fbec5f9a860\u003e\nautomatic_recalc = False\ninput_key = b\n"}, {"color": "#ccc", "font": {"color": "black"}, "id": "c", "label": "Input(c)", "level": 2.0, "mass": 2, "shape": "box", "size": 10, "title": "Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7fbec5f9a860\u003e\nautomatic_recalc = False\ninput_key = c\n"}]);
-                  edges = new vis.DataSet([{"arrows": "to", "from": "UfuncNode_1", "label": "value", "title": "UfuncNode() -\u003e WorkflowOutput.value", "to": "output", "width": 1}, {"arrows": "to", "from": "a", "label": "kwargs[input_0]", "title": "WorkflowInput() -\u003e UfuncNode.kwargs[input_0]", "to": "UfuncNode", "width": 1}, {"arrows": "to", "from": "UfuncNode", "label": "kwargs[input_0]", "title": "UfuncNode() -\u003e UfuncNode.kwargs[input_0]", "to": "UfuncNode_1", "width": 1}, {"arrows": "to", "from": "b", "label": "kwargs[input_1]", "title": "WorkflowInput() -\u003e UfuncNode.kwargs[input_1]", "to": "UfuncNode", "width": 1}, {"arrows": "to", "from": "c", "label": "kwargs[input_1]", "title": "WorkflowInput() -\u003e UfuncNode.kwargs[input_1]", "to": "UfuncNode_1", "width": 1}]);
+                  nodes = new vis.DataSet([{&quot;color&quot;: &quot;#fde725&quot;, &quot;font&quot;: {}, &quot;id&quot;: &quot;UfuncNode_1&quot;, &quot;label&quot;: &quot;val&quot;, &quot;level&quot;: 3.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;circle&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: UfuncNode\nNo documentation\n............................................\nautomatic_recalc = False\nkwargs = {\u0027input_0\u0027: \u0027Linked( UfuncNode.output )\u0027, \u0027input_1\u0027: \u0027Linked( sum_triple.c )\u0027}\nufunc = \u003cufunc \u0027add\u0027\u003e\nmethod = __call__\ninput_kwargs = {}\n&quot;}, {&quot;color&quot;: &quot;pink&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;output&quot;, &quot;label&quot;: &quot;Output&quot;, &quot;level&quot;: 4.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowOutput\nNo documentation\n............................................\nautomatic_recalc = False\nvalue = Linked( UfuncNode_1.output )\n&quot;}, {&quot;color&quot;: &quot;#ccc&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;a&quot;, &quot;label&quot;: &quot;Input(a)&quot;, &quot;level&quot;: 1.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7fdf1cfeb860\u003e\nautomatic_recalc = False\ninput_key = a\n&quot;}, {&quot;color&quot;: &quot;#440154&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;white&quot;}, &quot;id&quot;: &quot;UfuncNode&quot;, &quot;label&quot;: &quot;UfuncNode&quot;, &quot;level&quot;: 2.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;circle&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: UfuncNode\nNo documentation\n............................................\nautomatic_recalc = False\nkwargs = {\u0027input_0\u0027: \u0027Linked( sum_triple.a )\u0027, \u0027input_1\u0027: \u0027Linked( sum_triple.b )\u0027}\nufunc = \u003cufunc \u0027add\u0027\u003e\nmethod = __call__\ninput_kwargs = {}\n&quot;}, {&quot;color&quot;: &quot;#ccc&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;b&quot;, &quot;label&quot;: &quot;Input(b)&quot;, &quot;level&quot;: 1.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7fdf1cfeb860\u003e\nautomatic_recalc = False\ninput_key = b\n&quot;}, {&quot;color&quot;: &quot;#ccc&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;c&quot;, &quot;label&quot;: &quot;Input(c)&quot;, &quot;level&quot;: 2.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7fdf1cfeb860\u003e\nautomatic_recalc = False\ninput_key = c\n&quot;}]);
+                  edges = new vis.DataSet([{&quot;arrows&quot;: &quot;to&quot;, &quot;from&quot;: &quot;UfuncNode_1&quot;, &quot;label&quot;: &quot;value&quot;, &quot;title&quot;: &quot;UfuncNode() -\u003e WorkflowOutput.value&quot;, &quot;to&quot;: &quot;output&quot;, &quot;width&quot;: 1}, {&quot;arrows&quot;: &quot;to&quot;, &quot;from&quot;: &quot;a&quot;, &quot;label&quot;: &quot;kwargs[input_0]&quot;, &quot;title&quot;: &quot;WorkflowInput() -\u003e UfuncNode.kwargs[input_0]&quot;, &quot;to&quot;: &quot;UfuncNode&quot;, &quot;width&quot;: 1}, {&quot;arrows&quot;: &quot;to&quot;, &quot;from&quot;: &quot;UfuncNode&quot;, &quot;label&quot;: &quot;kwargs[input_0]&quot;, &quot;title&quot;: &quot;UfuncNode() -\u003e UfuncNode.kwargs[input_0]&quot;, &quot;to&quot;: &quot;UfuncNode_1&quot;, &quot;width&quot;: 1}, {&quot;arrows&quot;: &quot;to&quot;, &quot;from&quot;: &quot;b&quot;, &quot;label&quot;: &quot;kwargs[input_1]&quot;, &quot;title&quot;: &quot;WorkflowInput() -\u003e UfuncNode.kwargs[input_1]&quot;, &quot;to&quot;: &quot;UfuncNode&quot;, &quot;width&quot;: 1}, {&quot;arrows&quot;: &quot;to&quot;, &quot;from&quot;: &quot;c&quot;, &quot;label&quot;: &quot;kwargs[input_1]&quot;, &quot;title&quot;: &quot;WorkflowInput() -\u003e UfuncNode.kwargs[input_1]&quot;, &quot;to&quot;: &quot;UfuncNode_1&quot;, &quot;width&quot;: 1}]);
 
                   nodeColors = {};
-                  allNodes = nodes.get({ returnType: "Object" });
+                  allNodes = nodes.get({ returnType: &quot;Object&quot; });
                   for (nodeId in allNodes) {
                     nodeColors[nodeId] = allNodes[nodeId].color;
                   }
-                  allEdges = edges.get({ returnType: "Object" });
+                  allEdges = edges.get({ returnType: &quot;Object&quot; });
                   // adding nodes and edges to the graph
                   data = {nodes: nodes, edges: edges};
 
                   var options = {
-    "configure": {
-        "enabled": false
+    &quot;configure&quot;: {
+        &quot;enabled&quot;: false
     },
-    "edges": {
-        "color": {
-            "inherit": true
+    &quot;edges&quot;: {
+        &quot;color&quot;: {
+            &quot;inherit&quot;: true
         },
-        "smooth": {
-            "enabled": true,
-            "type": "dynamic"
+        &quot;smooth&quot;: {
+            &quot;enabled&quot;: true,
+            &quot;type&quot;: &quot;dynamic&quot;
         }
     },
-    "interaction": {
-        "dragNodes": true,
-        "hideEdgesOnDrag": false,
-        "hideNodesOnDrag": false
+    &quot;interaction&quot;: {
+        &quot;dragNodes&quot;: true,
+        &quot;hideEdgesOnDrag&quot;: false,
+        &quot;hideNodesOnDrag&quot;: false
     },
-    "layout": {
-        "hierarchical": {
-            "blockShifting": true,
-            "edgeMinimization": true,
-            "enabled": true,
-            "levelSeparation": 150,
-            "parentCentralization": true,
-            "sortMethod": "hubsize",
-            "treeSpacing": 200
+    &quot;layout&quot;: {
+        &quot;hierarchical&quot;: {
+            &quot;blockShifting&quot;: true,
+            &quot;edgeMinimization&quot;: true,
+            &quot;enabled&quot;: true,
+            &quot;levelSeparation&quot;: 150,
+            &quot;parentCentralization&quot;: true,
+            &quot;sortMethod&quot;: &quot;hubsize&quot;,
+            &quot;treeSpacing&quot;: 200
         },
-        "improvedLayout": true,
-        "randomSeed": 0
+        &quot;improvedLayout&quot;: true,
+        &quot;randomSeed&quot;: 0
     },
-    "physics": {
-        "enabled": true,
-        "stabilization": {
-            "enabled": true,
-            "fit": true,
-            "iterations": 1000,
-            "onlyDynamicEdges": false,
-            "updateInterval": 50
+    &quot;physics&quot;: {
+        &quot;enabled&quot;: true,
+        &quot;stabilization&quot;: {
+            &quot;enabled&quot;: true,
+            &quot;fit&quot;: true,
+            &quot;iterations&quot;: 1000,
+            &quot;onlyDynamicEdges&quot;: false,
+            &quot;updateInterval&quot;: 50
         }
     }
 };
@@ -1819,9 +1828,9 @@ function highlightFilter(filter) {
 
               }
               drawGraph();
-        </script>
-    </body>
-</html></div></div>
+        &lt;/script&gt;
+    &lt;/body&gt;
+&lt;/html&gt;" style="width:100%"></iframe></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
@@ -1869,16 +1878,16 @@ warn:0: SislWarning: Decorators are ignored for now on workflow creation. Ignori
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<div style="height:600px"><html>
-    <head>
-        <meta charset="utf-8">
+<iframe height='600px' srcdoc="&lt;html&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot;&gt;
 
-            <script>function neighbourhoodHighlight(params) {
-  // console.log("in nieghbourhoodhighlight");
-  allNodes = nodes.get({ returnType: "Object" });
+            &lt;script&gt;function neighbourhoodHighlight(params) {
+  // console.log(&quot;in nieghbourhoodhighlight&quot;);
+  allNodes = nodes.get({ returnType: &quot;Object&quot; });
   // originalNodes = JSON.parse(JSON.stringify(allNodes));
   // if something is selected:
-  if (params.nodes.length > 0) {
+  if (params.nodes.length &gt; 0) {
     highlightActive = true;
     var i, j;
     var selectedNode = params.nodes[0];
@@ -1887,7 +1896,7 @@ warn:0: SislWarning: Decorators are ignored for now on workflow creation. Ignori
     // mark all nodes as hard to read.
     for (let nodeId in allNodes) {
       // nodeColors[nodeId] = allNodes[nodeId].color;
-      allNodes[nodeId].color = "rgba(200,200,200,0.5)";
+      allNodes[nodeId].color = &quot;rgba(200,200,200,0.5)&quot;;
       if (allNodes[nodeId].hiddenLabel === undefined) {
         allNodes[nodeId].hiddenLabel = allNodes[nodeId].label;
         allNodes[nodeId].label = undefined;
@@ -1897,8 +1906,8 @@ warn:0: SislWarning: Decorators are ignored for now on workflow creation. Ignori
     var allConnectedNodes = [];
 
     // get the second degree nodes
-    for (i = 1; i < degrees; i++) {
-      for (j = 0; j < connectedNodes.length; j++) {
+    for (i = 1; i &lt; degrees; i++) {
+      for (j = 0; j &lt; connectedNodes.length; j++) {
         allConnectedNodes = allConnectedNodes.concat(
           network.getConnectedNodes(connectedNodes[j])
         );
@@ -1906,9 +1915,9 @@ warn:0: SislWarning: Decorators are ignored for now on workflow creation. Ignori
     }
 
     // all second degree nodes get a different color and their label back
-    for (i = 0; i < allConnectedNodes.length; i++) {
-      // allNodes[allConnectedNodes[i]].color = "pink";
-      allNodes[allConnectedNodes[i]].color = "rgba(150,150,150,0.75)";
+    for (i = 0; i &lt; allConnectedNodes.length; i++) {
+      // allNodes[allConnectedNodes[i]].color = &quot;pink&quot;;
+      allNodes[allConnectedNodes[i]].color = &quot;rgba(150,150,150,0.75)&quot;;
       if (allNodes[allConnectedNodes[i]].hiddenLabel !== undefined) {
         allNodes[allConnectedNodes[i]].label =
           allNodes[allConnectedNodes[i]].hiddenLabel;
@@ -1917,7 +1926,7 @@ warn:0: SislWarning: Decorators are ignored for now on workflow creation. Ignori
     }
 
     // all first degree nodes get their own color and their label back
-    for (i = 0; i < connectedNodes.length; i++) {
+    for (i = 0; i &lt; connectedNodes.length; i++) {
       // allNodes[connectedNodes[i]].color = undefined;
       allNodes[connectedNodes[i]].color = nodeColors[connectedNodes[i]];
       if (allNodes[connectedNodes[i]].hiddenLabel !== undefined) {
@@ -1935,10 +1944,10 @@ warn:0: SislWarning: Decorators are ignored for now on workflow creation. Ignori
       allNodes[selectedNode].hiddenLabel = undefined;
     }
   } else if (highlightActive === true) {
-    // console.log("highlightActive was true");
+    // console.log(&quot;highlightActive was true&quot;);
     // reset all nodes
     for (let nodeId in allNodes) {
-      // allNodes[nodeId].color = "purple";
+      // allNodes[nodeId].color = &quot;purple&quot;;
       allNodes[nodeId].color = nodeColors[nodeId];
       // delete allNodes[nodeId].color;
       if (allNodes[nodeId].hiddenLabel !== undefined) {
@@ -1951,7 +1960,7 @@ warn:0: SislWarning: Decorators are ignored for now on workflow creation. Ignori
 
   // transform the object into an array
   var updateArray = [];
-  if (params.nodes.length > 0) {
+  if (params.nodes.length &gt; 0) {
     for (let nodeId in allNodes) {
       if (allNodes.hasOwnProperty(nodeId)) {
         // console.log(allNodes[nodeId]);
@@ -1960,7 +1969,7 @@ warn:0: SislWarning: Decorators are ignored for now on workflow creation. Ignori
     }
     nodes.update(updateArray);
   } else {
-    // console.log("Nothing was selected");
+    // console.log(&quot;Nothing was selected&quot;);
     for (let nodeId in allNodes) {
       if (allNodes.hasOwnProperty(nodeId)) {
         // console.log(allNodes[nodeId]);
@@ -1973,9 +1982,9 @@ warn:0: SislWarning: Decorators are ignored for now on workflow creation. Ignori
 }
 
 function filterHighlight(params) {
-  allNodes = nodes.get({ returnType: "Object" });
+  allNodes = nodes.get({ returnType: &quot;Object&quot; });
   // if something is selected:
-  if (params.nodes.length > 0) {
+  if (params.nodes.length &gt; 0) {
     filterActive = true;
     let selectedNodes = params.nodes;
 
@@ -1988,7 +1997,7 @@ function filterHighlight(params) {
       }
     }
 
-    for (let i=0; i < selectedNodes.length; i++) {
+    for (let i=0; i &lt; selectedNodes.length; i++) {
       allNodes[selectedNodes[i]].hidden = false;
       if (allNodes[selectedNodes[i]].savedLabel !== undefined) {
         allNodes[selectedNodes[i]].label = allNodes[selectedNodes[i]].savedLabel;
@@ -2010,7 +2019,7 @@ function filterHighlight(params) {
 
   // transform the object into an array
   var updateArray = [];
-  if (params.nodes.length > 0) {
+  if (params.nodes.length &gt; 0) {
     for (let nodeId in allNodes) {
       if (allNodes.hasOwnProperty(nodeId)) {
         updateArray.push(allNodes[nodeId]);
@@ -2041,29 +2050,29 @@ function selectNodes(nodes) {
 
 function highlightFilter(filter) {
   let selectedNodes = []
-  let selectedProp = filter['property']
-  if (filter['item'] === 'node') {
-    let allNodes = nodes.get({ returnType: "Object" });
+  let selectedProp = filter[&#x27;property&#x27;]
+  if (filter[&#x27;item&#x27;] === &#x27;node&#x27;) {
+    let allNodes = nodes.get({ returnType: &quot;Object&quot; });
     for (let nodeId in allNodes) {
-      if (allNodes[nodeId][selectedProp] && filter['value'].includes((allNodes[nodeId][selectedProp]).toString())) {
+      if (allNodes[nodeId][selectedProp] &amp;&amp; filter[&#x27;value&#x27;].includes((allNodes[nodeId][selectedProp]).toString())) {
         selectedNodes.push(nodeId)
       }
     }
   }
-  else if (filter['item'] === 'edge'){
-    let allEdges = edges.get({returnType: 'object'});
+  else if (filter[&#x27;item&#x27;] === &#x27;edge&#x27;){
+    let allEdges = edges.get({returnType: &#x27;object&#x27;});
     // check if the selected property exists for selected edge and select the nodes connected to the edge
     for (let edge in allEdges) {
-      if (allEdges[edge][selectedProp] && filter['value'].includes((allEdges[edge][selectedProp]).toString())) {
-        selectedNodes.push(allEdges[edge]['from'])
-        selectedNodes.push(allEdges[edge]['to'])
+      if (allEdges[edge][selectedProp] &amp;&amp; filter[&#x27;value&#x27;].includes((allEdges[edge][selectedProp]).toString())) {
+        selectedNodes.push(allEdges[edge][&#x27;from&#x27;])
+        selectedNodes.push(allEdges[edge][&#x27;to&#x27;])
       }
     }
   }
   selectNodes(selectedNodes)
-}</script>
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+}&lt;/script&gt;
+            &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css&quot; integrity=&quot;sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==&quot; crossorigin=&quot;anonymous&quot; referrerpolicy=&quot;no-referrer&quot; /&gt;
+            &lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js&quot; integrity=&quot;sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==&quot; crossorigin=&quot;anonymous&quot; referrerpolicy=&quot;no-referrer&quot;&gt;&lt;/script&gt;
 
 
 
@@ -2072,29 +2081,29 @@ function highlightFilter(filter) {
 
 
 
-<center>
-<h1></h1>
-</center>
+&lt;center&gt;
+&lt;h1&gt;&lt;/h1&gt;
+&lt;/center&gt;
 
-<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
-<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
-        <link
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
-          crossorigin="anonymous"
-        />
-        <script
-          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
-          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
-          crossorigin="anonymous"
-        ></script>
+&lt;!-- &lt;link rel=&quot;stylesheet&quot; href=&quot;../node_modules/vis/dist/vis.min.css&quot; type=&quot;text/css&quot; /&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;../node_modules/vis/dist/vis.js&quot;&gt; &lt;/script&gt;--&gt;
+        &lt;link
+          href=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css&quot;
+          rel=&quot;stylesheet&quot;
+          integrity=&quot;sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6&quot;
+          crossorigin=&quot;anonymous&quot;
+        /&gt;
+        &lt;script
+          src=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js&quot;
+          integrity=&quot;sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf&quot;
+          crossorigin=&quot;anonymous&quot;
+        &gt;&lt;/script&gt;
 
 
-        <center>
-          <h1></h1>
-        </center>
-        <style type="text/css">
+        &lt;center&gt;
+          &lt;h1&gt;&lt;/h1&gt;
+        &lt;/center&gt;
+        &lt;style type=&quot;text/css&quot;&gt;
 
              #mynetwork {
                  width: 100%;
@@ -2110,21 +2119,21 @@ function highlightFilter(filter) {
 
 
 
-        </style>
-    </head>
+        &lt;/style&gt;
+    &lt;/head&gt;
 
 
-    <body>
-        <div class="card" style="width: 100%">
+    &lt;body&gt;
+        &lt;div class=&quot;card&quot; style=&quot;width: 100%&quot;&gt;
 
 
-            <div id="mynetwork" class="card-body"></div>
-        </div>
+            &lt;div id=&quot;mynetwork&quot; class=&quot;card-body&quot;&gt;&lt;/div&gt;
+        &lt;/div&gt;
 
 
 
 
-        <script type="text/javascript">
+        &lt;script type=&quot;text/javascript&quot;&gt;
 
               // initialize global variables.
               var edges;
@@ -2137,8 +2146,8 @@ function highlightFilter(filter) {
               var container;
               var options, data;
               var filter = {
-                  item : '',
-                  property : '',
+                  item : &#x27;&#x27;,
+                  property : &#x27;&#x27;,
                   value : []
               };
 
@@ -2148,62 +2157,62 @@ function highlightFilter(filter) {
 
               // This method is responsible for drawing the graph, returns the drawn network
               function drawGraph() {
-                  var container = document.getElementById('mynetwork');
+                  var container = document.getElementById(&#x27;mynetwork&#x27;);
 
 
 
                   // parsing and collecting nodes and edges from the python
-                  nodes = new vis.DataSet([{"color": "#440154", "font": {"color": "white"}, "id": "operation", "label": "val", "level": 2.0, "mass": 2, "shape": "circle", "size": 10, "title": "Node class: operation\nNo documentation\n............................................\nautomatic_recalc = False\na = Linked( sum_triple.a )\nb = Linked( sum_triple.b )\nc = Linked( sum_triple.c )\n"}, {"color": "pink", "font": {"color": "black"}, "id": "output", "label": "Output", "level": 3.0, "mass": 2, "shape": "box", "size": 10, "title": "Node class: WorkflowOutput\nNo documentation\n............................................\nautomatic_recalc = False\nvalue = Linked( operation.output )\n"}, {"color": "#ccc", "font": {"color": "black"}, "id": "a", "label": "Input(a)", "level": 1.0, "mass": 2, "shape": "box", "size": 10, "title": "Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7fbec5f9a860\u003e\nautomatic_recalc = False\ninput_key = a\n"}, {"color": "#ccc", "font": {"color": "black"}, "id": "b", "label": "Input(b)", "level": 1.0, "mass": 2, "shape": "box", "size": 10, "title": "Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7fbec5f9a860\u003e\nautomatic_recalc = False\ninput_key = b\n"}, {"color": "#ccc", "font": {"color": "black"}, "id": "c", "label": "Input(c)", "level": 1.0, "mass": 2, "shape": "box", "size": 10, "title": "Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7fbec5f9a860\u003e\nautomatic_recalc = False\ninput_key = c\n"}]);
-                  edges = new vis.DataSet([{"arrows": "to", "from": "operation", "label": "value", "title": "operation() -\u003e WorkflowOutput.value", "to": "output", "width": 1}, {"arrows": "to", "from": "a", "label": "a", "title": "WorkflowInput() -\u003e operation.a", "to": "operation", "width": 1}, {"arrows": "to", "from": "b", "label": "b", "title": "WorkflowInput() -\u003e operation.b", "to": "operation", "width": 1}, {"arrows": "to", "from": "c", "label": "c", "title": "WorkflowInput() -\u003e operation.c", "to": "operation", "width": 1}]);
+                  nodes = new vis.DataSet([{&quot;color&quot;: &quot;#440154&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;white&quot;}, &quot;id&quot;: &quot;operation&quot;, &quot;label&quot;: &quot;val&quot;, &quot;level&quot;: 2.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;circle&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: operation\nNo documentation\n............................................\nautomatic_recalc = False\na = Linked( sum_triple.a )\nb = Linked( sum_triple.b )\nc = Linked( sum_triple.c )\n&quot;}, {&quot;color&quot;: &quot;pink&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;output&quot;, &quot;label&quot;: &quot;Output&quot;, &quot;level&quot;: 3.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowOutput\nNo documentation\n............................................\nautomatic_recalc = False\nvalue = Linked( operation.output )\n&quot;}, {&quot;color&quot;: &quot;#ccc&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;a&quot;, &quot;label&quot;: &quot;Input(a)&quot;, &quot;level&quot;: 1.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7fdf1cfeb860\u003e\nautomatic_recalc = False\ninput_key = a\n&quot;}, {&quot;color&quot;: &quot;#ccc&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;b&quot;, &quot;label&quot;: &quot;Input(b)&quot;, &quot;level&quot;: 1.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7fdf1cfeb860\u003e\nautomatic_recalc = False\ninput_key = b\n&quot;}, {&quot;color&quot;: &quot;#ccc&quot;, &quot;font&quot;: {&quot;color&quot;: &quot;black&quot;}, &quot;id&quot;: &quot;c&quot;, &quot;label&quot;: &quot;Input(c)&quot;, &quot;level&quot;: 1.0, &quot;mass&quot;: 2, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: 10, &quot;title&quot;: &quot;Node class: WorkflowInput\nNo documentation\n............................................\nvalue = \u003cobject object at 0x7fdf1cfeb860\u003e\nautomatic_recalc = False\ninput_key = c\n&quot;}]);
+                  edges = new vis.DataSet([{&quot;arrows&quot;: &quot;to&quot;, &quot;from&quot;: &quot;operation&quot;, &quot;label&quot;: &quot;value&quot;, &quot;title&quot;: &quot;operation() -\u003e WorkflowOutput.value&quot;, &quot;to&quot;: &quot;output&quot;, &quot;width&quot;: 1}, {&quot;arrows&quot;: &quot;to&quot;, &quot;from&quot;: &quot;a&quot;, &quot;label&quot;: &quot;a&quot;, &quot;title&quot;: &quot;WorkflowInput() -\u003e operation.a&quot;, &quot;to&quot;: &quot;operation&quot;, &quot;width&quot;: 1}, {&quot;arrows&quot;: &quot;to&quot;, &quot;from&quot;: &quot;b&quot;, &quot;label&quot;: &quot;b&quot;, &quot;title&quot;: &quot;WorkflowInput() -\u003e operation.b&quot;, &quot;to&quot;: &quot;operation&quot;, &quot;width&quot;: 1}, {&quot;arrows&quot;: &quot;to&quot;, &quot;from&quot;: &quot;c&quot;, &quot;label&quot;: &quot;c&quot;, &quot;title&quot;: &quot;WorkflowInput() -\u003e operation.c&quot;, &quot;to&quot;: &quot;operation&quot;, &quot;width&quot;: 1}]);
 
                   nodeColors = {};
-                  allNodes = nodes.get({ returnType: "Object" });
+                  allNodes = nodes.get({ returnType: &quot;Object&quot; });
                   for (nodeId in allNodes) {
                     nodeColors[nodeId] = allNodes[nodeId].color;
                   }
-                  allEdges = edges.get({ returnType: "Object" });
+                  allEdges = edges.get({ returnType: &quot;Object&quot; });
                   // adding nodes and edges to the graph
                   data = {nodes: nodes, edges: edges};
 
                   var options = {
-    "configure": {
-        "enabled": false
+    &quot;configure&quot;: {
+        &quot;enabled&quot;: false
     },
-    "edges": {
-        "color": {
-            "inherit": true
+    &quot;edges&quot;: {
+        &quot;color&quot;: {
+            &quot;inherit&quot;: true
         },
-        "smooth": {
-            "enabled": true,
-            "type": "dynamic"
+        &quot;smooth&quot;: {
+            &quot;enabled&quot;: true,
+            &quot;type&quot;: &quot;dynamic&quot;
         }
     },
-    "interaction": {
-        "dragNodes": true,
-        "hideEdgesOnDrag": false,
-        "hideNodesOnDrag": false
+    &quot;interaction&quot;: {
+        &quot;dragNodes&quot;: true,
+        &quot;hideEdgesOnDrag&quot;: false,
+        &quot;hideNodesOnDrag&quot;: false
     },
-    "layout": {
-        "hierarchical": {
-            "blockShifting": true,
-            "edgeMinimization": true,
-            "enabled": true,
-            "levelSeparation": 150,
-            "parentCentralization": true,
-            "sortMethod": "hubsize",
-            "treeSpacing": 200
+    &quot;layout&quot;: {
+        &quot;hierarchical&quot;: {
+            &quot;blockShifting&quot;: true,
+            &quot;edgeMinimization&quot;: true,
+            &quot;enabled&quot;: true,
+            &quot;levelSeparation&quot;: 150,
+            &quot;parentCentralization&quot;: true,
+            &quot;sortMethod&quot;: &quot;hubsize&quot;,
+            &quot;treeSpacing&quot;: 200
         },
-        "improvedLayout": true,
-        "randomSeed": 0
+        &quot;improvedLayout&quot;: true,
+        &quot;randomSeed&quot;: 0
     },
-    "physics": {
-        "enabled": true,
-        "stabilization": {
-            "enabled": true,
-            "fit": true,
-            "iterations": 1000,
-            "onlyDynamicEdges": false,
-            "updateInterval": 50
+    &quot;physics&quot;: {
+        &quot;enabled&quot;: true,
+        &quot;stabilization&quot;: {
+            &quot;enabled&quot;: true,
+            &quot;fit&quot;: true,
+            &quot;iterations&quot;: 1000,
+            &quot;onlyDynamicEdges&quot;: false,
+            &quot;updateInterval&quot;: 50
         }
     }
 };
@@ -2228,9 +2237,9 @@ function highlightFilter(filter) {
 
               }
               drawGraph();
-        </script>
-    </body>
-</html></div></div>
+        &lt;/script&gt;
+    &lt;/body&gt;
+&lt;/html&gt;" style="width:100%"></iframe></div>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
