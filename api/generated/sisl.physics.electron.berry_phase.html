@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>berry_phase &mdash; sisl 0.1.dev1+g17089dc documentation</title>
+  <title>berry_phase &mdash; sisl 0.1.dev1+g53ece69 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -21,7 +21,7 @@
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -39,7 +39,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                0.1.dev1+g17089dc
+                0.1.dev1+g53ece69
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -56,12 +56,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../../other.html">Other resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../cite.html">Citing sisl</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../publications.html">Publications using sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">References</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scripts/scripts.html">Command line scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../nodes/nodes_intro.html">Nodes and workflows</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
 <ul>
@@ -187,7 +189,7 @@ first and last k-point must not be the same.</p></li>
 Forced true for Zak-phase calculations.</p></li>
 <li><p><strong>method</strong> (<em>{&quot;berry&quot;</em><em>, </em><em>&quot;zak&quot;}</em>) – “berry” will return the usual integral of the Berry connection over the specified contour
 “zak” will compute the Zak phase for 1D systems by performing
-a closed loop integration, see <span id="id1">[]</span>.
+a closed loop integration, see <span id="id1">[<a class="reference internal" href="../../references.html#id11" title="J. Zak. Berry's phase for energy bands in solids. Phys. Rev. Lett., 62(23):2747–2750, June 1989. URL: https://doi.org/10.1103/physrevlett.62.2747, doi:10.1103/physrevlett.62.2747.">10</a>]</span>.
 Additionally, one may do the Berry-phase calculation using the SVD method of the
 overlap matrices. Simply append “:svd” to the chosen method, e.g. “berry:svd”.</p></li>
 <li><p><strong>eigenstate_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – keyword arguments passed directly to the <code class="docutils literal notranslate"><span class="pre">contour.eigenstate</span></code> method.
@@ -203,13 +205,13 @@ One should <em>not</em> pass <code class="docutils literal notranslate"><span cl
 <p>For systems with band-crossings or degenerate states there is an arbitrariness to the definition
 of the Berry phase for <em>individual</em> bands. However, the total phase (i.e., sum over filled bands) is
 invariant and unaffected by this arbitrariness as long as the filled and empty bands do not intersect,
-see <span id="id2">[]</span>.</p>
+see <span id="id2">[<a class="reference internal" href="../../references.html#id7" title="Raffaele Resta. Manifestations of berry's phase in molecules and condensed matter. J. Phys. Condens. Matter, 12(9):R107–R143, February 2000. URL: https://doi.org/10.1088/0953-8984/12/9/201, doi:10.1088/0953-8984/12/9/201.">7</a>]</span>.</p>
 <p>For non-orthogonal basis sets it is not fully known how important the <span class="math notranslate nohighlight">\(\delta\mathbf k\)</span> spacing is since
 it relies on the Lowdin transformation of the states. However, one should be careful about choosing
 the correct bands for examination.</p>
 <p>The returned angles are _not_ placed in the interval <span class="math notranslate nohighlight">\(]-\pi;\pi]\)</span> as what <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.angle.html#numpy.angle" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.angle</span></code></a> would do.
 This is to allow users to examine the quantities as is.</p>
-<p>For more understanding of the Berry-phase and its calculation <span id="id3">[]</span> is a good reference.</p>
+<p>For more understanding of the Berry-phase and its calculation <span id="id3">[<a class="reference internal" href="../../references.html#id3" title="María Blanco de Paz, Chiara Devescovi, Geza Giedke, Juan José Saenz, Maia G. Vergniory, Barry Bradlyn, Dario Bercioux, and Aitzol García-Etxarri. Tutorial: Computing topological invariants in 2D photonic crystals. Adv. Quantum Technol., 3(2):1900117, December 2019. URL: https://doi.org/10.1002/qute.201900117, doi:10.1002/qute.201900117.">2</a>]</span> is a good reference.</p>
 <p class="rubric">Examples</p>
 <p>Calculate Berry-phase for first band but using the SVD method</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">N</span> <span class="o">=</span> <span class="mi">30</span>
