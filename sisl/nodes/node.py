@@ -162,6 +162,10 @@ class Node(NDArrayOperatorsMixin, metaclass=NodeMeta):
         extra_params = [
             inspect.Parameter("automatic_recalc", default=False, kind=inspect.Parameter.KEYWORD_ONLY)
         ]
+
+        # Remove the extra parameters that are already in the signature. This is useful if the node function
+        # wants to overwrite defaults for these parameters.
+        extra_params = [p for p in extra_params if p.name not in sig.parameters]
         cls._extra_params = tuple(p.name for p in extra_params)
 
         old_params = list(sig.parameters.values())
