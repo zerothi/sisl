@@ -67,7 +67,7 @@ jobs:
       - name: Build the documentation using the sisl-files as well
         run: |
           cd docs
-          SISL_FILES_TESTS=${GITHUB_WORKSPACE}/files/tests make html
+          SISL_NODES_EXPORT_VIS=t SISL_FILES_TESTS=${GITHUB_WORKSPACE}/files/tests make html
           rm -rf build/html/_sources
           touch build/html/.nojekyll
           cd ..
