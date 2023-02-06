@@ -10,28 +10,31 @@ dependencies:
   - setuptools>=46
   - setuptools_scm>=6.2
   - pyparsing>=1.5.7
-  - numpy
+  - numpy>=1.13
   - cython>=0.28
   - tqdm
-  - scipy
+  - scipy>=1.5.0
   - netcdf4
   - matplotlib-base
-  - xarray
+  - xarray>=0.10.0
   - pathos
-  - dill
+  - dill>=0.3.2
   - scikit-image
-  - plotly
+  - plotly>=5.12.0
   - sphinx
   - sphinx_rtd_theme
   - sphinx-gallery
+  - sphinxcontrib-bibtex
   - numpydoc
   - nbsphinx
   - jupyter_client
+  - ipywidgets
+  - jupyterlab-widgets
   - ipykernel
-#  - jinja2
-#  - tornado
-#  - nbformat
-#  - jupyter_client
+  - kaleido
+  # Visualizing nodes
+  - networkx
+  - pyvis
   - pip
   - pip:
     - -e ../
