@@ -3,17 +3,96 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from collections import deque
 from numbers import Integral
+import operator as op
 
 from sisl._internal import set_module
 
 
-__all__ = ["BaseMixer", "BaseHistoryMixer", "History"]
+__all__ = [
+    "BaseMixer", "CompositeMixer",
+    "BaseWeightMixer",
+    "BaseWeightHistoryMixer",
+    "History",
+]
 
 
 @set_module("sisl.mixing")
 class BaseMixer:
     r""" Base class mixer """
-    __slots__ = ("_weight")
+    __slots__ = ()
+
+    def __add__(self, other):
+        return CompositeMixer(op.add, self, other)
+
+    def __radd__(self, other):
+        return CompositeMixer(op.add, other, self)
+
+    def __sub__(self, other):
+        return CompositeMixer(op.sub, self, other)
+
+    def __rsub__(self, other):
+        return CompositeMixer(op.sub, other, self)
+
+    def __mul__(self, factor):
+        return CompositeMixer(op.mul, self, factor)
+
+    def __rmul__(self, factor):
+        return CompositeMixer(op.mul, self, factor)
+
+    def __truediv__(self, divisor):
+        return CompositeMixer(op.truediv, self, divisor)
+
+    def __rtruediv__(self, divisor):
+        return CompositeMixer(op.truediv, divisor, self)
+
+    def __neg__(self):
+        return CompositeMixer(op.mul, -1, self)
+
+    def __pow__(self, other):
+        return CompositeMixer(op.pow, self, other)
+
+    def __rpow__(self, other):
+        return CompositeMixer(op.pow, other, self)
+
+
+@set_module("sisl.mixing")
+class CompositeMixer(BaseMixer):
+    """ Placeholder for two metrics """
+
+    __slots__ = ("_op", "A", "B")
+
+    def __init__(self, op, A, B):
+        self._op = op
+        self.A = A
+        self.B = B
+
+    def __call__(self, *args, **kwargs):
+        if isinstance(self.A, BaseMixer):
+            A = self.A(*args, **kwargs)
+        else:
+            A = self.A
+        if isinstance(self.B, BaseMixer):
+            B = self.B(*args, **kwargs)
+        else:
+            B = self.B
+        return self._op(A, B)
+
+    def __str__(self):
+        if isinstance(self.A, BaseMixer):
+            A = "({})".format(repr(self.A).replace('\n', '\n '))
+        else:
+            A = f"{self.A}"
+        if isinstance(self.B, BaseMixer):
+            B = "({})".format(repr(self.B).replace('\n', '\n '))
+        else:
+            B = f"{self.B}"
+        return f"{self.__class__.__name__}{{{self._op.__name__}({A}, {B})}}"
+
+
+@set_module("sisl.mixing")
+class BaseWeightMixer(BaseMixer):
+    r""" Base class mixer """
+    __slots__ = ("_weight",)
 
     def __init__(self, weight=0.2):
         self.set_weight(weight)
@@ -36,9 +115,9 @@ class BaseMixer:
 
 
 @set_module("sisl.mixing")
-class BaseHistoryMixer(BaseMixer):
+class BaseWeightHistoryMixer(BaseWeightMixer):
     r""" Base class mixer with history """
-    __slots__ = ("_history")
+    __slots__ = ("_history",)
 
     def __init__(self, weight=0.2, history=0):
         super().__init__(weight)

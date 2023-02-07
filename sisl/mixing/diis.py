@@ -9,15 +9,15 @@ import numpy as np
 from sisl._internal import set_module
 import sisl._array as _a
 from sisl.linalg import solve_destroy
-from .base import BaseHistoryMixer, History
+from .base import BaseWeightHistoryMixer, History
 
 
-__all__ = ['DIISMixer', 'PulayMixer']
-__all__ += ['AdaptiveDIISMixer', 'AdaptivePulayMixer']
+__all__ = ["DIISMixer", "PulayMixer"]
+__all__ += ["AdaptiveDIISMixer", "AdaptivePulayMixer"]
 
 
 @set_module("sisl.mixing")
-class DIISMixer(BaseHistoryMixer):
+class DIISMixer(BaseWeightHistoryMixer):
     r""" Direct inversion of the iterative subspace (DIIS mixing)
 
     This mixing method (also known as Pulay mixing) estimates the next
@@ -70,6 +70,12 @@ class DIISMixer(BaseHistoryMixer):
         r""" String representation """
         hist = str(self.history).replace("\n", "\n  ")
         return f"{self.__class__.__name__}{{weight: {self.weight:.4f},\n  {hist}\n}}"
+
+    def __repr__(self):
+        r""" String representation """
+        hist = len(self.history)
+        max_hist = self.history.max_elements
+        return f"{self.__class__.__name__}{{weight: {self.weight:.4f}, history={hist}|{max_hist}}}"
 
     def solve_lagrange(self):
         r""" Calculate the coefficients according to Pulay's method, return everything + Lagrange multiplier """

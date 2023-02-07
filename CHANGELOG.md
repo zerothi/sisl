@@ -11,6 +11,8 @@ we hit release version 1.0.0.
 - `Atoms.formula` to get a chemical formula, currently only Hill notation
 - unified the index reading of Grids, `read_grid`, this influences
   Siesta and VASP grid reads.
+- `AndersonMixer` enables the popular and very simple linear-like mixer
+- Enabled composite mixers (simple math with mixers)
 
 ### Changed
 - `SelfEnergy.scattering_matrix` is changed to `SelfEnergy.broadening_matrix`
