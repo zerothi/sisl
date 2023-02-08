@@ -173,6 +173,72 @@ class TestBrillouinZone:
         assert not np.allclose(bz.k, bz_loop.k)
         assert np.allclose(bz_loop.k[0, :], bz_loop.k[-1, :])
 
+    def test_merge_simple(self):
+        normal = [0] * 3
+        origin = [1/2] * 3
+
+        bzs = [
+            BrillouinZone.param_circle(1, 10, 0.1, normal, origin),
+            BrillouinZone.param_circle(1, 10, 0.2, normal, origin),
+            BrillouinZone.param_circle(1, 10, 0.3, normal, origin),
+        ]
+        bz = BrillouinZone.merge(bzs)
+        assert len(bz) == 30
+        assert bz.weight.sum() == pytest.approx(
+            bzs[0].weight.sum() +
+            bzs[1].weight.sum() +
+            bzs[2].weight.sum()
+        )
+
+    def test_merge_scales(self):
+        normal = [0] * 3
+        origin = [1/2] * 3
+
+        bzs = [
+            BrillouinZone.param_circle(1, 10, 0.1, normal, origin),
+            BrillouinZone.param_circle(1, 10, 0.2, normal, origin),
+            BrillouinZone.param_circle(1, 10, 0.3, normal, origin),
+        ]
+        bz = BrillouinZone.merge(bzs, [1, 2, 3])
+        assert len(bz) == 30
+        assert bz.weight.sum() == pytest.approx(
+            bzs[0].weight.sum() +
+            bzs[1].weight.sum() * 2 +
+            bzs[2].weight.sum() * 3
+        )
+
+    def test_merge_scales_short(self):
+        normal = [0] * 3
+        origin = [1/2] * 3
+
+        bzs = [
+            BrillouinZone.param_circle(1, 10, 0.1, normal, [1/2] * 3),
+            BrillouinZone.param_circle(1, 10, 0.2, normal, [1/2] * 3),
+            BrillouinZone.param_circle(1, 10, 0.3, normal, [1/2] * 3),
+        ]
+        bz = BrillouinZone.merge(bzs, [1, 2])
+        assert len(bz) == 30
+        assert bz.weight.sum() == pytest.approx(
+            bzs[0].weight.sum() +
+            bzs[1].weight.sum() * 2 +
+            bzs[2].weight.sum() * 2
+        )
+
+    def test_merge_scales_scalar(self):
+        normal = [0] * 3
+        origin = [1/2] * 3
+
+        bzs = [
+            BrillouinZone.param_circle(1, 10, 0.1, normal, [1/2] * 3),
+            BrillouinZone.param_circle(1, 10, 0.3, normal, [1/2] * 3),
+        ]
+        bz = BrillouinZone.merge(bzs, 1)
+        assert len(bz) == 20
+        assert bz.weight.sum() == pytest.approx(
+            bzs[0].weight.sum() +
+            bzs[1].weight.sum()
+        )
+
 
 @pytest.mark.monkhorstpack
 class TestMonkhorstPack:

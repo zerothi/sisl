@@ -305,6 +305,15 @@ class BrillouinZone:
         except Exception:
             self.parent = SuperCell(parent)
 
+    def __str__(self):
+        """ String representation of the BrillouinZone """
+        parent = self.parent
+        if isinstance(parent, SuperCell):
+            parent = str(parent).replace("\n", "\n ")
+        else:
+            parent = str(parent.sc).replace("\n", "\n ")
+        return f"{self.__class__.__name__}{{nk: {len(self)},\n {parent}\n}}"
+
     def __getstate__(self):
         """ Return dictionary with the current state """
         return {
@@ -322,14 +331,49 @@ class BrillouinZone:
         parent.__setstate__(state['parent'])
         self.set_parent(parent)
 
-    def __str__(self):
-        """ String representation of the BrillouinZone """
-        parent = self.parent
-        if isinstance(parent, SuperCell):
-            parent = str(parent).replace("\n", "\n ")
-        else:
-            parent = str(parent.sc).replace("\n", "\n ")
-        return f"{self.__class__.__name__}{{nk: {len(self)},\n {parent}\n}}"
+    @staticmethod
+    def merge(bzs, weight_scale=1., parent=None):
+        """ Merge several BrillouinZone objects into one
+
+        The merging strategy only stores the new list of k-points and weights.
+        Information retained in the merged objects will not be stored.
+
+        Parameters
+        ----------
+        bzs : list-like of BrillouinZone objects
+           each element is a BrillouinZone object with ``bzs[i].k`` and ``bzs[i].weight``
+           fields.
+        weight_scale : list-like or float
+           these are matched item-wise with `bzs` and applied to.
+           Internally ``itertools.zip_longest(fillvalue=weight_scale[-1])`` will be
+           used to extend for all `bzs`.
+        parent : object, optional
+           Associated parent in the returned object, will default to ``bzs[0].parent``
+
+        Returns
+        -------
+        BrillouinZone:
+            even if all objects are not BrillouinZone objects the returned object
+            will be.
+        """
+        if isinstance(weight_scale, Real):
+            weight_scale = [weight_scale]
+
+        # check for lengths (scales cannot be longer!)
+        if len(bzs) < len(weight_scale):
+            raise ValueError("BrillouinZone.merge requires length of weight_scale to be smaller or equal to "
+                             "the objects.")
+
+        if parent is None:
+            parent = bzs[0].parent
+
+        k = []
+        w = []
+        for bz, scale in itertools.zip_longest(bzs, weight_scale, fillvalue=weight_scale[-1]):
+            k.append(bz.k)
+            w.append(bz.weight * scale)
+
+        return BrillouinZone(parent, np.concatenate(k), np.concatenate(w))
 
     def volume(self, ret_dim=False, periodic=None):
         """ Calculate the volume of the full Brillouin zone of the parent
@@ -482,9 +526,9 @@ class BrillouinZone:
         else:
             # Calculate the required number of points
             N = int(kR ** 2 * pi / N_or_dk + 0.5)
-            if N < 4:
-                N = 4
-                info('BrillouinZone.param_circle increased the number of circle points to 4.')
+            if N < 2:
+                N = 2
+                info('BrillouinZone.param_circle increased the number of circle points to 2.')
 
         # Conversion object
         bz = BrillouinZone(parent)

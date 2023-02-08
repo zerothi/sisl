@@ -13,6 +13,7 @@ we hit release version 1.0.0.
   Siesta and VASP grid reads.
 - `AndersonMixer` enables the popular and very simple linear-like mixer
 - Enabled composite mixers (simple math with mixers)
+- `BrillouinZone.merge` allows simple merging of several objects, #537
 
 ### Changed
 - `SelfEnergy.scattering_matrix` is changed to `SelfEnergy.broadening_matrix`
