@@ -54,6 +54,16 @@ class TestBrillouinZone:
         assert len(bz) == 2
         assert len(bz.copy()) == 2
 
+    def test_weight_automatic(self, setup):
+        bz = BrillouinZone(1.)
+        assert bz.weight[0] == 1.
+
+        bz = BrillouinZone(setup.s1, np.random.rand(3, 3))
+        assert bz.weight.sum() == pytest.approx(1)
+
+        bz = BrillouinZone(setup.s1, np.random.rand(3, 3), 0.5)
+        assert bz.weight.sum() == pytest.approx(1.5)
+
     def test_volume_self(self):
         bz = BrillouinZone(1.)
         assert bz.volume(True)[1] == 0

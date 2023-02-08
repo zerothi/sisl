@@ -264,8 +264,8 @@ class BrillouinZone:
        an array of floats which may be turned into a `SuperCell`
     k : array_like, optional
        k-points that this Brillouin zone represents
-    weight : array_like, optional
-       weights for the k-points. Must have the same length as `k`.
+    weight : scalar or array_like, optional
+       weights for the k-points.
     """
 
     def __init__(self, parent, k=None, weight=None):
@@ -279,13 +279,10 @@ class BrillouinZone:
             self._w = _a.onesd(1)
         else:
             self._k = _a.arrayd(k).reshape(-1, 3)
+            self._w = _a.emptyd(len(k))
             if weight is None:
-                n = self._k.shape[0]
-                self._w = _a.fulld(n, 1. / n)
-            else:
-                self._w = _a.arrayd(weight).ravel()
-        if len(self.k) != len(self.weight):
-            raise ValueError(f'{self.__class__.__name__}.__init__ requires input k-points and weights to be of equal length.')
+                weight = 1. / len(self._k)
+            self._w[:] = weight
 
     apply = BrillouinZoneDispatcher("apply",
                                     # Do not allow class dispatching

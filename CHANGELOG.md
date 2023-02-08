@@ -18,6 +18,7 @@ we hit release version 1.0.0.
 - `SelfEnergy.scattering_matrix` is changed to `SelfEnergy.broadening_matrix`
   ince the scattering matrix is an S-matrix usage.
   Also changed `se2scat` to `se2broadening` #529
+- allow `BrillouinZone` initialization with scalar weights for all k-points #537
 
 ### Fixed
 - Documentation now uses global references
