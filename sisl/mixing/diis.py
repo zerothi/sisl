@@ -1,6 +1,7 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from typing import Union, Type, Any, Optional, Tuple
 from functools import reduce
 from operator import add
 from numbers import Real
@@ -9,7 +10,7 @@ import numpy as np
 from sisl._internal import set_module
 import sisl._array as _a
 from sisl.linalg import solve_destroy
-from .base import BaseHistoryWeightMixer
+from .base import BaseHistoryWeightMixer, TypeWeight, TypeArgHistory, TypeMetric
 
 
 __all__ = ["DIISMixer", "PulayMixer"]
@@ -58,7 +59,8 @@ class DIISMixer(BaseHistoryWeightMixer):
     """
     __slots__ = ("_metric",)
 
-    def __init__(self, weight=0.1, history=2, metric=None):
+    def __init__(self, weight: TypeWeight = 0.1, history: TypeArgHistory = 2,
+                 metric: Optional[TypeMetric] = None):
         # This will call self.set_history(history)
         super().__init__(weight, history)
         if metric is None:
@@ -66,7 +68,7 @@ class DIISMixer(BaseHistoryWeightMixer):
                 return a.ravel().conj().dot(b.ravel()).real
         self._metric = metric
 
-    def solve_lagrange(self):
+    def solve_lagrange(self) -> Any:
         r""" Calculate the coefficients according to Pulay's method, return everything + Lagrange multiplier """
         hist = self.history
         n_h = len(hist)
@@ -114,12 +116,12 @@ class DIISMixer(BaseHistoryWeightMixer):
             # We have a LinalgError
             return _a.arrayd([1.]), last_metric
 
-    def coefficients(self):
+    def coefficients(self) -> Any:
         r""" Calculate coefficients of the Lagrangian """
         c, lagrange = self.solve_lagrange()
         return c
 
-    def mix(self, coefficients):
+    def mix(self, coefficients: Any) -> Any:
         r""" Calculate a new variable :math:`f'` using history and input coefficients
 
         Parameters
@@ -131,7 +133,9 @@ class DIISMixer(BaseHistoryWeightMixer):
             return coef * (hist[0] + self.weight * hist[1])
         return reduce(add, map(frac_hist, coefficients, self.history))
 
-    def __call__(self, f, df, delta=None, append=True):
+    def __call__(self, f: Any, df: Any,
+                 delta: Optional[Any] = None,
+                 append: bool = True) -> Any:
         # Add to history
         super().__call__(f, df, delta, append=append)
 
@@ -158,14 +162,18 @@ class AdaptiveDIISMixer(DIISMixer):
     """
     __slots__ = ("_weight_min", "_weight_delta")
 
-    def __init__(self, weight=(0.03, 0.5), history=2, metric=None):
+    def __init__(self, weight: Tuple[TypeWeight, TypeWeight] = (0.03, 0.5),
+                 history: TypeArgHistory = 2,
+                 metric: Optional[TypeMetric] = None):
         if isinstance(weight, Real):
             weight = (max(0.001, weight * 0.1), min(1., weight * 2))
         super().__init__(weight[0], history, metric)
         self._weight_min = weight[0]
         self._weight_delta = weight[1] - weight[0]
 
-    def adjust_weight(self, lagrange, offset=13, spread=7):
+    def adjust_weight(self, lagrange: Any,
+                      offset: Union[float, int] = 13,
+                      spread: Union[float, int] = 7):
         r""" Adjust the weight according to the Lagrange multiplier.
 
         Once close to convergence the Lagrange multiplier will be close to 0, otherwise it will go
@@ -176,7 +184,7 @@ class AdaptiveDIISMixer(DIISMixer):
         exp_lag_log = np.exp((np.log(lagrange) + offset) / spread)
         self._weight = self._weight_min + self._weight_delta / (exp_lag_log + 1)
 
-    def coefficients(self):
+    def coefficients(self) -> Any:
         r""" Calculate coefficients and adjust weights according to a Lagrange multiplier """
         c, lagrange = self.solve_lagrange()
         self.adjust_weight(lagrange)
