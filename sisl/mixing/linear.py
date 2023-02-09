@@ -26,12 +26,6 @@ class LinearMixer(BaseHistoryWeightMixer):
     """
     __slots__ = ()
 
-    def __str__(self):
-        r""" String representation """
-        return f"{self.__class__.__name__}{{weight: {self.weight:.4f}}}"
-
-    __repr__ = __str__
-
     def __call__(self, f, df, append=True):
         r""" Calculate a new variable :math:`f'` using input and output of the functional
 
@@ -81,12 +75,6 @@ class AndersonMixer(BaseHistoryWeightMixer):
     """
 
     __slots__ = ()
-
-    def __str__(self):
-        r""" String representation """
-        return f"{self.__class__.__name__}{{weight: {self.weight:.4f}}}"
-
-    __repr__ = __str__
 
     @staticmethod
     def _beta(df1, df2):

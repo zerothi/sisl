@@ -130,6 +130,18 @@ class BaseHistoryWeightMixer(BaseWeightMixer):
         super().__init__(weight)
         self.set_history(history)
 
+    def __str__(self):
+        r""" String representation """
+        hist = str(self.history).replace("\n", "\n  ")
+        return f"{self.__class__.__name__}{{weight: {self.weight:.4f},\n  {hist}\n}}"
+
+    def __repr__(self):
+        r""" String representation """
+        hist = len(self.history)
+        max_hist = self.history.max_elements
+        return f"{self.__class__.__name__}{{weight: {self.weight:.4f}, history={hist}|{max_hist}}}"
+
+
     def __call__(self, *args, append=True):
         """ Append data to thMix quantities based on arguments """
         if not append:

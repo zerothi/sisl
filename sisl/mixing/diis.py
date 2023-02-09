@@ -66,17 +66,6 @@ class DIISMixer(BaseHistoryWeightMixer):
                 return a.ravel().conj().dot(b.ravel()).real
         self._metric = metric
 
-    def __str__(self):
-        r""" String representation """
-        hist = str(self.history).replace("\n", "\n  ")
-        return f"{self.__class__.__name__}{{weight: {self.weight:.4f},\n  {hist}\n}}"
-
-    def __repr__(self):
-        r""" String representation """
-        hist = len(self.history)
-        max_hist = self.history.max_elements
-        return f"{self.__class__.__name__}{{weight: {self.weight:.4f}, history={hist}|{max_hist}}}"
-
     def solve_lagrange(self):
         r""" Calculate the coefficients according to Pulay's method, return everything + Lagrange multiplier """
         hist = self.history
