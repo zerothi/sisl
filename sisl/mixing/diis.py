@@ -9,7 +9,7 @@ import numpy as np
 from sisl._internal import set_module
 import sisl._array as _a
 from sisl.linalg import solve_destroy
-from .base import BaseWeightHistoryMixer, History
+from .base import BaseHistoryWeightMixer
 
 
 __all__ = ["DIISMixer", "PulayMixer"]
@@ -17,7 +17,7 @@ __all__ += ["AdaptiveDIISMixer", "AdaptivePulayMixer"]
 
 
 @set_module("sisl.mixing")
-class DIISMixer(BaseWeightHistoryMixer):
+class DIISMixer(BaseHistoryWeightMixer):
     r""" Direct inversion of the iterative subspace (DIIS mixing)
 
     This mixing method (also known as Pulay mixing) estimates the next
@@ -144,11 +144,7 @@ class DIISMixer(BaseWeightHistoryMixer):
 
     def __call__(self, f, df, delta=None, append=True):
         # Add to history
-        if append:
-            if delta is None:
-                self.history.append(f, df)
-            else:
-                self.history.append(f, df, delta)
+        super().__call__(f, df, delta, append=append)
 
         # Calculate new mixing quantity
         return self.mix(self.coefficients())

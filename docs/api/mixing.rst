@@ -22,7 +22,10 @@ The basic classes that are used internally are
 
    History
    BaseMixer
+   BaseWeightMixer
    BaseHistoryMixer
+   BaseWeightHistoryMixer
+   StepMixer
 
 
 Mixing algorithms
@@ -32,6 +35,7 @@ Mixing algorithms
    :toctree: generated/
 
    LinearMixer
+   AndersonMixer
    DIISMixer
    PulayMixer
    AdaptiveDIISMixer

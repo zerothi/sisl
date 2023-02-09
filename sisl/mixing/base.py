@@ -4,14 +4,17 @@
 from collections import deque
 from numbers import Integral
 import operator as op
+from abc import abstractmethod
 
 from sisl._internal import set_module
 
 
 __all__ = [
-    "BaseMixer", "CompositeMixer",
+    "BaseMixer",
+    "CompositeMixer",
     "BaseWeightMixer",
-    "BaseWeightHistoryMixer",
+    "BaseHistoryWeightMixer",
+    "StepMixer",
     "History",
 ]
 
@@ -20,6 +23,10 @@ __all__ = [
 class BaseMixer:
     r""" Base class mixer """
     __slots__ = ()
+
+    @abstractmethod
+    def __call__(self, *args, **kwargs):
+        """ Mix quantities based on arguments """
 
     def __add__(self, other):
         return CompositeMixer(op.add, self, other)
@@ -115,13 +122,25 @@ class BaseWeightMixer(BaseMixer):
 
 
 @set_module("sisl.mixing")
-class BaseWeightHistoryMixer(BaseWeightMixer):
+class BaseHistoryWeightMixer(BaseWeightMixer):
     r""" Base class mixer with history """
     __slots__ = ("_history",)
 
     def __init__(self, weight=0.2, history=0):
         super().__init__(weight)
         self.set_history(history)
+
+    def __call__(self, *args, append=True):
+        """ Append data to thMix quantities based on arguments """
+        if not append:
+            # do nothing
+            return
+
+        # remove none from the args
+        args = list(filter(lambda arg: arg is not None, args))
+
+        # append *args
+        self.history.append(*args)
 
     @property
     def history(self):
@@ -140,6 +159,116 @@ class BaseWeightHistoryMixer(BaseWeightMixer):
         if isinstance(history, Integral):
             history = History(history)
         self._history = history
+
+
+@set_module("sisl.mixing")
+class StepMixer(BaseMixer):
+    """ Step between different mixers in a user-defined fashion
+
+    This is handy for creating variable mixing schemes that alternates (or differently)
+    between multiple mixers.
+
+
+    Examples
+    --------
+
+    Alternate between two mixers:
+
+    >>> mixer = StepMixer(
+    ...        StepMixer.yield_repeat(mix1, 1),
+    ...        StepMixer.yield_repeat(mix2, 1))
+
+    One may also create custom based generators
+    which can interact with the mixers in between
+    different mixers:
+
+    >>> def gen():
+    ...     yield mix1
+    ...     mix1.history.clear()
+    ...     yield mix1
+    ...     yield mix1
+    ...     yield mix2
+
+    A restart mixer for history mixers:
+
+    >>> def gen():
+    ...     for _ in range(50):
+    ...         yield mix
+    ...     mix.history.clear()
+    """
+
+    __slots__ = ("_yield_func", "_yield_mixer", "_mixer")
+
+    def __init__(self, *yield_funcs):
+        self._yield_func = self.yield_chain(*yield_funcs)
+
+        self._yield_mixer = self._yield_func()
+
+        # We force a mixer to be in the queue.
+        # This is necessary so that attributes may be accessed
+        self._mixer = next(self._yield_mixer)
+
+    def next(self):
+        """ Return the current mixer, and step the internal mixer """
+        mixer = self._mixer
+        try:
+            self._mixer = next(self._yield_mixer)
+        except StopIteration:
+            self._yield_mixer = self._yield_func()
+            self._mixer = next(self._yield_mixer)
+        return mixer
+
+    @property
+    def mixer(self):
+        """ Return the current mixer """
+        return self._mixer
+
+    def __call__(self, *args, **kwargs):
+        """ Apply the mixing routine """
+        return self.next()(*args, **kwargs)
+
+    def __getattr__(self, attr):
+        """ Divert all unknown attributes to the current mixer
+
+        Note that available attributes may be different for different
+        mixers.
+        """
+        return getattr(self.mixer, attr)
+
+    @classmethod
+    def yield_repeat(cls, mixer, n):
+        """ Returns a function which repeats `mixer` `n` times """
+        if n == 1:
+            def yield_repeat():
+                f""" Yield the mixer {mixer} 1 time """
+                yield mixer
+        else:
+            def yield_repeat():
+                f""" Yield the mixer {mixer} {n} times """
+                for _ in range(n):
+                    yield mixer
+        return yield_repeat
+
+    @classmethod
+    def yield_chain(cls, *yield_funcs):
+        """ Returns a function which yields from each of the function arguments in turn
+
+        Basically equivalent to a function which does this:
+
+        >>> for yield_func in yield_funcs:
+        ...     yield from yield_func()
+
+        Parameters
+        *yield_funcs : list of callable
+           every function will be ``yield from``
+        """
+        if len(yield_funcs) == 1:
+            return yield_funcs[0]
+        def yield_chain():
+            f""" Yield from the different yield generators """
+            for yield_func in yield_funcs:
+                yield from yield_func()
+        return yield_chain
 
 
 @set_module("sisl.mixing")

@@ -2,14 +2,14 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from sisl._internal import set_module
-from .base import BaseWeightMixer
+from .base import BaseHistoryWeightMixer
 
 
 __all__ = ["LinearMixer", "AndersonMixer"]
 
 
 @set_module("sisl.mixing")
-class LinearMixer(BaseWeightMixer):
+class LinearMixer(BaseHistoryWeightMixer):
     r""" Linear mixing
 
     The linear mixing is solely defined using a weight, and the resulting functional
@@ -32,7 +32,7 @@ class LinearMixer(BaseWeightMixer):
 
     __repr__ = __str__
 
-    def __call__(self, f, df):
+    def __call__(self, f, df, append=True):
         r""" Calculate a new variable :math:`f'` using input and output of the functional
 
         Parameters
@@ -41,11 +41,14 @@ class LinearMixer(BaseWeightMixer):
            input variable for the functional
         df : object
            derivative of the functional
+        append : bool, optional
+           whether to append to the history
         """
+        super().__call__(f, df, append=append)
         return f + self.weight * df
 
 
-class AndersonMixer(BaseWeightMixer):
+class AndersonMixer(BaseHistoryWeightMixer):
     r""" Anderson mixing
 
     The Anderson mixing assumes that the mixed input/output are linearly
@@ -77,11 +80,7 @@ class AndersonMixer(BaseWeightMixer):
     See :cite:`Johnson1988` for more details.
     """
 
-    __slots__ = ("_last",)
-
-    def __init__(self, weight=0.2):
-        super().__init__(weight)
-        self._last = None
+    __slots__ = ()
 
     def __str__(self):
         r""" String representation """
@@ -100,7 +99,7 @@ class AndersonMixer(BaseWeightMixer):
 
         return beta
 
-    def __call__(self, f, df, delta=None):
+    def __call__(self, f, df, delta=None, append=True):
         r""" Calculate a new variable :math:`f'` using input and output of the functional
 
         Parameters
@@ -114,23 +113,35 @@ class AndersonMixer(BaseWeightMixer):
             # not a copy, simply the same reference
             delta = df
 
+        # Get last elements
+        if len(self.history) > 0:
+            last = self.history[-1]
+            f1 = last[0]
+            fdf1 = last[1]
+            d1 = last[-1]
+        else:
+            f1 = None
+
+        # the current iterations input + output variables
+        f2 = f
+        fdf2 = f + df
+        d2 = delta
+
         # store new last variables
         #   delta is used for calculating beta, nothing more
         # here n refers to the variable (density) we are mixing
         #  and the integer corresponds to the iteration count
-        n1 = self._last
-        n2 = (f, f + df, delta)
+        super().__call__(f2, fdf2, d2, append=append)
 
-        self._last = n2
-
-        if n1 is None:
+        if f1 is None:
+            # this is linear mixing for the first step
             return f + self.weight * df
 
         # calculate next position
-        beta = self._beta(n1[2], n2[2])
+        beta = self._beta(d1, d2)
 
         # Now calculate the new averages
-        nin = (1 - beta) * n2[0] + beta * n1[0]
-        nout = (1 - beta) * n2[1] + beta * n1[1]
+        nin = (1 - beta) * f2 + beta * f1
+        nout = (1 - beta) * fdf2 + beta * fdf1
 
         return (1 - self.weight) * nin + self.weight * nout

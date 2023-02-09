@@ -9,10 +9,13 @@ we hit release version 1.0.0.
 
 ### Added
 - `Atoms.formula` to get a chemical formula, currently only Hill notation
-- unified the index reading of Grids, `read_grid`, this influences
+- unified the index argument for reading Grids, `read_grid`, this influences
   Siesta and VASP grid reads.
-- `AndersonMixer` enables the popular and very simple linear-like mixer
-- Enabled composite mixers (simple math with mixers)
+- `sisl.mixing`:
+  - `AndersonMixer` enables the popular and very simple linear-like mixer
+  - `StepMixer` allows switching between different mixers, for instance this
+		enabled restart capabilities among other things.
+  - Enabled composite mixers (simple math with mixers)
 - `BrillouinZone.merge` allows simple merging of several objects, #537
 
 ### Changed
