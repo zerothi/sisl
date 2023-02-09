@@ -10,9 +10,6 @@ export SISL_NUM_PROCS=1
 # notebooks are to be exported to html
 export SISL_NODES_EXPORT_VIS=1
 
-# First make clean
-make clean
-
 # Now ensure everything is ready...
 make html
 retval=$?

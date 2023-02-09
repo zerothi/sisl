@@ -21,7 +21,7 @@ register_environ_variable(
 )
 
 class WorkflowInput(DummyInputValue):
-    ...
+    pass
 
 class WorkflowOutput(Node):
     
@@ -181,6 +181,7 @@ class Network:
         try:
             import networkx as nx
             import matplotlib as mpl
+            import matplotlib.pyplot as plt
             from pyvis.network import Network as visNetwork
         except ModuleNotFoundError:
             raise ModuleNotFoundError("You need to install the 'networkx', 'pyvis' and 'matplotlib' packages to visualize workflows.")
@@ -248,7 +249,9 @@ class Network:
             return node_inputs_str
 
         # Get the requested colorscale from matplotlib
-        cmap = mpl.colormaps[colorscale]
+        # in matplotlib > 3.5 mpl.colormaps[colorscale]
+        # This is portable
+        cmap = plt.get_cmap(colorscale)
         def rgb2gray(rgb):
             return rgb[0] * 0.2989 + rgb[1] * 0.5870 + rgb[2] * 0.1140
         # Loop through generations of nodes.

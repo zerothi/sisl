@@ -977,6 +977,14 @@ class DeviceGreen:
            the energy to calculate at, may be a complex value.
         k : array_like, optional
            k-point to calculate the Green function at
+        format : {"array", "btd", "bm", "bd", "sparse"}
+           return the matrix in a specific format
+
+           - array: a regular numpy array (full matrix)
+           - btd: a block-matrix object with only the diagonals and first off-diagonals
+           - bm: a block-matrix object with diagonals and all off-diagonals
+           - bd: a block-matrix object with only diagonals (no off-diagonals)
+           - sparse: a sparse-csr matrix for the sparse elements as found in the Hamiltonian
         """
         self._prepare(E, k)
         format = format.lower()
@@ -1318,6 +1326,13 @@ class DeviceGreen:
            the energy to calculate at, may be a complex value.
         k : array_like, optional
            k-point to calculate the spectral function at
+        format : {"array", "btd", "bm", "bd"}
+           return the matrix in a specific format
+
+           - array: a regular numpy array (full matrix)
+           - btd: a block-matrix object with only the diagonals and first off-diagonals
+           - bm: a block-matrix object with diagonals and all off-diagonals
+           - bd: same as btd, since they are already calculated
         method : {"column", "propagate"}
            which method to use for calculating the spectral function.
            Depending on the size of the BTD blocks one may be faster than the
@@ -1677,9 +1692,9 @@ class DeviceGreen:
         The scattering states are the eigen states of the spectral function:
 
         .. math::
-            \mathbf A_{\mathfrak{e}}(E,\mathbf k) \mathbf u = 2\pi\mathbf a \mathbf u
+            \mathbf A_{\mathfrak e}(E,\mathbf k) \mathbf u_i = 2\pi a_i \mathbf u_i
 
-        where :math:`\mathbf a_i` is the DOS carried by the :math:`i`'th scattering
+        where :math:`a_i` is the DOS carried by the :math:`i`'th scattering
         state.
 
         Parameters
@@ -1873,32 +1888,32 @@ class DeviceGreen:
         The scattering matrix is calculated as
 
         .. math::
-            \mathbf S_{\mathfrak{e_{\mathrm{to}}\mathfrak{e_{\mathrm{from}} }(E, \mathbf) &= -\delta_{\alpha\beta} + i
-               \tilde\boldsymbol\Gamma_{\mathfrak{e_{\mathrm{to}}}}
+               \mathbf S_{\mathfrak e_{\mathrm{to}}\mathfrak e_{\mathrm{from}} }(E, \mathbf) = -\delta_{\alpha\beta} + i
+               \tilde{\boldsymbol\Gamma}_{\mathfrak e_{\mathrm{to}}}
                \mathbf G
-               \tilde\boldsymbol\Gamma_{\mathfrak{e_{\mathrm{from}}}}
+               \tilde{\boldsymbol\Gamma}_{\mathfrak e_{\mathrm{from}}}
 
-        Here the :math:`\tilde\boldsymbol\Gamma` is defined as:
+        Here the :math:`\tilde{\boldsymbol\Gamma}` is defined as:
 
         .. math::
             \boldsymbol\Gamma(E,\mathbf k) \mathbf U &= \lambda \mathbf U
             \\
-            \tilde\boldsymbol\Gamma(E,\mathbf k) &= \operatorname{diag}\{ \lambda \} \mathbf U
+            \tilde{\boldsymbol\Gamma}(E,\mathbf k) &= \operatorname{diag}\{ \lambda \} \mathbf U
 
         Once the scattering matrices have been calculated one can calculate the full transmission
         function
 
         .. math::
-            T_{\mathfrak{e_{\mathrm{from}}\mathfrak{e_{\mathrm{to}} }(E, \mathbf k) = \operatorname{Tr}\big[
-              \mathbf S_{\mathfrak{e_{\mathrm{to}}\mathfrak{e_{\mathrm{from}} }^\dagger
-              \mathbf S_{\mathfrak{e_{\mathrm{to}}\mathfrak{e_{\mathrm{from}} }\big]
+              T_{\mathfrak e_{\mathrm{from}}\mathfrak e_{\mathrm{to}} }(E, \mathbf k) = \operatorname{Tr}\big[
+              \mathbf S_{\mathfrak e_{\mathrm{to}}\mathfrak e_{\mathrm{from}} }^\dagger
+              \mathbf S_{\mathfrak e_{\mathrm{to}}\mathfrak e_{\mathrm{from}} }\big]
 
 
         Parameters
         ----------
         elec_from : str or int
            the electrode where the scattering matrix originates from
-        elec_to : str or int (list or not)
+        elec_to : str or int or list of
            where the scattering matrix ends in.
         E : float
            the energy to calculate at, may be a complex value.
@@ -1912,7 +1927,7 @@ class DeviceGreen:
 
         Returns
         -------
-        scat_matrix : numpy.ndarray or tupel of numpy.ndarray
+        scat_matrix : numpy.ndarray or tuple of numpy.ndarray
            for each `elec_to` a scattering matrix will be returned. Its dimensions will be
            depending on the `cutoff` value at the cost of precision.
         """
@@ -1942,8 +1957,8 @@ class DeviceGreen:
             g = G[pvt, :]
             ret = dagger(tgam_to) @ g @ jtgam_from
             if elec_from == elec_to:
-                min_n = min(ret.shape)
-                np.add.at(ret, (np.arange(min_n), np.arange(min_n)), -1)
+                min_n = np.arange(min(ret.shape))
+                np.add.at(ret, (min_n, min_n), -1)
             return ret
 
         tgam_from = 1j * tG[elec_from]

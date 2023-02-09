@@ -68,9 +68,9 @@ class AndersonMixer(BaseHistoryWeightMixer):
 
     .. math::
 
-       |n_^{m+1}\rangle =
-          (1 - \alpha)|\bar n^{m}_{\mathrm{in}\rangle
-          + \alpha|\bar n^{m}_{\mathrm{out}\rangle
+          |n^{m+1}\rangle =
+          (1 - \alpha)|\bar n^m_{\mathrm{in}}\rangle
+          + \alpha|\bar n^m_{\mathrm{out}}\rangle
 
     See :cite:`Johnson1988` for more details.
     """

@@ -3,6 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 # To check for integers
 from __future__ import annotations
+from typing import List
 from numbers import Integral, Real
 from math import acos
 from itertools import product

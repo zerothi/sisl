@@ -23,8 +23,7 @@ The basic classes that are used internally are
    History
    BaseMixer
    BaseWeightMixer
-   BaseHistoryMixer
-   BaseWeightHistoryMixer
+   BaseHistoryWeightMixer
    StepMixer
 
 

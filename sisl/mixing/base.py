@@ -7,6 +7,8 @@ from numbers import Integral
 import operator as op
 from abc import abstractmethod
 
+from numpy.typing import ArrayLike
+
 from sisl._internal import set_module
 
 
@@ -175,7 +177,7 @@ class BaseHistoryWeightMixer(BaseWeightMixer):
 
         Parameters
         ----------
-        history : int or History
+        history :
            if an int a new History object will be created with that number of history elements
            Otherwise the object will be directly attached to the mixer.
         """
@@ -282,8 +284,9 @@ class StepMixer(BaseMixer):
         ...     yield from yield_func()
 
         Parameters
-        *yield_funcs : list of callable
-           every function will be ``yield from``
+        ----------
+        *yield_funcs :
+             every function will be ``yield from``
         """
         if len(yield_funcs) == 1:
             return yield_funcs[0]
@@ -342,22 +345,25 @@ class History:
     def __delitem__(self, key: str):
         self.clear(key)
 
-    def append(self, *args: Any):
+    def append(self, *variables: Any):
         r""" Add variables to the history
+
+        Internally, the list of variables will be added to the queue, it is up
+        to the implementation to use the appended values.
 
         Parameters
         ----------
-        *args : tuple of object
+        *variables :
             each variable will be added to the history of the mixer
         """
-        self._hist.append(args)
+        self._hist.append(variables)
 
-    def clear(self, index: Optional[int] = None):
+    def clear(self, index: Optional[Union[int, ArrayLike]] = None):
         r""" Clear variables to the history
 
         Parameters
         ----------
-        index : int or array_like of int
+        index :
             which indices of the history we should clear
         """
         if index is None:

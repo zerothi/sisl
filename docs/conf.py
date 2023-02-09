@@ -68,6 +68,7 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.todo',
     'sphinx.ext.viewcode',
+    'sphinx_autodoc_typehints',
     # plotting and advanced usage
     'matplotlib.sphinxext.plot_directive',
     'IPython.sphinxext.ipython_directive',
@@ -79,6 +80,7 @@ extensions = [
     'sphinxcontrib.bibtex',
 ]
 napoleon_numpy_docstring = True
+napoleon_use_param = True
 
 # There currently is a bug with mathjax >= 3, so we resort to 2.7.7
 mathjax_path = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"
@@ -296,7 +298,7 @@ latex_elements = {
 'pointsize': '10pt',
 
 # Additional stuff for the LaTeX preamble.
-#'preamble': '',
+'preamble': r"",
 
 # Latex figure (float) alignment
 'figure_align': '!htbp',

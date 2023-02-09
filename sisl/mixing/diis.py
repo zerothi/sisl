@@ -10,7 +10,7 @@ import numpy as np
 from sisl._internal import set_module
 import sisl._array as _a
 from sisl.linalg import solve_destroy
-from .base import BaseHistoryWeightMixer, TypeWeight, TypeArgHistory, TypeMetric
+from .base import BaseHistoryWeightMixer, History, TypeWeight, TypeArgHistory, TypeMetric
 
 
 __all__ = ["DIISMixer", "PulayMixer"]
