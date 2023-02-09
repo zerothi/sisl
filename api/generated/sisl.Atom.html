@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.Atom &mdash; sisl 0.1.dev1+gd93b38d documentation</title>
+  <title>sisl.Atom &mdash; sisl 0.1.dev1+gf943161 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -14,10 +14,8 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -34,14 +32,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> sisl
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            sisl
           </a>
               <div class="version">
-                0.1.dev1+gd93b38d
+                0.1.dev1+gf943161
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -119,7 +121,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">API documentation</a></li>
           <li class="breadcrumb-item"><a href="../basic.html">Basic classes</a></li>
       <li class="breadcrumb-item active">sisl.Atom</li>
@@ -175,7 +177,7 @@ such as</p>
 </ul>
 <p>The <a class="reference internal" href="#sisl.Atom" title="sisl.Atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Atom</span></code></a> object is <a class="reference external" href="https://docs.python.org/3/library/pickle.html#module-pickle" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pickle</span></code></a>-able.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>Z</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – key lookup for the atomic specie, <em class="xref py py-obj">Atom[key]</em></p></li>
 <li><p><strong>orbitals</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><a class="reference internal" href="sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital"><em>Orbital</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – all orbitals associated with this atom. Default to one orbital.</p></li>
@@ -187,10 +189,6 @@ different settings (defaults to the label of the atom)</p></li>
 </dl>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Atom.copy" title="sisl.Atom.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>([Z, orbitals, mass, tag])</p></td>
 <td><p>Return copy of this object</p></td>
@@ -264,7 +262,7 @@ different settings (defaults to the label of the atom)</p></li>
 <span class="sig-name descname"><span class="pre">equal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/atom.html#Atom.equal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Atom.equal" title="Permalink to this definition"></a></dt>
 <dd><p>True if <em class="xref py py-obj">other</em> is the same as this atomic specie</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>other</strong> (<a class="reference internal" href="#sisl.Atom" title="sisl.Atom"><em>Atom</em></a>) – the other object to check againts</p></li>
 <li><p><strong>R</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – if True the equality check also checks the orbital radii, else they are not compared</p></li>
@@ -285,15 +283,15 @@ different settings (defaults to the label of the atom)</p></li>
 <span class="sig-name descname"><span class="pre">iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/atom.html#Atom.iter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Atom.iter" title="Permalink to this definition"></a></dt>
 <dd><p>Loop on all orbitals in this atom</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>group</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – if two orbitals share the same radius
 one may be able to group two orbitals together</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>current orbital, if <em class="xref py py-obj">group</em> is <code class="docutils literal notranslate"><span class="pre">True</span></code> this is a list of orbitals,
 otherwise a single orbital is returned</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital">Orbital</a></p>
 </dd>
 </dl>
@@ -335,13 +333,13 @@ otherwise a single orbital is returned</p>
 <span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orbitals</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/atom.html#Atom.remove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Atom.remove" title="Permalink to this definition"></a></dt>
 <dd><p>Return the same atom without a specific set of orbitals</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>orbitals</strong> (<em>array_like</em>) – indices of the orbitals to remove</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>without the specified orbitals</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#sisl.Atom" title="sisl.Atom">Atom</a></p>
 </dd>
 </dl>
@@ -359,7 +357,7 @@ otherwise a single orbital is returned</p>
 <span class="sig-name descname"><span class="pre">scale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scale</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/atom.html#Atom.scale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Atom.scale" title="Permalink to this definition"></a></dt>
 <dd><p>Scale the atomic radii and return an equivalent atom.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – the scale factor for the atomic radii</p>
 </dd>
 </dl>
@@ -370,16 +368,16 @@ otherwise a single orbital is returned</p>
 <span class="sig-name descname"><span class="pre">sub</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orbitals</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/atom.html#Atom.sub"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Atom.sub" title="Permalink to this definition"></a></dt>
 <dd><p>Return the same atom with only a subset of the orbitals present</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>orbitals</strong> (<em>array_like</em>) – indices of the orbitals to retain</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>with only the subset of orbitals</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#sisl.Atom" title="sisl.Atom">Atom</a></p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – if the number of orbitals removed is too large or some indices are outside the allowed range</p>
 </dd>
 </dl>
@@ -402,10 +400,10 @@ otherwise a single orbital is returned</p>
 <span class="sig-name descname"><span class="pre">toSphere</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/atom.html#Atom.toSphere"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Atom.toSphere" title="Permalink to this definition"></a></dt>
 <dd><p>Return a sphere with the maximum orbital radius equal</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>a sphere with radius equal to the maximum radius of the orbitals</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="sisl.shape.Sphere.html#sisl.shape.Sphere" title="sisl.shape.Sphere"><em>Sphere</em></a></p>
 </dd>
 </dl>

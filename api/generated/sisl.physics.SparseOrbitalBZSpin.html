@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.SparseOrbitalBZSpin &mdash; sisl 0.1.dev1+gd93b38d documentation</title>
+  <title>sisl.physics.SparseOrbitalBZSpin &mdash; sisl 0.1.dev1+gf943161 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -14,10 +14,8 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -36,14 +34,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> sisl
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            sisl
           </a>
               <div class="version">
-                0.1.dev1+gd93b38d
+                0.1.dev1+gf943161
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -114,7 +116,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">API documentation</a></li>
           <li class="breadcrumb-item"><a href="../physics.html">Physical objects</a></li>
       <li class="breadcrumb-item active">sisl.physics.SparseOrbitalBZSpin</li>
@@ -168,7 +170,7 @@ standard <a class="reference external" href="https://numpy.org/doc/stable/refere
 <p>which assigns 0.1 as the element between orbital 2 and 3.
 (remember that Python is 0-based elements).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>geometry</strong> (<a class="reference internal" href="sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a>) – parent geometry to create a sparse matrix from. The matrix will
 have size equivalent to the number of orbitals in the geometry</p></li>
@@ -186,10 +188,6 @@ This is a keyword-only argument.</p></li>
 </dl>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.SparseOrbitalBZSpin.Rij" title="sisl.physics.SparseOrbitalBZSpin.Rij"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Rij</span></code></a>([what, dtype])</p></td>
 <td><p>Create a sparse matrix with the vectors between atoms/orbitals</p></td>
@@ -354,7 +352,7 @@ This is a keyword-only argument.</p></li>
 <span class="sig-name descname"><span class="pre">Rij</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">what='orbital'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=&lt;class</span> <span class="pre">'numpy.float64'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.SparseOrbitalBZSpin.Rij" title="Permalink to this definition"></a></dt>
 <dd><p>Create a sparse matrix with the vectors between atoms/orbitals</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>what</strong> (<em>{'orbital'</em><em>, </em><em>'atom'}</em>) – which kind of sparse vector matrix to return, either an atomic vector matrix
 or an orbital vector matrix. The orbital matrix is equivalent to the atomic
@@ -392,7 +390,7 @@ structure is completed.</p>
 \[\mathbf S(k) = \mathbf S_{\nu\mu} e^{i k r}\]</div>
 <p>where <span class="math notranslate nohighlight">\(r\)</span> is the distance between the orbitals.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>k</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the k-point to setup the overlap at (default Gamma point)</p></li>
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
@@ -419,10 +417,10 @@ hopping + phases are required.</p></li>
 </dl>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>matrix</strong> – the overlap matrix at <span class="math notranslate nohighlight">\(k\)</span>. The returned object depends on <em class="xref py py-obj">format</em>.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a> or scipy.sparse.*_matrix</p>
 </dd>
 </dl>
@@ -442,7 +440,7 @@ hopping + phases are required.</p></li>
 have commensurate overlapping regions. If you want to create couplings you have to use <a class="reference internal" href="#sisl.physics.SparseOrbitalBZSpin.append" title="sisl.physics.SparseOrbitalBZSpin.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code></a> but that
 requires the structures are commensurate in the coupling region.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>other</strong> (<em>SparseGeometry</em>) – the other sparse matrix to be added, all atoms will be appended</p></li>
 <li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>None</em><em>, </em><em>optional</em>) – whether a specific axis of the cell will be added to the final geometry.
@@ -506,7 +504,7 @@ following:</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>other</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><em>object</em></a>) – must be an object of the same type as <em class="xref py py-obj">self</em></p></li>
 <li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – axis to append the two sparse geometries along</p></li>
@@ -541,13 +539,13 @@ in <em class="xref py py-obj">other</em>.</p></li>
 </dl>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – if the two geometries are not compatible for either coordinate, orbital or supercell errors</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a new instance with two sparse matrices joined and appended together</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)">object</a></p>
 </dd>
 </dl>
@@ -570,7 +568,7 @@ In this second case all atoms must only have
 one orbital.</p></li>
 </ol>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>func</strong> (<em>callable</em><em> or </em><em>array_like</em>) – <p>this function <em>must</em> take 4 arguments.
 1. Is this object (<code class="docutils literal notranslate"><span class="pre">self</span></code>)
@@ -610,7 +608,7 @@ up the <em class="xref py py-obj">iter_block</em> loop.</p></li>
 <span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.SparseOrbitalBZSpin.copy" title="Permalink to this definition"></a></dt>
 <dd><p>A copy of this object</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – it is possible to convert the data to a different data-type
 If not specified, it will use <code class="docutils literal notranslate"><span class="pre">self.dtype</span></code></p>
 </dd>
@@ -641,7 +639,7 @@ you have to implement the function your-self.</p>
 for spin-orbit systems. Do note that it <em>still</em> creates the matrices
 based on the input.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>R</strong> (<em>array_like</em>) – radii parameters for different shells.
 Must have same length as <em class="xref py py-obj">param</em> or one less.
@@ -677,7 +675,7 @@ And <span class="math notranslate nohighlight">\(\alpha\)</span> is one of the C
 \[\nabla_k \mathbf S_\alpha(k) = i r_\alpha \mathbf S_{ij} e^{i k r}\]</div>
 <p>where <span class="math notranslate nohighlight">\(r\)</span> is the distance between the orbitals.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>k</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the k-point to setup the overlap at (default Gamma point)</p></li>
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
@@ -701,10 +699,10 @@ return in <a class="reference external" href="https://numpy.org/doc/stable/refer
 </dl>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>for each of the Cartesian directions a <span class="math notranslate nohighlight">\(\partial \mathbf S(k)/\partial k\)</span> is returned.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)">tuple</a></p>
 </dd>
 </dl>
@@ -726,7 +724,7 @@ And <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class
 \[\nabla_k^2 \mathbf S_{\alpha\beta}(k) = - r_\alpha r_\beta \mathbf S_{ij} e^{i k r}\]</div>
 <p>where <span class="math notranslate nohighlight">\(r\)</span> is the distance between the orbitals.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>k</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the k-point to setup the overlap at (default Gamma point)</p></li>
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
@@ -750,10 +748,10 @@ return in <a class="reference external" href="https://numpy.org/doc/stable/refer
 </dl>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>for each of the Cartesian directions (in Voigt representation); xx, yy, zz, zy, xz, xy</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a> of matrices</p>
 </dd>
 </dl>
@@ -784,7 +782,7 @@ return in <a class="reference external" href="https://numpy.org/doc/stable/refer
 <p>The returned edges are unique and sorted (see <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.unique.html#numpy.unique" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.unique</span></code></a>) and are returned
 in supercell indices (i.e. <code class="docutils literal notranslate"><span class="pre">0</span> <span class="pre">&lt;=</span> <span class="pre">edge</span> <span class="pre">&lt;</span> <span class="pre">self.geometry.no_s</span></code>).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the edges are returned only for the given atom (but by using  all orbitals of the
 requested atom). The returned edges are also atoms.</p></li>
@@ -810,7 +808,7 @@ requested atom). The returned edges are also atoms.</p></li>
 the given k-point and calculate the eigenvalues.</p>
 <p>All subsequent arguments gets passed directly to <code class="code docutils literal notranslate"><span class="pre">scipy.linalg.eig</span></code></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>spin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the spin-component to calculate the eigenvalue spectrum of, note that
 this parameter is only valid for <a class="reference internal" href="sisl.physics.Spin.html#sisl.physics.Spin.POLARIZED" title="sisl.physics.Spin.POLARIZED"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Spin.POLARIZED</span></code></a> matrices.</p>
 </dd>
@@ -825,7 +823,7 @@ this parameter is only valid for <a class="reference internal" href="sisl.physic
 the given k-point and calculate the eigenvalues.</p>
 <p>All subsequent arguments gets passed directly to <code class="code docutils literal notranslate"><span class="pre">scipy.linalg.eigh</span></code></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>spin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the spin-component to calculate the eigenvalue spectrum of, note that
 this parameter is only valid for <a class="reference internal" href="sisl.physics.Spin.html#sisl.physics.Spin.POLARIZED" title="sisl.physics.Spin.POLARIZED"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Spin.POLARIZED</span></code></a> matrices.</p>
 </dd>
@@ -840,7 +838,7 @@ this parameter is only valid for <a class="reference internal" href="sisl.physic
 the given k-point and calculate a subset of the eigenvalues using the sparse algorithms.</p>
 <p>All subsequent arguments gets passed directly to <code class="code docutils literal notranslate"><span class="pre">scipy.linalg.eigsh</span></code></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>spin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the spin-component to calculate the eigenvalue spectrum of, note that
 this parameter is only valid for <a class="reference internal" href="sisl.physics.Spin.html#sisl.physics.Spin.POLARIZED" title="sisl.physics.Spin.POLARIZED"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Spin.POLARIZED</span></code></a> matrices.</p>
 </dd>
@@ -888,7 +886,7 @@ internal data-representation.</p>
 <dd><p>Create a sparse model from a preset <em class="xref py py-obj">Geometry</em> and a list of sparse matrices</p>
 <p>The passed sparse matrices are in one of <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/sparse.html#module-scipy.sparse" title="(in SciPy v1.10.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse</span></code></a> formats.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>geometry</strong> (<a class="reference internal" href="sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a>) – geometry to describe the new sparse geometry</p></li>
 <li><p><strong>P</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><em>scipy.sparse</em><em> or </em><em>scipy.sparse</em>) – the new sparse matrices that are to be populated in the sparse
@@ -899,10 +897,10 @@ returned sparse matrix to be non-orthogonal</p></li>
 of the class.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a new sparse matrix that holds the passed geometry and the elements of <em class="xref py py-obj">P</em> and optionally being non-orthogonal if <a class="reference internal" href="#sisl.physics.SparseOrbitalBZSpin.S" title="sisl.physics.SparseOrbitalBZSpin.S"><code class="xref py py-obj docutils literal notranslate"><span class="pre">S</span></code></a> is not none</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>SparseGeometry</p>
 </dd>
 </dl>
@@ -925,7 +923,7 @@ of the class.</p></li>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>array_like</em>) – only loop on the non-zero elements coinciding with the orbitals
 on these atoms (not compatible with the <em class="xref py py-obj">orbitals</em> keyword)</p></li>
@@ -949,14 +947,14 @@ orbital index.</p>
 repeated according to the number of orbitals associated with
 the atom <em class="xref py py-obj">ia</em>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>array_like</em><em>, </em><em>optional</em>) – only loop on the given atoms, default to all atoms</p></li>
 <li><p><strong>local</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the orbital index is the global index, or the local index relative to
 the atom it resides on.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Yields</dt>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><em>ia</em> – atomic index</p></li>
 <li><p><em>io</em> – orbital index</p></li>
@@ -989,7 +987,7 @@ the atom it resides on.</p></li>
 <span class="sig-name descname"><span class="pre">nonzero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.SparseOrbitalBZSpin.nonzero" title="Permalink to this definition"></a></dt>
 <dd><p>Indices row and column indices where non-zero elements exists</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – only return the tuples for the requested atoms, default is all atoms
 But for <em>all</em> orbitals.</p></li>
@@ -1027,7 +1025,7 @@ But for <em>all</em> orbitals.</p></li>
 <span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.SparseOrbitalBZSpin.remove" title="Permalink to this definition"></a></dt>
 <dd><p>Remove a subset of this sparse matrix by only retaining the atoms corresponding to <em class="xref py py-obj">atoms</em></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>atoms</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a>) – indices of removed atoms or Atom for direct removal of all atoms</p>
 </dd>
 </dl>
@@ -1051,7 +1049,7 @@ But for <em>all</em> orbitals.</p></li>
 <p>For more detailed examples, please see the equivalent (but opposite) method
 <a class="reference internal" href="#sisl.physics.SparseOrbitalBZSpin.sub_orbital" title="sisl.physics.SparseOrbitalBZSpin.sub_orbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub_orbital</span></code></a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atoms</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a>) – indices of atoms or <em class="xref py py-obj">Atom</em> that will be reduced in size according to <em class="xref py py-obj">orbitals</em></p></li>
 <li><p><strong>orbitals</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference internal" href="sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital"><em>Orbital</em></a>) – indices of the orbitals on <em class="xref py py-obj">atoms</em> that are removed from the sparse matrix.</p></li>
@@ -1074,7 +1072,7 @@ But for <em>all</em> orbitals.</p></li>
 <p>The already existing sparse elements are extrapolated
 to the new supercell by repeating them in blocks like the coordinates.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – number of repetitions along cell-vector <em class="xref py py-obj">axis</em></p></li>
 <li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – 0, 1, 2 according to the cell-direction</p></li>
@@ -1151,7 +1149,7 @@ The below variable <code class="docutils literal notranslate"><span class="pre">
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atoms</strong> (<em>array_like</em>) – which atoms in <em class="xref py py-obj">self</em> that are removed and replaced with <code class="docutils literal notranslate"><span class="pre">other.sub(other_atoms)</span></code></p></li>
 <li><p><strong>other</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><em>object</em></a>) – must be an object of the same type as <em class="xref py py-obj">self</em>, a subset is taken from this
@@ -1189,19 +1187,19 @@ in <em class="xref py py-obj">other</em>.</p></li>
 </dl>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – if the two geometries are not compatible for either coordinate, orbital or supercell errors</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AssertionError" title="(in Python v3.11)"><strong>AssertionError</strong></a> – if the two geometries are not compatible for either coordinate, orbital or supercell errors</p></li>
 </ul>
 </dd>
-<dt class="field-even">Warns</dt>
+<dt class="field-even">Warns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>SislWarning</strong> – in case the overlapping atoms are not comprising the same atomic specie. In some cases this may not be a problem. However, care must be taken by the user if this warning is issued.</p>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>a new instance with two sparse matrices merged together by replacing some atoms</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)">object</a></p>
 </dd>
 </dl>
@@ -1215,7 +1213,7 @@ in <em class="xref py py-obj">other</em>.</p></li>
 initialized with the same geometry as it were
 created with.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – number of dimensions per element, default to the current number of
 elements per matrix element.</p></li>
@@ -1231,7 +1229,7 @@ elements per matrix element.</p></li>
 <span class="sig-name descname"><span class="pre">rij</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">what='orbital'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=&lt;class</span> <span class="pre">'numpy.float64'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.SparseOrbitalBZSpin.rij" title="Permalink to this definition"></a></dt>
 <dd><p>Create a sparse matrix with the distance between atoms/orbitals</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>what</strong> (<em>{'orbital'</em><em>, </em><em>'atom'}</em>) – which kind of sparse distance matrix to return, either an atomic distance matrix
 or an orbital distance matrix. The orbital matrix is equivalent to the atomic
@@ -1295,7 +1293,7 @@ that references the supercell will be deleted.</p>
 <dd><p>Create a subset of this sparse matrix by only retaining the atoms corresponding to <em class="xref py py-obj">atoms</em></p>
 <p>Negative indices are wrapped and thus works, supercell atoms are also wrapped to the unit-cell.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>atoms</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a>) – indices of retained atoms or <em class="xref py py-obj">Atom</em> for retaining only <em>that</em> atom</p>
 </dd>
 </dl>
@@ -1325,7 +1323,7 @@ that references the supercell will be deleted.</p>
 <dd><p>Retain only a subset of the orbitals on <em class="xref py py-obj">atoms</em> according to <em class="xref py py-obj">orbitals</em></p>
 <p>This allows one to retain only a given subset of the sparse matrix elements.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atoms</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a>) – indices of atoms or <em class="xref py py-obj">Atom</em> that will be reduced in size according to <em class="xref py py-obj">orbitals</em></p></li>
 <li><p><strong>orbitals</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference internal" href="sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital"><em>Orbital</em></a>) – indices of the orbitals on <em class="xref py py-obj">atoms</em> that are retained in the sparse matrix, the list of
@@ -1385,7 +1383,7 @@ will note species that are different from the original by a <code class="docutil
 <dd><p>Swaps atoms in the sparse geometry to obtain a new order of atoms</p>
 <p>This can be used to reorder elements of a geometry.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>a</strong> (<em>array_like</em>) – the first list of atomic coordinates</p></li>
 <li><p><strong>b</strong> (<em>array_like</em>) – the second list of atomic coordinates</p></li>
@@ -1401,7 +1399,7 @@ will note species that are different from the original by a <code class="docutil
 <p>The already existing sparse elements are extrapolated
 to the new supercell by repeating them in blocks like the coordinates.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – number of repetitions along cell-vector <em class="xref py py-obj">axis</em></p></li>
 <li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – 0, 1, 2 according to the cell-direction</p></li>
@@ -1429,7 +1427,7 @@ to the new supercell by repeating them in blocks like the coordinates.</p>
 <dd><p>Convert the sparse object (without data) to a new sparse object with equivalent but reduced sparse pattern</p>
 <p>This converts the orbital sparse pattern to an atomic sparse pattern.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – number of dimensions allocated in the SparseAtom object, default to the same</p></li>
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – used data-type for the sparse object. Defaults to the same.</p></li>
@@ -1443,7 +1441,7 @@ to the new supercell by repeating them in blocks like the coordinates.</p>
 <span class="sig-name descname"><span class="pre">tocsr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.SparseOrbitalBZSpin.tocsr" title="Permalink to this definition"></a></dt>
 <dd><p>Return a <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.10.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a> for the specified dimension</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the dimension in the sparse matrix (for non-orthogonal cases the last
 dimension is the overlap matrix)</p></li>
@@ -1485,7 +1483,7 @@ or explicitly introduced as the identity matrix.</p>
 <p>The transformation matrix does <em>not</em> act on the rows and columns, only on the
 final dimension of the matrix.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>matrix</strong> (<em>array_like</em><em>, </em><em>optional</em>) – transformation matrix of shape <span class="math notranslate nohighlight">\(m \times n\)</span>. Default is no transformation.</p></li>
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – data type contained in the matrix. Defaults to the input type.</p></li>
@@ -1501,7 +1499,7 @@ final dimension of the matrix.</p>
 <span class="sig-name descname"><span class="pre">transpose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hermitian</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/sparse.html#SparseOrbitalBZSpin.transpose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.SparseOrbitalBZSpin.transpose" title="Permalink to this definition"></a></dt>
 <dd><p>A transpose copy of this object, possibly apply the Hermitian conjugate as well</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>hermitian</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – if true, also emply a spin-box Hermitian operator to ensure TRS, otherwise
 only return the transpose values.</p></li>
@@ -1539,7 +1537,7 @@ this is the opposite of <a class="reference internal" href="#sisl.physics.Sparse
 <p>Recreates a new sparse object with only the cutted
 atoms in the structure. This will preserve matrix elements in the supercell.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – number of repetitions the tiling function created (opposite meaning as in <a class="reference internal" href="#sisl.physics.SparseOrbitalBZSpin.untile" title="sisl.physics.SparseOrbitalBZSpin.untile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">untile</span></code></a>)</p></li>
 <li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – which axis to untile along</p></li>
@@ -1570,7 +1568,7 @@ it will halve the coupling and use the same coupling to the left, which is clear
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>ValueError :</strong> – in case the matrix elements are not conseuctive when determining the
     new supercell structure. This may often happen if untiling a matrix
     too few times, and then untiling it again.</p>

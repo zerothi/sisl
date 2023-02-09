@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.viz.Animation &mdash; sisl 0.1.dev1+gd93b38d documentation</title>
+  <title>sisl.viz.Animation &mdash; sisl 0.1.dev1+gf943161 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -14,10 +14,8 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -34,14 +32,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> sisl
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            sisl
           </a>
               <div class="version">
-                0.1.dev1+gd93b38d
+                0.1.dev1+gf943161
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -109,7 +111,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">API documentation</a></li>
           <li class="breadcrumb-item"><a href="../index.html">Visualization</a></li>
       <li class="breadcrumb-item active">sisl.viz.Animation</li>
@@ -154,7 +156,7 @@
 <dd><p>Bases: <a class="reference internal" href="sisl.viz.MultiplePlot.html#sisl.viz.MultiplePlot" title="sisl.viz.plot.MultiplePlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiplePlot</span></code></a></p>
 <p>Version of MultiplePlot that renders each plot in a different animation frame</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>frame_duration</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – Time (in ms) that each frame will be displayed.  This is only
 meaningful in the plotly backend</p></li>
@@ -177,10 +179,6 @@ located. This path has to be relative to the root fdf.</p></li>
 </dl>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.Animation.add_children" title="sisl.viz.Animation.add_children"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_children</span></code></a>(*plots)</p></td>
 <td><p>Append children to the existing ones</p></td>
@@ -353,7 +351,7 @@ located. This path has to be relative to the root fdf.</p></li>
 <span class="sig-name descname"><span class="pre">add_children</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">plots</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.Animation.add_children" title="Permalink to this definition"></a></dt>
 <dd><p>Append children to the existing ones</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>*plots</strong> (<a class="reference internal" href="sisl.viz.Plot.html#sisl.viz.Plot" title="sisl.viz.Plot"><em>Plot</em></a>) – all the plots that you want to add as child plots of this one.</p>
 </dd>
 </dl>
@@ -366,7 +364,7 @@ located. This path has to be relative to the root fdf.</p></li>
 <p>You will see that argument names here are marked with “_”, in an
 attempt to avoid interfering with the action function’s arguments.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>_keys</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the sequence of keys that trigger the shortcut (e.g.: ctrl+e).</p></li>
 <li><p><strong>_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – a short name for the shortcut that should give a first idea of what the shortcut does.</p></li>
@@ -387,7 +385,7 @@ attempt to avoid interfering with the action function’s arguments.</p>
 <p>For example, if you run <em class="xref py py-obj">BandsPlot.animated()</em> you will get an animation made of bands plots.</p>
 <p>If no arguments are passed, you will get the default animation for that plot, if there is any.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>*args</strong> – <dl>
 <dt>Depending on what you pass the arguments will be interpreted differently:</dt><dd><ul>
@@ -457,10 +455,10 @@ that generates the default animation. One recurrent example of this is the keywo
 </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The Animation that you asked for</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#sisl.viz.Animation" title="sisl.viz.Animation">Animation</a></p>
 </dd>
 </dl>
@@ -478,7 +476,7 @@ that generates the default animation. One recurrent example of this is the keywo
 <p>In fact, this is the method that is executed when a keypress is detected
 in the GUI or the jupyter notebook.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>keys</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the sequence of keys that trigger the shortcut.</p></li>
 <li><p><strong>**kwargs</strong> (<em>*args and</em>) – <p>extra arguments that you pass to the function call.</p>
@@ -527,7 +525,7 @@ use <em class="xref py py-obj">clone()</em> instead.</p>
 <span class="sig-name descname"><span class="pre">follow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_abs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unfollow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.Animation.follow" title="Permalink to this definition"></a></dt>
 <dd><p>Makes sure that the object knows which files to follow in order to trigger updates</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>*files</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – <p>a string that represents the path to the file that needs to be followed.</p>
 <p>You can pass as many as you want as separate arguments. Note that if you have a list of
@@ -547,13 +545,13 @@ more robust. It is better to leave it as True unless you have a good reason to c
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_plotly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plotly_fig</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.Animation.from_plotly" title="Permalink to this definition"></a></dt>
 <dd><p>Converts a plotly plot to a Plot object</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>plotly_fig</strong> (<a class="reference external" href="https://plotly.com/python-api-reference/generated/plotly.graph_objs.Figure.html#id0" title="(in )"><em>plotly.graph_objs.Figure</em></a>) – the figure that we want to convert into a sisl plot</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>the converted plot that contains the plotly figure.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="sisl.viz.Plot.html#sisl.viz.Plot" title="sisl.viz.Plot">Plot</a></p>
 </dd>
 </dl>
@@ -569,13 +567,13 @@ more robust. It is better to leave it as True unless you have a good reason to c
 <span class="sig-name descname"><span class="pre">get_figure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">backend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interpolated_frames</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/plot.html#Animation.get_figure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Animation.get_figure" title="Permalink to this definition"></a></dt>
 <dd><p>Generates a figure out of the already processed data.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>clear_fig</strong> (<em>boolean</em><em>, </em><em>optional</em>) – whether the figure should be cleared before drawing.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>self.figure</strong> – the plotly figure.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://plotly.com/python-api-reference/generated/plotly.graph_objs.Figure.html#id0" title="(in )">plotly.graph_objs.Figure</a></p>
 </dd>
 </dl>
@@ -591,7 +589,7 @@ more robust. It is better to leave it as True unless you have a good reason to c
 <span class="sig-name descname"><span class="pre">get_param</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params_extractor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.Animation.get_param" title="Permalink to this definition"></a></dt>
 <dd><p>Gets the parameter for a given setting</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The key of the desired parameter.</p></li>
 <li><p><strong>as_dict</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If set to True, returns a dictionary instead of the actual parameter object.</p></li>
@@ -601,10 +599,10 @@ have a different structure (e.g. QueriesInput inputField) or if there is some ne
 field that the class is not aware of (although this second case is probably not advisable).</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>param</strong> – The parameter in the form specified by as_dict.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)">dict</a> or InputField</p>
 </dd>
 </dl>
@@ -615,7 +613,7 @@ field that the class is not aware of (although this second case is probably not 
 <span class="sig-name descname"><span class="pre">get_setting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.Animation.get_setting" title="Permalink to this definition"></a></dt>
 <dd><p>Gets the value for a given setting</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The key of the setting we want to get</p></li>
 <li><p><strong>copy</strong> (<em>boolean</em><em>, </em><em>optional</em>) – Whether you want a copy of the object or the actual object</p></li>
@@ -630,17 +628,17 @@ field that the class is not aware of (although this second case is probably not 
 <span class="sig-name descname"><span class="pre">get_settings_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps_back</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.Animation.get_settings_group" title="Permalink to this definition"></a></dt>
 <dd><p>Gets the subset of the settings that corresponds to a given group</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>group</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The key of the settings group that we desire.</p></li>
 <li><p><strong>steps_back</strong> (<em>optional</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – If you don’t want the actual settings, but some point of the settings history,
 use this argument to state how many steps back you want the settings’ values.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>settings_group</strong> – A subset of the settings with only those that belong to the asked group.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)">dict</a></p>
 </dd>
 </dl>
@@ -665,7 +663,7 @@ use this argument to state how many steps back you want the settings’ values.<
 </dd>
 </dl>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the path to the file that you want to read.
 It can also be the setting key that you want to read.</p></li>
@@ -683,7 +681,7 @@ It can also be the setting key that you want to read.</p></li>
 <span class="sig-name descname"><span class="pre">has_shortcut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keys</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.Animation.has_shortcut" title="Permalink to this definition"></a></dt>
 <dd><p>Checks if a shortcut is already registered.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>keys</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the sequence of keys that trigger the shortcut.</p>
 </dd>
 </dl>
@@ -694,7 +692,7 @@ It can also be the setting key that you want to read.</p></li>
 <span class="sig-name descname"><span class="pre">has_these_settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">settings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.Animation.has_these_settings" title="Permalink to this definition"></a></dt>
 <dd><p>Checks if the object settings match the provided settings</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>settings</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – dictionary containing the settings keys and values</p></li>
 <li><p><strong>**kwargs</strong> – setting keys and values can also be passed as keyword arguments.</p></li>
@@ -710,7 +708,7 @@ It can also be the setting key that you want to read.</p></li>
 <span class="sig-name descname"><span class="pre">init_all_plots</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">update_fig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">try_sharing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.Animation.init_all_plots" title="Permalink to this definition"></a></dt>
 <dd><p>Initializes all child plots</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>update_fig</strong> (<em>boolean</em><em>, </em><em>optional</em>) – whether we should build the figure if this step is succesful.</p></li>
 <li><p><strong>try_sharing</strong> (<em>boolean</em><em>, </em><em>optional</em>) – <p>If <em class="xref py py-obj">True</em>, we will check if all plots have exactly the same settings to read
@@ -728,7 +726,7 @@ but also for those that take significant time to read it.</p>
 <span class="sig-name descname"><span class="pre">init_settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">presets</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.Animation.init_settings" title="Permalink to this definition"></a></dt>
 <dd><p>Initializes the settings for the object.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>presets</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><em>array-like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – all the presets that you want to use.
 Note that you can register new presets using <em class="xref py py-obj">sisl.viz.plotly.add_preset</em></p></li>
@@ -745,7 +743,7 @@ Note that you can register new presets using <em class="xref py py-obj">sisl.viz
 <span class="sig-name descname"><span class="pre">insert_childplot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.Animation.insert_childplot" title="Permalink to this definition"></a></dt>
 <dd><p>Inserts a plot in a given position of the children list</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – The position where the plot should be inserted</p></li>
 <li><p><strong>plot</strong> (<em>sisl Plot</em><em> or </em><em>plotly Figure</em>) – The plot to insert in the list</p></li>
@@ -759,7 +757,7 @@ Note that you can register new presets using <em class="xref py py-obj">sisl.viz
 <span class="sig-name descname"><span class="pre">listen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">forever</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_animation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_animation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_figWidget</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clear_previous</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speak</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notify_title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notify_message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speak_message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig_widget</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.Animation.listen" title="Permalink to this definition"></a></dt>
 <dd><p>Listens for updates in the followed files (see the <a class="reference internal" href="#sisl.viz.Animation.updates_available" title="sisl.viz.Animation.updates_available"><code class="xref py py-obj docutils literal notranslate"><span class="pre">updates_available</span></code></a> method)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>forever</strong> (<em>boolean</em><em>, </em><em>optional</em>) – whether to keep listening after the first plot update</p></li>
 <li><p><strong>show</strong> (<em>boolean</em><em>, </em><em>optional</em>) – whether to show the plot at the beggining and update the layout when the plot is updated.</p></li>
@@ -796,7 +794,7 @@ Although right now, this does not make much sense because figure widgets don’t
 <span class="sig-name descname"><span class="pre">merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">others</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'multiple'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extend_multiples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.Animation.merge" title="Permalink to this definition"></a></dt>
 <dd><p>Merges this plot’s instance with the list of plots provided</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>others</strong> (<em>array-like</em><em> of </em><a class="reference internal" href="sisl.viz.Plot.html#sisl.viz.Plot" title="sisl.viz.Plot"><em>Plot</em></a><em>(</em><em>) or </em><a class="reference internal" href="sisl.viz.Plot.html#sisl.viz.Plot" title="sisl.viz.Plot"><em>Plot</em></a><em>(</em><em>)</em>) – the plots that we want to merge with this plot instance.</p></li>
 <li><p><strong>to</strong> (<em>{&quot;multiple&quot;</em><em>, </em><em>&quot;subplots&quot;</em><em>, </em><em>&quot;animation&quot;}</em><em>, </em><em>optional</em>) – the merge method. Each option results in a different way of putting all the plots
@@ -812,10 +810,10 @@ If False, a `MultiplePlot</em> is treated as a solid unit.</p></li>
 or <a class="reference internal" href="#sisl.viz.Animation" title="sisl.viz.Animation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Animation</span></code></a> initialization.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>depending on the value of the <em class="xref py py-obj">to</em> parameter.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="sisl.viz.MultiplePlot.html#sisl.viz.MultiplePlot" title="sisl.viz.MultiplePlot">MultiplePlot</a>, Subplots or <a class="reference internal" href="#sisl.viz.Animation" title="sisl.viz.Animation">Animation</a></p>
 </dd>
 </dl>
@@ -857,7 +855,7 @@ can know what do you want to change:</p>
 </dl>
 <p>}</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The key of the parameter to be modified</p></li>
 <li><p><strong>*args</strong> – <dl>
@@ -901,10 +899,10 @@ In this function, you can call predefined methods of the parameter, for example.
 <li><p><strong>**kwargs</strong> (<em>optional</em>) – They are passed directly to the Configurable.get_param method to retrieve the parameter.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The configurable object.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>self</p>
 </dd>
 </dl>
@@ -919,7 +917,7 @@ It is a general method that serves as a common denominator for building Multiple
 or Animation objects. Therefore, it is used by the <a class="reference internal" href="#sisl.viz.Animation.animated" title="sisl.viz.Animation.animated"><code class="xref py py-obj docutils literal notranslate"><span class="pre">animated</span></code></a> and <a class="reference internal" href="#sisl.viz.Animation.subplots" title="sisl.viz.Animation.subplots"><code class="xref py py-obj docutils literal notranslate"><span class="pre">subplots</span></code></a> methods</p>
 <p>If no arguments are passed, you will get the default multiple plot for the class, if there is any.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>*args</strong> – <dl>
 <dt>Depending on what you pass the arguments will be interpreted differently:</dt><dd><ul>
@@ -979,10 +977,10 @@ that generates the default multiple plot. One recurrent example of this is the k
 </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The plot that you asked for.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="sisl.viz.MultiplePlot.html#sisl.viz.MultiplePlot" title="sisl.viz.MultiplePlot">MultiplePlot</a>, <a class="reference internal" href="sisl.viz.SubPlots.html#sisl.viz.SubPlots" title="sisl.viz.SubPlots">SubPlots</a> or <a class="reference internal" href="#sisl.viz.Animation" title="sisl.viz.Animation">Animation</a></p>
 </dd>
 </dl>
@@ -1009,7 +1007,7 @@ that generates the default multiple plot. One recurrent example of this is the k
 <span class="sig-name descname"><span class="pre">remove_shortcut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keys</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.Animation.remove_shortcut" title="Permalink to this definition"></a></dt>
 <dd><p>Unregisters a given shortcut.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>keys</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the sequence of keys that trigger the shortcut.</p>
 </dd>
 </dl>
@@ -1020,10 +1018,10 @@ that generates the default multiple plot. One recurrent example of this is the k
 <span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.Animation.save" title="Permalink to this definition"></a></dt>
 <dd><p>Saves the plot so that it can be loaded in the future</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The path to the file where you want to save the plot</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>self</p>
 </dd>
 </dl>
@@ -1034,7 +1032,7 @@ that generates the default multiple plot. One recurrent example of this is the k
 <span class="sig-name descname"><span class="pre">set_children</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plots</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.Animation.set_children" title="Permalink to this definition"></a></dt>
 <dd><p>Sets the children of a multiple plot</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>plots</strong> (<em>array-like</em><em> of </em><em>sisl.viz.plotly.Plot</em><em> or </em><em>plotly Figure</em>) – the plots that should be set as children for the animation.</p></li>
 <li><p><strong>keep</strong> (<em>boolean</em><em>, </em><em>optional</em>) – <p>whether the existing children should be kept.</p>
@@ -1060,7 +1058,7 @@ that generates the default multiple plot. One recurrent example of this is the k
 <span class="sig-name descname"><span class="pre">set_shared_attr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.Animation.set_shared_attr" title="Permalink to this definition"></a></dt>
 <dd><p>Sets the value of a shared attribute</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the key of the attribute that is to be set.</p></li>
 <li><p><strong>val</strong> (<em>any</em>) – the new value for the attribute</p></li>
@@ -1088,13 +1086,13 @@ that generates the default multiple plot. One recurrent example of this is the k
 <p>This method will be given to all children so that they can retreive the shared
 attributes. This is done in <a class="reference internal" href="#sisl.viz.Animation.set_children" title="sisl.viz.Animation.set_children"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_children</span></code></a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the name of the attribute that you want to retrieve</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>the value that you asked for</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>any</p>
 </dd>
 </dl>
@@ -1105,7 +1103,7 @@ attributes. This is done in <a class="reference internal" href="#sisl.viz.Animat
 <span class="sig-name descname"><span class="pre">shortcut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keys</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.Animation.shortcut" title="Permalink to this definition"></a></dt>
 <dd><p>Gets the dict that represents a shortcut.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>keys</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the sequence of keys that trigger the shortcut.</p>
 </dd>
 </dl>
@@ -1129,7 +1127,7 @@ attributes. This is done in <a class="reference internal" href="#sisl.viz.Animat
 <span class="sig-name descname"><span class="pre">show</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">listen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_figWidget</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.Animation.show" title="Permalink to this definition"></a></dt>
 <dd><p>Displays the plot</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>listen</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – after showing, keeps listening for file changes to update the plot.
 This is nice for monitoring.</p></li>
@@ -1147,7 +1145,7 @@ get the figure widget as a return so that you can act on it.</p></li>
 <p>Using this method only makes sense if you have previously made the plot listen
 either through <em class="xref py py-obj">Plot.listen()</em> or <em class="xref py py-obj">Plot.show(listen=True)</em></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>fig_widget</strong> (<em>plotly FigureWidget</em><em>, </em><em>optional</em>) – <p>the figure widget where the plot is currently being displayed.</p>
 <p>This is just used to reset the listening shortcut.</p>
 <p>YOU WILL MOST LIKELY NOT USE THIS because <a class="reference internal" href="sisl.viz.Plot.html#sisl.viz.Plot" title="sisl.viz.Plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Plot</span></code></a> already knows
@@ -1163,7 +1161,7 @@ where is it being displayed in normal situations.</p>
 <dd><p>Creates subplots where each plot has different settings</p>
 <p>Mainly, it uses the <a class="reference internal" href="#sisl.viz.Animation.multiple" title="sisl.viz.Animation.multiple"><code class="xref py py-obj docutils literal notranslate"><span class="pre">multiple</span></code></a> method to generate them.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>*args</strong> – <dl>
 <dt>Depending on what you pass the arguments will be interpreted differently:</dt><dd><ul>
@@ -1245,7 +1243,7 @@ function to understand this better.</p>
 <dd><p>Undoes only a particular setting and leaves the others unchanged</p>
 <p>At the moment it is a ‘fake’ undo function, since it actually updates the settings.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the key of the setting that you want to undo.</p>
 </dd>
 </dl>
@@ -1256,7 +1254,7 @@ function to understand this better.</p>
 <span class="sig-name descname"><span class="pre">undo_settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_updates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.Animation.undo_settings" title="Permalink to this definition"></a></dt>
 <dd><p>Brings the settings back a number of steps</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>steps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the number of steps you want to go back.</p></li>
 <li><p><strong>run_updates</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether we should run updates after updating the settings. If not, the settings
@@ -1272,7 +1270,7 @@ will be updated, but you won’t see any change in the object.</p></li>
 <dd><p>Takes the desired group of settings one step back, but the rest of the settings remain unchanged</p>
 <p>At the moment it is a ‘fake’ undo function, since it actually updates the settings.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>group</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the key of the settings group for which you want to undo its values.</p>
 </dd>
 </dl>
@@ -1283,7 +1281,7 @@ will be updated, but you won’t see any change in the object.</p></li>
 <span class="sig-name descname"><span class="pre">update_children_settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">children_sel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.Animation.update_children_settings" title="Permalink to this definition"></a></dt>
 <dd><p>Updates the settings of all child plots</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>children_sel</strong> (<em>array-like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – The indices of the child plots that you want to update.</p></li>
 <li><p><strong>**kwargs</strong> – Keyword arguments specifying the settings that you want to update
@@ -1330,7 +1328,7 @@ located. This path has to be relative to the root fdf.</p>
 </div></blockquote>
 </div></blockquote>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>frame_duration</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – Time (in ms) that each frame will be displayed.  This is only
 meaningful in the plotly backend</p></li>

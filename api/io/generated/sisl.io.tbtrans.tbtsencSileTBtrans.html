@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.tbtrans.tbtsencSileTBtrans &mdash; sisl 0.1.dev1+gd93b38d documentation</title>
+  <title>sisl.io.tbtrans.tbtsencSileTBtrans &mdash; sisl 0.1.dev1+gf943161 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -14,10 +14,8 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -36,14 +34,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> sisl
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            sisl
           </a>
               <div class="version">
-                0.1.dev1+gd93b38d
+                0.1.dev1+gf943161
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -126,7 +128,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">API documentation</a></li>
           <li class="breadcrumb-item"><a href="../index.html">Input/Output</a></li>
           <li class="breadcrumb-item"><a href="../tbtrans.html">TBtrans</a></li>
@@ -203,10 +205,6 @@ testing various things in Python.</p>
 </div>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.tbtsencSileTBtrans.Eindex" title="sisl.io.tbtrans.tbtsencSileTBtrans.Eindex"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Eindex</span></code></a>(E)</p></td>
 <td><p>Return the closest energy index corresponding to the energy <code class="docutils literal notranslate"><span class="pre">E</span></code></p></td>
@@ -401,7 +399,7 @@ testing various things in Python.</p>
 <span class="sig-name descname"><span class="pre">Eindex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.tbtsencSileTBtrans.Eindex" title="Permalink to this definition"></a></dt>
 <dd><p>Return the closest energy index corresponding to the energy <code class="docutils literal notranslate"><span class="pre">E</span></code></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – if <em class="xref py py-obj">int</em>, return it-self, else return the energy index which is
 closests to the energy.
 For a <em class="xref py py-obj">str</em> it will be parsed to a float and treated as such.</p>
@@ -424,7 +422,7 @@ For a <em class="xref py py-obj">str</em> it will be parsed to a float and treat
 </div>
 <p>Will warn if an atom requested is not in the device list of atoms.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>atoms</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – atomic indices (0-based)</p>
 </dd>
 </dl>
@@ -447,7 +445,7 @@ For a <em class="xref py py-obj">str</em> it will be parsed to a float and treat
 <span class="sig-name descname"><span class="pre">a_down</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bulk</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.tbtsencSileTBtrans.a_down" title="Permalink to this definition"></a></dt>
 <dd><p>Down-folding atomic indices for a given electrode</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – electrode to retrieve indices for</p></li>
 <li><p><strong>bulk</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the returned indices are <em>only</em> in the pristine electrode,
@@ -462,7 +460,7 @@ or the down-folding region (electrode + downfolding region, not in device)</p></
 <span class="sig-name descname"><span class="pre">a_elec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.tbtsencSileTBtrans.a_elec" title="Permalink to this definition"></a></dt>
 <dd><p>Electrode atomic indices for the full geometry (sorted)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – electrode to retrieve indices for</p>
 </dd>
 </dl>
@@ -479,7 +477,7 @@ or the down-folding region (electrode + downfolding region, not in device)</p></
 <span class="sig-name descname"><span class="pre">bloch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.tbtsencSileTBtrans.bloch" title="Permalink to this definition"></a></dt>
 <dd><p>Bloch-expansion coefficients for an electrode</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – bloch expansions of electrode</p>
 </dd>
 </dl>
@@ -493,7 +491,7 @@ or the down-folding region (electrode + downfolding region, not in device)</p></
 <div class="math notranslate nohighlight">
 \[\Gamma(E) = i [\Sigma(E) - \Sigma^\dagger(E)]\]</div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the corresponding electrode to return the broadening matrix from</p></li>
 <li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – energy to retrieve the broadening matrix at, if a floating point the closest
@@ -513,7 +511,7 @@ be returned according to the pivoted orbitals in the device region.</p></li>
 <span class="sig-name descname"><span class="pre">btd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.tbtsencSileTBtrans.btd" title="Permalink to this definition"></a></dt>
 <dd><p>Block-sizes for the BTD method in the device/electrode region</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the BTD block sizes for the device (if none), otherwise the downfolding
 BTD block sizes for the electrode</p>
 </dd>
@@ -554,7 +552,7 @@ BTD block sizes for the electrode</p>
 <span class="sig-name descname"><span class="pre">electron_temperature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.tbtsencSileTBtrans.electron_temperature" title="Permalink to this definition"></a></dt>
 <dd><p>Electron bath temperature [Kelvin]</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – electrode to extract the temperature from</p>
 </dd>
 </dl>
@@ -572,7 +570,7 @@ BTD block sizes for the electrode</p>
 <span class="sig-name descname"><span class="pre">eta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.tbtsencSileTBtrans.eta" title="Permalink to this definition"></a></dt>
 <dd><p>The imaginary part used when calculating the self-energies in eV (or for the device</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – electrode to extract the eta value from. If not specified (or None) the device
 region eta will be returned.</p>
 </dd>
@@ -602,7 +600,7 @@ region eta will be returned.</p>
 <span class="sig-name descname"><span class="pre">info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/tbtrans/se.html#tbtsencSileTBtrans.info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.tbtrans.tbtsencSileTBtrans.info" title="Permalink to this definition"></a></dt>
 <dd><p>Information about the self-energy file available for extracting in this file</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the electrode to request information from</p>
 </dd>
 </dl>
@@ -625,7 +623,7 @@ region eta will be returned.</p>
 groups, dimensions, and then variables such that one always ensures correct
 dependencies in the generation of a new <code class="docutils literal notranslate"><span class="pre">SileCDF</span></code>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>group</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code> (<em class="xref py py-obj">True</em>)) – whether the iterator yields <em class="xref py py-obj">Group</em> instances</p></li>
 <li><p><strong>dimension</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code> (<em class="xref py py-obj">True</em>)) – whether the iterator yields <em class="xref py py-obj">Dimension</em> instances</p></li>
@@ -660,7 +658,7 @@ sub-groups this iterator will return.</p></li>
 <span class="sig-name descname"><span class="pre">kT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.tbtsencSileTBtrans.kT" title="Permalink to this definition"></a></dt>
 <dd><p>Electron bath temperature [eV]</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – electrode to extract the temperature from</p>
 </dd>
 </dl>
@@ -678,7 +676,7 @@ sub-groups this iterator will return.</p></li>
 <span class="sig-name descname"><span class="pre">kindex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.tbtsencSileTBtrans.kindex" title="Permalink to this definition"></a></dt>
 <dd><p>Return the index of the k-point that is closests to the queried k-point (in reduced coordinates)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>k</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the queried k-point in reduced coordinates <span class="math notranslate nohighlight">\(]-0.5;0.5]\)</span>. If <code class="docutils literal notranslate"><span class="pre">int</span></code>
 return it-self.</p>
 </dd>
@@ -714,7 +712,7 @@ return it-self.</p>
 <span class="sig-name descname"><span class="pre">n_btd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.tbtsencSileTBtrans.n_btd" title="Permalink to this definition"></a></dt>
 <dd><p>Number of blocks in the BTD partioning</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – if None the number of blocks in the device region BTD matrix. Else
 the number of BTD blocks in the electrode down-folding.</p>
 </dd>
@@ -756,7 +754,7 @@ the number of BTD blocks in the electrode down-folding.</p>
 <span class="sig-name descname"><span class="pre">na_down</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.tbtsencSileTBtrans.na_down" title="Permalink to this definition"></a></dt>
 <dd><p>Number of atoms in the downfolding region (without device downfolded region)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Number of downfolding atoms for electrode <em class="xref py py-obj">elec</em></p>
 </dd>
 </dl>
@@ -803,7 +801,7 @@ the number of BTD blocks in the electrode down-folding.</p>
 <span class="sig-name descname"><span class="pre">no_down</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.tbtsencSileTBtrans.no_down" title="Permalink to this definition"></a></dt>
 <dd><p>Number of orbitals in the downfolding region (plus device downfolded region)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Number of downfolding orbitals for electrode <em class="xref py py-obj">elec</em></p>
 </dd>
 </dl>
@@ -814,7 +812,7 @@ the number of BTD blocks in the electrode down-folding.</p>
 <span class="sig-name descname"><span class="pre">no_e</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.tbtsencSileTBtrans.no_e" title="Permalink to this definition"></a></dt>
 <dd><p>Number of orbitals in the downfolded region of the electrode in the device</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Specify the electrode to query number of downfolded orbitals</p>
 </dd>
 </dl>
@@ -832,7 +830,7 @@ the number of BTD blocks in the electrode down-folding.</p>
 <dd><p>Return the pivoting indices (0-based) for the orbitals, possibly on an electrode</p>
 <p>Will warn if an orbital requested is not in the device list of orbitals.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>orbitals</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – orbital indices (0-based)</p></li>
 <li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>None</em><em>, </em><em>optional</em>) – electrode to return pivoting indices of (if None it is the
@@ -860,7 +858,7 @@ device pivoting indices).</p></li>
 <span class="sig-name descname"><span class="pre">pivot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.tbtsencSileTBtrans.pivot" title="Permalink to this definition"></a></dt>
 <dd><p>Return the pivoting indices for a specific electrode (in the device region) or the device</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the corresponding electrode to return the pivoting indices from</p></li>
 <li><p><strong>in_device</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> the pivoting table will be translated to the device region orbitals.
@@ -901,7 +899,7 @@ the device in a non-pivoted order.</p></li>
 <span class="sig-name descname"><span class="pre">pivot_down</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.tbtsencSileTBtrans.pivot_down" title="Permalink to this definition"></a></dt>
 <dd><p>Pivoting orbitals for the downfolding region of a given electrode</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the corresponding electrode to get the pivoting indices for</p>
 </dd>
 </dl>
@@ -918,7 +916,7 @@ the device in a non-pivoted order.</p></li>
 <span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.tbtsencSileTBtrans.read" title="Permalink to this definition"></a></dt>
 <dd><p>Generic read method which should be overloaded in child-classes</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>kwargs</strong> – keyword arguments will try and search for the attribute <code class="docutils literal notranslate"><span class="pre">read_&lt;&gt;</span></code>
 and call it with the remaining <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> as arguments.</p>
 </dd>
@@ -942,7 +940,7 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 <span class="sig-name descname"><span class="pre">self_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/tbtrans/se.html#tbtsencSileTBtrans.self_energy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.tbtrans.tbtsencSileTBtrans.self_energy" title="Permalink to this definition"></a></dt>
 <dd><p>Return the self-energy from the electrode <em class="xref py py-obj">elec</em></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the corresponding electrode to return the self-energy from</p></li>
 <li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – energy to retrieve the self-energy at, if a floating point the closest
@@ -962,7 +960,7 @@ be returned according to the pivoted orbitals in the device region.</p></li>
 <span class="sig-name descname"><span class="pre">self_energy_average</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/tbtrans/se.html#tbtsencSileTBtrans.self_energy_average"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.tbtrans.tbtsencSileTBtrans.self_energy_average" title="Permalink to this definition"></a></dt>
 <dd><p>Return the k-averaged average self-energy from the electrode <em class="xref py py-obj">elec</em></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the corresponding electrode to return the self-energy from</p></li>
 <li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – energy to retrieve the self-energy at, if a floating point the closest
@@ -998,7 +996,7 @@ be returned according to the pivoted orbitals in the device region.</p></li>
 <span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.tbtsencSileTBtrans.write" title="Permalink to this definition"></a></dt>
 <dd><p>Generic write method which should be overloaded in child-classes</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>**kwargs</strong> – keyword arguments will try and search for the attribute <em class="xref py py-obj">write_</em>
 and call it with the remaining <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> as arguments.</p>
 </dd>

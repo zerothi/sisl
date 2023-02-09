@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.BandStructure &mdash; sisl 0.1.dev1+gd93b38d documentation</title>
+  <title>sisl.physics.BandStructure &mdash; sisl 0.1.dev1+gf943161 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -14,10 +14,8 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -36,14 +34,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> sisl
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            sisl
           </a>
               <div class="version">
-                0.1.dev1+gd93b38d
+                0.1.dev1+gf943161
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -114,7 +116,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">API documentation</a></li>
           <li class="breadcrumb-item"><a href="../physics.html">Physical objects</a></li>
           <li class="breadcrumb-item"><a href="../physics.brillouinzone.html">Brillouin zone</a></li>
@@ -160,7 +162,7 @@
 <dd><p>Bases: <a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><code class="xref py py-class docutils literal notranslate"><span class="pre">BrillouinZone</span></code></a></p>
 <p>Create a path in the Brillouin zone for plotting band-structures etc.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>parent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><em>object</em></a><em> or </em><em>array_like</em>) – An object with associated <em class="xref py py-obj">parent.cell</em> and <em class="xref py py-obj">parent.rcell</em> or
 an array of floats which may be turned into a <em class="xref py py-obj">SuperCell</em></p></li>
@@ -197,10 +199,6 @@ Such a band-structure may be useful when one is not interested in a fully connec
 </div>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.BandStructure.copy" title="sisl.physics.BandStructure.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>([parent])</p></td>
 <td><p>Create a copy of this object, optionally changing the parent</p></td>
@@ -220,43 +218,46 @@ Such a band-structure may be useful when one is not interested in a fully connec
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.BandStructure.lineartick" title="sisl.physics.BandStructure.lineartick"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lineartick</span></code></a>()</p></td>
 <td><p>The tick-marks corresponding to the linear-k values</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.BandStructure.param_circle" title="sisl.physics.BandStructure.param_circle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">param_circle</span></code></a>(parent, N_or_dk, kR, normal, origin)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.BandStructure.merge" title="sisl.physics.BandStructure.merge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge</span></code></a>(bzs[, weight_scale, parent])</p></td>
+<td><p>Merge several BrillouinZone objects into one</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.BandStructure.param_circle" title="sisl.physics.BandStructure.param_circle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">param_circle</span></code></a>(parent, N_or_dk, kR, normal, origin)</p></td>
 <td><p>Create a parameterized k-point list where the k-points are generated on a circle around an origin</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.BandStructure.parametrize" title="sisl.physics.BandStructure.parametrize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parametrize</span></code></a>(parent, func, N, *args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.BandStructure.parametrize" title="sisl.physics.BandStructure.parametrize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parametrize</span></code></a>(parent, func, N, *args, **kwargs)</p></td>
 <td><p>Generate a new <a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BrillouinZone</span></code></a> object with k-points parameterized via the function <em class="xref py py-obj">func</em> in <em class="xref py py-obj">N</em> separations</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.BandStructure.set_parent" title="sisl.physics.BandStructure.set_parent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_parent</span></code></a>(parent)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.BandStructure.set_parent" title="sisl.physics.BandStructure.set_parent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_parent</span></code></a>(parent)</p></td>
 <td><p>Update the parent associated to this object</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.BandStructure.tocartesian" title="sisl.physics.BandStructure.tocartesian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tocartesian</span></code></a>(k)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.BandStructure.tocartesian" title="sisl.physics.BandStructure.tocartesian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tocartesian</span></code></a>(k)</p></td>
 <td><p>Transfer a k-point in reduced coordinates to the Cartesian coordinates</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.BandStructure.tolinear" title="sisl.physics.BandStructure.tolinear"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tolinear</span></code></a>(k[, ret_index, tol])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.BandStructure.tolinear" title="sisl.physics.BandStructure.tolinear"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tolinear</span></code></a>(k[, ret_index, tol])</p></td>
 <td><p>Convert a k-point into the equivalent linear k-point via the distance</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.BandStructure.toreduced" title="sisl.physics.BandStructure.toreduced"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toreduced</span></code></a>(k)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.BandStructure.toreduced" title="sisl.physics.BandStructure.toreduced"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toreduced</span></code></a>(k)</p></td>
 <td><p>Transfer a k-point in Cartesian coordinates to the reduced coordinates</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.BandStructure.volume" title="sisl.physics.BandStructure.volume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">volume</span></code></a>([ret_dim, periodic])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.BandStructure.volume" title="sisl.physics.BandStructure.volume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">volume</span></code></a>([ret_dim, periodic])</p></td>
 <td><p>Calculate the volume of the full Brillouin zone of the parent</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.BandStructure.write" title="sisl.physics.BandStructure.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(sile, *args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.BandStructure.write" title="sisl.physics.BandStructure.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(sile, *args, **kwargs)</p></td>
 <td><p>Writes k-points to a <a class="reference internal" href="../io/generated/sisl.io.tableSile.html#sisl.io.tableSile" title="sisl.io.tableSile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tableSile</span></code></a>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.BandStructure.apply" title="sisl.physics.BandStructure.apply"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.BandStructure.apply" title="sisl.physics.BandStructure.apply"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply</span></code></a></p></td>
 <td><p>Loop over all k-points by applying <em class="xref py py-obj">parent</em> methods for all k.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.BandStructure.cell" title="sisl.physics.BandStructure.cell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cell</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.BandStructure.cell" title="sisl.physics.BandStructure.cell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cell</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.BandStructure.k" title="sisl.physics.BandStructure.k"><code class="xref py py-obj docutils literal notranslate"><span class="pre">k</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.BandStructure.k" title="sisl.physics.BandStructure.k"><code class="xref py py-obj docutils literal notranslate"><span class="pre">k</span></code></a></p></td>
 <td><p>A list of all k-points (if available)</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.BandStructure.rcell" title="sisl.physics.BandStructure.rcell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rcell</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.BandStructure.rcell" title="sisl.physics.BandStructure.rcell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rcell</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.BandStructure.weight" title="sisl.physics.BandStructure.weight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">weight</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.BandStructure.weight" title="sisl.physics.BandStructure.weight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">weight</span></code></a></p></td>
 <td><p>Weight of the k-points in the <a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BrillouinZone</span></code></a> object</p></td>
 </tr>
 </tbody>
@@ -290,7 +291,7 @@ and passing <a class="reference internal" href="#sisl.physics.BandStructure.k" t
 <li><p><em class="xref py py-obj">apply.none</em>, specialized method that is mainly useful when wrapping methods</p></li>
 <li><p><em class="xref py py-obj">apply.list</em> same as <em class="xref py py-obj">apply.array</em> but using Python list as return value</p></li>
 <li><p><em class="xref py py-obj">apply.oplist</em> using <a class="reference internal" href="sisl.oplist.oplist.html#sisl.oplist.oplist" title="sisl.oplist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.oplist</span></code></a> allows greater flexibility for mathematical operations element wise</p></li>
-<li><p><em class="xref py py-obj">apply.datarray</em> if <a class="reference external" href="https://docs.xarray.dev/en/stable/index.html#module-xarray" title="(in xarray v2023.1.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray</span></code></a> is available one can retrieve an <a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2023.1.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a> instance</p></li>
+<li><p><em class="xref py py-obj">apply.datarray</em> if <a class="reference external" href="https://docs.xarray.dev/en/stable/index.html#module-xarray" title="(in xarray v2023.2.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray</span></code></a> is available one can retrieve an <a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2023.2.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a> instance</p></li>
 </ul>
 <p>Please see <a class="reference internal" href="../physics.brillouinzone.html#physics-brillouinzone"><span class="std std-ref">Brillouin zone</span></a> for further examples.</p>
 </dd></dl>
@@ -305,7 +306,7 @@ and passing <a class="reference internal" href="#sisl.physics.BandStructure.k" t
 <span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/brillouinzone.html#BandStructure.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.BandStructure.copy" title="Permalink to this definition"></a></dt>
 <dd><p>Create a copy of this object, optionally changing the parent</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>parent</strong> (<em>optional</em>) – change the parent</p>
 </dd>
 </dl>
@@ -316,13 +317,13 @@ and passing <a class="reference internal" href="#sisl.physics.BandStructure.k" t
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">in_primitive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.BandStructure.in_primitive" title="Permalink to this definition"></a></dt>
 <dd><p>Move the k-point into the primitive point(s) ]-0.5 ; 0.5]</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>k</strong> (<em>array_like</em>) – k-point(s) to move into the primitive cell</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>all k-points moved into the primitive cell</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -340,7 +341,7 @@ For each discontinuity jump an element will be inserted.</p>
 <p>This may be useful for plotting since <em class="xref py py-obj">np.nan</em> gets interpreted as a discontinuity
 in the graph thus removing connections between the segments.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>*arrays</strong> (<em>array_like</em>) – arrays will get <em class="xref py py-obj">value</em> inserted where there are jumps in the band structure</p></li>
 <li><p><strong>value</strong> (<em>optional</em>) – the value to be inserted at the jump points in the data array</p></li>
@@ -365,10 +366,10 @@ in the graph thus removing connections between the segments.</p>
 <span class="sig-name descname"><span class="pre">iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ret_weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.BandStructure.iter" title="Permalink to this definition"></a></dt>
 <dd><p>An iterator for the k-points and (possibly) the weights</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>ret_weight</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – if true, also yield the weight for the respective k-point</p>
 </dd>
-<dt class="field-even">Yields</dt>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>kpt</strong> (<em>k-point</em>)</p></li>
 <li><p><strong>weight</strong> (weight of k-point, only if <em class="xref py py-obj">ret_weight</em> is true.)</p></li>
@@ -405,7 +406,7 @@ distances in the reciprocal lattice.</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>ticks</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – if <em class="xref py py-obj">True</em> the ticks for the points are also returned</p>
 </dd>
 </dl>
@@ -417,7 +418,7 @@ distances in the reciprocal lattice.</p>
 </dl>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><ul class="simple">
 <li><p><strong>linear_k</strong> (<em>numpy.ndarray</em>) – the positions in reciprocal space determined by the distance between points</p></li>
 <li><p><strong>ticks</strong> (<em>numpy.ndarray</em>) – linear k-positions of the points, only returned if <em class="xref py py-obj">ticks</em> is <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
@@ -433,10 +434,10 @@ distances in the reciprocal lattice.</p>
 <span class="sig-name descname"><span class="pre">lineartick</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/brillouinzone.html#BandStructure.lineartick"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.BandStructure.lineartick" title="Permalink to this definition"></a></dt>
 <dd><p>The tick-marks corresponding to the linear-k values</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>the positions in reciprocal space determined by the distance between points</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -450,6 +451,33 @@ distances in the reciprocal lattice.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.BandStructure.merge">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bzs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.BandStructure.merge" title="Permalink to this definition"></a></dt>
+<dd><p>Merge several BrillouinZone objects into one</p>
+<p>The merging strategy only stores the new list of k-points and weights.
+Information retained in the merged objects will not be stored.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bzs</strong> (<em>list-like</em><em> of </em><em>BrillouinZone objects</em>) – each element is a BrillouinZone object with <code class="docutils literal notranslate"><span class="pre">bzs[i].k</span></code> and <code class="docutils literal notranslate"><span class="pre">bzs[i].weight</span></code>
+fields.</p></li>
+<li><p><strong>weight_scale</strong> (<em>list-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – these are matched item-wise with <em class="xref py py-obj">bzs</em> and applied to.
+Internally <code class="docutils literal notranslate"><span class="pre">itertools.zip_longest(fillvalue=weight_scale[-1])</span></code> will be
+used to extend for all <em class="xref py py-obj">bzs</em>.</p></li>
+<li><p><strong>parent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><em>object</em></a><em>, </em><em>optional</em>) – Associated parent in the returned object, will default to <code class="docutils literal notranslate"><span class="pre">bzs[0].parent</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>even if all objects are not BrillouinZone objects the returned object
+will be.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone">BrillouinZone</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.BandStructure.param_circle">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">param_circle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_or_dk</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.BandStructure.param_circle" title="Permalink to this definition"></a></dt>
 <dd><p>Create a parameterized k-point list where the k-points are generated on a circle around an origin</p>
@@ -458,7 +486,7 @@ To generate a perfect circle in units of the reciprocal lattice vectors one can
 generate the circle for a diagonal supercell with side-length <span class="math notranslate nohighlight">\(2\pi\)</span>, see
 example below.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>parent</strong> (<a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><em>SuperCell</em></a><em>, or </em><em>SuperCellChild</em>) – the parent object</p></li>
 <li><p><strong>N_or_dk</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – number of k-points generated using the parameterization (if an integer),
@@ -485,10 +513,10 @@ the number of points increased to 4.</p></li>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>with the parameterized k-points.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone">BrillouinZone</a></p>
 </dd>
 </dl>
@@ -501,7 +529,7 @@ the number of points increased to 4.</p></li>
 <p>Generator of a parameterized Brillouin zone object that contains a parameterized k-point
 list.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>parent</strong> (<a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><em>SuperCell</em></a><em>, or </em><em>SuperCellChild</em>) – the object that the returned object will contain as parent</p></li>
 <li><p><strong>func</strong> (<em>callable</em>) – <p>method that parameterizes the k-points, <em>must</em> at least accept three arguments,
@@ -553,7 +581,7 @@ lists accordingly.</p></li>
 <span class="sig-name descname"><span class="pre">set_parent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.BandStructure.set_parent" title="Permalink to this definition"></a></dt>
 <dd><p>Update the parent associated to this object</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>parent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><em>object</em></a><em> or </em><em>array_like</em>) – an object containing cell vectors</p>
 </dd>
 </dl>
@@ -564,13 +592,13 @@ lists accordingly.</p></li>
 <span class="sig-name descname"><span class="pre">tocartesian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.BandStructure.tocartesian" title="Permalink to this definition"></a></dt>
 <dd><p>Transfer a k-point in reduced coordinates to the Cartesian coordinates</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – k-point in reduced coordinates</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>in units of 1/Ang</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -584,7 +612,7 @@ lists accordingly.</p></li>
 The returned value is then the equivalent index in <a class="reference internal" href="#sisl.physics.BandStructure.lineark" title="sisl.physics.BandStructure.lineark"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lineark</span></code></a>.</p>
 <p>This is very useful for extracting certain points along the band structure.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>k</strong> (<em>array_like</em>) – the k-point(s) to locate in the linear values</p></li>
 <li><p><strong>ret_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the indices are also returned</p></li>
@@ -601,13 +629,13 @@ The tolerance is in units 1/Ang.</p></li>
 <span class="sig-name descname"><span class="pre">toreduced</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.BandStructure.toreduced" title="Permalink to this definition"></a></dt>
 <dd><p>Transfer a k-point in Cartesian coordinates to the reduced coordinates</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – k-point in Cartesian coordinates</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>in units of reciprocal lattice vectors ]-0.5 ; 0.5] (if k is in the primitive cell)</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -623,14 +651,14 @@ have auxilliary supercells that can contribute to Brillouin zone integrals.
 Therefore the returned value will have differing units depending on
 dimensionality.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ret_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – also return the dimensionality of the system</p></li>
 <li><p><strong>periodic</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – estimate the volume using only the directions indexed by this array.
 The default value is <em class="xref py py-obj">(self.parent.nsc &gt; 1).nonzero()[0]</em>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><em>vol</em> – the volume of the Brillouin zone. Units are Ang^D with D being the dimensionality.
 For 0D it will return 0.</p></li>

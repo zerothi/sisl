@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.Bloch &mdash; sisl 0.1.dev1+gd93b38d documentation</title>
+  <title>sisl.physics.Bloch &mdash; sisl 0.1.dev1+gf943161 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -14,10 +14,8 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -36,14 +34,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> sisl
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            sisl
           </a>
               <div class="version">
-                0.1.dev1+gd93b38d
+                0.1.dev1+gf943161
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -116,7 +118,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">API documentation</a></li>
           <li class="breadcrumb-item"><a href="../physics.html">Physical objects</a></li>
           <li class="breadcrumb-item"><a href="../physics.matrix.html">Physical quantites</a></li>
@@ -185,7 +187,7 @@ The general idea may be summarized in the following equation:</p>
 \otimes
 \mathbf M_{k_j}^1.\end{split}\]</div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>bloch</strong> (<em>(</em><em>3</em><em>,</em><em>) </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Bloch repetitions along each direction</p>
 </dd>
 </dl>
@@ -198,10 +200,6 @@ The general idea may be summarized in the following equation:</p>
 </div>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.Bloch.unfold" title="sisl.physics.Bloch.unfold"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unfold</span></code></a>(M, k_unfold)</p></td>
 <td><p>Unfold the matrix list of matrices <em class="xref py py-obj">M</em> into a corresponding k-point (unfolding k-points are <em class="xref py py-obj">k_unfold</em>)</p></td>
@@ -230,7 +228,7 @@ methods.</p>
 <p class="rubric">Notes</p>
 <p>The function passed <em>must</em> have a keyword argument <code class="docutils literal notranslate"><span class="pre">k</span></code>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>func</strong> (<em>callable</em>) – method called which returns a matrix.</p></li>
 <li><p><strong>k</strong> (<em>(</em><em>3</em><em>, </em><em>) of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – k-point to be unfolded</p></li>
@@ -238,10 +236,10 @@ methods.</p>
 <li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – keyword arguments passed directly to <em class="xref py py-obj">func</em></p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>unfolded Bloch matrix</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -264,16 +262,16 @@ methods.</p>
 <span class="sig-name descname"><span class="pre">unfold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k_unfold</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/bloch.html#Bloch.unfold"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.Bloch.unfold" title="Permalink to this definition"></a></dt>
 <dd><p>Unfold the matrix list of matrices <em class="xref py py-obj">M</em> into a corresponding k-point (unfolding k-points are <em class="xref py py-obj">k_unfold</em>)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>M</strong> (<em>(</em><em>:</em><em>, </em><em>:</em><em>, </em><em>:</em><em>)</em>) – an <code class="docutils literal notranslate"><span class="pre">*</span></code>-N-M matrix used for unfolding</p></li>
 <li><p><strong>k_unfold</strong> (<em>(</em><em>:</em><em>, </em><em>3</em><em>) of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – unfolding k-points as returned by <a class="reference internal" href="#sisl.physics.Bloch.unfold_points" title="sisl.physics.Bloch.unfold_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Bloch.unfold_points</span></code></a></p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>unfolded matrix of size <code class="docutils literal notranslate"><span class="pre">M[0].shape</span> <span class="pre">*</span> <span class="pre">k_unfold.shape[0]</span> <span class="pre">**</span> <span class="pre">2</span></code></p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -287,13 +285,13 @@ methods.</p>
 The return list of <em class="xref py py-obj">k</em> points are the k-points required to be sampled in the
 folded geometry.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>k</strong> (<em>(</em><em>3</em><em>,</em><em>) of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – k-point evaluation corresponding to the unfolded unit-cell</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a list of <code class="docutils literal notranslate"><span class="pre">np.prod(self.bloch)</span></code> k-points used for the unfolding</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>

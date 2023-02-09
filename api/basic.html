@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Basic classes &mdash; sisl 0.1.dev1+gd93b38d documentation</title>
+  <title>Basic classes &mdash; sisl 0.1.dev1+gf943161 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -14,10 +14,8 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -36,14 +34,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> sisl
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            sisl
           </a>
               <div class="version">
-                0.1.dev1+gd93b38d
+                0.1.dev1+gf943161
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -131,7 +133,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="index.html">API documentation</a></li>
       <li class="breadcrumb-item active">Basic classes</li>
       <li class="wy-breadcrumbs-aside">
@@ -174,10 +176,6 @@ unit cells and grid functions.</p>
 <section id="simple-objects">
 <h2>Simple objects<a class="headerlink" href="#simple-objects" title="Permalink to this heading"></a></h2>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.PeriodicTable.html#sisl.PeriodicTable" title="sisl.PeriodicTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PeriodicTable</span></code></a>()</p></td>
 <td><p>Periodic table for creating an <a class="reference internal" href="generated/sisl.Atom.html#sisl.Atom" title="sisl.Atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Atom</span></code></a>, or retrieval of atomic information via atomic numbers</p></td>
@@ -225,10 +223,6 @@ based on these base classes.
 However, it may be beneficial to read the specific matrix
 in <a class="reference internal" href="physics.matrix.html#physics-matrix"><span class="std std-ref">Physical quantites</span></a>.</p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.Quaternion.html#sisl.Quaternion" title="sisl.Quaternion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Quaternion</span></code></a>([angle, v, rad])</p></td>
 <td><p>Quaternion object to enable easy rotational quantities.</p></td>
@@ -252,10 +246,6 @@ and using them will be encouraged in combination with sisl.</p>
 <p>In particular <a class="reference internal" href="generated/sisl.oplist.oplist.html#sisl.oplist.oplist" title="sisl.oplist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">oplist</span></code></a> is useful when calculating averages in Brillouin zones (see
 <a class="reference internal" href="physics.brillouinzone.html#physics-brillouinzone"><span class="std std-ref">Brillouin zone</span></a>).</p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.oplist.oplist.html#sisl.oplist.oplist" title="sisl.oplist.oplist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">oplist</span></code></a>([iterable])</p></td>
 <td><p>list with element-wise operations</p></td>

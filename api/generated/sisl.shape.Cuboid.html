@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.shape.Cuboid &mdash; sisl 0.1.dev1+gd93b38d documentation</title>
+  <title>sisl.shape.Cuboid &mdash; sisl 0.1.dev1+gf943161 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -14,10 +14,8 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -34,14 +32,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> sisl
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            sisl
           </a>
               <div class="version">
-                0.1.dev1+gd93b38d
+                0.1.dev1+gf943161
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -113,7 +115,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">API documentation</a></li>
           <li class="breadcrumb-item"><a href="../utilities.html">Utilities</a></li>
           <li class="breadcrumb-item"><a href="../utilities.shape.html">Shapes</a></li>
@@ -159,7 +161,7 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PureShape</span></code></p>
 <p>A cuboid/rectangular prism (P4)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>v</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><em>(</em><em>3</em><em>,</em><em>) or </em><em>(</em><em>3</em><em>, </em><em>3</em><em>)</em>) – vectors describing the cuboid, if only 3 the cuboid will be
 along the Euclidean vectors.</p></li>
@@ -180,10 +182,6 @@ Not allowed as argument if <a class="reference internal" href="#sisl.shape.Cuboi
 </div>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.shape.Cuboid.copy" title="sisl.shape.Cuboid.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>()</p></td>
 <td><p></p></td>
@@ -253,7 +251,7 @@ Not allowed as argument if <a class="reference internal" href="#sisl.shape.Cuboi
 <span class="sig-name descname"><span class="pre">expand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/shape/prism4.html#Cuboid.expand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.shape.Cuboid.expand" title="Permalink to this definition"></a></dt>
 <dd><p>Expand the cuboid by a constant value along side vectors</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><em>(</em><em>3</em><em>,</em><em>)</em>) – the extension in Ang per cuboid vector.</p>
 </dd>
 </dl>
@@ -270,7 +268,7 @@ Not allowed as argument if <a class="reference internal" href="#sisl.shape.Cuboi
 <span class="sig-name descname"><span class="pre">scale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scale</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/shape/prism4.html#Cuboid.scale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.shape.Cuboid.scale" title="Permalink to this definition"></a></dt>
 <dd><p>Scale the cuboid box size (center is retained)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><em>(</em><em>3</em><em>,</em><em>)</em>) – the scale parameter for each of the vectors defining the <a class="reference internal" href="#sisl.shape.Cuboid" title="sisl.shape.Cuboid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Cuboid</span></code></a></p>
 </dd>
 </dl>
@@ -286,7 +284,7 @@ Not allowed as argument if <a class="reference internal" href="#sisl.shape.Cuboi
 <p>This class should be an attribute of a class. It heavily relies on the <em class="xref py py-obj">__get__</em> special
 method.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – name of the attribute in the class</p></li>
 <li><p><strong>dispatchs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – dictionary of dispatch methods</p></li>
@@ -337,7 +335,7 @@ This controls the dispatcher used if called from a class.</p></li>
 <dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if <em class="xref py py-obj">other</em> is fully within <em class="xref py py-obj">self</em></p>
 <p>If <em class="xref py py-obj">other</em> is an array, an array will be returned for each of these.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>other</strong> (<em>array_like</em>) – the array/object that is checked for containment</p></li>
 <li><p><strong>*args</strong> – passed directly to <a class="reference internal" href="#sisl.shape.Cuboid.within_index" title="sisl.shape.Cuboid.within_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">within_index</span></code></a></p></li>
@@ -352,7 +350,7 @@ This controls the dispatcher used if called from a class.</p></li>
 <span class="sig-name descname"><span class="pre">within_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/shape/prism4.html#Cuboid.within_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.shape.Cuboid.within_index" title="Permalink to this definition"></a></dt>
 <dd><p>Return indices of the <em class="xref py py-obj">other</em> object which are contained in the shape</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>other</strong> (<em>array_like</em>) – the object that is checked for containment</p></li>
 <li><p><strong>tol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – absolute tolerance for boundaries</p></li>

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.StateC &mdash; sisl 0.1.dev1+gd93b38d documentation</title>
+  <title>sisl.physics.StateC &mdash; sisl 0.1.dev1+gf943161 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -14,10 +14,8 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -36,14 +34,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> sisl
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            sisl
           </a>
               <div class="version">
-                0.1.dev1+gd93b38d
+                0.1.dev1+gf943161
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -114,7 +116,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">API documentation</a></li>
           <li class="breadcrumb-item"><a href="../physics.html">Physical objects</a></li>
       <li class="breadcrumb-item active">sisl.physics.StateC</li>
@@ -159,7 +161,7 @@
 <dd><p>Bases: <a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State"><code class="xref py py-class docutils literal notranslate"><span class="pre">State</span></code></a></p>
 <p>An object handling a set of vectors describing a given <em>state</em> with associated coefficients <a class="reference internal" href="#sisl.physics.StateC.c" title="sisl.physics.StateC.c"><code class="xref py py-obj docutils literal notranslate"><span class="pre">c</span></code></a></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>state</strong> (<em>array_like</em>) – state vectors <code class="docutils literal notranslate"><span class="pre">state[i,</span> <span class="pre">:]</span></code> containing the i’th state vector</p></li>
 <li><p><strong>c</strong> (<em>array_like</em>) – coefficients for the states <code class="docutils literal notranslate"><span class="pre">c[i]</span></code> containing the i’th coefficient</p></li>
@@ -173,10 +175,6 @@ This <a class="reference internal" href="#sisl.physics.StateC.info" title="sisl.
 <p>This class should be subclassed!</p>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.StateC.align_norm" title="sisl.physics.StateC.align_norm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">align_norm</span></code></a>(other[, ret_index, inplace])</p></td>
 <td><p>Align <em class="xref py py-obj">self</em> with the site-norms of <em class="xref py py-obj">other</em>, a copy may optionally be returned</p></td>
@@ -284,14 +282,14 @@ This <a class="reference internal" href="#sisl.physics.StateC.info" title="sisl.
 The new states (from <em class="xref py py-obj">self</em>) returned is then ordered such that the index
 <span class="math notranslate nohighlight">\(\alpha \equiv \beta'\)</span> where <span class="math notranslate nohighlight">\(\delta N_{\alpha\beta}\)</span> is smallest.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>other</strong> (<a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State"><em>State</em></a>) – the other state to align against</p></li>
 <li><p><strong>ret_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – also return indices for the swapped indices</p></li>
 <li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – swap states in-place</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>self_swap</strong> (<em>State</em>) – A swapped instance of <em class="xref py py-obj">self</em>, only if <em class="xref py py-obj">inplace</em> is False</p></li>
 <li><p><strong>index</strong> (<em>array of int</em>) – the indices that swaps <em class="xref py py-obj">self</em> to be <code class="docutils literal notranslate"><span class="pre">self_swap</span></code>, i.e. <code class="docutils literal notranslate"><span class="pre">self_swap</span> <span class="pre">=</span> <span class="pre">self.sub(index)</span></code>
@@ -317,7 +315,7 @@ Only if <em class="xref py py-obj">inplace</em> is False and <em class="xref py 
 <dd><p>Align <em class="xref py py-obj">self</em> with the phases for <em class="xref py py-obj">other</em>, a copy may be returned</p>
 <p>States will be rotated by <span class="math notranslate nohighlight">\(\pi\)</span> provided the phase difference between the states are above <span class="math notranslate nohighlight">\(|\Delta\theta| &gt; \pi/2\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>other</strong> (<a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State"><em>State</em></a>) – the other state to align onto this state</p></li>
 <li><p><strong>ret_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – return which indices got swapped</p></li>
@@ -358,7 +356,7 @@ Only if <em class="xref py py-obj">inplace</em> is False and <em class="xref py 
 \[\tilde C_j = e^{i\mathbf k\mathbf r_j} C_j\]</div>
 <p>where <span class="math notranslate nohighlight">\(C_j\)</span> and <span class="math notranslate nohighlight">\(\tilde C_j\)</span> belongs to the <code class="docutils literal notranslate"><span class="pre">r</span></code> and <code class="docutils literal notranslate"><span class="pre">R</span></code> gauge, respectively.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>gauge</strong> (<em>{'R'</em><em>, </em><em>'r'}</em>) – specify the new gauge for the mode coefficients</p></li>
 <li><p><strong>offset</strong> (<em>array_like</em><em>, </em><em>optional</em>) – whether the coordinates should be offset by another phase-factor</p></li>
@@ -378,13 +376,13 @@ Only if <em class="xref py py-obj">inplace</em> is False and <em class="xref py 
 <span class="sig-name descname"><span class="pre">degenerate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eps</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/state.html#StateC.degenerate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.StateC.degenerate" title="Permalink to this definition"></a></dt>
 <dd><p>Find degenerate coefficients with a specified precision</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>eps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – the precision above which coefficients are not considered degenerate</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a list of indices</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a> of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -415,7 +413,7 @@ differences (Berry contribution) and the 1st derivative matrix for correcting th
 to reals. In these cases you should force the state at the <span class="math notranslate nohighlight">\(\Gamma\)</span> point to be calculated
 in complex numbers to enable the correct decoupling.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>order</strong> (<em>{1</em><em>, </em><em>2}</em>) – an integer specifying which order of the derivative is being calculated.</p></li>
 <li><p><strong>degenerate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><em>array_like</em><em>, </em><em>optional</em>) – If a float is passed it is regarded as the degeneracy tolerance used to calculate the degeneracy
@@ -437,7 +435,7 @@ is required to decouple them. See <em class="xref py py-obj">degenerate_dir</em>
 </dl>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><ul class="simple">
 <li><p><em>dv</em> – the 1st derivative, has shape <code class="docutils literal notranslate"><span class="pre">(3,</span> <span class="pre">state.shape[0])</span></code> for <code class="docutils literal notranslate"><span class="pre">matrix=False</span></code>, else
 has shape <code class="docutils literal notranslate"><span class="pre">(3,</span> <span class="pre">state.shape[0],</span> <span class="pre">state.shape[0])</span></code>
@@ -473,7 +471,7 @@ Only returned for <code class="docutils literal notranslate"><span class="pre">o
 <span class="sig-name descname"><span class="pre">inner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ket</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.StateC.inner" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate the inner product as <span class="math notranslate nohighlight">\(\mathbf A_{ij} = \langle\psi_i|\mathbf M|\psi'_j\rangle\)</span></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ket</strong> (<a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State"><em>State</em></a><em>, </em><em>optional</em>) – the ket object to calculate the inner product with, if not passed it will do the inner
 product with itself. The object itself will always be the bra <span class="math notranslate nohighlight">\(\langle\psi_i|\)</span></p></li>
@@ -486,13 +484,13 @@ product with itself. The object itself will always be the bra <span class="math 
 <p class="rubric">Notes</p>
 <p>This does <em>not</em> take into account a possible overlap matrix when non-orthogonal basis sets are used.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – if the number of state coefficients are different for the bra and ket</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a matrix with the sum of inner state products</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -518,12 +516,12 @@ states:</p>
      \\
      \text{const.} &amp;\quad \text{localized state}
     \end{aligned}\right.
- \end{align}</div><p>For further details see <span id="id1">[<a class="reference internal" href="../../references.html#id10" title="N. C. Murphy, R. Wortis, and W. A. Atkinson. Generalized inverse participation ratio as a possible measure of localization for interacting systems. Phys. Rev. B, May 2011. URL: https://doi.org/10.1103/physrevb.83.184206, doi:10.1103/physrevb.83.184206.">4</a>]</span>. Note that for eigen states the IPR reduces to:</p>
+ \end{align}</div><p>For further details see <span id="id1">[<a class="reference internal" href="../../references.html#id10" title="N. C. Murphy, R. Wortis, and W. A. Atkinson. Generalized inverse participation ratio as a possible measure of localization for interacting systems. Phys. Rev. B, May 2011. URL: https://doi.org/10.1103/physrevb.83.184206, doi:10.1103/physrevb.83.184206.">5</a>]</span>. Note that for eigen states the IPR reduces to:</p>
 <div class="math notranslate nohighlight">
 \[I_{q,i} = \sum_\nu |\psi_{i\nu}|^{2q}\]</div>
 <p>since the denominator is <span class="math notranslate nohighlight">\(1^{q} = 1\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>q</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – order parameter for the IPR</p>
 </dd>
 </dl>
@@ -534,11 +532,11 @@ states:</p>
 <span class="sig-name descname"><span class="pre">iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asarray</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.StateC.iter" title="Permalink to this definition"></a></dt>
 <dd><p>An iterator looping over the states in this system</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>asarray</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – if true the yielded values are the state vectors, i.e. a numpy array.
 Otherwise an equivalent object is yielded.</p>
 </dd>
-<dt class="field-even">Yields</dt>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>state</strong> (<em>State</em>) – a state <em>only</em> containing individual elements, if <em class="xref py py-obj">asarray</em> is false</p></li>
 <li><p><strong>state</strong> (<em>numpy.ndarray</em>) – a state <em>only</em> containing individual elements, if <em class="xref py py-obj">asarray</em> is true</p></li>
@@ -552,10 +550,10 @@ Otherwise an equivalent object is yielded.</p>
 <span class="sig-name descname"><span class="pre">norm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.StateC.norm" title="Permalink to this definition"></a></dt>
 <dd><p>Return a vector with the Euclidean norm of each state <span class="math notranslate nohighlight">\(\sqrt{\langle\psi|\psi\rangle}\)</span></p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>the Euclidean norm for each state</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -566,14 +564,14 @@ Otherwise an equivalent object is yielded.</p>
 <span class="sig-name descname"><span class="pre">norm2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.StateC.norm2" title="Permalink to this definition"></a></dt>
 <dd><p>Return a vector with the norm of each state <span class="math notranslate nohighlight">\(\langle\psi|\psi\rangle\)</span></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>sum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – for true only a single number per state will be returned, otherwise the norm
 per basis element will be returned.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>the squared norm for each state</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -591,10 +589,10 @@ per basis element will be returned.</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>a new state with all states normalized, otherwise equal to this</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State">State</a></p>
 </dd>
 </dl>
@@ -605,7 +603,7 @@ per basis element will be returned.</p>
 <span class="sig-name descname"><span class="pre">outer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ket</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.StateC.outer" title="Permalink to this definition"></a></dt>
 <dd><p>Return the outer product by <span class="math notranslate nohighlight">\(\sum_i|\psi_i\rangle\langle\psi'_i|\)</span></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ket</strong> (<a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State"><em>State</em></a><em>, </em><em>optional</em>) – the ket object to calculate the outer product of, if not passed it will do the outer
 product with itself. The object itself will always be the bra <span class="math notranslate nohighlight">\(|\psi_i\rangle\)</span></p></li>
@@ -617,10 +615,10 @@ product with itself. The object itself will always be the bra <span class="math 
 <p class="rubric">Notes</p>
 <p>This does <em>not</em> take into account a possible overlap matrix when non-orthogonal basis sets are used.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>a matrix with the sum of outer state products</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -636,7 +634,7 @@ product with itself. The object itself will always be the bra <span class="math 
 <span class="sig-name descname"><span class="pre">phase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'max'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.StateC.phase" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate the Euler angle (phase) for the elements of the state, in the range <span class="math notranslate nohighlight">\(]-\pi;\pi]\)</span></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>method</strong> (<em>{'max'</em><em>, </em><em>'all'}</em>) – for max, the phase for the element which has the largest absolute magnitude is returned,
 for all, all phases are calculated</p></li>
@@ -651,16 +649,16 @@ for all, all phases are calculated</p></li>
 <span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/state.html#StateC.remove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.StateC.remove" title="Permalink to this definition"></a></dt>
 <dd><p>Return a new state without the specified indices</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>idx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>array_like</em>) – indices that are removed in the returned object</p></li>
 <li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the values will be removed inplace</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a new state without containing the requested elements, only if <em class="xref py py-obj">inplace</em> is false</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#sisl.physics.StateC" title="sisl.physics.StateC">StateC</a></p>
 </dd>
 </dl>
@@ -676,7 +674,7 @@ for all, all phases are calculated</p></li>
 <p>where <span class="math notranslate nohighlight">\(S^\dagger_{\phi-\mathrm{max}}\)</span> is the phase of the component with the largest amplitude
 and <span class="math notranslate nohighlight">\(\phi\)</span> is the angle to align on.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>phi</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – angle to align the state at (in radians), 0 is the positive real axis</p></li>
 <li><p><strong>individual</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the rotation is per state, or a single maximum component is chosen.</p></li>
@@ -696,7 +694,7 @@ and <span class="math notranslate nohighlight">\(\phi\)</span> is the angle to a
 <span class="sig-name descname"><span class="pre">sort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ascending</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/state.html#StateC.sort"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.StateC.sort" title="Permalink to this definition"></a></dt>
 <dd><p>Sort and return a new <a class="reference internal" href="#sisl.physics.StateC" title="sisl.physics.StateC"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StateC</span></code></a> by sorting the coefficients (default to ascending)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>ascending</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – sort the contained elements ascending, else they will be sorted descending</p>
 </dd>
 </dl>
@@ -712,16 +710,16 @@ and <span class="math notranslate nohighlight">\(\phi\)</span> is the angle to a
 <span class="sig-name descname"><span class="pre">sub</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/state.html#StateC.sub"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.StateC.sub" title="Permalink to this definition"></a></dt>
 <dd><p>Return a new state with only the specified states</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>idx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>array_like</em>) – indices that are retained in the returned object</p></li>
 <li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the values will be retained inplace</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a new object with a subset of the states, only if <em class="xref py py-obj">inplace</em> is false</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#sisl.physics.StateC" title="sisl.physics.StateC">StateC</a></p>
 </dd>
 </dl>
@@ -739,7 +737,7 @@ selects which of the <span class="math notranslate nohighlight">\(\mathbf a_i\)<
 to the <span class="math notranslate nohighlight">\(i\)</span>, <span class="math notranslate nohighlight">\(j\)</span> and <span class="math notranslate nohighlight">\(l\)</span> variables. The <em class="xref py py-obj">offset</em> moves the individual states
 by said amount, i.e. <span class="math notranslate nohighlight">\(i\to i+\mathrm{offset}\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – number of repetitions along a specific lattice vector</p></li>
 <li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – lattice vector to tile along</p></li>
@@ -762,7 +760,7 @@ eigenstates</p></li>
 <p>The method is thoroughly explained in <a class="reference internal" href="#sisl.physics.StateC.tile" title="sisl.physics.StateC.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a> while this one only
 selects the corresponding state vector</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>isc</strong> (<em>(</em><em>3</em><em>,</em><em>)</em>) – number of offsets for the statevector</p>
 </dd>
 </dl>

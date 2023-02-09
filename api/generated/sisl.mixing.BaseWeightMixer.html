@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.mixing.BaseHistoryMixer &mdash; sisl 0.1.dev1+gd93b38d documentation</title>
+  <title>sisl.mixing.BaseWeightMixer &mdash; sisl 0.1.dev1+gf943161 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -14,10 +14,8 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -25,7 +23,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="sisl.mixing.LinearMixer" href="sisl.mixing.LinearMixer.html" />
+    <link rel="next" title="sisl.mixing.BaseHistoryWeightMixer" href="sisl.mixing.BaseHistoryWeightMixer.html" />
     <link rel="prev" title="sisl.mixing.BaseMixer" href="sisl.mixing.BaseMixer.html" /> 
 </head>
 
@@ -34,14 +32,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> sisl
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            sisl
           </a>
               <div class="version">
-                0.1.dev1+gd93b38d
+                0.1.dev1+gf943161
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -82,7 +84,9 @@
 <li class="toctree-l3 current"><a class="reference internal" href="../mixing.html#container-classes">Container classes</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="sisl.mixing.History.html">sisl.mixing.History</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.mixing.BaseMixer.html">sisl.mixing.BaseMixer</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">sisl.mixing.BaseHistoryMixer</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">sisl.mixing.BaseWeightMixer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.mixing.BaseHistoryWeightMixer.html">sisl.mixing.BaseHistoryWeightMixer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.mixing.StepMixer.html">sisl.mixing.StepMixer</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../mixing.html#mixing-algorithms">Mixing algorithms</a></li>
@@ -109,12 +113,12 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">API documentation</a></li>
           <li class="breadcrumb-item"><a href="../mixing.html">Mixing self-consistent quantities</a></li>
-      <li class="breadcrumb-item active">sisl.mixing.BaseHistoryMixer</li>
+      <li class="breadcrumb-item active">sisl.mixing.BaseWeightMixer</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../_sources/api/generated/sisl.mixing.BaseHistoryMixer.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/api/generated/sisl.mixing.BaseWeightMixer.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -146,71 +150,54 @@
     text-align: unset;
 }
 </style>
-<section id="sisl-mixing-basehistorymixer">
-<h1>sisl.mixing.BaseHistoryMixer<a class="headerlink" href="#sisl-mixing-basehistorymixer" title="Permalink to this heading"></a></h1>
+<section id="sisl-mixing-baseweightmixer">
+<h1>sisl.mixing.BaseWeightMixer<a class="headerlink" href="#sisl-mixing-baseweightmixer" title="Permalink to this heading"></a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="sisl.mixing.BaseHistoryMixer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.mixing.</span></span><span class="sig-name descname"><span class="pre">BaseHistoryMixer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">history</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.mixing.BaseHistoryMixer" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="sisl.mixing.BaseWeightMixer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.mixing.</span></span><span class="sig-name descname"><span class="pre">BaseWeightMixer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.mixing.BaseWeightMixer" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="sisl.mixing.BaseMixer.html#sisl.mixing.BaseMixer" title="sisl.mixing.BaseMixer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseMixer</span></code></a></p>
-<p>Base class mixer with history</p>
+<p>Base class mixer</p>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.mixing.BaseHistoryMixer.set_history" title="sisl.mixing.BaseHistoryMixer.set_history"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_history</span></code></a>(history)</p></td>
-<td><p>Replace the current history in the mixer with a new one</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.mixing.BaseHistoryMixer.set_weight" title="sisl.mixing.BaseHistoryMixer.set_weight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_weight</span></code></a>(weight)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.mixing.BaseWeightMixer.set_weight" title="sisl.mixing.BaseWeightMixer.set_weight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_weight</span></code></a>(weight)</p></td>
 <td><p>Set a new weight for this mixer</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.mixing.BaseHistoryMixer.history" title="sisl.mixing.BaseHistoryMixer.history"><code class="xref py py-obj docutils literal notranslate"><span class="pre">history</span></code></a></p></td>
-<td><p>History object tracked by this mixer</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.mixing.BaseHistoryMixer.weight" title="sisl.mixing.BaseHistoryMixer.weight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">weight</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.mixing.BaseWeightMixer.weight" title="sisl.mixing.BaseWeightMixer.weight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">weight</span></code></a></p></td>
 <td><p>This mixers mixing weight, the weight is the fractional contribution of the derivative</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py method">
-<dt class="sig sig-object py" id="sisl.mixing.BaseHistoryMixer.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">history</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/mixing/base.html#BaseHistoryMixer.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.mixing.BaseHistoryMixer.__init__" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="sisl.mixing.BaseHistoryMixer.history">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">history</span></span><a class="headerlink" href="#sisl.mixing.BaseHistoryMixer.history" title="Permalink to this definition"></a></dt>
-<dd><p>History object tracked by this mixer</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="sisl.mixing.BaseHistoryMixer.set_history">
-<span class="sig-name descname"><span class="pre">set_history</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">history</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/mixing/base.html#BaseHistoryMixer.set_history"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.mixing.BaseHistoryMixer.set_history" title="Permalink to this definition"></a></dt>
-<dd><p>Replace the current history in the mixer with a new one</p>
+<dt class="sig sig-object py" id="sisl.mixing.BaseWeightMixer.__call__">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.mixing.BaseWeightMixer.__call__" title="Permalink to this definition"></a></dt>
+<dd><p>Mix quantities based on arguments</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>history</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference internal" href="sisl.mixing.History.html#sisl.mixing.History" title="sisl.mixing.History"><em>History</em></a>) – if an int a new History object will be created with that number of history elements
-Otherwise the object will be directly attached to the mixer.</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="sisl.mixing.BaseHistoryMixer.set_weight">
-<span class="sig-name descname"><span class="pre">set_weight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weight</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.mixing.BaseHistoryMixer.set_weight" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="sisl.mixing.BaseWeightMixer.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/mixing/base.html#BaseWeightMixer.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.mixing.BaseWeightMixer.__init__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.mixing.BaseWeightMixer.set_weight">
+<span class="sig-name descname"><span class="pre">set_weight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weight</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/mixing/base.html#BaseWeightMixer.set_weight"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.mixing.BaseWeightMixer.set_weight" title="Permalink to this definition"></a></dt>
 <dd><p>Set a new weight for this mixer</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>weight</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – the new weight for this mixer, it must be bigger than 0</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="sisl.mixing.BaseHistoryMixer.weight">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">weight</span></span><a class="headerlink" href="#sisl.mixing.BaseHistoryMixer.weight" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="sisl.mixing.BaseWeightMixer.weight">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">weight</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></em><a class="headerlink" href="#sisl.mixing.BaseWeightMixer.weight" title="Permalink to this definition"></a></dt>
 <dd><p>This mixers mixing weight, the weight is the fractional contribution of the derivative</p>
 </dd></dl>
 
@@ -223,7 +210,7 @@ Otherwise the object will be directly attached to the mixer.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="sisl.mixing.BaseMixer.html" class="btn btn-neutral float-left" title="sisl.mixing.BaseMixer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="sisl.mixing.LinearMixer.html" class="btn btn-neutral float-right" title="sisl.mixing.LinearMixer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="sisl.mixing.BaseHistoryWeightMixer.html" class="btn btn-neutral float-right" title="sisl.mixing.BaseHistoryWeightMixer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

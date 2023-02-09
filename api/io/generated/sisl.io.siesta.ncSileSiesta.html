@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.ncSileSiesta &mdash; sisl 0.1.dev1+gd93b38d documentation</title>
+  <title>sisl.io.siesta.ncSileSiesta &mdash; sisl 0.1.dev1+gf943161 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -14,10 +14,8 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -34,14 +32,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> sisl
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            sisl
           </a>
               <div class="version">
-                0.1.dev1+gd93b38d
+                0.1.dev1+gf943161
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -139,7 +141,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">API documentation</a></li>
           <li class="breadcrumb-item"><a href="../index.html">Input/Output</a></li>
           <li class="breadcrumb-item"><a href="../siesta.html">Siesta</a></li>
@@ -186,10 +188,6 @@
 <p>Generic NetCDF output file containing a large variety of information</p>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.ncSileSiesta.close" title="sisl.io.siesta.ncSileSiesta.close"><code class="xref py py-obj docutils literal notranslate"><span class="pre">close</span></code></a>()</p></td>
 <td><p></p></td>
@@ -328,7 +326,7 @@
 groups, dimensions, and then variables such that one always ensures correct
 dependencies in the generation of a new <code class="docutils literal notranslate"><span class="pre">SileCDF</span></code>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>group</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code> (<em class="xref py py-obj">True</em>)) – whether the iterator yields <em class="xref py py-obj">Group</em> instances</p></li>
 <li><p><strong>dimension</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code> (<em class="xref py py-obj">True</em>)) – whether the iterator yields <em class="xref py py-obj">Dimension</em> instances</p></li>
@@ -363,7 +361,7 @@ sub-groups this iterator will return.</p></li>
 <span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.siesta.ncSileSiesta.read" title="Permalink to this definition"></a></dt>
 <dd><p>Generic read method which should be overloaded in child-classes</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>kwargs</strong> – keyword arguments will try and search for the attribute <code class="docutils literal notranslate"><span class="pre">read_&lt;&gt;</span></code>
 and call it with the remaining <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> as arguments.</p>
 </dd>
@@ -413,10 +411,10 @@ Hamiltonian. This is counter-intuitive but is required when using PHtrans.</p>
 <span class="sig-name descname"><span class="pre">read_force_constant</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/siesta_nc.html#ncSileSiesta.read_force_constant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.ncSileSiesta.read_force_constant" title="Permalink to this definition"></a></dt>
 <dd><p>Reads the force-constant stored in the nc file</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>force constants</strong> – contains the directions, and 3rd dimensions contains -/+ displacements.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>numpy.ndarray with 5 dimensions containing all the forces. The 2nd dimensions contains</p>
 </dd>
 </dl>
@@ -434,7 +432,7 @@ Hamiltonian. This is counter-intuitive but is required when using PHtrans.</p>
 <dd><p>Reads a grid in the current Siesta.nc file</p>
 <p>Enables the reading and processing of the grids created by Siesta</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – name of the grid variable to read</p></li>
 <li><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>array_like</em><em>, </em><em>optional</em>) – the spin-index for retrieving one of the components. If a vector
@@ -481,7 +479,7 @@ Default to the first component.</p></li>
 <span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.siesta.ncSileSiesta.write" title="Permalink to this definition"></a></dt>
 <dd><p>Generic write method which should be overloaded in child-classes</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>**kwargs</strong> – keyword arguments will try and search for the attribute <em class="xref py py-obj">write_</em>
 and call it with the remaining <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> as arguments.</p>
 </dd>
@@ -493,7 +491,7 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 <span class="sig-name descname"><span class="pre">write_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atom</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/siesta_nc.html#ncSileSiesta.write_basis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.ncSileSiesta.write_basis" title="Permalink to this definition"></a></dt>
 <dd><p>Write the current atoms orbitals as the basis</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>atom</strong> (<a class="reference internal" href="../../generated/sisl.Atoms.html#sisl.Atoms" title="sisl.Atoms"><em>Atoms</em></a>) – atom specifications to write.</p>
 </dd>
 </dl>
@@ -504,7 +502,7 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 <span class="sig-name descname"><span class="pre">write_density_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DM</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/siesta_nc.html#ncSileSiesta.write_density_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.ncSileSiesta.write_density_matrix" title="Permalink to this definition"></a></dt>
 <dd><p>Writes density matrix model to file</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>DM</strong> (<a class="reference internal" href="../../generated/sisl.physics.DensityMatrix.html#sisl.physics.DensityMatrix" title="sisl.physics.DensityMatrix"><em>DensityMatrix</em></a>) – the model to be saved in the NC file</p>
 </dd>
 </dl>
@@ -515,7 +513,7 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 <span class="sig-name descname"><span class="pre">write_dynamical_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">D</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/siesta_nc.html#ncSileSiesta.write_dynamical_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.ncSileSiesta.write_dynamical_matrix" title="Permalink to this definition"></a></dt>
 <dd><p>Writes dynamical matrix model to file</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>D</strong> (<a class="reference internal" href="../../generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix" title="sisl.physics.DynamicalMatrix"><em>DynamicalMatrix</em></a>) – the model to be saved in the NC file</p>
 </dd>
 </dl>
@@ -526,7 +524,7 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 <span class="sig-name descname"><span class="pre">write_energy_density_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">EDM</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/siesta_nc.html#ncSileSiesta.write_energy_density_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.ncSileSiesta.write_energy_density_matrix" title="Permalink to this definition"></a></dt>
 <dd><p>Writes energy density matrix model to file</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>EDM</strong> (<a class="reference internal" href="../../generated/sisl.physics.EnergyDensityMatrix.html#sisl.physics.EnergyDensityMatrix" title="sisl.physics.EnergyDensityMatrix"><em>EnergyDensityMatrix</em></a>) – the model to be saved in the NC file</p>
 </dd>
 </dl>
@@ -543,7 +541,7 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 <span class="sig-name descname"><span class="pre">write_hamiltonian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">H</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/siesta_nc.html#ncSileSiesta.write_hamiltonian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.ncSileSiesta.write_hamiltonian" title="Permalink to this definition"></a></dt>
 <dd><p>Writes Hamiltonian model to file</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>H</strong> (<a class="reference internal" href="../../generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian" title="sisl.physics.Hamiltonian"><em>Hamiltonian</em></a>) – the model to be saved in the NC file</p></li>
 <li><p><strong>Ef</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – the Fermi level of the electronic structure (in eV), default to 0.</p></li>

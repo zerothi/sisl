@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.brillouinzone &mdash; sisl 0.1.dev1+gd93b38d documentation</title>
+  <title>sisl.physics.brillouinzone &mdash; sisl 0.1.dev1+gf943161 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -13,10 +13,8 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -31,14 +29,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> sisl
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            sisl
           </a>
               <div class="version">
-                0.1.dev1+gd93b38d
+                0.1.dev1+gf943161
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -87,7 +89,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
       <li class="breadcrumb-item active">sisl.physics.brillouinzone</li>
       <li class="wy-breadcrumbs-aside">
@@ -365,8 +367,8 @@
 <span class="sd">       an array of floats which may be turned into a `SuperCell`</span>
 <span class="sd">    k : array_like, optional</span>
 <span class="sd">       k-points that this Brillouin zone represents</span>
-<span class="sd">    weight : array_like, optional</span>
-<span class="sd">       weights for the k-points. Must have the same length as `k`.</span>
+<span class="sd">    weight : scalar or array_like, optional</span>
+<span class="sd">       weights for the k-points.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="BrillouinZone.__init__"><a class="viewcode-back" href="../../../api/generated/sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -380,13 +382,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">onesd</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_k</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">emptyd</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">weight</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_k</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">fulld</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_w</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">(</span><span class="n">weight</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">.__init__ requires input k-points and weights to be of equal length.&#39;</span><span class="p">)</span></div>
+                <span class="n">weight</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_k</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_w</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">weight</span></div>
 
     <span class="n">apply</span> <span class="o">=</span> <span class="n">BrillouinZoneDispatcher</span><span class="p">(</span><span class="s2">&quot;apply&quot;</span><span class="p">,</span>
                                     <span class="c1"># Do not allow class dispatching</span>
@@ -409,6 +408,15 @@
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">SuperCell</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span></div>
 
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; String representation of the BrillouinZone &quot;&quot;&quot;</span>
+        <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">SuperCell</span><span class="p">):</span>
+            <span class="n">parent</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> &quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">parent</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">parent</span><span class="o">.</span><span class="n">sc</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> &quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">nk: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">parent</span><span class="si">}</span><span class="se">\n}}</span><span class="s2">&quot;</span>
+
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Return dictionary with the current state &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
@@ -426,14 +434,49 @@
         <span class="n">parent</span><span class="o">.</span><span class="n">__setstate__</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;parent&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_parent</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; String representation of the BrillouinZone &quot;&quot;&quot;</span>
-        <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">SuperCell</span><span class="p">):</span>
-            <span class="n">parent</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> &quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">parent</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">parent</span><span class="o">.</span><span class="n">sc</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> &quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">nk: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">parent</span><span class="si">}</span><span class="se">\n}}</span><span class="s2">&quot;</span>
+<div class="viewcode-block" id="BrillouinZone.merge"><a class="viewcode-back" href="../../../api/generated/sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone.merge">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="n">bzs</span><span class="p">,</span> <span class="n">weight_scale</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Merge several BrillouinZone objects into one</span>
+
+<span class="sd">        The merging strategy only stores the new list of k-points and weights.</span>
+<span class="sd">        Information retained in the merged objects will not be stored.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        bzs : list-like of BrillouinZone objects</span>
+<span class="sd">           each element is a BrillouinZone object with ``bzs[i].k`` and ``bzs[i].weight``</span>
+<span class="sd">           fields.</span>
+<span class="sd">        weight_scale : list-like or float</span>
+<span class="sd">           these are matched item-wise with `bzs` and applied to.</span>
+<span class="sd">           Internally ``itertools.zip_longest(fillvalue=weight_scale[-1])`` will be</span>
+<span class="sd">           used to extend for all `bzs`.</span>
+<span class="sd">        parent : object, optional</span>
+<span class="sd">           Associated parent in the returned object, will default to ``bzs[0].parent``</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        BrillouinZone:</span>
+<span class="sd">            even if all objects are not BrillouinZone objects the returned object</span>
+<span class="sd">            will be.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">weight_scale</span><span class="p">,</span> <span class="n">Real</span><span class="p">):</span>
+            <span class="n">weight_scale</span> <span class="o">=</span> <span class="p">[</span><span class="n">weight_scale</span><span class="p">]</span>
+
+        <span class="c1"># check for lengths (scales cannot be longer!)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bzs</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">weight_scale</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;BrillouinZone.merge requires length of weight_scale to be smaller or equal to &quot;</span>
+                             <span class="s2">&quot;the objects.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">parent</span> <span class="o">=</span> <span class="n">bzs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">parent</span>
+
+        <span class="n">k</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">bz</span><span class="p">,</span> <span class="n">scale</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">zip_longest</span><span class="p">(</span><span class="n">bzs</span><span class="p">,</span> <span class="n">weight_scale</span><span class="p">,</span> <span class="n">fillvalue</span><span class="o">=</span><span class="n">weight_scale</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="n">k</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bz</span><span class="o">.</span><span class="n">k</span><span class="p">)</span>
+            <span class="n">w</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bz</span><span class="o">.</span><span class="n">weight</span> <span class="o">*</span> <span class="n">scale</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">BrillouinZone</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">w</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="BrillouinZone.volume"><a class="viewcode-back" href="../../../api/generated/sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone.volume">[docs]</a>    <span class="k">def</span> <span class="nf">volume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ret_dim</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Calculate the volume of the full Brillouin zone of the parent</span>
@@ -586,9 +629,9 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Calculate the required number of points</span>
             <span class="n">N</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">kR</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="n">N_or_dk</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">N</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">:</span>
-                <span class="n">N</span> <span class="o">=</span> <span class="mi">4</span>
-                <span class="n">info</span><span class="p">(</span><span class="s1">&#39;BrillouinZone.param_circle increased the number of circle points to 4.&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">N</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">N</span> <span class="o">=</span> <span class="mi">2</span>
+                <span class="n">info</span><span class="p">(</span><span class="s1">&#39;BrillouinZone.param_circle increased the number of circle points to 2.&#39;</span><span class="p">)</span>
 
         <span class="c1"># Conversion object</span>
         <span class="n">bz</span> <span class="o">=</span> <span class="n">BrillouinZone</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>

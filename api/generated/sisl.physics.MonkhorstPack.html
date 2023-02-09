@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.MonkhorstPack &mdash; sisl 0.1.dev1+gd93b38d documentation</title>
+  <title>sisl.physics.MonkhorstPack &mdash; sisl 0.1.dev1+gf943161 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -14,10 +14,8 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -36,14 +34,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> sisl
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            sisl
           </a>
               <div class="version">
-                0.1.dev1+gd93b38d
+                0.1.dev1+gf943161
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -114,7 +116,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">API documentation</a></li>
           <li class="breadcrumb-item"><a href="../physics.html">Physical objects</a></li>
           <li class="breadcrumb-item"><a href="../physics.brillouinzone.html">Brillouin zone</a></li>
@@ -160,7 +162,7 @@
 <dd><p>Bases: <a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><code class="xref py py-class docutils literal notranslate"><span class="pre">BrillouinZone</span></code></a></p>
 <p>Create a Monkhorst-Pack grid for the Brillouin zone</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>parent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><em>object</em></a><em> or </em><em>array_like</em>) – An object with associated <em class="xref py py-obj">parent.cell</em> and <em class="xref py py-obj">parent.rcell</em> or
 an array of floats which may be turned into a <em class="xref py py-obj">SuperCell</em></p></li>
@@ -187,10 +189,6 @@ are normalized to the entire BZ.</p></li>
 </div>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.copy" title="sisl.physics.MonkhorstPack.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>([parent])</p></td>
 <td><p>Create a copy of this object, optionally changing the parent</p></td>
@@ -204,43 +202,46 @@ are normalized to the entire BZ.</p></li>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.iter" title="sisl.physics.MonkhorstPack.iter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter</span></code></a>([ret_weight])</p></td>
 <td><p>An iterator for the k-points and (possibly) the weights</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.param_circle" title="sisl.physics.MonkhorstPack.param_circle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">param_circle</span></code></a>(parent, N_or_dk, kR, normal, origin)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.merge" title="sisl.physics.MonkhorstPack.merge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge</span></code></a>(bzs[, weight_scale, parent])</p></td>
+<td><p>Merge several BrillouinZone objects into one</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.param_circle" title="sisl.physics.MonkhorstPack.param_circle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">param_circle</span></code></a>(parent, N_or_dk, kR, normal, origin)</p></td>
 <td><p>Create a parameterized k-point list where the k-points are generated on a circle around an origin</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.parametrize" title="sisl.physics.MonkhorstPack.parametrize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parametrize</span></code></a>(parent, func, N, *args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.parametrize" title="sisl.physics.MonkhorstPack.parametrize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parametrize</span></code></a>(parent, func, N, *args, **kwargs)</p></td>
 <td><p>Generate a new <a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BrillouinZone</span></code></a> object with k-points parameterized via the function <em class="xref py py-obj">func</em> in <em class="xref py py-obj">N</em> separations</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.replace" title="sisl.physics.MonkhorstPack.replace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">replace</span></code></a>(k, mp[, displacement, as_index, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.replace" title="sisl.physics.MonkhorstPack.replace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">replace</span></code></a>(k, mp[, displacement, as_index, ...])</p></td>
 <td><p>Replace a k-point with a new set of k-points from a Monkhorst-Pack grid</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.set_parent" title="sisl.physics.MonkhorstPack.set_parent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_parent</span></code></a>(parent)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.set_parent" title="sisl.physics.MonkhorstPack.set_parent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_parent</span></code></a>(parent)</p></td>
 <td><p>Update the parent associated to this object</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.tocartesian" title="sisl.physics.MonkhorstPack.tocartesian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tocartesian</span></code></a>(k)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.tocartesian" title="sisl.physics.MonkhorstPack.tocartesian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tocartesian</span></code></a>(k)</p></td>
 <td><p>Transfer a k-point in reduced coordinates to the Cartesian coordinates</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.toreduced" title="sisl.physics.MonkhorstPack.toreduced"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toreduced</span></code></a>(k)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.toreduced" title="sisl.physics.MonkhorstPack.toreduced"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toreduced</span></code></a>(k)</p></td>
 <td><p>Transfer a k-point in Cartesian coordinates to the reduced coordinates</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.volume" title="sisl.physics.MonkhorstPack.volume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">volume</span></code></a>([ret_dim, periodic])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.volume" title="sisl.physics.MonkhorstPack.volume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">volume</span></code></a>([ret_dim, periodic])</p></td>
 <td><p>Calculate the volume of the full Brillouin zone of the parent</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.write" title="sisl.physics.MonkhorstPack.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(sile, *args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.write" title="sisl.physics.MonkhorstPack.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(sile, *args, **kwargs)</p></td>
 <td><p>Writes k-points to a <a class="reference internal" href="../io/generated/sisl.io.tableSile.html#sisl.io.tableSile" title="sisl.io.tableSile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tableSile</span></code></a>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.apply" title="sisl.physics.MonkhorstPack.apply"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.apply" title="sisl.physics.MonkhorstPack.apply"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply</span></code></a></p></td>
 <td><p>Loop over all k-points by applying <em class="xref py py-obj">parent</em> methods for all k.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.cell" title="sisl.physics.MonkhorstPack.cell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cell</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.cell" title="sisl.physics.MonkhorstPack.cell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cell</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.k" title="sisl.physics.MonkhorstPack.k"><code class="xref py py-obj docutils literal notranslate"><span class="pre">k</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.k" title="sisl.physics.MonkhorstPack.k"><code class="xref py py-obj docutils literal notranslate"><span class="pre">k</span></code></a></p></td>
 <td><p>A list of all k-points (if available)</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.rcell" title="sisl.physics.MonkhorstPack.rcell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rcell</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.rcell" title="sisl.physics.MonkhorstPack.rcell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rcell</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.weight" title="sisl.physics.MonkhorstPack.weight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">weight</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.MonkhorstPack.weight" title="sisl.physics.MonkhorstPack.weight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">weight</span></code></a></p></td>
 <td><p>Weight of the k-points in the <a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BrillouinZone</span></code></a> object</p></td>
 </tr>
 </tbody>
@@ -274,7 +275,7 @@ and passing <a class="reference internal" href="#sisl.physics.MonkhorstPack.k" t
 <li><p><em class="xref py py-obj">apply.none</em>, specialized method that is mainly useful when wrapping methods</p></li>
 <li><p><em class="xref py py-obj">apply.list</em> same as <em class="xref py py-obj">apply.array</em> but using Python list as return value</p></li>
 <li><p><em class="xref py py-obj">apply.oplist</em> using <a class="reference internal" href="sisl.oplist.oplist.html#sisl.oplist.oplist" title="sisl.oplist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.oplist</span></code></a> allows greater flexibility for mathematical operations element wise</p></li>
-<li><p><em class="xref py py-obj">apply.datarray</em> if <a class="reference external" href="https://docs.xarray.dev/en/stable/index.html#module-xarray" title="(in xarray v2023.1.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray</span></code></a> is available one can retrieve an <a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2023.1.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a> instance</p></li>
+<li><p><em class="xref py py-obj">apply.datarray</em> if <a class="reference external" href="https://docs.xarray.dev/en/stable/index.html#module-xarray" title="(in xarray v2023.2.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray</span></code></a> is available one can retrieve an <a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2023.2.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a> instance</p></li>
 </ul>
 <p>Please see <a class="reference internal" href="../physics.brillouinzone.html#physics-brillouinzone"><span class="std std-ref">Brillouin zone</span></a> for further examples.</p>
 </dd></dl>
@@ -289,7 +290,7 @@ and passing <a class="reference internal" href="#sisl.physics.MonkhorstPack.k" t
 <span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/brillouinzone.html#MonkhorstPack.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.MonkhorstPack.copy" title="Permalink to this definition"></a></dt>
 <dd><p>Create a copy of this object, optionally changing the parent</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>parent</strong> (<em>optional</em>) – change the parent</p>
 </dd>
 </dl>
@@ -301,7 +302,7 @@ and passing <a class="reference internal" href="#sisl.physics.MonkhorstPack.k" t
 <dd><p>Create a grid of <em class="xref py py-obj">n</em> points with an offset of <em class="xref py py-obj">displ</em> and sampling <em class="xref py py-obj">size</em> around <em class="xref py py-obj">displ</em></p>
 <p>The <span class="math notranslate nohighlight">\(k\)</span>-points are <span class="math notranslate nohighlight">\(\Gamma\)</span> centered.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – number of points in the grid. If <em class="xref py py-obj">trs</em> is <code class="docutils literal notranslate"><span class="pre">True</span></code> this may be smaller than <em class="xref py py-obj">n</em></p></li>
 <li><p><strong>displ</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – the displacement of the grid</p></li>
@@ -310,7 +311,7 @@ and passing <a class="reference internal" href="#sisl.physics.MonkhorstPack.k" t
 <li><p><strong>trs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether time-reversal-symmetry is applied</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>k</strong> (<em>numpy.ndarray</em>) – the list of k-points in the Brillouin zone to be sampled</p></li>
 <li><p><strong>w</strong> (<em>numpy.ndarray</em>) – weights for the k-points</p></li>
@@ -325,13 +326,13 @@ and passing <a class="reference internal" href="#sisl.physics.MonkhorstPack.k" t
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">in_primitive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.MonkhorstPack.in_primitive" title="Permalink to this definition"></a></dt>
 <dd><p>Move the k-point into the primitive point(s) ]-0.5 ; 0.5]</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>k</strong> (<em>array_like</em>) – k-point(s) to move into the primitive cell</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>all k-points moved into the primitive cell</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -342,10 +343,10 @@ and passing <a class="reference internal" href="#sisl.physics.MonkhorstPack.k" t
 <span class="sig-name descname"><span class="pre">iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ret_weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.MonkhorstPack.iter" title="Permalink to this definition"></a></dt>
 <dd><p>An iterator for the k-points and (possibly) the weights</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>ret_weight</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – if true, also yield the weight for the respective k-point</p>
 </dd>
-<dt class="field-even">Yields</dt>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>kpt</strong> (<em>k-point</em>)</p></li>
 <li><p><strong>weight</strong> (weight of k-point, only if <em class="xref py py-obj">ret_weight</em> is true.)</p></li>
@@ -361,6 +362,33 @@ and passing <a class="reference internal" href="#sisl.physics.MonkhorstPack.k" t
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.MonkhorstPack.merge">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bzs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.MonkhorstPack.merge" title="Permalink to this definition"></a></dt>
+<dd><p>Merge several BrillouinZone objects into one</p>
+<p>The merging strategy only stores the new list of k-points and weights.
+Information retained in the merged objects will not be stored.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bzs</strong> (<em>list-like</em><em> of </em><em>BrillouinZone objects</em>) – each element is a BrillouinZone object with <code class="docutils literal notranslate"><span class="pre">bzs[i].k</span></code> and <code class="docutils literal notranslate"><span class="pre">bzs[i].weight</span></code>
+fields.</p></li>
+<li><p><strong>weight_scale</strong> (<em>list-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – these are matched item-wise with <em class="xref py py-obj">bzs</em> and applied to.
+Internally <code class="docutils literal notranslate"><span class="pre">itertools.zip_longest(fillvalue=weight_scale[-1])</span></code> will be
+used to extend for all <em class="xref py py-obj">bzs</em>.</p></li>
+<li><p><strong>parent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><em>object</em></a><em>, </em><em>optional</em>) – Associated parent in the returned object, will default to <code class="docutils literal notranslate"><span class="pre">bzs[0].parent</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>even if all objects are not BrillouinZone objects the returned object
+will be.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone">BrillouinZone</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.MonkhorstPack.param_circle">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">param_circle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_or_dk</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.MonkhorstPack.param_circle" title="Permalink to this definition"></a></dt>
 <dd><p>Create a parameterized k-point list where the k-points are generated on a circle around an origin</p>
@@ -369,7 +397,7 @@ To generate a perfect circle in units of the reciprocal lattice vectors one can
 generate the circle for a diagonal supercell with side-length <span class="math notranslate nohighlight">\(2\pi\)</span>, see
 example below.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>parent</strong> (<a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><em>SuperCell</em></a><em>, or </em><em>SuperCellChild</em>) – the parent object</p></li>
 <li><p><strong>N_or_dk</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – number of k-points generated using the parameterization (if an integer),
@@ -396,10 +424,10 @@ the number of points increased to 4.</p></li>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>with the parameterized k-points.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone">BrillouinZone</a></p>
 </dd>
 </dl>
@@ -412,7 +440,7 @@ the number of points increased to 4.</p></li>
 <p>Generator of a parameterized Brillouin zone object that contains a parameterized k-point
 list.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>parent</strong> (<a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><em>SuperCell</em></a><em>, or </em><em>SuperCellChild</em>) – the object that the returned object will contain as parent</p></li>
 <li><p><strong>func</strong> (<em>callable</em>) – <p>method that parameterizes the k-points, <em>must</em> at least accept three arguments,
@@ -461,7 +489,7 @@ lists accordingly.</p></li>
 such that the k-points are replaced.
 This enables one to zoom in on specific points in the Brillouin zone for detailed analysis.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>k</strong> (<em>array_like</em>) – k-point in this object to replace, if <em class="xref py py-obj">as_index</em> is true, it will be regarded as integer
 positions of the k-points to replace, otherwise the indices of the k-points will be located
@@ -503,7 +531,7 @@ a 4x4x1 Monkhorst-Pack grid.</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>SislError</strong> – if the size of the replacement <a class="reference internal" href="#sisl.physics.MonkhorstPack" title="sisl.physics.MonkhorstPack"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MonkhorstPack</span></code></a> grid is not compatible with the k-point spacing in this object.</p>
 </dd>
 </dl>
@@ -514,7 +542,7 @@ a 4x4x1 Monkhorst-Pack grid.</p>
 <span class="sig-name descname"><span class="pre">set_parent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.MonkhorstPack.set_parent" title="Permalink to this definition"></a></dt>
 <dd><p>Update the parent associated to this object</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>parent</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><em>object</em></a><em> or </em><em>array_like</em>) – an object containing cell vectors</p>
 </dd>
 </dl>
@@ -525,13 +553,13 @@ a 4x4x1 Monkhorst-Pack grid.</p>
 <span class="sig-name descname"><span class="pre">tocartesian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.MonkhorstPack.tocartesian" title="Permalink to this definition"></a></dt>
 <dd><p>Transfer a k-point in reduced coordinates to the Cartesian coordinates</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – k-point in reduced coordinates</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>in units of 1/Ang</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -542,13 +570,13 @@ a 4x4x1 Monkhorst-Pack grid.</p>
 <span class="sig-name descname"><span class="pre">toreduced</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.MonkhorstPack.toreduced" title="Permalink to this definition"></a></dt>
 <dd><p>Transfer a k-point in Cartesian coordinates to the reduced coordinates</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – k-point in Cartesian coordinates</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>in units of reciprocal lattice vectors ]-0.5 ; 0.5] (if k is in the primitive cell)</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -564,14 +592,14 @@ have auxilliary supercells that can contribute to Brillouin zone integrals.
 Therefore the returned value will have differing units depending on
 dimensionality.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ret_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – also return the dimensionality of the system</p></li>
 <li><p><strong>periodic</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – estimate the volume using only the directions indexed by this array.
 The default value is <em class="xref py py-obj">(self.parent.nsc &gt; 1).nonzero()[0]</em>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><em>vol</em> – the volume of the Brillouin zone. Units are Ang^D with D being the dimensionality.
 For 0D it will return 0.</p></li>

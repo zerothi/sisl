@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.DynamicalMatrix &mdash; sisl 0.1.dev1+gd93b38d documentation</title>
+  <title>sisl.physics.DynamicalMatrix &mdash; sisl 0.1.dev1+gf943161 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -14,10 +14,8 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -36,14 +34,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> sisl
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            sisl
           </a>
               <div class="version">
-                0.1.dev1+gd93b38d
+                0.1.dev1+gf943161
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -116,7 +118,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">API documentation</a></li>
           <li class="breadcrumb-item"><a href="../physics.html">Physical objects</a></li>
           <li class="breadcrumb-item"><a href="../physics.matrix.html">Physical quantites</a></li>
@@ -163,10 +165,6 @@
 <p>Dynamical matrix of a geometry</p>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.DynamicalMatrix.Dk" title="sisl.physics.DynamicalMatrix.Dk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Dk</span></code></a>([k, dtype, gauge, format])</p></td>
 <td><p>Setup the dynamical matrix for a given k-point</p></td>
@@ -181,7 +179,7 @@
 <td><p>Add two sparse matrices by adding the parameters to one set.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.DynamicalMatrix.append" title="sisl.physics.DynamicalMatrix.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code></a>(other, axis[, eps, scale])</p></td>
-<td><p>Append <em class="xref py py-obj">other</em> along <em class="xref py py-obj">axis</em> to construct a new connected sparse matrix</p></td>
+<td><p>Append <cite>other</cite> along <cite>axis</cite> to construct a new connected sparse matrix</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.DynamicalMatrix.apply_newton" title="sisl.physics.DynamicalMatrix.apply_newton"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply_newton</span></code></a>()</p></td>
 <td><p>Sometimes the dynamical matrix does not obey Newtons 3rd law.</p></td>
@@ -193,7 +191,7 @@
 <td><p>A copy of this object</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.DynamicalMatrix.create_construct" title="sisl.physics.DynamicalMatrix.create_construct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_construct</span></code></a>(R, param)</p></td>
-<td><p>Create a simple function for passing to the <a class="reference internal" href="#sisl.physics.DynamicalMatrix.construct" title="sisl.physics.DynamicalMatrix.construct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">construct</span></code></a> function.</p></td>
+<td><p>Create a simple function for passing to the <cite>construct</cite> function.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.DynamicalMatrix.dDk" title="sisl.physics.DynamicalMatrix.dDk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dDk</span></code></a>([k, dtype, gauge, format])</p></td>
 <td><p>Setup the dynamical matrix derivative for a given k-point</p></td>
@@ -208,16 +206,16 @@
 <td><p>Setup the double <span class="math notranslate nohighlight">\(k\)</span>-derivatie of the overlap matrix for a given k-point</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.DynamicalMatrix.edges" title="sisl.physics.DynamicalMatrix.edges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edges</span></code></a>([atoms, exclude, orbitals])</p></td>
-<td><p>Retrieve edges (connections) for all <em class="xref py py-obj">atoms</em></p></td>
+<td><p>Retrieve edges (connections) for all <cite>atoms</cite></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.DynamicalMatrix.eig" title="sisl.physics.DynamicalMatrix.eig"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eig</span></code></a>([k, gauge, eigvals_only])</p></td>
 <td><p>Returns the eigenvalues of the physical quantity (using the non-Hermitian solver)</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.DynamicalMatrix.eigenmode" title="sisl.physics.DynamicalMatrix.eigenmode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eigenmode</span></code></a>([k, gauge])</p></td>
-<td><p>Calculate the eigenmodes at <em class="xref py py-obj">k</em> and return an <code class="xref py py-obj docutils literal notranslate"><span class="pre">EigenmodePhonon</span></code> object containing all eigenmodes</p></td>
+<td><p>Calculate the eigenmodes at <cite>k</cite> and return an <cite>EigenmodePhonon</cite> object containing all eigenmodes</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.DynamicalMatrix.eigenvalue" title="sisl.physics.DynamicalMatrix.eigenvalue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eigenvalue</span></code></a>([k, gauge])</p></td>
-<td><p>Calculate the eigenvalues at <em class="xref py py-obj">k</em> and return an <code class="xref py py-obj docutils literal notranslate"><span class="pre">EigenvaluePhonon</span></code> object containing all eigenvalues for a given <em class="xref py py-obj">k</em></p></td>
+<td><p>Calculate the eigenvalues at <cite>k</cite> and return an <cite>EigenvaluePhonon</cite> object containing all eigenvalues for a given <cite>k</cite></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.DynamicalMatrix.eigh" title="sisl.physics.DynamicalMatrix.eigh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eigh</span></code></a>([k, gauge, eigvals_only])</p></td>
 <td><p>Returns the eigenvalues of the physical quantity</p></td>
@@ -235,7 +233,7 @@
 <td><p>Finalizes the model</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.DynamicalMatrix.fromsp" title="sisl.physics.DynamicalMatrix.fromsp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fromsp</span></code></a>(geometry, P[, S])</p></td>
-<td><p>Create a sparse model from a preset <em class="xref py py-obj">Geometry</em> and a list of sparse matrices</p></td>
+<td><p>Create a sparse model from a preset <cite>Geometry</cite> and a list of sparse matrices</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.DynamicalMatrix.iter_nnz" title="sisl.physics.DynamicalMatrix.iter_nnz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_nnz</span></code></a>([atoms, orbitals])</p></td>
 <td><p>Iterations of the non-zero elements</p></td>
@@ -247,22 +245,22 @@
 <td><p>Indices row and column indices where non-zero elements exists</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.DynamicalMatrix.prepend" title="sisl.physics.DynamicalMatrix.prepend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepend</span></code></a>(other, axis[, eps, scale])</p></td>
-<td><p>See <a class="reference internal" href="#sisl.physics.DynamicalMatrix.append" title="sisl.physics.DynamicalMatrix.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code></a> for details</p></td>
+<td><p>See <cite>append</cite> for details</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.DynamicalMatrix.read" title="sisl.physics.DynamicalMatrix.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(sile, *args, **kwargs)</p></td>
-<td><p>Reads dynamical matrix from <em class="xref py py-obj">Sile</em> using <em class="xref py py-obj">read_dynamical_matrix</em>.</p></td>
+<td><p>Reads dynamical matrix from <cite>Sile</cite> using <cite>read_dynamical_matrix</cite>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.DynamicalMatrix.remove" title="sisl.physics.DynamicalMatrix.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a>(atoms)</p></td>
-<td><p>Remove a subset of this sparse matrix by only retaining the atoms corresponding to <em class="xref py py-obj">atoms</em></p></td>
+<td><p>Remove a subset of this sparse matrix by only retaining the atoms corresponding to <cite>atoms</cite></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.DynamicalMatrix.remove_orbital" title="sisl.physics.DynamicalMatrix.remove_orbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_orbital</span></code></a>(atoms, orbitals)</p></td>
-<td><p>Remove a subset of orbitals on <em class="xref py py-obj">atoms</em> according to <em class="xref py py-obj">orbitals</em></p></td>
+<td><p>Remove a subset of orbitals on <cite>atoms</cite> according to <cite>orbitals</cite></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.DynamicalMatrix.repeat" title="sisl.physics.DynamicalMatrix.repeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat</span></code></a>(reps, axis)</p></td>
-<td><p>Create a repeated sparse orbital object, equivalent to <em class="xref py py-obj">Geometry.repeat</em></p></td>
+<td><p>Create a repeated sparse orbital object, equivalent to <cite>Geometry.repeat</cite></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.DynamicalMatrix.replace" title="sisl.physics.DynamicalMatrix.replace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">replace</span></code></a>(atoms, other[, other_atoms, eps, scale])</p></td>
-<td><p>Replace <em class="xref py py-obj">atoms</em> in <em class="xref py py-obj">self</em> with <em class="xref py py-obj">other_atoms</em> in <em class="xref py py-obj">other</em> and retain couplings between them</p></td>
+<td><p>Replace <cite>atoms</cite> in <cite>self</cite> with <cite>other_atoms</cite> in <cite>other</cite> and retain couplings between them</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.DynamicalMatrix.reset" title="sisl.physics.DynamicalMatrix.reset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reset</span></code></a>([dim, dtype, nnzpr])</p></td>
 <td><p>The sparsity pattern has all elements removed and everything is reset.</p></td>
@@ -280,16 +278,16 @@
 <td><p>Compare two sparse objects and check whether they have the same entries.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.DynamicalMatrix.sub" title="sisl.physics.DynamicalMatrix.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub</span></code></a>(atoms)</p></td>
-<td><p>Create a subset of this sparse matrix by only retaining the atoms corresponding to <em class="xref py py-obj">atoms</em></p></td>
+<td><p>Create a subset of this sparse matrix by only retaining the atoms corresponding to <cite>atoms</cite></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.DynamicalMatrix.sub_orbital" title="sisl.physics.DynamicalMatrix.sub_orbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub_orbital</span></code></a>(atoms, orbitals)</p></td>
-<td><p>Retain only a subset of the orbitals on <em class="xref py py-obj">atoms</em> according to <em class="xref py py-obj">orbitals</em></p></td>
+<td><p>Retain only a subset of the orbitals on <cite>atoms</cite> according to <cite>orbitals</cite></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.DynamicalMatrix.swap" title="sisl.physics.DynamicalMatrix.swap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">swap</span></code></a>(a, b)</p></td>
 <td><p>Swaps atoms in the sparse geometry to obtain a new order of atoms</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.DynamicalMatrix.tile" title="sisl.physics.DynamicalMatrix.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a>(reps, axis)</p></td>
-<td><p>Create a tiled sparse orbital object, equivalent to <em class="xref py py-obj">Geometry.tile</em></p></td>
+<td><p>Create a tiled sparse orbital object, equivalent to <cite>Geometry.tile</cite></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.DynamicalMatrix.toSparseAtom" title="sisl.physics.DynamicalMatrix.toSparseAtom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toSparseAtom</span></code></a>([dim, dtype])</p></td>
 <td><p>Convert the sparse object (without data) to a new sparse object with equivalent but reduced sparse pattern</p></td>
@@ -307,7 +305,7 @@
 <td><p>Untiles the sparse model into different parts (retaining couplings)</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.DynamicalMatrix.write" title="sisl.physics.DynamicalMatrix.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(sile, *args, **kwargs)</p></td>
-<td><p>Writes a dynamical matrix to the <em class="xref py py-obj">Sile</em> as implemented in the <code class="code docutils literal notranslate"><span class="pre">Sile.write_dynamical_matrix</span></code> method</p></td>
+<td><p>Writes a dynamical matrix to the <cite>Sile</cite> as implemented in the <code class="code docutils literal notranslate"><span class="pre">Sile.write_dynamical_matrix</span></code> method</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.DynamicalMatrix.D" title="sisl.physics.DynamicalMatrix.D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">D</span></code></a></p></td>
 <td><p>Access the dynamical matrix elements</p></td>
@@ -365,17 +363,17 @@
 \[\mathbf D(k) = \mathbf D_{\nu\mu} e^{i k r}\]</div>
 <p>where <span class="math notranslate nohighlight">\(r\)</span> is the distance between the atoms.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>k</strong> (<em>array_like</em>) – the k-point to setup the dynamical matrix at</p></li>
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><em>numpy.dtype</em></a><em> , </em><em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
 data-type for non-Gamma k.
-The default data-type is <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.complex128" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.complex128</span></code></a></p></li>
-<li><p><strong>gauge</strong> (<em>{'R'</em><em>, </em><em>'r'}</em>) – the chosen gauge, <em class="xref py py-obj">R</em> for cell vector gauge, and <em class="xref py py-obj">r</em> for atomic distance
+The default data-type is <cite>numpy.complex128</cite></p></li>
+<li><p><strong>gauge</strong> (<em>{'R'</em><em>, </em><em>'r'}</em>) – the chosen gauge, <cite>R</cite> for cell vector gauge, and <cite>r</cite> for atomic distance
 gauge.</p></li>
 <li><p><strong>format</strong> (<em>{'csr'</em><em>, </em><em>'array'</em><em>, </em><em>'dense'</em><em>, </em><em>'coo'</em><em>, </em><em>...</em><em>}</em>) – the returned format of the matrix, defaulting to the <code class="docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code>,
 however if one always requires operations on dense matrices, one can always
-return in <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (<em class="xref py py-obj">‘array’</em>/<em class="xref py py-obj">’dense’</em>/<em class="xref py py-obj">’matrix’</em>).
+return in <cite>numpy.ndarray</cite> (<cite>‘array’</cite>/<cite>’dense’</cite>/<cite>’matrix’</cite>).
 Prefixing with ‘sc:’, or simply ‘sc’ returns the matrix in supercell format
 with phases.</p></li>
 </ul>
@@ -384,17 +382,17 @@ with phases.</p></li>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.dDk" title="sisl.physics.DynamicalMatrix.dDk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dDk</span></code></a></dt><dd><p>dynamical matrix derivative with respect to <em class="xref py py-obj">k</em></p>
+<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.dDk" title="sisl.physics.DynamicalMatrix.dDk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dDk</span></code></a></dt><dd><p>dynamical matrix derivative with respect to <cite>k</cite></p>
 </dd>
-<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.ddDk" title="sisl.physics.DynamicalMatrix.ddDk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ddDk</span></code></a></dt><dd><p>dynamical matrix double derivative with respect to <em class="xref py py-obj">k</em></p>
+<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.ddDk" title="sisl.physics.DynamicalMatrix.ddDk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ddDk</span></code></a></dt><dd><p>dynamical matrix double derivative with respect to <cite>k</cite></p>
 </dd>
 </dl>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>matrix</strong> – the dynamical matrix at <span class="math notranslate nohighlight">\(k\)</span>. The returned object depends on <em class="xref py py-obj">format</em>.</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>matrix</strong> – the dynamical matrix at <span class="math notranslate nohighlight">\(k\)</span>. The returned object depends on <cite>format</cite>.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a> or scipy.sparse.*_matrix</p>
 </dd>
 </dl>
@@ -405,7 +403,7 @@ with phases.</p></li>
 <span class="sig-name descname"><span class="pre">Rij</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">what='orbital'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=&lt;class</span> <span class="pre">'numpy.float64'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.DynamicalMatrix.Rij" title="Permalink to this definition"></a></dt>
 <dd><p>Create a sparse matrix with the vectors between atoms/orbitals</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>what</strong> (<em>{'orbital'</em><em>, </em><em>'atom'}</em>) – which kind of sparse vector matrix to return, either an atomic vector matrix
 or an orbital vector matrix. The orbital matrix is equivalent to the atomic
@@ -443,17 +441,17 @@ structure is completed.</p>
 \[\mathbf S(k) = \mathbf S_{\nu\mu} e^{i k r}\]</div>
 <p>where <span class="math notranslate nohighlight">\(r\)</span> is the distance between the orbitals.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>k</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the k-point to setup the overlap at (default Gamma point)</p></li>
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
 data-type for non-Gamma k.
-The default data-type is <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.complex128" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.complex128</span></code></a></p></li>
-<li><p><strong>gauge</strong> (<em>{&quot;R&quot;</em><em>, </em><em>&quot;r&quot;}</em>) – the chosen gauge, <em class="xref py py-obj">R</em> for cell vector gauge, and <em class="xref py py-obj">r</em> for orbital distance
+The default data-type is <cite>numpy.complex128</cite></p></li>
+<li><p><strong>gauge</strong> (<em>{&quot;R&quot;</em><em>, </em><em>&quot;r&quot;}</em>) – the chosen gauge, <cite>R</cite> for cell vector gauge, and <cite>r</cite> for orbital distance
 gauge.</p></li>
 <li><p><strong>format</strong> (<em>{&quot;csr&quot;</em><em>, </em><em>&quot;array&quot;</em><em>, </em><em>&quot;matrix&quot;</em><em>, </em><em>&quot;coo&quot;</em><em>, </em><em>...</em><em>}</em>) – the returned format of the matrix, defaulting to the <code class="docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code>,
 however if one always requires operations on dense matrices, one can always
-return in <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (<em class="xref py py-obj">“array”</em>/<em class="xref py py-obj">”dense”</em>/<em class="xref py py-obj">”matrix”</em>).
+return in <cite>numpy.ndarray</cite> (<cite>“array”</cite>/<cite>”dense”</cite>/<cite>”matrix”</cite>).
 Prefixing with “sc:”, or simply “sc” returns the matrix in supercell format
 with phases. This is useful for e.g. bond-current calculations where individual
 hopping + phases are required.</p></li>
@@ -463,17 +461,17 @@ hopping + phases are required.</p></li>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.dSk" title="sisl.physics.DynamicalMatrix.dSk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dSk</span></code></a></dt><dd><p>Overlap matrix derivative with respect to <em class="xref py py-obj">k</em></p>
+<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.dSk" title="sisl.physics.DynamicalMatrix.dSk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dSk</span></code></a></dt><dd><p>Overlap matrix derivative with respect to <cite>k</cite></p>
 </dd>
-<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.ddSk" title="sisl.physics.DynamicalMatrix.ddSk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ddSk</span></code></a></dt><dd><p>Overlap matrix double derivative with respect to <em class="xref py py-obj">k</em></p>
+<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.ddSk" title="sisl.physics.DynamicalMatrix.ddSk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ddSk</span></code></a></dt><dd><p>Overlap matrix double derivative with respect to <cite>k</cite></p>
 </dd>
 </dl>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>matrix</strong> – the overlap matrix at <span class="math notranslate nohighlight">\(k\)</span>. The returned object depends on <em class="xref py py-obj">format</em>.</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>matrix</strong> – the overlap matrix at <span class="math notranslate nohighlight">\(k\)</span>. The returned object depends on <cite>format</cite>.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a> or scipy.sparse.*_matrix</p>
 </dd>
 </dl>
@@ -488,18 +486,18 @@ hopping + phases are required.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.DynamicalMatrix.add">
 <span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.DynamicalMatrix.add" title="Permalink to this definition"></a></dt>
-<dd><p>Add two sparse matrices by adding the parameters to one set. The final matrix will have no couplings between <em class="xref py py-obj">self</em> and <em class="xref py py-obj">other</em></p>
-<p>The final sparse matrix will not have any couplings between <em class="xref py py-obj">self</em> and <em class="xref py py-obj">other</em>. Not even if they
-have commensurate overlapping regions. If you want to create couplings you have to use <a class="reference internal" href="#sisl.physics.DynamicalMatrix.append" title="sisl.physics.DynamicalMatrix.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code></a> but that
+<dd><p>Add two sparse matrices by adding the parameters to one set. The final matrix will have no couplings between <cite>self</cite> and <cite>other</cite></p>
+<p>The final sparse matrix will not have any couplings between <cite>self</cite> and <cite>other</cite>. Not even if they
+have commensurate overlapping regions. If you want to create couplings you have to use <cite>append</cite> but that
 requires the structures are commensurate in the coupling region.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>other</strong> (<em>SparseGeometry</em>) – the other sparse matrix to be added, all atoms will be appended</p></li>
 <li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>None</em><em>, </em><em>optional</em>) – whether a specific axis of the cell will be added to the final geometry.
-For <code class="docutils literal notranslate"><span class="pre">None</span></code> the final cell will be that of <em class="xref py py-obj">self</em>, otherwise the lattice
-vector corresponding to <em class="xref py py-obj">axis</em> will be appended.</p></li>
-<li><p><strong>offset</strong> (<em>(</em><em>3</em><em>,</em><em>)</em><em>, </em><em>optional</em>) – offset in geometry of <em class="xref py py-obj">other</em> when adding the atoms.</p></li>
+For <code class="docutils literal notranslate"><span class="pre">None</span></code> the final cell will be that of <cite>self</cite>, otherwise the lattice
+vector corresponding to <cite>axis</cite> will be appended.</p></li>
+<li><p><strong>offset</strong> (<em>(</em><em>3</em><em>,</em><em>)</em><em>, </em><em>optional</em>) – offset in geometry of <cite>other</cite> when adding the atoms.</p></li>
 </ul>
 </dd>
 </dl>
@@ -508,7 +506,7 @@ vector corresponding to <em class="xref py py-obj">axis</em> will be appended.</
 <dl class="simple">
 <dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.append" title="sisl.physics.DynamicalMatrix.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code></a></dt><dd><p>append two matrices by also adding overlap couplings</p>
 </dd>
-<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.prepend" title="sisl.physics.DynamicalMatrix.prepend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepend</span></code></a></dt><dd><p>see <a class="reference internal" href="#sisl.physics.DynamicalMatrix.append" title="sisl.physics.DynamicalMatrix.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code></a></p>
+<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.prepend" title="sisl.physics.DynamicalMatrix.prepend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepend</span></code></a></dt><dd><p>see <cite>append</cite></p>
 </dd>
 </dl>
 </div>
@@ -517,16 +515,16 @@ vector corresponding to <em class="xref py py-obj">axis</em> will be appended.</
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.DynamicalMatrix.append">
 <span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.005</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.DynamicalMatrix.append" title="Permalink to this definition"></a></dt>
-<dd><p>Append <em class="xref py py-obj">other</em> along <em class="xref py py-obj">axis</em> to construct a new connected sparse matrix</p>
+<dd><p>Append <cite>other</cite> along <cite>axis</cite> to construct a new connected sparse matrix</p>
 <p>This method tries to append two sparse geometry objects together by
 the following these steps:</p>
 <ol class="arabic simple">
 <li><p>Create the new extended geometry</p></li>
-<li><p>Use neighbor cell couplings from <em class="xref py py-obj">self</em> as the couplings to <em class="xref py py-obj">other</em>
+<li><p>Use neighbor cell couplings from <cite>self</cite> as the couplings to <cite>other</cite>
 This <em>may</em> cause problems if the coupling atoms are not exactly equi-positioned.
-If the coupling coordinates and the coordinates in <em class="xref py py-obj">other</em> differ by more than
+If the coupling coordinates and the coordinates in <cite>other</cite> differ by more than
 0.01 Ang, a warning will be issued.
-If this difference is above <em class="xref py py-obj">eps</em> the couplings will be removed.</p></li>
+If this difference is above <cite>eps</cite> the couplings will be removed.</p></li>
 </ol>
 <p>When appending sparse matrices made up of atoms, this method assumes that
 the orbitals on the overlapping atoms have the same orbitals, as well as the
@@ -557,9 +555,9 @@ following:</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>other</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><em>object</em></a>) – must be an object of the same type as <em class="xref py py-obj">self</em></p></li>
+<li><p><strong>other</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><em>object</em></a>) – must be an object of the same type as <cite>self</cite></p></li>
 <li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – axis to append the two sparse geometries along</p></li>
 <li><p><strong>eps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – tolerance that all coordinates <em>must</em> be within to allow an append.
 It is important that this value is smaller than half the distance between
@@ -568,8 +566,8 @@ equivalent atoms. An internal stricter eps is used as a baseline, see above.</p>
 <li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><em>array_like</em><em>, </em><em>optional</em>) – the scale used for the overlapping region. For scalar values it corresponds
 to passing: <code class="docutils literal notranslate"><span class="pre">(scale,</span> <span class="pre">scale)</span></code>.
 For array-like input <code class="docutils literal notranslate"><span class="pre">scale[0]</span></code> refers to the scale of the matrix elements
-coupling from <em class="xref py py-obj">self</em>, while <code class="docutils literal notranslate"><span class="pre">scale[1]</span></code> is the scale of the matrix elements
-in <em class="xref py py-obj">other</em>.</p></li>
+coupling from <cite>self</cite>, while <code class="docutils literal notranslate"><span class="pre">scale[1]</span></code> is the scale of the matrix elements
+in <cite>other</cite>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -592,13 +590,13 @@ in <em class="xref py py-obj">other</em>.</p></li>
 </dl>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – if the two geometries are not compatible for either coordinate, orbital or supercell errors</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a new instance with two sparse matrices joined and appended together</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)">object</a></p>
 </dd>
 </dl>
@@ -618,9 +616,9 @@ in <em class="xref py py-obj">other</em>.</p></li>
 <dd><p>Automatically construct the sparse model based on a function that does the setting up of the elements</p>
 <p>This may be called in two variants.</p>
 <ol class="arabic simple">
-<li><p>Pass a function (<em class="xref py py-obj">func</em>), see e.g. <code class="docutils literal notranslate"><span class="pre">create_construct</span></code>
+<li><p>Pass a function (<cite>func</cite>), see e.g. <code class="docutils literal notranslate"><span class="pre">create_construct</span></code>
 which does the setting up.</p></li>
-<li><p>Pass a tuple/list in <em class="xref py py-obj">func</em> which consists of two
+<li><p>Pass a tuple/list in <cite>func</cite> which consists of two
 elements, one is <code class="docutils literal notranslate"><span class="pre">R</span></code> the radii parameters for
 the corresponding parameters.
 The second is the parameters
@@ -629,14 +627,14 @@ In this second case all atoms must only have
 one orbital.</p></li>
 </ol>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>func</strong> (<em>callable</em><em> or </em><em>array_like</em>) – <p>this function <em>must</em> take 4 arguments.
 1. Is this object (<code class="docutils literal notranslate"><span class="pre">self</span></code>)
 2. Is the currently examined atom (<code class="docutils literal notranslate"><span class="pre">ia</span></code>)
 3. Is the currently bounded indices (<code class="docutils literal notranslate"><span class="pre">idxs</span></code>)
 4. Is the currently bounded indices atomic coordinates (<code class="docutils literal notranslate"><span class="pre">idxs_xyz</span></code>)
-An example <em class="xref py py-obj">func</em> could be:</p>
+An example <cite>func</cite> could be:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ia</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">atoms_xyz</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">ia</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.44</span><span class="p">],</span> <span class="n">atoms</span><span class="o">=</span><span class="n">atoms</span><span class="p">,</span> <span class="n">atoms_xyz</span><span class="o">=</span><span class="n">atoms_xyz</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="bp">self</span><span class="p">[</span><span class="n">ia</span><span class="p">,</span> <span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">0</span>
@@ -645,8 +643,8 @@ An example <em class="xref py py-obj">func</em> could be:</p>
 </div>
 </p></li>
 <li><p><strong>na_iR</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – number of atoms within the sphere for speeding
-up the <em class="xref py py-obj">iter_block</em> loop.</p></li>
-<li><p><strong>method</strong> (<em>{'rand'</em><em>, </em><em>str}</em>) – method used in <em class="xref py py-obj">Geometry.iter_block</em>, see there for details</p></li>
+up the <cite>iter_block</cite> loop.</p></li>
+<li><p><strong>method</strong> (<em>{'rand'</em><em>, </em><em>str}</em>) – method used in <cite>Geometry.iter_block</cite>, see there for details</p></li>
 <li><p><strong>eta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether an ETA will be printed</p></li>
 </ul>
 </dd>
@@ -669,7 +667,7 @@ up the <em class="xref py py-obj">iter_block</em> loop.</p></li>
 <span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.DynamicalMatrix.copy" title="Permalink to this definition"></a></dt>
 <dd><p>A copy of this object</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – it is possible to convert the data to a different data-type
 If not specified, it will use <code class="docutils literal notranslate"><span class="pre">self.dtype</span></code></p>
 </dd>
@@ -679,7 +677,7 @@ If not specified, it will use <code class="docutils literal notranslate"><span c
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.DynamicalMatrix.create_construct">
 <span class="sig-name descname"><span class="pre">create_construct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.DynamicalMatrix.create_construct" title="Permalink to this definition"></a></dt>
-<dd><p>Create a simple function for passing to the <a class="reference internal" href="#sisl.physics.DynamicalMatrix.construct" title="sisl.physics.DynamicalMatrix.construct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">construct</span></code></a> function.</p>
+<dd><p>Create a simple function for passing to the <cite>construct</cite> function.</p>
 <p>This is simply to leviate the creation of simplistic
 functions needed for setting up the sparse elements.</p>
 <p>Basically this returns a function:</p>
@@ -694,12 +692,12 @@ functions needed for setting up the sparse elements.</p>
 element per atom). If you have more than one element per atom
 you have to implement the function your-self.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>R</strong> (<em>array_like</em>) – radii parameters for different shells.
-Must have same length as <em class="xref py py-obj">param</em> or one less.
+Must have same length as <cite>param</cite> or one less.
 If one less it will be extended with <code class="docutils literal notranslate"><span class="pre">R[0]/100</span></code></p></li>
-<li><p><strong>param</strong> (<em>array_like</em>) – coupling constants corresponding to the <em class="xref py py-obj">R</em>
+<li><p><strong>param</strong> (<em>array_like</em>) – coupling constants corresponding to the <cite>R</cite>
 ranges. <code class="docutils literal notranslate"><span class="pre">param[0,:]</span></code> are the elements
 for the all atoms within <code class="docutils literal notranslate"><span class="pre">R[0]</span></code> of each atom.</p></li>
 </ul>
@@ -708,7 +706,7 @@ for the all atoms within <code class="docutils literal notranslate"><span class=
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.construct" title="sisl.physics.DynamicalMatrix.construct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">construct</span></code></a></dt><dd><p>routine to create the sparse matrix from a generic function (as returned from <a class="reference internal" href="#sisl.physics.DynamicalMatrix.create_construct" title="sisl.physics.DynamicalMatrix.create_construct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_construct</span></code></a>)</p>
+<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.construct" title="sisl.physics.DynamicalMatrix.construct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">construct</span></code></a></dt><dd><p>routine to create the sparse matrix from a generic function (as returned from <cite>create_construct</cite>)</p>
 </dd>
 </dl>
 </div>
@@ -730,34 +728,34 @@ And <span class="math notranslate nohighlight">\(\gamma\)</span> is one of the C
 \[\nabla_k \mathbf D_\gamma(k) = i r_\gamma \mathbf D_{i_\alpha j_\beta} e^{i k r}\]</div>
 <p>where <span class="math notranslate nohighlight">\(r\)</span> is the distance between the atoms.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>k</strong> (<em>array_like</em>) – the k-point to setup the dynamical matrix at</p></li>
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><em>numpy.dtype</em></a><em> , </em><em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
 data-type for non-Gamma k.
-The default data-type is <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.complex128" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.complex128</span></code></a></p></li>
-<li><p><strong>gauge</strong> (<em>{'R'</em><em>, </em><em>'r'}</em>) – the chosen gauge, <em class="xref py py-obj">R</em> for cell vector gauge, and <em class="xref py py-obj">r</em> for atomic distance
+The default data-type is <cite>numpy.complex128</cite></p></li>
+<li><p><strong>gauge</strong> (<em>{'R'</em><em>, </em><em>'r'}</em>) – the chosen gauge, <cite>R</cite> for cell vector gauge, and <cite>r</cite> for atomic distance
 gauge.</p></li>
 <li><p><strong>format</strong> (<em>{'csr'</em><em>, </em><em>'array'</em><em>, </em><em>'dense'</em><em>, </em><em>'coo'</em><em>, </em><em>...</em><em>}</em>) – the returned format of the matrix, defaulting to the <code class="docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code>,
 however if one always requires operations on dense matrices, one can always
-return in <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (<em class="xref py py-obj">‘array’</em>/<em class="xref py py-obj">’dense’</em>/<em class="xref py py-obj">’matrix’</em>).</p></li>
+return in <cite>numpy.ndarray</cite> (<cite>‘array’</cite>/<cite>’dense’</cite>/<cite>’matrix’</cite>).</p></li>
 </ul>
 </dd>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.Dk" title="sisl.physics.DynamicalMatrix.Dk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Dk</span></code></a></dt><dd><p>dynamical matrix with respect to <em class="xref py py-obj">k</em></p>
+<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.Dk" title="sisl.physics.DynamicalMatrix.Dk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Dk</span></code></a></dt><dd><p>dynamical matrix with respect to <cite>k</cite></p>
 </dd>
-<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.ddDk" title="sisl.physics.DynamicalMatrix.ddDk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ddDk</span></code></a></dt><dd><p>dynamical matrix double derivative with respect to <em class="xref py py-obj">k</em></p>
+<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.ddDk" title="sisl.physics.DynamicalMatrix.ddDk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ddDk</span></code></a></dt><dd><p>dynamical matrix double derivative with respect to <cite>k</cite></p>
 </dd>
 </dl>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>for each of the Cartesian directions a <span class="math notranslate nohighlight">\(\partial \mathbf D(k)/\partial k_\gamma\)</span> is returned.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)">tuple</a></p>
 </dd>
 </dl>
@@ -779,34 +777,34 @@ And <span class="math notranslate nohighlight">\(\alpha\)</span> is one of the C
 \[\nabla_k \mathbf S_\alpha(k) = i r_\alpha \mathbf S_{ij} e^{i k r}\]</div>
 <p>where <span class="math notranslate nohighlight">\(r\)</span> is the distance between the orbitals.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>k</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the k-point to setup the overlap at (default Gamma point)</p></li>
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
 data-type for non-Gamma k.
-The default data-type is <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.complex128" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.complex128</span></code></a></p></li>
-<li><p><strong>gauge</strong> (<em>{&quot;R&quot;</em><em>, </em><em>&quot;r&quot;}</em>) – the chosen gauge, <em class="xref py py-obj">R</em> for cell vector gauge, and <em class="xref py py-obj">r</em> for orbital distance
+The default data-type is <cite>numpy.complex128</cite></p></li>
+<li><p><strong>gauge</strong> (<em>{&quot;R&quot;</em><em>, </em><em>&quot;r&quot;}</em>) – the chosen gauge, <cite>R</cite> for cell vector gauge, and <cite>r</cite> for orbital distance
 gauge.</p></li>
 <li><p><strong>format</strong> (<em>{&quot;csr&quot;</em><em>, </em><em>&quot;array&quot;</em><em>, </em><em>&quot;matrix&quot;</em><em>, </em><em>&quot;coo&quot;</em><em>, </em><em>...</em><em>}</em>) – the returned format of the matrix, defaulting to the <code class="docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code>,
 however if one always requires operations on dense matrices, one can always
-return in <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (<em class="xref py py-obj">“array”</em>/<em class="xref py py-obj">”dense”</em>/<em class="xref py py-obj">”matrix”</em>).</p></li>
+return in <cite>numpy.ndarray</cite> (<cite>“array”</cite>/<cite>”dense”</cite>/<cite>”matrix”</cite>).</p></li>
 </ul>
 </dd>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.Sk" title="sisl.physics.DynamicalMatrix.Sk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Sk</span></code></a></dt><dd><p>Overlap matrix at <em class="xref py py-obj">k</em></p>
+<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.Sk" title="sisl.physics.DynamicalMatrix.Sk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Sk</span></code></a></dt><dd><p>Overlap matrix at <cite>k</cite></p>
 </dd>
-<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.ddSk" title="sisl.physics.DynamicalMatrix.ddSk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ddSk</span></code></a></dt><dd><p>Overlap matrix double derivative at <em class="xref py py-obj">k</em></p>
+<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.ddSk" title="sisl.physics.DynamicalMatrix.ddSk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ddSk</span></code></a></dt><dd><p>Overlap matrix double derivative at <cite>k</cite></p>
 </dd>
 </dl>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>for each of the Cartesian directions a <span class="math notranslate nohighlight">\(\partial \mathbf S(k)/\partial k\)</span> is returned.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)">tuple</a></p>
 </dd>
 </dl>
@@ -828,34 +826,34 @@ And <span class="math notranslate nohighlight">\(\gamma\)</span>, <span class="m
 \[\nabla_k^2 \mathbf D_{\gamma\sigma}(k) = - r_\gamma r_\sigma \mathbf D_{i_\alpha j_\beta} e^{i k r}\]</div>
 <p>where <span class="math notranslate nohighlight">\(r\)</span> is atomic distance.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>k</strong> (<em>array_like</em>) – the k-point to setup the dynamical matrix at</p></li>
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><em>numpy.dtype</em></a><em> , </em><em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
 data-type for non-Gamma k.
-The default data-type is <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.complex128" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.complex128</span></code></a></p></li>
-<li><p><strong>gauge</strong> (<em>{'R'</em><em>, </em><em>'r'}</em>) – the chosen gauge, <em class="xref py py-obj">R</em> for cell vector gauge, and <em class="xref py py-obj">r</em> for orbital distance
+The default data-type is <cite>numpy.complex128</cite></p></li>
+<li><p><strong>gauge</strong> (<em>{'R'</em><em>, </em><em>'r'}</em>) – the chosen gauge, <cite>R</cite> for cell vector gauge, and <cite>r</cite> for orbital distance
 gauge.</p></li>
 <li><p><strong>format</strong> (<em>{'csr'</em><em>, </em><em>'array'</em><em>, </em><em>'dense'</em><em>, </em><em>'coo'</em><em>, </em><em>...</em><em>}</em>) – the returned format of the matrix, defaulting to the <code class="docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code>,
 however if one always requires operations on dense matrices, one can always
-return in <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (<em class="xref py py-obj">‘array’</em>/<em class="xref py py-obj">’dense’</em>/<em class="xref py py-obj">’matrix’</em>).</p></li>
+return in <cite>numpy.ndarray</cite> (<cite>‘array’</cite>/<cite>’dense’</cite>/<cite>’matrix’</cite>).</p></li>
 </ul>
 </dd>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.Dk" title="sisl.physics.DynamicalMatrix.Dk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Dk</span></code></a></dt><dd><p>dynamical matrix with respect to <em class="xref py py-obj">k</em></p>
+<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.Dk" title="sisl.physics.DynamicalMatrix.Dk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Dk</span></code></a></dt><dd><p>dynamical matrix with respect to <cite>k</cite></p>
 </dd>
-<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.dDk" title="sisl.physics.DynamicalMatrix.dDk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dDk</span></code></a></dt><dd><p>dynamical matrix derivative with respect to <em class="xref py py-obj">k</em></p>
+<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.dDk" title="sisl.physics.DynamicalMatrix.dDk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dDk</span></code></a></dt><dd><p>dynamical matrix derivative with respect to <cite>k</cite></p>
 </dd>
 </dl>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>for each of the Cartesian directions (in Voigt representation); xx, yy, zz, zy, xz, xy</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a> of matrices</p>
 </dd>
 </dl>
@@ -877,34 +875,34 @@ And <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class
 \[\nabla_k^2 \mathbf S_{\alpha\beta}(k) = - r_\alpha r_\beta \mathbf S_{ij} e^{i k r}\]</div>
 <p>where <span class="math notranslate nohighlight">\(r\)</span> is the distance between the orbitals.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>k</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the k-point to setup the overlap at (default Gamma point)</p></li>
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
 data-type for non-Gamma k.
-The default data-type is <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.complex128" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.complex128</span></code></a></p></li>
-<li><p><strong>gauge</strong> (<em>{&quot;R&quot;</em><em>, </em><em>&quot;r&quot;}</em>) – the chosen gauge, <em class="xref py py-obj">R</em> for cell vector gauge, and <em class="xref py py-obj">r</em> for orbital distance
+The default data-type is <cite>numpy.complex128</cite></p></li>
+<li><p><strong>gauge</strong> (<em>{&quot;R&quot;</em><em>, </em><em>&quot;r&quot;}</em>) – the chosen gauge, <cite>R</cite> for cell vector gauge, and <cite>r</cite> for orbital distance
 gauge.</p></li>
 <li><p><strong>format</strong> (<em>{&quot;csr&quot;</em><em>, </em><em>&quot;array&quot;</em><em>, </em><em>&quot;matrix&quot;</em><em>, </em><em>&quot;coo&quot;</em><em>, </em><em>...</em><em>}</em>) – the returned format of the matrix, defaulting to the <code class="docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code>,
 however if one always requires operations on dense matrices, one can always
-return in <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (<em class="xref py py-obj">“array”</em>/<em class="xref py py-obj">”dense”</em>/<em class="xref py py-obj">”matrix”</em>).</p></li>
+return in <cite>numpy.ndarray</cite> (<cite>“array”</cite>/<cite>”dense”</cite>/<cite>”matrix”</cite>).</p></li>
 </ul>
 </dd>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.Sk" title="sisl.physics.DynamicalMatrix.Sk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Sk</span></code></a></dt><dd><p>Overlap matrix at <em class="xref py py-obj">k</em></p>
+<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.Sk" title="sisl.physics.DynamicalMatrix.Sk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Sk</span></code></a></dt><dd><p>Overlap matrix at <cite>k</cite></p>
 </dd>
-<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.dSk" title="sisl.physics.DynamicalMatrix.dSk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dSk</span></code></a></dt><dd><p>Overlap matrix derivative at <em class="xref py py-obj">k</em></p>
+<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.dSk" title="sisl.physics.DynamicalMatrix.dSk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dSk</span></code></a></dt><dd><p>Overlap matrix derivative at <cite>k</cite></p>
 </dd>
 </dl>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>for each of the Cartesian directions (in Voigt representation); xx, yy, zz, zy, xz, xy</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a> of matrices</p>
 </dd>
 </dl>
@@ -931,15 +929,15 @@ return in <a class="reference external" href="https://numpy.org/doc/stable/refer
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.DynamicalMatrix.edges">
 <span class="sig-name descname"><span class="pre">edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.DynamicalMatrix.edges" title="Permalink to this definition"></a></dt>
-<dd><p>Retrieve edges (connections) for all <em class="xref py py-obj">atoms</em></p>
-<p>The returned edges are unique and sorted (see <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.unique.html#numpy.unique" title="(in NumPy v1.24)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.unique</span></code></a>) and are returned
+<dd><p>Retrieve edges (connections) for all <cite>atoms</cite></p>
+<p>The returned edges are unique and sorted (see <cite>numpy.unique</cite>) and are returned
 in supercell indices (i.e. <code class="docutils literal notranslate"><span class="pre">0</span> <span class="pre">&lt;=</span> <span class="pre">edge</span> <span class="pre">&lt;</span> <span class="pre">self.geometry.no_s</span></code>).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the edges are returned only for the given atom (but by using  all orbitals of the
 requested atom). The returned edges are also atoms.</p></li>
-<li><p><strong>exclude</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>None</em><em>, </em><em>optional</em>) – remove edges which are in the <em class="xref py py-obj">exclude</em> list, this list refers to orbitals.</p></li>
+<li><p><strong>exclude</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>None</em><em>, </em><em>optional</em>) – remove edges which are in the <cite>exclude</cite> list, this list refers to orbitals.</p></li>
 <li><p><strong>orbitals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the edges are returned only for the given orbital. The returned edges are orbitals.</p></li>
 </ul>
 </dd>
@@ -965,16 +963,16 @@ the given k-point and calculate the eigenvalues.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.DynamicalMatrix.eigenmode">
 <span class="sig-name descname"><span class="pre">eigenmode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gauge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'R'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/dynamicalmatrix.html#DynamicalMatrix.eigenmode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.DynamicalMatrix.eigenmode" title="Permalink to this definition"></a></dt>
-<dd><p>Calculate the eigenmodes at <em class="xref py py-obj">k</em> and return an <code class="xref py py-obj docutils literal notranslate"><span class="pre">EigenmodePhonon</span></code> object containing all eigenmodes</p>
+<dd><p>Calculate the eigenmodes at <cite>k</cite> and return an <cite>EigenmodePhonon</cite> object containing all eigenmodes</p>
 <p>Note that the phonon modes are _not_ mass-scaled.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>k</strong> (<em>array_like*3</em><em>, </em><em>optional</em>) – the k-point at which to evaluate the eigenmodes at</p></li>
 <li><p><strong>gauge</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – the gauge used for calculating the eigenmodes</p></li>
-<li><p><strong>sparse</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, <a class="reference internal" href="#sisl.physics.DynamicalMatrix.eigsh" title="sisl.physics.DynamicalMatrix.eigsh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eigsh</span></code></a> will be called, else <a class="reference internal" href="#sisl.physics.DynamicalMatrix.eigh" title="sisl.physics.DynamicalMatrix.eigh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eigh</span></code></a> will be
+<li><p><strong>sparse</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, <cite>eigsh</cite> will be called, else <cite>eigh</cite> will be
 called (default).</p></li>
-<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – passed arguments to the <a class="reference internal" href="#sisl.physics.DynamicalMatrix.eigh" title="sisl.physics.DynamicalMatrix.eigh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eigh</span></code></a>/<em class="xref py py-obj">eighs</em> routine</p></li>
+<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – passed arguments to the <cite>eigh</cite>/<cite>eighs</cite> routine</p></li>
 </ul>
 </dd>
 </dl>
@@ -988,7 +986,7 @@ called (default).</p></li>
 </dl>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="sisl.physics.phonon.EigenmodePhonon.html#sisl.physics.phonon.EigenmodePhonon" title="sisl.physics.phonon.EigenmodePhonon">EigenmodePhonon</a></p>
 </dd>
 </dl>
@@ -997,15 +995,15 @@ called (default).</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.DynamicalMatrix.eigenvalue">
 <span class="sig-name descname"><span class="pre">eigenvalue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gauge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'R'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/dynamicalmatrix.html#DynamicalMatrix.eigenvalue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.DynamicalMatrix.eigenvalue" title="Permalink to this definition"></a></dt>
-<dd><p>Calculate the eigenvalues at <em class="xref py py-obj">k</em> and return an <code class="xref py py-obj docutils literal notranslate"><span class="pre">EigenvaluePhonon</span></code> object containing all eigenvalues for a given <em class="xref py py-obj">k</em></p>
+<dd><p>Calculate the eigenvalues at <cite>k</cite> and return an <cite>EigenvaluePhonon</cite> object containing all eigenvalues for a given <cite>k</cite></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>k</strong> (<em>array_like*3</em><em>, </em><em>optional</em>) – the k-point at which to evaluate the eigenvalues at</p></li>
 <li><p><strong>gauge</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – the gauge used for calculating the eigenvalues</p></li>
-<li><p><strong>sparse</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, <a class="reference internal" href="#sisl.physics.DynamicalMatrix.eigsh" title="sisl.physics.DynamicalMatrix.eigsh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eigsh</span></code></a> will be called, else <a class="reference internal" href="#sisl.physics.DynamicalMatrix.eigh" title="sisl.physics.DynamicalMatrix.eigh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eigh</span></code></a> will be
+<li><p><strong>sparse</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, <cite>eigsh</cite> will be called, else <cite>eigh</cite> will be
 called (default).</p></li>
-<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – passed arguments to the <a class="reference internal" href="#sisl.physics.DynamicalMatrix.eigh" title="sisl.physics.DynamicalMatrix.eigh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eigh</span></code></a> routine</p></li>
+<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – passed arguments to the <cite>eigh</cite> routine</p></li>
 </ul>
 </dd>
 </dl>
@@ -1019,7 +1017,7 @@ called (default).</p></li>
 </dl>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="sisl.physics.phonon.EigenvaluePhonon.html#sisl.physics.phonon.EigenvaluePhonon" title="sisl.physics.phonon.EigenvaluePhonon">EigenvaluePhonon</a></p>
 </dd>
 </dl>
@@ -1081,10 +1079,10 @@ internal data-representation.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.DynamicalMatrix.fromsp">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fromsp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">S</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.DynamicalMatrix.fromsp" title="Permalink to this definition"></a></dt>
-<dd><p>Create a sparse model from a preset <em class="xref py py-obj">Geometry</em> and a list of sparse matrices</p>
-<p>The passed sparse matrices are in one of <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/sparse.html#module-scipy.sparse" title="(in SciPy v1.10.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse</span></code></a> formats.</p>
+<dd><p>Create a sparse model from a preset <cite>Geometry</cite> and a list of sparse matrices</p>
+<p>The passed sparse matrices are in one of <cite>scipy.sparse</cite> formats.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>geometry</strong> (<a class="reference internal" href="sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a>) – geometry to describe the new sparse geometry</p></li>
 <li><p><strong>P</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><em>scipy.sparse</em><em> or </em><em>scipy.sparse</em>) – the new sparse matrices that are to be populated in the sparse
@@ -1095,10 +1093,10 @@ returned sparse matrix to be non-orthogonal</p></li>
 of the class.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a new sparse matrix that holds the passed geometry and the elements of <em class="xref py py-obj">P</em> and optionally being non-orthogonal if <a class="reference internal" href="#sisl.physics.DynamicalMatrix.S" title="sisl.physics.DynamicalMatrix.S"><code class="xref py py-obj docutils literal notranslate"><span class="pre">S</span></code></a> is not none</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a new sparse matrix that holds the passed geometry and the elements of <cite>P</cite> and optionally being non-orthogonal if <cite>S</cite> is not none</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>SparseGeometry</p>
 </dd>
 </dl>
@@ -1121,12 +1119,12 @@ of the class.</p></li>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>array_like</em>) – only loop on the non-zero elements coinciding with the orbitals
-on these atoms (not compatible with the <em class="xref py py-obj">orbitals</em> keyword)</p></li>
+on these atoms (not compatible with the <cite>orbitals</cite> keyword)</p></li>
 <li><p><strong>orbitals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>array_like</em>) – only loop on the non-zero elements coinciding with the orbital
-(not compatible with the <em class="xref py py-obj">atoms</em> keyword)</p></li>
+(not compatible with the <cite>atoms</cite> keyword)</p></li>
 </ul>
 </dd>
 </dl>
@@ -1141,18 +1139,18 @@ orbital index.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">ia</span><span class="p">,</span> <span class="n">io</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter_orbitals</span><span class="p">():</span>
 </pre></div>
 </div>
-<p>In the above case <a class="reference external" href="https://docs.python.org/3/library/io.html#module-io" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">io</span></code></a> always belongs to atom <em class="xref py py-obj">ia</em> and <em class="xref py py-obj">ia</em> may be
+<p>In the above case <cite>io</cite> always belongs to atom <cite>ia</cite> and <cite>ia</cite> may be
 repeated according to the number of orbitals associated with
-the atom <em class="xref py py-obj">ia</em>.</p>
+the atom <cite>ia</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>array_like</em><em>, </em><em>optional</em>) – only loop on the given atoms, default to all atoms</p></li>
 <li><p><strong>local</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the orbital index is the global index, or the local index relative to
 the atom it resides on.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Yields</dt>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><em>ia</em> – atomic index</p></li>
 <li><p><em>io</em> – orbital index</p></li>
@@ -1185,7 +1183,7 @@ the atom it resides on.</p></li>
 <span class="sig-name descname"><span class="pre">nonzero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.DynamicalMatrix.nonzero" title="Permalink to this definition"></a></dt>
 <dd><p>Indices row and column indices where non-zero elements exists</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – only return the tuples for the requested atoms, default is all atoms
 But for <em>all</em> orbitals.</p></li>
@@ -1211,7 +1209,7 @@ But for <em>all</em> orbitals.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.DynamicalMatrix.prepend">
 <span class="sig-name descname"><span class="pre">prepend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.005</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.DynamicalMatrix.prepend" title="Permalink to this definition"></a></dt>
-<dd><p>See <a class="reference internal" href="#sisl.physics.DynamicalMatrix.append" title="sisl.physics.DynamicalMatrix.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code></a> for details</p>
+<dd><p>See <cite>append</cite> for details</p>
 <p>This is currently equivalent to:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">other</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span>
 </pre></div>
@@ -1221,12 +1219,12 @@ But for <em>all</em> orbitals.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.DynamicalMatrix.read">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sile</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/dynamicalmatrix.html#DynamicalMatrix.read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.DynamicalMatrix.read" title="Permalink to this definition"></a></dt>
-<dd><p>Reads dynamical matrix from <em class="xref py py-obj">Sile</em> using <em class="xref py py-obj">read_dynamical_matrix</em>.</p>
+<dd><p>Reads dynamical matrix from <cite>Sile</cite> using <cite>read_dynamical_matrix</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>sile</strong> (<a class="reference internal" href="../io/generated/sisl.io.Sile.html#sisl.io.Sile" title="sisl.io.Sile"><em>Sile</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><em>pathlib.Path</em></a>) – a <em class="xref py py-obj">Sile</em> object which will be used to read the dynamical matrix.
-If it is a string it will create a new sile using <em class="xref py py-obj">get_sile</em>.</p></li>
+<li><p><strong>sile</strong> (<a class="reference internal" href="../io/generated/sisl.io.Sile.html#sisl.io.Sile" title="sisl.io.Sile"><em>Sile</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><em>pathlib.Path</em></a>) – a <cite>Sile</cite> object which will be used to read the dynamical matrix.
+If it is a string it will create a new sile using <cite>get_sile</cite>.</p></li>
 <li><p><strong>*</strong> (args passed directly to <code class="docutils literal notranslate"><span class="pre">read_dynamical_matrix(,**)</span></code>) – </p></li>
 </ul>
 </dd>
@@ -1236,20 +1234,20 @@ If it is a string it will create a new sile using <em class="xref py py-obj">get
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.DynamicalMatrix.remove">
 <span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.DynamicalMatrix.remove" title="Permalink to this definition"></a></dt>
-<dd><p>Remove a subset of this sparse matrix by only retaining the atoms corresponding to <em class="xref py py-obj">atoms</em></p>
+<dd><p>Remove a subset of this sparse matrix by only retaining the atoms corresponding to <cite>atoms</cite></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>atoms</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a>) – indices of removed atoms or Atom for direct removal of all atoms</p>
 </dd>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.remove</span></code></dt><dd><p>equivalent to the resulting <em class="xref py py-obj">Geometry</em> from this routine</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.remove</span></code></dt><dd><p>equivalent to the resulting <cite>Geometry</cite> from this routine</p>
 </dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.sub</span></code></dt><dd><p>the negative of <em class="xref py py-obj">Geometry.remove</em></p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.sub</span></code></dt><dd><p>the negative of <cite>Geometry.remove</cite></p>
 </dd>
-<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.sub" title="sisl.physics.DynamicalMatrix.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub</span></code></a></dt><dd><p>the opposite of <a class="reference internal" href="#sisl.physics.DynamicalMatrix.remove" title="sisl.physics.DynamicalMatrix.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a>, i.e. retain a subset of atoms</p>
+<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.sub" title="sisl.physics.DynamicalMatrix.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub</span></code></a></dt><dd><p>the opposite of <cite>remove</cite>, i.e. retain a subset of atoms</p>
 </dd>
 </dl>
 </div>
@@ -1258,14 +1256,14 @@ If it is a string it will create a new sile using <em class="xref py py-obj">get
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.DynamicalMatrix.remove_orbital">
 <span class="sig-name descname"><span class="pre">remove_orbital</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.DynamicalMatrix.remove_orbital" title="Permalink to this definition"></a></dt>
-<dd><p>Remove a subset of orbitals on <em class="xref py py-obj">atoms</em> according to <em class="xref py py-obj">orbitals</em></p>
+<dd><p>Remove a subset of orbitals on <cite>atoms</cite> according to <cite>orbitals</cite></p>
 <p>For more detailed examples, please see the equivalent (but opposite) method
-<a class="reference internal" href="#sisl.physics.DynamicalMatrix.sub_orbital" title="sisl.physics.DynamicalMatrix.sub_orbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub_orbital</span></code></a>.</p>
+<cite>sub_orbital</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>atoms</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a>) – indices of atoms or <em class="xref py py-obj">Atom</em> that will be reduced in size according to <em class="xref py py-obj">orbitals</em></p></li>
-<li><p><strong>orbitals</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference internal" href="sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital"><em>Orbital</em></a>) – indices of the orbitals on <em class="xref py py-obj">atoms</em> that are removed from the sparse matrix.</p></li>
+<li><p><strong>atoms</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a>) – indices of atoms or <cite>Atom</cite> that will be reduced in size according to <cite>orbitals</cite></p></li>
+<li><p><strong>orbitals</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference internal" href="sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital"><em>Orbital</em></a>) – indices of the orbitals on <cite>atoms</cite> that are removed from the sparse matrix.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1281,13 +1279,13 @@ If it is a string it will create a new sile using <em class="xref py py-obj">get
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.DynamicalMatrix.repeat">
 <span class="sig-name descname"><span class="pre">repeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.DynamicalMatrix.repeat" title="Permalink to this definition"></a></dt>
-<dd><p>Create a repeated sparse orbital object, equivalent to <em class="xref py py-obj">Geometry.repeat</em></p>
+<dd><p>Create a repeated sparse orbital object, equivalent to <cite>Geometry.repeat</cite></p>
 <p>The already existing sparse elements are extrapolated
 to the new supercell by repeating them in blocks like the coordinates.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – number of repetitions along cell-vector <em class="xref py py-obj">axis</em></p></li>
+<li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – number of repetitions along cell-vector <cite>axis</cite></p></li>
 <li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – 0, 1, 2 according to the cell-direction</p></li>
 </ul>
 </dd>
@@ -1308,8 +1306,8 @@ to the new supercell by repeating them in blocks like the coordinates.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.DynamicalMatrix.replace">
 <span class="sig-name descname"><span class="pre">replace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.005</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.DynamicalMatrix.replace" title="Permalink to this definition"></a></dt>
-<dd><p>Replace <em class="xref py py-obj">atoms</em> in <em class="xref py py-obj">self</em> with <em class="xref py py-obj">other_atoms</em> in <em class="xref py py-obj">other</em> and retain couplings between them</p>
-<p>This method replaces a subset of atoms in <em class="xref py py-obj">self</em> with
+<dd><p>Replace <cite>atoms</cite> in <cite>self</cite> with <cite>other_atoms</cite> in <cite>other</cite> and retain couplings between them</p>
+<p>This method replaces a subset of atoms in <cite>self</cite> with
 another sparse geometry retaining any couplings between them.
 The algorithm checks whether the coupling atoms have the same number of
 orbitals. Meaning that atoms in the overlapping region should have the same
@@ -1355,20 +1353,20 @@ following:</p>
 </div>
 <p>Also note that the ordering of the atoms will be <code class="docutils literal notranslate"><span class="pre">range(atoms.min()),</span> <span class="pre">range(len(other_atoms)),</span> <span class="pre">&lt;rest&gt;</span></code>.</p>
 <p>Algorithms that utilizes atomic indices should be careful.</p>
-<p>When the tolerance <em class="xref py py-obj">eps</em> is high, the elements may be more prone to differences in the
+<p>When the tolerance <cite>eps</cite> is high, the elements may be more prone to differences in the
 symmetry elements. A good idea would be to check the difference between the couplings.
 The below variable <code class="docutils literal notranslate"><span class="pre">diff</span></code> will contain the difference <code class="docutils literal notranslate"><span class="pre">(self</span> <span class="pre">-&gt;</span> <span class="pre">other)</span> <span class="pre">-</span> <span class="pre">(other</span> <span class="pre">-&gt;</span> <span class="pre">self)</span></code></p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">diff</span> <span class="o">=</span> <span class="n">sm</span> <span class="o">-</span> <span class="n">sm</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>atoms</strong> (<em>array_like</em>) – which atoms in <em class="xref py py-obj">self</em> that are removed and replaced with <code class="docutils literal notranslate"><span class="pre">other.sub(other_atoms)</span></code></p></li>
-<li><p><strong>other</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><em>object</em></a>) – must be an object of the same type as <em class="xref py py-obj">self</em>, a subset is taken from this
-sparse matrix and combined with <em class="xref py py-obj">self</em> to create a new sparse matrix</p></li>
-<li><p><strong>other_atoms</strong> (<em>array_like</em><em>, </em><em>optional</em>) – to select a subset of atoms in <em class="xref py py-obj">other</em> that are taken out.
-Defaults to all atoms in <em class="xref py py-obj">other</em>.</p></li>
+<li><p><strong>atoms</strong> (<em>array_like</em>) – which atoms in <cite>self</cite> that are removed and replaced with <code class="docutils literal notranslate"><span class="pre">other.sub(other_atoms)</span></code></p></li>
+<li><p><strong>other</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><em>object</em></a>) – must be an object of the same type as <cite>self</cite>, a subset is taken from this
+sparse matrix and combined with <cite>self</cite> to create a new sparse matrix</p></li>
+<li><p><strong>other_atoms</strong> (<em>array_like</em><em>, </em><em>optional</em>) – to select a subset of atoms in <cite>other</cite> that are taken out.
+Defaults to all atoms in <cite>other</cite>.</p></li>
 <li><p><strong>eps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – coordinate tolerance for allowing replacement.
 It is important that this value is at least smaller than half the distance between
 the two closests atoms such that there is no ambiguity in selecting
@@ -1376,15 +1374,15 @@ equivalent atoms.</p></li>
 <li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><em>array_like</em><em>, </em><em>optional</em>) – the scale used for the overlapping region. For scalar values it corresponds
 to passing: <code class="docutils literal notranslate"><span class="pre">(scale,</span> <span class="pre">scale)</span></code>.
 For array-like input <code class="docutils literal notranslate"><span class="pre">scale[0]</span></code> refers to the scale of the matrix elements
-coupling from <em class="xref py py-obj">self</em>, while <code class="docutils literal notranslate"><span class="pre">scale[1]</span></code> is the scale of the matrix elements
-in <em class="xref py py-obj">other</em>.</p></li>
+coupling from <cite>self</cite>, while <code class="docutils literal notranslate"><span class="pre">scale[1]</span></code> is the scale of the matrix elements
+in <cite>other</cite>.</p></li>
 </ul>
 </dd>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.prepend" title="sisl.physics.DynamicalMatrix.prepend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepend</span></code></a></dt><dd><p>prepend two sparse matrices, see <a class="reference internal" href="#sisl.physics.DynamicalMatrix.append" title="sisl.physics.DynamicalMatrix.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code></a> for details</p>
+<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.prepend" title="sisl.physics.DynamicalMatrix.prepend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepend</span></code></a></dt><dd><p>prepend two sparse matrices, see <cite>append</cite> for details</p>
 </dd>
 <dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.add" title="sisl.physics.DynamicalMatrix.add"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add</span></code></a></dt><dd><p>merge two matrices without considering overlap or commensurability</p>
 </dd>
@@ -1400,19 +1398,19 @@ in <em class="xref py py-obj">other</em>.</p></li>
 </dl>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – if the two geometries are not compatible for either coordinate, orbital or supercell errors</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AssertionError" title="(in Python v3.11)"><strong>AssertionError</strong></a> – if the two geometries are not compatible for either coordinate, orbital or supercell errors</p></li>
 </ul>
 </dd>
-<dt class="field-even">Warns</dt>
+<dt class="field-even">Warns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>SislWarning</strong> – in case the overlapping atoms are not comprising the same atomic specie. In some cases this may not be a problem. However, care must be taken by the user if this warning is issued.</p>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>a new instance with two sparse matrices merged together by replacing some atoms</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)">object</a></p>
 </dd>
 </dl>
@@ -1426,7 +1424,7 @@ in <em class="xref py py-obj">other</em>.</p></li>
 initialized with the same geometry as it were
 created with.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – number of dimensions per element, default to the current number of
 elements per matrix element.</p></li>
@@ -1442,7 +1440,7 @@ elements per matrix element.</p></li>
 <span class="sig-name descname"><span class="pre">rij</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">what='orbital'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=&lt;class</span> <span class="pre">'numpy.float64'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.DynamicalMatrix.rij" title="Permalink to this definition"></a></dt>
 <dd><p>Create a sparse matrix with the distance between atoms/orbitals</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>what</strong> (<em>{'orbital'</em><em>, </em><em>'atom'}</em>) – which kind of sparse distance matrix to return, either an atomic distance matrix
 or an orbital distance matrix. The orbital matrix is equivalent to the atomic
@@ -1465,7 +1463,7 @@ structure is completed.</p>
 <dd><p>Reset the number of allowed supercells in the sparse orbital</p>
 <p>If one reduces the number of supercells <em>any</em> sparse element
 that references the supercell will be deleted.</p>
-<p>See <em class="xref py py-obj">SuperCell.set_nsc</em> for allowed parameters.</p>
+<p>See <cite>SuperCell.set_nsc</cite> for allowed parameters.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
@@ -1497,11 +1495,11 @@ that references the supercell will be deleted.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.DynamicalMatrix.sub">
 <span class="sig-name descname"><span class="pre">sub</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.DynamicalMatrix.sub" title="Permalink to this definition"></a></dt>
-<dd><p>Create a subset of this sparse matrix by only retaining the atoms corresponding to <em class="xref py py-obj">atoms</em></p>
+<dd><p>Create a subset of this sparse matrix by only retaining the atoms corresponding to <cite>atoms</cite></p>
 <p>Negative indices are wrapped and thus works, supercell atoms are also wrapped to the unit-cell.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>atoms</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a>) – indices of retained atoms or <em class="xref py py-obj">Atom</em> for retaining only <em>that</em> atom</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>atoms</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a>) – indices of retained atoms or <cite>Atom</cite> for retaining only <em>that</em> atom</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -1514,11 +1512,11 @@ that references the supercell will be deleted.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.remove</span></code></dt><dd><p>the negative of <em class="xref py py-obj">Geometry.sub</em></p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.remove</span></code></dt><dd><p>the negative of <cite>Geometry.sub</cite></p>
 </dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.sub</span></code></dt><dd><p>equivalent to the resulting <em class="xref py py-obj">Geometry</em> from this routine</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.sub</span></code></dt><dd><p>equivalent to the resulting <cite>Geometry</cite> from this routine</p>
 </dd>
-<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.remove" title="sisl.physics.DynamicalMatrix.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a></dt><dd><p>the negative of <a class="reference internal" href="#sisl.physics.DynamicalMatrix.sub" title="sisl.physics.DynamicalMatrix.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub</span></code></a>, i.e. remove a subset of atoms</p>
+<dt><a class="reference internal" href="#sisl.physics.DynamicalMatrix.remove" title="sisl.physics.DynamicalMatrix.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a></dt><dd><p>the negative of <cite>sub</cite>, i.e. remove a subset of atoms</p>
 </dd>
 </dl>
 </div>
@@ -1527,13 +1525,13 @@ that references the supercell will be deleted.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.DynamicalMatrix.sub_orbital">
 <span class="sig-name descname"><span class="pre">sub_orbital</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.DynamicalMatrix.sub_orbital" title="Permalink to this definition"></a></dt>
-<dd><p>Retain only a subset of the orbitals on <em class="xref py py-obj">atoms</em> according to <em class="xref py py-obj">orbitals</em></p>
+<dd><p>Retain only a subset of the orbitals on <cite>atoms</cite> according to <cite>orbitals</cite></p>
 <p>This allows one to retain only a given subset of the sparse matrix elements.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>atoms</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a>) – indices of atoms or <em class="xref py py-obj">Atom</em> that will be reduced in size according to <em class="xref py py-obj">orbitals</em></p></li>
-<li><p><strong>orbitals</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference internal" href="sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital"><em>Orbital</em></a>) – indices of the orbitals on <em class="xref py py-obj">atoms</em> that are retained in the sparse matrix, the list of
+<li><p><strong>atoms</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a>) – indices of atoms or <cite>Atom</cite> that will be reduced in size according to <cite>orbitals</cite></p></li>
+<li><p><strong>orbitals</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference internal" href="sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital"><em>Orbital</em></a>) – indices of the orbitals on <cite>atoms</cite> that are retained in the sparse matrix, the list of
 orbitals will be sorted. One cannot re-arrange matrix elements currently.</p></li>
 </ul>
 </dd>
@@ -1590,7 +1588,7 @@ will note species that are different from the original by a <code class="docutil
 <dd><p>Swaps atoms in the sparse geometry to obtain a new order of atoms</p>
 <p>This can be used to reorder elements of a geometry.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>a</strong> (<em>array_like</em>) – the first list of atomic coordinates</p></li>
 <li><p><strong>b</strong> (<em>array_like</em>) – the second list of atomic coordinates</p></li>
@@ -1602,13 +1600,13 @@ will note species that are different from the original by a <code class="docutil
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.DynamicalMatrix.tile">
 <span class="sig-name descname"><span class="pre">tile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.DynamicalMatrix.tile" title="Permalink to this definition"></a></dt>
-<dd><p>Create a tiled sparse orbital object, equivalent to <em class="xref py py-obj">Geometry.tile</em></p>
+<dd><p>Create a tiled sparse orbital object, equivalent to <cite>Geometry.tile</cite></p>
 <p>The already existing sparse elements are extrapolated
 to the new supercell by repeating them in blocks like the coordinates.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – number of repetitions along cell-vector <em class="xref py py-obj">axis</em></p></li>
+<li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – number of repetitions along cell-vector <cite>axis</cite></p></li>
 <li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – 0, 1, 2 according to the cell-direction</p></li>
 </ul>
 </dd>
@@ -1634,7 +1632,7 @@ to the new supercell by repeating them in blocks like the coordinates.</p>
 <dd><p>Convert the sparse object (without data) to a new sparse object with equivalent but reduced sparse pattern</p>
 <p>This converts the orbital sparse pattern to an atomic sparse pattern.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – number of dimensions allocated in the SparseAtom object, default to the same</p></li>
 <li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – used data-type for the sparse object. Defaults to the same.</p></li>
@@ -1648,7 +1646,7 @@ to the new supercell by repeating them in blocks like the coordinates.</p>
 <span class="sig-name descname"><span class="pre">tocsr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.DynamicalMatrix.tocsr" title="Permalink to this definition"></a></dt>
 <dd><p>Return a <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.10.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a> for the specified dimension</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the dimension in the sparse matrix (for non-orthogonal cases the last
 dimension is the overlap matrix)</p></li>
@@ -1666,10 +1664,10 @@ dimension is the overlap matrix)</p></li>
 Thus when one transposes a sparse geometry one should <em>ideally</em> get the same
 matrix. This is true for the Hamiltonian, density matrix, etc.</p>
 <p>This routine transposes all rows and columns such that any interaction between
-row, <em class="xref py py-obj">r</em>, and column <em class="xref py py-obj">c</em> in a given supercell <em class="xref py py-obj">(i,j,k)</em> will be transposed
-into row <em class="xref py py-obj">c</em>, column <em class="xref py py-obj">r</em> in the supercell <em class="xref py py-obj">(-i,-j,-k)</em>.</p>
+row, <cite>r</cite>, and column <cite>c</cite> in a given supercell <cite>(i,j,k)</cite> will be transposed
+into row <cite>c</cite>, column <cite>r</cite> in the supercell <cite>(-i,-j,-k)</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>sort</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – the returned columns for the transposed structure will be sorted
 if this is true, default</p>
 </dd>
@@ -1683,10 +1681,10 @@ if this is true, default</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>an equivalent sparse geometry with transposed matrix elements</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)">object</a></p>
 </dd>
 </dl>
@@ -1696,8 +1694,8 @@ if this is true, default</p>
 <dt class="sig sig-object py" id="sisl.physics.DynamicalMatrix.unrepeat">
 <span class="sig-name descname"><span class="pre">unrepeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sym</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.DynamicalMatrix.unrepeat" title="Permalink to this definition"></a></dt>
 <dd><p>Unrepeats the sparse model into different parts (retaining couplings)</p>
-<p>Please see <a class="reference internal" href="#sisl.physics.DynamicalMatrix.untile" title="sisl.physics.DynamicalMatrix.untile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">untile</span></code></a> for details, the algorithm and arguments are the same however,
-this is the opposite of <a class="reference internal" href="#sisl.physics.DynamicalMatrix.repeat" title="sisl.physics.DynamicalMatrix.repeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat</span></code></a>.</p>
+<p>Please see <cite>untile</cite> for details, the algorithm and arguments are the same however,
+this is the opposite of <cite>repeat</cite>.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1707,25 +1705,25 @@ this is the opposite of <a class="reference internal" href="#sisl.physics.Dynami
 <p>Recreates a new sparse object with only the cutted
 atoms in the structure. This will preserve matrix elements in the supercell.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – number of repetitions the tiling function created (opposite meaning as in <a class="reference internal" href="#sisl.physics.DynamicalMatrix.untile" title="sisl.physics.DynamicalMatrix.untile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">untile</span></code></a>)</p></li>
+<li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – number of repetitions the tiling function created (opposite meaning as in <cite>untile</cite>)</p></li>
 <li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – which axis to untile along</p></li>
 <li><p><strong>segment</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – which segment to retain. Generally each segment should be equivalent, however
 requesting individiual segments can help uncover inconsistencies in the sparse matrix</p></li>
-<li><p><strong>*args</strong> – arguments passed directly to <em class="xref py py-obj">Geometry.untile</em></p></li>
+<li><p><strong>*args</strong> – arguments passed directly to <cite>Geometry.untile</cite></p></li>
 <li><p><strong>sym</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – if True, the algorithm will ensure the returned matrix is symmetrized (i.e.
 return <code class="docutils literal notranslate"><span class="pre">(M</span> <span class="pre">+</span> <span class="pre">M.transpose())/2</span></code>, else return data as is.
 False should generally only be used for debugging precision of the matrix elements,
 or if one wishes to check the warnings.</p></li>
-<li><p><strong>**kwargs</strong> – keyword arguments passed directly to <em class="xref py py-obj">Geometry.untile</em></p></li>
+<li><p><strong>**kwargs</strong> – keyword arguments passed directly to <cite>Geometry.untile</cite></p></li>
 </ul>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
-<p>Untiling structures with <code class="docutils literal notranslate"><span class="pre">nsc</span> <span class="pre">==</span> <span class="pre">1</span></code> along <em class="xref py py-obj">axis</em> are assumed to have periodic boundary
+<p>Untiling structures with <code class="docutils literal notranslate"><span class="pre">nsc</span> <span class="pre">==</span> <span class="pre">1</span></code> along <cite>axis</cite> are assumed to have periodic boundary
 conditions.</p>
-<p>When untiling structures with <code class="docutils literal notranslate"><span class="pre">nsc</span> <span class="pre">==</span> <span class="pre">1</span></code> along <em class="xref py py-obj">axis</em> it is important to
+<p>When untiling structures with <code class="docutils literal notranslate"><span class="pre">nsc</span> <span class="pre">==</span> <span class="pre">1</span></code> along <cite>axis</cite> it is important to
 untile <em>as much as possible</em>. This is because otherwise the algorithm cannot determine
 the correct couplings. Therefore to create a geometry of 3 times a unit-cell, one should
 untile to the unit-cell, and subsequently tile 3 times.</p>
@@ -1738,7 +1736,7 @@ it will halve the coupling and use the same coupling to the left, which is clear
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>ValueError :</strong> – in case the matrix elements are not conseuctive when determining the
     new supercell structure. This may often happen if untiling a matrix
     too few times, and then untiling it again.</p>
@@ -1757,8 +1755,13 @@ it will halve the coupling and use the same coupling to the left, which is clear
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.DynamicalMatrix.write">
-<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sile</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/sisl/physics/dynamicalmatrix.html#DynamicalMatrix.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.DynamicalMatrix.write" title="Permalink to this definition"></a></dt>
-<dd><p>Writes a dynamical matrix to the <em class="xref py py-obj">Sile</em> as implemented in the <code class="code docutils literal notranslate"><span class="pre">Sile.write_dynamical_matrix</span></code> method</p>
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sile</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/dynamicalmatrix.html#DynamicalMatrix.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.DynamicalMatrix.write" title="Permalink to this definition"></a></dt>
+<dd><p>Writes a dynamical matrix to the <cite>Sile</cite> as implemented in the <code class="code docutils literal notranslate"><span class="pre">Sile.write_dynamical_matrix</span></code> method</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

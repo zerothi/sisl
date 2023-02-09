@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.outSileSiesta &mdash; sisl 0.1.dev1+gd93b38d documentation</title>
+  <title>sisl.io.siesta.outSileSiesta &mdash; sisl 0.1.dev1+gf943161 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -14,10 +14,8 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -34,14 +32,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> sisl
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            sisl
           </a>
               <div class="version">
-                0.1.dev1+gd93b38d
+                0.1.dev1+gf943161
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -139,7 +141,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">API documentation</a></li>
           <li class="breadcrumb-item"><a href="../index.html">Input/Output</a></li>
           <li class="breadcrumb-item"><a href="../siesta.html">Siesta</a></li>
@@ -187,10 +189,6 @@
 <p>This enables reading the output quantities from the Siesta output.</p>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.outSileSiesta.close" title="sisl.io.siesta.outSileSiesta.close"><code class="xref py py-obj docutils literal notranslate"><span class="pre">close</span></code></a>()</p></td>
 <td><p></p></td>
@@ -287,7 +285,7 @@
 <span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.siesta.outSileSiesta.read" title="Permalink to this definition"></a></dt>
 <dd><p>Generic read method which should be overloaded in child-classes</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>kwargs</strong> – keyword arguments will try and search for the attribute <code class="docutils literal notranslate"><span class="pre">read_&lt;&gt;</span></code>
 and call it with the remaining <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> as arguments.</p>
 </dd>
@@ -317,14 +315,6 @@ specifying which species in the calculation.</p></li>
 may be encountered, the letters are referred to in the
 return section to indicate what is returned.</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 20%" />
-<col style="width: 9%" />
-<col style="width: 9%" />
-<col style="width: 15%" />
-<col style="width: 13%" />
-<col style="width: 33%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p>Case</p></td>
 <td><p><em>A</em></p></td>
@@ -416,7 +406,7 @@ the most information, effectively SCF will be returned if present.</p>
 <p>Currently Mulliken is not implemented, any help in reading this would be
 very welcome.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<em>{&quot;voronoi&quot;</em><em>, </em><em>&quot;hirshfeld&quot;}</em>) – the name of the charges that you want to read</p></li>
 <li><p><strong>iscf</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>Opt</em><em>, </em><em>optional</em>) – index (0-based) of the scf iteration you want the charges for.
@@ -433,7 +423,7 @@ If both <em class="xref py py-obj">imd</em> and <em class="xref py py-obj">iscf<
 <li><p><strong>as_dataframe</strong> (<em>boolean</em><em>, </em><em>optional</em>) – whether charges should be returned as a pandas dataframe.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><em>numpy.ndarray</em> – if a specific MD+SCF index is requested (or special cases where output is
 not complete)</p></li>
@@ -461,7 +451,7 @@ of keywords, so:</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>geometry</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – read geometry, args are passed to <a class="reference internal" href="#sisl.io.siesta.outSileSiesta.read_geometry" title="sisl.io.siesta.outSileSiesta.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a></p></li>
 <li><p><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – read force, args are passed to <a class="reference internal" href="#sisl.io.siesta.outSileSiesta.read_force" title="sisl.io.siesta.outSileSiesta.read_force"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_force</span></code></a></p></li>
@@ -522,10 +512,10 @@ of keywords, so:</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>PropertyDict</strong></p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>dictionary like lookup table ionic energies are stored in a nested <em class="xref py py-obj">PropertyDict</em> at the key <code class="docutils literal notranslate"><span class="pre">ion</span></code> (all energies in eV)</p>
 </dd>
 </dl>
@@ -536,7 +526,7 @@ of keywords, so:</p>
 <span class="sig-name descname"><span class="pre">read_force</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">last</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'siesta'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/out.html#outSileSiesta.read_force"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.outSileSiesta.read_force" title="Permalink to this definition"></a></dt>
 <dd><p>Reads the forces from the Siesta output file</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>last</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – only read the last force</p></li>
 <li><p><strong>all</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – return a list of all forces (like an MD)
@@ -553,7 +543,7 @@ The function will look for a line containing <code class="docutils literal notra
 to start reading forces.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><p>returns <code class="docutils literal notranslate"><span class="pre">None</span></code> if the forces are not found in the
 output, otherwise forces will be returned</p>
 <dl class="simple">
@@ -569,7 +559,7 @@ will therefore be just a float, not an array.</p>
 <p>If <em class="xref py py-obj">total</em> and <em class="xref py py-obj">max</em> are both <em class="xref py py-obj">True</em>, they are returned separately as a tuple: <code class="docutils literal notranslate"><span class="pre">(total,</span> <span class="pre">max)</span></code></p>
 </p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a> or None</p>
 </dd>
 </dl>
@@ -580,18 +570,18 @@ will therefore be just a float, not an array.</p>
 <span class="sig-name descname"><span class="pre">read_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">last</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/out.html#outSileSiesta.read_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.outSileSiesta.read_geometry" title="Permalink to this definition"></a></dt>
 <dd><p>Reads the geometry from the Siesta output file</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>last</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – only read the last geometry</p></li>
 <li><p><strong>all</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – return a list of all geometries (like an MD)
 If <em class="xref py py-obj">True</em> <em class="xref py py-obj">last</em> is ignored</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>geometries</strong> – if all is False only one geometry will be returned (or None). Otherwise
 a list of geometries corresponding to the MD-runs.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a> or <a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry">Geometry</a> or None</p>
 </dd>
 </dl>
@@ -603,7 +593,7 @@ a list of geometries corresponding to the MD-runs.</p>
 <dd><p>Reads the moments from the Siesta output file</p>
 <p>These will only be present in case of spin-orbit coupling.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>orbitals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – return a table with orbitally resolved
 moments.</p></li>
@@ -621,7 +611,7 @@ If <em class="xref py py-obj">True</em> <em class="xref py py-obj">last</em> is 
 <span class="sig-name descname"><span class="pre">read_scf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iscf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_dataframe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret_header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/out.html#outSileSiesta.read_scf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.outSileSiesta.read_scf" title="Permalink to this definition"></a></dt>
 <dd><p>Parse SCF information and return a table of SCF information depending on what is requested</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>key</strong> (<em>{'scf'</em><em>, </em><em>'ts-scf'}</em>) – parse SCF information from Siesta SCF or TranSiesta SCF</p></li>
 <li><p><strong>iscf</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – which SCF cycle should be stored. If <code class="docutils literal notranslate"><span class="pre">-1</span></code> only the final SCF step is stored,
@@ -644,7 +634,7 @@ will have no effect if <em class="xref py py-obj">as_dataframe</em> is true.</p>
 <span class="sig-name descname"><span class="pre">read_stress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'static'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/out.html#outSileSiesta.read_stress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.outSileSiesta.read_stress" title="Permalink to this definition"></a></dt>
 <dd><p>Reads the stresses from the Siesta output file</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>key</strong> (<em>{'static'</em><em>, </em><em>'total'}</em>) – which stress to read from the output.</p></li>
 <li><p><strong>last</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – only read the last stress</p></li>
@@ -652,11 +642,11 @@ will have no effect if <em class="xref py py-obj">as_dataframe</em> is true.</p>
 If <em class="xref py py-obj">True</em> <em class="xref py py-obj">last</em> is ignored</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>returns <code class="docutils literal notranslate"><span class="pre">None</span></code> if the stresses are not found in the
 output, otherwise stresses will be returned</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a> or None</p>
 </dd>
 </dl>
@@ -672,7 +662,7 @@ output, otherwise stresses will be returned</p>
 <span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.siesta.outSileSiesta.write" title="Permalink to this definition"></a></dt>
 <dd><p>Generic write method which should be overloaded in child-classes</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>**kwargs</strong> – keyword arguments will try and search for the attribute <em class="xref py py-obj">write_</em>
 and call it with the remaining <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> as arguments.</p>
 </dd>

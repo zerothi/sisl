@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.mixing.DIISMixer &mdash; sisl 0.1.dev1+gd93b38d documentation</title>
+  <title>sisl.mixing.DIISMixer &mdash; sisl 0.1.dev1+gf943161 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -14,10 +14,8 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -28,7 +26,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="sisl.mixing.PulayMixer" href="sisl.mixing.PulayMixer.html" />
-    <link rel="prev" title="sisl.mixing.LinearMixer" href="sisl.mixing.LinearMixer.html" /> 
+    <link rel="prev" title="sisl.mixing.AndersonMixer" href="sisl.mixing.AndersonMixer.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -36,14 +34,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> sisl
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            sisl
           </a>
               <div class="version">
-                0.1.dev1+gd93b38d
+                0.1.dev1+gf943161
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -84,6 +86,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../mixing.html#container-classes">Container classes</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="../mixing.html#mixing-algorithms">Mixing algorithms</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="sisl.mixing.LinearMixer.html">sisl.mixing.LinearMixer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.mixing.AndersonMixer.html">sisl.mixing.AndersonMixer</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">sisl.mixing.DIISMixer</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.mixing.PulayMixer.html">sisl.mixing.PulayMixer</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.mixing.AdaptiveDIISMixer.html">sisl.mixing.AdaptiveDIISMixer</a></li>
@@ -113,7 +116,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">API documentation</a></li>
           <li class="breadcrumb-item"><a href="../mixing.html">Mixing self-consistent quantities</a></li>
       <li class="breadcrumb-item active">sisl.mixing.DIISMixer</li>
@@ -155,7 +158,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="sisl.mixing.DIISMixer">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.mixing.</span></span><span class="sig-name descname"><span class="pre">DIISMixer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">history</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.mixing.DIISMixer" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="sisl.mixing.BaseHistoryMixer.html#sisl.mixing.BaseHistoryMixer" title="sisl.mixing.BaseHistoryMixer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseHistoryMixer</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="sisl.mixing.BaseHistoryWeightMixer.html#sisl.mixing.BaseHistoryWeightMixer" title="sisl.mixing.BaseHistoryWeightMixer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseHistoryWeightMixer</span></code></a></p>
 <p>Direct inversion of the iterative subspace (DIIS mixing)</p>
 <p>This mixing method (also known as Pulay mixing) estimates the next
 trial function given a set of previously inputs and derivatives of
@@ -174,10 +177,10 @@ calling the object with an optional 3rd argument, the metric will use
 that argument instead of <span class="math notranslate nohighlight">\(\delta\)</span> but still use <span class="math notranslate nohighlight">\(\delta\)</span> when
 extrapolating the coefficients.
 This may be useful for testing various metrics based on alternate values.</p>
-<p>Alternatively one can pass a <em class="xref py py-obj">metric</em> argument that can pre-process the
+<p>Alternatively one can pass a <cite>metric</cite> argument that can pre-process the
 <span class="math notranslate nohighlight">\(\delta\)</span> variable.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>weight</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – weight used for the derivative of the functional.
 The mixer will use a weight of <span class="math notranslate nohighlight">\(1-w\)</span> for the <em>old</em> value</p></li>
@@ -189,10 +192,6 @@ new functional</p></li>
 </dl>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.mixing.DIISMixer.coefficients" title="sisl.mixing.DIISMixer.coefficients"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coefficients</span></code></a>()</p></td>
 <td><p>Calculate coefficients of the Lagrangian</p></td>
@@ -220,7 +219,12 @@ new functional</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.mixing.DIISMixer.__call__">
 <span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">append</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/mixing/diis.html#DIISMixer.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.mixing.DIISMixer.__call__" title="Permalink to this definition"></a></dt>
-<dd><p>Call self as a function.</p>
+<dd><p>Append data to thMix quantities based on arguments</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -232,11 +236,16 @@ new functional</p></li>
 <dt class="sig sig-object py" id="sisl.mixing.DIISMixer.coefficients">
 <span class="sig-name descname"><span class="pre">coefficients</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/mixing/diis.html#DIISMixer.coefficients"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.mixing.DIISMixer.coefficients" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate coefficients of the Lagrangian</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.mixing.DIISMixer.history">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">history</span></span><a class="headerlink" href="#sisl.mixing.DIISMixer.history" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">history</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.11)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="sisl.mixing.History.html#sisl.mixing.History" title="sisl.mixing.History"><span class="pre">History</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#sisl.mixing.DIISMixer.history" title="Permalink to this definition"></a></dt>
 <dd><p>History object tracked by this mixer</p>
 </dd></dl>
 
@@ -245,8 +254,11 @@ new functional</p></li>
 <span class="sig-name descname"><span class="pre">mix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coefficients</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/mixing/diis.html#DIISMixer.mix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.mixing.DIISMixer.mix" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate a new variable <span class="math notranslate nohighlight">\(f'\)</span> using history and input coefficients</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>coefficients</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>numpy.ndarray</em></a>) – coefficients used for extrapolation</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -256,8 +268,8 @@ new functional</p></li>
 <span class="sig-name descname"><span class="pre">set_history</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">history</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.mixing.DIISMixer.set_history" title="Permalink to this definition"></a></dt>
 <dd><p>Replace the current history in the mixer with a new one</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>history</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference internal" href="sisl.mixing.History.html#sisl.mixing.History" title="sisl.mixing.History"><em>History</em></a>) – if an int a new History object will be created with that number of history elements
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>history</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code></a>[<a class="reference internal" href="sisl.mixing.History.html#sisl.mixing.History" title="sisl.mixing.History"><code class="xref py py-class docutils literal notranslate"><span class="pre">History</span></code></a>]]) – if an int a new History object will be created with that number of history elements
 Otherwise the object will be directly attached to the mixer.</p>
 </dd>
 </dl>
@@ -268,7 +280,7 @@ Otherwise the object will be directly attached to the mixer.</p>
 <span class="sig-name descname"><span class="pre">set_weight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weight</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.mixing.DIISMixer.set_weight" title="Permalink to this definition"></a></dt>
 <dd><p>Set a new weight for this mixer</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>weight</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – the new weight for this mixer, it must be bigger than 0</p>
 </dd>
 </dl>
@@ -278,11 +290,16 @@ Otherwise the object will be directly attached to the mixer.</p>
 <dt class="sig sig-object py" id="sisl.mixing.DIISMixer.solve_lagrange">
 <span class="sig-name descname"><span class="pre">solve_lagrange</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/mixing/diis.html#DIISMixer.solve_lagrange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.mixing.DIISMixer.solve_lagrange" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate the coefficients according to Pulay’s method, return everything + Lagrange multiplier</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.mixing.DIISMixer.weight">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">weight</span></span><a class="headerlink" href="#sisl.mixing.DIISMixer.weight" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">weight</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></em><a class="headerlink" href="#sisl.mixing.DIISMixer.weight" title="Permalink to this definition"></a></dt>
 <dd><p>This mixers mixing weight, the weight is the fractional contribution of the derivative</p>
 </dd></dl>
 
@@ -294,7 +311,7 @@ Otherwise the object will be directly attached to the mixer.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="sisl.mixing.LinearMixer.html" class="btn btn-neutral float-left" title="sisl.mixing.LinearMixer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sisl.mixing.AndersonMixer.html" class="btn btn-neutral float-left" title="sisl.mixing.AndersonMixer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="sisl.mixing.PulayMixer.html" class="btn btn-neutral float-right" title="sisl.mixing.PulayMixer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

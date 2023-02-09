@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.fdfSileSiesta &mdash; sisl 0.1.dev1+gd93b38d documentation</title>
+  <title>sisl.io.siesta.fdfSileSiesta &mdash; sisl 0.1.dev1+gf943161 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -14,10 +14,8 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -34,14 +32,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> sisl
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            sisl
           </a>
               <div class="version">
-                0.1.dev1+gd93b38d
+                0.1.dev1+gf943161
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -139,7 +141,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">API documentation</a></li>
           <li class="breadcrumb-item"><a href="../index.html">Input/Output</a></li>
           <li class="breadcrumb-item"><a href="../siesta.html">Siesta</a></li>
@@ -187,7 +189,7 @@
 <p>By supplying base you can reference files in other directories.
 By default the <code class="docutils literal notranslate"><span class="pre">base</span></code> is the directory given in the file name.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – fdf file</p></li>
 <li><p><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – opening mode, default to read-only</p></li>
@@ -202,10 +204,6 @@ By default the <code class="docutils literal notranslate"><span class="pre">base
 </div>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.close" title="sisl.io.siesta.fdfSileSiesta.close"><code class="xref py py-obj docutils literal notranslate"><span class="pre">close</span></code></a>()</p></td>
 <td><p></p></td>
@@ -320,7 +318,7 @@ By default the <code class="docutils literal notranslate"><span class="pre">base
 <span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.get" title="Permalink to this definition"></a></dt>
 <dd><p>Retrieve fdf-keyword from the file</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>label</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the fdf-label to search for</p></li>
 <li><p><strong>default</strong> (<em>optional</em>) – if the label is not found, this will be the returned value (default to <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
@@ -328,7 +326,7 @@ By default the <code class="docutils literal notranslate"><span class="pre">base
 <li><p><strong>with_unit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the physical quantity gets returned with the found unit in the fdf file.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>value</strong> (the value of the fdf-label. If the label is a block, a <em class="xref py py-obj">list</em> is returned, for) – a real value a <em class="xref py py-obj">float</em> (or if the default is of <em class="xref py py-obj">float</em>), for an integer, an
 <em class="xref py py-obj">int</em> is returned.</p></li>
@@ -382,7 +380,7 @@ By default the <code class="docutils literal notranslate"><span class="pre">base
 <span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.read" title="Permalink to this definition"></a></dt>
 <dd><p>Generic read method which should be overloaded in child-classes</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>kwargs</strong> – keyword arguments will try and search for the attribute <code class="docutils literal notranslate"><span class="pre">read_&lt;&gt;</span></code>
 and call it with the remaining <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> as arguments.</p>
 </dd>
@@ -397,7 +395,7 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 <p>One can limit the tried files to only one file by passing
 only a single file ending.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – the order of which to try and read the basis information.
 By default this is <code class="docutils literal notranslate"><span class="pre">[&quot;nc&quot;,</span> <span class="pre">&quot;ion&quot;,</span> <span class="pre">&quot;ORB_INDX&quot;,</span> <span class="pre">&quot;fdf&quot;]</span></code></p>
 </dd>
@@ -411,7 +409,7 @@ By default this is <code class="docutils literal notranslate"><span class="pre">
 <p>One can limit the tried files to only one file by passing
 only a single file ending.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – the order of which to try and read the density matrix
 By default this is <code class="docutils literal notranslate"><span class="pre">[&quot;nc&quot;,</span> <span class="pre">&quot;TSDE&quot;,</span> <span class="pre">&quot;DM&quot;]</span></code>.</p>
 </dd>
@@ -428,7 +426,7 @@ e.g. through the fdf file.
 By default the mass will be read from the AtomicMass key in the fdf file
 and <em>not</em> from the basis set information.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – the order of which to try and read the dynamical matrix.
 By default this is <code class="docutils literal notranslate"><span class="pre">[&quot;nc&quot;,</span> <span class="pre">&quot;FC&quot;]</span></code>.</p></li>
@@ -447,10 +445,10 @@ forced to 0.</p></li>
 <p>This is highly untested and may result in errorneous matrices.
 Please report back to developers about problems and suggestions.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>dynamic_matrix</strong> – the dynamical matrix</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="../../generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix" title="sisl.physics.DynamicalMatrix">DynamicalMatrix</a></p>
 </dd>
 </dl>
@@ -463,7 +461,7 @@ Please report back to developers about problems and suggestions.</p>
 <p>One can limit the tried files to only one file by passing
 only a single file ending.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – the order of which to try and read the density matrix
 By default this is <code class="docutils literal notranslate"><span class="pre">[&quot;nc&quot;,</span> <span class="pre">&quot;TSDE&quot;]</span></code>.</p>
 </dd>
@@ -475,14 +473,14 @@ By default this is <code class="docutils literal notranslate"><span class="pre">
 <span class="sig-name descname"><span class="pre">read_fermi_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.read_fermi_level"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.read_fermi_level" title="Permalink to this definition"></a></dt>
 <dd><p>Read fermi-level from output of the calculation</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – the order of which to try and read the fermi-level.
 By default this is <code class="docutils literal notranslate"><span class="pre">[&quot;nc&quot;,</span> <span class="pre">&quot;TSDE&quot;,</span> <span class="pre">&quot;TSHS&quot;,</span> <span class="pre">&quot;EIG&quot;,</span> <span class="pre">&quot;bands&quot;]</span></code>.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>Ef</strong> – fermi-level</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
 </dd>
 </dl>
@@ -493,13 +491,13 @@ By default this is <code class="docutils literal notranslate"><span class="pre">
 <span class="sig-name descname"><span class="pre">read_force</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.read_force"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.read_force" title="Permalink to this definition"></a></dt>
 <dd><p>Read forces from the output of the calculation (forces are not defined in the input)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – the order of the forces we are trying to read, default to <code class="docutils literal notranslate"><span class="pre">[&quot;FA&quot;,</span> <span class="pre">&quot;nc&quot;]</span></code></p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>numpy.ndarray</strong></p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>vector with forces for each of the atoms, along each Cartesian direction</p>
 </dd>
 </dl>
@@ -510,10 +508,10 @@ By default this is <code class="docutils literal notranslate"><span class="pre">
 <span class="sig-name descname"><span class="pre">read_force_constant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.read_force_constant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.read_force_constant" title="Permalink to this definition"></a></dt>
 <dd><p>Read force constant from the output of the calculation</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>force_constant</strong> – vector <code class="docutils literal notranslate"><span class="pre">[*,</span> <span class="pre">3,</span> <span class="pre">2,</span> <span class="pre">*,</span> <span class="pre">3]</span></code>  with force constant element for each of the atomic displacements</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -526,7 +524,7 @@ By default this is <code class="docutils literal notranslate"><span class="pre">
 <p>One can limit the tried files to only one file by passing
 only a single file ending.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>output</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether to read geometry from output files (default to read from
 the fdf file).</p></li>
@@ -554,7 +552,7 @@ If <em class="xref py py-obj">order</em> is present <em class="xref py py-obj">o
 <p>One can limit the tried files to only one file by passing
 only a single file ending.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – name of data to read. The list of names correspond to the
 Siesta output manual (Rho, TotalPotential, etc.), the strings are
@@ -573,7 +571,7 @@ By default this is <code class="docutils literal notranslate"><span class="pre">
 <p>One can limit the tried files to only one file by passing
 only a single file ending.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – the order of which to try and read the Hamiltonian.
 By default this is <code class="docutils literal notranslate"><span class="pre">[&quot;nc&quot;,</span> <span class="pre">&quot;TSHS&quot;,</span> <span class="pre">&quot;HSX&quot;]</span></code>.</p>
 </dd>
@@ -587,7 +585,7 @@ By default this is <code class="docutils literal notranslate"><span class="pre">
 <p>One can limit the tried files to only one file by passing
 only a single file ending.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – the order of which to try and read the overlap matrix
 By default this is <code class="docutils literal notranslate"><span class="pre">[&quot;nc&quot;,</span> <span class="pre">&quot;TSHS&quot;,</span> <span class="pre">&quot;HSX&quot;,</span> <span class="pre">&quot;onlyS&quot;]</span></code>.</p>
 </dd>
@@ -601,7 +599,7 @@ By default this is <code class="docutils literal notranslate"><span class="pre">
 <p>One can limit the tried files to only one file by passing
 only a single file ending.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>output</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether to read supercell from output files (default to read from
 the fdf file).</p></li>
@@ -626,7 +624,7 @@ If <em class="xref py py-obj">order</em> is present <em class="xref py py-obj">o
 <span class="sig-name descname"><span class="pre">read_supercell_nsc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.read_supercell_nsc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.read_supercell_nsc" title="Permalink to this definition"></a></dt>
 <dd><p>Read supercell size using any method available</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>SislWarning</strong> – if none of the files can be read</p>
 </dd>
 </dl>
@@ -637,7 +635,7 @@ If <em class="xref py py-obj">order</em> is present <em class="xref py py-obj">o
 <span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.set" title="Permalink to this definition"></a></dt>
 <dd><p>Add the key and value to the FDF file</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the fdf-key value to be set in the fdf file</p></li>
 <li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the value of the string. If a <em class="xref py py-obj">str</em> is passed a regular
@@ -659,7 +657,7 @@ a time-stamp will be written to show when the key was overwritten.</p></li>
 <span class="sig-name descname"><span class="pre">type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.type" title="Permalink to this definition"></a></dt>
 <dd><p>Return the type of the fdf-keyword</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>label</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the label to look-up</p>
 </dd>
 </dl>
@@ -670,7 +668,7 @@ a time-stamp will be written to show when the key was overwritten.</p></li>
 <span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.write" title="Permalink to this definition"></a></dt>
 <dd><p>Generic write method which should be overloaded in child-classes</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>**kwargs</strong> – keyword arguments will try and search for the attribute <em class="xref py py-obj">write_</em>
 and call it with the remaining <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> as arguments.</p>
 </dd>
@@ -682,7 +680,7 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 <span class="sig-name descname"><span class="pre">write_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.8f'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.write_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.write_geometry" title="Permalink to this definition"></a></dt>
 <dd><p>Writes the geometry</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>geometry</strong> (<a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a>) – geometry object to write</p></li>
 <li><p><strong>fmt</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – precision used to store the atomic coordinates</p></li>
@@ -698,7 +696,7 @@ fractional and frac are the same.</p></li>
 <span class="sig-name descname"><span class="pre">write_supercell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.8f'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.write_supercell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.write_supercell" title="Permalink to this definition"></a></dt>
 <dd><p>Writes the supercell</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>sc</strong> (<a class="reference internal" href="../../generated/sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><em>SuperCell</em></a>) – supercell object to write</p></li>
 <li><p><strong>fmt</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – precision used to store the lattice vectors</p></li>

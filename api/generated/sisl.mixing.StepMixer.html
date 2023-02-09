@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.mixing.StepMixer &mdash; sisl 0.1.dev1+gf943161 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="sisl.mixing.LinearMixer" href="sisl.mixing.LinearMixer.html" />
+    <link rel="prev" title="sisl.mixing.BaseHistoryWeightMixer" href="sisl.mixing.BaseHistoryWeightMixer.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            sisl
+          </a>
+              <div class="version">
+                0.1.dev1+gf943161
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cite.html">Citing sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../publications.html">Publications using sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/scripts.html">Command line scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../nodes/nodes_intro.html">Nodes and workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../basic.html">Basic classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../default_geom.html">Common geometries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics.html">Physical objects</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../mixing.html">Mixing self-consistent quantities</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../mixing.html#container-classes">Container classes</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="sisl.mixing.History.html">sisl.mixing.History</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.mixing.BaseMixer.html">sisl.mixing.BaseMixer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.mixing.BaseWeightMixer.html">sisl.mixing.BaseWeightMixer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.mixing.BaseHistoryWeightMixer.html">sisl.mixing.BaseHistoryWeightMixer</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">sisl.mixing.StepMixer</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../mixing.html#mixing-algorithms">Mixing algorithms</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../viz/index.html">Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../unit_constant.html">Units and constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">API documentation</a></li>
+          <li class="breadcrumb-item"><a href="../mixing.html">Mixing self-consistent quantities</a></li>
+      <li class="breadcrumb-item active">sisl.mixing.StepMixer</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/generated/sisl.mixing.StepMixer.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="sisl-mixing-stepmixer">
+<h1>sisl.mixing.StepMixer<a class="headerlink" href="#sisl-mixing-stepmixer" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="sisl.mixing.StepMixer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.mixing.</span></span><span class="sig-name descname"><span class="pre">StepMixer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">yield_funcs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.mixing.StepMixer" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="sisl.mixing.BaseMixer.html#sisl.mixing.BaseMixer" title="sisl.mixing.BaseMixer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseMixer</span></code></a></p>
+<p>Step between different mixers in a user-defined fashion</p>
+<p>This is handy for creating variable mixing schemes that alternates (or differently)
+between multiple mixers.</p>
+<p class="rubric">Examples</p>
+<p>Alternate between two mixers:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mixer</span> <span class="o">=</span> <span class="n">StepMixer</span><span class="p">(</span>
+<span class="gp">... </span>       <span class="n">StepMixer</span><span class="o">.</span><span class="n">yield_repeat</span><span class="p">(</span><span class="n">mix1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+<span class="gp">... </span>       <span class="n">StepMixer</span><span class="o">.</span><span class="n">yield_repeat</span><span class="p">(</span><span class="n">mix2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>One may also create custom based generators
+which can interact with the mixers in between
+different mixers:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">gen</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="k">yield</span> <span class="n">mix1</span>
+<span class="gp">... </span>    <span class="n">mix1</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="k">yield</span> <span class="n">mix1</span>
+<span class="gp">... </span>    <span class="k">yield</span> <span class="n">mix1</span>
+<span class="gp">... </span>    <span class="k">yield</span> <span class="n">mix2</span>
+</pre></div>
+</div>
+<p>A restart mixer for history mixers:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">gen</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="k">yield</span> <span class="n">mix</span>
+<span class="gp">... </span>    <span class="n">mix</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+</pre></div>
+</div>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.mixing.StepMixer.next" title="sisl.mixing.StepMixer.next"><code class="xref py py-obj docutils literal notranslate"><span class="pre">next</span></code></a>()</p></td>
+<td><p>Return the current mixer, and step the internal mixer</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.mixing.StepMixer.yield_chain" title="sisl.mixing.StepMixer.yield_chain"><code class="xref py py-obj docutils literal notranslate"><span class="pre">yield_chain</span></code></a>(*yield_funcs)</p></td>
+<td><p>Returns a function which yields from each of the function arguments in turn</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.mixing.StepMixer.yield_repeat" title="sisl.mixing.StepMixer.yield_repeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">yield_repeat</span></code></a>(mixer, n)</p></td>
+<td><p>Returns a function which repeats <cite>mixer</cite> <cite>n</cite> times</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.mixing.StepMixer.mixer" title="sisl.mixing.StepMixer.mixer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mixer</span></code></a></p></td>
+<td><p>Return the current mixer</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.mixing.StepMixer.__call__">
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/mixing/base.html#StepMixer.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.mixing.StepMixer.__call__" title="Permalink to this definition"></a></dt>
+<dd><p>Apply the mixing routine</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.mixing.StepMixer.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">yield_funcs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/mixing/base.html#StepMixer.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.mixing.StepMixer.__init__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.mixing.StepMixer.mixer">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mixer</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.11)"><span class="pre">Type</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="sisl.mixing.BaseMixer.html#sisl.mixing.BaseMixer" title="sisl.mixing.BaseMixer"><span class="pre">BaseMixer</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#sisl.mixing.StepMixer.mixer" title="Permalink to this definition"></a></dt>
+<dd><p>Return the current mixer</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.mixing.StepMixer.next">
+<span class="sig-name descname"><span class="pre">next</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/mixing/base.html#StepMixer.next"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.mixing.StepMixer.next" title="Permalink to this definition"></a></dt>
+<dd><p>Return the current mixer, and step the internal mixer</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code></a>[<a class="reference internal" href="sisl.mixing.BaseMixer.html#sisl.mixing.BaseMixer" title="sisl.mixing.BaseMixer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseMixer</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.mixing.StepMixer.yield_chain">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">yield_chain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">yield_funcs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/mixing/base.html#StepMixer.yield_chain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.mixing.StepMixer.yield_chain" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a function which yields from each of the function arguments in turn</p>
+<p>Basically equivalent to a function which does this:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">yield_func</span> <span class="ow">in</span> <span class="n">yield_funcs</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">yield from</span> <span class="n">yield_func</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*yield_funcs</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code></a>[<a class="reference internal" href="sisl.mixing.BaseMixer.html#sisl.mixing.BaseMixer" title="sisl.mixing.BaseMixer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseMixer</span></code></a>]]]) – every function will be <code class="docutils literal notranslate"><span class="pre">yield</span> <span class="pre">from</span></code></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code></a>[<a class="reference internal" href="sisl.mixing.BaseMixer.html#sisl.mixing.BaseMixer" title="sisl.mixing.BaseMixer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseMixer</span></code></a>]]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.mixing.StepMixer.yield_repeat">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">yield_repeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mixer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/mixing/base.html#StepMixer.yield_repeat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.mixing.StepMixer.yield_repeat" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a function which repeats <cite>mixer</cite> <cite>n</cite> times</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[[], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Type" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code></a>[<a class="reference internal" href="sisl.mixing.BaseMixer.html#sisl.mixing.BaseMixer" title="sisl.mixing.BaseMixer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseMixer</span></code></a>]]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sisl.mixing.BaseHistoryWeightMixer.html" class="btn btn-neutral float-left" title="sisl.mixing.BaseHistoryWeightMixer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sisl.mixing.LinearMixer.html" class="btn btn-neutral float-right" title="sisl.mixing.LinearMixer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

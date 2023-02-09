@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.HydrogenicOrbital &mdash; sisl 0.1.dev1+gd93b38d documentation</title>
+  <title>sisl.HydrogenicOrbital &mdash; sisl 0.1.dev1+gf943161 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -14,10 +14,8 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -36,14 +34,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> sisl
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            sisl
           </a>
               <div class="version">
-                0.1.dev1+gd93b38d
+                0.1.dev1+gf943161
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -121,7 +123,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">API documentation</a></li>
           <li class="breadcrumb-item"><a href="../basic.html">Basic classes</a></li>
       <li class="breadcrumb-item active">sisl.HydrogenicOrbital</li>
@@ -179,13 +181,14 @@ R_{nl}(|\mathbf r|) &amp;= -\sqrt{\big(\frac{2Z}{na_0}\big)^3 \frac{(n-l-1)!}{2n
    \big( \frac{2Zr}{na_0} \big)\end{split}\]</div>
 <p>With <span class="math notranslate nohighlight">\(L_{n-l-1}^{(2l+1)}\)</span> is the generalized Laguerre polynomials.</p>
 <p class="rubric">References</p>
-<dl class="citation">
-<dt class="label" id="hydrogenico"><span class="brackets"><a class="fn-backref" href="#id1">HydrogenicO</a></span></dt>
-<dd><p><a class="reference external" href="https://en.wikipedia.org/wiki/Hydrogen-like_atom">https://en.wikipedia.org/wiki/Hydrogen-like_atom</a></p>
-</dd>
-</dl>
+<div role="list" class="citation-list">
+<div class="citation" id="hydrogenico" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">HydrogenicO</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/Hydrogen-like_atom">https://en.wikipedia.org/wiki/Hydrogen-like_atom</a></p>
+</div>
+</div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – principal quantum number</p></li>
 <li><p><strong>l</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – angular momentum quantum number</p></li>
@@ -201,10 +204,6 @@ R_{nl}(|\mathbf r|) &amp;= -\sqrt{\big(\frac{2Z}{na_0}\big)^3 \frac{(n-l-1)!}{2n
 </div>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.HydrogenicOrbital.copy" title="sisl.HydrogenicOrbital.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>()</p></td>
 <td><p>Create an exact copy of this object</p></td>
@@ -297,7 +296,7 @@ R_{nl}(|\mathbf r|) &amp;= -\sqrt{\big(\frac{2Z}{na_0}\big)^3 \frac{(n-l-1)!}{2n
 <span class="sig-name descname"><span class="pre">equal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.HydrogenicOrbital.equal" title="Permalink to this definition"></a></dt>
 <dd><p>Compare two orbitals by comparing their radius, and possibly the radial and psi functions</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>other</strong> (<a class="reference internal" href="sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital"><em>Orbital</em></a>) – comparison orbital</p></li>
 <li><p><strong>psi</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – also compare that the full psi are the same</p></li>
@@ -343,13 +342,13 @@ R_{nl}(|\mathbf r|) &amp;= -\sqrt{\big(\frac{2Z}{na_0}\big)^3 \frac{(n-l-1)!}{2n
 <dd><p>Calculate <span class="math notranslate nohighlight">\(\phi(\mathbf r)\)</span> at a given point (or more points)</p>
 <p>The position <em class="xref py py-obj">r</em> is a vector from the origin of this orbital.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>r</strong> (<em>array_like</em>) – the vector from the orbital origin</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>basis function value at point <em class="xref py py-obj">r</em></p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -361,7 +360,7 @@ R_{nl}(|\mathbf r|) &amp;= -\sqrt{\big(\frac{2Z}{na_0}\big)^3 \frac{(n-l-1)!}{2n
 <dd><p>Calculate <span class="math notranslate nohighlight">\(\phi(|\mathbf R|, \theta, \phi)\)</span> at a given point (in spherical coordinates)</p>
 <p>This is equivalent to <a class="reference internal" href="#sisl.HydrogenicOrbital.psi" title="sisl.HydrogenicOrbital.psi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">psi</span></code></a> however, the input is given in spherical coordinates.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>r</strong> (<em>array_like</em>) – the radius from the orbital origin</p></li>
 <li><p><strong>theta</strong> (<em>array_like</em>) – azimuthal angle in the <span class="math notranslate nohighlight">\(x-y\)</span> plane (from <span class="math notranslate nohighlight">\(x\)</span>)</p></li>
@@ -370,10 +369,10 @@ R_{nl}(|\mathbf r|) &amp;= -\sqrt{\big(\frac{2Z}{na_0}\big)^3 \frac{(n-l-1)!}{2n
 <em class="xref py py-obj">cos</em> is not necessary to call.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>basis function value at point <em class="xref py py-obj">r</em></p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -391,13 +390,13 @@ R_{nl}(|\mathbf r|) &amp;= -\sqrt{\big(\frac{2Z}{na_0}\big)^3 \frac{(n-l-1)!}{2n
 <dd><p>Calculate the radial part of the wavefunction <span class="math notranslate nohighlight">\(f(\mathbf R)\)</span></p>
 <p>The position <em class="xref py py-obj">r</em> is a vector from the origin of this orbital.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>r</strong> (<em>array_like</em>) – radius from the orbital origin</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>radial orbital value at point <em class="xref py py-obj">r</em></p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -421,7 +420,7 @@ R_{nl}(|\mathbf r|) &amp;= -\sqrt{\big(\frac{2Z}{na_0}\big)^3 \frac{(n-l-1)!}{2n
 <span class="sig-name descname"><span class="pre">spher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cos_phi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.HydrogenicOrbital.spher" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate the spherical harmonics of this orbital at a given point (in spherical coordinates)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>theta</strong> (<em>array_like</em>) – azimuthal angle in the <span class="math notranslate nohighlight">\(x-y\)</span> plane (from <span class="math notranslate nohighlight">\(x\)</span>)</p></li>
 <li><p><strong>phi</strong> (<em>array_like</em>) – polar angle from <span class="math notranslate nohighlight">\(z\)</span> axis</p></li>
@@ -429,10 +428,10 @@ R_{nl}(|\mathbf r|) &amp;= -\sqrt{\big(\frac{2Z}{na_0}\big)^3 \frac{(n-l-1)!}{2n
 <em class="xref py py-obj">cos</em> is not necessary to call.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>spherical harmonics at angles <span class="math notranslate nohighlight">\(\theta\)</span> and <span class="math notranslate nohighlight">\(\phi\)</span></p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
 </dd>
 </dl>
@@ -449,7 +448,7 @@ R_{nl}(|\mathbf r|) &amp;= -\sqrt{\big(\frac{2Z}{na_0}\big)^3 \frac{(n-l-1)!}{2n
 <span class="sig-name descname"><span class="pre">toGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">precision=0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c=1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=&lt;class</span> <span class="pre">'numpy.float64'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atom=1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.HydrogenicOrbital.toGrid" title="Permalink to this definition"></a></dt>
 <dd><p>Create a Grid with <em>only</em> this orbital wavefunction on it</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>precision</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – used separation in the <a class="reference internal" href="sisl.Grid.html#sisl.Grid" title="sisl.Grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Grid</span></code></a> between voxels (in Ang)</p></li>
 <li><p><strong>c</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#complex" title="(in Python v3.11)"><em>complex</em></a><em>, </em><em>optional</em>) – coefficient for the orbital</p></li>
@@ -467,10 +466,10 @@ something that <code class="docutils literal notranslate"><span class="pre">Atom
 <span class="sig-name descname"><span class="pre">toSphere</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.HydrogenicOrbital.toSphere" title="Permalink to this definition"></a></dt>
 <dd><p>Return a sphere with radius equal to the orbital size</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>sphere with a radius equal to the radius of this orbital</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="sisl.shape.Sphere.html#sisl.shape.Sphere" title="sisl.shape.Sphere"><em>Sphere</em></a></p>
 </dd>
 </dl>

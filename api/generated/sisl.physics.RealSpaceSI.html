@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.RealSpaceSI &mdash; sisl 0.1.dev1+gd93b38d documentation</title>
+  <title>sisl.physics.RealSpaceSI &mdash; sisl 0.1.dev1+gf943161 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -14,10 +14,8 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -36,14 +34,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> sisl
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            sisl
           </a>
               <div class="version">
-                0.1.dev1+gd93b38d
+                0.1.dev1+gf943161
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -116,7 +118,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">API documentation</a></li>
           <li class="breadcrumb-item"><a href="../physics.html">Physical objects</a></li>
           <li class="breadcrumb-item"><a href="../physics.matrix.html">Physical quantites</a></li>
@@ -167,7 +169,7 @@
      - \Big[\sum_{\mathbf k} \mathbf G_{\mathbf k}(E)\Big]^{-1}\]</div>
 <p>The method actually used is relying on <a class="reference internal" href="sisl.physics.RecursiveSI.html#sisl.physics.RecursiveSI" title="sisl.physics.RecursiveSI"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RecursiveSI</span></code></a> and <a class="reference internal" href="sisl.physics.Bloch.html#sisl.physics.Bloch" title="sisl.physics.Bloch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Bloch</span></code></a> objects.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>semi</strong> (<a class="reference internal" href="sisl.physics.SemiInfinite.html#sisl.physics.SemiInfinite" title="sisl.physics.SemiInfinite"><em>SemiInfinite</em></a>) – physical object which contains the semi-infinite direction, it is from
 this object we calculate the self-energy to be put into the surface.
@@ -220,10 +222,6 @@ to true.</p></li>
 <p>Manually specify Brillouin zone integration and default <span class="math notranslate nohighlight">\(\eta\)</span> value.</p>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.RealSpaceSI.broadening_matrix" title="sisl.physics.RealSpaceSI.broadening_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">broadening_matrix</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Calculate the broadening matrix by first calculating the self-energy</p></td>
@@ -310,7 +308,7 @@ calculated the self-energy, this will be <em>much</em>, <em>MUCH</em> faster!</p
 <div class="math notranslate nohighlight">
 \[\mathbf G^\mathcal{R}(E) = \sum_{\mathbf k} \mathbf G_{\mathbf k}(E)\]</div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>E</strong> (<em>float/complex</em>) – energy to evaluate the real-space Green function at</p></li>
 <li><p><strong>k</strong> (<em>array_like</em><em>, </em><em>optional</em>) – only viable for 3D bulk systems with real-space Green functions along 2 directions.
@@ -340,10 +338,10 @@ sampling times the unfolding (per <span class="math notranslate nohighlight">\(\
 <p>The resulting parent object only contains the inner-cell couplings for the elements that couple
 out of the real-space matrix.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>ret_indices</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – if true, also return the atomic indices (corresponding to <a class="reference internal" href="#sisl.physics.RealSpaceSI.real_space_parent" title="sisl.physics.RealSpaceSI.real_space_parent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">real_space_parent</span></code></a>) that encompass the coupling matrix</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>parent</strong> (<em>object</em>) – parent object only retaining the elements of the atoms that couple out of the primary unit cell</p></li>
 <li><p><strong>atom_index</strong> (<em>numpy.ndarray</em>) – indices for the atoms that couple out of the geometry, only if <em class="xref py py-obj">ret_indices</em> is true</p></li>
@@ -369,7 +367,7 @@ correspond to the <em class="xref py py-obj">self.surface</em> object, always!</
 <div class="math notranslate nohighlight">
 \[\boldsymbol\Gamma = i(\boldsymbol\Sigma - \boldsymbol \Sigma ^\dagger)\]</div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>SE</strong> (<em>matrix</em>) – self-energy matrix</p>
 </dd>
 </dl>
@@ -384,7 +382,7 @@ correspond to the <em class="xref py py-obj">self.surface</em> object, always!</
 \[\boldsymbol\Sigma^{\mathcal{R}}(E) = \mathbf S^{\mathcal{R}} E - \mathbf H^{\mathcal{R}}
    - \Big[\sum_{\mathbf k} \mathbf G_{\mathbf k}(E)\Big]^{-1}\]</div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>E</strong> (<em>float/complex</em>) – energy to evaluate the real-space self-energy at</p></li>
 <li><p><strong>k</strong> (<em>array_like</em><em>, </em><em>optional</em>) – only viable for 3D bulk systems with real-space self-energies along 2 directions.
@@ -406,7 +404,7 @@ are returned</p></li>
 <dd><p>Update options in the real-space self-energy</p>
 <p>After updating options one should re-call <a class="reference internal" href="#sisl.physics.RealSpaceSI.initialize" title="sisl.physics.RealSpaceSI.initialize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">initialize</span></code></a> for consistency.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>semi_bulk</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the semi-infinite matrix elements are used for in the surface. Default to true.</p></li>
 <li><p><strong>eta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – imaginary part in the self-energy calculations (default 1e-4 eV)</p></li>

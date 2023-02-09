@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.mixing.linear &mdash; sisl 0.1.dev1+gd93b38d documentation</title>
+  <title>sisl.mixing.linear &mdash; sisl 0.1.dev1+gf943161 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -13,10 +13,8 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -31,14 +29,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> sisl
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            sisl
           </a>
               <div class="version">
-                0.1.dev1+gd93b38d
+                0.1.dev1+gf943161
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -87,7 +89,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
       <li class="breadcrumb-item active">sisl.mixing.linear</li>
       <li class="wy-breadcrumbs-aside">
@@ -102,15 +104,16 @@
 <span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
 <span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseMixer</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseHistoryWeightMixer</span>
 
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;LinearMixer&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;LinearMixer&quot;</span><span class="p">,</span> <span class="s2">&quot;AndersonMixer&quot;</span><span class="p">]</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.mixing&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">LinearMixer</span><span class="p">(</span><span class="n">BaseMixer</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">LinearMixer</span><span class="p">(</span><span class="n">BaseHistoryWeightMixer</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Linear mixing</span>
 
 <span class="sd">    The linear mixing is solely defined using a weight, and the resulting functional</span>
@@ -127,15 +130,70 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
-<div class="viewcode-block" id="LinearMixer.__init__"><a class="viewcode-back" href="../../../api/generated/sisl.mixing.LinearMixer.html#sisl.mixing.LinearMixer.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mf">0.2</span><span class="p">):</span>
-        <span class="c1"># No parameters passed</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">weight</span><span class="p">)</span></div>
+<div class="viewcode-block" id="LinearMixer.__call__"><a class="viewcode-back" href="../../../api/generated/sisl.mixing.LinearMixer.html#sisl.mixing.LinearMixer.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">append</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate a new variable :math:`f&#39;` using input and output of the functional</span>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; String representation &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">weight: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="si">:</span><span class="s2">.4f</span><span class="se">}}</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        f : object</span>
+<span class="sd">           input variable for the functional</span>
+<span class="sd">        df : object</span>
+<span class="sd">           derivative of the functional</span>
+<span class="sd">        append : bool, optional</span>
+<span class="sd">           whether to append to the history</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">append</span><span class="o">=</span><span class="n">append</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">f</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">*</span> <span class="n">df</span></div>
 
-<div class="viewcode-block" id="LinearMixer.__call__"><a class="viewcode-back" href="../../../api/generated/sisl.mixing.LinearMixer.html#sisl.mixing.LinearMixer.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">df</span><span class="p">):</span>
+
+<div class="viewcode-block" id="AndersonMixer"><a class="viewcode-back" href="../../../api/generated/sisl.mixing.AndersonMixer.html#sisl.mixing.AndersonMixer">[docs]</a><span class="k">class</span> <span class="nc">AndersonMixer</span><span class="p">(</span><span class="n">BaseHistoryWeightMixer</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Anderson mixing</span>
+
+<span class="sd">    The Anderson mixing assumes that the mixed input/output are linearly</span>
+<span class="sd">    related. Hence </span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       |\bar{n}^{m}_{\mathrm{in}/\mathrm{out}\rangle =</span>
+<span class="sd">          (1 - \beta)|n^{m}_{\mathrm{in}/\mathrm{out}\rangle</span>
+<span class="sd">          + \beta|n^{m-1}_{\mathrm{in}/\mathrm{out}\rangle</span>
+
+<span class="sd">    Here the optimal choice :math:`\beta` is calculated as:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \delta_i &amp;= F_i^{\mathrm{out}} - F_i^{\mathrm{in}}</span>
+<span class="sd">       \\</span>
+<span class="sd">       \beta &amp;= \frac{\langle \delta_i | \delta_i - \delta_{i-1}\rangle}</span>
+<span class="sd">         {\langle \delta_i - \delta_{i-1}| \delta_i - \delta_{i-1} \rangle}</span>
+
+<span class="sd">    Finally the resulting output becomes:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">          |n^{m+1}\rangle =</span>
+<span class="sd">          (1 - \alpha)|\bar n^m_{\mathrm{in}}\rangle</span>
+<span class="sd">          + \alpha|\bar n^m_{\mathrm{out}}\rangle</span>
+
+<span class="sd">    See :cite:`Johnson1988` for more details.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_beta</span><span class="p">(</span><span class="n">df1</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">df2</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="c1"># Minimize the average densities for the delta variable</span>
+        <span class="k">def</span> <span class="nf">metric</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">a</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span><span class="o">.</span><span class="n">real</span>
+
+        <span class="n">ddf</span> <span class="o">=</span> <span class="n">df2</span> <span class="o">-</span> <span class="n">df1</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="n">metric</span><span class="p">(</span><span class="n">df2</span><span class="p">,</span> <span class="n">ddf</span><span class="p">)</span> <span class="o">/</span> <span class="n">metric</span><span class="p">(</span><span class="n">ddf</span><span class="p">,</span> <span class="n">ddf</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">beta</span>
+
+<div class="viewcode-block" id="AndersonMixer.__call__"><a class="viewcode-back" href="../../../api/generated/sisl.mixing.AndersonMixer.html#sisl.mixing.AndersonMixer.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+                 <span class="n">delta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">append</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate a new variable :math:`f&#39;` using input and output of the functional</span>
 
 <span class="sd">        Parameters</span>
@@ -145,7 +203,42 @@
 <span class="sd">        df : object</span>
 <span class="sd">           derivative of the functional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">f</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">*</span> <span class="n">df</span></div>
+        <span class="k">if</span> <span class="n">delta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># not a copy, simply the same reference</span>
+            <span class="n">delta</span> <span class="o">=</span> <span class="n">df</span>
+
+        <span class="c1"># Get last elements</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">last</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">f1</span> <span class="o">=</span> <span class="n">last</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">fdf1</span> <span class="o">=</span> <span class="n">last</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">d1</span> <span class="o">=</span> <span class="n">last</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">f1</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># the current iterations input + output variables</span>
+        <span class="n">f2</span> <span class="o">=</span> <span class="n">f</span>
+        <span class="n">fdf2</span> <span class="o">=</span> <span class="n">f</span> <span class="o">+</span> <span class="n">df</span>
+        <span class="n">d2</span> <span class="o">=</span> <span class="n">delta</span>
+
+        <span class="c1"># store new last variables</span>
+        <span class="c1">#   delta is used for calculating beta, nothing more</span>
+        <span class="c1"># here n refers to the variable (density) we are mixing</span>
+        <span class="c1">#  and the integer corresponds to the iteration count</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">f2</span><span class="p">,</span> <span class="n">fdf2</span><span class="p">,</span> <span class="n">d2</span><span class="p">,</span> <span class="n">append</span><span class="o">=</span><span class="n">append</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">f1</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># this is linear mixing for the first step</span>
+            <span class="k">return</span> <span class="n">f</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">*</span> <span class="n">df</span>
+
+        <span class="c1"># calculate next position</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_beta</span><span class="p">(</span><span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">)</span>
+
+        <span class="c1"># Now calculate the new averages</span>
+        <span class="n">nin</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta</span><span class="p">)</span> <span class="o">*</span> <span class="n">f2</span> <span class="o">+</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">f1</span>
+        <span class="n">nout</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta</span><span class="p">)</span> <span class="o">*</span> <span class="n">fdf2</span> <span class="o">+</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">fdf1</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">)</span> <span class="o">*</span> <span class="n">nin</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">*</span> <span class="n">nout</span></div></div>
 </pre></div>
 
            </div>
