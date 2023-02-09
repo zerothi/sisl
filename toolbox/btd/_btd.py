@@ -1893,12 +1893,12 @@ class DeviceGreen:
                \mathbf G
                \tilde{\boldsymbol\Gamma}_{\mathfrak e_{\mathrm{from}}}
 
-        Here the :math:`\tilde{\boldsymbol\Gamma}` is defined as:
+        Here :math:`\tilde{\boldsymbol\Gamma}` is defined as:
 
         .. math::
-            \boldsymbol\Gamma(E,\mathbf k) \mathbf U &= \lambda \mathbf U
+            \boldsymbol\Gamma(E,\mathbf k) \mathbf u_i &= \lambda_i \mathbf u_i
             \\
-            \tilde{\boldsymbol\Gamma}(E,\mathbf k) &= \operatorname{diag}\{ \lambda \} \mathbf U
+            \tilde{\boldsymbol\Gamma}(E,\mathbf k) &= \operatorname{diag}\{ \sqrt{\boldsymbol\lambda} \} \mathbf u
 
         Once the scattering matrices have been calculated one can calculate the full transmission
         function
@@ -1979,11 +1979,11 @@ class DeviceGreen:
         DOS weighted scattering states:
 
         .. math::
-            \mathbf A_{\mathfrak{e}}(E,\mathbf k) \mathbf u &= 2\pi\mathbf a \mathbf u
+            \mathbf A_{\mathfrak e_{\mathrm{from}} }(E,\mathbf k) \mathbf u_i &= 2\pi a_i \mathbf u_i
             \\
-            \mathbf t_{\mathbf u} &= \sum \langle \mathbf u | \boldsymbol\Gamma_{\mathfrak{e\to}} | \mathbf u\rangle
+            \mathbf t_{\mathbf u} &= \sum \langle \mathbf u | \boldsymbol\Gamma_{ \mathfrak e_{\mathrm{to}} }  | \mathbf u\rangle
 
-        where the eigenvectors of :math:`\mathbf t_{\mathbf u}` is the coefficients of the
+        where the eigenvectors of :math:`\mathbf t_{\mathbf u}` are the coefficients of the
         DOS weighted scattering states (:math:`\sqrt{2\pi a_i} u_i`) for the individual eigen channels.
         The eigenvalues are the transmission eigenvalues. Further details may be found in :cite:`Paulsson2007`.
 

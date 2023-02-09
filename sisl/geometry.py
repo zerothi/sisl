@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 # To check for integers
 from __future__ import annotations
-from typing import List
+from typing import List, Union, Iterator
 from numbers import Integral, Real
 from math import acos
 from itertools import product
@@ -12,10 +12,12 @@ from pathlib import Path
 import warnings
 
 import numpy as np
+from numpy.typing import ArrayLike
 from numpy import ndarray, int32, bool_
 from numpy import dot, square, sqrt, diff
 from numpy import floor, ceil, tile, unique
 from numpy import argsort, split, isin, concatenate
+
 
 from .orbital import Orbital
 from ._internal import set_module, singledispatchmethod
@@ -55,6 +57,18 @@ class AtomCategory(Category):
         if case:
             return cls.__name__[4:] == name
         return cls.__name__[4:].lower() == name.lower()
+
+
+AtomsArg = Union[
+    ArrayLike,
+    str, int, dict,
+    Atom, AtomCategory, GenericCategory,
+    Shape
+]
+OrbitalsArg = Union[
+    ArrayLike,
+    str, int, dict,
+]
 
 
 @set_module("sisl")
@@ -130,7 +144,7 @@ class Geometry(SuperCellChild):
     Atom : contained atoms are each an object of this
     """
 
-    def __init__(self, xyz, atoms=None, sc=None, names=None):
+    def __init__(self, xyz: ArrayLike, atoms=None, sc=None, names=None):
 
         # Create the geometry coordinate
         # We need flatten to ensure a copy
@@ -362,7 +376,7 @@ class Geometry(SuperCellChild):
 
     @_sanitize_atoms.register(AtomCategory)
     @_sanitize_atoms.register(GenericCategory)
-    def _(self, atoms):
+    def _(self, atoms) -> ndarray:
         # First do categorization
         cat = atoms.categorize(self)
         def m(cat):
@@ -388,7 +402,7 @@ class Geometry(SuperCellChild):
         return atoms.within_index(self.xyz)
 
     @singledispatchmethod
-    def _sanitize_orbs(self, orbitals):
+    def _sanitize_orbs(self, orbitals) -> ndarray:
         """ Converts an `orbital` to index under given inputs
 
         `orbital` may be one of the following:
@@ -405,26 +419,26 @@ class Geometry(SuperCellChild):
             return orbitals.nonzero()[0]
         return orbitals
 
-    @_sanitize_orbs.register(ndarray)
-    def _(self, orbitals):
+    @_sanitize_orbs.register
+    def _(self, orbitals: ndarray) -> ndarray:
         if orbitals.dtype == bool_:
             return np.flatnonzero(orbitals)
         return orbitals
 
-    @_sanitize_orbs.register(str)
-    def _(self, orbitals):
+    @_sanitize_orbs.register
+    def _(self, orbitals: str) -> ndarray:
         atoms = self._sanitize_atoms(orbitals)
         return self.a2o(atoms, all=True)
 
-    @_sanitize_orbs.register(dict)
-    def _(self, orbitals):
+    @_sanitize_orbs.register
+    def _(self, orbitals: dict) -> ndarray:
         """ A dict has atoms as keys """
         def conv(atom, orbs):
             atom = self._sanitize_atoms(atom)
             return np.add.outer(self.firsto[atom], orbs).ravel()
         return np.concatenate(tuple(conv(atom, orbs) for atom, orbs in orbitals.items()))
 
-    def as_primary(self, na_primary, axes=(0, 1, 2), ret_super: bool=False):
+    def as_primary(self, na_primary: int, axes=(0, 1, 2), ret_super: bool=False):
         """ Try and reduce the geometry to the primary unit-cell comprising `na_primary` atoms
 
         This will basically try and find the tiling/repetitions required for the geometry to only have
@@ -432,11 +446,11 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        na_primary : int
+        na_primary :
            number of atoms in the primary unit cell
         axes : array_like, optional
            only search the given directions for supercells, default to all directions
-        ret_super : bool, optional
+        ret_super :
            also return the number of supercells used in each direction
 
         Returns
@@ -557,7 +571,7 @@ class Geometry(SuperCellChild):
         """
         self._atoms = self.atoms.reduce(in_place=True)
 
-    def rij(self, ia, ja) -> ndarray:
+    def rij(self, ia: AtomsArg, ja: AtomsArg) -> ndarray:
         r""" Distance between atom `ia` and `ja`, atoms can be in super-cell indices
 
         Returns the distance between two atoms:
@@ -579,7 +593,7 @@ class Geometry(SuperCellChild):
 
         return fnorm(R)
 
-    def Rij(self, ia, ja) -> ndarray:
+    def Rij(self, ia: AtomsArg, ja: AtomsArg) -> ndarray:
         r""" Vector between atom `ia` and `ja`, atoms can be in super-cell indices
 
         Returns the vector between two atoms:
@@ -589,9 +603,9 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        ia : int or array_like
+        ia :
            atomic index of first atom
-        ja : int or array_like
+        ja :
            atomic indices
         """
         xi = self.axyz(ia)
@@ -604,7 +618,7 @@ class Geometry(SuperCellChild):
 
         return xj - xi[None, :]
 
-    def orij(self, orbitals1, orbitals2) -> ndarray:
+    def orij(self, orbitals1: OrbitalsArg, orbitals2: OrbitalsArg) -> ndarray:
         r""" Distance between orbital `orbitals1` and `orbitals2`, orbitals can be in super-cell indices
 
         Returns the distance between two orbitals:
@@ -621,7 +635,7 @@ class Geometry(SuperCellChild):
         """
         return self.rij(self.o2a(orbitals1), self.o2a(orbitals2))
 
-    def oRij(self, orbitals1, orbitals2) -> ndarray:
+    def oRij(self, orbitals1: OrbitalsArg, orbitals2: OrbitalsArg) -> ndarray:
         r""" Vector between orbital `orbitals1` and `orbitals2`, orbitals can be in super-cell indices
 
         Returns the vector between two orbitals:
@@ -661,7 +675,7 @@ class Geometry(SuperCellChild):
             with get_sile(sile, mode='r') as fh:
                 return fh.read_geometry(*args, **kwargs)
 
-    def write(self, sile, *args, **kwargs) -> None:
+    def write(self, sile: Union[str, BaseSile], *args, **kwargs) -> None:
         """ Writes geometry to the `Sile` using `sile.write_geometry`
 
         Parameters
@@ -698,7 +712,7 @@ class Geometry(SuperCellChild):
         """ A simple, short string representation. """
         return f"<{self.__module__}.{self.__class__.__name__} na={self.na}, no={self.no}, nsc={self.nsc}>"
 
-    def iter(self):
+    def iter(self) -> Iterator[int]:
         """ An iterator over all atomic indices
 
         This iterator is the same as:
@@ -720,7 +734,7 @@ class Geometry(SuperCellChild):
 
     __iter__ = iter
 
-    def iter_species(self, atoms=None):
+    def iter_species(self, atoms: Optional[AtomsArg]=None) -> Iterator[int, Atom, int]:
         """ Iterator over all atoms (or a subset) and species as a tuple in this geometry
 
         >>> for ia, a, idx_specie in self.iter_species():
@@ -733,7 +747,7 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        atoms : int or array_like, optional
+        atoms :
            only loop on the given atoms, default to all atoms
 
         See Also
@@ -748,7 +762,7 @@ class Geometry(SuperCellChild):
             for ia in self._sanitize_atoms(atoms).ravel():
                 yield ia, self.atoms[ia], self.atoms.specie[ia]
 
-    def iter_orbitals(self, atoms=None, local: bool=True):
+    def iter_orbitals(self, atoms: Optional[AtomsArg]=None, local: bool=True) -> Iterator[int, int]:
         r"""
         Returns an iterator over all atoms and their associated orbitals
 
@@ -830,7 +844,7 @@ class Geometry(SuperCellChild):
 
         return max(2, iR)
 
-    def iter_block_rand(self, iR=20, R=None, atoms=None):
+    def iter_block_rand(self, iR=20, R=None, atoms: Optional[AtomsArg]=None):
         """ Perform the *random* block-iteration by randomly selecting the next center of block """
 
         # We implement yields as we can then do nested iterators
@@ -901,7 +915,7 @@ class Geometry(SuperCellChild):
             print(np.sum(not_passed), len(self))
             raise SislError(f'{self.__class__.__name__}.iter_block_rand error on iterations. Not all atoms have been visited.')
 
-    def iter_block_shape(self, shape=None, iR=20, atoms=None):
+    def iter_block_shape(self, shape=None, iR=20, atoms: Optional[AtomsArg]=None):
         """ Perform the *grid* block-iteration by looping a grid """
 
         # We implement yields as we can then do nested iterators
@@ -1021,7 +1035,7 @@ class Geometry(SuperCellChild):
             print(np.sum(not_passed), len(self))
             raise SislError(f'{self.__class__.__name__}.iter_block_shape error on iterations. Not all atoms have been visited.')
 
-    def iter_block(self, iR=20, R=None, atoms=None, method: str='rand'):
+    def iter_block(self, iR=20, R=None, atoms: Optional[AtomsArg]=None, method: str='rand'):
         """ Iterator for performance critical loops
 
         NOTE: This requires that `R` has been set correctly as the maximum interaction range.
@@ -2249,7 +2263,7 @@ class Geometry(SuperCellChild):
             return ang
         return np.degrees(ang)
 
-    def rotate(self, angle, v, origin=None, atoms=None, only='abc+xyz', rad=False) -> Geometry:
+    def rotate(self, angle, v, origin=None, atoms: Optional[AtomsArg]=None, only='abc+xyz', rad=False) -> Geometry:
         """ Rotate geometry around vector and return a new geometry
 
         Per default will the entire geometry be rotated, such that everything
@@ -2341,7 +2355,7 @@ class Geometry(SuperCellChild):
         a = acos(np.sum(lm * lv))
         return self.rotate(a, cp, rad=True)
 
-    def translate(self, v, atoms=None, cell=False) -> Geometry:
+    def translate(self, v, atoms: Optional[AtomsArg]=None, cell=False) -> Geometry:
         """ Translates the geometry by `v`
 
         One can translate a subset of the atoms by supplying `atoms`.
@@ -2369,7 +2383,7 @@ class Geometry(SuperCellChild):
         return g
     move = translate
 
-    def translate2uc(self, atoms=None, axes=(0, 1, 2)) -> Geometry:
+    def translate2uc(self, atoms: Optional[AtomsArg]=None, axes=(0, 1, 2)) -> Geometry:
         """Translates atoms in the geometry into the unit cell
 
         One can translate a subset of the atoms or axes by appropriate arguments.
@@ -2450,7 +2464,7 @@ class Geometry(SuperCellChild):
             sc = self.sc.copy()
         return self.__class__(xyz, atoms=self.atoms.copy(), sc=sc)
 
-    def center(self, atoms=None, what="xyz") -> ndarray:
+    def center(self, atoms: Optional[AtomsArg]=None, what="xyz") -> ndarray:
         """ Returns the center of the geometry
 
         By specifying `what` one can control whether it should be:
@@ -2873,7 +2887,7 @@ class Geometry(SuperCellChild):
         out._atoms = out.atoms.insert(index, other.atoms)
         return out
 
-    def reverse(self, atoms=None) -> Geometry:
+    def reverse(self, atoms: Optional[AtomsArg]=None) -> Geometry:
         """ Returns a reversed geometry
 
         Also enables reversing a subset of the atoms.
@@ -2892,7 +2906,7 @@ class Geometry(SuperCellChild):
             xyz[atoms, :] = self.xyz[atoms[::-1], :]
         return self.__class__(xyz, atoms=self.atoms.reverse(atoms), sc=self.sc.copy())
 
-    def mirror(self, method, atoms=None, point=(0, 0, 0)) -> Geometry:
+    def mirror(self, method, atoms: Optional[AtomsArg]=None, point=(0, 0, 0)) -> Geometry:
         r""" Mirrors the atomic coordinates about a plane given by its normal vector
 
         This will typically move the atomic coordinates outside of the unit-cell.
@@ -2962,7 +2976,7 @@ class Geometry(SuperCellChild):
         g.xyz[atoms, :] -= vp.reshape(-1, 1) * method.reshape(1, 3)
         return g
 
-    def axyz(self, atoms=None, isc=None) -> ndarray:
+    def axyz(self, atoms: Optional[AtomsArg]=None, isc=None) -> ndarray:
         """ Return the atomic coordinates in the supercell of a given atom.
 
         The ``Geometry[...]`` slicing is calling this function with appropriate options.
@@ -3055,7 +3069,7 @@ class Geometry(SuperCellChild):
         return self.__class__(xyz, atoms=atoms, sc=sc)
 
     def within_sc(self, shapes, isc=None,
-                  atoms=None, atoms_xyz=None,
+                  atoms: Optional[AtomsArg]=None, atoms_xyz=None,
                   ret_xyz=False, ret_rij=False):
         """ Indices of atoms in a given supercell within a given shape from a given coordinate
 
@@ -3213,7 +3227,7 @@ class Geometry(SuperCellChild):
         return ret[0]
 
     def close_sc(self, xyz_ia, isc=(0, 0, 0), R=None,
-                 atoms=None, atoms_xyz=None,
+                 atoms: Optional[AtomsArg]=None, atoms_xyz=None,
                  ret_xyz=False, ret_rij=False):
         """ Indices of atoms in a given supercell within a given radius from a given coordinate
 
@@ -3454,7 +3468,7 @@ class Geometry(SuperCellChild):
                 'Changing bond-length dependent on several lacks implementation.')
 
     def within(self, shapes,
-               atoms=None, atoms_xyz=None,
+               atoms: Optional[AtomsArg]=None, atoms_xyz=None,
                ret_xyz=False, ret_rij=False, ret_isc=False):
         """ Indices of atoms in the entire supercell within a given shape from a given coordinate
 
@@ -3562,7 +3576,7 @@ class Geometry(SuperCellChild):
         return ret
 
     def close(self, xyz_ia, R=None,
-              atoms=None, atoms_xyz=None,
+              atoms: Optional[AtomsArg]=None, atoms_xyz=None,
               ret_xyz=False, ret_rij=False, ret_isc=False):
         """ Indices of atoms in the entire supercell within a given radius from a given coordinate
 
@@ -3752,7 +3766,7 @@ class Geometry(SuperCellChild):
         atoms2 = atoms2 % na + sc_index(-isc1) * na
         return atoms2, atoms1
 
-    def o2transpose(self, orb1, orb2=None) -> tuple[ndarray, ndarray]:
+    def o2transpose(self, orb1: OrbitalsArg, orb2: Optional[OrbitalsArg]=None) -> tuple[ndarray, ndarray]:
         """ Transposes connections from `orb1` to `orb2` such that supercell connections are transposed
 
         When handling supercell indices it is useful to get the *transposed* connection. I.e. if you have
@@ -3774,9 +3788,9 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        orb1 : array_like
+        orb1 :
             orbital indices must have same length as `orb2` or length 1
-        orb2 : array_like, optional
+        orb2 :
             orbital indices must have same length as `orb1` or length 1.
             If not present then only `orb1` will be returned in transposed indices.
 
@@ -3814,7 +3828,7 @@ class Geometry(SuperCellChild):
         orb2 = orb2 % no + sc_index(-isc1) * no
         return orb2, orb1
 
-    def a2o(self, atoms, all=False) -> ndarray:
+    def a2o(self, atoms: AtomsArg, all: bool=False) -> ndarray:
         """
         Returns an orbital index of the first orbital of said atom.
         This is particularly handy if you want to create
@@ -3824,9 +3838,9 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        atoms : array_like
+        atoms :
              Atomic indices
-        all : bool, optional
+        all :
              ``False``, return only the first orbital corresponding to the atom,
              ``True``, returns list of the full atom(s), will always return a 1D array.
         """
@@ -3845,16 +3859,16 @@ class Geometry(SuperCellChild):
 
         return _a.array_arange(ob, oe)
 
-    def o2a(self, orbitals, unique=False) -> ndarray:
+    def o2a(self, orbitals: OrbitalsArg, unique: bool=False) -> ndarray:
         """ Atomic index corresponding to the orbital indicies.
 
         Note that this will preserve the super-cell offsets.
 
         Parameters
         ----------
-        orbitals : array_like
+        orbitals :
              List of orbital indices to return the atoms for
-        unique : bool, optional
+        unique :
              If True only return the unique atoms.
         """
         orbitals = self._sanitize_orbs(orbitals)
@@ -3868,7 +3882,7 @@ class Geometry(SuperCellChild):
             return np.unique(a + isc * self.na)
         return a + isc * self.na
 
-    def uc2sc(self, atoms, unique=False) -> ndarray:
+    def uc2sc(self, atoms: AtomsArg, unique: bool=False) -> ndarray:
         """ Returns atom from unit-cell indices to supercell indices, possibly removing dublicates
 
         Parameters
@@ -3885,7 +3899,7 @@ class Geometry(SuperCellChild):
         return atoms
     auc2sc = uc2sc
 
-    def sc2uc(self, atoms, unique=False) -> ndarray:
+    def sc2uc(self, atoms: AtomsArg, unique: bool=False) -> ndarray:
         """ Returns atoms from supercell indices to unit-cell indices, possibly removing dublicates
 
         Parameters
@@ -3901,7 +3915,7 @@ class Geometry(SuperCellChild):
         return atoms
     asc2uc = sc2uc
 
-    def osc2uc(self, orbitals, unique=False) -> ndarray:
+    def osc2uc(self, orbitals: OrbitalsArg, unique: bool=False) -> ndarray:
         """ Orbitals from supercell indices to unit-cell indices, possibly removing dublicates
 
         Parameters
@@ -3916,7 +3930,7 @@ class Geometry(SuperCellChild):
             return np.unique(orbitals)
         return orbitals
 
-    def ouc2sc(self, orbitals, unique=False) -> ndarray:
+    def ouc2sc(self, orbitals: OrbitalsArg, unique: bool=False) -> ndarray:
         """ Orbitals from unit-cell indices to supercell indices, possibly removing dublicates
 
         Parameters
@@ -3934,7 +3948,7 @@ class Geometry(SuperCellChild):
             return np.unique(orbitals)
         return orbitals
 
-    def a2isc(self, atoms) -> ndarray:
+    def a2isc(self, atoms: AtomsArg) -> ndarray:
         """ Super-cell indices for a specific/list atom
 
         Returns a vector of 3 numbers with integers.
@@ -3950,13 +3964,13 @@ class Geometry(SuperCellChild):
     # This function is a bit weird, it returns a real array,
     # however, there should be no ambiguity as it corresponds to th
     # offset and "what else" is there to query?
-    def a2sc(self, atoms) -> ndarray:
+    def a2sc(self, atoms: AtomsArg) -> ndarray:
         """
         Returns the super-cell offset for a specific atom
         """
         return self.sc.offset(self.a2isc(atoms))
 
-    def o2isc(self, orbitals) -> ndarray:
+    def o2isc(self, orbitals: OrbitalsArg) -> ndarray:
         """
         Returns the super-cell index for a specific orbital.
 
@@ -3967,7 +3981,7 @@ class Geometry(SuperCellChild):
             orbitals = orbitals.ravel()
         return self.sc.sc_off[orbitals, :]
 
-    def o2sc(self, orbitals) -> ndarray:
+    def o2sc(self, orbitals: OrbitalsArg) -> ndarray:
         """
         Returns the super-cell offset for a specific orbital.
         """
@@ -4112,7 +4126,10 @@ class Geometry(SuperCellChild):
 
         return rij
 
-    def distance(self, atoms=None, R=None, tol=0.1, method='average'):
+    def distance(self, atoms: Optional[AtomsArg]=None,
+                 R: Optional[float]=None,
+                 tol: float=0.1,
+                 method: str='average'):
         """ Calculate the distances for all atoms in shells of radius `tol` within `max_R`
 
         Parameters
@@ -4382,7 +4399,7 @@ class Geometry(SuperCellChild):
         # infinite supercell indices
         return self.sc2uc(idx), xyz, isc
 
-    def apply(self, data, func, mapper, axis=0, segments="atoms"):
+    def apply(self, data, func, mapper, axis: int=0, segments="atoms"):
         r"""Apply a function `func` to the data along axis `axis` using the method specified
 
         This can be useful for applying conversions from orbital data to atomic data through
@@ -4395,7 +4412,7 @@ class Geometry(SuperCellChild):
         ----------
         data : array_like
             the data to be converted
-        func :
+        func : callable
             a callable function that transforms the data in some way
         mapper : func, optional
             a function transforming the `segments` into some other segments that
