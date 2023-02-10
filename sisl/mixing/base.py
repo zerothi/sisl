@@ -155,7 +155,7 @@ class BaseHistoryWeightMixer(BaseWeightMixer):
         return f"{self.__class__.__name__}{{weight: {self.weight:.4f}, history={hist}|{max_hist}}}"
 
 
-    def __call__(self, *args: Any, append: bool = True):
+    def __call__(self, *args: Any, append: bool = True) -> None:
         """ Append data to thMix quantities based on arguments """
         if not append:
             # do nothing
@@ -172,7 +172,7 @@ class BaseHistoryWeightMixer(BaseWeightMixer):
         """ History object tracked by this mixer """
         return self._history
 
-    def set_history(self, history: TypeArgHistory):
+    def set_history(self, history: TypeArgHistory) -> None:
         """ Replace the current history in the mixer with a new one
 
         Parameters
@@ -239,6 +239,7 @@ class StepMixer(BaseMixer):
         try:
             self._mixer = next(self._yield_mixer)
         except StopIteration:
+            # reset the generator
             self._yield_mixer = self._yield_func()
             self._mixer = next(self._yield_mixer)
         return mixer
@@ -248,7 +249,7 @@ class StepMixer(BaseMixer):
         """ Return the current mixer """
         return self._mixer
 
-    def __call__(self, *args: Any, **kwargs: Any):
+    def __call__(self, *args: Any, **kwargs: Any) -> Any:
         """ Apply the mixing routine """
         return self.next()(*args, **kwargs)
 
@@ -264,11 +265,11 @@ class StepMixer(BaseMixer):
     def yield_repeat(cls: TypeStepMixer, mixer: TypeBaseMixer, n: int) -> TypeStepCallable:
         """ Returns a function which repeats `mixer` `n` times """
         if n == 1:
-            def yield_repeat():
+            def yield_repeat() -> Iterator[TypeBaseMixer]:
                 f""" Yield the mixer {mixer} 1 time """
                 yield mixer
         else:
-            def yield_repeat():
+            def yield_repeat() -> Iterator[TypeBaseMixer]:
                 f""" Yield the mixer {mixer} {n} times """
                 for _ in range(n):
                     yield mixer
@@ -290,7 +291,7 @@ class StepMixer(BaseMixer):
         """
         if len(yield_funcs) == 1:
             return yield_funcs[0]
-        def yield_chain():
+        def yield_chain() -> Iterator[TypeBaseMixer]:
             f""" Yield from the different yield generators """
             for yield_func in yield_funcs:
                 yield from yield_func()
@@ -336,16 +337,16 @@ class History:
     def __len__(self) -> int:
         return self.elements
 
-    def __getitem__(self, key: str) -> Any:
+    def __getitem__(self, key: int) -> Any:
         return self._hist[key]
 
-    def __setitem__(self, key: str, value: Any):
+    def __setitem__(self, key: int, value: Any) -> None:
         self._hist[key] = value
 
-    def __delitem__(self, key: str):
+    def __delitem__(self, key: Union[int, ArrayLike]) -> None:
         self.clear(key)
 
-    def append(self, *variables: Any):
+    def append(self, *variables: Any) -> None:
         r""" Add variables to the history
 
         Internally, the list of variables will be added to the queue, it is up
@@ -358,7 +359,7 @@ class History:
         """
         self._hist.append(variables)
 
-    def clear(self, index: Optional[Union[int, ArrayLike]] = None):
+    def clear(self, index: Optional[Union[int, ArrayLike]]=None) -> None:
         r""" Clear variables to the history
 
         Parameters

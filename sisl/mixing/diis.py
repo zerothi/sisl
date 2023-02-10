@@ -6,6 +6,7 @@ from functools import reduce
 from operator import add
 from numbers import Real
 import numpy as np
+from numpy.typing import NDArray
 
 from sisl._internal import set_module
 import sisl._array as _a
@@ -68,7 +69,7 @@ class DIISMixer(BaseHistoryWeightMixer):
                 return a.ravel().conj().dot(b.ravel()).real
         self._metric = metric
 
-    def solve_lagrange(self) -> Any:
+    def solve_lagrange(self) -> Tuple[NDArray, NDArray]:
         r""" Calculate the coefficients according to Pulay's method, return everything + Lagrange multiplier """
         hist = self.history
         n_h = len(hist)
@@ -116,12 +117,12 @@ class DIISMixer(BaseHistoryWeightMixer):
             # We have a LinalgError
             return _a.arrayd([1.]), last_metric
 
-    def coefficients(self) -> Any:
+    def coefficients(self) -> NDArray:
         r""" Calculate coefficients of the Lagrangian """
         c, lagrange = self.solve_lagrange()
         return c
 
-    def mix(self, coefficients: Any) -> Any:
+    def mix(self, coefficients: NDArray) -> Any:
         r""" Calculate a new variable :math:`f'` using history and input coefficients
 
         Parameters
@@ -173,7 +174,7 @@ class AdaptiveDIISMixer(DIISMixer):
 
     def adjust_weight(self, lagrange: Any,
                       offset: Union[float, int] = 13,
-                      spread: Union[float, int] = 7):
+                      spread: Union[float, int] = 7) -> None:
         r""" Adjust the weight according to the Lagrange multiplier.
 
         Once close to convergence the Lagrange multiplier will be close to 0, otherwise it will go
@@ -184,7 +185,7 @@ class AdaptiveDIISMixer(DIISMixer):
         exp_lag_log = np.exp((np.log(lagrange) + offset) / spread)
         self._weight = self._weight_min + self._weight_delta / (exp_lag_log + 1)
 
-    def coefficients(self) -> Any:
+    def coefficients(self) -> NDArray:
         r""" Calculate coefficients and adjust weights according to a Lagrange multiplier """
         c, lagrange = self.solve_lagrange()
         self.adjust_weight(lagrange)
