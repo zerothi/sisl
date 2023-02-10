@@ -11,7 +11,7 @@ from numpy.typing import NDArray
 from sisl._internal import set_module
 import sisl._array as _a
 from sisl.linalg import solve_destroy
-from .base import BaseHistoryWeightMixer, History, TypeWeight, TypeArgHistory, TypeMetric
+from .base import BaseHistoryWeightMixer, History, TypeWeight, TypeArgHistory, TypeMetric, T
 
 
 __all__ = ["DIISMixer", "PulayMixer"]
@@ -134,9 +134,9 @@ class DIISMixer(BaseHistoryWeightMixer):
             return coef * (hist[0] + self.weight * hist[1])
         return reduce(add, map(frac_hist, coefficients, self.history))
 
-    def __call__(self, f: Any, df: Any,
+    def __call__(self, f: T, df: T,
                  delta: Optional[Any] = None,
-                 append: bool = True) -> Any:
+                 append: bool = True) -> T:
         # Add to history
         super().__call__(f, df, delta, append=append)
 

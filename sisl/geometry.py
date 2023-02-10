@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 # To check for integers
 from __future__ import annotations
-from typing import List, Union, Iterator
+from typing import List, Union, Iterator, Optional
 from numbers import Integral, Real
 from math import acos
 from itertools import product
@@ -675,7 +675,7 @@ class Geometry(SuperCellChild):
             with get_sile(sile, mode='r') as fh:
                 return fh.read_geometry(*args, **kwargs)
 
-    def write(self, sile: Union[str, BaseSile], *args, **kwargs) -> None:
+    def write(self, sile: Union[str, "BaseSile"], *args, **kwargs) -> None:
         """ Writes geometry to the `Sile` using `sile.write_geometry`
 
         Parameters

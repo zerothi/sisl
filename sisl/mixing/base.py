@@ -1,7 +1,7 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from typing import Union, Type, Any, Optional, Callable, Iterator
+from typing import Union, Any, Optional, Callable, Iterator, TypeVar
 from collections import deque
 from numbers import Integral
 import operator as op
@@ -21,11 +21,12 @@ __all__ = [
     "History",
 ]
 
-TypeBaseMixer = Type["BaseMixer"]
-TypeCompositeMixer = Type["CompositeMixer"]
-TypeStepMixer = Type["StepMixer"]
+T = TypeVar("T")
+TypeBaseMixer = "BaseMixer"
+TypeCompositeMixer = "CompositeMixer"
+TypeStepMixer = "StepMixer"
 TypeWeight = Union[float, int]
-TypeHistory = Type["History"]
+TypeHistory = "History"
 TypeArgHistory = Union[int, TypeHistory]
 # we don't use the Generator as we don't use the SendType/ReturnType
 TypeStepCallable = Callable[[], Iterator[TypeBaseMixer]]
@@ -38,7 +39,7 @@ class BaseMixer:
     __slots__ = ()
 
     @abstractmethod
-    def __call__(self, *args: Any, **kwargs: Any) -> Any:
+    def __call__(self, f: T, df: T, *args: Any, **kwargs: Any) -> T:
         """ Mix quantities based on arguments """
 
     def __add__(self, other: Union[float, int, TypeBaseMixer]) -> TypeCompositeMixer:
@@ -86,7 +87,7 @@ class CompositeMixer(BaseMixer):
         self.A = A
         self.B = B
 
-    def __call__(self, *args: Any, **kwargs: Any) -> Any:
+    def __call__(self, f: T, df: T, *args: Any, **kwargs: Any) -> T:
         if isinstance(self.A, BaseMixer):
             A = self.A(*args, **kwargs)
         else:
@@ -155,7 +156,7 @@ class BaseHistoryWeightMixer(BaseWeightMixer):
         return f"{self.__class__.__name__}{{weight: {self.weight:.4f}, history={hist}|{max_hist}}}"
 
 
-    def __call__(self, *args: Any, append: bool = True) -> None:
+    def __call__(self, f: T, df: T, *args: Any, append: bool = True) -> None:
         """ Append data to thMix quantities based on arguments """
         if not append:
             # do nothing
@@ -249,7 +250,7 @@ class StepMixer(BaseMixer):
         """ Return the current mixer """
         return self._mixer
 
-    def __call__(self, *args: Any, **kwargs: Any) -> Any:
+    def __call__(self, f: T, df: T, *args: Any, **kwargs: Any) -> T:
         """ Apply the mixing routine """
         return self.next()(*args, **kwargs)
 

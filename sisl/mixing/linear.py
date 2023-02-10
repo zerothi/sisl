@@ -1,11 +1,11 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from typing import Union, Type, Any, Optional
+from typing import Any, Optional
 from numpy.typing import NDArray
 
 from sisl._internal import set_module
-from .base import BaseHistoryWeightMixer
+from .base import BaseHistoryWeightMixer, T
 
 
 __all__ = ["LinearMixer", "AndersonMixer"]
@@ -29,7 +29,7 @@ class LinearMixer(BaseHistoryWeightMixer):
     """
     __slots__ = ()
 
-    def __call__(self, f: Any, df: Any, append: bool=True) -> Any:
+    def __call__(self, f: T, df: T, append: bool=True) -> T:
         r""" Calculate a new variable :math:`f'` using input and output of the functional
 
         Parameters
@@ -80,7 +80,7 @@ class AndersonMixer(BaseHistoryWeightMixer):
     __slots__ = ()
 
     @staticmethod
-    def _beta(df1: Any, df2: Any) -> NDArray:
+    def _beta(df1: T, df2: T) -> NDArray:
         # Minimize the average densities for the delta variable
         def metric(a, b):
             return a.ravel().conj().dot(b.ravel()).real
@@ -90,9 +90,9 @@ class AndersonMixer(BaseHistoryWeightMixer):
 
         return beta
 
-    def __call__(self, f: Any, df: Any,
+    def __call__(self, f: T, df: T,
                  delta: Optional[Any]=None,
-                 append: bool=True) -> Any:
+                 append: bool=True) -> T:
         r""" Calculate a new variable :math:`f'` using input and output of the functional
 
         Parameters
