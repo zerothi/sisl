@@ -89,11 +89,11 @@ class CompositeMixer(BaseMixer):
 
     def __call__(self, f: T, df: T, *args: Any, **kwargs: Any) -> T:
         if isinstance(self.A, BaseMixer):
-            A = self.A(*args, **kwargs)
+            A = self.A(f, df, *args, **kwargs)
         else:
             A = self.A
         if isinstance(self.B, BaseMixer):
-            B = self.B(*args, **kwargs)
+            B = self.B(f, df, *args, **kwargs)
         else:
             B = self.B
         return self._op(A, B)
@@ -157,7 +157,7 @@ class BaseHistoryWeightMixer(BaseWeightMixer):
 
 
     def __call__(self, f: T, df: T, *args: Any, append: bool = True) -> None:
-        """ Append data to thMix quantities based on arguments """
+        """ Append data to the history (omitting None values)! """
         if not append:
             # do nothing
             return
@@ -166,7 +166,7 @@ class BaseHistoryWeightMixer(BaseWeightMixer):
         args = list(filter(lambda arg: arg is not None, args))
 
         # append *args
-        self.history.append(*args)
+        self.history.append(f, df, *args)
 
     @property
     def history(self) -> TypeHistory:
@@ -252,7 +252,7 @@ class StepMixer(BaseMixer):
 
     def __call__(self, f: T, df: T, *args: Any, **kwargs: Any) -> T:
         """ Apply the mixing routine """
-        return self.next()(*args, **kwargs)
+        return self.next()(f, df, *args, **kwargs)
 
     def __getattr__(self, attr: str) -> Any:
         """ Divert all unknown attributes to the current mixer
