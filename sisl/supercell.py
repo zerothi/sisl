@@ -5,6 +5,7 @@
 
 This class is the basis of many different objects.
 """
+from typing import Union
 import math
 import warnings
 
@@ -23,6 +24,9 @@ from ._supercell import cell_invert, cell_reciprocal
 
 
 __all__ = ['SuperCell', 'SuperCellChild']
+
+
+TSuperCell = "SuperCell"
 
 
 @set_module("sisl")
@@ -377,19 +381,104 @@ class SuperCell:
 
         return self.copy(cell)
 
-    def swapaxes(self, a, b):
-        """ Swap axis `a` and `b` in a new `SuperCell`
+    def swapaxes(self, axes_a: Union[int, str],
+                 axes_b: Union[int, str],
+                 what: str="abc") -> TSuperCell:
+        r""" Swaps axes `axes_a` and `axes_b`
 
-        If ``swapaxes(0,1)`` it returns the 0 in the 1 values.
+        Swapaxes is a versatile method for changing the order
+        of axes elements, either lattice vector order, or Cartesian
+        coordinate orders.
+
+        Parameters
+        ----------
+        axes_a :
+           the old axis indices (or labels if `str`)
+           If `str`, then `what` is not used.
+           A string will translate arguments such that ``abc`` are
+           lattice vector axes, and ``xyz`` are Cartesian coordinate
+           axes.
+        axes_b :
+           the new axis indices, same behaviour as `axes_a`
+        what : {"abc", "xyz", "abc+xyz"}
+           which elements to swap, lattice vectors (``abc``), or
+           Cartesian coordinates (``xyz``), or both.
+           This argument is only used if the axes arguments are
+           ints.
+
+        Examples
+        --------
+
+        Swap the first two axes
+
+        >>> sc_ba = sc.swapaxes(0, 1)
+        >>> assert np.allclose(sc_ba.cell[(1, 0, 2)], sc.cell)
+
+        Swap the Cartesian coordinates of the lattice vectors
+
+        >>> sc_yx = sc.swapaxes(0, 1, what="xyz")
+        >>> assert np.allclose(sc_ba.cell[:, (1, 0, 2)], sc.cell)
+
+        Collapsed swapping:
+        1. abc -> bac
+        2. bac -> bca
+
+        >>> sc_bca = sc.swapaxes("ab", "bc")
+        >>> assert np.allclose(sc_ba.cell[:, (1, 0, 2)], sc.cell)
         """
-        # Create index vector
-        idx = _a.arrayi([0, 1, 2])
-        idx[b] = a
-        idx[a] = b
-        # There _can_ be errors when sc_off isn't created by sisl
-        return self.__class__(np.copy(self.cell[idx, :], order='C'),
-                              nsc=self.nsc[idx],
-                              origin=np.copy(self.origin[idx], order='C'))
+        if isinstance(axes_a, int) and isinstance(axes_b, int):
+            idx = [0, 1, 2]
+            idx[axes_a], idx[axes_b] = idx[axes_b], idx[axes_a]
+
+            if "abc" in what or "cell" in what:
+                if "xyz" in what:
+                    axes_a = "abc"[axes_a] + "xyz"[axes_a]
+                    axes_b = "abc"[axes_b] + "xyz"[axes_b]
+                else:
+                    axes_a = "abc"[axes_a]
+                    axes_b = "abc"[axes_b]
+            elif "xyz" in what:
+                axes_a = "xyz"[axes_a]
+                axes_b = "xyz"[axes_b]
+            else:
+                raise ValueError(f"{self.__class__.__name__}.swapaxes could not understand 'what' "
+                                 "must contain abc and/or xyz.")
+
+        if (not isinstance(axes_a, str)) or (not isinstance(axes_b, str)):
+            raise ValueError(f"{self.__class__.__name__}.swapaxes axes arguments must be either all int or all str, not a mix.")
+
+        cell = self.cell
+        nsc = self.nsc
+        origin = self.origin
+
+        if len(axes_a) != len(axes_b):
+            raise ValueError(f"{self.__class__.__name__}.swapaxes expects axes_a and axes_b to have the same lengeth {len(axes_a)}, {len(axes_b)}.")
+
+        for a, b in zip(axes_a, axes_b):
+            idx = [0, 1, 2]
+
+            aidx = "abcxyz".index(a)
+            bidx = "abcxyz".index(b)
+
+            if aidx // 3 != bidx // 3:
+                raise ValueError(f"{self.__class__.__name__}.swapaxes expects axes_a and axes_b to belong to the same category, do not mix lattice vector swaps with Cartesian coordinates.")
+
+            if aidx < 3:
+                idx[aidx], idx[bidx] = idx[bidx], idx[aidx]
+                # we are dealing with lattice vectors
+                cell = cell[idx]
+                nsc = nsc[idx]
+
+            else:
+                aidx -= 3
+                bidx -= 3
+                idx[aidx], idx[bidx] = idx[bidx], idx[aidx]
+
+                # we are dealing with lattice vectors
+                cell = cell[:, idx]
+                origin = origin[idx]
+
+        return self.__class__(cell.copy(), nsc=nsc.copy(), origin=origin.copy())
 
     def plane(self, ax1, ax2, origin=True):
         """ Query point and plane-normal for the plane spanning `ax1` and `ax2`
