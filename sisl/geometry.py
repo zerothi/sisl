@@ -2036,7 +2036,7 @@ class Geometry(SuperCellChild):
         See Also
         --------
         repeat : equivalent but different ordering of final structure
-        cut : opposite method of this
+        untile : opposite method of this
         """
         if reps < 1:
             raise ValueError(f'{self.__class__.__name__}.tile requires a repetition above 0')
