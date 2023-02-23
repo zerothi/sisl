@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl_toolbox.btd.DeviceGreen &mdash; sisl 0.1.dev1+gf943161 documentation</title>
+  <title>sisl_toolbox.btd.DeviceGreen &mdash; sisl 0.1.dev1+g0d78d3d documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -41,7 +41,7 @@
             sisl
           </a>
               <div class="version">
-                0.1.dev1+gf943161
+                0.1.dev1+g0d78d3d
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -258,10 +258,10 @@ This does not take all things into consideration, but should cover most problems
 <p>The eigenchannels are the eigen states of the transmission matrix in the
 DOS weighted scattering states:</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}\mathbf A_{\mathfrak{e}}(E,\mathbf k) \mathbf u &amp;= 2\pi\mathbf a \mathbf u
+\[\begin{split}\mathbf A_{\mathfrak e_{\mathrm{from}} }(E,\mathbf k) \mathbf u_i &amp;= 2\pi a_i \mathbf u_i
 \\
-\mathbf t_{\mathbf u} &amp;= \sum \langle \mathbf u | \boldsymbol\Gamma_{\mathfrak{e\to}} | \mathbf u\rangle\end{split}\]</div>
-<p>where the eigenvectors of <span class="math notranslate nohighlight">\(\mathbf t_{\mathbf u}\)</span> is the coefficients of the
+\mathbf t_{\mathbf u} &amp;= \sum \langle \mathbf u | \boldsymbol\Gamma_{ \mathfrak e_{\mathrm{to}} }  | \mathbf u\rangle\end{split}\]</div>
+<p>where the eigenvectors of <span class="math notranslate nohighlight">\(\mathbf t_{\mathbf u}\)</span> are the coefficients of the
 DOS weighted scattering states (<span class="math notranslate nohighlight">\(\sqrt{2\pi a_i} u_i\)</span>) for the individual eigen channels.
 The eigenvalues are the transmission eigenvalues. Further details may be found in <span id="id1">[<a class="reference internal" href="../../../references.html#id9" title="Magnus Paulsson and Mads Brandbyge. Transmission eigenchannels from nonequilibrium green's functions. Phys. Rev. B, September 2007. URL: https://doi.org/10.1103/physrevb.76.115117, doi:10.1103/physrevb.76.115117.">6</a>]</span>.</p>
 <dl class="field-list simple">
@@ -348,11 +348,11 @@ or calculate them on the fly.</p></li>
 \tilde{\boldsymbol\Gamma}_{\mathfrak e_{\mathrm{to}}}
 \mathbf G
 \tilde{\boldsymbol\Gamma}_{\mathfrak e_{\mathrm{from}}}\]</div>
-<p>Here the <span class="math notranslate nohighlight">\(\tilde{\boldsymbol\Gamma}\)</span> is defined as:</p>
+<p>Here <span class="math notranslate nohighlight">\(\tilde{\boldsymbol\Gamma}\)</span> is defined as:</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}\boldsymbol\Gamma(E,\mathbf k) \mathbf U &amp;= \lambda \mathbf U
+\[\begin{split}\boldsymbol\Gamma(E,\mathbf k) \mathbf u_i &amp;= \lambda_i \mathbf u_i
 \\
-\tilde{\boldsymbol\Gamma}(E,\mathbf k) &amp;= \operatorname{diag}\{ \lambda \} \mathbf U\end{split}\]</div>
+\tilde{\boldsymbol\Gamma}(E,\mathbf k) &amp;= \operatorname{diag}\{ \sqrt{\boldsymbol\lambda} \} \mathbf u\end{split}\]</div>
 <p>Once the scattering matrices have been calculated one can calculate the full transmission
 function</p>
 <div class="math notranslate nohighlight">

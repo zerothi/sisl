@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.mixing.diis &mdash; sisl 0.1.dev1+gf943161 documentation</title>
+  <title>sisl.mixing.diis &mdash; sisl 0.1.dev1+g0d78d3d documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -36,7 +36,7 @@
             sisl
           </a>
               <div class="version">
-                0.1.dev1+gf943161
+                0.1.dev1+g0d78d3d
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -109,11 +109,12 @@
 <span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">add</span>
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Real</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy.typing</span> <span class="kn">import</span> <span class="n">NDArray</span>
 
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
 <span class="kn">from</span> <span class="nn">sisl.linalg</span> <span class="kn">import</span> <span class="n">solve_destroy</span>
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseHistoryWeightMixer</span><span class="p">,</span> <span class="n">History</span><span class="p">,</span> <span class="n">TypeWeight</span><span class="p">,</span> <span class="n">TypeArgHistory</span><span class="p">,</span> <span class="n">TypeMetric</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseHistoryWeightMixer</span><span class="p">,</span> <span class="n">History</span><span class="p">,</span> <span class="n">TypeWeight</span><span class="p">,</span> <span class="n">TypeArgHistory</span><span class="p">,</span> <span class="n">TypeMetric</span><span class="p">,</span> <span class="n">T</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;DIISMixer&quot;</span><span class="p">,</span> <span class="s2">&quot;PulayMixer&quot;</span><span class="p">]</span>
@@ -171,7 +172,7 @@
                 <span class="k">return</span> <span class="n">a</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span><span class="o">.</span><span class="n">real</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_metric</span> <span class="o">=</span> <span class="n">metric</span></div>
 
-<div class="viewcode-block" id="DIISMixer.solve_lagrange"><a class="viewcode-back" href="../../../api/generated/sisl.mixing.DIISMixer.html#sisl.mixing.DIISMixer.solve_lagrange">[docs]</a>    <span class="k">def</span> <span class="nf">solve_lagrange</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<div class="viewcode-block" id="DIISMixer.solve_lagrange"><a class="viewcode-back" href="../../../api/generated/sisl.mixing.DIISMixer.html#sisl.mixing.DIISMixer.solve_lagrange">[docs]</a>    <span class="k">def</span> <span class="nf">solve_lagrange</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">,</span> <span class="n">NDArray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the coefficients according to Pulay&#39;s method, return everything + Lagrange multiplier &quot;&quot;&quot;</span>
         <span class="n">hist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">history</span>
         <span class="n">n_h</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">hist</span><span class="p">)</span>
@@ -219,12 +220,12 @@
             <span class="c1"># We have a LinalgError</span>
             <span class="k">return</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">([</span><span class="mf">1.</span><span class="p">]),</span> <span class="n">last_metric</span></div>
 
-<div class="viewcode-block" id="DIISMixer.coefficients"><a class="viewcode-back" href="../../../api/generated/sisl.mixing.DIISMixer.html#sisl.mixing.DIISMixer.coefficients">[docs]</a>    <span class="k">def</span> <span class="nf">coefficients</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<div class="viewcode-block" id="DIISMixer.coefficients"><a class="viewcode-back" href="../../../api/generated/sisl.mixing.DIISMixer.html#sisl.mixing.DIISMixer.coefficients">[docs]</a>    <span class="k">def</span> <span class="nf">coefficients</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate coefficients of the Lagrangian &quot;&quot;&quot;</span>
         <span class="n">c</span><span class="p">,</span> <span class="n">lagrange</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solve_lagrange</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">c</span></div>
 
-<div class="viewcode-block" id="DIISMixer.mix"><a class="viewcode-back" href="../../../api/generated/sisl.mixing.DIISMixer.html#sisl.mixing.DIISMixer.mix">[docs]</a>    <span class="k">def</span> <span class="nf">mix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coefficients</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<div class="viewcode-block" id="DIISMixer.mix"><a class="viewcode-back" href="../../../api/generated/sisl.mixing.DIISMixer.html#sisl.mixing.DIISMixer.mix">[docs]</a>    <span class="k">def</span> <span class="nf">mix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coefficients</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate a new variable :math:`f&#39;` using history and input coefficients</span>
 
 <span class="sd">        Parameters</span>
@@ -236,9 +237,9 @@
             <span class="k">return</span> <span class="n">coef</span> <span class="o">*</span> <span class="p">(</span><span class="n">hist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">*</span> <span class="n">hist</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="n">add</span><span class="p">,</span> <span class="nb">map</span><span class="p">(</span><span class="n">frac_hist</span><span class="p">,</span> <span class="n">coefficients</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="DIISMixer.__call__"><a class="viewcode-back" href="../../../api/generated/sisl.mixing.DIISMixer.html#sisl.mixing.DIISMixer.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+<div class="viewcode-block" id="DIISMixer.__call__"><a class="viewcode-back" href="../../../api/generated/sisl.mixing.DIISMixer.html#sisl.mixing.DIISMixer.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span> <span class="n">df</span><span class="p">:</span> <span class="n">T</span><span class="p">,</span>
                  <span class="n">delta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">append</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+                 <span class="n">append</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
         <span class="c1"># Add to history</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">append</span><span class="o">=</span><span class="n">append</span><span class="p">)</span>
 
@@ -276,7 +277,7 @@
 
 <div class="viewcode-block" id="AdaptiveDIISMixer.adjust_weight"><a class="viewcode-back" href="../../../api/generated/sisl.mixing.AdaptiveDIISMixer.html#sisl.mixing.AdaptiveDIISMixer.adjust_weight">[docs]</a>    <span class="k">def</span> <span class="nf">adjust_weight</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lagrange</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
                       <span class="n">offset</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">13</span><span class="p">,</span>
-                      <span class="n">spread</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">7</span><span class="p">):</span>
+                      <span class="n">spread</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">7</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Adjust the weight according to the Lagrange multiplier.</span>
 
 <span class="sd">        Once close to convergence the Lagrange multiplier will be close to 0, otherwise it will go</span>
@@ -287,7 +288,7 @@
         <span class="n">exp_lag_log</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">lagrange</span><span class="p">)</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span> <span class="o">/</span> <span class="n">spread</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_weight</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weight_min</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weight_delta</span> <span class="o">/</span> <span class="p">(</span><span class="n">exp_lag_log</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="AdaptiveDIISMixer.coefficients"><a class="viewcode-back" href="../../../api/generated/sisl.mixing.AdaptiveDIISMixer.html#sisl.mixing.AdaptiveDIISMixer.coefficients">[docs]</a>    <span class="k">def</span> <span class="nf">coefficients</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<div class="viewcode-block" id="AdaptiveDIISMixer.coefficients"><a class="viewcode-back" href="../../../api/generated/sisl.mixing.AdaptiveDIISMixer.html#sisl.mixing.AdaptiveDIISMixer.coefficients">[docs]</a>    <span class="k">def</span> <span class="nf">coefficients</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate coefficients and adjust weights according to a Lagrange multiplier &quot;&quot;&quot;</span>
         <span class="n">c</span><span class="p">,</span> <span class="n">lagrange</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solve_lagrange</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">adjust_weight</span><span class="p">(</span><span class="n">lagrange</span><span class="p">)</span>

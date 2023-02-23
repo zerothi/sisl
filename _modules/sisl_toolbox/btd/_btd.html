@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl_toolbox.btd._btd &mdash; sisl 0.1.dev1+gf943161 documentation</title>
+  <title>sisl_toolbox.btd._btd &mdash; sisl 0.1.dev1+g0d78d3d documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -36,7 +36,7 @@
             sisl
           </a>
               <div class="version">
-                0.1.dev1+gf943161
+                0.1.dev1+g0d78d3d
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -1996,12 +1996,12 @@
 <span class="sd">               \mathbf G</span>
 <span class="sd">               \tilde{\boldsymbol\Gamma}_{\mathfrak e_{\mathrm{from}}}</span>
 
-<span class="sd">        Here the :math:`\tilde{\boldsymbol\Gamma}` is defined as:</span>
+<span class="sd">        Here :math:`\tilde{\boldsymbol\Gamma}` is defined as:</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">            \boldsymbol\Gamma(E,\mathbf k) \mathbf U &amp;= \lambda \mathbf U</span>
+<span class="sd">            \boldsymbol\Gamma(E,\mathbf k) \mathbf u_i &amp;= \lambda_i \mathbf u_i</span>
 <span class="sd">            \\</span>
-<span class="sd">            \tilde{\boldsymbol\Gamma}(E,\mathbf k) &amp;= \operatorname{diag}\{ \lambda \} \mathbf U</span>
+<span class="sd">            \tilde{\boldsymbol\Gamma}(E,\mathbf k) &amp;= \operatorname{diag}\{ \sqrt{\boldsymbol\lambda} \} \mathbf u</span>
 
 <span class="sd">        Once the scattering matrices have been calculated one can calculate the full transmission</span>
 <span class="sd">        function</span>
@@ -2082,11 +2082,11 @@
 <span class="sd">        DOS weighted scattering states:</span>
 
 <span class="sd">        .. math::</span>
-<span class="sd">            \mathbf A_{\mathfrak{e}}(E,\mathbf k) \mathbf u &amp;= 2\pi\mathbf a \mathbf u</span>
+<span class="sd">            \mathbf A_{\mathfrak e_{\mathrm{from}} }(E,\mathbf k) \mathbf u_i &amp;= 2\pi a_i \mathbf u_i</span>
 <span class="sd">            \\</span>
-<span class="sd">            \mathbf t_{\mathbf u} &amp;= \sum \langle \mathbf u | \boldsymbol\Gamma_{\mathfrak{e\to}} | \mathbf u\rangle</span>
+<span class="sd">            \mathbf t_{\mathbf u} &amp;= \sum \langle \mathbf u | \boldsymbol\Gamma_{ \mathfrak e_{\mathrm{to}} }  | \mathbf u\rangle</span>
 
-<span class="sd">        where the eigenvectors of :math:`\mathbf t_{\mathbf u}` is the coefficients of the</span>
+<span class="sd">        where the eigenvectors of :math:`\mathbf t_{\mathbf u}` are the coefficients of the</span>
 <span class="sd">        DOS weighted scattering states (:math:`\sqrt{2\pi a_i} u_i`) for the individual eigen channels.</span>
 <span class="sd">        The eigenvalues are the transmission eigenvalues. Further details may be found in :cite:`Paulsson2007`.</span>
 
