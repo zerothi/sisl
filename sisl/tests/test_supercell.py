@@ -128,20 +128,51 @@ class TestSuperCell:
         rot.cell[2, 2] *= -1
         assert np.allclose(rot.cell, setup.sc.cell)
 
-    def test_swapaxes1(self, setup):
-        sab = setup.sc.swapaxes(0, 1)
-        assert np.allclose(sab.cell[0, :], setup.sc.cell[1, :])
-        assert np.allclose(sab.cell[1, :], setup.sc.cell[0, :])
+    @pytest.mark.parametrize("a,b", [[0, 1], [0, 2], [1, 2]])
+    def test_swapaxes_lattice_vector(self, setup, a, b):
+        sc = setup.sc
+        sab = sc.swapaxes(a, b)
+        assert np.allclose(sc.origin, sab.origin)
+        assert np.allclose(sc.nsc[[b, a]], sab.nsc[[a, b]])
+        assert np.allclose(sc.cell[[b, a]], sab.cell[[a, b]])
 
-    def test_swapaxes2(self, setup):
-        sab = setup.sc.swapaxes(0, 2)
-        assert np.allclose(sab.cell[0, :], setup.sc.cell[2, :])
-        assert np.allclose(sab.cell[2, :], setup.sc.cell[0, :])
+        # and string input
+        sab = setup.sc.swapaxes("abc"[a], "abc"[b])
+        assert np.allclose(sab.cell[[b, a]], setup.sc.cell[[a, b]])
+        assert np.allclose(sab.origin, setup.sc.origin)
+        assert np.allclose(sab.nsc[[b, a]], setup.sc.nsc[[a, b]])
 
-    def test_swapaxes3(self, setup):
-        sab = setup.sc.swapaxes(1, 2)
-        assert np.allclose(sab.cell[1, :], setup.sc.cell[2, :])
-        assert np.allclose(sab.cell[2, :], setup.sc.cell[1, :])
+    @pytest.mark.parametrize("a,b", [[0, 1], [0, 2], [1, 2]])
+    def test_swapaxes_xyz(self, setup, a, b):
+        sc = setup.sc
+        sab = sc.swapaxes(1, 2, "xyz")
+        assert np.allclose(sc.nsc, sab.nsc)
+        assert np.allclose(sc.origin[[b, a]], sab.origin[[a, b]])
+        assert np.allclose(sc.origin[[b, a]], sab.origin[[a, b]])
+
+        # and string input
+        sab = setup.sc.swapaxes("xyz"[a], "xyz"[b])
+        assert np.allclose(sc.nsc, sab.nsc)
+        assert np.allclose(sc.origin[[b, a]], sab.origin[[a, b]])
+        assert np.allclose(sc.origin[[b, a]], sab.origin[[a, b]])
+
+    def test_swapaxes_complicated(self, setup):
+
+        # swap a couple of lattice vectors and cartesian coordinates
+        a = "azby"
+        b = "bxcz"
+        # this will result in
+        # 0. abc, xyz
+        # 1. bac, xyz
+        # 2. bac, zyx
+        # 3. bca, zyx
+        # 4. bca, zxy
+        sab = setup.sc.swapaxes(a, b)
+        idx_abc = [1, 2, 0]
+        idx_xyz = [2, 0, 1]
+        assert np.allclose(sab.cell, setup.sc.cell[idx_abc][:, idx_xyz])
+        assert np.allclose(sab.origin, setup.sc.origin[idx_xyz])
+        assert np.allclose(sab.nsc, setup.sc.nsc[idx_abc])
 
     def test_offset1(self, setup):
         off = setup.sc.offset()

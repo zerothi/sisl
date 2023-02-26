@@ -69,6 +69,7 @@ OrbitalsArg = Union[
     ArrayLike,
     str, int, dict,
 ]
+TGeometry = "Geometry"
 
 
 @set_module("sisl")
@@ -1094,7 +1095,7 @@ class Geometry(SuperCellChild):
 
             yield from self.iter_block_shape(dS)
 
-    def copy(self) -> Geometry:
+    def copy(self) -> TGeometry:
         """ A copy of the object. """
         g = self.__class__(np.copy(self.xyz), atoms=self.atoms.copy(), sc=self.sc.copy())
         g._names = self.names.copy()
@@ -1155,7 +1156,7 @@ class Geometry(SuperCellChild):
             other_extend(idx)
         return _a.arrayi(idx_self), _a.arrayi(idx_other)
 
-    def sort(self, **kwargs) -> Geometry | tuple[Geometry, List]:
+    def sort(self, **kwargs) -> Union[TGeometry, tuple[Geometry, List]]:
         r""" Sort atoms in a nested fashion according to various criteria
 
         There are many ways to sort a `Geometry`.
@@ -2435,34 +2436,76 @@ class Geometry(SuperCellChild):
         xyz[atoms_b, :] = self.xyz[atoms_a, :]
         return self.__class__(xyz, atoms=self.atoms.swap(atoms_a, atoms_b), sc=self.sc.copy())
 
-    def swapaxes(self, axis_a, axis_b, what="cell+xyz") -> Geometry:
-        """ Swap the axis for the atomic coordinates and the cell vectors
+    def swapaxes(self, axes_a: Union[int, str],
+                 axes_b: Union[int, str], what: str="abc") -> TGeometry:
+        """ Swap the axes components by either lattice vectors (only cell), or Cartesian coordinates
 
-        If ``swapaxes(0,1)`` it returns the 0 and 1 values
-        swapped in the ``cell`` variable.
+        See `SuperCell.swapaxes` for details.
 
         Parameters
         ----------
-        axis_a : int
-           axis 1, swaps with `b`
-        axis_b : int
-           axis 2, swaps with `a`
-        what : {'cell+xyz', 'cell', 'xyz'}
-           decide what to swap, if `'cell'` is in `what` then
-           the cell axis are swapped.
-           if `'xyz'` is in `what` then
-           the xyz (Cartesian) axis are swapped.
-           Both may be in `what`.
+        axes_a :
+           old axis indices (or labels)
+        axes_b : int
+           new axis indices (or labels)
+        what : {'abc', 'xyz', 'abc+xyz'}
+           what to swap, lattice vectors (abc) or Cartesian components (xyz),
+           or both.
+
+
+        Examples
+        --------
+
+        Only swap lattice vectors
+
+        >>> g_ba = g.swapaxes(0, 1)
+        >>> assert np.allclose(g.xyz, g_ba.xyz)
+
+        Only swap Cartesian coordinates
+
+        >>> g_ba = g.swapaxes(0, 1, "xyz")
+        >>> assert np.allclose(g.xyz[:, [1, 0, 2]], g_ba.xyz)
+
+        Collapsed swapping:
+        1. abc, xyz -> bac, xyz
+        2. bac, xyz -> bca, xyz
+        2. bac, xyz -> bac, zyx
+
+        >>> g_s = g.swapaxes("abx", "bcz", 1, "xyz")
+        >>> assert np.allclose(g.xyz[:, [2, 1, 0]], g_s.xyz)
         """
-        xyz = np.copy(self.xyz)
-        if "xyz" in what:
-            xyz[:, axis_a] = self.xyz[:, axis_b]
-            xyz[:, axis_b] = self.xyz[:, axis_a]
-        if "cell" in what:
-            sc = self.sc.swapaxes(axis_a, axis_b)
-        else:
-            sc = self.sc.copy()
-        return self.__class__(xyz, atoms=self.atoms.copy(), sc=sc)
+        # swap supercell
+        sc = self.sc.swapaxes(axes_a, axes_b, what)
+
+        if isinstance(axes_a, int) and isinstance(axes_b, int):
+            idx = [0, 1, 2]
+            idx[axes_a], idx[axes_b] = idx[axes_b], idx[axes_a]
+
+            if "xyz" in what:
+                axes_a = "xyz"[axes_a]
+                axes_b = "xyz"[axes_b]
+            else:
+                axes_a = ""
+                axes_b = ""
+
+        # we don't need to check arguments, supercell will do this for us
+
+        # only thing we are going to swap
+        xyz = self.xyz
+
+        for a, b in zip(axes_a, axes_b):
+            idx = [0, 1, 2]
+
+            aidx = "xyzabc".index(a)
+            bidx = "xyzabc".index(b)
+            # we do not need to check the arguments, supercell.swapaxes
+            # will do this for us
+
+            if aidx < 3:
+                idx[aidx], idx[bidx] = idx[bidx], idx[aidx]
+                xyz = xyz[:, idx]
+
+        return self.__class__(xyz.copy(), atoms=self.atoms.copy(), sc=sc)
 
     def center(self, atoms: Optional[AtomsArg]=None, what="xyz") -> ndarray:
         """ Returns the center of the geometry

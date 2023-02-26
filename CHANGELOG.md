@@ -23,9 +23,13 @@ we hit release version 1.0.0.
   ince the scattering matrix is an S-matrix usage.
   Also changed `se2scat` to `se2broadening` #529
 - allow `BrillouinZone` initialization with scalar weights for all k-points #537
+- Geometry.swapaxes and SuperCell.swapaxes, these are now more versatile by
+	allowing multiple swaps in a single run, #539
+
 
 ### Fixed
 - Documentation now uses global references
+- Geometry.swapaxes would not swap latticevector cartesian coordinates, #539
 
 
 ### toolbox.btd

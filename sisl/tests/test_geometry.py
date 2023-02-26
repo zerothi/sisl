@@ -567,12 +567,35 @@ class TestGeometry:
             assert np.allclose(p.cell[axis, :], P.cell[axis, :])
             assert np.allclose(p.xyz, P.xyz)
 
-    def test_swapaxes(self, setup):
-        s = setup.g.swapaxes(0, 1)
-        assert np.allclose(setup.g.xyz[:, 0], s.xyz[:, 1])
-        assert np.allclose(setup.g.xyz[:, 1], s.xyz[:, 0])
-        assert np.allclose(setup.g.cell[0, :], s.cell[1, :])
-        assert np.allclose(setup.g.cell[1, :], s.cell[0, :])
+    @pytest.mark.parametrize("a,b", [[0, 1], [0, 2], [1, 2]])
+    def test_swapaxes_lattice_vectors(self, setup, a, b):
+        s = setup.g.swapaxes(a, b)
+        assert np.allclose(setup.g.xyz, s.xyz)
+
+    @pytest.mark.parametrize("a,b", [[0, 1], [0, 2], [1, 2]])
+    def test_swapaxes_lattice_xyz(self, setup, a, b):
+        g = setup.g
+        s = g.swapaxes(a, b, what="xyz")
+        idx = [0, 1, 2]
+        idx[a], idx[b] = idx[b], idx[a]
+        assert np.allclose(g.cell[:, idx], s.cell)
+        assert np.allclose(g.xyz[:, idx], s.xyz)
+
+    def test_swapaxes_complicated(self, setup):
+        # swap a couple of lattice vectors and cartesian coordinates
+        a = "azby"
+        b = "bxcz"
+        # this will result in
+        # 0. abc, xyz
+        # 1. bac, xyz
+        # 2. bac, zyx
+        # 3. bca, zyx
+        # 4. bca, zxy
+        sab = setup.g.swapaxes(a, b)
+        idx_abc = [1, 2, 0]
+        idx_xyz = [2, 0, 1]
+        assert np.allclose(setup.g.xyz[:, idx_xyz], sab.xyz)
+        assert np.allclose(setup.g.cell[idx_abc][:, idx_xyz], sab.cell)
 
     def test_center(self, setup):
         g = setup.g.copy()
