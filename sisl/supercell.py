@@ -643,7 +643,7 @@ class SuperCell:
         v     : array_like or str or int
              the vector around the rotation is going to happen
              ``v = [1,0,0]`` will rotate in the ``yz`` plane
-        what : ("abc"), str, optional
+        what : combination of ``"abc"``, str, optional
              only rotate the designated cell vectors.
         rad : bool, optional
              Whether the angle is in radians (True) or in degrees (False)

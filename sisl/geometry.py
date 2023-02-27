@@ -2299,13 +2299,12 @@ class Geometry(SuperCellChild):
              atoms will be rotated.
         rad : bool, optional
              if ``True`` the angle is provided in radians (rather than degrees)
-        what : {'xyz', 'abc', 'abc+xyz'}
+        what : {'xyz', 'abc', 'abc+xyz', <or combinations of "xyzabc">}
             which coordinate subject should be rotated,
-            if ``abc`` is in this string the cell will be rotated
-            if ``xyz`` is in this string the coordinates will be rotated
-            Each of the coordinates may be individually rotated.
+            if any of ``abc`` is in this string the corresponding cell vector will be rotated
+            if any of ``xyz`` is in this string the corresponding coordinates will be rotated
             If `atoms` is None, this defaults to "abc+xyz", otherwise it defaults
-            to "xyz".
+            to "xyz". See Examples.
 
         Examples
         --------
@@ -2330,6 +2329,7 @@ class Geometry(SuperCellChild):
         if atoms is None:
             if what is None:
                 what = "abc+xyz"
+            # important to not add a new dimension to xyz
             atoms = slice(None)
         else:
             if what is None:
