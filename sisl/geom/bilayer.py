@@ -116,7 +116,7 @@ def bilayer(bond=1.42, bottom_atoms=None, top_atoms=None, stacking='AB',
                .tile(rep, axis=0)
                .tile(rep, axis=1)
                .move(align_vec)
-               .rotate(theta, [0, 0, 1]))
+               .rotate(theta, [0, 0, 1], what="abc+xyz"))
 
         inside_idx = cell_box.within_index(top.xyz)
         top = top.sub(inside_idx)
@@ -149,7 +149,7 @@ def bilayer(bond=1.42, bottom_atoms=None, top_atoms=None, stacking='AB',
         vec = bilayer.cell[0] + bilayer.cell[1]
         vec_costh = vec[0] / vec.dot(vec) ** 0.5
         vec_th = -acos(vec_costh) * 180 / pi
-        bilayer = bilayer.move(-offset).rotate(vec_th, [0, 0, 1])
+        bilayer = bilayer.move(-offset).rotate(vec_th, [0, 0, 1], what="xyz+abc")
 
     # Sanity check
     assert len(bilayer) == natoms

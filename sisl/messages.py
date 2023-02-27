@@ -28,7 +28,7 @@ from ._environ import get_environ_variable
 
 
 __all__ = ['SislDeprecation', 'SislInfo', 'SislWarning', 'SislException', 'SislError']
-__all__ += ['warn', 'info', 'deprecate', "deprecate_method"]
+__all__ += ['warn', 'info', 'deprecate', "deprecate_method", "deprecate_argument"]
 __all__ += ['progressbar', 'tqdm_eta']
 
 # The local registry for warnings issued
@@ -79,6 +79,23 @@ def deprecate(message, from_version=None):
     if from_version is not None:
         message = f"{message} [>={from_version}]"
     warnings.warn_explicit(message, SislDeprecation, 'dep', 0, registry=_sisl_warn_registry)
+
+
+@set_module("sisl")
+def deprecate_argument(old, new, message, from_version=None):
+    """ Decorator for deprecating `old` argument, and replacing it with `new`
+
+    The old keyword argument is still retained.
+    """
+    def deco(func):
+        @wraps(func)
+        def wrapped(*args, **kwargs):
+            if old in kwargs:
+                deprecate(f"{func.__name__} {message}", from_version=from_version)
+                kwargs[new] = kwargs.pop(old)
+            return func(*args, **kwargs)
+        return wrapped
+    return deco
 
 
 @set_module("sisl")

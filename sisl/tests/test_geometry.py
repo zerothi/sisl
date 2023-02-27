@@ -9,7 +9,7 @@ import math as m
 import numpy as np
 
 import sisl.geom as sisl_geom
-from sisl import SislWarning, SislError
+from sisl import SislWarning, SislError, SislDeprecation
 from sisl import Cube, Sphere
 from sisl import Geometry, Atom, SuperCell
 
@@ -389,48 +389,56 @@ class TestGeometry:
         assert np.allclose([1, 1, 1], sc.nsc)
         assert len(sc.sc_off) == np.prod(sc.nsc)
 
+    def test_rotate_deprecate(self, setup):
+        rot1 = setup.g.rotate(180, "xz", what="xyz")
+        with pytest.warns(SislDeprecation) as warns:
+            rot2 = setup.g.rotate(180, [1, 0, 1], only="xyz")
+        assert len(warns) == 1
+        assert np.allclose(rot1.cell, rot2.cell)
+        assert np.allclose(rot1.xyz, rot2.xyz)
+
     def test_rotation1(self, setup):
-        rot = setup.g.rotate(180, [0, 0, 1])
+        rot = setup.g.rotate(180, [0, 0, 1], what="xyz+abc")
         rot.sc.cell[2, 2] *= -1
         assert np.allclose(-rot.sc.cell, setup.g.sc.cell)
         assert np.allclose(-rot.xyz, setup.g.xyz)
 
-        rot = setup.g.rotate(np.pi, [0, 0, 1], rad=True)
+        rot = setup.g.rotate(np.pi, [0, 0, 1], rad=True, what="xyz+abc")
         rot.sc.cell[2, 2] *= -1
         assert np.allclose(-rot.sc.cell, setup.g.sc.cell)
         assert np.allclose(-rot.xyz, setup.g.xyz)
 
-        rot = rot.rotate(180, [0, 0, 1])
+        rot = rot.rotate(180, "z", what="xyz+abc")
         rot.sc.cell[2, 2] *= -1
         assert np.allclose(rot.sc.cell, setup.g.sc.cell)
         assert np.allclose(rot.xyz, setup.g.xyz)
 
     def test_rotation2(self, setup):
-        rot = setup.g.rotate(180, [0, 0, 1], only='abc')
+        rot = setup.g.rotate(180, "z", what='abc')
         rot.sc.cell[2, 2] *= -1
         assert np.allclose(-rot.sc.cell, setup.g.sc.cell)
         assert np.allclose(rot.xyz, setup.g.xyz)
 
-        rot = setup.g.rotate(np.pi, [0, 0, 1], rad=True, only='abc')
+        rot = setup.g.rotate(np.pi, [0, 0, 1], rad=True, what='abc')
         rot.sc.cell[2, 2] *= -1
         assert np.allclose(-rot.sc.cell, setup.g.sc.cell)
         assert np.allclose(rot.xyz, setup.g.xyz)
 
-        rot = rot.rotate(180, [0, 0, 1], only='abc')
+        rot = rot.rotate(180, [0, 0, 1], what='abc')
         rot.sc.cell[2, 2] *= -1
         assert np.allclose(rot.sc.cell, setup.g.sc.cell)
         assert np.allclose(rot.xyz, setup.g.xyz)
 
     def test_rotation3(self, setup):
-        rot = setup.g.rotate(180, [0, 0, 1], only='xyz')
+        rot = setup.g.rotate(180, [0, 0, 1], what='xyz')
         assert np.allclose(rot.sc.cell, setup.g.sc.cell)
         assert np.allclose(-rot.xyz, setup.g.xyz)
 
-        rot = setup.g.rotate(np.pi, [0, 0, 1], rad=True, only='xyz')
+        rot = setup.g.rotate(np.pi, [0, 0, 1], rad=True, what='xyz')
         assert np.allclose(rot.sc.cell, setup.g.sc.cell)
         assert np.allclose(-rot.xyz, setup.g.xyz)
 
-        rot = rot.rotate(180, [0, 0, 1], only='xyz')
+        rot = rot.rotate(180, "z", what='xyz')
         assert np.allclose(rot.sc.cell, setup.g.sc.cell)
         assert np.allclose(rot.xyz, setup.g.xyz)
 

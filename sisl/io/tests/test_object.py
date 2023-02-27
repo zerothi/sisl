@@ -223,7 +223,7 @@ class TestObject:
             assert isinstance(sile, obj)
 
     def test_write(self, sisl_tmp, sisl_system):
-        G = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :])
+        G = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc")
         G.set_nsc([1, 1, 1])
         f = sisl_tmp("test_write", _dir)
         for sile in get_siles(["write_geometry"]):
@@ -235,7 +235,7 @@ class TestObject:
 
     @pytest.mark.parametrize("sile", _my_intersect(["read_geometry"], ["write_geometry"]))
     def test_read_write_geometry(self, sisl_tmp, sisl_system, sile):
-        G = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :])
+        G = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc")
         G.set_nsc([1, 1, 1])
         f = sisl_tmp("test_read_write_geom.win", _dir)
         # These files does not store the atomic species
@@ -266,7 +266,7 @@ class TestObject:
         if issubclass(sile, _gfSileSiesta):
             return
 
-        G = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :])
+        G = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc")
         H = Hamiltonian(G)
         H.construct([[0.1, 1.45], [0.1, -2.7]])
         f = sisl_tmp("test_read_write_hamiltonian.win", _dir)
@@ -290,7 +290,7 @@ class TestObject:
 
     @pytest.mark.parametrize("sile", _my_intersect(["read_density_matrix"], ["write_density_matrix"]))
     def test_read_write_density_matrix(self, sisl_tmp, sisl_system, sile):
-        G = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :])
+        G = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc")
         DM = DensityMatrix(G, orthogonal=True)
         DM.construct([[0.1, 1.45], [0.1, -2.7]])
         f = sisl_tmp("test_read_write_density_matrix.win", _dir)
@@ -314,7 +314,7 @@ class TestObject:
 
     @pytest.mark.parametrize("sile", _my_intersect(["read_energy_density_matrix"], ["write_energy_density_matrix"]))
     def test_read_write_energy_density_matrix(self, sisl_tmp, sisl_system, sile):
-        G = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :])
+        G = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc")
         EDM = EnergyDensityMatrix(G, orthogonal=True)
         EDM.construct([[0.1, 1.45], [0.1, -2.7]])
         f = sisl_tmp("test_read_write_energy_density_matrix.win", _dir)
@@ -341,7 +341,7 @@ class TestObject:
         if issubclass(sile, _gfSileSiesta):
             return
 
-        G = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :])
+        G = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc")
         H = Hamiltonian(G, orthogonal=False)
         H.construct([[0.1, 1.45], [(0.1, 1), (-2.7, 0.1)]])
         f = sisl_tmp("test_read_write_hamiltonian_overlap.win", _dir)
@@ -366,7 +366,7 @@ class TestObject:
     @pytest.mark.filterwarnings("ignore", message="*gridncSileSiesta.read_grid cannot determine")
     @pytest.mark.parametrize("sile", _my_intersect(["read_grid"], ["write_grid"]))
     def test_read_write_grid(self, sisl_tmp, sisl_system, sile):
-        g = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :])
+        g = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc")
         G = Grid([10, 11, 12])
         G[:, :, :] = np.random.rand(10, 11, 12)
 

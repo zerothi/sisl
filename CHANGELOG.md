@@ -19,6 +19,9 @@ we hit release version 1.0.0.
 - `BrillouinZone.merge` allows simple merging of several objects, #537
 
 ### Changed
+- Geometry.rotate(only=) to (what=), this is to unify the interfaces across, #541
+  Also changed the default value to be "xyz" if atoms is Not none
+- tbtncSileTBtrans(only=) arguments are changed to (what=) #541
 - `SelfEnergy.scattering_matrix` is changed to `SelfEnergy.broadening_matrix`
   ince the scattering matrix is an S-matrix usage.
   Also changed `se2scat` to `se2broadening` #529

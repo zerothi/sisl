@@ -31,7 +31,7 @@ import sisl._array as _a
 from sisl import Geometry, Atoms
 from sisl import constant
 from sisl.sparse import _ncol_to_indptr
-from sisl.messages import warn, info, SislError
+from sisl.messages import warn, info, SislError, deprecate, deprecate_argument
 from sisl._help import wrap_filterwarnings
 from sisl.unit.siesta import unit_convert
 from sisl.physics.distribution import fermi_dirac
@@ -1304,7 +1304,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Examples
         --------
-        >>> Jij = tbt.orbital_current(0, -1.03, only="both") # orbital current @ E = -1 eV originating from electrode ``0``
+        >>> Jij = tbt.orbital_current(0, -1.03, what="both") # orbital current @ E = -1 eV originating from electrode ``0``
         >>> Ja = tbt.sparse_orbital_to_scalar(Jij)
         """
         # Create the bond-currents with all summations
@@ -1329,7 +1329,14 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         return Da
 
-    def orbital_transmission(self, E, elec=0, kavg=True, isc=None, only="all", orbitals=None) -> csr_matrix:
+    @deprecate_argument("only", "what",
+                        "argument only has been deprecated in favor of what, please update your code.",
+                        "0.14.0")
+    def orbital_transmission(self, E, elec=0,
+                             kavg=True,
+                             isc=None,
+                             what: str="all",
+                             orbitals=None) -> csr_matrix:
         r""" Transmission at energy `E` between orbitals originating from `elec`
 
         Each matrix element of the sparse matrix corresponds to the orbital indices of the
@@ -1337,21 +1344,21 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         When requesting orbital-transmissions it is vital to consider how the data needs to be analysed
         before extracting the data. For instance, if only local transmission pathways are interesting one should
-        use ``only="+"`` to only retain the positive orbital transmissions.
+        use ``what="+"`` to retain the positive orbital transmissions.
         While if one is interested in the transmission between subset of orbitals,
-        ``only="all"`` is the correct method to account for loop transmissions.
+        ``what="all"`` is the correct method to account for loop transmissions.
 
         The orbital transmissions are calculated as described in the TBtrans manual:
 
         .. math::
             T_{\mu \nu}(E) = i [
             (\mathbf H_{\nu\mu} - E\mathbf S_{\nu\mu}) \mathbf A_{\mu\nu}(E)
-            -
+            -:
             (\mathbf H_{\mu\nu} - E\mathbf S_{\mu\nu}) \mathbf A_{\nu\mu}(E)],
 
         It is easy to show that the above matrix obeys :math:`T_{\mu\nu}=-T_{\nu\mu}`.
 
-        For inexperienced users it is adviced to try out all three values of ``only`` to ensure
+        For inexperienced users it is adviced to try out all three values of ``what`` to ensure
         the correct physics is obtained.
 
         This becomes even more important when the orbital transmissions are calculated with magnetic
@@ -1377,9 +1384,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            the returned transmissions from the unit-cell (``[None, None, None]``) to
            the given supercell, the default is all transmissions for the supercell.
            To only get unit cell transmissions, pass ``[0, 0, 0]``.
-        only : {"all"/"both", "+"/"out", "-"/"in"}
-           which transmissions to return, all, positive (outgoing) or negative (incoming)
-           values only.
+        what : {"all"/"both"/"+-"/"inout", "+"/"out", "-"/"in"}
+           which transmissions to return, all, positive (outgoing) or negative (incoming).
         orbitals : array-like or dict, optional
            only retain transmissions for a subset of orbitals (including their supercell equivalents)
 
@@ -1411,13 +1417,13 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         """
         J = self._sparse_matrix('J', elec, E, kavg, isc, orbitals)
 
-        if only in ("+", "out"):
+        if what in ("+", "out"):
             J.data[J.data < 0] = 0
-        elif only in ("-", "in"):
+        elif what in ("-", "in"):
             J.data[J.data > 0] = 0
-        elif only not in ("all", "both"):
-            raise ValueError(f"{self.__class__.__name__}.orbital_transmission 'only' keyword has "
-                             "wrong value [all/both, +/out,-/in] allowed.")
+        elif what not in ("all", "both", "+-", "-+", "inout", "outin"):
+            raise ValueError(f"{self.__class__.__name__}.orbital_transmission 'what' keyword has "
+                             "wrong value [all/both/+-, +/out,-/in] allowed.")
 
         # do not delete explicit 0's as the user can then know the sparse matrices
         # calculated.
@@ -1425,7 +1431,11 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         return J
 
-    def orbital_current(self, elec=0, elec_other=1, kavg=True, isc=None, only="all", orbitals=None) -> csr_matrix:
+    @deprecate_argument("only", "what",
+                        "argument only has been deprecated in favor of what, please update your code.",
+                        "0.14.0")
+    def orbital_current(self, elec=0, elec_other=1, kavg=True, isc=None,
+                        what: str="all", orbitals=None) -> csr_matrix:
         r""" Orbital current originating from `elec` as a sparse matrix
 
         This is the bias window integrated quantity of `orbital_transmission`. As such it
@@ -1450,9 +1460,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            the returned bond currents from the unit-cell (``[None, None, None]``) to
            the given supercell, the default is all orbital currents for the supercell.
            To only get unit cell orbital currents, pass ``[0, 0, 0]``.
-        only : {"all"/"both", "+"/"out", "-"/"in"}
-           which orbital currents to return, all, positive (outgoing) or negative (incoming)
-           values only.
+        what : {"all"/"both"/"+-"/"inout", "+"/"out", "-"/"in"}
+           which orbital currents to return, all, positive (outgoing) or negative (incoming).
            Default to ``"all"`` because it can then be used in the subsequent default
            arguments for `sparse_orbital_to_atom` and `sparse_orbital_to_scalar`.
         orbitals : array-like or dict, optional
@@ -1504,18 +1513,26 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             "-": func_in,
             "in": func_in,
             "all": func_all,
+            "inout": func_all,
+            "outin": func_all,
+            "+-": func_all,
+            "-+": func_all,
             "both": func_all,
-        }.get(only)
+        }.get(what)
 
         if getdata is None:
-            raise ValueError(f"{self.__class__.__name__}.orbital_current 'only' keyword has "
-                             "wrong value [all/both, +/out,-/in] allowed.")
+            raise ValueError(f"{self.__class__.__name__}.orbital_current 'what' keyword has "
+                             "wrong value [all/both/+-/inout, +/out,-/in] allowed.")
 
         J = reduce(getdata, enumerate(integrator(self.E)), 0.)
 
         return self._sparse_data_to_matrix(J, isc, orbitals) * constant.q / constant.h("eV s")
 
-    def bond_transmission(self, E, elec=0, kavg=True, isc=None, only="all", orbitals=None, uc=False) -> csr_matrix:
+    @deprecate_argument("only", "what",
+                        "argument only has been deprecated in favor of what, please update your code.",
+                        "0.14.0")
+    def bond_transmission(self, E, elec=0, kavg=True, isc=None,
+                          what: str="all", orbitals=None, uc=False) -> csr_matrix:
         r""" Bond transmission between atoms at a specific energy
 
         Short hand function for calling `orbital_transmission` and `sparse_orbital_to_atom`.
@@ -1540,7 +1557,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         isc : array_like, optional
            the returned transmissions from the unit-cell (``[None, None, None]``) (default) to
            the given supercell. If ``[None, None, None]`` is passed all transmissions are returned.
-        only : {"+"/"out", "-"/"in", "all"/"both"}
+        what : {"all"/"both"/"+-"/"inout", "+"/"out", "-"/"in"}
            If +/out is supplied only the positive transmissions are used (going out)
            for -/in, only the negative transmissions are used (going in),
            else return both. Please see discussion in `orbital_transmission`.
@@ -1555,9 +1572,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Examples
         --------
-        >>> Jij = tbt.orbital_transmission(-1.0, only="out") # orbital transmission @ E = -1 eV originating from electrode ``0``
-        >>> Jab1 = tbt.sparse_orbital_to_atom(Jij)
-        >>> Jab2 = tbt.bond_transmission(-1.0, only="out")
+        >>> Jij = tbt.orbital_transmission(-1.0, what="out") # orbital transmission @ E = -1 eV originating from electrode ``0``
+        >>> Jab1 = tbt.sparse_orbital_to_atom(Jij)[
+        >>> Jab2 = tbt.bond_transmission(-1.0, what="out")
         >>> Jab1 == Jab2
         True
 
@@ -1572,11 +1589,15 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         atom_current : the atomic current for each atom (scalar representation of bond-currents)
         """
         Jij = self.orbital_transmission(E, elec, kavg=kavg, isc=isc,
-                                        only=only, orbitals=orbitals)
+                                        what=what, orbitals=orbitals)
 
         return self.sparse_orbital_to_atom(Jij, uc=uc)
 
-    def bond_current(self, elec=0, elec_other=1, kavg=True, isc=None, only="all", orbitals=None, uc=False) -> csr_matrix:
+    @deprecate_argument("only", "what",
+                        "argument only has been deprecated in favor of what, please update your code.",
+                        "0.14.0")
+    def bond_current(self, elec=0, elec_other=1, kavg=True, isc=None,
+                     what: str="all", orbitals=None, uc=False) -> csr_matrix:
         r""" Bond current between atoms (sum of orbital currents)
 
         Short hand function for calling `orbital_current` and `sparse_orbital_to_atom`.
@@ -1600,7 +1621,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            the returned bond currents from the unit-cell (``[None, None, None]``) (default) to
            the given supercell. If ``[None, None, None]`` is passed all
            bond currents are returned.
-        only : {"+"/"out", "-"/"in", "all"/"both"}
+        what : {"all"/"both"/"+-"/"inout", "+"/"out", "-"/"in"}
            If +/out is supplied only the positive currents are used (going out)
            for -/in, only the negative currents are used (going in),
            else return both. Please see discussion in `orbital_current`.
@@ -1616,9 +1637,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Examples
         --------
-        >>> Jij = tbt.orbital_current(0, 1, only="out") # orbital current originating from electrode ``0``
+        >>> Jij = tbt.orbital_current(0, 1, what="out") # orbital current originating from electrode ``0``
         >>> Jab1 = tbt.sparse_orbital_to_atom(Jij)
-        >>> Jab2 = tbt.bond_current(0, 1, only="out")
+        >>> Jab2 = tbt.bond_current(0, 1, what="out")
         >>> Jab1 == Jab2
         True
 
@@ -1641,11 +1662,15 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         atom_current : the atomic current for each atom (scalar representation of bond-currents)
         """
         Jij = self.orbital_current(elec, elec_other, kavg=kavg, isc=isc,
-                                   only=only, orbitals=orbitals)
+                                   what=what, orbitals=orbitals)
 
         return self.sparse_orbital_to_atom(Jij, uc=uc)
 
-    def vector_transmission(self, E, elec=0, kavg=True, isc=None, only="all", orbitals=None) -> ndarray:
+    @deprecate_argument("only", "what",
+                        "argument only has been deprecated in favor of what, please update your code.",
+                        "0.14.0")
+    def vector_transmission(self, E, elec=0, kavg=True, isc=None,
+                            what="all", orbitals=None) -> ndarray:
         r""" Vector for each atom being the sum of bond transmissions times the normalized bond vector between the atoms
 
         The vector transmission is defined as:
@@ -1672,8 +1697,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            the returned vectors from the unit-cell (``[None, None, None]``) to
            the given supercell, the default is all vectors for the supercell.
            To only get unit cell vectors, pass ``[0, 0, 0]``.
-        only : {"+"/"out", "-"/"in", "all"/"both"}
-           By default only sum *outgoing* vectors (``"out"``).
+        what : {"all"/"both"/"+-"/"inout", "+"/"out", "-"/"in"}
+           The *outgoing* vectors may be retrieved by ``"out"``.
            The *incoming* vectors may be retrieved by ``"in"``, while the
            average incoming and outgoing direction can be obtained with ``"both"``.
            In the last case the vector transmissions are divided by 2 to ensure the length
@@ -1698,9 +1723,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         atom_current : the atomic current for each atom (scalar representation of bond-currents)
         """
         Jab = self.bond_transmission(E, elec, kavg=kavg, isc=isc,
-                                only=only, orbitals=orbitals)
+                                     what=what, orbitals=orbitals)
 
-        if only in ("all", "both"):
+        if what in ("all", "both", "+-", "-+", "inout", "outin"):
             # When we divide by two one can *always* compare the bulk
             # vector currents using either of the sum-rules.
             # I.e. it will be much easier to distinguish differences
@@ -1709,7 +1734,11 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         return self.sparse_atom_to_vector(Jab)
 
-    def vector_current(self, elec=0, elec_other=1, kavg=True, isc=None, only="all", orbitals=None) -> ndarray:
+    @deprecate_argument("only", "what",
+                        "argument only has been deprecated in favor of what, please update your code.",
+                        "0.14.0")
+    def vector_current(self, elec=0, elec_other=1, kavg=True, isc=None,
+                       what: str="all", orbitals=None) -> ndarray:
         r""" Vector for each atom being the sum of bond currents times the normalized bond vector between the atoms
 
         The vector current is defined as:
@@ -1734,8 +1763,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            the returned currents from the unit-cell (``[None, None, None]``) to
            the given supercell, the default is all currents for the supercell.
            To only get unit cell orbital currents, pass ``[0, 0, 0]``.
-        only : {"+"/"out", "-"/"in", "all"/"both"}
-           By default only sum *outgoing* currents (``"out"``).
+        what : {"all"/"both"/"+-"/"inout", "+"/"out", "-"/"in"}
+           The *outgoing* currents may be retrieved by ``"out"``.
            The *incoming* currents may be retrieved by ``"in"``, while the
            average incoming and outgoing direction can be obtained with ``"both"``.
            In the last case the vector currents are divided by 2 to ensure the length
@@ -1768,9 +1797,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         atom_current : the atomic current for each atom (scalar representation of bond-currents)
         """
         Jab = self.bond_current(elec, elec_other, kavg=kavg, isc=isc,
-                                only=only, orbitals=orbitals)
+                                what=what, orbitals=orbitals)
 
-        if only in ("all", "both"):
+        if what in ("all", "both", "+-", "-+", "inout", "outin"):
             # When we divide by two one can *always* compare the bulk
             # vector currents using either of the sum-rules.
             # I.e. it will be much easier to distinguish differences
@@ -1830,7 +1859,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Examples
         --------
-        >>> Jij = tbt.orbital_transmission(-1., only="all") # transmission @ E=-1 eV from electrode ``0``
+        >>> Jij = tbt.orbital_transmission(-1., what"all") # transmission @ E=-1 eV from electrode ``0``
         >>> Ja = tbt.sparse_orbital_to_scalar(Jij)
 
         See Also
@@ -1844,7 +1873,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         atom_current : the atomic current for each atom (scalar representation of bond-currents)
         """
         Jij = self.orbital_transmission(E, elec, kavg=kavg, isc=isc,
-                                   only="all", orbitals=orbitals)
+                                        what="all", orbitals=orbitals)
 
         return self.sparse_orbital_to_scalar(Jij, activity=activity)
 
@@ -1897,7 +1926,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Examples
         --------
-        >>> Jij = tbt.orbital_current(0, 1, only="all") # orbital current originating from electrode ``0``
+        >>> Jij = tbt.orbital_current(0, 1, what="all") # orbital current originating from electrode ``0``
         >>> Ja = tbt.sparse_orbital_to_scalar(Jij)
 
         Notes
@@ -1919,7 +1948,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         atom_transmission : energy resolved atomic transmission for each atom (scalar representation of bond-transmissions)
         """
         Jij = self.orbital_current(elec, elec_other, kavg=kavg, isc=isc,
-                                   only="all", orbitals=orbitals)
+                                   what="all", orbitals=orbitals)
 
         return self.sparse_orbital_to_scalar(Jij, activity=activity)
 
