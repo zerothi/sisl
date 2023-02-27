@@ -341,7 +341,7 @@ class TestSuperCell:
         gbig = g.repeat(40, 0).repeat(40, 1)
         assert g.sc.parallel(gbig.sc)
         assert gbig.sc.parallel(g.sc)
-        g = g.rotate(90, g.cell[0, :])
+        g = g.rotate(90, g.cell[0, :], what="abc")
         assert not g.sc.parallel(gbig.sc)
 
     def test_tile_multiply_orthogonal(self):

@@ -8,6 +8,7 @@ from numbers import Integral, Real
 from math import acos
 from itertools import product
 from collections import OrderedDict
+from functools import reduce
 from pathlib import Path
 import warnings
 
@@ -26,7 +27,7 @@ from . import _array as _a
 from ._math_small import is_ascending, cross3
 from ._indices import indices_in_sphere_with_dist, indices_le, indices_gt_le
 from ._indices import list_index_le
-from .messages import info, warn, SislError
+from .messages import info, warn, SislError, deprecate_argument
 from ._help import isndarray
 from .utils import default_ArgumentParser, default_namespace, cmd, str_spec
 from .utils import angle, direction
@@ -1327,7 +1328,7 @@ class Geometry(SuperCellChild):
         >>> geom.sort(group=('symbol', ['N', 'B'], 'C')) # [B, N], C (B and N unaltered order)
         >>> geom.sort(group=('symbol', ['B', 'N'], 'C')) # [B, N], C (B and N unaltered order)
 
-        A group based sorting can use *anything* that can be fetched from the `Atom` object, 
+        A group based sorting can use *anything* that can be fetched from the `Atom` object,
         sort first according to mass, then for all with the same mass, sort according to atomic
         tag:
 
@@ -2264,13 +2265,19 @@ class Geometry(SuperCellChild):
             return ang
         return np.degrees(ang)
 
-    def rotate(self, angle, v, origin=None, atoms: Optional[AtomsArg]=None, only='abc+xyz', rad=False) -> Geometry:
-        """ Rotate geometry around vector and return a new geometry
+    @deprecate_argument("only", "what",
+                        "argument only has been deprecated in favor of what, please update your code.",
+                        "0.14.0")
+    def rotate(self, angle, v, origin=None,
+               atoms: Optional[AtomsArg]=None,
+               rad: bool=False,
+               what: Optional[str]=None) -> TGeometry:
+        r""" Rotate geometry around vector and return a new geometry
 
         Per default will the entire geometry be rotated, such that everything
         is aligned as before rotation.
 
-        However, by supplying ``only = 'abc|xyz'`` one can designate which
+        However, by supplying ``what = 'abc|xyz'`` one can designate which
         part of the geometry that will be rotated.
 
         Parameters
@@ -2280,7 +2287,9 @@ class Geometry(SuperCellChild):
              argument to use radians.
         v     : int or str or array_like
              the normal vector to the rotated plane, i.e.
-             v = [1,0,0] will rotate the ``yz`` plane
+             v = [1,0,0] will rotate around the :math:`yz` plane.
+             If a str it refers to the Cartesian direction (xyz), or the
+             lattice vectors (abc). Providing several is the combined direction.
         origin : int or array_like, optional
              the origin of rotation. Anything but [0, 0, 0] is equivalent
              to a `self.move(-origin).rotate(...).move(origin)`.
@@ -2288,53 +2297,77 @@ class Geometry(SuperCellChild):
         atoms : int or array_like, optional
              only rotate the given atomic indices, if not specified, all
              atoms will be rotated.
-        only : {'abc+xyz', 'xyz', 'abc'}
-             which coordinate subject should be rotated,
-             if ``abc`` is in this string the cell will be rotated
-             if ``xyz`` is in this string the coordinates will be rotated
         rad : bool, optional
              if ``True`` the angle is provided in radians (rather than degrees)
+        what : {'xyz', 'abc', 'abc+xyz', <or combinations of "xyzabc">}
+            which coordinate subject should be rotated,
+            if any of ``abc`` is in this string the corresponding cell vector will be rotated
+            if any of ``xyz`` is in this string the corresponding coordinates will be rotated
+            If `atoms` is None, this defaults to "abc+xyz", otherwise it defaults
+            to "xyz". See Examples.
+
+        Examples
+        --------
+        rotate coordinates around the :math:`x`-axis
+        >>> geom_x45 = geom.rotate(45, [1, 0, 0])
+
+        rotate around the ``(1, 1, 0)`` direction but project the rotation onto the :math:`x`
+        axis
+        >>> geom_xy_x = geom.rotate(45, "xy", what='x')
 
         See Also
         --------
         Quaternion : class to rotate
+        SuperCell.rotate : rotation passed to the contained supercell
         """
         if origin is None:
             origin = [0., 0., 0.]
         elif isinstance(origin, Integral):
             origin = self.axyz(origin)
-        origin = _a.asarrayd(origin)
+        origin = _a.asarrayd(origin).reshape(1, -1)
 
-        if not atoms is None:
+        if atoms is None:
+            if what is None:
+                what = "abc+xyz"
+            # important to not add a new dimension to xyz
+            atoms = slice(None)
+        else:
+            if what is None:
+                what = "xyz"
             # Only rotate the unique values
             atoms = self.sc2uc(atoms, unique=True)
 
-        if isinstance(v, (str, Integral)):
-            v = direction(v, abc=self.cell, xyz=np.diag([1]*3))
+        if isinstance(v, Integral):
+            v = direction(v, abc=self.cell, xyz=np.diag([1, 1, 1]))
+        elif isinstance(v, str):
+            v = reduce(lambda a, b: a + direction(b, abc=self.cell, xyz=np.diag([1, 1, 1])), v, 0)
 
         # Ensure the normal vector is normalized... (flatten == copy)
         vn = _a.asarrayd(v).flatten()
         vn /= fnorm(vn)
 
         # Rotate by direct call
-        if 'a' in only or 'b' in only or 'c' in only:
-            sc = self.sc.rotate(angle, vn, rad=rad, only=only)
-        else:
-            sc = self.sc.copy()
+        sc = self.sc.rotate(angle, vn, rad=rad, what=what)
 
         # Copy
         xyz = np.copy(self.xyz)
 
-        if 'xyz' in only:
+        idx = []
+        for i, d in enumerate('xyz'):
+            if d in what:
+                idx.append(i)
+
+        # get which coordinates to rotate
+        if idx:
             # Prepare quaternion...
             q = Quaternion(angle, vn, rad=rad)
             q /= q.norm()
             # subtract and add origin, before and after rotation
-            xyz[atoms, :] = q.rotate(xyz[atoms, :] - origin[None, :]) + origin[None, :]
+            xyz[atoms, idx] = (q.rotate(xyz[atoms] - origin) + origin)[:, idx]
 
         return self.__class__(xyz, atoms=self.atoms.copy(), sc=sc)
 
-    def rotate_miller(self, m, v) -> Geometry:
+    def rotate_miller(self, m, v) -> TGeometry:
         """ Align Miller direction along ``v``
 
         Rotate geometry and cell such that the Miller direction
@@ -3059,7 +3092,9 @@ class Geometry(SuperCellChild):
         # Neither of atoms, or isc are `None`, we add the offset to all coordinates
         return self.axyz(atoms) + self.sc.offset(isc)
 
-    def scale(self, scale, what="abc", scale_atoms=True) -> Geometry:
+    def scale(self, scale,
+              what:str ="abc",
+              scale_atoms: bool=True) -> TGeometry:
         """ Scale coordinates and unit-cell to get a new geometry with proper scaling
 
         Parameters
@@ -3071,15 +3106,11 @@ class Geometry(SuperCellChild):
            If three different scale factors are provided, whether each scaling factor
            is to be applied on the corresponding lattice vector ("abc") or on the
            corresponding cartesian coordinate ("xyz").
-        scale_atoms : bool
+        scale_atoms : bool, optional
            whether atoms (basis) should be scaled as well.
         """
         # Ensure we are dealing with a numpy array
         scale = np.asarray(scale)
-        if scale.size == 1:
-            # scaling with a scalar is equivalent to scaling
-            # cartesian coordinates
-            what = "xyz"
 
         # Scale the supercell
         sc = self.sc.scale(scale, what=what)
@@ -3102,6 +3133,8 @@ class Geometry(SuperCellChild):
                 scaled_verts = sc.vertices().reshape(8, 3)
                 scaled_span = scaled_verts.max(axis=0) - scaled_verts.min(axis=0)
                 max_scale = (scaled_span / prev_span).max()
+        else:
+            raise ValueError(f"{self.__class__.__name__}.scale got wrong what argument, must be one of abc|xyz")
 
         if scale_atoms:
             # Atoms are rescaled to the maximum scale factor
@@ -3113,7 +3146,7 @@ class Geometry(SuperCellChild):
 
     def within_sc(self, shapes, isc=None,
                   atoms: Optional[AtomsArg]=None, atoms_xyz=None,
-                  ret_xyz=False, ret_rij=False):
+                  ret_xyz: bool=False, ret_rij: bool=False):
         """ Indices of atoms in a given supercell within a given shape from a given coordinate
 
         This returns a set of atomic indices which are within a
@@ -4498,7 +4531,7 @@ class Geometry(SuperCellChild):
             elif segments == "orbitals":
                 segments = range(self.no)
             elif segments == "all":
-                segments = [np.arange(data.shape[axis])]
+                segments = range(data.shape[axis])
             else:
                 raise ValueError(f"{self.__class__}.apply got wrong argument 'segments'={segments}")
 
@@ -4625,38 +4658,38 @@ class Geometry(SuperCellChild):
                 # Convert value[0] to the direction
                 # The rotate function expects degree
                 ang = angle(values[0], rad=False, in_rad=False)
-                ns._geometry = ns._geometry.rotate(ang, values[1])
+                ns._geometry = ns._geometry.rotate(ang, values[1], what="abc+xyz")
         p.add_argument(*opts('--rotate', '-R'), nargs=2, metavar=('ANGLE', 'DIR'),
                        action=Rotation,
-                       help='Rotate geometry around given axis. ANGLE defaults to be specified in degree. Prefix with "r" for input in radians.')
+                       help='Rotate coordinates and lattice vectors around given axis (x|y|z|a|b|c). ANGLE defaults to be specified in degree. Prefix with "r" for input in radians.')
 
         if not limit_args:
             class RotationX(argparse.Action):
                 def __call__(self, parser, ns, value, option_string=None):
                     # The rotate function expects degree
                     ang = angle(value, rad=False, in_rad=False)
-                    ns._geometry = ns._geometry.rotate(ang, "x")
+                    ns._geometry = ns._geometry.rotate(ang, "x", what="abc+xyz")
             p.add_argument(*opts('--rotate-x', '-Rx'), metavar='ANGLE',
                            action=RotationX,
-                           help='Rotate geometry around first cell vector. ANGLE defaults to be specified in degree. Prefix with "r" for input in radians.')
+                           help='Rotate coordinates and lattice vectors around x axis. ANGLE defaults to be specified in degree. Prefix with "r" for input in radians.')
 
             class RotationY(argparse.Action):
                 def __call__(self, parser, ns, value, option_string=None):
                     # The rotate function expects degree
                     ang = angle(value, rad=False, in_rad=False)
-                    ns._geometry = ns._geometry.rotate(ang, "y")
+                    ns._geometry = ns._geometry.rotate(ang, "y", what="abc+xyz")
             p.add_argument(*opts('--rotate-y', '-Ry'), metavar='ANGLE',
                            action=RotationY,
-                           help='Rotate geometry around second cell vector. ANGLE defaults to be specified in degree. Prefix with "r" for input in radians.')
+                           help='Rotate coordinates and lattice vectors around y axis. ANGLE defaults to be specified in degree. Prefix with "r" for input in radians.')
 
             class RotationZ(argparse.Action):
                 def __call__(self, parser, ns, value, option_string=None):
                     # The rotate function expects degree
                     ang = angle(value, rad=False, in_rad=False)
-                    ns._geometry = ns._geometry.rotate(ang, "z")
+                    ns._geometry = ns._geometry.rotate(ang, "z", what="abc+xyz")
             p.add_argument(*opts('--rotate-z', '-Rz'), metavar='ANGLE',
                            action=RotationZ,
-                           help='Rotate geometry around third cell vector. ANGLE defaults to be specified in degree. Prefix with "r" for input in radians.')
+                           help='Rotate coordinates and lattice vectors around z axis. ANGLE defaults to be specified in degree. Prefix with "r" for input in radians.')
 
         # Reduce size of geometry
         class ReduceSub(argparse.Action):

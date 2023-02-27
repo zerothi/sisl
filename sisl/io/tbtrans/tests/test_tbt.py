@@ -261,12 +261,12 @@ def test_1_graphene_all_content(sisl_files):
     assert orb_right[d2, d1.T].sum() == pytest.approx(-orb_right[d1, d2.T].sum())
 
     orb_left.sort_indices()
-    atom_left = tbt.bond_transmission(E, left, only='all')
+    atom_left = tbt.bond_transmission(E, left, what='all')
     atom_left.sort_indices()
     assert np.allclose(orb_left.data, atom_left.data)
     assert np.allclose(orb_left.data, tbt.sparse_orbital_to_atom(orb_left).data)
     orb_right.sort_indices()
-    atom_right = tbt.bond_transmission(E, right, only='all')
+    atom_right = tbt.bond_transmission(E, right, what='all')
     atom_right.sort_indices()
     assert np.allclose(orb_right.data, atom_right.data)
     assert np.allclose(orb_right.data, tbt.sparse_orbital_to_atom(orb_right).data)
@@ -275,7 +275,7 @@ def test_1_graphene_all_content(sisl_files):
     # For 1-orbital systems the activity and non-activity are equivalent
     assert np.allclose(tbt.atom_transmission(E, left), tbt.atom_transmission(E, left, activity=False))
     tbt.vector_transmission(E, left)
-    assert np.allclose(tbt.sparse_atom_to_vector(atom_left) / 2, tbt.vector_transmission(E, left, only='all'))
+    assert np.allclose(tbt.sparse_atom_to_vector(atom_left) / 2, tbt.vector_transmission(E, left, what='all'))
 
     # Check COOP curves
     coop = tbt.orbital_COOP(E)
@@ -369,9 +369,9 @@ def test_1_graphene_sparse_current(sisl_files, sisl_tmp):
     tbt = sisl.get_sile(sisl_files(_dir, '1_graphene_all.TBT.nc'))
     J = tbt.orbital_current()
     assert np.allclose(J.data, 0)
-    J = tbt.orbital_current(only="+")
+    J = tbt.orbital_current(what="+")
     assert np.allclose(J.data, 0)
-    J = tbt.orbital_current(only="-")
+    J = tbt.orbital_current(what="-")
     assert np.allclose(J.data, 0)
     J = tbt.bond_current()
     assert np.allclose(J.data, 0)

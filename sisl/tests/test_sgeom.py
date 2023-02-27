@@ -1,4 +1,3 @@
-# This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import pytest
@@ -29,7 +28,7 @@ def setup():
             def sg_g(**kwargs):
                 kwargs['ret_geometry'] = True
                 if 'geometry' not in kwargs:
-                    kwargs['geometry'] = self.g
+                    kwargs['geometry'] = self.g.copy()
                 return sgeom(**kwargs)
 
             self.sg_g = sg_g
@@ -37,7 +36,7 @@ def setup():
             def sg_mol(**kwargs):
                 kwargs['ret_geometry'] = True
                 if 'geometry' not in kwargs:
-                    kwargs['geometry'] = self.mol
+                    kwargs['geometry'] = self.mol.copy()
                 return sgeom(**kwargs)
 
             self.sg_mol = sg_mol
@@ -119,11 +118,13 @@ class TestGeometry:
             assert len(g) == l
 
     def test_rotation1(self, setup):
+        print(setup.g.cell)
         rot = setup.sg_g(argv='--rotate 180 z'.split())
         rot.sc.cell[2, 2] *= -1
         assert np.allclose(-rot.sc.cell, setup.g.sc.cell)
         assert np.allclose(-rot.xyz, setup.g.xyz)
 
+        print(setup.g.cell)
         rot = setup.sg_g(argv='--rotate-z 180'.split())
         rot.sc.cell[2, 2] *= -1
         assert np.allclose(-rot.sc.cell, setup.g.sc.cell)

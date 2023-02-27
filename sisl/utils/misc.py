@@ -162,7 +162,7 @@ def direction(d, abc=None, xyz=None):
 
     Returns
     -------
-    index : int 
+    index : int
        index of the Cartesian coordinate system, only if both `abc` and `xyz` are none
        or if the requested direction is not present, only returned if the corresponding direction
        is none

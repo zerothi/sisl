@@ -56,7 +56,7 @@ def nanoribbon(width, bond, atoms, kind='armchair'):
 
     elif kind == "zigzag":
         # Construct zigzag GNR
-        ribbon = ribbon.rotate(90, [0, 0, -1])
+        ribbon = ribbon.rotate(90, [0, 0, -1], what="abc+xyz")
         if m == 1:
             ribbon = ribbon.tile(n + 1, 0)
             ribbon = ribbon.remove(-1).remove(-1)

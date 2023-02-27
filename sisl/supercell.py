@@ -13,6 +13,7 @@ from numbers import Integral
 import numpy as np
 from numpy import ndarray, dot
 
+from .messages import deprecate_argument
 from ._internal import set_module
 from . import _plot as plt
 from . import _array as _a
@@ -624,7 +625,12 @@ class SuperCell:
                                  "float, or an array of values according to axes argument.")
         return self.cell[axes] * (length / self.length[axes]).reshape(-1, 1)
 
-    def rotate(self, angle, v, only='abc', rad=False):
+    @deprecate_argument("only", "what",
+                        "argument only has been deprecated in favor of what, please update your code.",
+                        "0.14.0")
+    def rotate(self, angle, v,
+               rad: bool=False,
+               what: str="abc") -> TSuperCell:
         """ Rotates the supercell, in-place by the angle around the vector
 
         One can control which cell vectors are rotated by designating them
@@ -634,26 +640,30 @@ class SuperCell:
         ----------
         angle : float
              the angle of which the geometry should be rotated
-        v     : array_like
+        v     : array_like or str or int
              the vector around the rotation is going to happen
              ``v = [1,0,0]`` will rotate in the ``yz`` plane
+        what : combination of ``"abc"``, str, optional
+             only rotate the designated cell vectors.
         rad : bool, optional
              Whether the angle is in radians (True) or in degrees (False)
-        only : ('abc'), str, optional
-             only rotate the designated cell vectors.
         """
+        if isinstance(v, Integral):
+            v = direction(v, abc=self.cell, xyz=np.diag([1, 1, 1]))
+        elif isinstance(v, str):
+            v = reduce(lambda a, b: a + direction(b, abc=self.cell, xyz=np.diag([1, 1, 1])), v, 0)
         # flatten => copy
         vn = _a.asarrayd(v).flatten()
         vn /= fnorm(vn)
         q = Quaternion(angle, vn, rad=rad)
         q /= q.norm()  # normalize the quaternion
         cell = np.copy(self.cell)
-        if 'a' in only:
-            cell[0, :] = q.rotate(self.cell[0, :])
-        if 'b' in only:
-            cell[1, :] = q.rotate(self.cell[1, :])
-        if 'c' in only:
-            cell[2, :] = q.rotate(self.cell[2, :])
+        idx = []
+        for i, d in enumerate('abc'):
+            if d in what:
+                idx.append(i)
+        if idx:
+            cell[idx, :] = q.rotate(self.cell[idx, :])
         return self.copy(cell)
 
     def offset(self, isc=None):
