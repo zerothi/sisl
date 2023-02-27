@@ -54,8 +54,8 @@ class SislWarning(SislException, UserWarning):
 
 
 @set_module("sisl")
-class SislDeprecation(SislWarning, DeprecationWarning):
-    """ Sisl deprecation warnings """
+class SislDeprecation(SislWarning, FutureWarning):
+    """ Sisl deprecation warnings for end-users """
     pass
 
 
