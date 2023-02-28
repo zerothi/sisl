@@ -320,7 +320,7 @@ class Geometry(SuperCellChild):
         return self.axyz(atoms)
 
     @__getitem__.register
-    def _(self, atoms: slice) -> NDArray[np.float64]:
+    def _(self, atoms: slice) -> ndarray:
         if atoms.stop is None:
             atoms = atoms.indices(self.na)
         else:
