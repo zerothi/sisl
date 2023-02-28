@@ -5,7 +5,8 @@
 
 This class is the basis of many different objects.
 """
-from typing import Union
+from __future__ import annotations
+from typing import Union, Tuple, TYPE_CHECKING
 import math
 import warnings
 
@@ -25,9 +26,6 @@ from ._supercell import cell_invert, cell_reciprocal
 
 
 __all__ = ['SuperCell', 'SuperCellChild']
-
-
-TSuperCell = "SuperCell"
 
 
 @set_module("sisl")
@@ -121,7 +119,7 @@ class SuperCell:
         find_min_max(cmin, cmax, self.cell.sum(0))
         return Cuboid(cmax - cmin, self.center() + self.origin)
 
-    def parameters(self, rad=False) -> tuple:
+    def parameters(self, rad=False) -> Tuple[float, float, float, float, float, float]:
         r""" Cell parameters of this cell in 3 lengths and 3 angles
 
         Notes
@@ -384,7 +382,7 @@ class SuperCell:
 
     def swapaxes(self, axes_a: Union[int, str],
                  axes_b: Union[int, str],
-                 what: str="abc") -> TSuperCell:
+                 what: str="abc") -> SuperCell:
         r""" Swaps axes `axes_a` and `axes_b`
 
         Swapaxes is a versatile method for changing the order
@@ -630,7 +628,7 @@ class SuperCell:
                         "0.14.0")
     def rotate(self, angle, v,
                rad: bool=False,
-               what: str="abc") -> TSuperCell:
+               what: str="abc") -> SuperCell:
         """ Rotates the supercell, in-place by the angle around the vector
 
         One can control which cell vectors are rotated by designating them

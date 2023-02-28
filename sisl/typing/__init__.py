@@ -3,8 +3,4 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-
-from sisl._typing import (
-    CellOrGeometry,
-    AtomLike,
-)
+from ._common import *

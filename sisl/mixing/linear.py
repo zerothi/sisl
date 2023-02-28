@@ -1,9 +1,10 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
 from typing import Any, Optional
-from numpy.typing import NDArray
 
+from sisl._typing_ext.numpy import npt
 from sisl._internal import set_module
 from .base import BaseHistoryWeightMixer, T
 
@@ -80,7 +81,7 @@ class AndersonMixer(BaseHistoryWeightMixer):
     __slots__ = ()
 
     @staticmethod
-    def _beta(df1: T, df2: T) -> NDArray:
+    def _beta(df1: T, df2: T) -> npt.NDArray:
         # Minimize the average densities for the delta variable
         def metric(a, b):
             return a.ravel().conj().dot(b.ravel()).real

@@ -1,6 +1,7 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
 from numbers import Integral, Real
 from collections import Counter
 from collections.abc import Iterable
@@ -1033,7 +1034,7 @@ class Atom(metaclass=AtomMeta):
         return hash((self._tag, self._mass, self._Z, *self._orbitals))
 
     @property
-    def Z(self):
+    def Z(self) -> npt.NDArray[np.int]:
         """ Atomic number """
         return self._Z
 
@@ -1043,17 +1044,17 @@ class Atom(metaclass=AtomMeta):
         return self._orbitals
 
     @property
-    def mass(self):
+    def mass(self) -> npt.NDArray[np.float64]:
         """ Atomic mass """
         return self._mass
 
     @property
-    def tag(self):
+    def tag(self) -> str:
         """ Tag for atom """
         return self._tag
 
     @property
-    def no(self):
+    def no(self) -> int:
         """ Number of orbitals on this atom """
         return len(self.orbitals)
 

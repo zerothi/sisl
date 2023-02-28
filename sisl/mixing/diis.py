@@ -1,13 +1,15 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
 from typing import Union, Type, Any, Optional, Tuple
 from functools import reduce
 from operator import add
 from numbers import Real
 import numpy as np
-from numpy.typing import NDArray
 
+
+from sisl._typing_ext.numpy import npt
 from sisl._internal import set_module
 import sisl._array as _a
 from sisl.linalg import solve_destroy
@@ -69,7 +71,7 @@ class DIISMixer(BaseHistoryWeightMixer):
                 return a.ravel().conj().dot(b.ravel()).real
         self._metric = metric
 
-    def solve_lagrange(self) -> Tuple[NDArray, NDArray]:
+    def solve_lagrange(self) -> Tuple[npt.NDArray, npt.NDArray]:
         r""" Calculate the coefficients according to Pulay's method, return everything + Lagrange multiplier """
         hist = self.history
         n_h = len(hist)
@@ -117,12 +119,12 @@ class DIISMixer(BaseHistoryWeightMixer):
             # We have a LinalgError
             return _a.arrayd([1.]), last_metric
 
-    def coefficients(self) -> NDArray:
+    def coefficients(self) -> npt.NDArray:
         r""" Calculate coefficients of the Lagrangian """
         c, lagrange = self.solve_lagrange()
         return c
 
-    def mix(self, coefficients: NDArray) -> Any:
+    def mix(self, coefficients: npt.NDArray) -> Any:
         r""" Calculate a new variable :math:`f'` using history and input coefficients
 
         Parameters
@@ -185,7 +187,7 @@ class AdaptiveDIISMixer(DIISMixer):
         exp_lag_log = np.exp((np.log(lagrange) + offset) / spread)
         self._weight = self._weight_min + self._weight_delta / (exp_lag_log + 1)
 
-    def coefficients(self) -> NDArray:
+    def coefficients(self) -> npt.NDArray:
         r""" Calculate coefficients and adjust weights according to a Lagrange multiplier """
         c, lagrange = self.solve_lagrange()
         self.adjust_weight(lagrange)

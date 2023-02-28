@@ -1,14 +1,22 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from typing import Union, Any, Optional, Callable, Iterator, TypeVar
+from __future__ import annotations
+from typing import (
+    Any,
+    Union,
+    Optional,
+    Callable,
+    Iterator,
+    TypeVar,
+    TYPE_CHECKING
+)
 from collections import deque
 from numbers import Integral
 import operator as op
 from abc import abstractmethod
 
-from numpy.typing import ArrayLike
-
+from sisl._typing_ext.numpy import npt
 from sisl._internal import set_module
 
 
@@ -344,7 +352,7 @@ class History:
     def __setitem__(self, key: int, value: Any) -> None:
         self._hist[key] = value
 
-    def __delitem__(self, key: Union[int, ArrayLike]) -> None:
+    def __delitem__(self, key: Union[int, npt.ArrayLike]) -> None:
         self.clear(key)
 
     def append(self, *variables: Any) -> None:
@@ -360,7 +368,7 @@ class History:
         """
         self._hist.append(variables)
 
-    def clear(self, index: Optional[Union[int, ArrayLike]]=None) -> None:
+    def clear(self, index: Optional[Union[int, npt.ArrayLike]]=None) -> None:
         r""" Clear variables to the history
 
         Parameters
