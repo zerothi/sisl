@@ -19,7 +19,7 @@ from numpy import floor, ceil, tile, unique
 from numpy import argsort, split, isin, concatenate
 
 
-from sisl._typing_ext.numpy import npt
+from sisl._typing_ext.numpy import ArrayLike, NDArray
 if TYPE_CHECKING:
     from sisl.typing import AtomsArgument, OrbitalsArgument
 from .orbital import Orbital
@@ -135,7 +135,7 @@ class Geometry(SuperCellChild):
     Atom : contained atoms are each an object of this
     """
 
-    def __init__(self, xyz: npt.ArrayLike, atoms=None, sc=None, names=None):
+    def __init__(self, xyz: ArrayLike, atoms=None, sc=None, names=None):
 
         # Create the geometry coordinate
         # We need flatten to ensure a copy
@@ -286,12 +286,12 @@ class Geometry(SuperCellChild):
         return self.no * self.n_s
 
     @property
-    def firsto(self) -> npt.NDArray[np.int32]:
+    def firsto(self) -> NDArray[np.int32]:
         """ The first orbital on the corresponding atom """
         return self.atoms.firsto
 
     @property
-    def lasto(self) -> npt.NDArray[np.int32]:
+    def lasto(self) -> NDArray[np.int32]:
         """ The last orbital on the corresponding atom """
         return self.atoms.lasto
 
@@ -303,7 +303,7 @@ class Geometry(SuperCellChild):
     ## End size of geometry
 
     @property
-    def fxyz(self) -> npt.NDArray[np.float64]:
+    def fxyz(self) -> NDArray[np.float64]:
         """ Returns geometry coordinates in fractional coordinates """
         return dot(self.xyz, self.icell.T)
 
@@ -320,7 +320,7 @@ class Geometry(SuperCellChild):
         return self.axyz(atoms)
 
     @__getitem__.register
-    def _(self, atoms: slice) -> npt.NDArray[np.float64]:
+    def _(self, atoms: slice) -> NDArray[np.float64]:
         if atoms.stop is None:
             atoms = atoms.indices(self.na)
         else:

@@ -16,7 +16,7 @@ from numbers import Integral
 import operator as op
 from abc import abstractmethod
 
-from sisl._typing_ext.numpy import npt
+from sisl._typing_ext.numpy import ArrayLike
 from sisl._internal import set_module
 
 
@@ -352,7 +352,7 @@ class History:
     def __setitem__(self, key: int, value: Any) -> None:
         self._hist[key] = value
 
-    def __delitem__(self, key: Union[int, npt.ArrayLike]) -> None:
+    def __delitem__(self, key: Union[int, ArrayLike]) -> None:
         self.clear(key)
 
     def append(self, *variables: Any) -> None:
@@ -368,7 +368,7 @@ class History:
         """
         self._hist.append(variables)
 
-    def clear(self, index: Optional[Union[int, npt.ArrayLike]]=None) -> None:
+    def clear(self, index: Optional[Union[int, ArrayLike]]=None) -> None:
         r""" Clear variables to the history
 
         Parameters

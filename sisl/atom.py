@@ -8,6 +8,7 @@ from collections.abc import Iterable
 
 import numpy as np
 
+from sisl._typing_ext.numpy import NDArray
 from ._internal import set_module
 from .messages import info
 from . import _array as _a
@@ -1034,7 +1035,7 @@ class Atom(metaclass=AtomMeta):
         return hash((self._tag, self._mass, self._Z, *self._orbitals))
 
     @property
-    def Z(self) -> npt.NDArray[np.int]:
+    def Z(self) -> NDArray[np.int32]:
         """ Atomic number """
         return self._Z
 
@@ -1044,7 +1045,7 @@ class Atom(metaclass=AtomMeta):
         return self._orbitals
 
     @property
-    def mass(self) -> npt.NDArray[np.float64]:
+    def mass(self) -> NDArray[np.float64]:
         """ Atomic mass """
         return self._mass
 

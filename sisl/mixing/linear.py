@@ -4,7 +4,7 @@
 from __future__ import annotations
 from typing import Any, Optional
 
-from sisl._typing_ext.numpy import npt
+from sisl._typing_ext.numpy import NDArray
 from sisl._internal import set_module
 from .base import BaseHistoryWeightMixer, T
 
@@ -81,7 +81,7 @@ class AndersonMixer(BaseHistoryWeightMixer):
     __slots__ = ()
 
     @staticmethod
-    def _beta(df1: T, df2: T) -> npt.NDArray:
+    def _beta(df1: T, df2: T) -> NDArray:
         # Minimize the average densities for the delta variable
         def metric(a, b):
             return a.ravel().conj().dot(b.ravel()).real

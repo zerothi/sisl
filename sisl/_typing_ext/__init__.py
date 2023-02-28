@@ -10,4 +10,4 @@ required to be handled via versioning or by other means.
 This is easier to maintain in a single source file, rather
 than for every line of sisl using that typing information.
 """
-from . import numpy
+from . import numpy as npt

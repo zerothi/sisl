@@ -2,16 +2,16 @@ from typing import (
     Union,
 )
 
-from ._ext.numpy import npt
+import sisl._typing_ext.numpy as npt
 from sisl import (
     Atom,
     Atoms,
-    AtomCategory,
-    GenericCategory,
     Shape,
     Geometry,
     SuperCell
 )
+from sisl._category import GenericCategory
+from sisl.geom.category import AtomCategory
 
 # An atoms like argument that may be parsed by Geometry._sanitize_atoms
 AtomsArgument = Union[
