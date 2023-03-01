@@ -2466,43 +2466,50 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        axes_a :
+        axes_a : int or str
+           the old axis indices (or labels if `str`)
+           A string will translate each character as a specific
+           axis index.
+           Lattice vectors are denoted by ``abc`` while the
+           Cartesian coordinates are denote by ``xyz``.
+           If `str`, then `what` is not used.
+        axes_b : int or str
+           the new axis indices, same as `axes_a`
            old axis indices (or labels)
-        axes_b : int
-           new axis indices (or labels)
         what : {'abc', 'xyz', 'abc+xyz'}
            what to swap, lattice vectors (abc) or Cartesian components (xyz),
            or both.
+           Neglected for integer axes arguments.
 
+        See Also
+        --------
+        SuperCell.swapaxes
 
         Examples
         --------
 
         Only swap lattice vectors
-
         >>> g_ba = g.swapaxes(0, 1)
         >>> assert np.allclose(g.xyz, g_ba.xyz)
 
         Only swap Cartesian coordinates
-
         >>> g_ba = g.swapaxes(0, 1, "xyz")
         >>> assert np.allclose(g.xyz[:, [1, 0, 2]], g_ba.xyz)
 
-        Collapsed swapping:
+        Consecutive swappings (what will be neglected if provided):
         1. abc, xyz -> bac, xyz
         2. bac, xyz -> bca, xyz
-        2. bac, xyz -> bac, zyx
-
-        >>> g_s = g.swapaxes("abx", "bcz", 1, "xyz")
+        2. bac, xyz -> bca, zyx
+        >>> g_s = g.swapaxes("abx", "bcz")
         >>> assert np.allclose(g.xyz[:, [2, 1, 0]], g_s.xyz)
+        >>> assert np.allclose(g.cell[[1, 2, 0]][:, [2, 1, 0]], g_s.cell)
         """
         # swap supercell
+        # We do not need to check argument types etc,
+        # SuperCell.swapaxes will do this for us
         sc = self.sc.swapaxes(axes_a, axes_b, what)
 
         if isinstance(axes_a, int) and isinstance(axes_b, int):
-            idx = [0, 1, 2]
-            idx[axes_a], idx[axes_b] = idx[axes_b], idx[axes_a]
-
             if "xyz" in what:
                 axes_a = "xyz"[axes_a]
                 axes_b = "xyz"[axes_b]
@@ -2510,24 +2517,15 @@ class Geometry(SuperCellChild):
                 axes_a = ""
                 axes_b = ""
 
-        # we don't need to check arguments, supercell will do this for us
-
-        # only thing we are going to swap
-        xyz = self.xyz
-
+        # only thing we are going to swap is the coordinates
+        idx = [0, 1, 2]
         for a, b in zip(axes_a, axes_b):
-            idx = [0, 1, 2]
-
             aidx = "xyzabc".index(a)
             bidx = "xyzabc".index(b)
-            # we do not need to check the arguments, supercell.swapaxes
-            # will do this for us
-
             if aidx < 3:
                 idx[aidx], idx[bidx] = idx[bidx], idx[aidx]
-                xyz = xyz[:, idx]
 
-        return self.__class__(xyz.copy(), atoms=self.atoms.copy(), sc=sc)
+        return self.__class__(self.xyz[:, idx].copy(), atoms=self.atoms.copy(), sc=sc)
 
     def center(self, atoms: Optional[AtomsArgument]=None, what="xyz") -> ndarray:
         """ Returns the center of the geometry

@@ -391,14 +391,15 @@ class SuperCell:
 
         Parameters
         ----------
-        axes_a :
+        axes_a : int or str
            the old axis indices (or labels if `str`)
+           A string will translate each character as a specific
+           axis index.
+           Lattice vectors are denoted by ``abc`` while the
+           Cartesian coordinates are denote by ``xyz``.
            If `str`, then `what` is not used.
-           A string will translate arguments such that ``abc`` are
-           lattice vector axes, and ``xyz`` are Cartesian coordinate
-           axes.
-        axes_b :
-           the new axis indices, same behaviour as `axes_a`
+        axes_b : int or str
+           the new axis indices, same as `axes_a`
         what : {"abc", "xyz", "abc+xyz"}
            which elements to swap, lattice vectors (``abc``), or
            Cartesian coordinates (``xyz``), or both.
@@ -418,7 +419,7 @@ class SuperCell:
         >>> sc_yx = sc.swapaxes(0, 1, what="xyz")
         >>> assert np.allclose(sc_ba.cell[:, (1, 0, 2)], sc.cell)
 
-        Collapsed swapping:
+        Consecutive swapping:
         1. abc -> bac
         2. bac -> bca
 
@@ -442,8 +443,7 @@ class SuperCell:
             else:
                 raise ValueError(f"{self.__class__.__name__}.swapaxes could not understand 'what' "
                                  "must contain abc and/or xyz.")
-
-        if (not isinstance(axes_a, str)) or (not isinstance(axes_b, str)):
+        elif (not isinstance(axes_a, str)) or (not isinstance(axes_b, str)):
             raise ValueError(f"{self.__class__.__name__}.swapaxes axes arguments must be either all int or all str, not a mix.")
 
         cell = self.cell
@@ -473,7 +473,7 @@ class SuperCell:
                 bidx -= 3
                 idx[aidx], idx[bidx] = idx[bidx], idx[aidx]
 
-                # we are dealing with lattice vectors
+                # we are dealing with cartesian coordinates
                 cell = cell[:, idx]
                 origin = origin[idx]
 
