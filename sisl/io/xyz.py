@@ -98,8 +98,11 @@ class xyzSile(Sile):
         sc : SuperCell, optional
             the supercell to be associated with the geometry
         """
+        line = self.readline()
+        if line == '':
+            return None
         # Read number of atoms
-        na = int(self.readline())
+        na = int(line)
 
         # Read header, and try and convert to dictionary
         header = self.readline()
