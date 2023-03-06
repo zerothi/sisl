@@ -13,6 +13,7 @@ sisl.
 Remark that the `gridSileSiesta` file encompass all ``RHO``, ``RHOINIT``, ``DRHO``,
 ``RHOXC``, ``BADER``, ``IOCH``, ``TOCH`` ``VH``, ``VNA`` and ``VT`` binary output files.
 
+   aniSileSiesta - ANI file
    fdfSileSiesta - input file
    outSileSiesta - output file
    xvSileSiesta - xyz and vxyz file
@@ -44,6 +45,7 @@ The TranSiesta specific output files are:
    tsvncSileSiesta - TranSiesta potential solution input file
 
 """
+from .ani import *
 from .sile import *
 from .bands import *
 from .basis import *
