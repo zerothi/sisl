@@ -88,6 +88,7 @@ class xyzSile(Sile):
         return Geometry(xyz, atoms=sp, sc=sc)
 
     @sile_fh_open()
+    @sile_read_multiple()
     def read_geometry(self, atoms=None, sc=None):
         """ Returns Geometry object from the XYZ file
 

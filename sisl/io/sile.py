@@ -36,6 +36,7 @@ __all__ += [
 # Decorators or sile-specific functions
 __all__ += [
     'sile_fh_open',
+    'sile_read_multiple',
     'sile_raise_write',
     'sile_raise_read'
 ]
@@ -544,6 +545,88 @@ def sile_fh_open(from_closed=False):
                     return func(self, *args, **kwargs)
             return pre_open
     return _wrapper
+
+
+def sile_read_multiple(start=0, stop=1000000000, step=None, all=False,
+                       skip_call=None, pre_call=None, post_call=None):
+    """ Method decorator for doing multiple reads
+
+    Parameters
+    ----------
+    start : int, optional
+       position of first read
+    stop : int, optional
+       position of last read
+    step : int, optional
+       number of steps to take (if any at all)
+    all : bool, optional
+       read all entries (takes precedence over start/step)
+    skip_call : function, optional
+       read method without actual data processing
+    pre_call : function, optional
+       function to be applied before each read call
+    post_call : function, optional
+       function to be applied after each read call
+
+    Returns
+    -------
+    single entry or list from multiple reads
+    """
+    def decorator(func):
+        @wraps(func)
+        def multiple(self, *args, start=start, stop=stop, step=step, all=all,
+                     skip_call=skip_call, pre_call=pre_call, post_call=post_call, **kwargs):
+
+            if skip_call is None:
+                skip_call = func
+            if pre_call is None:
+                def pre_call(): pass
+            if post_call is None:
+                def post_call(): pass
+
+            def wrap_func(self, *args, **kwargs):
+                pre_call()
+                r = func(self, *args, **kwargs)
+                post_call()
+                return r
+
+            def wrap_skip_call(self, *args, **kwargs):
+                pre_call()
+                r = skip_call(self, *args, **kwargs)
+                post_call()
+                return r
+
+            if all:
+                start, stop, step = 0, 1000000000, 1
+
+            if step is None:
+                for _ in range(start):
+                    wrap_skip_call(self, *args, **kwargs)
+                if hasattr(self, "fh"):
+                    return wrap_func(self, *args, **kwargs)
+                with self:
+                    return wrap_func(self, *args, **kwargs)
+
+            def loop(self):
+                rng = range(start, stop, step)
+                R, r, ir = [], True, 0
+                while r is not None:
+                    if ir in rng:
+                        r = wrap_func(self, *args, **kwargs)
+                        if r is not None:
+                            R.append(r)
+                    else:
+                        r = wrap_skip_call(self, *args, **kwargs)
+                    ir += 1
+                return R
+
+            if hasattr(self, "fh"):
+                return loop(self)
+            with self:
+                return loop(self)
+
+        return multiple
+    return decorator
 
 
 @set_module("sisl.io")
