@@ -137,9 +137,8 @@ class Geometry(SuperCellChild):
 
     def __init__(self, xyz: ArrayLike, atoms=None, sc=None, names=None):
 
-        # Create the geometry coordinate
-        # We need flatten to ensure a copy
-        self.xyz = _a.asarrayd(xyz).flatten().reshape(-1, 3)
+        # Create the geometry coordinate, be aware that we do not copy!
+        self.xyz = _a.asarrayd(xyz).reshape(-1, 3)
 
         # Default value
         if atoms is None:
@@ -2527,7 +2526,8 @@ class Geometry(SuperCellChild):
 
         return self.__class__(self.xyz[:, idx].copy(), atoms=self.atoms.copy(), sc=sc)
 
-    def center(self, atoms: Optional[AtomsArgument]=None, what="xyz") -> ndarray:
+    def center(self, atoms: Optional[AtomsArgument]=None,
+               what: str="xyz") -> ndarray:
         """ Returns the center of the geometry
 
         By specifying `what` one can control whether it should be:
