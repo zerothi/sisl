@@ -7,7 +7,7 @@ from typing import Callable, List, Union, Iterator, Optional, TYPE_CHECKING
 from numbers import Integral, Real
 from math import acos
 from itertools import product
-from collections import OrderedDict
+from collections import OrderedDict, UserList
 from functools import reduce
 from pathlib import Path
 import warnings
@@ -4887,50 +4887,12 @@ class Geometry(SuperCellChild):
         return p, namespace
 
 
-class GeometryCollection:
+class GeometryCollection(UserList):
     """ Container for multiple geometries in a single object """
-
-    def __init__(self, geometries: Union[Geometry, List[Geometry]]):
-        if isinstance(geometries, Geometry):
-            self._geometries = [geometries]
-        else:
-            # we will not host tuples
-            self._geometries = list(geometries)
-
-    def __len__(self):
-        return len(self.geometries)
-
-    def __iter__(self):
-        yield from self.geometries
-
-
-    def __getitem__(self, index):
-        """ Returns the indexed geometry(ies) """
-        return self.geometries[index]
-
-    def __setitem__(self, index, value):
-        self._geometries[index] = value
 
     @property
     def geometries(self) -> List[Geometry]:
-        return self._geometries
-
-    def append(self, geometry: Geometry):
-        """ Add a new geometry to the end of the collection """
-        self._geometries.append(geometry)
-
-    def extend(self, geometries: List[Geometry]):
-        """ Add an iterable of geometries to the end of the collection """
-        self._geometries.extend(geometries)
-
-    def insert(self, index: int, geometry: Geometry):
-        """ Insert a geometry at a given location in the list """
-        self._geometries.insert(index, geometry)
-
-    def remove(self, index: int):
-        """ Delete an element from the collection of geometries """
-        self._geometries.remove(index)
-
+        return self.data
 
     def write(self, sile: Union[str, "BaseSile"], *args, **kwargs) -> None:
         """ Writes the geometries to the sile by consecutively calling write-geometry """
