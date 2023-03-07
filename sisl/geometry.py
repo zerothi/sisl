@@ -4965,7 +4965,7 @@ class GeometryCollection:
         -------
         GeometryCollection : a new collection with each geometry transformed by `func`
         """
-        return GeometryCollection(func(g, **kwargs) for g in self))
+        return GeometryCollection(func(g, **kwargs) for g in self)
 
 
 new_dispatch = Geometry.new
