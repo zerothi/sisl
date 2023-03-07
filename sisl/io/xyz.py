@@ -87,8 +87,21 @@ class xyzSile(Sile):
             sc = SuperCell(cell, nsc=[1] * 3)
         return Geometry(xyz, atoms=sp, sc=sc)
 
+    def _r_geometry_skip(self, *args, **kwargs):
+        """ Read the geometry for a generic xyz file (not sisl, nor ASE) """
+        # The cell dimensions isn't defined, we are going to create a molecule box
+        line = self.readline()
+        if line == '':
+            return None
+
+        na = int(line)
+        self.readline()
+        for _ in range(na):
+            self.readline()
+        return na
+
     @sile_fh_open()
-    @sile_read_multiple()
+    @sile_read_multiple(skip_call=_r_geometry_skip)
     def read_geometry(self, atoms=None, sc=None):
         """ Returns Geometry object from the XYZ file
 
@@ -102,6 +115,7 @@ class xyzSile(Sile):
         line = self.readline()
         if line == '':
             return None
+
         # Read number of atoms
         na = int(line)
 

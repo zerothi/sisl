@@ -10,6 +10,7 @@ from sisl._internal import set_module
 from sisl import Geometry, Atom, AtomGhost, AtomUnknown, Atoms, SuperCell
 from sisl.unit.siesta import unit_convert
 
+
 __all__ = ['structSileSiesta']
 
 
