@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 # To check for integers
 from __future__ import annotations
-from typing import List, Union, Iterator, Optional, TYPE_CHECKING
+from typing import Callable, List, Union, Iterator, Optional, TYPE_CHECKING
 from numbers import Integral, Real
 from math import acos
 from itertools import product
@@ -45,7 +45,7 @@ from ._dispatcher import AbstractDispatch
 from ._dispatcher import ClassDispatcher, TypeDispatcher
 
 
-__all__ = ['Geometry', 'sgeom']
+__all__ = ['Geometry', "GeometryCollection", 'sgeom']
 
 
 # It needs to be here otherwise we can't use it in these routines
@@ -4885,6 +4885,87 @@ class Geometry(SuperCellChild):
 
         # We have now created all arguments
         return p, namespace
+
+
+class GeometryCollection:
+    """ Container for multiple geometries in a single object """
+
+    def __init__(self, geometries: Union[Geometry, List[Geometry]]):
+        if isinstance(geometries, Geometry):
+            self._geometries = [geometries]
+        else:
+            # we will not host tuples
+            self._geometries = list(geometries)
+
+    def __len__(self):
+        return len(self.geometries)
+
+    def __iter__(self):
+        yield from self.geometries
+
+
+    def __getitem__(self, index):
+        """ Returns the indexed geometry(ies) """
+        return self.geometries[index]
+
+    def __setitem__(self, index, value):
+        self._geometries[index] = value
+
+    @property
+    def geometries(self) -> List[Geometry]:
+        return self._geometries
+
+    def append(self, geometry: Geometry):
+        """ Add a new geometry to the end of the collection """
+        self._geometries.append(geometry)
+
+    def extend(self, geometries: List[Geometry]):
+        """ Add an iterable of geometries to the end of the collection """
+        self._geometries.extend(geometries)
+
+    def insert(self, index: int, geometry: Geometry):
+        """ Insert a geometry at a given location in the list """
+        self._geometries.insert(index, geometry)
+
+    def remove(self, index: int):
+        """ Delete an element from the collection of geometries """
+        self._geometries.remove(index)
+
+
+    def write(self, sile: Union[str, "BaseSile"], *args, **kwargs) -> None:
+        """ Writes the geometries to the sile by consecutively calling write-geometry """
+        # This only works because, they *must*
+        # have been imported previously
+        from sisl.io import get_sile, BaseSile
+        if isinstance(sile, BaseSile):
+            with sile:
+                for g in self:
+                    sile.write_geometry(g, *args, **kwargs)
+        else:
+            with get_sile(sile, mode='w') as fh:
+                for g in self:
+                    fh.write_geometry(g, *args, **kwargs)
+
+    # Here comes a set of routines that manipulates the contained elements
+
+    def applymap(self, func: Callable, **kwargs):
+        """ Apply a function to all geometries elementwise
+
+        Applies the function `func` to each of the contained geometries
+        and returns a new collection with the applied function to them.
+
+        Parameters
+        ----------
+        func : callable
+            the function to be called on each geometry contained
+        **kwargs : optional
+            keyword arguments passed directly to `func`
+
+        Returns
+        -------
+        GeometryCollection : a new collection with each geometry transformed by `func`
+        """
+        return GeometryCollection(func(g, **kwargs) for g in self))
 
 
 new_dispatch = Geometry.new
