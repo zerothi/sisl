@@ -6,12 +6,13 @@
 
 |pypi|_
 |conda|_
-|zenodo|_
-|discord|_
-
 |license|_
+|zenodo|_
+
+|discord|_
 |buildstatus|_
 |codecov|_
+|codetriage|_
 
 
 .. title:: sisl: Toolbox for electronic structure calculations
@@ -155,3 +156,6 @@ a table of contents for the sub-modules may be found :ref:`here <modindex>`.
 
 .. |discord| image:: https://img.shields.io/discord/742636379871379577.svg?label=&logo=discord&logoColor=ffffff&color=green&labelColor=red
 .. _discord: https://discord.gg/5XnFXFdkv2
+
+.. |codetriage| image:: https://www.codetriage.com/zerothi/sisl/badges/users.svg
+.. _codetriage: https://www.codetriage.com/zerothi/sisl

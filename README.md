@@ -2,12 +2,14 @@
 
 [![Install sisl using PyPI](https://badge.fury.io/py/sisl.svg)](https://badge.fury.io/py/sisl)
 [![Install sisl using conda](https://anaconda.org/conda-forge/sisl/badges/version.svg)](https://anaconda.org/conda-forge/sisl)
-[![DOI for citation](https://zenodo.org/badge/doi/10.5281/zenodo.597181.svg)](https://doi.org/10.5281/zenodo.597181)
-[![Join discussion on Discord](https://img.shields.io/discord/742636379871379577.svg?label=&logo=discord&logoColor=ffffff&color=green&labelColor=red)](https://discord.gg/5XnFXFdkv2)
-<!--- [![Documentation on RTD](https://readthedocs.org/projects/docs/badge/?version=latest)](http://sisl.readthedocs.io/en/latest/) -->
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://www.mozilla.org/en-US/MPL/2.0/)
+[![DOI for citation](https://zenodo.org/badge/doi/10.5281/zenodo.597181.svg)](https://doi.org/10.5281/zenodo.597181)
+<!--- [![Documentation on RTD](https://readthedocs.org/projects/docs/badge/?version=latest)](http://sisl.readthedocs.io/en/latest/) -->
+[![Join discussion on Discord](https://img.shields.io/discord/742636379871379577.svg?label=&logo=discord&logoColor=ffffff&color=green&labelColor=red)](https://discord.gg/5XnFXFdkv2)
 [![Build Status](https://github.com/zerothi/sisl/actions/workflows/test.yaml/badge.svg?branch=main)](https://github.com/zerothi/sisl/actions/workflows/test.yaml)
 [![Checkout sisl code coverage](https://codecov.io/gh/zerothi/sisl/branch/main/graph/badge.svg)](https://codecov.io/gh/zerothi/sisl)
+[![Open Source Helpers](https://www.codetriage.com/zerothi/sisl/badges/users.svg)](https://www.codetriage.com/zerothi/sisl)
+
 
 Copyright Nick R. Papior 2023
 
