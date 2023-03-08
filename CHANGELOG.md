@@ -28,6 +28,7 @@ we hit release version 1.0.0.
 - allow `BrillouinZone` initialization with scalar weights for all k-points #537
 - Geometry.swapaxes and SuperCell.swapaxes, these are now more versatile by
 	allowing multiple swaps in a single run, #539
+- deprecated `set_sc`
 
 
 ### Fixed

@@ -1265,8 +1265,10 @@ class TestGeometry:
         # and atoms
         s1 = SuperCell([2, 2, 2])
         g1 = Geometry([[0, 0, 0], [1, 1, 1]], sc=[2, 2, 1])
-        g1.set_sc(s1)
+        with pytest.warns(SislDeprecation) as deps:
+            g1.set_sc(s1)
         assert g1.sc == s1
+        assert len(deps) == 1
 
     def test_attach1(self, setup):
         g = setup.g.attach(0, setup.mol, 0, dist=1.42, axis=2)

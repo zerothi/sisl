@@ -94,8 +94,8 @@ class Grid(SuperCellChild):
         # If the user sets the super-cell, that has precedence.
         if sc is not None:
             if not self.geometry is None:
-                self.geometry.set_sc(sc)
-            self.set_sc(sc)
+                self.geometry.set_supercell(sc)
+            self.set_supercell(sc)
 
     def __getitem__(self, key):
         """ Grid value at `key` """
@@ -118,7 +118,7 @@ class Grid(SuperCellChild):
             self.geometry = None
         else:
             self.geometry = geometry
-            self.set_sc(geometry.sc)
+            self.set_supercell(geometry.sc)
 
     def fill(self, val):
         """ Fill the grid with this value
@@ -433,7 +433,7 @@ class Grid(SuperCellChild):
             raise ValueError('You cannot retain no indices.')
         grid = self.__class__(shape, bc=np.copy(self.bc), dtype=self.dtype, **self.__sc_geometry_dict())
         # Update cell shape (the cell is smaller now)
-        grid.set_sc(cell)
+        grid.set_supercell(cell)
         if scale_geometry and not self.geometry is None:
             geom = self.geometry.copy()
             fxyz = geom.fxyz.copy()
@@ -632,7 +632,7 @@ class Grid(SuperCellChild):
         reps_all[axis] = reps
         grid.grid = np.tile(self.grid, reps_all)
         if self.geometry is None:
-            grid.set_sc(self.sc.tile(reps, axis))
+            grid.set_supercell(self.sc.tile(reps, axis))
         else:
             grid.set_geometry(self.geometry.tile(reps, axis))
         return grid

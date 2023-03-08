@@ -14,7 +14,7 @@ from numbers import Integral
 import numpy as np
 from numpy import ndarray, dot
 
-from .messages import deprecate_argument
+from .messages import deprecate_argument, deprecate_method
 from ._internal import set_module
 from . import _plot as plt
 from . import _array as _a
@@ -1203,7 +1203,7 @@ class SuperCellChild:
                 except Exception:
                     pass
 
-    set_sc = set_supercell
+    set_sc = deprecate_method("set_sc is deprecated; prefer to use set_supercell instead", "0.14")(set_supercell)
 
     @property
     def length(self):
