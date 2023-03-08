@@ -36,6 +36,7 @@ __all__ += [
 # Decorators or sile-specific functions
 __all__ += [
     'sile_fh_open',
+    'sile_read_multiple',
     'sile_raise_write',
     'sile_raise_read'
 ]
@@ -544,6 +545,111 @@ def sile_fh_open(from_closed=False):
                     return func(self, *args, **kwargs)
             return pre_open
     return _wrapper
+
+
+def sile_read_multiple(start=0, stop=1000000000, step=None, all=False,
+                       skip_call=None, pre_call=None, post_call=None,
+                       postprocess=None):
+    """ Method decorator for doing multiple reads
+
+    Parameters
+    ----------
+    start : int, optional
+       position of first read
+    stop : int, optional
+       position of last read
+    step : int, optional
+       number of steps to take (if any at all)
+    all : bool, optional
+       read all entries (takes precedence over start/step)
+    skip_call : function, optional
+       read method without actual data processing.
+       The skip call must something different from ``None`` if it succeeds.
+    pre_call : function, optional
+       function to be applied before each read call.
+       Does *not* apply to the `skip_call`.
+    post_call : function, optional
+       function to be applied after each read call
+       Does *not* apply to the `skip_call`.
+    postprocess : function, optional
+       function to be applied on the returned data before it gets returned.
+
+    Returns
+    -------
+    single entry or list from multiple reads
+    """
+    def decorator(func):
+        # ensure we can access the callables
+        nonlocal skip_call, pre_call, post_call, postprocess
+
+        if pre_call is None:
+            def pre_call(): pass
+
+        if post_call is None:
+            def post_call(): pass
+
+        if postprocess is None:
+            def postprocess(x): return x
+
+        def wrap_func(*args, **kwargs):
+            pre_call()
+            r = func(*args, **kwargs)
+            post_call()
+            return r
+
+        # if skip_call is not set, we'll simply use func.
+        # Only in this case will pre and post be called
+        # as well.
+        # they should be equivalent but skip can be used to
+        # skip some processing of the read data.
+        if skip_call is None:
+            skip_call = wrap_func
+
+        @wraps(func)
+        def multiple(*args, start=start, stop=stop, step=step, all=all, **kwargs):
+            self = args[0]
+
+            if all:
+                start, stop, step = 0, 100000000000, 1
+            if stop < 0:
+                # TODO this will probably fail if users do stop=-4 (to not have the last 3 items)
+                # It should be done in a different manner
+                stop = 100000000000
+
+            # start by reading past start
+            for _ in range(start):
+                r = skip_call(*args, **kwargs)
+
+            if step is None:
+                # read a single element and return
+                def ret_func():
+                    return wrap_func(*args, **kwargs)
+
+            else:
+                # read a set of geometries and return
+                def ret_func():
+                    R = []
+                    for ir in range(start, stop, step):
+                        r = wrap_func(*args, **kwargs)
+                        if r is None:
+                            return R
+                        R.append(r)
+
+                        # skip the middle steps
+                        for _ in range(step-1):
+                            r = skip_call(*args, **kwargs)
+                            if r is None:
+                                return R
+                    return R
+
+            if hasattr(self, "fh"):
+                return postprocess(ret_func())
+            else:
+                with self:
+                    return postprocess(ret_func())
+
+        return multiple
+    return decorator
 
 
 @set_module("sisl.io")

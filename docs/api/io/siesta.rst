@@ -8,6 +8,7 @@ Siesta
 .. autosummary::
    :toctree: generated/
 
+   aniSileSiesta - ANI file
    fdfSileSiesta - input file
    outSileSiesta - output file
    xvSileSiesta - xyz and vxyz file
