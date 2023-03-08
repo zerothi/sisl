@@ -4,6 +4,7 @@
 """
 Sile object for reading ANI files
 """
+from sisl import GeometryCollection
 from ..xyz import xyzSile
 from ..sile import add_sile
 from sisl._internal import set_module
@@ -16,7 +17,7 @@ __all__ = ["aniSileSiesta"]
 class aniSileSiesta(xyzSile):
 
     def read_geometry(*args, all=True, **kwargs):
-        return super().read_geometry(*args, all=True, **kwargs)
+        return super().read_geometry(*args, all=all, **kwargs)
 
 
 add_sile('ANI', aniSileSiesta, gzip=True)

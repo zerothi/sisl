@@ -116,6 +116,12 @@ C   2.00000  0.00000000  0.00000000
     assert len(g) == 2
     assert g[0].na == 1 and g[-1].na == 3
     g = xyzSile(f).read_geometry(stop=2, step=1)
-    assert g[0].na == 1 and g[-1].na == 2
+    assert g[0].na == 1 and g[1].na == 2
+    g = xyzSile(f).read_geometry(start=1, step=None)
+    assert g.na == 2
+    g = xyzSile(f).read_geometry(start=1, stop=3, step=1)
+    assert g[0].na == 2
+    g = xyzSile(f).read_geometry(start=1, stop=3, step=1, all=True)
+    assert g[0].na == 1
 
     g = xyzSile(f).read_geometry(sc=None, atoms=None)
