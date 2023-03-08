@@ -29,6 +29,7 @@ Simple objects
    Atom
    Atoms
    Geometry
+   GeometryCollection
    SuperCell
    Grid
 
