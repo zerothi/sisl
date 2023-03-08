@@ -7,7 +7,7 @@ from typing import Callable, List, Union, Iterator, Optional, TYPE_CHECKING
 from numbers import Integral, Real
 from math import acos
 from itertools import product
-from collections import OrderedDict, UserList
+from collections import OrderedDict
 from functools import reduce
 from pathlib import Path
 import warnings
@@ -43,6 +43,7 @@ from ._namedindex import NamedIndex
 from ._category import Category, GenericCategory
 from ._dispatcher import AbstractDispatch
 from ._dispatcher import ClassDispatcher, TypeDispatcher
+from ._collection import Collection
 
 
 __all__ = ['Geometry', "GeometryCollection", 'sgeom']
@@ -4887,7 +4888,7 @@ class Geometry(SuperCellChild):
         return p, namespace
 
 
-class GeometryCollection(UserList):
+class GeometryCollection(Collection):
     """ Container for multiple geometries in a single object """
 
     @property
@@ -4907,27 +4908,6 @@ class GeometryCollection(UserList):
             with get_sile(sile, mode='w') as fh:
                 for g in self:
                     fh.write_geometry(g, *args, **kwargs)
-
-    # Here comes a set of routines that manipulates the contained elements
-
-    def applymap(self, func: Callable, **kwargs):
-        """ Apply a function to all geometries elementwise
-
-        Applies the function `func` to each of the contained geometries
-        and returns a new collection with the applied function to them.
-
-        Parameters
-        ----------
-        func : callable
-            the function to be called on each geometry contained
-        **kwargs : optional
-            keyword arguments passed directly to `func`
-
-        Returns
-        -------
-        GeometryCollection : a new collection with each geometry transformed by `func`
-        """
-        return GeometryCollection(func(g, **kwargs) for g in self)
 
 
 new_dispatch = Geometry.new
