@@ -70,6 +70,7 @@ def test_xyz_arbitrary(sisl_tmp):
     f = sisl_tmp('ase.xyz', _dir)
     with open(f, 'w') as fh:
         fh.write("""3
+
 C   0.00000000  0.00000000  0.00000000
 C   1.000000  0.00000000  0.00000000
 C   2.00000  0.00000000  0.00000000
@@ -103,12 +104,18 @@ C   2.00000  0.00000000  0.00000000
     g = xyzSile(f).read_geometry(start=1)
     assert g.na == 2
     g = xyzSile(f).read_geometry(all=True)
-    assert g[0].na == 1 and g[-1].na == 3
+    assert g[0].na == 1 and g[2].na == 3
     g = xyzSile(f).read_geometry(start=1, step=1)
-    assert g[0].na == 2 and g[-1].na == 3
+    assert g[0].na == 2 and g[1].na == 3
     g = xyzSile(f).read_geometry(step=2)
-    assert g[0].na == 1 and g[-1].na == 3
+    assert g[0].na == 1 and g[1].na == 3
     g = xyzSile(f).read_geometry(stop=2, step=1)
-    assert g[0].na == 1 and g[-1].na == 2
+    assert g[0].na == 1 and g[1].na == 2
+    g = xyzSile(f).read_geometry(start=1, step=None)
+    assert g.na == 2
+    g = xyzSile(f).read_geometry(start=1, stop=3, step=1)
+    assert g[0].na == 2
+    g = xyzSile(f).read_geometry(start=1, stop=3, step=1, all=True)
+    assert g[0].na == 1
 
     g = xyzSile(f).read_geometry(sc=None, atoms=None)
