@@ -16,7 +16,7 @@ __all__ = ["aniSileSiesta"]
 class aniSileSiesta(xyzSile):
 
     def read_geometry(*args, all=True, **kwargs):
-        return super().read_geometry(*args, all=all, **kwargs)
+        return super().read_geometry(*args, all=True, **kwargs)
 
 
 add_sile('ANI', aniSileSiesta, gzip=True)

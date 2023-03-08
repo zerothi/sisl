@@ -1,7 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from functools import wraps
+from typing import Optional, Callable, Any
+from functools import wraps, reduce
 from os.path import splitext, basename
 import gzip
 from io import TextIOBase
@@ -516,7 +517,7 @@ class BaseSile:
         return f"{self.__class__.__name__}({self.base_file!s}, base={d!s})"
 
 
-def sile_fh_open(from_closed=False):
+def sile_fh_open(from_closed=False, reset=None):
     """ Method decorator for objects to directly implement opening of the
     file-handle upon entry (if it isn't already).
 
@@ -524,32 +525,47 @@ def sile_fh_open(from_closed=False):
     ----------
     from_closed : bool, optional
        ensure the wrapped function *must* open the file, otherwise it will seek to 0.
+    reset : callable, optional
+       in case the file gets opened a new, then the `reset` method will be called as
+       ``reset(self)``
     """
+    if reset is None:
+        def reset(self): pass
+
     if from_closed:
         def _wrapper(func):
+            nonlocal reset
             @wraps(func)
             def pre_open(self, *args, **kwargs):
                 if hasattr(self, "fh"):
                     self.fh.seek(0)
                     return func(self, *args, **kwargs)
                 with self:
+                    reset(self)
                     return func(self, *args, **kwargs)
             return pre_open
     else:
         def _wrapper(func):
+            nonlocal reset
             @wraps(func)
             def pre_open(self, *args, **kwargs):
                 if hasattr(self, "fh"):
                     return func(self, *args, **kwargs)
                 with self:
+                    reset(self)
                     return func(self, *args, **kwargs)
             return pre_open
     return _wrapper
 
 
-def sile_read_multiple(start=0, stop=1000000000, step=None, all=False,
-                       skip_call=None, pre_call=None, post_call=None,
-                       postprocess=None):
+def sile_read_multiple(start: Optional[int]=None,
+                       stop: Optional[int]=None,
+                       step: Optional[int]=None,
+                       all: bool=False,
+                       skip_call: Optional[Callable[..., Optional[Any]]]=None,
+                       pre_call: Optional[Callable[..., Optional[Any]]]=None,
+                       post_call: Optional[Callable[..., Optional[Any]]]=None,
+                       postprocess: Optional[Callable[..., Any]]=None):
     """ Method decorator for doing multiple reads
 
     Parameters
@@ -559,9 +575,10 @@ def sile_read_multiple(start=0, stop=1000000000, step=None, all=False,
     stop : int, optional
        position of last read
     step : int, optional
-       number of steps to take (if any at all)
+       number of steps to take (if any at all).
     all : bool, optional
-       read all entries (takes precedence over start/step)
+       read all entries, `start`, `stop` and `step` will not be altered
+       unless they are set to None.
     skip_call : function, optional
        read method without actual data processing.
        The skip call must something different from ``None`` if it succeeds.
@@ -610,15 +627,61 @@ def sile_read_multiple(start=0, stop=1000000000, step=None, all=False,
             self = args[0]
 
             if all:
-                start, stop, step = 0, 100000000000, 1
+                # parse everything, but still obey inputs
+                if start is None:
+                    start = 0
+                if stop is None:
+                    stop = 100000000000
+                if step is None:
+                    step = 1
+            else:
+                # behave like range(stop) | range(start, stop, step)
+                # almost.
+                #  step only => start, step = 0, inf
+                #  start only => stop = start + 1
+                #  stop only => start = stop - 1
+                if step is not None:
+                    if start is None:
+                        start = 0
+                    if stop is None:
+                        stop = -1
+                elif start is None and stop is None:
+                    start = 0
+                    stop = 1
+
+                if start is None:
+                    if stop is not None:
+                        start = stop - 1
+                    else:
+                        start = 0
+                if stop is None:
+                    # this will only occur if start is given, but not stop
+                    stop = start + 1
+                elif stop < 0:
+                    stop = 1000000000000
+                if step is None:
+                    # only handle cases where the requested number of
+                    # elements is longer than 1, then step should be defined,
+                    # else we resort to returning a single entity (not postprocessed)
+                    if stop - start > 1:
+                        step = 1
+
             if stop < 0:
                 # TODO this will probably fail if users do stop=-4 (to not have the last 3 items)
                 # It should be done in a different manner
                 stop = 100000000000
 
-            # start by reading past start
+            def check_none(r):
+                if isinstance(r, tuple):
+                    return reduce(lambda x, y: x and y is None, r, True)
+                return r is None
+
+            # start by reading past start, this is regardless of what we
+            # are about to do
             for _ in range(start):
                 r = skip_call(*args, **kwargs)
+                if check_none(r):
+                    return r
 
             if step is None:
                 # read a single element and return
@@ -629,24 +692,24 @@ def sile_read_multiple(start=0, stop=1000000000, step=None, all=False,
                 # read a set of geometries and return
                 def ret_func():
                     R = []
-                    for ir in range(start, stop, step):
+                    for _ in range(start, stop, step):
                         r = wrap_func(*args, **kwargs)
-                        if r is None:
-                            return R
+                        if check_none(r):
+                            break
                         R.append(r)
 
                         # skip the middle steps
                         for _ in range(step-1):
                             r = skip_call(*args, **kwargs)
-                            if r is None:
-                                return R
-                    return R
+                            if check_none(r):
+                                return postprocess(R)
+                    return postprocess(R)
 
             if hasattr(self, "fh"):
-                return postprocess(ret_func())
+                return ret_func()
             else:
                 with self:
-                    return postprocess(ret_func())
+                    return ret_func()
 
         return multiple
     return decorator

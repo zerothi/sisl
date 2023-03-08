@@ -11,7 +11,7 @@ from ._help import header_to_dict
 from .sile import *
 
 from sisl._internal import set_module
-from sisl import Geometry, SuperCell
+from sisl import Geometry, SuperCell, GeometryCollection
 from sisl.messages import warn
 import sisl._array as _a
 
@@ -101,7 +101,7 @@ class xyzSile(Sile):
         return na
 
     @sile_fh_open()
-    @sile_read_multiple(skip_call=_r_geometry_skip)
+    @sile_read_multiple(skip_call=_r_geometry_skip, postprocess=GeometryCollection)
     def read_geometry(self, atoms=None, sc=None):
         """ Returns Geometry object from the XYZ file
 

@@ -9,13 +9,14 @@ import numpy as np
 from .sile import *
 
 from sisl._internal import set_module
-from sisl import PeriodicTable
-from sisl import Geometry, AtomUnknown, SuperCell
+from sisl import PeriodicTable, Grid
+from sisl._collection import Collection
+from sisl import Geometry, GeometryCollection, AtomUnknown, SuperCell
 from sisl.utils import str_spec
 import sisl._array as _a
 
 
-__all__ = ['xsfSile', 'axsfSile']
+__all__ = ["xsfSile"]
 
 
 def _get_kw_index(key):
@@ -26,21 +27,84 @@ def _get_kw_index(key):
     return int(kl[1]) - 1
 
 
+def reset_values(names_values, animsteps=False):
+    if animsteps:
+        def reset(self):
+            nonlocal names_values
+            self._write_animsteps()
+            for name, value in names_values:
+                setattr(self, name, value)
+    else:
+        def reset(self):
+            nonlocal names_values
+            for name, value in names_values:
+                setattr(self, name, value)
+    return reset
+
+
+def postprocess(*funcs):
+    """ Post-processes the returned value according to the funcs for multiple data """
+    def post(ret):
+        nonlocal funcs
+        if isinstance(ret[0], tuple):
+            rets = zip(*ret)
+            return tuple(func(r) for r, func in zip(zip(*ret), funcs))
+        return funcs[0](ret)
+    return post
+
+        
+# Implementation notice!
+# The XSF files are compatible with Vesta, but ONLY
+# if there are no empty lines!
 @set_module("sisl.io")
 class xsfSile(Sile):
-    """ XSF file for XCrySDen """
+    """ XSF file for XCrySDen
+
+    When creating an XSF file one must denote how many geometries to write out.
+    It is also necessary to use the xsf in a context manager, otherwise it will
+    overwrite itself repeatedly.
+
+    >>> with xsfSile('file.xsf', 'w', steps=100) as xsf:
+    ...     for i in range(100):
+    ...         xsf.write_geometry(geom)
+
+    Parameters
+    ----------
+    steps : int, optional
+        number of steps the xsf file contains. Defaults to 1
+    """
 
     def _setup(self, *args, **kwargs):
         """ Setup the `xsfSile` after initialization """
         super()._setup(*args, **kwargs)
         self._comment = ['#']
+        if "w" in self._mode:
+            self._geometry_max = kwargs.get("steps", 1)
+        else:
+            self._geometry_max = kwargs.get("steps", -1)
+        self._geometry_write = 0
+        self._read_type = None
+        self._read_cell = None
 
     def _write_key(self, key):
         self._write(f"{key}\n")
 
-    _write_once = Sile._write
+    def _write_key_index(self, key):
+        # index is 1-based in file
+        if self._geometry_max > 1:
+            self._write(f"{key} {self._geometry_write + 1}\n")
+        else:
+            self._write(f"{key}\n")
 
-    @sile_fh_open()
+    def _write_once(self, string):
+        if self._geometry_write <= 0:
+            self._write(string)
+
+    def _write_animsteps(self):
+        if self._geometry_max > 1:
+            self._write(f"ANIMSTEPS {self._geometry_max}\n")
+
+    @sile_fh_open(reset=reset_values(("_geometry_write", 0), animsteps=True))
     def write_supercell(self, sc, fmt='.8f'):
         """ Writes the supercell to the contained file
 
@@ -51,10 +115,6 @@ class xsfSile(Sile):
         fmt : str, optional
            used format for the precision of the data
         """
-        # Implementation notice!
-        # The XSF files are compatible with Vesta, but ONLY
-        # if there are no empty lines!
-
         # Check that we can write to the file
         sile_raise_write(self)
 
@@ -62,26 +122,33 @@ class xsfSile(Sile):
         from time import gmtime, strftime
         self._write_once('# File created by: sisl {}\n#\n'.format(strftime("%Y-%m-%d", gmtime())))
 
-        self._write_once('CRYSTAL\n#\n')
+        if all(sc.nsc == 1):
+            self._write_once("MOLECULE\n#\n")
+        elif all(sc.nsc[:2] > 1):
+            self._write_once("SLAB\n#\n")
+        elif sc.nsc[0] > 1:
+            self._write_once("POLYMER\n#\n")
+        else:
+            self._write_once('CRYSTAL\n#\n')
 
         self._write_once('# Primitive lattice vectors:\n#\n')
-        self._write_key('PRIMVEC')
+        self._write_key_index('PRIMVEC')
 
         # We write the cell coordinates as the cell coordinates
         fmt_str = f'{{:{fmt}}} ' * 3 + '\n'
-        for i in [0, 1, 2]:
+        for i in (0, 1, 2):
             self._write(fmt_str.format(*sc.cell[i, :]))
 
         # Convert the unit cell to a conventional cell (90-90-90))
         # It seems this simply allows to store both formats in
-        # the same file.
-        self._write_once('#\n# Conventional lattice vectors:\n#\n')
-        self._write_key('CONVVEC')
-        convcell = sc.toCuboid(True)._v
-        for i in [0, 1, 2]:
-            self._write(fmt_str.format(*convcell[i, :]))
+        # the same file. However the below stuff is not correct.
+        #self._write_once('#\n# Conventional lattice vectors:\n#\n')
+        #self._write_key_index('CONVVEC')
+        #convcell = sc.toCuboid(True)._v
+        #for i in [0, 1, 2]:
+        #    self._write(fmt_str.format(*convcell[i, :]))
 
-    @sile_fh_open()
+    @sile_fh_open(reset=reset_values(("_geometry_write", 0), animsteps=True))
     def write_geometry(self, geometry, fmt='.8f', data=None):
         """ Writes the geometry to the contained file
 
@@ -102,7 +169,8 @@ class xsfSile(Sile):
             data.shape = (-1, 3)
 
         self._write_once('#\n# Atomic coordinates (in primitive coordinates)\n#\n')
-        self._write_key("PRIMCOORD")
+        self._geometry_write += 1
+        self._write_key_index("PRIMCOORD")
         self._write(f'{len(geometry)} 1\n')
 
         non_valid_Z = (geometry.atoms.Z <= 0).nonzero()[0]
@@ -122,147 +190,147 @@ class xsfSile(Sile):
                 self._write(fmt_str.format(geometry.atoms[ia].Z, *geometry.xyz[ia, :]))
 
     @sile_fh_open()
-    def _r_geometry_multiple(self, steps, ret_data=False, squeeze=False):
-        asteps = steps
-        steps = dict((step, i) for i, step in enumerate(steps))
+    def _r_geometry_next(self, sc=None, atoms=None, ret_data=False):
+        if sc is None:
+            # fetch the prior read cell value
+            sc = self._read_cell
 
         # initialize all things
-        cell = [None] * len(steps)
-        cell_set = [False] * len(steps)
-        xyz_set = [False] * len(steps)
-        atom = [None for _ in steps]
-        xyz = [None for _ in steps]
-        data = [None for _ in steps]
-        data_set = [not ret_data for _ in steps]
+        cell = None
+        convvec = None
+        primvec = None
+        atoms_r = []
+        xyz = None
+        data = None
 
         line = " "
-        all_loaded = False
-
-        pt = PeriodicTable()
-
-        while line != '' and not all_loaded:
+        while line != '':
             line = self.readline()
 
             if line.isspace():
                 continue
-            kw = line.split()[0]
-            if kw not in ("CONVVEC", "PRIMVEC", "PRIMCOORD"):
-                continue
 
-            step = _get_kw_index(line)
-            if step != -1 and step not in steps:
-                continue
-
-            if step not in steps and step == -1:
-                step = idstep = istep = None
-            else:
-                idstep = steps[step]
-                istep = idstep
-
-            if kw == "CONVVEC":
-                if step is None:
-                    if not any(cell_set):
-                        cell_set = [True] * len(cell_set)
-                    else:
-                        continue
-                elif cell_set[istep]:
-                    continue
-                else:
-                    cell_set[istep] = True
-
-                icell = _a.zerosd([3, 3])
+            if line.startswith("CONVVEC"):
+                convvec = _a.emptyd([3, 3])
                 for i in range(3):
-                    line = self.readline()
-                    icell[i] = line.split()
-                if step is None:
-                    cell = [icell] * len(cell)
-                else:
-                    cell[istep] = icell
+                    convvec[i] = self.readline().split()
 
-            elif kw == "PRIMVEC":
-                if step is None:
-                    cell_set = [True] * len(cell_set)
-                else:
-                    cell_set[istep] = True
-
-                icell = _a.zerosd([3, 3])
+            elif line.startswith("PRIMVEC"):
+                primvec = _a.emptyd([3, 3])
                 for i in range(3):
-                    line = self.readline()
-                    icell[i] = line.split()
-                if step is None:
-                    cell = [icell] * len(cell)
-                else:
-                    cell[istep] = icell
+                    primvec[i] = self.readline().split()
 
-            elif kw == "PRIMCOORD":
-                if step is None:
-                    raise ValueError(f"{self.__class__.__name__}"
-                        " contains an unindexed (or somehow malformed) 'PRIMCOORD'"
-                        " section but you've asked for a particular index. This"
-                        f" shouldn't happen. line:\n {line}"
-                    )
-
-                iatom = []
-                ixyz = []
-                idata = []
+            elif line.startswith("PRIMCOORD"):
+                # get number of atoms
                 line = self.readline().split()
-                for _ in range(int(line[0])):
+                na = int(line[0])
+                xyz = _a.emptyd([na, 3])
+                atoms_r, data = [], []
+                for i in range(na):
                     line = self.readline().split()
-                    if not xyz_set[istep]:
-                        iatom.append(pt.Z(line[0]))
-                        ixyz.append([float(x) for x in line[1:4]])
+                    atoms_r.append(line[0])
+                    xyz[i] = line[1:4]
                     if ret_data and len(line) > 4:
-                        idata.append([float(x) for x in line[4:]])
-                if not xyz_set[istep]:
-                    atom[istep] = iatom
-                    xyz[istep] = ixyz
-                    xyz_set[istep] = True
-                data[idstep] = idata
-                data_set[idstep] = True
+                        data.append([float(x) for x in line[4:]])
 
-            all_loaded = all(xyz_set) and all(cell_set) and all(data_set)
+                # the primcoord should always come after conv/prim-vec
+                break
 
-        if not all(xyz_set):
-            which = [asteps[i] for i in np.flatnonzero(xyz_set)]
-            raise ValueError(f"{self.__class__.__name__} file did not contain atom coordinates for the following requested index: {which}")
+            elif line.startswith("ATOMS"):
+                # molecule specification
+                def next():
+                    point = self.fh.tell()
+                    line = self.readline().split()
+                    try:
+                        int(line[0])
+                    except ValueError:
+                        self.fh.seek(point)
+                        return []
+                    return line
 
-        if ret_data:
-            data = _a.arrayd(data)
-            if data.size == 0:
-                data.shape = (len(steps), len(xyz[0]), 0)
+                xyz, atoms_r, data = [], [], []
+                lines = next()
+                while lines:
+                    atoms_r.append(line[0])
+                    xyz.append(line[1:4])
+                    if ret_data and len(line) > 4:
+                        data.append(line[4:])
+                    lines = next()
+                xyz = _a.arrayd(xyz)
+                if ret_data:
+                    data = _a.arrayd(data)
 
-        xyz = _a.arrayd(xyz)
-        cell = _a.arrayd(cell)
-        atom = _a.arrayi(atom)
+                # the ATOMS key should always come after conv/prim-vec
+                break
 
-        geoms = []
-        for istep in range(len(steps)):
-            if len(atom) == 0:
-                geoms.append(Geometry(xyz[istep], sc=SuperCell(cell[istep])))
-            elif len(atom[0]) == 1 and atom[0][0] == -999:
-                # should we perhaps do AtomUnknown?
-                geoms.append(None)
-            else:
-                geoms.append(Geometry(xyz[istep], atoms=atom[istep], sc=SuperCell(cell[istep])))
+            elif line.startswith("CONVCOORD"):
+                raise NotImplementedError(f"{self.__class__.__name__} does not implement reading CONVCOORD")
 
-        if squeeze and len(steps) == 1:
-            geoms = geoms[0]
+            elif line.startswith("CRYSTAL"):
+                self._read_type = "CRYSTAL"
+            elif line.startswith("SLAB"):
+                self._read_type = "SLAB"
+            elif line.startswith("POLYMER"):
+                self._read_type = "POLYMER"
+            elif line.startswith("MOLECULE"):
+                self._read_type = "MOLECULE"
+
+        typ = self._read_type
+        if typ == "CRYSTAL":
+            nsc = [3, 3, 3]
+        elif typ == "SLAB":
+            nsc = [3, 3, 1]
+        elif typ == "POLYMER":
+            nsc = [3, 1, 1]
+        else:
+            nsc = [1, 1, 1]
+
+        cell = None
+
+        if primvec is not None:
+            cell = SuperCell(primvec, nsc=nsc)
+        elif sc is not None:
+            cell = sc
+
+        elif typ == "MOLECULE":
+            cell = SuperCell(np.diag(xyz.max(0) - xyz.min(0) + 10.))
+
+        if cell is None:
+            raise ValueError(f"{self.__class__.__name__} could not find lattice parameters.")
+
+        # overwrite the currently read cell
+        self._read_cell = cell
+
+        if atoms is None:
+            # this ensures that we will not parse atoms unless required
+            pt = PeriodicTable()
+            atoms = [pt.Z(Z) for Z in atoms_r]
+
+        if xyz is None:
             if ret_data:
-                data = data[0]
+                return None, None
+            return None
 
+        geom = Geometry(xyz, atoms=atoms, sc=cell)
         if ret_data:
-            return geoms, data
-        return geoms
+            return geom, _a.arrayd(data)
+        return geom
 
-    def read_geometry(self, ret_data=False):
+    @sile_read_multiple(postprocess=postprocess(GeometryCollection, Collection))
+    def read_geometry(self, sc=None, atoms=None, ret_data=False):
         """ Geometry contained in file, and optionally the associated data
 
         Parameters
         ----------
+        sc : SuperCell, optional
+            the supercell in case the lattice vectors are not present in the current
+            block.
+        atoms : Atoms, optional
+            atomic species used regardless of the contained atomic species
         ret_data : bool, optional
            in case the the file has auxiliary data, return that as well.
         """
-        return self._r_geometry_multiple([-1], ret_data=ret_data, squeeze=True)
+        return self._r_geometry_next(sc=sc, atoms=atoms, ret_data=ret_data)
 
     @sile_fh_open()
     def write_grid(self, *args, **kwargs):
@@ -289,6 +357,10 @@ class xsfSile(Sile):
             size of the buffer while writing the data, (6144)
         """
         sile_raise_write(self)
+        # for now we do not allow an animation with grid data... should this
+        # even work?
+        if self._geometry_max > 1:
+            raise NotImplementedError(f"{self.__class__.__name__}.write_grid not allowed in an animation file.")
 
         geom = kwargs.get('geometry', args[0].geometry)
         if geom is None:
@@ -296,13 +368,13 @@ class xsfSile(Sile):
         self.write_geometry(geom)
 
         # Buffer size for writing
-        buffersize = kwargs.get('buffersize', min(6144, args[0].grid.size))
+        buffersize = min(kwargs.get('buffersize', 6144), args[0].grid.size)
 
         # Format for precision
         fmt = kwargs.get('fmt', '.5e')
 
         self._write('BEGIN_BLOCK_DATAGRID_3D\n')
-        name = kwargs.get('name', 'sisl_grid_{}'.format(len(args)))
+        name = kwargs.get('name', 'sisl_{}'.format(len(args)))
         # Transfer all spaces to underscores (no spaces allowed)
         self._write(' ' + name.replace(' ', '_') + '\n')
         _v3 = (('{:' + fmt + '} ') * 3).strip() + '\n'
@@ -316,9 +388,16 @@ class xsfSile(Sile):
             self._write('  ' + _v3.format(*grid.cell[2, :]))
 
         for i, grid in enumerate(args):
+
+            if isinstance(grid, Grid):
+                name = kwargs.get(f'grid{i}', str(i))
+            else:
+                # it must be a tuple
+                name, grid = grid
+                name = kwargs.get(f'grid{i}', name)
+
             is_complex = np.iscomplexobj(grid.grid)
 
-            name = kwargs.get(f'grid{i}', str(i))
             if is_complex:
                 self._write(f' BEGIN_DATAGRID_3D_real_{name}\n')
             else:
@@ -449,99 +528,5 @@ By default the vectors scaled by 1 / max(|V|) such that the longest vector has l
                        """)
 
 
-@set_module("sisl.io")
-class axsfSile(xsfSile):
-    """ AXSF file for XCrySDen
-
-    When creating an AXSF file one must denote how many geometries to write out.
-    It is also necessary to use the axsf in a context manager, otherwise it will
-    overwrite itself repeatedly.
-
-    >>> with axsfSile('file.axsf', 'w', steps=100) as axsf:
-    ...     for i in range(100):
-    ...         axsf.write_geometry(geom)
-    """
-
-    def _setup(self, *args, steps=1, **kwargs):
-        super()._setup(*args, **kwargs)
-
-        # Index of last written geometry (or current geom when writing one)
-        self._geometry_index = -1
-
-        # Total number of geometries intended to be written
-        self._geometry_count = steps
-        if self._geometry_count < 1 and "w" in self._mode:
-            raise ValueError(
-                "In write mode, the intended positive number of geometries must be passed in the"
-                " `steps` keyword."
-            )
-
-    def _incr_index(self):
-        """ Increment the geometry index """
-        self._geometry_index += 1
-
-    def _write_key(self, key):
-        self._write(f"{key} {self._geometry_index + 1}\n")
-
-    def _write_once(self, string):
-        if self._geometry_index <= 0:
-            self._write(string)
-
-    @sile_fh_open()
-    def write_geometry(self, geometry, fmt='.8f', data=None):
-        """ Writes the geometry to the contained file
-
-        Parameters
-        ----------
-        geometry : Geometry
-           the geometry to be written
-        fmt : str, optional
-           used format for the precision of the data
-        data : (geometry.na, 3), optional
-           auxiliary data associated with the geometry to be saved
-           along side. Internally in XCrySDen this data is named *Forces*
-        """
-        self._incr_index()
-        self._write_once(f"ANIMSTEPS {self._geometry_count}\n")
-        return super().write_geometry(geometry, fmt=fmt, data=data)
-
-    def read_geometry(self, index=-1, ret_data=False):
-        """ Geometries and (possibly) associated data stored in the AXSF file
-
-        Parameters
-        ----------
-        index : int or iterable of int or None, optional
-            The indices to load (0-indexed). If None, load all.
-            If an integer is passed, a single Geometry is returned, and the leading dimension on data is removed.
-        ret_data : bool, optional
-            in case the file has auxiliary data, return that as well.
-
-        Returns
-        -------
-        geometries : list of Geometry or Geometry
-            A list of geometries (or a single Geometries) corresponding to requested indices.
-        data : ndarray of shape (nindex, natoms, nperatom) and dtype float64
-            Only returned if `data` is True.
-        """
-        squeeze = isinstance(index, Integral)
-        if index is None:
-            index = np.arange(self._r_geometry_count())
-        else:
-            index = _a.arrayi(index).ravel()
-            index[index < 0] += self._r_geometry_count()
-        return self._r_geometry_multiple(index, ret_data=ret_data, squeeze=squeeze)
-
-    @sile_fh_open()
-    def _r_geometry_count(self):
-        line = ' '
-        while line != '':
-            line = self.readline()
-            if line.startswith("ANIMSTEPS"):
-                return _get_kw_index(line) + 1
-        raise ValueError(f"{self.__class__.__name__} did not find 'ANIMSTEPS' in the file...")
-
-    write_grid = None
-
-
 add_sile('xsf', xsfSile, case=False, gzip=True)
-add_sile('axsf', axsfSile, case=False, gzip=True)
+add_sile('axsf', xsfSile, case=False, gzip=True)
