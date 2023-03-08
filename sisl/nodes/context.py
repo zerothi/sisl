@@ -3,7 +3,7 @@ from collections import ChainMap
 from typing import Any, Union
 
 # The main sisl nodes context that all nodes will use by default as their base.
-MAIN_CONTEXT = dict(
+SISL_NODES_CONTEXT = dict(
     # Whether the nodes should compute lazily or immediately when inputs are updated.
     lazy=True,
     # On initialization, should the node compute? If None, defaults to `lazy`.
@@ -52,7 +52,7 @@ def temporal_context(context: Union[dict, ChainMap, None] = None, **context_keys
     ----------
     context: dict or ChainMap, optional
         The context that should be updated temporarily. This could for example be
-        sisl's MAIN_CONTEXT or the context of a specific node class.
+        sisl's main context or the context of a specific node class.
         
         If None, the keys and values are forced on all nodes.  
     **context_keys: Any

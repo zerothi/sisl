@@ -7,7 +7,7 @@ from collections import ChainMap
 from numpy.lib.mixins import NDArrayOperatorsMixin
 
 from sisl.messages import SislError, info
-from .context import NodeContext, MAIN_CONTEXT
+from .context import NodeContext, SISL_NODES_CONTEXT
 
 class NodeError(SislError):
     def __init__(self, node, error):
@@ -59,7 +59,7 @@ class Node(NDArrayOperatorsMixin):
     # Variable containing settings regarding how the node must behave.
     # As an example, the context contains whether a node should be lazily computed or not.
     _cls_context: Dict[str, Any]
-    context: NodeContext = NodeContext({}, MAIN_CONTEXT)
+    context: NodeContext = NodeContext({}, SISL_NODES_CONTEXT)
 
     # Keys for variadic arguments, if present.
     _args_inputs_key: Optional[str] = None
@@ -132,7 +132,7 @@ class Node(NDArrayOperatorsMixin):
         if not hasattr(cls, "_cls_context") or cls._cls_context is None:
             cls._cls_context = {}
 
-        cls.context = NodeContext(cls._cls_context, *base_contexts, MAIN_CONTEXT)
+        cls.context = NodeContext(cls._cls_context, *base_contexts, SISL_NODES_CONTEXT)
 
         # Initialize the dictionary that stores the functions that have been converted to this kind of node
         cls._known_function_nodes = {}
