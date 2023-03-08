@@ -3,9 +3,6 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import pytest
 
-import math as m
-import numpy as np
-
 import sisl
 
 pytestmark = [pytest.mark.geometry, pytest.mark.collection]
