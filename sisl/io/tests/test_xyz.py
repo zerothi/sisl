@@ -26,7 +26,9 @@ def test_xyz1(sisl_tmp, sisl_system):
 
 def test_xyz_sisl(sisl_tmp):
     f = sisl_tmp('sisl.xyz', _dir)
-    open(f, 'w').write("""3
+
+    with open(f, 'w') as fh:
+        fh.write("""3
 sisl-version=1 nsc=1 1 3 cell=10 0 0 0 12 0 0 0 13
 C   0.00000000  0.00000000  0.00000000
 C   1.000000  0.00000000  0.00000000
@@ -47,7 +49,8 @@ C   2.00000  0.00000000  0.00000000
 
 def test_xyz_ase(sisl_tmp):
     f = sisl_tmp('ase.xyz', _dir)
-    open(f, 'w').write("""3
+    with open(f, 'w') as fh:
+        fh.write("""3
 Lattice="10 0 0 0 12 0 0 0 13" Properties=species:S:1:pos:R:3 pbc="F F T"
 C   0.00000000  0.00000000  0.00000000
 C   1.000000  0.00000000  0.00000000
@@ -65,8 +68,8 @@ C   2.00000  0.00000000  0.00000000
 
 def test_xyz_arbitrary(sisl_tmp):
     f = sisl_tmp('ase.xyz', _dir)
-    open(f, 'w').write("""3
-
+    with open(f, 'w') as fh:
+        fh.write("""3
 C   0.00000000  0.00000000  0.00000000
 C   1.000000  0.00000000  0.00000000
 C   2.00000  0.00000000  0.00000000
@@ -81,7 +84,8 @@ C   2.00000  0.00000000  0.00000000
 
 def test_xyz_multiple(sisl_tmp):
     f = sisl_tmp('sisl.xyz', _dir)
-    open(f, 'w').write("""1
+    with open(f, 'w') as fh:
+        fh.write("""1
 
 C   0.00000000  0.00000000  0.00000000
 2
