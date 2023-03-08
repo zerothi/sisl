@@ -8,11 +8,15 @@ from ..xyz import xyzSile
 from ..sile import add_sile
 from sisl._internal import set_module
 
+
 __all__ = ["aniSileSiesta"]
+
 
 @set_module("sisl.io.siesta")
 class aniSileSiesta(xyzSile):
 
-    pass
+    def read_geometry(*args, all=True, **kwargs):
+        return super().read_geometry(*args, all=all, **kwargs)
 
-add_sile('ani', aniSileSiesta, case=False, gzip=True)
+
+add_sile('ANI', aniSileSiesta, gzip=True)
