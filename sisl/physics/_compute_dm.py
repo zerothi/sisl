@@ -7,7 +7,7 @@ complex_or_float = cython.fused_type(cython.complex, cython.floating)
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def add_cnc_diag_spin(state: complex_or_float[:, :], row_orbs: cython.int[:], col_orbs_uc: cython.int[:], 
+def add_cnc_diag_spin(state: complex_or_float[:, :], DM_ptr: cython.int[:], DM_col_uc: cython.int[:],
                     occs: cython.floating[:], DM_kpoint: complex_or_float[:], occtol: float = 1e-9):
     """Adds the cnc contributions of all orbital pairs to the DM given a array of states.
     
@@ -18,10 +18,10 @@ def add_cnc_diag_spin(state: complex_or_float[:, :], row_orbs: cython.int[:], co
     state:
         The coefficients of all eigenstates for this contribution.
         Array of shape (n_eigenstates, n_basisorbitals)
-    row_orbs:
-        The orbital row indices of the sparsity pattern. 
-        Shape (nnz, ), where nnz is the number of nonzero elements in the sparsity pattern.
-    col_orbs_uc:
+    DM_ptr:
+        The pointer to row array of the sparse DM. 
+        Shape (no + 1, ), where no is the number of orbitals in the unit cell.
+    DM_col_uc:
         The orbital col indices of the sparsity pattern, but converted to the unit cell.
         Shape (nnz, ), where nnz is the number of nonzero elements in the sparsity pattern.
     occs:
@@ -37,11 +37,13 @@ def add_cnc_diag_spin(state: complex_or_float[:, :], row_orbs: cython.int[:], co
     i: cython.int
     u: cython.int
     v: cython.int
-    ipair: cython.int
+
+    # Number of orbitals in the unit cell
+    no: cython.int = DM_ptr.shape[0] - 1
+    ival: cython.int
 
     # Loop lengths
     n_wfs: cython.int = state.shape[0]
-    n_opairs: cython.int = row_orbs.shape[0]
         
     # Variable to store the occupation of each state 
     occ: float
@@ -54,17 +56,17 @@ def add_cnc_diag_spin(state: complex_or_float[:, :], row_orbs: cython.int[:], co
         if occ < occtol:
             continue
         
-        # The occupation is above the tolerance threshold, loop through all overlaping orbital pairs
-        for ipair in range(n_opairs):
-            # Get the orbital indices of this pair
-            u = row_orbs[ipair]
-            v = col_orbs_uc[ipair]
-            # Add the contribution of this eigenstate to the DM_{u,v} element
-            DM_kpoint[ipair] = DM_kpoint[ipair] + state[i, u] * occ * state[i, v].conjugate()
+        # Loop over all non zero elements in the sparsity pattern
+        for u in range(no):
+            for ival in range(DM_ptr[u], DM_ptr[u+1]):
+                v = DM_col_uc[ival]
+                # Add the contribution of this eigenstate to the DM_{u,v} element
+                DM_kpoint[ival] = DM_kpoint[ival] + state[i, u] * occ * state[i, v].conjugate()
+
             
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def add_cnc_nc(state: cython.complex[:, :, :], row_orbs: cython.int[:], col_orbs_uc: cython.int[:], 
+def add_cnc_nc(state: cython.complex[:, :, :], DM_ptr: cython.int[:], DM_col_uc: cython.int[:], 
                     occs: cython.floating[:], DM_kpoint: cython.complex[:, :, :], occtol: float = 1e-9):
     """Adds the cnc contributions of all orbital pairs to the DM given a array of states.
     
@@ -76,10 +78,10 @@ def add_cnc_nc(state: cython.complex[:, :, :], row_orbs: cython.int[:], col_orbs
         The coefficients of all eigenstates for this contribution.
         Array of shape (n_eigenstates, n_basisorbitals, 2), where the last dimension is the spin
         "up"/"down" dimension.
-    row_orbs:
-        The orbital row indices of the sparsity pattern. 
-        Shape (nnz, ), where nnz is the number of nonzero elements in the sparsity pattern.
-    col_orbs_uc:
+    DM_ptr:
+        The pointer to row array of the sparse DM. 
+        Shape (no + 1, ), where no is the number of orbitals in the unit cell.
+    DM_col_uc:
         The orbital col indices of the sparsity pattern, but converted to the unit cell.
         Shape (nnz, ), where nnz is the number of nonzero elements in the sparsity pattern.
     occs:
@@ -96,14 +98,17 @@ def add_cnc_nc(state: cython.complex[:, :, :], row_orbs: cython.int[:], col_orbs
     i: cython.int
     u: cython.int
     v: cython.int
-    ipair: cython.int
+    ival: cython.int
+
+    # Number of orbitals in the unit cell
+    no: cython.int = DM_ptr.shape[0] - 1
+
     # The spin box indices.
     Di: cython.int
     Dj: cython.int
 
     # Loop lengths
     n_wfs: cython.int = state.shape[0]
-    n_opairs: cython.int = row_orbs.shape[0]
         
     # Variable to store the occupation of each state 
     occ: float
@@ -115,14 +120,13 @@ def add_cnc_nc(state: cython.complex[:, :, :], row_orbs: cython.int[:], col_orbs
         # If the occupation is lower than the tolerance, skip the state
         if occ < occtol:
             continue
-        
-        # The occupation is above the tolerance threshold, loop through all overlaping orbital pairs
-        for ipair in range(n_opairs):
-            # Get the orbital indices of this pair
-            u = row_orbs[ipair]
-            v = col_orbs_uc[ipair]
+
+        # Loop over all non zero elements in the sparsity pattern
+        for u in range(no):
+            for ival in range(DM_ptr[u], DM_ptr[u+1]):
+                v = DM_col_uc[ival]
             
-            # Add to spin box
-            for Di in range(2):
-                for Dj in range(2):
-                    DM_kpoint[ipair, Di, Dj] = DM_kpoint[ipair, Di, Dj] + state[i, u, Di] * occ * state[i, v, Dj].conjugate()
+                # Add to spin box
+                for Di in range(2):
+                    for Dj in range(2):
+                        DM_kpoint[ival, Di, Dj] = DM_kpoint[ival, Di, Dj] + state[i, u, Di] * occ * state[i, v, Dj].conjugate()

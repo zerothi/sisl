@@ -46,9 +46,7 @@ def compute_dm(bz: BrillouinZone, eigenstates: Optional[Sequence[EigenstateElect
     geom = H.geometry
 
     # Sparsity pattern information
-    row_orbs, col_orbs = H.nonzero()
-    col_orbs_uc = H.osc2uc(col_orbs)
-    col_isc = col_orbs // H.no
+    col_isc, col_uc = np.divmod(H._csr.col, H.no)
     sc_offsets = H.sc_off.dot(H.cell)
 
     # Initialize the density matrix using the sparsity pattern of the Hamiltonian.
@@ -121,8 +119,8 @@ def compute_dm(bz: BrillouinZone, eigenstates: Optional[Sequence[EigenstateElect
 
             if DM.spin.is_diagonal:
                 # Calculate the matrix elements contributions for this k point.
-                DM_kpoint = np.zeros(row_orbs.shape[0], dtype=k_eigs.state.dtype)
-                add_cnc_diag_spin(state, row_orbs, col_orbs_uc, occs, DM_kpoint, occtol=occtol)
+                DM_kpoint = np.zeros(DM.nnz, dtype=k_eigs.state.dtype)
+                add_cnc_diag_spin(state, H._csr.ptr, col_uc, occs, DM_kpoint, occtol=occtol)
 
                 # Apply phases
                 DM_kpoint = DM_kpoint * phases
@@ -139,8 +137,8 @@ def compute_dm(bz: BrillouinZone, eigenstates: Optional[Sequence[EigenstateElect
 
                 # Calculate the matrix elements contributions for this k point. For each matrix element
                 # we allocate a 2x2 spin box.
-                DM_kpoint = np.zeros((row_orbs.shape[0], 2, 2), dtype=np.complex128)
-                add_cnc_nc(state, row_orbs, col_orbs_uc, occs, DM_kpoint, occtol=occtol)
+                DM_kpoint = np.zeros((DM.nnz, 2, 2), dtype=np.complex128)
+                add_cnc_nc(state, H._csr.ptr, col_uc, occs, DM_kpoint, occtol=occtol)
 
                 # Apply phases
                 DM_kpoint *= phases.reshape(-1, 1, 1)
