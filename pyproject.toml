@@ -255,3 +255,8 @@ archs = ["x86_64", "universal2",  "arm64"]
 # Use delvewheel on windows to gather all dll files.
 before-build = "pip install delvewheel"
 repair-wheel-command = "delvewheel repair --no-mangle-all --ignore-in-wheel -w {dest_dir} {wheel}"
+
+[tool.isort]
+# how should sorting be done
+sections = ['FUTURE', 'STDLIB', 'THIRDPARTY', 'FIRSTPARTY', 'LOCALFOLDER']
+src_paths = ["toolbox", "sisl"]
