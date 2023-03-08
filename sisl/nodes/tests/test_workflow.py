@@ -28,7 +28,7 @@ def triple_sum(request) -> Type[Workflow]:
         class triple_sum(Workflow):
 
             @staticmethod
-            def _workflow(a, b, c):
+            def function(a, b, c):
                 first_sum = my_sum(a, b)
                 return my_sum(first_sum, c)
         

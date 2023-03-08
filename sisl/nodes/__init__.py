@@ -1,3 +1,3 @@
 from .node import Node
 from .workflow import Workflow
-from .context import lazy_context, set_lazy_computation
+from .context import NodeContext, SISL_NODES_CONTEXT, temporal_context

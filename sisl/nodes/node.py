@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 import inspect
-from typing import Any, Optional, Callable, Dict, Sequence, Tuple, List
+from typing import Any, Optional, Callable, Dict, Sequence, Tuple, List, Union
 from collections import ChainMap
 
 from numpy.lib.mixins import NDArrayOperatorsMixin
 
 from sisl.messages import SislError, info
-from .context import lazy_context
+from .context import NodeContext, SISL_NODES_CONTEXT
 
 class NodeError(SislError):
     def __init__(self, node, error):
@@ -37,40 +37,7 @@ class NodeInputError(NodeError):
         # Should make this more specific
         return (f"Some input is not right in {self._node} and could not be parsed")
 
-class NodeMeta(type):
-
-    # Global flag that controls whether a node has to be lazily computed or not.
-    # This variable MUST NOT be overwritten by subclasses, because context managers
-    # use it to turn on and off lazy computation.
-    _lazy_computation: bool = True
-
-    # Whether this node class was created from a function (i.e. using the Node.from_func
-    # decorator), as oposed to using class syntax.
-    _from_function: bool = False
-    # Dictionary that stores the functions that have been converted to this kind of node.
-    _known_function_nodes: dict[Callable, Node] = {}
-
-    # Contains the raw function of the node.
-    _get: Callable
-
-    def __call__(self, *args, **kwargs):
-        if self._lazy_computation:
-            return super().__call__(*args, **kwargs)
-        else:
-            if self._from_function:
-                return self._get(*args, **kwargs)
-            else:
-                return super().__call__(*args, **kwargs).get()
-
-    def init(self, *args, **kwargs):
-        """Initializes a node of this class.
-        
-        This is to be used if you want to initialize a lazy node, regardless of whether
-        the lazy_computation switch is on or off.
-        """
-        return super().__call__(*args, **kwargs)
-
-class Node(NDArrayOperatorsMixin, metaclass=NodeMeta):
+class Node(NDArrayOperatorsMixin):
     """Generic class for nodes.
 
     A node is a process that runs with some inputs and returns some outputs.
@@ -85,17 +52,14 @@ class Node(NDArrayOperatorsMixin, metaclass=NodeMeta):
     _blank = object()
     # This is the signal to remove a kwarg from the inputs.
     DELETE_KWARG = object()
-    # Whether debugging messages should be issued
-    _debug: bool = False
-    _debug_show_inputs: bool = False
 
-    # Global flag that controls whether a node has to be lazily computed or not.
-    # This variable MUST NOT be overwritten by subclasses, because context managers
-    # use it to turn on and off lazy computation.
-    _lazy_computation: bool = True
+    # Dictionary that stores the functions that have been converted to this kind of node.
+    _known_function_nodes: dict[Callable, Node] = {}
 
-    # Parameters that are added to the signature, but should not be passed to the worker function.
-    _extra_params: Tuple[str, ...] = ()
+    # Variable containing settings regarding how the node must behave.
+    # As an example, the context contains whether a node should be lazily computed or not.
+    _cls_context: Dict[str, Any]
+    context: NodeContext = NodeContext({}, SISL_NODES_CONTEXT)
 
     # Keys for variadic arguments, if present.
     _args_inputs_key: Optional[str] = None
@@ -120,8 +84,22 @@ class Node(NDArrayOperatorsMixin, metaclass=NodeMeta):
     # Whether the node's output is currently outdated.
     _outdated: bool
 
+    # Contains the raw function of the node.
+    function: Callable
+
     def __init__(self, *args, **kwargs):
 
+        self.setup(*args, **kwargs)
+
+        lazy_init = self.context['lazy_init']
+        if lazy_init is None:
+            lazy_init = self.context['lazy']
+
+        if not lazy_init:
+            self.get()
+    
+    def setup(self, *args, **kwargs):
+        """Sets up the node based on its initial inputs."""
         # Parse inputs into arguments.
         bound_params = self.__class__.__signature__.bind_partial(*args, **kwargs)
         bound_params.apply_defaults()
@@ -139,83 +117,94 @@ class Node(NDArrayOperatorsMixin, metaclass=NodeMeta):
         self._nupdates = 0
 
         self._outdated = True
+
+        self.context = self.__class__.context.new_child({})
     
     def __init_subclass__(cls):
+        # Assign a context to this node class. This is a chainmap that will
+        # resolve keys from its parents, in the order defined by the MRO, in
+        # case the context key is not set for this class.
+        base_contexts = []
+        for base in cls.mro()[1:]:
+            if issubclass(base, Node):
+                base_contexts.append(base.context.maps[0])
 
-        node_func = cls._get
+        if not hasattr(cls, "_cls_context") or cls._cls_context is None:
+            cls._cls_context = {}
+
+        cls.context = NodeContext(cls._cls_context, *base_contexts, SISL_NODES_CONTEXT)
 
         # Initialize the dictionary that stores the functions that have been converted to this kind of node
         cls._known_function_nodes = {}
 
-        # Get the signature of the function
-        sig = inspect.signature(node_func)
-        
-        cls.__doc__ = node_func.__doc__
+        # If the class doesn't contain a "function" attribute, it means that it is just meant
+        # to be a base class. If it does contain a "function" attribute, it is an actual usable
+        # node class that implements some computation. In that case, we modify the signature of the
+        # class to mimic the signature of the function. 
+        if hasattr(cls, "function"):
+            node_func = cls.function
 
-        # Use the function's signature for the __init__ function, so that the help message
-        # is actually useful.
-        new_params = []
-        if "self" not in sig.parameters:
-            new_params.append(inspect.Parameter("self", kind=inspect.Parameter.POSITIONAL_OR_KEYWORD))
-    
-        # Add some extra parameters to the signature
-        extra_params = [
-            inspect.Parameter("automatic_recalc", default=False, kind=inspect.Parameter.KEYWORD_ONLY)
-        ]
+            # Get the signature of the function
+            sig = inspect.signature(node_func)
+            
+            cls.__doc__ = node_func.__doc__
 
-        # Remove the extra parameters that are already in the signature. This is useful if the node function
-        # wants to overwrite defaults for these parameters.
-        extra_params = [p for p in extra_params if p.name not in sig.parameters]
-        cls._extra_params = tuple(p.name for p in extra_params)
+            # Use the function's signature for the __init__ function, so that the help message
+            # is actually useful.
+            init_sig = sig
+            if "self" not in init_sig.parameters:
+                init_sig = sig.replace(parameters=[
+                    inspect.Parameter("self", kind=inspect.Parameter.POSITIONAL_OR_KEYWORD),
+                    *sig.parameters.values()
+                ])
+            
+            no_self_sig = init_sig.replace(parameters=tuple(init_sig.parameters.values())[1:])
 
-        old_params = list(sig.parameters.values())
+            # Find out if there are arguments that are VAR_POSITIONAL (*args) or VAR_KEYWORD (**kwargs)
+            # and register it so that they can be handled on init.
+            cls._args_inputs_key = None
+            cls._kwargs_inputs_key = None
+            for key, parameter in no_self_sig.parameters.items():
+                if parameter.kind == parameter.VAR_POSITIONAL:
+                    cls._args_inputs_key = key
+                if parameter.kind == parameter.VAR_KEYWORD:
+                    cls._kwargs_inputs_key = key
 
-        if len(old_params) == 0:
-            pass
-        elif old_params[-1].kind == inspect.Parameter.VAR_KEYWORD:
-            new_params.extend(old_params[:-1])
-            new_params.extend(extra_params)
-            new_params.append(old_params[-1])
-        else:
-            new_params.extend(old_params)
-            new_params.extend(extra_params)
-        
-        init_sig = sig.replace(parameters=new_params)
-        no_self_sig = init_sig.replace(parameters=tuple(init_sig.parameters.values())[1:])
-
-        # Find out if there are arguments that are VAR_POSITIONAL (*args) or VAR_KEYWORD (**kwargs)
-        # and register it so that they can be handled on init.
-        cls._args_inputs_key = None
-        cls._kwargs_inputs_key = None
-        for key, parameter in no_self_sig.parameters.items():
-            if parameter.kind == parameter.VAR_POSITIONAL:
-                cls._args_inputs_key = key
-            if parameter.kind == parameter.VAR_KEYWORD:
-                cls._kwargs_inputs_key = key
-
-        cls.__init__.__signature__ = init_sig
-        cls.__signature__ = no_self_sig
+            cls.__init__.__signature__ = init_sig
+            cls.__signature__ = no_self_sig
 
         return super().__init_subclass__()
         
     @classmethod
-    def from_func(cls, func, func_method="_get"):
+    def from_func(cls, func: Union[Callable, None] = None, context: Union[dict, None] = None):
         """Builds a node from a function.
 
         Parameters
         ----------
-        func: function
-            The function to be converted to a node
-        func_method: str, optional
-            The name of the method to which the function will be assigned
+        func: function, optional
+            The function to be converted to a node. 
+            
+            If not provided, the return of this method is just a lambda function that expects 
+            the function. This is useful if you want to use this method as a decorator while
+            also providing extra arguments (like the context argument).
+        context: dict, optional
+            The context to be used as the default for the node class that
+            will be created.
         """
+        if func is None:
+            return lambda func: cls.from_func(func=func, context=context)
+
         if isinstance(func, type) and issubclass(func, Node):
             return func
 
         if func in cls._known_function_nodes:
             return cls._known_function_nodes[func]       
 
-        new_node_cls = type(func.__name__, (cls, ), {func_method: staticmethod(func), "_from_function": True})
+        new_node_cls = type(func.__name__, (cls, ), {
+            "function": staticmethod(func),
+            "_cls_context": context,
+            "_from_function": True
+        })
 
         cls._known_function_nodes[func] = new_node_cls
 
@@ -325,20 +314,15 @@ class Node(NDArrayOperatorsMixin, metaclass=NodeMeta):
         evaluated_inputs = self.map_inputs(
             inputs=self._inputs, 
             func=lambda node: node.get(),
-            only_nodes=True, 
-            exclude=self._extra_params
+            only_nodes=True,
         )
-
-        for extra_param in self._extra_params:
-            evaluated_inputs.pop(extra_param, None)
 
         if self._outdated or self.is_output_outdated(evaluated_inputs):
             try:
-                with lazy_context(False):
-                    args, kwargs = self._sanitize_inputs(evaluated_inputs)
-                    self._output = self._get(*args, **kwargs)
-                if self._debug:
-                    if self._debug_show_inputs:
+                args, kwargs = self._sanitize_inputs(evaluated_inputs)
+                self._output = self.function(*args, **kwargs)
+                if self.context['debug']:
+                    if self.context['debug_show_inputs']:
                         info(f"{self}: evaluated with inputs {evaluated_inputs}: {self._output}.") 
                     else:
                         info(f"{self}: evaluated because inputs changed.")
@@ -349,13 +333,10 @@ class Node(NDArrayOperatorsMixin, metaclass=NodeMeta):
             self._prev_evaluated_inputs = evaluated_inputs
             self._outdated = False
         else:
-            if self._debug:
+            if self.context['debug']:
                 info(f"{self}: no need to evaluate")    
 
         return self._output
-
-    def _get(self, **inputs):
-        raise NotImplementedError(f"{self.__class__.__name__} node does not implement _get")
 
     def get_tree(self):
         tree = {
@@ -509,7 +490,7 @@ class Node(NDArrayOperatorsMixin, metaclass=NodeMeta):
 
     def _maybe_autoupdate(self):
         """Makes this node recalculate its output if automatic recalculation is turned on"""
-        if self._inputs['automatic_recalc']:
+        if not self.context['lazy']:
             self.get()
 
 class DummyInputValue(Node):
@@ -522,21 +503,28 @@ class DummyInputValue(Node):
     @property
     def value(self):
         return self._inputs.get('value', Node._blank)
-
-    def _get(self, input_key: str, value: Any = Node._blank):
+    
+    @staticmethod
+    def function(input_key: str, value: Any = Node._blank):
         return value
 
 class FuncNode(Node):
-    def _get(self, func, **kwargs):
+
+    @staticmethod
+    def function(func: Callable, **kwargs):
         return func(**kwargs)
 
 class GetItemNode(Node):
-    def _get(self, data, key):
+
+    @staticmethod
+    def function(data: Any, key: Any):
         return data[key]
 
 class UfuncNode(Node):
     """Node that wraps a numpy ufunc."""
-    def _get(self, ufunc, method, input_kwargs, **kwargs):
+
+    @staticmethod
+    def function(ufunc, method: str, input_kwargs: Dict[str, Any], **kwargs):
         # We need to 
         inputs = []
         i = 0
