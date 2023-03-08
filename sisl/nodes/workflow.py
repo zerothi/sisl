@@ -12,7 +12,7 @@ from sisl.messages import warn
 from sisl._environ import register_environ_variable, get_environ_variable
 
 from .node import DummyInputValue, Node
-from .context import lazy_context
+from .context import temporal_context
 from .utils import traverse_tree_forward, traverse_tree_backward
 
 register_environ_variable(
@@ -25,7 +25,8 @@ class WorkflowInput(DummyInputValue):
 
 class WorkflowOutput(Node):
     
-    def _get(self, value: Any) -> Any:
+    @staticmethod
+    def function(value: Any) -> Any:
         return value
 
 class NetworkDescriptor:
@@ -608,8 +609,8 @@ class WorkflowNodes:
                 new_workers[node_key] = new_node
 
             return new_node
-
-        with lazy_context(nodes=True):
+        
+        with temporal_context(lazy=True):
             traverse_tree_forward(list(self.inputs.values()), copy_node)
             traverse_tree_backward((self.output, ), copy_node)
 
@@ -626,26 +627,15 @@ class Workflow(Node):
     nodes: WorkflowNodes
 
     network = NetworkDescriptor()
-    
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+
+    def setup(self, *args, **kwargs):
+        super().setup(*args, **kwargs)
 
         self.nodes = self.dryrun_nodes.copy(inputs=self._inputs)
 
-    @classmethod
-    def from_func(cls, func: Callable):
-        """Builds a workflow from a function.
-
-        Parameters
-        ----------
-        func: function
-            The function to be converted to a node
-        """
-        return super().from_func(func, func_method="_workflow")
-
     def __init_subclass__(cls):
         # If this is just a subclass of Workflow that is not meant to be ran, continue 
-        if not hasattr(cls, "_workflow"):
+        if not hasattr(cls, "function"):
             return super().__init_subclass__()
 
         # Otherwise, do all the setting up of the class
@@ -661,29 +651,30 @@ class Workflow(Node):
             return value
 
         # Get the workflow function
-        work_func = cls._workflow
-        cls._get = cls._workflow
+        work_func = cls.function
         # Nodify it, passing the middleware function that will assign the variables to the workflow.
         work_func = nodify_func(work_func, assign_fn=assign_workflow_var)
 
         # Get the signature of the function.
         sig = inspect.signature(work_func)
-        
-        # Define all workflow inputs.
-        inps = {
-            k: WorkflowInput(
-                input_key=k, 
-                value=param.default if param.default != inspect.Parameter.empty else Node._blank
-            ) for k, param in sig.parameters.items()
-            if param.kind not in (inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD)
-        }
 
-        # Run the workflow
-        with lazy_context(nodes=True):   
+        # Run a dryrun of the workflow, so that we can understand how the nodes are connected. 
+        # To this end, nodes must behave lazily.
+        with temporal_context(lazy=True): 
+            # Define all workflow inputs.
+            inps = {
+                k: WorkflowInput(
+                    input_key=k, 
+                    value=param.default if param.default != inspect.Parameter.empty else Node._blank
+                ) for k, param in sig.parameters.items()
+                if param.kind not in (inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD)
+            }
+
+            # Run the workflow function.
             final_node = work_func(**inps)
 
-        # Connect the final node to the output of the workflow.
-        out = WorkflowOutput(value=final_node)
+            # Connect the final node to the output of the workflow.
+            out = WorkflowOutput(value=final_node)
         
         # Store all the nodes of the workflow.
         cls.dryrun_nodes = WorkflowNodes.from_workflow_run(inputs=inps, output=out, named_vars=named_vars)
