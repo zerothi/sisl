@@ -369,16 +369,21 @@ def test_1_graphene_sparse_current(sisl_files, sisl_tmp):
     tbt = sisl.get_sile(sisl_files(_dir, '1_graphene_all.TBT.nc'))
     J = tbt.orbital_current()
     assert np.allclose(J.data, 0)
+
+    # convert to bond_current
+    j = tbt.sparse_orbital_to_atom(J)
+    assert np.allclose(j.data, 0)
+
+    j = tbt.sparse_atom_to_vector(j)
+    assert np.allclose(j.data, 0)
+
+    j = tbt.sparse_orbital_to_scalar(J, activity=True)
+    assert np.allclose(j.data, 0)
+
     J = tbt.orbital_current(what="+")
     assert np.allclose(J.data, 0)
     J = tbt.orbital_current(what="-")
     assert np.allclose(J.data, 0)
-    J = tbt.bond_current()
-    assert np.allclose(J.data, 0)
-    J = tbt.vector_current()
-    assert np.allclose(J, 0)
-    J = tbt.atom_current()
-    assert np.allclose(J, 0)
 
 
 @pytest.mark.filterwarnings("ignore:.*requesting energy")

@@ -212,6 +212,7 @@ def pytest_configure(config):
                  'density_matrix', 'dynamicalmatrix', 'energydensity_matrix',
                  'siesta', 'tbtrans', 'vasp', 'w90', 'wannier90', 'gulp', 'fdf',
                  "fhiaims", "aims", "orca",
+                 "collection",
                  "category", "geom_category", "plot",
                  'slow', 'selector', 'overlap', 'mixing',
                  'viz', 'plotly', 'blender']:
