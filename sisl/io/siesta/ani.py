@@ -4,7 +4,6 @@
 """
 Sile object for reading ANI files
 """
-from sisl import GeometryCollection
 from ..xyz import xyzSile
 from ..sile import add_sile
 from sisl._internal import set_module
