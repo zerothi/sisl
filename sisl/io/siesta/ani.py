@@ -15,7 +15,7 @@ __all__ = ["aniSileSiesta"]
 @set_module("sisl.io.siesta")
 class aniSileSiesta(xyzSile):
 
-    def read_geometry(*args, all=True, **kwargs):
+    def read_geometry(self, *args, all=True, **kwargs):
         return super().read_geometry(*args, all=all, **kwargs)
 
 

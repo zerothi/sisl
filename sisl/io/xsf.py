@@ -27,7 +27,7 @@ def _get_kw_index(key):
     return int(kl[1]) - 1
 
 
-def reset_values(names_values, animsteps=False):
+def reset_values(*names_values, animsteps=False):
     if animsteps:
         def reset(self):
             nonlocal names_values
