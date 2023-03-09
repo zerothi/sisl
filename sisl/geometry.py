@@ -4891,6 +4891,11 @@ class Geometry(SuperCellChild):
 class GeometryCollection(Collection):
     """ Container for multiple geometries in a single object """
 
+    def __init__(self, geometries):
+        if isinstance(geometries, Geometry):
+            geometries = [geometries]
+        super().__init__(geometries)
+
     @property
     def geometries(self) -> List[Geometry]:
         return self.data
