@@ -260,3 +260,8 @@ repair-wheel-command = "delvewheel repair --no-mangle-all --ignore-in-wheel -w {
 # how should sorting be done
 sections = ['FUTURE', 'STDLIB', 'THIRDPARTY', 'FIRSTPARTY', 'LOCALFOLDER']
 src_paths = ["toolbox", "sisl"]
+known_first_party = ["sisl_toolbox", "sisl"]
+line_length=90
+overwrite_in_place = true
+extend_skip = ["sisl/__init__.py"]
+
