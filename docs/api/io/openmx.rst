@@ -9,6 +9,7 @@ OpenMX
    :toctree: generated/
 
    omxSileOpenMX - input file
+   mdSileOpenMX - moleculer dynamics file
 
 
 .. autosummary::

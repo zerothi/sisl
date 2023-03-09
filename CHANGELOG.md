@@ -8,6 +8,7 @@ we hit release version 1.0.0.
 ## [X.Y.Z] - YYYY-MM-DD
 
 ### Added
+- `mdSileOpenMX` for MD output of OpenMX
 - `GeometryCollection` enabling multiple geometries contained in a single collection
 - `Atoms.formula` to get a chemical formula, currently only Hill notation
 - unified the index argument for reading Grids, `read_grid`, this influences

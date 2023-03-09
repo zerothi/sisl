@@ -6,6 +6,8 @@ OpenMX
 ======
 
    omxSileOpenMX - input file
+   mdSileOpenMX
 """
 from .sile import *
+from .md import *
 from .omx import *
