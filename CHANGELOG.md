@@ -8,6 +8,7 @@ we hit release version 1.0.0.
 ## [X.Y.Z] - YYYY-MM-DD
 
 ### Added
+- added `aniSileSiesta` for MD output of Siesta, #544
 - `mdSileOpenMX` for MD output of OpenMX
 - `GeometryCollection` enabling multiple geometries contained in a single collection
 - `Atoms.formula` to get a chemical formula, currently only Hill notation
