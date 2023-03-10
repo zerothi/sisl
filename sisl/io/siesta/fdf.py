@@ -21,6 +21,7 @@ from sisl._indices import indices_only
 from sisl.utils.ranges import list2str
 from sisl.messages import SislError, info, warn
 from sisl.utils.mathematics import fnorm
+from sisl.physics import BandStructure
 
 from .bands import bandsSileSiesta
 from .basis import ionxmlSileSiesta, ionncSileSiesta
@@ -601,6 +602,37 @@ class fdfSileSiesta(SileSiesta):
 
         if not _write_block:
             self._write("%endblock\n")
+
+    @sile_fh_open()
+    def write_brillouinzone(self, bz):
+        r""" Writes Brillouinzone information to the fdf input file
+
+        The `bz` object will be written as options in the input file.
+        The class of `bz` decides which options gets written. For instance
+        a `BandStructure` class will write the corresponding ``BandLines`` block.
+
+        Parameters
+        ----------
+        bz : BrillouinZone
+            which setting to write to the file
+
+        Notes
+        -----
+        Currently, only the `BandStructure` class may be accepted as `bz`.
+        """
+        sile_raise_write(self)
+
+        if not isinstance(bz, BandStructure):
+            raise NotImplementedError(f"{self.__class__.__name__}.write_brillouinzone only implements BandStructure object writing.")
+
+        self._write("BandLinesScale ReciprocalLatticeVectors\n%block BandLines\n")
+        ip = 1
+        for divs, point, name in zip(bz.divisions, bz.points, bz.names):
+            self._write(f"  {ip}  {point[0]:.5f} {point[1]:.5f} {point[2]:.5f}  {name}\n")
+            ip = divs
+        point, name = bz.points[-1], bz.names[-1]
+        self._write(f"  {ip}  {point[0]:.5f} {point[1]:.5f} {point[2]:.5f}  {name}\n")
+        self._write("%endblock BandLines\n")
 
     def read_supercell_nsc(self, *args, **kwargs):
         """ Read supercell size using any method available

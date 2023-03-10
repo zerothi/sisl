@@ -8,6 +8,8 @@ we hit release version 1.0.0.
 ## [X.Y.Z] - YYYY-MM-DD
 
 ### Added
+- added `fdfSileSiesta.write_brillouinzone` to easily write BandLines to the fdf output,
+  see #141
 - added `aniSileSiesta` for MD output of Siesta, #544
 - `mdSileOpenMX` for MD output of OpenMX
 - `GeometryCollection` enabling multiple geometries contained in a single collection
