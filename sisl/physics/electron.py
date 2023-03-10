@@ -54,9 +54,7 @@ from numpy import add, sort
 from scipy.sparse import identity, csr_matrix, hstack, isspmatrix
 
 from sisl._internal import set_module
-from sisl import units, constant
-from sisl.supercell import SuperCell
-from sisl.geometry import Geometry
+from sisl import units, constant, Grid, SuperCell, Geometry
 from sisl._indices import indices_le
 from sisl.oplist import oplist
 from sisl._math_small import xyz_to_spherical_cos_phi
@@ -1469,6 +1467,11 @@ class _electron_State:
             geometry = self.parent
         else:
             geometry = getattr(self.parent, "geometry", None)
+
+        if not isinstance(grid, Grid):
+            # probably the grid is a Real, or a tuple that denotes the shape
+            # at least this makes it easier to parse
+            grid = Grid(grid, geometry=geometry, dtype=self.dtype)
 
         # Ensure we are dealing with the R gauge
         self.change_gauge("R")
