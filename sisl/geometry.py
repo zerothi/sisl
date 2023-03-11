@@ -37,7 +37,7 @@ from .utils import lstranges, strmap
 from .utils.mathematics import fnorm
 from .quaternion import Quaternion
 from .supercell import SuperCell, SuperCellChild
-from .atom import Atom, Atoms
+from .atom import Atom, Atoms, PeriodicTable
 from .shape import Shape, Sphere, Cube
 from ._namedindex import NamedIndex
 from ._category import Category, GenericCategory
@@ -3530,6 +3530,75 @@ class Geometry(SuperCellChild):
         else:
             raise NotImplementedError(
                 'Changing bond-length dependent on several lacks implementation.')
+
+    def bond_completion(self, nbonds, bond=None, new_bond=None, atom=None, idx=None):
+        """ Return a new geometry with additional atoms added to complete the number of bonds
+
+        This function may be useful to saturate dangling bonds at edges in sp2-carbon structures,
+        e.g., with H-atoms.
+
+        Parameters
+        ----------
+        nbonds : int
+            number of bonds requested
+        bond, float, optional
+            distance between existing atoms to be considered a bond. Defaults to value from `PeriodicTable`
+        new_bond, float, optional
+            bond length to added atom. Defaults to value from `PeriodicTable`
+        atom : `Atom`, optional
+            kind of atom to be added, where missing. Defaults to atoms of the same type.
+        idx : array_like, optional
+            List of indices for atoms that are to be considered
+
+        Examples
+        --------
+        >>> g = geom.graphene(orthogonal=True).tile(3, 0).tile(4, 1)
+        >>> g.cell[0] *= 2
+        >>> g.bond_completion(3, bond=1.42, new_bond=1.09, atom=Atom(1))
+        """
+
+        if idx is not None:
+            if not isndarray(idx):
+                selection = _a.asarrayi(idx).ravel()
+        else:
+            selection = range(len(self))
+
+        new_xyz = []
+        new_atom = []
+
+        PT = PeriodicTable()
+
+        for ia in selection:
+            a = self.atoms[ia]
+            # Determine radius of sphere for bond search
+            if bond is None:
+                ria = 0.1 + 2 * PT.radius(a.Z)
+            else:
+                ria = 1e-4 + bond
+            idx = self.close(ia, R=(0.1, ria), ret_xyz=True)
+            # We just need second-shell coordinates
+            xyz = idx[1][1]
+            if len(xyz) == nbonds - 1:
+                # Compute bond vector
+                bvec = len(xyz) * self.xyz[ia] - np.sum(xyz, axis=0)
+                bnorm = bvec.dot(bvec) ** .5
+                if bnorm > 0.1:
+                    # only add to geometry if new position is away from ia-atom
+                    if atom is None:
+                        new_a = Atom(a.Z, R=a.R)
+                    else:
+                        new_a = atom
+                    if new_bond is None:
+                        bond_length = PT.radius(a.Z) + PT.radius(new_a.Z)
+                    else:
+                        bond_length = new_bond
+                    bvec *= bond_length / bnorm
+                    new_xyz.append(self.xyz[ia] + bvec)
+                    new_atom.append(new_a)
+        if len(new_xyz) > 0:
+            return self.add(self.__class__(new_xyz, new_atom))
+        else:
+            return self.copy()
 
     def within(self, shapes,
                atoms: Optional[AtomsArgument]=None, atoms_xyz=None,
