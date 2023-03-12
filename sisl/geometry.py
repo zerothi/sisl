@@ -475,7 +475,7 @@ class Geometry(SuperCellChild):
         # Move to 0
         fxyz -= fxyz.min(0)
         # Shift a little bit in to account for inaccuracies.
-        fxyz += (0.5 - (fxyz.max(0) - fxyz.min(0)) / 2).reshape(1, -1) * 0.01
+        fxyz += (0.5 - (fxyz.max(0) - fxyz.min(0)) / 2) * 0.01
 
         # Default guess to 1 along all directions
         supercell = _a.onesi(3)
@@ -2313,7 +2313,7 @@ class Geometry(SuperCellChild):
             origin = [0., 0., 0.]
         elif isinstance(origin, Integral):
             origin = self.axyz(origin)
-        origin = _a.asarrayd(origin).reshape(1, -1)
+        origin = _a.asarray(origin)
 
         if atoms is None:
             if what is None:
@@ -2634,7 +2634,7 @@ class Geometry(SuperCellChild):
                     offset = [0, 0, 0]
                 else:
                     raise ValueError(f"{self.__class__.__name__}.append requires offset to be (3,) for supercell input")
-            xyz += _a.arrayd(offset).reshape(1, 3)
+            xyz += _a.asarray(offset)
 
         else:
             # sanitize output
@@ -2642,7 +2642,7 @@ class Geometry(SuperCellChild):
             if isinstance(offset, str):
                 offset = offset.lower()
                 if offset == 'none':
-                    offset = self.cell[axis, :].reshape(1, 3)
+                    offset = self.cell[axis, :]
                 elif offset == 'min':
                     # We want to align at the minimum position along the `axis`
                     min_f = self.fxyz[:, axis].min()
@@ -2651,7 +2651,7 @@ class Geometry(SuperCellChild):
                 else:
                     raise ValueError(f'{self.__class__.__name__}.append requires align keyword to be one of [none, min, (3,)]')
             else:
-                offset = (self.cell[axis, :] + _a.arrayd(offset)).reshape(1, 3)
+                offset = self.cell[axis, :] + _a.asarray(offset)
 
             xyz = np.append(self.xyz, offset + other.xyz, axis=0)
             atoms = self.atoms.append(other.atoms)
@@ -2711,7 +2711,7 @@ class Geometry(SuperCellChild):
                     offset = [0, 0, 0]
                 else:
                     raise ValueError(f"{self.__class__.__name__}.prepend requires offset to be (3,) for supercell input")
-            xyz += _a.arrayd(offset).reshape(1, 3)
+            xyz += _a.arrayd(offset)
 
         else:
             # sanitize output
@@ -2719,7 +2719,7 @@ class Geometry(SuperCellChild):
             if isinstance(offset, str):
                 offset = offset.lower()
                 if offset == 'none':
-                    offset = other.cell[axis, :].reshape(1, 3)
+                    offset = other.cell[axis, :]
                 elif offset == 'min':
                     # We want to align at the minimum position along the `axis`
                     min_f = other.fxyz[:, axis].min()
@@ -2728,7 +2728,7 @@ class Geometry(SuperCellChild):
                 else:
                     raise ValueError(f'{self.__class__.__name__}.prepend requires align keyword to be one of [none, min, (3,)]')
             else:
-                offset = (other.cell[axis, :] + _a.arrayd(offset)).reshape(1, 3)
+                offset = other.cell[axis, :] + _a.asarray(offset)
 
             xyz = np.append(other.xyz, offset + self.xyz, axis=0)
             atoms = self.atoms.prepend(other.atoms)
