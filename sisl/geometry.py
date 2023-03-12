@@ -2346,13 +2346,15 @@ class Geometry(SuperCellChild):
             if d in what:
                 idx.append(i)
 
-        # get which coordinates to rotate
         if idx:
             # Prepare quaternion...
             q = Quaternion(angle, vn, rad=rad)
             q /= q.norm()
             # subtract and add origin, before and after rotation
-            xyz[atoms, idx] = (q.rotate(xyz[atoms] - origin) + origin)[:, idx]
+            rotated = (q.rotate(xyz[atoms] - origin) + origin)
+            # get which coordinates to rotate
+            for i in idx:
+                xyz[atoms, i] = rotated[:, i]
 
         return self.__class__(xyz, atoms=self.atoms.copy(), sc=sc)
 
