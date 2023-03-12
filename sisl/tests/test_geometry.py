@@ -442,6 +442,28 @@ class TestGeometry:
         assert np.allclose(rot.sc.cell, setup.g.sc.cell)
         assert np.allclose(rot.xyz, setup.g.xyz)
 
+    def test_rotation4(self, setup):
+        ref = setup.g.tile(2, 0).tile(2, 1)
+
+        rot = ref.rotate(10, "z", atoms=1)
+        assert not np.allclose(ref.xyz[1], rot.xyz[1])
+
+        rot = ref.rotate(10, "z", atoms=[1, 2])
+        assert not np.allclose(ref.xyz[1], rot.xyz[1])
+        assert not np.allclose(ref.xyz[2], rot.xyz[2])
+        assert np.allclose(ref.xyz[3], rot.xyz[3])
+
+        rot = ref.rotate(10, "z", atoms=[1, 2], what='y')
+        assert ref.xyz[1, 0] == rot.xyz[1, 0]
+        assert ref.xyz[1, 1] != rot.xyz[1, 1]
+        assert ref.xyz[1, 2] == rot.xyz[1, 2]
+
+        rot = ref.rotate(10, "z", atoms=[1, 2], what='xy', origin=ref.xyz[2])
+        assert ref.xyz[1, 0] != rot.xyz[1, 0]
+        assert ref.xyz[1, 1] != rot.xyz[1, 1]
+        assert ref.xyz[1, 2] == rot.xyz[1, 2]
+        assert np.allclose(ref.xyz[2], rot.xyz[2])
+
     def test_translate(self, setup):
         t = setup.g.translate([0, 0, 1])
         assert np.allclose(setup.g.xyz[:, 0], t.xyz[:, 0])
