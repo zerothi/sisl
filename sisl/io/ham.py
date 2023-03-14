@@ -11,7 +11,7 @@ from .sile import *
 
 from sisl._internal import set_module
 from sisl.messages import warn
-from sisl import Geometry, Atom, SuperCell
+from sisl import Geometry, Atom, Lattice
 from sisl.sparse import ispmatrix, ispmatrixd
 from sisl.physics import Hamiltonian
 from sisl._help import wrap_filterwarnings
@@ -85,7 +85,7 @@ class hamiltonianSile(Sile):
                 self.readline()  # step past the block
 
         # Create geometry with associated supercell and atoms
-        geom = Geometry(xyz, atoms=Atom[Z], sc=SuperCell(cell, nsc))
+        geom = Geometry(xyz, atoms=Atom[Z], lattice=Lattice(cell, nsc))
 
         return geom
 
@@ -248,7 +248,7 @@ class hamiltonianSile(Sile):
         if hermitian:
             herm_acc = kwargs.get('herm_acc', 1e-6)
             # We check whether it is Hermitian (not S)
-            for i, isc in enumerate(geom.sc.sc_off):
+            for i, isc in enumerate(geom.lattice.sc_off):
                 oi = i * geom.no
                 oj = geom.sc_index(-isc) * geom.no
                 # get the difference between the ^\dagger elements
@@ -264,7 +264,7 @@ class hamiltonianSile(Sile):
 
         if hermitian:
             # Remove all double stuff
-            for i, isc in enumerate(geom.sc.sc_off):
+            for i, isc in enumerate(geom.lattice.sc_off):
                 if np.any(isc < 0):
                     # We have ^\dagger element, remove it
                     o = i * geom.no
@@ -301,7 +301,7 @@ class hamiltonianSile(Sile):
 
         # Start writing of the model
         # We loop on all super-cells
-        for i, isc in enumerate(geom.sc.sc_off):
+        for i, isc in enumerate(geom.lattice.sc_off):
             # Check that we have any contributions in this
             # sub-section
             Hsub = h[:, i * geom.no:(i + 1) * geom.no]

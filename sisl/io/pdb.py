@@ -10,8 +10,9 @@ import numpy as np
 # Import sile objects
 from .sile import *
 
+from sisl.messages import deprecate_argument
 from sisl._internal import set_module
-from sisl import Geometry, SuperCell, Atoms, Atom
+from sisl import Geometry, Lattice, Atoms, Atom
 
 
 __all__ = ['pdbSile']
@@ -77,13 +78,14 @@ class pdbSile(Sile):
         return found, l
 
     @sile_fh_open()
-    def write_supercell(self, sc):
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", from_version="0.15")
+    def write_lattice(self, lattice):
         """ Writes the supercell to the contained file """
         # Check that we can write to the file
         sile_raise_write(self)
 
         # Get parameters and append the space group and specification
-        args = sc.parameters() + ('P 1', 1)
+        args = lattice.parameters() + ('P 1', 1)
 
         #COLUMNS       DATA  TYPE    FIELD          DEFINITION
         #-------------------------------------------------------------
@@ -106,7 +108,7 @@ class pdbSile(Sile):
         #31 - 40         Real(10.6)    s[n][3]            Sn3
         #46 - 55         Real(10.5)    u[n]               Un
         for i in range(3):
-            args = [i + 1] + sc.cell[i, :].tolist() + [0.]
+            args = [i + 1] + lattice.cell[i, :].tolist() + [0.]
             self._write(('SCALE{:1d}    {:10.6f}{:10.6f}{:10.6f}     {:10.5f}\n').format(*args))
 
         #COLUMNS        DATA  TYPE     FIELD         DEFINITION
@@ -118,11 +120,11 @@ class pdbSile(Sile):
         #46 - 55         Real(10.5)    t[n]          Tn
         fmt = 'ORIGX{:1d}   ' + '{:10.6f}' * 3 + '{:10.5f}\n'
         for i in range(3):
-            args = [i + 1, 0, 0, 0, sc.origin[i]]
+            args = [i + 1, 0, 0, 0, lattice.origin[i]]
             self._write(fmt.format(*args))
 
     @sile_fh_open()
-    def read_supercell(self):
+    def read_lattice(self):
         """ Read supercell from the contained file """
         f, line = self._step_record('CRYST1')
 
@@ -134,7 +136,7 @@ class pdbSile(Sile):
         alpha = float(line[33:40])
         beta = float(line[40:47])
         gamma = float(line[47:54])
-        cell = SuperCell.tocell([a, b, c, alpha, beta, gamma])
+        cell = Lattice.tocell([a, b, c, alpha, beta, gamma])
 
         f, line = self._step_record('SCALE1')
         if f:
@@ -154,7 +156,7 @@ class pdbSile(Sile):
             if f:
                 origin[i] = float(line[45:55])
 
-        return SuperCell(cell, origin=origin)
+        return Lattice(cell, origin=origin)
 
     @sile_fh_open()
     def write_geometry(self, geometry):
@@ -165,7 +167,7 @@ class pdbSile(Sile):
         geometry : Geometry
            the geometry to be written
         """
-        self.write_supercell(geometry.sc)
+        self.write_lattice(geometry.lattice)
 
         # Start a model
         self._w_model(True)
@@ -208,7 +210,7 @@ class pdbSile(Sile):
         """ Read geometry from the contained file """
 
         # First we read in the geometry
-        sc = self.read_supercell()
+        lattice = self.read_lattice()
 
         # Try and go to the first model record
         in_model, l = self._step_record('MODEL')
@@ -237,7 +239,7 @@ class pdbSile(Sile):
         # Create the atom list
         atoms = [dict(Z=Z[i], tag=tags[i]) for i in idx]
 
-        return Geometry(xyz, atoms, sc=sc)
+        return Geometry(xyz, atoms, lattice=lattice)
 
     def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """

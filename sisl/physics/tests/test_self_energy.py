@@ -8,7 +8,7 @@ import warnings
 import numpy as np
 from scipy.sparse import SparseEfficiencyWarning
 
-from sisl import Geometry, Atom, SuperCell, Hamiltonian
+from sisl import Geometry, Atom, Lattice, Hamiltonian
 from sisl import BrillouinZone, Bloch
 from sisl import SelfEnergy, WideBandSE, SemiInfinite, RecursiveSI
 from sisl import RealSpaceSE, RealSpaceSI
@@ -24,14 +24,14 @@ def setup():
         def __init__(self):
             bond = 1.42
             sq3h = 3.**.5 * 0.5
-            self.sc = SuperCell(np.array([[1.5, sq3h, 0.],
-                                          [1.5, -sq3h, 0.],
-                                          [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
-
+            self.lattice = Lattice(np.array([[1.5, sq3h, 0.],
+                                             [1.5, -sq3h, 0.],
+                                             [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
+            
             C = Atom(Z=6, R=[bond * 1.01])
             self.g = Geometry(np.array([[0., 0., 0.],
                                         [1., 0., 0.]], np.float64) * bond,
-                            atoms=C, sc=self.sc)
+                              atoms=C, lattice=self.lattice)
             self.H = Hamiltonian(self.g)
             func = self.H.create_construct([0.1, bond+0.1], [0., -2.7])
             self.H.construct(func)
@@ -195,9 +195,9 @@ def test_real_space_H(setup, k_axes, semi_axis, trs, bz, unfold):
 
 
 def test_real_space_H_3d():
-    sc = SuperCell(1., nsc=[3] * 3)
+    lattice = Lattice(1., nsc=[3] * 3)
     H = Atom(Z=1, R=[1.001])
-    geom = Geometry([0] * 3, atoms=H, sc=sc)
+    geom = Geometry([0] * 3, atoms=H, lattice=lattice)
     H = Hamiltonian(geom)
     H.construct(([0.001, 1.01], (0, -1)))
     RSE = RealSpaceSE(H, 0, [1, 2], (3, 4, 2))

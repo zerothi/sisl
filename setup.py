@@ -182,7 +182,7 @@ ext_cython = {
     "sisl._sparse": {
         "depends": [_ospath("sisl/_indices.pxd")]
     },
-    "sisl._supercell": {},
+    "sisl._lattice": {},
     "sisl.physics._bloch": {},
     "sisl.physics._phase": {},
     "sisl.physics._matrix_utils": {},

@@ -194,7 +194,7 @@ class SemiInfinite(SelfEnergy):
             raise ValueError(f"{self.__class__.__name__} infinite keyword does not end with `A`, `B` or `C`.")
 
         # Check that the Hamiltonian does have a non-zero V along the semi-infinite direction
-        if spgeom.geometry.sc.nsc[self.semi_inf] == 1:
+        if spgeom.geometry.lattice.nsc[self.semi_inf] == 1:
             warn("Creating a semi-infinite self-energy with no couplings along the semi-infinite direction")
 
         # Finalize the setup by calling the class specific routine
@@ -229,7 +229,7 @@ class RecursiveSI(SemiInfinite):
 
         # Create spgeom0 and spgeom1
         self.spgeom0 = spgeom.copy()
-        nsc = np.copy(spgeom.geometry.sc.nsc)
+        nsc = np.copy(spgeom.geometry.lattice.nsc)
         nsc[self.semi_inf] = 1
         self.spgeom0.set_nsc(nsc)
 
@@ -245,14 +245,14 @@ class RecursiveSI(SemiInfinite):
                  "These values will be forced to 0 as the principal cell-interaction is a requirement")
 
         # I.e. we will delete all interactions that are un-important
-        n_s = self.spgeom1.geometry.sc.n_s
+        n_s = self.spgeom1.geometry.lattice.n_s
         n = self.spgeom1.shape[0]
         # Figure out the matrix columns we should set to zero
         nsc = [None] * 3
         nsc[self.semi_inf] = self.semi_inf_dir
         # Get all supercell indices that we should delete
         idx = np.delete(_a.arangei(n_s),
-                        _a.arrayi(self.spgeom1.geometry.sc.sc_index(nsc))) * n
+                        _a.arrayi(self.spgeom1.geometry.lattice.sc_index(nsc))) * n
 
         cols = _a.array_arange(idx, idx + n)
         # Delete all values in columns, but keep them to retain the supercell information
@@ -780,7 +780,7 @@ class RealSpaceSE(SelfEnergy):
         # Remove all inner-cell couplings (0, 0, 0) to figure out the
         # elements that couple out of the real-space region
         n = PC.shape[0]
-        idx = g.sc.sc_index([0, 0, 0])
+        idx = g.lattice.sc_index([0, 0, 0])
         cols = _a.arangei(idx * n, (idx + 1) * n)
         csr = PC._csr.copy([0]) # we just want the sparse pattern, so forget about the other elements
         csr.delete_columns(cols, keep_shape=True)
@@ -841,11 +841,11 @@ class RealSpaceSE(SelfEnergy):
         if self._options["bz"] is None:
             # Update the integration grid
             # Note this integration grid is based on the big system.
-            sc = self.parent.sc * self._unfold
-            rcell = fnorm(sc.rcell)[k_ax]
+            lattice = self.parent.lattice * self._unfold
+            rcell = fnorm(lattice.rcell)[k_ax]
             nk = _a.onesi(3)
             nk[k_ax] = np.ceil(self._options["dk"] * rcell).astype(np.int32)
-            self._options["bz"] = MonkhorstPack(sc, nk, trs=self._options["trs"])
+            self._options["bz"] = MonkhorstPack(lattice, nk, trs=self._options["trs"])
 
     def self_energy(self, E, k=(0, 0, 0), bulk=False, coupling=False, dtype=None, **kwargs):
         r""" Calculate the real-space self-energy
@@ -1167,7 +1167,7 @@ class RealSpaceSI(SelfEnergy):
         self.semi = semi
         self.surface = surface
 
-        if not self.semi.sc.parallel(surface.sc):
+        if not self.semi.lattice.parallel(surface.lattice):
             raise ValueError(f"{self.__class__.__name__} requires semi and surface to have parallel "
                              "lattice vectors.")
 
@@ -1355,7 +1355,7 @@ class RealSpaceSI(SelfEnergy):
             # Remove all inner-cell couplings (0, 0, 0) to figure out the
             # elements that couple out of the real-space region
             n = PC.shape[0]
-            idx = g.sc.sc_index([0, 0, 0])
+            idx = g.lattice.sc_index([0, 0, 0])
             cols = _a.arangei(idx * n, (idx + 1) * n)
             csr = PC._csr.copy([0]) # we just want the sparse pattern, so forget about the other elements
             csr.delete_columns(cols, keep_shape=True)
@@ -1436,11 +1436,11 @@ class RealSpaceSI(SelfEnergy):
         if self._options["bz"] is None:
             # Update the integration grid
             # Note this integration grid is based on the big system.
-            sc = self.surface.sc * self._unfold
-            rcell = fnorm(sc.rcell)[self._k_axes]
+            lattice = self.surface.lattice * self._unfold
+            rcell = fnorm(lattice.rcell)[self._k_axes]
             nk = _a.onesi(3)
             nk[self._k_axes] = np.ceil(self._options["dk"] * rcell).astype(np.int32)
-            self._options["bz"] = MonkhorstPack(sc, nk, trs=self._options["trs"])
+            self._options["bz"] = MonkhorstPack(lattice, nk, trs=self._options["trs"])
 
     def self_energy(self, E, k=(0, 0, 0), bulk=False, coupling=False, dtype=None, **kwargs):
         r""" Calculate real-space surface self-energy

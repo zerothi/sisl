@@ -11,8 +11,9 @@ from ..sile import SileError
 
 from .sile import SileFHIaims
 
+from sisl.messages import deprecate_argument
 from sisl._internal import set_module
-from sisl import Geometry, SuperCell
+from sisl import Geometry, Lattice
 
 
 __all__ = ["inSileFHIaims"]
@@ -23,21 +24,22 @@ class inSileFHIaims(SileFHIaims):
     """ FHI-aims geometry file object """
 
     @sile_fh_open()
-    def write_supercell(self, sc, fmt=".8f"):
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", from_version="0.15")
+    def write_lattice(self, lattice, fmt=".8f"):
         """ Writes the supercell to the contained file
 
         Parameters
         ----------
-        sc : SuperCell
+        lattice : Lattice
            the supercell to be written
         fmt : str, optional
            used format for the precision of the data
         """
         sile_raise_write(self)
         _fmt = f"lattice_vector {{:{fmt}}} {{:{fmt}}} {{:{fmt}}}\n"
-        self._write(_fmt.format(*sc.cell[0]))
-        self._write(_fmt.format(*sc.cell[1]))
-        self._write(_fmt.format(*sc.cell[2]))
+        self._write(_fmt.format(*lattice.cell[0]))
+        self._write(_fmt.format(*lattice.cell[1]))
+        self._write(_fmt.format(*lattice.cell[2]))
 
     @sile_fh_open()
     def write_geometry(self, geometry, fmt=".8f", as_frac=False, velocity=None, moment=None):
@@ -59,7 +61,7 @@ class inSileFHIaims(SileFHIaims):
         # Check that we can write to the file
         sile_raise_write(self)
 
-        self.write_supercell(geometry.sc, fmt)
+        self.write_lattice(geometry.lattice, fmt)
 
         if as_frac:
             xyz = geometry.fxyz
@@ -80,7 +82,7 @@ class inSileFHIaims(SileFHIaims):
                 self._write(_fmtm.format(moment[ia]))
 
     @sile_fh_open()
-    def read_supercell(self):
+    def read_lattice(self):
         """ Reads supercell object from the file """
         self.fh.seek(0)
 
@@ -90,7 +92,7 @@ class inSileFHIaims(SileFHIaims):
             if line.startswith("lattice_vector"):
                 cell.append([float(f) for f in line.split()[1:]])
 
-        return SuperCell(cell)
+        return Lattice(cell)
 
     @sile_fh_open()
     def read_geometry(self, velocity=False, moment=False):
@@ -115,7 +117,7 @@ class inSileFHIaims(SileFHIaims):
         moment : array_like
             array of initial moments of each atom, will only be returned if `moment` is true
         """
-        sc = self.read_supercell()
+        lattice = self.read_lattice()
 
         self.fh.seek(0)
         sp = []
@@ -134,7 +136,7 @@ class inSileFHIaims(SileFHIaims):
             if line[0] == "atom":
                 xyz.append([float(f) for f in line[1:4]])
             elif line[0] == "atom_frac":
-                xyz.append([float(f) for f in line[1:4]] @ sc.cell)
+                xyz.append([float(f) for f in line[1:4]] @ lattice.cell)
             elif line[0] == "velocity":
                 # ensure xyz and v are same length
                 ensure_length(v, len(xyz) - 1, [0, 0, 0])
@@ -151,7 +153,7 @@ class inSileFHIaims(SileFHIaims):
             # we found an atom
             sp.append(line[4])
 
-        ret = (Geometry(xyz, atoms=sp, sc=sc), )
+        ret = (Geometry(xyz, atoms=sp, lattice=lattice), )
         if not velocity and not moment:
             return ret[0]
 

@@ -11,10 +11,10 @@ from ..sile import add_sile, sile_raise_write, SileError
 from .sile import SileCDFTBtrans
 
 # Import the geometry object
-from sisl import Geometry, Atom, SuperCell
+from sisl import Geometry, Atom, Lattice
 from sisl import SparseOrbitalBZSpin
 from sisl.sparse import _ncol_to_indptr
-from sisl.messages import warn
+from sisl.messages import warn, deprecate_argument
 from sisl.unit.siesta import unit_convert
 from ..siesta._help import _csr_to_siesta, _csr_from_sc_off, _mat_spin_convert
 from ..siesta._siesta import siesta_sc_off
@@ -194,24 +194,24 @@ class deltancSileTBtrans(SileCDFTBtrans):
         """
         return f"LEVEL-{ilvl}" in self.groups
 
-    def read_supercell(self):
-        """ Returns the `SuperCell` object from this file """
+    def read_lattice(self):
+        """ Returns the `Lattice` object from this file """
         cell = _a.arrayd(np.copy(self._value('cell'))) * Bohr2Ang
         cell.shape = (3, 3)
 
         nsc = self._value('nsc')
-        sc = SuperCell(cell, nsc=nsc)
+        lattice = Lattice(cell, nsc=nsc)
         try:
-            sc.sc_off = self._value('isc_off')
+            lattice.sc_off = self._value('isc_off')
         except Exception:
             # This is ok, we simply do not have the supercell offsets
             pass
 
-        return sc
+        return lattice
 
     def read_geometry(self, *args, **kwargs):
         """ Returns the `Geometry` object from this file """
-        sc = self.read_supercell()
+        lattice = self.read_lattice()
 
         xyz = _a.arrayd(np.copy(self._value('xa'))) * Bohr2Ang
         xyz.shape = (-1, 3)
@@ -237,30 +237,31 @@ class deltancSileTBtrans(SileCDFTBtrans):
             atms = [Atom('H', [-1] * o) for o in nos]
 
         # Create and return geometry object
-        geom = Geometry(xyz, atms, sc=sc)
+        geom = Geometry(xyz, atms, lattice=lattice)
 
         return geom
 
-    def write_supercell(self, sc):
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", from_version="0.15")
+    def write_lattice(self, lattice):
         """ Creates the NetCDF file and writes the supercell information """
         sile_raise_write(self)
 
         # Create initial dimensions
         self._crt_dim(self, 'one', 1)
-        self._crt_dim(self, 'n_s', np.prod(sc.nsc))
+        self._crt_dim(self, 'n_s', np.prod(lattice.nsc))
         self._crt_dim(self, 'xyz', 3)
 
         # Create initial geometry
         v = self._crt_var(self, 'nsc', 'i4', ('xyz',))
         v.info = 'Number of supercells in each unit-cell direction'
-        v[:] = sc.nsc[:]
+        v[:] = lattice.nsc[:]
         v = self._crt_var(self, 'isc_off', 'i4', ('n_s', 'xyz'))
         v.info = "Index of supercell coordinates"
-        v[:] = sc.sc_off[:, :]
+        v[:] = lattice.sc_off[:, :]
         v = self._crt_var(self, 'cell', 'f8', ('xyz', 'xyz'))
         v.info = 'Unit cell'
         v.unit = 'Bohr'
-        v[:] = sc.cell[:, :] / Bohr2Ang
+        v[:] = lattice.cell[:, :] / Bohr2Ang
 
         # Create designation of the creation
         self.method = 'sisl'
@@ -270,7 +271,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
         sile_raise_write(self)
 
         # Create initial dimensions
-        self.write_supercell(geometry.sc)
+        self.write_lattice(geometry.lattice)
         self._crt_dim(self, 'no_s', np.prod(geometry.nsc) * geometry.no)
         self._crt_dim(self, 'no_u', geometry.no)
         self._crt_dim(self, 'na_u', geometry.na)
@@ -441,7 +442,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
             if np.any(lvl.variables['list_col'][:] != csr.col[:]+1):
                 raise ValueError("The sparsity pattern stored in delta *MUST* be equivalent for "
                                  "all delta entries [list_col].")
-            if np.any(lvl.variables['isc_off'][:] != siesta_sc_off(*delta.geometry.sc.nsc).T):
+            if np.any(lvl.variables['isc_off'][:] != siesta_sc_off(*delta.geometry.lattice.nsc).T):
                 raise ValueError("The sparsity pattern stored in delta *MUST* be equivalent for "
                                  "all delta entries [sc_off].")
         else:
@@ -455,7 +456,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
             v[:] = csr.col[:] + 1  # correct for fortran indices
             v = self._crt_var(lvl, 'isc_off', 'i4', ('n_s', 'xyz'))
             v.info = "Index of supercell coordinates"
-            v[:] = siesta_sc_off(*delta.geometry.sc.nsc).T
+            v[:] = siesta_sc_off(*delta.geometry.lattice.nsc).T
 
         warn_E = True
         if ilvl in (3, 4):

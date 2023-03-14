@@ -7,7 +7,7 @@ import math as m
 import numpy as np
 import scipy as sc
 
-from sisl import Geometry, Atom, SuperCell, Cuboid
+from sisl import Geometry, Atom, Lattice, Cuboid
 from sisl.geom import fcc, graphene
 from sisl.sparse_geometry import *
 import sisl.messages as sm
@@ -35,7 +35,7 @@ def test_sparse_orbital_symmetric(n0, n1, n2):
         # Figure out the transposed supercell indices of the edges
         isc = - s.geometry.o2isc(edges)
         # Convert to supercell
-        IO = s.geometry.sc.sc_index(isc) * no + io
+        IO = s.geometry.lattice.sc_index(isc) * no + io
         # Figure out if 'io' is also in the back-edges
         for jo, edge in zip(IO, edges % no):
             assert jo in s.edges(edge)
@@ -134,7 +134,7 @@ def test_sparse_orbital_append_scale(n0, n1, n2, axis):
 
 
 def test_sparse_orbital_hermitian():
-    g = Geometry([0] * 3, Atom(1, R=1), sc=SuperCell(1, nsc=[3, 1, 1]))
+    g = Geometry([0] * 3, Atom(1, R=1), sc=Lattice(1, nsc=[3, 1, 1]))
 
     for f in [True, False]:
         spo = SparseOrbital(g)
@@ -167,7 +167,7 @@ def test_sparse_orbital_hermitian():
 def test_sparse_orbital_sub_orbital():
     a0 = Atom(1, R=(1.1, 1.4, 1.6))
     a1 = Atom(2, R=(1.3, 1.1))
-    g = Geometry([[0, 0, 0], [1, 1, 1]], [a0, a1], sc=SuperCell(2, nsc=[3, 1, 1]))
+    g = Geometry([[0, 0, 0], [1, 1, 1]], [a0, a1], sc=Lattice(2, nsc=[3, 1, 1]))
     g = g.tile(3, 0)
     assert g.no == 15
 
@@ -250,7 +250,7 @@ def test_sparse_orbital_sub_orbital_nested():
     """
     a0 = Atom(1, R=(1.1, 1.4, 1.6))
     a1 = Atom(2, R=(1.3, 1.1))
-    g = Geometry([[0, 0, 0], [1, 1, 1]], [a0, a1], sc=SuperCell(2, nsc=[3, 1, 1]))
+    g = Geometry([[0, 0, 0], [1, 1, 1]], [a0, a1], sc=Lattice(2, nsc=[3, 1, 1]))
     g = g.repeat(3, 0)
     assert g.no == 15
 
@@ -360,7 +360,7 @@ def test_sparse_orbital_replace_hole():
     # now replace every position that can be replaced
     for y in [0, 2, 3]:
         for x in [1, 2, 3]:
-            cube = Cuboid(hole.sc.cell, origin=g.sc.offset([x, y, 0]) - 0.1)
+            cube = Cuboid(hole.lattice.cell, origin=g.lattice.offset([x, y, 0]) - 0.1)
             atoms = big.within(cube)
             assert len(atoms) == 4 * 6 * 6
             new = big.replace(atoms, hole)
@@ -402,7 +402,7 @@ def test_sparse_orbital_replace_hole_norbs():
     # now replace every position that can be replaced
     for y in [0, 3]:
         for x in [1, 3]:
-            cube = Cuboid(hole.sc.cell, origin=g.sc.offset([x, y, 0]) - 0.1)
+            cube = Cuboid(hole.lattice.cell, origin=g.lattice.offset([x, y, 0]) - 0.1)
             atoms = big.within(cube)
             assert len(atoms) == 4 * 6 * 6
             new = big.replace(atoms, hole)

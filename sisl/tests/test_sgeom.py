@@ -5,7 +5,7 @@ import pytest
 import math as m
 import numpy as np
 
-from sisl import Geometry, Atom, SuperCell
+from sisl import Geometry, Atom, Lattice
 from sisl.geometry import sgeom
 
 
@@ -15,15 +15,15 @@ def setup():
         def __init__(self):
             bond = 1.42
             sq3h = 3.**.5 * 0.5
-            self.sc = SuperCell(np.array([[1.5, sq3h, 0.],
-                                          [1.5, -sq3h, 0.],
-                                          [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
+            self.lattice = Lattice(np.array([[1.5, sq3h, 0.],
+                                             [1.5, -sq3h, 0.],
+                                             [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
             C = Atom(Z=6, R=[bond * 1.01] * 2)
             self.g = Geometry(np.array([[0., 0., 0.],
                                         [1., 0., 0.]], np.float64) * bond,
-                              atoms=C, sc=self.sc)
+                              atoms=C, lattice=self.lattice)
 
-            self.mol = Geometry([[i, 0, 0] for i in range(10)], sc=[50])
+            self.mol = Geometry([[i, 0, 0] for i in range(10)], lattice=[50])
 
             def sg_g(**kwargs):
                 kwargs['ret_geometry'] = True
@@ -57,22 +57,22 @@ class TestGeometry:
         sgeom(argv=['--cite'])
 
     def test_tile1(self, setup):
-        cell = np.copy(setup.g.sc.cell)
+        cell = np.copy(setup.g.lattice.cell)
         cell[0, :] *= 2
         for tile in ['tile 2 x', 'tile-x 2']:
             tx = setup.sg_g(argv=('--' + tile).split())
-            assert np.allclose(cell, tx.sc.cell)
+            assert np.allclose(cell, tx.lattice.cell)
         cell[1, :] *= 2
         for tile in ['tile 2 y', 'tile-y 2']:
             ty = setup.sg_g(geometry=tx, argv=('--' + tile).split())
-            assert np.allclose(cell, ty.sc.cell)
+            assert np.allclose(cell, ty.lattice.cell)
         cell[2, :] *= 2
         for tile in ['tile 2 z', 'tile-z 2']:
             tz = setup.sg_g(geometry=ty, argv=('--' + tile).split())
-            assert np.allclose(cell, tz.sc.cell)
+            assert np.allclose(cell, tz.lattice.cell)
 
     def test_tile2(self, setup):
-        cell = np.copy(setup.g.sc.cell)
+        cell = np.copy(setup.g.lattice.cell)
         cell[:, :] *= 2
         for xt in ['tile 2 x', 'tile-x 2']:
             xt = '--' + xt
@@ -82,25 +82,25 @@ class TestGeometry:
                     zt = '--' + zt
                     argv = ' '.join([xt, yt, zt]).split()
                     t = setup.sg_g(argv=argv)
-                    assert np.allclose(cell, t.sc.cell)
+                    assert np.allclose(cell, t.lattice.cell)
 
     def test_repeat1(self, setup):
-        cell = np.copy(setup.g.sc.cell)
+        cell = np.copy(setup.g.lattice.cell)
         cell[0, :] *= 2
         for repeat in ['repeat 2 x', 'repeat-x 2']:
             tx = setup.sg_g(argv=('--' + repeat).split())
-            assert np.allclose(cell, tx.sc.cell)
+            assert np.allclose(cell, tx.lattice.cell)
         cell[1, :] *= 2
         for repeat in ['repeat 2 y', 'repeat-y 2']:
             ty = setup.sg_g(geometry=tx, argv=('--' + repeat).split())
-            assert np.allclose(cell, ty.sc.cell)
+            assert np.allclose(cell, ty.lattice.cell)
         cell[2, :] *= 2
         for repeat in ['repeat 2 z', 'repeat-z 2']:
             tz = setup.sg_g(geometry=ty, argv=('--' + repeat).split())
-            assert np.allclose(cell, tz.sc.cell)
+            assert np.allclose(cell, tz.lattice.cell)
 
     def test_repeat2(self, setup):
-        cell = np.copy(setup.g.sc.cell)
+        cell = np.copy(setup.g.lattice.cell)
         cell[:, :] *= 2
         for xt in ['repeat 2 x', 'repeat-x 2']:
             xt = '--' + xt
@@ -110,7 +110,7 @@ class TestGeometry:
                     zt = '--' + zt
                     argv = ' '.join([xt, yt, zt]).split()
                     t = setup.sg_g(argv=argv)
-                    assert np.allclose(cell, t.sc.cell)
+                    assert np.allclose(cell, t.lattice.cell)
 
     def test_sub1(self, setup):
         for a, l in [('0', 1), ('0,1', 2), ('0-1', 2)]:
@@ -120,24 +120,24 @@ class TestGeometry:
     def test_rotation1(self, setup):
         print(setup.g.cell)
         rot = setup.sg_g(argv='--rotate 180 z'.split())
-        rot.sc.cell[2, 2] *= -1
-        assert np.allclose(-rot.sc.cell, setup.g.sc.cell)
+        rot.lattice.cell[2, 2] *= -1
+        assert np.allclose(-rot.lattice.cell, setup.g.lattice.cell)
         assert np.allclose(-rot.xyz, setup.g.xyz)
 
         print(setup.g.cell)
         rot = setup.sg_g(argv='--rotate-z 180'.split())
-        rot.sc.cell[2, 2] *= -1
-        assert np.allclose(-rot.sc.cell, setup.g.sc.cell)
+        rot.lattice.cell[2, 2] *= -1
+        assert np.allclose(-rot.lattice.cell, setup.g.lattice.cell)
         assert np.allclose(-rot.xyz, setup.g.xyz)
 
         rot = setup.sg_g(argv='--rotate rpi z'.split())
-        rot.sc.cell[2, 2] *= -1
-        assert np.allclose(-rot.sc.cell, setup.g.sc.cell)
+        rot.lattice.cell[2, 2] *= -1
+        assert np.allclose(-rot.lattice.cell, setup.g.lattice.cell)
         assert np.allclose(-rot.xyz, setup.g.xyz)
 
         rot = setup.sg_g(argv='--rotate-z rpi'.split())
-        rot.sc.cell[2, 2] *= -1
-        assert np.allclose(-rot.sc.cell, setup.g.sc.cell)
+        rot.lattice.cell[2, 2] *= -1
+        assert np.allclose(-rot.lattice.cell, setup.g.lattice.cell)
         assert np.allclose(-rot.xyz, setup.g.xyz)
 
     def test_swap(self, setup):

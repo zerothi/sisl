@@ -63,7 +63,7 @@ def test_si_pdos_kgrid_struct_out(sisl_files):
     assert np.allclose(struct_geom.cell, fdf_geom.cell)
     assert np.allclose(struct_geom.xyz, fdf_geom.xyz)
 
-    struct_sc = struct.read_supercell()
-    fdf_sc = fdf.read_supercell(order='STRUCT')
+    struct_sc = struct.read_lattice()
+    fdf_sc = fdf.read_lattice(order='STRUCT')
 
     assert np.allclose(struct_sc.cell, fdf_sc.cell)

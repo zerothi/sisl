@@ -10,7 +10,7 @@ from ..sile import add_sile, sile_fh_open, sile_raise_write
 from sisl._internal import set_module
 import sisl._array as _a
 from sisl.messages import warn
-from sisl import Geometry, PeriodicTable, Atom, SuperCell
+from sisl import Geometry, PeriodicTable, Atom, Lattice
 
 
 __all__ = ['carSileVASP']
@@ -119,8 +119,8 @@ class carSileVASP(SileVASP):
             self._write(fmt.format(*geometry.xyz[ia, :]) + todyn(dynamic[idx[ia]]))
 
     @sile_fh_open(True)
-    def read_supercell(self):
-        """ Returns `SuperCell` object from the CONTCAR/POSCAR file """
+    def read_lattice(self):
+        """ Returns `Lattice` object from the CONTCAR/POSCAR file """
 
         # read first line
         self.readline()  # LABEL
@@ -133,7 +133,7 @@ class carSileVASP(SileVASP):
             cell[i, :] = list(map(float, self.readline().split()[:3]))
         cell *= self._scale
 
-        return SuperCell(cell)
+        return Lattice(cell)
 
     @sile_fh_open()
     def read_geometry(self, ret_dynamic=False):
@@ -147,7 +147,7 @@ class carSileVASP(SileVASP):
            also return selective dynamics (if present), if not, None will
            be returned.
         """
-        sc = self.read_supercell()
+        lattice = self.read_lattice()
 
         # The species labels are not always included in *CAR
         line1 = self.readline().split()
@@ -204,10 +204,10 @@ class carSileVASP(SileVASP):
             # The unit of the coordinates are cartesian
             xyz *= self._scale
         else:
-            xyz = xyz.dot(sc.cell)
+            xyz = xyz.dot(lattice.cell)
 
         # The POT/CONT-CAR does not contain information on the atomic species
-        geom = Geometry(xyz=xyz, atoms=atom, sc=sc)
+        geom = Geometry(xyz=xyz, atoms=atom, lattice=lattice)
         if ret_dynamic:
             return geom, dynamic
         return geom

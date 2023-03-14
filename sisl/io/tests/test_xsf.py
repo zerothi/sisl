@@ -23,7 +23,7 @@ def test_default(sisl_tmp):
 
 def test_default_size(sisl_tmp):
     f = sisl_tmp('GRID_default_size.xsf', _dir)
-    grid = Grid(0.2, sc=2.0)
+    grid = Grid(0.2, lattice=2.0)
     grid.grid = np.random.rand(*grid.shape)
     grid.write(f)
     assert grid.geometry is None
@@ -31,7 +31,7 @@ def test_default_size(sisl_tmp):
 
 def test_geometry(sisl_tmp):
     f = sisl_tmp('GRID_geometry.xsf', _dir)
-    geom = Geometry(np.random.rand(10, 3), np.random.randint(1, 70, 10), sc=[10, 10, 10, 45, 60, 90])
+    geom = Geometry(np.random.rand(10, 3), np.random.randint(1, 70, 10), lattice=[10, 10, 10, 45, 60, 90])
     grid = Grid(0.2, geometry=geom)
     grid.grid = np.random.rand(*grid.shape)
     grid.write(f)
@@ -40,7 +40,7 @@ def test_geometry(sisl_tmp):
 
 def test_imaginary(sisl_tmp):
     f = sisl_tmp('GRID_imag.xsf', _dir)
-    geom = Geometry(np.random.rand(10, 3), np.random.randint(1, 70, 10), sc=[10, 10, 10, 45, 60, 90])
+    geom = Geometry(np.random.rand(10, 3), np.random.randint(1, 70, 10), lattice=[10, 10, 10, 45, 60, 90])
     grid = Grid(0.2, geometry=geom, dtype=np.complex128)
     grid.grid = np.random.rand(*grid.shape) + 1j*np.random.rand(*grid.shape)
     grid.write(f)
@@ -49,7 +49,7 @@ def test_imaginary(sisl_tmp):
 
 def test_axsf_geoms(sisl_tmp):
     f = sisl_tmp('multigeom_nodata.axsf', _dir)
-    geom = Geometry(np.random.rand(10, 3), np.random.randint(1, 70, 10), sc=[10, 10, 10, 45, 60, 90])
+    geom = Geometry(np.random.rand(10, 3), np.random.randint(1, 70, 10), lattice=[10, 10, 10, 45, 60, 90])
     geoms = [geom.move((i/10, i/10, i/10)) for i in range(3)]
 
     with xsfSile(f, "w", steps=3) as s:
@@ -87,7 +87,7 @@ def test_axsf_geoms(sisl_tmp):
 
 def test_axsf_data(sisl_tmp):
     f = sisl_tmp('multigeom_data.axsf', _dir)
-    geom = Geometry(np.random.rand(10, 3), np.random.randint(1, 70, 10), sc=[10, 10, 10, 45, 60, 90])
+    geom = Geometry(np.random.rand(10, 3), np.random.randint(1, 70, 10), lattice=[10, 10, 10, 45, 60, 90])
     geoms = [geom.move((i/10, i/10, i/10)) for i in range(3)]
     data = np.random.rand(3, 10, 3)
 

@@ -9,7 +9,7 @@ from io import TextIOBase
 from pathlib import Path
 
 from sisl._internal import set_module
-from sisl.messages import SislWarning, SislInfo
+from sisl.messages import SislWarning, SislInfo, deprecate
 from sisl.utils.misc import str_spec
 from ._help import *
 
@@ -477,6 +477,12 @@ class BaseSile:
         """ Override to check the handle """
         if name == 'fh':
             raise AttributeError(f"The filehandle for {self.file} has not been opened yet...")
+        if name == "read_supercell" and hasattr(self, "read_lattice"):
+            deprecate(f"{self.__class__.__name__}.read_supercell is deprecated in favor of read_lattice", "0.15")
+            return getattr(self, "read_lattice")
+        if name == "write_supercell" and hasattr(self, "write_lattice"):
+            deprecate(f"{self.__class__.__name__}.write_supercell is deprecated in favor of write_lattice", "0.15")
+            return getattr(self, "write_lattice")
         return getattr(self.fh, name)
 
     @classmethod

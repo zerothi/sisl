@@ -19,7 +19,7 @@ from sisl._internal import set_module
 from sisl.messages import info, warn, SislError
 
 import sisl._array as _a
-from sisl import Geometry, Atom, Atoms, SuperCell, Grid, SparseCSR
+from sisl import Geometry, Atom, Atoms, Lattice, Grid, SparseCSR
 from sisl import AtomicOrbital
 from sisl.sparse import _ncol_to_indptr
 from sisl.unit.siesta import unit_convert
@@ -105,10 +105,10 @@ def _geometry_align(geom_b, geom_u, cls, method):
         warn(f"{cls.__name__}.{method} has mismatched atomic coordinates, will copy geometry and use file XYZ.")
         geom, is_copy = get_copy(geom, is_copy)
         geom.xyz[:, :] = geom_b.xyz[:, :]
-    if not np.allclose(geom_b.sc.cell, geom.sc.cell):
+    if not np.allclose(geom_b.lattice.cell, geom.lattice.cell):
         warn(f"{cls.__name__}.{method} has non-equal lattice vectors, will copy geometry and use file lattice.")
         geom, is_copy = get_copy(geom, is_copy)
-        geom.sc.cell[:, :] = geom_b.sc.cell[:, :]
+        geom.lattice.cell[:, :] = geom_b.lattice.cell[:, :]
     if not np.array_equal(geom_b.nsc, geom.nsc):
         warn(f"{cls.__name__}.{method} has non-equal number of supercells, will copy geometry and use file supercell count.")
         geom, is_copy = get_copy(geom, is_copy)
@@ -158,12 +158,12 @@ class onlysSileSiesta(SileBinSiesta):
         """ The version of the file """
         return _siesta.read_tshs_version(self.file)
 
-    def read_supercell(self):
-        """ Returns a SuperCell object from a TranSiesta file """
+    def read_lattice(self):
+        """ Returns a Lattice object from a TranSiesta file """
         n_s = _siesta.read_tshs_sizes(self.file)[3]
-        self._fortran_check("read_supercell", "could not read sizes.")
+        self._fortran_check("read_lattice", "could not read sizes.")
         arr = _siesta.read_tshs_cell(self.file, n_s)
-        self._fortran_check("read_supercell", "could not read cell.")
+        self._fortran_check("read_lattice", "could not read cell.")
         nsc = np.array(arr[0], np.int32)
         # We have to transpose since the data is read *as-is*
         # The cell in fortran files are (:, A1)
@@ -172,19 +172,19 @@ class onlysSileSiesta(SileBinSiesta):
         # Note that care must be taken for the different data-structures
         # In particular not all data needs to be transposed (sparse H and S)
         cell = arr[1].T * _Bohr2Ang
-        return SuperCell(cell, nsc=nsc)
+        return Lattice(cell, nsc=nsc)
 
     def read_geometry(self, geometry=None):
         """ Returns Geometry object from a TranSiesta file """
 
         # Read supercell
-        sc = self.read_supercell()
+        lattice = self.read_lattice()
 
         na = _siesta.read_tshs_sizes(self.file)[1]
         self._fortran_check("read_geometry", "could not read sizes.")
         arr = _siesta.read_tshs_geom(self.file, na)
         self._fortran_check("read_geometry", "could not read geometry.")
-        # see onlysSileSiesta.read_supercell for .T
+        # see onlysSileSiesta.read_lattice for .T
         xyz = arr[0].T * _Bohr2Ang
         lasto = arr[1]
 
@@ -226,7 +226,7 @@ class onlysSileSiesta(SileBinSiesta):
                     atom.append(a.__class__(a.Z, [-1. for io in range(no)], mass=a.mass, tag=a.tag))
 
         # Create and return geometry object
-        return Geometry(xyz, atom, sc=sc)
+        return Geometry(xyz, atom, lattice=lattice)
 
     def read_overlap(self, **kwargs):
         """ Returns the overlap matrix from the TranSiesta file """
@@ -236,7 +236,7 @@ class onlysSileSiesta(SileBinSiesta):
         # read the sizes used...
         sizes = _siesta.read_tshs_sizes(self.file)
         self._fortran_check("read_overlap", "could not read sizes.")
-        # see onlysSileSiesta.read_supercell for .T
+        # see onlysSileSiesta.read_lattice for .T
         isc = _siesta.read_tshs_cell(self.file, sizes[3])[2].T
         self._fortran_check("read_overlap", "could not read cell.")
         no = sizes[2]
@@ -321,7 +321,7 @@ class tshsSileSiesta(onlysSileSiesta):
         # read the sizes used...
         sizes = _siesta.read_tshs_sizes(self.file)
         self._fortran_check("read_hamiltonian", "could not read sizes.")
-        # see onlysSileSiesta.read_supercell for .T
+        # see onlysSileSiesta.read_lattice for .T
         isc = _siesta.read_tshs_cell(self.file, sizes[3])[2].T
         self._fortran_check("read_hamiltonian", "could not read cell.")
         spin = sizes[0]
@@ -406,7 +406,7 @@ class tshsSileSiesta(onlysSileSiesta):
         nsc = H.geometry.nsc[:].astype(np.int32)
         isc = _siesta.siesta_sc_off(*nsc)
 
-        # see onlysSileSiesta.read_supercell for .T
+        # see onlysSileSiesta.read_lattice for .T
         _siesta.write_tshs_hs(self.file, nsc[0], nsc[1], nsc[2],
                               cell.T / _Bohr2Ang, xyz.T / _Bohr2Ang, H.geometry.firsto,
                               csr.ncol, csr.col + 1,
@@ -442,8 +442,8 @@ class dmSileSiesta(SileBinSiesta):
             # We truly, have no clue,
             # Just generate a boxed system
             xyz = [[x, 0, 0] for x in range(no)]
-            sc = SuperCell([no, 1, 1], nsc=nsc)
-            geom = Geometry(xyz, Atom(1), sc=sc)
+            lattice = Lattice([no, 1, 1], nsc=nsc)
+            geom = Geometry(xyz, Atom(1), lattice=lattice)
 
         if nsc[0] != 0 and np.any(geom.nsc != nsc):
             # We have to update the number of supercells!
@@ -505,7 +505,7 @@ class dmSileSiesta(SileBinSiesta):
         # Ensure shapes (say if only 1 spin)
         dm.shape = (-1, len(DM.spin))
 
-        nsc = DM.geometry.sc.nsc.astype(np.int32)
+        nsc = DM.geometry.lattice.nsc.astype(np.int32)
 
         _siesta.write_dm(self.file, nsc, csr.ncol, csr.col + 1, _toF(dm, np.float64))
         self._fortran_check("write_density_matrix", "could not write density matrix.")
@@ -537,8 +537,8 @@ class tsdeSileSiesta(dmSileSiesta):
             # We truly, have no clue,
             # Just generate a boxed system
             xyz = [[x, 0, 0] for x in range(no)]
-            sc = SuperCell([no, 1, 1], nsc=nsc)
-            geom = Geometry(xyz, Atom(1), sc=sc)
+            lattice = Lattice([no, 1, 1], nsc=nsc)
+            geom = Geometry(xyz, Atom(1), lattice=lattice)
 
         if nsc[0] != 0 and np.any(geom.nsc != nsc):
             # We have to update the number of supercells!
@@ -632,7 +632,7 @@ class tsdeSileSiesta(dmSileSiesta):
         else:
             edm = EDMcsr._D[:, :EDM.S_idx]
 
-        nsc = DM.geometry.sc.nsc.astype(np.int32)
+        nsc = DM.geometry.lattice.nsc.astype(np.int32)
 
         _siesta.write_tsde_dm_edm(self.file, nsc, DMcsr.ncol, DMcsr.col + 1,
                                   _toF(dm, np.float64),
@@ -798,7 +798,7 @@ class hsxSileSiesta(SileBinSiesta):
             n_s = xij.shape[1] // xij.shape[0]
             if n_s == 1:
                 # easy!!
-                return SuperCell(xyz.max(axis=0) - xyz.min(axis=0) + 10., nsc=[1] * 3)
+                return Lattice(xyz.max(axis=0) - xyz.min(axis=0) + 10., nsc=[1] * 3)
 
             sc_off = _a.zerosd([n_s, 3])
             mark = _a.zerosi(n_s)
@@ -910,14 +910,14 @@ class hsxSileSiesta(SileBinSiesta):
                     cell[i, cart_dir] = xyz[:, cart_dir].max() - xyz[:, cart_dir].min() + 10.
                     i += 1
 
-            return SuperCell(cell, nsc)
+            return Lattice(cell, nsc)
 
         # now we have all orbitals, ensure compatibility with passed geometry
         if geometry is None:
             atm_xij = convert_to_atom(geom_handle, xij)
             xyz = coord_from_xij(atm_xij)
-            sc = sc_from_xij(atm_xij, xyz)
-            geometry = Geometry(xyz, geom_handle.atoms, sc)
+            lattice = sc_from_xij(atm_xij, xyz)
+            geometry = Geometry(xyz, geom_handle.atoms, lattice)
 
             # Move coordinates into unit-cell
             geometry.xyz[:, :] = (geometry.fxyz % 1.) @ geometry.cell
@@ -925,8 +925,8 @@ class hsxSileSiesta(SileBinSiesta):
         else:
             if geometry.n_s != xij.shape[1] // xij.shape[0]:
                 atm_xij = convert_to_atom(geom_handle, xij)
-                sc = sc_from_xij(atm_xij, coord_from_xij(atm_xij))
-                geometry.set_nsc(sc.nsc)
+                lattice = sc_from_xij(atm_xij, coord_from_xij(atm_xij))
+                geometry.set_nsc(lattice.nsc)
 
             def conv(orbs, atm):
                 if len(orbs) == len(atm):
@@ -1038,8 +1038,8 @@ class hsxSileSiesta(SileBinSiesta):
 
         cell, nsc, xa, _ = _siesta.read_hsx_geom1(self.file, na)
 
-        sc = SuperCell(cell.T * _Bohr2Ang, nsc=nsc)
-        return Geometry(xa.T * _Bohr2Ang, atoms, sc=sc)
+        lattice = Lattice(cell.T * _Bohr2Ang, nsc=nsc)
+        return Geometry(xa.T * _Bohr2Ang, atoms, lattice=lattice)
 
     def read_geometry(self, **kwargs):
         """ Read the geometry from the file
@@ -1237,7 +1237,7 @@ class wfsxSileSiesta(SileBinSiesta):
     geometry : Geometry, optional
         a geometry contains a cell with corresponding lattice vectors
         used to convert k [1/Ang] -> [b]
-    sc : SuperCell, optional
+    lattice : Lattice, optional
         a supercell contains the lattice vectors to convert k
     """
 
@@ -1249,8 +1249,8 @@ class wfsxSileSiesta(SileBinSiesta):
         """
         super()._setup(*args, **kwargs)
 
-        # default sc
-        sc = None
+        # default lattice
+        lattice = None
 
         # In case the instantiation was called with wfsxSileSiesta("path", geometry=geometry)
         parent = kwargs.get("parent")
@@ -1258,36 +1258,36 @@ class wfsxSileSiesta(SileBinSiesta):
             geometry = None
         elif isinstance(parent, Geometry):
             geometry = parent
-        elif isinstance(parent, SuperCell):
-            sc = parent
+        elif isinstance(parent, Lattice):
+            lattice = parent
         else:
             geometry = parent.geometry
 
         geometry = kwargs.get("geometry", geometry)
-        if geometry is not None and sc is None:
-            sc = geometry.sc
+        if geometry is not None and lattice is None:
+            lattice = geometry.lattice
 
-        sc = kwargs.get("sc", sc)
-        if sc is None and geometry is not None:
-            raise ValueError(f"{self.__class__.__name__}(geometry=Geometry, sc=None) is not an allowed argument combination.")
+        lattice = kwargs.get("lattice", kwargs.get("sc", lattice))
+        if lattice is None and geometry is not None:
+            raise ValueError(f"{self.__class__.__name__}(geometry=Geometry, lattice=None) is not an allowed argument combination.")
 
         if parent is None:
             parent = geometry
         if parent is None:
-            parent = sc
+            parent = lattice
 
         self._parent = parent
         self._geometry = geometry
-        self._sc = sc
-        if self._parent is None and self._geometry is None and self._sc is None:
+        self._lattice = lattice
+        if self._parent is None and self._geometry is None and self._lattice is None:
             def conv(k):
                 if not np.allclose(k, 0.):
                     warn(f"{self.__class__.__name__} cannot convert stored k-points from 1/Ang to reduced coordinates. "
-                         "Please ensure parent=Hamiltonian, geometry=Geometry, or sc=SuperCell to ensure reduced k.")
+                         "Please ensure parent=Hamiltonian, geometry=Geometry, or lattice=Lattice to ensure reduced k.")
                 return k / _Bohr2Ang
         else:
             def conv(k):
-                return (k @ sc.cell.T) / (2 * np.pi * _Bohr2Ang)
+                return (k @ lattice.cell.T) / (2 * np.pi * _Bohr2Ang)
         self._convert_k = conv
 
     def _open_wfsx(self, mode, rewind=False):
@@ -1554,7 +1554,7 @@ class wfsxSileSiesta(SileBinSiesta):
             info["spin"] = ispin
 
         # `eig` is already in eV
-        # See onlysSileSiesta.read_supercell to understand why we transpose `state`
+        # See onlysSileSiesta.read_lattice to understand why we transpose `state`
         return EigenstateElectron(state.T, eig, parent=self._parent, **info)
 
     def read_sizes(self):
@@ -1697,13 +1697,13 @@ class _gridSileSiesta(SileBinSiesta):
     units (Bohr, Ry) to sisl units (Ang, eV) provided the correct extension is present.
     """
 
-    def read_supercell(self, *args, **kwargs):
+    def read_lattice(self, *args, **kwargs):
         r""" Return the cell contained in the file """
 
         cell = _siesta.read_grid_cell(self.file).T * _Bohr2Ang
-        self._fortran_check("read_supercell", "could not read cell.")
+        self._fortran_check("read_lattice", "could not read cell.")
 
-        return SuperCell(cell)
+        return Lattice(cell)
 
     def read_grid_size(self):
         r""" Query grid size information such as the grid size and number of spin components
@@ -1737,7 +1737,7 @@ class _gridSileSiesta(SileBinSiesta):
         index = kwargs.get("spin", index)
         # Read the sizes and cell
         nspin, mesh = self.read_grid_size()
-        sc = self.read_supercell()
+        lattice = self.read_lattice()
         grid = _siesta.read_grid(self.file, nspin, mesh[0], mesh[1], mesh[2])
         self._fortran_check("read_grid", "could not read grid.")
 
@@ -1748,7 +1748,7 @@ class _gridSileSiesta(SileBinSiesta):
 
         # Simply create the grid (with no information)
         # We will overwrite the actual grid
-        g = Grid([1, 1, 1], sc=sc)
+        g = Grid([1, 1, 1], lattice=lattice)
         # NOTE: there is no need to swap-axes since the returned array is in F ordering
         #       and thus the first axis is the fast (x, y, z) is retained
         g.grid = grid * self.grid_unit
@@ -2144,7 +2144,7 @@ class _gfSileSiesta(SileBinSiesta):
         if obj is None:
             obj = bz.parent
         nspin = len(obj.spin)
-        cell = obj.geometry.sc.cell
+        cell = obj.geometry.lattice.cell
         na_u = obj.geometry.na
         no_u = obj.geometry.no
         xa = obj.geometry.xyz
@@ -2182,7 +2182,7 @@ class _gfSileSiesta(SileBinSiesta):
 
         # Now write to it...
         self._step_counter("write_header", header=True, read=True)
-        # see onlysSileSiesta.read_supercell for .T
+        # see onlysSileSiesta.read_lattice for .T
         _siesta.write_gf_header(self._iu, nspin, _toF(cell.T, np.float64, 1. / _Bohr2Ang),
                                 na_u, no_u, no_u, _toF(xa.T, np.float64, 1. / _Bohr2Ang),
                                 lasto, bloch, 0, mu * _eV2Ry, _toF(k.T, np.float64),

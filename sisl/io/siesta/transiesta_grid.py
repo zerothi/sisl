@@ -33,7 +33,7 @@ class tsvncSileSiesta(gridncSileSiesta):
 
     def read_grid(self, *args, **kwargs):
         """ Reads the TranSiesta potential input grid """
-        sc = self.read_supercell().swapaxes(0, 2)
+        lattice = self.read_lattice().swapaxes(0, 2)
 
         # Create the grid
         na = len(self._dimension('a'))
@@ -43,7 +43,7 @@ class tsvncSileSiesta(gridncSileSiesta):
         v = self._variable('V')
 
         # Create the grid, Siesta uses periodic, always
-        grid = Grid([nc, nb, na], bc=Grid.PERIODIC, sc=sc, dtype=v.dtype)
+        grid = Grid([nc, nb, na], bc=Grid.PERIODIC, lattice=lattice, dtype=v.dtype)
 
         grid.grid[:, :, :] = v[:, :, :] * _Ry2eV
 
@@ -55,7 +55,7 @@ class tsvncSileSiesta(gridncSileSiesta):
         """ Write the Poisson solution to the TSV.nc file """
         sile_raise_write(self)
 
-        self.write_supercell(grid.sc)
+        self.write_lattice(grid.lattice)
 
         self._crt_dim(self, 'one', 1)
         self._crt_dim(self, 'a', grid.shape[0])

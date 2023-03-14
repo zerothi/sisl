@@ -14,7 +14,7 @@ atomic specie to be a Hydrogen atom with a single orbital with a range of :math:
 
   >>> Hydrogen = Atom(1, R=1.)
   >>> square = Geometry([[0.5, 0.5, 0]], Hydrogen,
-                        sc=SuperCell([1, 1, 10], [3, 3, 1]))
+                        lattice=Lattice([1, 1, 10], nsc=[3, 3, 1]))
   >>> H = Hamiltonian(square)
   >>> print(H)
   {spin: 1, non-zero: 0

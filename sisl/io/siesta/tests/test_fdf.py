@@ -34,7 +34,7 @@ def test_fdf1(sisl_tmp, sisl_system):
         assert fdf.get('LatticeConstant') > 0.
         assert fdf.get('LatticeConstant') > 0.
 
-        fdf.read_supercell()
+        fdf.read_lattice()
         fdf.read_geometry()
 
 
@@ -66,7 +66,7 @@ def test_fdf_units(sisl_tmp, sisl_system):
             assert g.atoms[ia].tag == g2.atoms[ia].tag
 
 
-def test_supercell(sisl_tmp):
+def test_lattice(sisl_tmp):
     f = sisl_tmp('file.fdf', _dir)
     lines = [
         'Latticeconstant 1. Ang',
@@ -80,8 +80,8 @@ def test_supercell(sisl_tmp):
         fh.write('\n'.join(lines))
 
     cell = np.array([[1.]*3, [0, 0, 1], [1, 0, 1]])
-    sc = fdfSileSiesta(f).read_supercell()
-    assert np.allclose(sc.cell, cell)
+    lattice = fdfSileSiesta(f).read_lattice()
+    assert np.allclose(lattice.cell, cell)
 
     lines = [
         'Latticeconstant 1. Bohr',
@@ -94,8 +94,8 @@ def test_supercell(sisl_tmp):
     with open(f, 'w') as fh:
         fh.write('\n'.join(lines))
 
-    sc = fdfSileSiesta(f).read_supercell()
-    assert np.allclose(sc.cell, cell * unit_convert('Bohr', 'Ang'))
+    lattice = fdfSileSiesta(f).read_lattice()
+    assert np.allclose(lattice.cell, cell * unit_convert('Bohr', 'Ang'))
 
     cell = np.diag([2.] * 3)
     lines = [
@@ -107,11 +107,11 @@ def test_supercell(sisl_tmp):
     with open(f, 'w') as fh:
         fh.write('\n'.join(lines))
 
-    sc = fdfSileSiesta(f).read_supercell()
-    assert np.allclose(sc.cell, cell)
+    lattice = fdfSileSiesta(f).read_lattice()
+    assert np.allclose(lattice.cell, cell)
 
 
-def test_supercell_fail(sisl_tmp):
+def test_lattice_fail(sisl_tmp):
     f = sisl_tmp('file.fdf', _dir)
     lines = [
         '%block Latticevectors',
@@ -123,7 +123,7 @@ def test_supercell_fail(sisl_tmp):
     with open(f, 'w') as fh:
         fh.write('\n'.join(lines))
     with pytest.raises(SileError):
-        fdfSileSiesta(f).read_supercell()
+        fdfSileSiesta(f).read_lattice()
 
 
 def test_geometry(sisl_tmp):
@@ -292,9 +292,9 @@ def test_xv_preference(sisl_tmp):
     g.xyz[0, 0] += 1.
     g.write(sisl_tmp('siesta.XV', _dir))
 
-    sc = fdfSileSiesta(sisl_tmp('file.fdf', _dir)).read_supercell(True)
+    lattice = fdfSileSiesta(sisl_tmp('file.fdf', _dir)).read_lattice(True)
     g2 = fdfSileSiesta(sisl_tmp('file.fdf', _dir)).read_geometry(True)
-    assert np.allclose(sc.cell, g.cell)
+    assert np.allclose(lattice.cell, g.cell)
     assert np.allclose(g.cell, g2.cell)
     assert np.allclose(g.xyz, g2.xyz)
 
@@ -368,16 +368,16 @@ def test_dry_read(sisl_tmp):
     read_methods = set(m for m in dir(fdf) if m.startswith("read_"))
     output = dict(output=True)
     kwargs = {
-        "supercell": output,
+        "lattice": output,
         "geometry": output,
         "grid": dict(name="rho"),
     }
 
     with pytest.warns(SislWarning):
-        assert np.allclose(fdf.read_supercell_nsc(), (1, 1, 1))
-    read_methods.remove("read_supercell_nsc")
+        assert np.allclose(fdf.read_lattice_nsc(), (1, 1, 1))
+    read_methods.remove("read_lattice_nsc")
 
-    geom_methods = set(f"read_{x}" for x in ("basis", "supercell", "geometry"))
+    geom_methods = set(f"read_{x}" for x in ("basis", "lattice", "geometry"))
     read_methods -= geom_methods
 
     for methodname in read_methods:

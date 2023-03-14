@@ -6,9 +6,10 @@ import numpy as np
 # Import sile objects
 from sisl.io.sile import *
 from ._help import header_to_dict
+from sisl.messages import deprecate_argument
 
 from sisl._internal import set_module
-from sisl import Geometry, Atom, SuperCell, Grid, SislError
+from sisl import Geometry, Atom, Lattice, Grid, SislError
 from sisl.unit import unit_convert
 
 
@@ -26,15 +27,16 @@ class cubeSile(Sile):
     """
 
     @sile_fh_open()
-    def write_supercell(self, sc, fmt="15.10e", size=None, origin=None,
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", from_version="0.15")
+    def write_lattice(self, lattice, fmt="15.10e", size=None, origin=None,
                         unit="Bohr",
                         *args, **kwargs):
-        """ Writes `SuperCell` object attached to this grid
+        """ Writes `Lattice` object attached to this grid
 
         Parameters
         ----------
-        sc : SuperCell
-            supercell to be written
+        lattice : Lattice
+            lattice to be written
         fmt : str, optional
             floating point format for stored values
         size : (3, ), optional
@@ -55,7 +57,7 @@ class cubeSile(Sile):
         if size is None:
             size = np.ones([3], np.int32)
         if origin is None:
-            origin = sc.origin[:]
+            origin = lattice.origin[:]
 
         _fmt = "{:d} {:15.10e} {:15.10e} {:15.10e}\n"
 
@@ -64,7 +66,7 @@ class cubeSile(Sile):
 
         # Write the cell and voxels
         for ix in range(3):
-            dcell = sc.cell[ix, :] / size[ix] * Ang2unit
+            dcell = lattice.cell[ix, :] / size[ix] * Ang2unit
             self._write(_fmt.format(size[ix], *dcell))
 
         self._write("1 0. 0. 0. 0.\n")
@@ -143,7 +145,7 @@ class cubeSile(Sile):
         sile_raise_write(self)
 
         if grid.geometry is None:
-            self.write_supercell(grid.sc, size=grid.shape, unit=unit, *args, **kwargs)
+            self.write_lattice(grid.lattice, size=grid.shape, unit=unit, *args, **kwargs)
         else:
             self.write_geometry(grid.geometry, size=grid.shape, unit=unit, *args, **kwargs)
 
@@ -186,8 +188,8 @@ class cubeSile(Sile):
         return header
 
     @sile_fh_open()
-    def read_supercell(self, na=False):
-        """ Returns `SuperCell` object from the CUBE file
+    def read_lattice(self, na=False):
+        """ Returns `Lattice` object from the CUBE file
 
         Parameters
         ----------
@@ -211,14 +213,14 @@ class cubeSile(Sile):
         cell = cell * unit2Ang
         origin = origin * unit2Ang
         if na:
-            return lna, SuperCell(cell, origin=origin)
-        return SuperCell(cell, origin=origin)
+            return lna, Lattice(cell, origin=origin)
+        return Lattice(cell, origin=origin)
 
     @sile_fh_open()
     def read_geometry(self):
         """ Returns `Geometry` object from the CUBE file """
         unit2Ang = self._r_header_dict()["unit"]
-        na, sc = self.read_supercell(na=True)
+        na, lattice = self.read_lattice(na=True)
 
         if na == 0:
             return None
@@ -233,7 +235,7 @@ class cubeSile(Sile):
             xyz[ia, 1] = float(tmp[3])
             xyz[ia, 2] = float(tmp[4])
 
-        return Geometry(xyz * unit2Ang, atom, sc=sc)
+        return Geometry(xyz * unit2Ang, atom, lattice=lattice)
 
     @sile_fh_open()
     def read_grid(self, imag=None):
@@ -252,9 +254,9 @@ class cubeSile(Sile):
         geom = self.read_geometry()
         if geom is None:
             self.fh.seek(0)
-            sc = self.read_supercell()
+            lattice = self.read_lattice()
         else:
-            sc = geom.sc
+            lattice = geom.lattice
 
         # read headers (and seek to start)
         self._r_header_dict()
@@ -270,7 +272,7 @@ class cubeSile(Sile):
             self.readline()
 
         if geom is None:
-            grid = Grid(ngrid, dtype=np.float64, sc=sc)
+            grid = Grid(ngrid, dtype=np.float64, lattice=lattice)
         else:
             grid = Grid(ngrid, dtype=np.float64, geometry=geom)
         grid.grid.shape = (-1,)

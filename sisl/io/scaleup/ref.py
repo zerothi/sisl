@@ -7,7 +7,7 @@ from ..sile import *
 
 # Import the geometry object
 import sisl._array as _a
-from sisl import Geometry, Atom, SuperCell
+from sisl import Geometry, Atom, Lattice
 from sisl.unit import unit_convert
 
 import numpy as np
@@ -22,7 +22,7 @@ class refSileScaleUp(SileScaleUp):
     """ REF file object for ScaleUp """
 
     @sile_fh_open()
-    def read_supercell(self):
+    def read_lattice(self):
         """ Reads a supercell from the Sile """
         # 1st line is number of supercells
         nsc = _a.fromiteri(map(int, self.readline().split()[:3]))
@@ -31,7 +31,7 @@ class refSileScaleUp(SileScaleUp):
         cell = _a.fromiterd(map(float, self.readline().split()[:9]))
         # Typically ScaleUp uses very large unit-cells
         # so supercells will typically be restricted to [3, 3, 3]
-        return SuperCell(cell * Bohr2Ang, nsc=nsc)
+        return Lattice(cell * Bohr2Ang, nsc=nsc)
 
     @sile_fh_open()
     def read_geometry(self, primary=False, **kwargs):
@@ -71,7 +71,7 @@ class refSileScaleUp(SileScaleUp):
             c[2, 1] = cell[3] / 2.
             c[2, 2] = 1. + cell[2]
             cell = c * Ang2Bohr
-        sc = SuperCell(cell * Bohr2Ang, nsc=nsc)
+        lattice = Lattice(cell * Bohr2Ang, nsc=nsc)
 
         # Create list of coordinates and atoms
         xyz = np.empty([na * ns, 3], np.float64)
@@ -87,7 +87,7 @@ class refSileScaleUp(SileScaleUp):
             atoms[ia] = species[int(line[4]) - 1]
             xyz[ia, :] = _a.fromiterd(map(float, line[5:8]))
 
-        return Geometry(xyz * Bohr2Ang, atoms, sc=sc)
+        return Geometry(xyz * Bohr2Ang, atoms, lattice=lattice)
 
     @sile_fh_open()
     def write_geometry(self, geometry, fmt='18.8e'):
@@ -96,7 +96,7 @@ class refSileScaleUp(SileScaleUp):
         sile_raise_write(self)
 
         # 1st line is number of supercells
-        self._write('{:5d}{:5d}{:5d}\n'.format(*geometry.sc.nsc // 2 + 1))
+        self._write('{:5d}{:5d}{:5d}\n'.format(*geometry.lattice.nsc // 2 + 1))
         # natoms, nspecies
         self._write('{:5d}{:5d}\n'.format(len(geometry), len(geometry.atoms.atom)))
 
@@ -114,7 +114,7 @@ class refSileScaleUp(SileScaleUp):
         line = '{:5d}{:5d}{:5d}{:5d}{:5d}' + f'{{:{fmt}}}' * 3 + '\n'
 
         args = [None] * 8
-        for _, isc in geometry.sc:
+        for _, isc in geometry.lattice:
             if np.any(isc < 0):
                 continue
 
@@ -163,8 +163,8 @@ class restartSileScaleUp(refSileScaleUp):
 
         restart = super().read_geometry()
         if not ref is None:
-            restart.sc = SuperCell(np.dot(ref.sc.cell, restart.sc.cell.T),
-                                   nsc=restart.nsc)
+            restart.lattice = Lattice(np.dot(ref.lattice.cell, restart.lattice.cell.T),
+                                      nsc=restart.nsc)
             restart.xyz += ref.xyz
 
         return restart

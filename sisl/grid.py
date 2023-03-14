@@ -13,6 +13,7 @@ from scipy.sparse import SparseEfficiencyWarning
 from scipy.ndimage import zoom as ndimage_zoom
 
 from ._internal import set_module
+from .messages import deprecate_argument
 from . import _array as _a
 from ._help import dtype_complex_to_real, wrap_filterwarnings
 from .shape import Shape
@@ -21,14 +22,14 @@ from .utils import cmd, strseq, direction, str_spec
 from .utils import import_attr
 from .utils.mathematics import fnorm
 
-from .supercell import SuperCellChild
+from .lattice import LatticeChild
 from .geometry import Geometry
 
 __all__ = ['Grid', 'sgrid']
 
 
 @set_module("sisl")
-class Grid(SuperCellChild):
+class Grid(LatticeChild):
     """ Real-space grid information with associated geometry.
 
     This grid object handles cell vectors and divisions of said grid.
@@ -40,25 +41,25 @@ class Grid(SuperCellChild):
         a list of integers specifies the exact grid size.
     bc : list of int (3, 2) or (3, ), optional
         the boundary conditions for each of the cell's planes. Default to periodic BC.
-    sc : SuperCell, optional
-        the supercell that this grid represents. `sc` has precedence if both `geometry` and `sc`
-        has been specified. Default to ``[1, 1, 1]``.
+    lattice : Lattice, optional
+        the lattice that this grid represents. `lattice` has precedence if both `geometry` and `lattice`
+        has been specified. Defaults to ``[1, 1, 1]``.
     dtype : numpy.dtype, optional
         the data-type of the grid, default to `numpy.float64`.
     geometry : Geometry, optional
-        associated geometry with the grid. If `sc` has not been passed the supercell will
+        associated geometry with the grid. If `lattice` has not been passed the lattice will
         be taken from this geometry.
 
     Examples
     --------
-    >>> grid1 = Grid(0.1, sc=10)
-    >>> grid2 = Grid(0.1, sc=SuperCell(10))
-    >>> grid3 = Grid(0.1, sc=SuperCell([10] * 3))
+    >>> grid1 = Grid(0.1, lattice=10)
+    >>> grid2 = Grid(0.1, lattice=Lattice(10))
+    >>> grid3 = Grid(0.1, lattice=Lattice([10] * 3))
     >>> grid1 == grid2
     True
     >>> grid1 == grid3
     True
-    >>> grid = Grid(0.1, sc=10, dtype=np.complex128)
+    >>> grid = Grid(0.1, lattice=10, dtype=np.complex128)
     >>> grid == grid1
     False
     """
@@ -72,11 +73,14 @@ class Grid(SuperCellChild):
     #: Constant for defining an open boundary condition
     OPEN = 4
 
-    def __init__(self, shape, bc=None, sc=None, dtype=None, geometry=None):
+    @deprecate_argument("sc", "lattice",
+                        "argument sc has been deprecated in favor of lattice, please update your code.",
+                        "0.15.0")
+    def __init__(self, shape, bc=None, lattice=None, dtype=None, geometry=None):
         if bc is None:
             bc = [[self.PERIODIC] * 2] * 3
 
-        self.set_supercell(sc)
+        self.set_lattice(lattice)
 
         # Create the atomic structure in the grid, if possible
         self.set_geometry(geometry)
@@ -92,10 +96,10 @@ class Grid(SuperCellChild):
         self.set_bc(bc)
 
         # If the user sets the super-cell, that has precedence.
-        if sc is not None:
+        if lattice is not None:
             if not self.geometry is None:
-                self.geometry.set_supercell(sc)
-            self.set_supercell(sc)
+                self.geometry.set_lattice(lattice)
+            self.set_lattice(lattice)
 
     def __getitem__(self, key):
         """ Grid value at `key` """
@@ -118,7 +122,7 @@ class Grid(SuperCellChild):
             self.geometry = None
         else:
             self.geometry = geometry
-            self.set_supercell(geometry.sc)
+            self.set_lattice(geometry.lattice)
 
     def fill(self, val):
         """ Fill the grid with this value
@@ -369,9 +373,9 @@ class Grid(SuperCellChild):
     set_boundary_condition = set_bc
 
     def __sc_geometry_dict(self):
-        """ Internal routine for copying the SuperCell and Geometry """
+        """ Internal routine for copying the Lattice and Geometry """
         d = dict()
-        d['sc'] = self.sc.copy()
+        d['lattice'] = self.lattice.copy()
         if not self.geometry is None:
             d['geometry'] = self.geometry.copy()
         return d
@@ -389,7 +393,7 @@ class Grid(SuperCellChild):
         return grid
 
     def swapaxes(self, a, b):
-        """ Swap two axes in the grid (also swaps axes in the supercell)
+        """ Swap two axes in the grid (also swaps axes in the lattice)
 
         If ``swapaxes(0,1)`` it returns the 0 in the 1 values.
 
@@ -404,7 +408,7 @@ class Grid(SuperCellChild):
         idx[a] = b
         s = np.copy(self.shape)
         d = self.__sc_geometry_dict()
-        d['sc'] = d['sc'].swapaxes(a, b)
+        d['lattice'] = d['lattice'].swapaxes(a, b)
         d['dtype'] = self.dtype
         grid = self.__class__(s[idx], bc=self.bc[idx], **d)
         # We need to force the C-order or we loose the contiguity
@@ -420,7 +424,7 @@ class Grid(SuperCellChild):
     @property
     def dvolume(self):
         """ Volume of the grid voxel elements """
-        return self.sc.volume / self.size
+        return self.lattice.volume / self.size
 
     def _copy_sub(self, n, axis, scale_geometry=False):
         # First calculate the new shape
@@ -433,12 +437,12 @@ class Grid(SuperCellChild):
             raise ValueError('You cannot retain no indices.')
         grid = self.__class__(shape, bc=np.copy(self.bc), dtype=self.dtype, **self.__sc_geometry_dict())
         # Update cell shape (the cell is smaller now)
-        grid.set_supercell(cell)
+        grid.set_lattice(cell)
         if scale_geometry and not self.geometry is None:
             geom = self.geometry.copy()
             fxyz = geom.fxyz.copy()
-            geom.set_supercell(grid.sc)
-            geom.xyz[:, :] = np.dot(fxyz, grid.sc.cell)
+            geom.set_lattice(grid.lattice)
+            geom.xyz[:, :] = np.dot(fxyz, grid.lattice.cell)
             grid.set_geometry(geom)
 
         return grid
@@ -579,7 +583,7 @@ class Grid(SuperCellChild):
             min_xyz = self.dcell[axis, :] * idx[0]
             # Now shift the geometry according to what is retained
             geom = self.geometry.translate(-min_xyz)
-            geom.set_supercell(grid.sc)
+            geom.set_lattice(grid.lattice)
             grid.set_geometry(geom)
         else:
             grid = self._copy_sub(len(idx), axis, scale_geometry=True)
@@ -632,7 +636,7 @@ class Grid(SuperCellChild):
         reps_all[axis] = reps
         grid.grid = np.tile(self.grid, reps_all)
         if self.geometry is None:
-            grid.set_supercell(self.sc.tile(reps, axis))
+            grid.set_lattice(self.lattice.tile(reps, axis))
         else:
             grid.set_geometry(self.geometry.tile(reps, axis))
         return grid
@@ -949,7 +953,7 @@ class Grid(SuperCellChild):
         if not self.geometry is None:
             s += '{}\n}}'.format(str(self.geometry).replace('\n', '\n '))
         else:
-            s += '{}\n}}'.format(str(self.sc).replace('\n', '\n '))
+            s += '{}\n}}'.format(str(self.lattice).replace('\n', '\n '))
         return s
 
     def _check_compatibility(self, other, msg):
@@ -1520,7 +1524,7 @@ class Grid(SuperCellChild):
                     if "." in value:
                         return int(round(length / float(value)))
                     return int(value)
-                shape = list(map(_conv_shape, ns._grid.sc.length, values[:3]))
+                shape = list(map(_conv_shape, ns._grid.lattice.length, values[:3]))
                 # shorten list for easier arguments
                 values = values[3:]
                 if len(values) > 0:
@@ -1530,7 +1534,7 @@ class Grid(SuperCellChild):
                        action=InterpGrid,
                        help="""Interpolate grid for higher or lower density (minimum 3 arguments)
 Requires at least 3 arguments, number of points along 1st, 2nd and 3rd lattice vector. These may contain a "." to signal a distance in angstrom of each voxel.
-For instance --interp 0.1 10 100 will result in an interpolated shape of [nint(grid.sc.length / 0.1), 10, 100].
+For instance --interp 0.1 10 100 will result in an interpolated shape of [nint(grid.lattice.length / 0.1), 10, 100].
 
 The 4th optional argument is the order of interpolation; an integer 0<=i<=5 (default 1)
 The 5th optional argument is the mode to interpolate; wrap/mirror/constant/reflect/nearest
@@ -1572,7 +1576,7 @@ The 3rd argument is the mode to use; wrap/mirror/constant/reflect/nearest
                 for ax in (0, 1, 2):
                     shape = grid.shape[ax]
                     if shape > 1:
-                        axs.append(np.linspace(0, grid.sc.length[ax], shape, endpoint=False))
+                        axs.append(np.linspace(0, grid.lattice.length[ax], shape, endpoint=False))
                         idx.append(ax)
 
                 # Now plot data
@@ -1615,7 +1619,7 @@ The 3rd argument is the mode to use; wrap/mirror/constant/reflect/nearest
                     # the distance along the lattice vector
                     idx = np.argmax(grid.shape)
 
-                    dx = np.linspace(0, grid.sc.length[idx], grid.shape[idx], endpoint=False)
+                    dx = np.linspace(0, grid.lattice.length[idx], grid.shape[idx], endpoint=False)
                     sile.write_data(dx, grid.grid.ravel())
                 else:
                     raise ValueError(f"""Either of these two cases are not fullfilled:
@@ -1711,7 +1715,7 @@ This may be unexpected but enables one to do advanced manipulations.
         kwargs = {}
         if input_file is None:
             stdout_grid = False
-            grid = Grid(0.1, geometry=Geometry([0] * 3, sc=1))
+            grid = Grid(0.1, geometry=Geometry([0] * 3, lattice=1))
         else:
             grid = Grid.read(input_file)
 

@@ -4,7 +4,7 @@
 import numpy as np
 
 from sisl._internal import set_module
-from sisl import Atom, Geometry, SuperCell
+from sisl import Atom, Geometry, Lattice
 from ._common import geometry_define_nsc
 
 __all__ = ['nanotube']
@@ -135,9 +135,9 @@ def nanotube(bond, atoms=None, chirality=(1, 1)):
     idx = np.argsort(xyz[:, 2])
     xyz = xyz[idx, :]
 
-    sc = SuperCell([rs * 4, rs * 4, t])
+    lattice = Lattice([rs * 4, rs * 4, t])
 
-    geom = Geometry(xyz, atoms, sc=sc)
+    geom = Geometry(xyz, atoms, lattice=lattice)
     geom = geom.translate(-np.amin(geom.xyz, axis=0))
 
     geometry_define_nsc(geom, [False, False, True])

@@ -20,7 +20,7 @@ def test_xyz1(sisl_tmp, sisl_system):
     assert np.allclose(g.cell, sisl_system.g.cell)
     assert np.allclose(g.xyz, sisl_system.g.xyz)
     assert sisl_system.g.atoms.equal(g.atoms, R=False)
-    g = xyzSile(f).read_geometry(sc=g.sc)
+    g = xyzSile(f).read_geometry(lattice=g.lattice)
     assert np.allclose(g.cell, sisl_system.g.cell)
 
 
@@ -43,7 +43,7 @@ C   2.00000  0.00000000  0.00000000
     assert np.allclose(g.xyz[:, 2], 0.)
     assert np.allclose(g.nsc, [1, 1, 3])
 
-    g = xyzSile(f).read_geometry(sc=[10, 11, 13])
+    g = xyzSile(f).read_geometry(lattice=[10, 11, 13])
     assert np.allclose(g.cell, [[10, 0, 0], [0, 11, 0], [0, 0, 13]])
 
 
@@ -128,4 +128,4 @@ C   2.00000  0.00000000  0.00000000
     assert g[0].na == 2 and g[1].na == 3
 
     # ensure it works with other arguments
-    g = xyzSile(f).read_geometry(sc=None, atoms=None)
+    g = xyzSile(f).read_geometry(lattice=None, atoms=None)

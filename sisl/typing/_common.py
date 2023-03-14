@@ -8,7 +8,7 @@ from sisl import (
     Atoms,
     Shape,
     Geometry,
-    SuperCell
+    Lattice
 )
 from sisl._category import GenericCategory
 from sisl.geom.category import AtomCategory
@@ -34,6 +34,6 @@ AtomLike = Union[
 ]
 
 CellOrGeometry = Union[
-    SuperCell,
+    Lattice,
     Geometry
 ]

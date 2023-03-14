@@ -23,7 +23,7 @@ Generic classes
    AtomicOrbital
    Atoms
    Geometry
-   SuperCell
+   Lattice
    Grid
 
 Below are a group of advanced classes rarely needed.
@@ -107,7 +107,7 @@ import sisl.mixing as mixing
 from .quaternion import *
 from .shape import *
 
-from .supercell import *
+from .lattice import *
 from .atom import *
 
 from .orbital import *

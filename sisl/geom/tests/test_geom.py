@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import pytest
 
-from sisl import Atom, SuperCell
+from sisl import Atom, Lattice
 from sisl.geom import *
 from sisl._math_small import cross3, dot3
 
@@ -14,7 +14,7 @@ import numpy as np
 pytestmark = [pytest.mark.geom]
 
 
-class CellDirect(SuperCell):
+class CellDirect(Lattice):
 
     @property
     def volume(self):
@@ -22,7 +22,7 @@ class CellDirect(SuperCell):
 
 
 def is_right_handed(geometry):
-    sc = CellDirect(geometry.sc.cell)
+    sc = CellDirect(geometry.lattice.cell)
     return sc.volume > 0.
 
 

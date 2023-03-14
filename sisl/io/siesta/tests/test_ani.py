@@ -69,4 +69,4 @@ C   3.00000  0.00000000  0.00000000
     g = a.read_geometry(start=1, stop=3, step=2, all=True)
     assert g[0].na == 2 and len(g) == 1
 
-    g = a.read_geometry(sc=None, atoms=None)
+    g = a.read_geometry(lattice=None, atoms=None)

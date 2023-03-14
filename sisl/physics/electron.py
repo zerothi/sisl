@@ -54,7 +54,7 @@ from numpy import add, sort
 from scipy.sparse import identity, csr_matrix, hstack, isspmatrix
 
 from sisl._internal import set_module
-from sisl import units, constant, Grid, SuperCell, Geometry
+from sisl import units, constant, Grid, Lattice, Geometry
 from sisl._indices import indices_le
 from sisl.oplist import oplist
 from sisl._math_small import xyz_to_spherical_cos_phi
@@ -1098,7 +1098,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
         raise SislError("wavefunction: did not find a usable Geometry through keywords or the Grid!")
     # Ensure coordinates are in the primary unit-cell, regardless of origin etc.
     geometry = geometry.copy()
-    geometry.xyz = (geometry.fxyz % 1) @ geometry.sc.cell
+    geometry.xyz = (geometry.fxyz % 1) @ geometry.lattice.cell
 
     # In case the user has passed several vectors we sum them to plot the summed state
     if v.ndim == 2:
@@ -1142,7 +1142,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
     # Extract sub variables used throughout the loop
     shape = _a.asarrayi(grid.shape)
     dcell = grid.dcell
-    ic_shape = grid.sc.icell * shape.reshape(3, 1)
+    ic_shape = grid.lattice.icell * shape.reshape(3, 1)
 
     # Convert the geometry (hosting the wavefunction coefficients) coordinates into
     # grid-fractionals X grid-shape to get index-offsets in the grid for the geometry
@@ -1193,7 +1193,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
     del ctheta_sphi, stheta_sphi, cphi, idx, rxyz, nrxyz
 
     # Fast loop (only per specie)
-    origin = grid.sc.origin.reshape(1, 3)
+    origin = grid.lattice.origin.reshape(1, 3)
     idx_mm = _a.emptyd([geometry.na, 2, 3])
     all_negative_R = True
     for atom, ia in geometry.atoms.iter(True):
@@ -1226,14 +1226,14 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
     # In case this grid does not have a Geometry associated
     # We can *perhaps* easily attach a geometry with the given
     # atoms in the unit-cell
-    sc = grid.sc.copy()
+    lattice = grid.lattice.copy()
     # Find the periodic directions
     pbc = [bc == grid.PERIODIC or geometry.nsc[i] > 1 for i, bc in enumerate(grid.bc[:, 0])]
     if grid.geometry is None:
         # Create the actual geometry that encompass the grid
-        ia, xyz, _ = geometry.within_inf(sc, periodic=pbc)
+        ia, xyz, _ = geometry.within_inf(lattice, periodic=pbc)
         if len(ia) > 0:
-            grid.set_geometry(Geometry(xyz, geometry.atoms[ia], sc=sc))
+            grid.set_geometry(Geometry(xyz, geometry.atoms[ia], lattice=lattice))
 
     # Instead of looping all atoms in the supercell we find the exact atoms
     # and their supercell indices.
@@ -1243,17 +1243,17 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
     # For extremely skewed lattices this will be way too much, hence we make
     # them square.
 
-    o = sc.toCuboid(True)
-    sc = SuperCell(o._v + np.diag(2 * add_R), origin=o.origin - add_R)
+    o = lattice.toCuboid(True)
+    lattice = Lattice(o._v + np.diag(2 * add_R), origin=o.origin - add_R)
 
     # Retrieve all atoms within the grid supercell
     # (and the neighbours that connect into the cell)
     # Note that we cannot pass the "moved" origin because then ISC would be wrong
-    IA, XYZ, ISC = geometry.within_inf(sc, periodic=pbc)
+    IA, XYZ, ISC = geometry.within_inf(lattice, periodic=pbc)
     # We need to revert the grid supercell origin as that is not subtracted in the `within_inf` returned
     # coordinates (and the below loop expects positions with respect to the origin of the plotting
     # grid).
-    XYZ -= grid.sc.origin.reshape(1, 3)
+    XYZ -= grid.lattice.origin.reshape(1, 3)
 
     phk = k * 2 * np.pi
     phase = 1

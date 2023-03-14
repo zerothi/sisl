@@ -15,7 +15,7 @@ import sisl._array as _a
 from sisl._indices import indices
 
 # Import the geometry object
-from sisl import Geometry, Atom, SuperCell
+from sisl import Geometry, Atom, Lattice
 from sisl.unit.siesta import unit_convert
 from sisl.physics.distribution import fermi_dirac
 
@@ -33,22 +33,22 @@ eV2Ry = unit_convert('eV', 'Ry')
 class _ncSileTBtrans(SileCDFTBtrans):
     r""" Common TBtrans NetCDF file object due to a lot of the files having common entries
 
-    This enables easy read of the Geometry and SuperCells etc.
+    This enables easy read of the Geometry and Lattices etc.
     """
     @lru_cache(maxsize=1)
-    def read_supercell(self):
-        """ Returns `SuperCell` object from this file """
+    def read_lattice(self):
+        """ Returns `Lattice` object from this file """
         cell = _a.arrayd(np.copy(self.cell))
         cell.shape = (3, 3)
 
         nsc = self._value('nsc')
-        sc = SuperCell(cell, nsc=nsc)
-        sc.sc_off = self._value('isc_off')
-        return sc
+        lattice = Lattice(cell, nsc=nsc)
+        lattice.sc_off = self._value('isc_off')
+        return lattice
 
     def read_geometry(self, *args, **kwargs):
         """ Returns `Geometry` object from this file """
-        sc = self.read_supercell()
+        lattice = self.read_lattice()
 
         xyz = _a.arrayd(np.copy(self.xa))
         xyz.shape = (-1, 3)
@@ -74,7 +74,7 @@ class _ncSileTBtrans(SileCDFTBtrans):
             atms = [Atom('H', [-1] * o) for o in nos]
 
         # Create and return geometry object
-        geom = Geometry(xyz, atms, sc=sc)
+        geom = Geometry(xyz, atms, lattice=lattice)
 
         return geom
 

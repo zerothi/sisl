@@ -17,7 +17,7 @@ The *only* required information is the atomic coordinates::
    }
 
 this will create a `Geometry` object with 1 Hydrogen atom with a single orbital
-(default if not specified), and a supercell of 10 A in each Cartesian direction.
+(default if not specified), and a lattice of 10 A in each Cartesian direction.
 When printing a `Geometry` object a list of information is printed in an
 XML-like fashion. ``na`` corresponds to the total number of atoms in the
 geometry, while ``no`` refers to the total number of orbitals.

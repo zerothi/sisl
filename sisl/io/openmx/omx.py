@@ -11,7 +11,7 @@ from .._help import *
 from ..sile import *
 from .sile import SileOpenMX
 
-from sisl import Geometry, SphericalOrbital, Atom, SuperCell
+from sisl import Geometry, SphericalOrbital, Atom, Lattice
 
 
 __all__ = ['omxSileOpenMX']
@@ -338,7 +338,7 @@ class omxSileOpenMX(SileOpenMX):
             atom.append(Atom(Z, orbs, tag=d[0]))
         return atom
 
-    def read_supercell(self, output=False, *args, **kwargs):
+    def read_lattice(self, output=False, *args, **kwargs):
         """ Reads supercell
 
         One can limit the tried files to only one file by passing
@@ -364,7 +364,7 @@ class omxSileOpenMX(SileOpenMX):
         return None
 
     def _r_supercell_omx(self, *args, **kwargs):
-        """ Returns `SuperCell` object from the omx file """
+        """ Returns `Lattice` object from the omx file """
         conv = self.get('Atoms.UnitVectors.Unit', default='Ang')
         if conv.upper() == 'AU':
             conv = units('Bohr', 'Ang')
@@ -382,7 +382,7 @@ class omxSileOpenMX(SileOpenMX):
             raise SileError('Could not find Atoms.UnitVectors in file')
         cell *= conv
 
-        return SuperCell(cell)
+        return Lattice(cell)
 
     _r_supercell_dat = _r_supercell_omx
 
@@ -413,7 +413,7 @@ class omxSileOpenMX(SileOpenMX):
 
     def _r_geometry_omx(self, *args, **kwargs):
         """ Returns `Geometry` """
-        sc = self.read_supercell(order=['omx'])
+        lattice = self.read_lattice(order=['omx'])
 
         na = self.get('Atoms.Number', default=0)
         conv = self.get('Atoms.SpeciesAndCoordinates.Unit', default='Ang')
@@ -448,9 +448,9 @@ class omxSileOpenMX(SileOpenMX):
         if conv == 'AU':
             xyz *= units('Bohr', 'Ang')
         elif conv == 'FRAC':
-            xyz = np.dot(xyz, sc.cell)
+            xyz = np.dot(xyz, lattice.cell)
 
-        return Geometry(xyz, atoms=atom, sc=sc)
+        return Geometry(xyz, atoms=atom, lattice=lattice)
 
     _r_geometry_dat = _r_geometry_omx
 

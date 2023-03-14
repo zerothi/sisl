@@ -7,7 +7,7 @@ from ..sile import add_sile, sile_fh_open, sile_raise_write
 from .sile import SileSiesta
 
 from sisl._internal import set_module
-from sisl import Geometry, Atom, AtomGhost, AtomUnknown, Atoms, SuperCell
+from sisl import Geometry, Atom, AtomGhost, AtomUnknown, Atoms, Lattice
 from sisl.unit.siesta import unit_convert
 
 
@@ -52,14 +52,14 @@ class structSileSiesta(SileSiesta):
                 self._write(fmt_str.format(ips + 1, a.Z, *fxyz[ia]))
 
     @sile_fh_open()
-    def read_supercell(self):
-        """ Returns `SuperCell` object from the STRUCT file """
+    def read_lattice(self):
+        """ Returns `Lattice` object from the STRUCT file """
 
         cell = np.empty([3, 3], np.float64)
         for i in range(3):
             cell[i, :] = list(map(float, self.readline().split()[:3]))
 
-        return SuperCell(cell)
+        return Lattice(cell)
 
     @sile_fh_open()
     def read_geometry(self, species_Z=False):
@@ -75,7 +75,7 @@ class structSileSiesta(SileSiesta):
         -------
         Geometry
         """
-        sc = self.read_supercell()
+        lattice = self.read_lattice()
 
         # Read number of atoms
         na = int(self.readline())
@@ -91,7 +91,7 @@ class structSileSiesta(SileSiesta):
                 atms[ia] = Atom(int(line[1]))
             xyz[ia, :] = line[2:5]
 
-        xyz = xyz @ sc.cell
+        xyz = xyz @ lattice.cell
 
         # Ensure correct sorting
         max_s = sp.max()
@@ -106,7 +106,7 @@ class structSileSiesta(SileSiesta):
             else:
                 atms2[idx] = atms[idx[0]]
 
-        return Geometry(xyz, atms2.reduce(), sc=sc)
+        return Geometry(xyz, atms2.reduce(), lattice=lattice)
 
     def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """

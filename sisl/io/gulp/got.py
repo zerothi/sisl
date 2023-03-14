@@ -8,10 +8,11 @@ import numpy as np
 
 from sisl._internal import set_module
 from sisl.messages import info, warn
+from sisl.messages import deprecate_argument, deprecate_method
 from .sile import SileGULP
 from .fc import fcSileGULP
 from ..sile import add_sile, sile_fh_open
-from sisl import Geometry, Atom, Orbital, SuperCell
+from sisl import Geometry, Atom, Orbital, Lattice
 from sisl import constant, units
 from sisl.physics import DynamicalMatrix
 
@@ -37,7 +38,7 @@ class gotSileGULP(SileGULP):
         """ Setup `gotSileGULP` after initialization """
         super()._setup(*args, **kwargs)
         self._keys = dict()
-        self.set_supercell_key('Cartesian lattice vectors')
+        self.set_lattice_key('Cartesian lattice vectors')
         self.set_geometry_key('Final fractional coordinates')
         self.set_dynamical_matrix_key('Real Dynamical matrix')
 
@@ -46,12 +47,14 @@ class gotSileGULP(SileGULP):
         if key is not None:
             self._keys[segment] = key
 
-    def set_supercell_key(self, key):
+    def set_lattice_key(self, key):
         """ Overwrites internal key lookup value for the cell vectors """
-        self.set_key('sc', key)
+        self.set_key('lattice', key)
+
+    set_supercell_key = deprecate_method("set_supercell_key is deprecated in favor of set_lattice_key", "0.15")(set_lattice_key)
 
     @sile_fh_open()
-    def read_super(self, key=None):
+    def read_lattice_nsc(self, key=None):
         """ Reads the dimensions of the supercell """
 
         f, l = self.step_to('Supercell dimensions')
@@ -62,20 +65,20 @@ class gotSileGULP(SileGULP):
         xyz = l.split('=')[1:]
 
         # Now read off the quantities...
-        sc = [int(i.split()[0]) for i in xyz]
+        nsc = [int(i.split()[0]) for i in xyz]
 
-        return np.array(sc[:3], np.int32)
+        return np.array(nsc[:3], np.int32)
 
     @sile_fh_open()
-    def read_supercell(self, key=None, **kwargs):
-        """ Reads a `SuperCell` and creates the GULP cell """
-        self.set_supercell_key(key)
+    def read_lattice(self, key=None, **kwargs):
+        """ Reads a `Lattice` and creates the GULP cell """
+        self.set_lattice_key(key)
 
-        f, _ = self.step_to(self._keys['sc'])
+        f, _ = self.step_to(self._keys['lattice'])
         if not f:
             raise ValueError(
-                'SileGULP tries to lookup the SuperCell vectors '
-                 'using key "' + self._keys['sc'] + '". \n'
+                'SileGULP tries to lookup the Lattice vectors '
+                 'using key "' + self._keys['lattice'] + '". \n'
                  'Use ".set_supercell_key(...)" to search for different name.\n'
                  'This could not be found found in file: "' + self.file + '".')
 
@@ -86,7 +89,7 @@ class gotSileGULP(SileGULP):
             l = self.readline().split()
             cell[i, :] = [float(x) for x in l[:3]]
 
-        return SuperCell(cell)
+        return Lattice(cell)
 
     def set_geometry_key(self, key):
         """ Overwrites internal key lookup value for the geometry vectors """
@@ -96,14 +99,14 @@ class gotSileGULP(SileGULP):
     def read_geometry(self, **kwargs):
         """ Reads a geometry and creates the GULP dynamical geometry """
         # create default supercell
-        sc = SuperCell([1, 1, 1])
+        lattice = Lattice([1, 1, 1])
 
         for _ in [0, 1]:
             # Step to either the geometry or
-            f, _, ki = self.step_to([self._keys['sc'], self._keys['geometry']], ret_index=True)
+            f, _, ki = self.step_to([self._keys['lattice'], self._keys['geometry']], ret_index=True)
             if not f and ki == 0:
-                raise ValueError('SileGULP tries to lookup the SuperCell vectors '
-                                 'using key "' + self._keys['sc'] + '". \n'
+                raise ValueError('SileGULP tries to lookup the Lattice vectors '
+                                 'using key "' + self._keys['lattice'] + '". \n'
                                  'Use ".set_supercell_key(...)" to search for different name.\n'
                                  'This could not be found found in file: "' + self.file + '".')
             elif f and ki == 0:
@@ -115,7 +118,7 @@ class gotSileGULP(SileGULP):
                     cell[i, 0] = float(l[0])
                     cell[i, 1] = float(l[1])
                     cell[i, 2] = float(l[2])
-                sc = SuperCell(cell)
+                lattice = Lattice(cell)
 
             elif not f and ki == 1:
                 raise ValueError('SileGULP tries to lookup the Geometry coordinates '
@@ -150,7 +153,7 @@ class gotSileGULP(SileGULP):
 
             elif not f:
                 # could not find either cell or geometry
-                raise ValueError('SileGULP tries to lookup the SuperCell or Geometry.\n'
+                raise ValueError('SileGULP tries to lookup the Lattice or Geometry.\n'
                                  'None succeeded, ensure file has correct format.\n'
                                  'This could not be found found in file: "{}".'.format(self.file))
 
@@ -158,10 +161,10 @@ class gotSileGULP(SileGULP):
         # to wait until here to convert from fractional
         if 'fractional' in self._keys['geometry'].lower():
             # Correct for fractional coordinates
-            xyz = np.dot(xyz, sc.cell)
+            xyz = np.dot(xyz, lattice.cell)
 
         # Return the geometry
-        return Geometry(xyz, Z, sc=sc)
+        return Geometry(xyz, Z, lattice=lattice)
 
     def set_dynamical_matrix_key(self, key):
         """ Overwrites internal key lookup value for the dynamical matrix vectors """

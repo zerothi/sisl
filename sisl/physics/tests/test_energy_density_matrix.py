@@ -6,7 +6,7 @@ import pytest
 import math as m
 import numpy as np
 
-from sisl import Geometry, Atom, SuperCell, EnergyDensityMatrix, Spin
+from sisl import Geometry, Atom, Lattice, EnergyDensityMatrix, Spin
 
 
 @pytest.fixture
@@ -15,14 +15,14 @@ def setup():
         def __init__(self):
             bond = 1.42
             sq3h = 3.**.5 * 0.5
-            self.sc = SuperCell(np.array([[1.5, sq3h, 0.],
+            self.lattice = Lattice(np.array([[1.5, sq3h, 0.],
                                           [1.5, -sq3h, 0.],
                                           [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
 
             C = Atom(Z=6, R=[bond * 1.01] * 3)
             self.g = Geometry(np.array([[0., 0., 0.],
                                         [1., 0., 0.]], np.float64) * bond,
-                              atoms=C, sc=self.sc)
+                              atoms=C, lattice=self.lattice)
             self.E = EnergyDensityMatrix(self.g)
             self.ES = EnergyDensityMatrix(self.g, orthogonal=False)
 

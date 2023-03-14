@@ -206,7 +206,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
         no = self.no
         d_uc = lil_matrix((no, no), dtype=dyn_sc.dtype)
 
-        for i, _ in self.sc:
+        for i, _ in self.lattice:
             d_uc[:, :] += dyn_sc[:, i*no: (i+1)*no]
 
         # A CSC matrix is faster to slice for columns

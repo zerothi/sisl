@@ -9,7 +9,7 @@ from .sile import SileBigDFT
 from ..sile import *
 
 from sisl._internal import set_module
-from sisl import Geometry, Atom, SuperCell
+from sisl import Geometry, Atom, Lattice
 from sisl.unit import unit_convert
 
 import numpy as np
@@ -110,9 +110,9 @@ class asciiSileBigDFT(SileBigDFT):
         # Create the supercell
         if is_angdeg:
             # The input is in skewed axis
-            sc = SuperCell([dxx, dyx, dyy, dzx, dzy, dzz])
+            lattice = Lattice([dxx, dyx, dyy, dzx, dzy, dzz])
         else:
-            sc = SuperCell([[dxx, 0., 0.], [dyx, dyy, 0.], [dzx, dzy, dzz]])
+            lattice = Lattice([[dxx, 0., 0.], [dyx, dyy, 0.], [dzx, dzy, dzz]])
 
         # Now create the geometry
         xyz = np.array(xyz, np.float64)
@@ -120,7 +120,7 @@ class asciiSileBigDFT(SileBigDFT):
         if is_frac:
             # Transform from fractional to actual
             # coordinates
-            xyz = np.dot(xyz, sc.cell.T)
+            xyz = np.dot(xyz, lattice.cell.T)
 
         elif is_bohr:
             # Not when fractional coordinates are used
@@ -128,7 +128,7 @@ class asciiSileBigDFT(SileBigDFT):
             # correct unit
             xyz *= Bohr2Ang
 
-        return Geometry(xyz, spec, sc=sc)
+        return Geometry(xyz, spec, lattice=lattice)
 
     @sile_fh_open()
     def write_geometry(self, geom, fmt='.8f'):

@@ -152,7 +152,7 @@ from sisl.utils.mathematics import cart2spher, fnorm
 from sisl.utils import batched_indices
 import sisl._array as _a
 from sisl.messages import info, warn, SislError, progressbar
-from sisl.supercell import SuperCell
+from sisl.lattice import Lattice
 from sisl.grid import Grid
 from sisl._dispatcher import ClassDispatcher
 
@@ -254,14 +254,14 @@ class BrillouinZone:
     2. `rcell` which is the reciprocal lattice vectors.
 
     The object may also be an array of floats in which case an internal
-    `SuperCell` object will be created from the cell vectors (see `SuperCell` for
+    `Lattice` object will be created from the cell vectors (see `Lattice` for
     details).
 
     Parameters
     ----------
     parent : object or array_like
        An object with associated ``parent.cell`` and ``parent.rcell`` or
-       an array of floats which may be turned into a `SuperCell`
+       an array of floats which may be turned into a `Lattice`
     k : array_like, optional
        k-points that this Brillouin zone represents
     weight : scalar or array_like, optional
@@ -303,15 +303,15 @@ class BrillouinZone:
             parent.rcell
             self.parent = parent
         except Exception:
-            self.parent = SuperCell(parent)
+            self.parent = Lattice(parent)
 
     def __str__(self):
         """ String representation of the BrillouinZone """
         parent = self.parent
-        if isinstance(parent, SuperCell):
+        if isinstance(parent, Lattice):
             parent = str(parent).replace("\n", "\n ")
         else:
-            parent = str(parent.sc).replace("\n", "\n ")
+            parent = str(parent.lattice).replace("\n", "\n ")
         return f"{self.__class__.__name__}{{nk: {len(self)},\n {parent}\n}}"
 
     def __getstate__(self):
@@ -426,7 +426,7 @@ class BrillouinZone:
 
         Parameters
         ----------
-        parent : SuperCell, or SuperCellChild
+        parent : Lattice, or LatticeChild
            the object that the returned object will contain as parent
         func : callable
            method that parameterizes the k-points, *must* at least accept three arguments,
@@ -487,7 +487,7 @@ class BrillouinZone:
 
         Parameters
         ----------
-        parent : SuperCell, or SuperCellChild
+        parent : Lattice, or LatticeChild
            the parent object
         N_or_dk : int
            number of k-points generated using the parameterization (if an integer),
@@ -506,13 +506,13 @@ class BrillouinZone:
         Examples
         --------
 
-        >>> sc = SuperCell([1, 1, 10, 90, 90, 60])
-        >>> bz = BrillouinZone.param_circle(sc, 10, 0.05, [0, 0, 1], [1./3, 2./3, 0])
+        >>> lattice = Lattice([1, 1, 10, 90, 90, 60])
+        >>> bz = BrillouinZone.param_circle(lattice, 10, 0.05, [0, 0, 1], [1./3, 2./3, 0])
 
         To generate a circular set of k-points in reduced coordinates (reciprocal
 
-        >>> sc = SuperCell([1, 1, 10, 90, 90, 60])
-        >>> bz = BrillouinZone.param_circle(sc, 10, 0.05, [0, 0, 1], [1./3, 2./3, 0])
+        >>> lattice = Lattice([1, 1, 10, 90, 90, 60])
+        >>> bz = BrillouinZone.param_circle(lattice, 10, 0.05, [0, 0, 1], [1./3, 2./3, 0])
         >>> bz_rec = BrillouinZone.param_circle(2*np.pi, 10, 0.05, [0, 0, 1], [1./3, 2./3, 0])
         >>> bz.k[:, :] = bz_rec.k[:, :]
 
@@ -698,7 +698,7 @@ class MonkhorstPack(BrillouinZone):
     ----------
     parent : object or array_like
        An object with associated `parent.cell` and `parent.rcell` or
-       an array of floats which may be turned into a `SuperCell`
+       an array of floats which may be turned into a `Lattice`
     nkpt : array_like of ints
        a list of number of k-points along each cell direction
     displacement : float or array_like of float, optional
@@ -718,10 +718,10 @@ class MonkhorstPack(BrillouinZone):
 
     Examples
     --------
-    >>> sc = SuperCell(3.)
-    >>> MonkhorstPack(sc, 10) # 10 x 10 x 10 (with TRS)
-    >>> MonkhorstPack(sc, [10, 5, 5]) # 10 x 5 x 5 (with TRS)
-    >>> MonkhorstPack(sc, [10, 5, 5], trs=False) # 10 x 5 x 5 (without TRS)
+    >>> lattice = Lattice(3.)
+    >>> MonkhorstPack(lattice, 10) # 10 x 10 x 10 (with TRS)
+    >>> MonkhorstPack(lattice, [10, 5, 5]) # 10 x 5 x 5 (with TRS)
+    >>> MonkhorstPack(lattice, [10, 5, 5], trs=False) # 10 x 5 x 5 (without TRS)
     """
 
     def __init__(self, parent, nkpt, displacement=None, size=None, centered=True, trs=True):
@@ -850,15 +850,15 @@ class MonkhorstPack(BrillouinZone):
 
     def __str__(self):
         """ String representation of MonkhorstPack """
-        if isinstance(self.parent, SuperCell):
+        if isinstance(self.parent, Lattice):
             p = self.parent
         else:
-            p = self.parent.sc
+            p = self.parent.lattice
         return ('{cls}{{nk: {nk:d}, size: [{size[0]:.5f} {size[1]:.5f} {size[0]:.5f}], trs: {trs},'
                 '\n diagonal: [{diag[0]:d} {diag[1]:d} {diag[2]:d}], displacement: [{disp[0]:.5f} {disp[1]:.5f} {disp[2]:.5f}],'
-                '\n {sc}\n}}').format(cls=self.__class__.__name__, nk=len(self),
+                '\n {lattice}\n}}').format(cls=self.__class__.__name__, nk=len(self),
                                       size=self._size, trs={0: 'A', 1: 'B', 2: 'C'}.get(self._trs, 'no'),
-                                      diag=self._diag, disp=self._displ, sc=str(p).replace('\n', '\n '))
+                                      diag=self._diag, disp=self._displ, lattice=str(p).replace('\n', '\n '))
 
     def __getstate__(self):
         """ Return dictionary with the current state """
@@ -1018,23 +1018,23 @@ class MonkhorstPack(BrillouinZone):
         This example creates a zoomed-in view of the :math:`\Gamma`-point by replacing it with
         a 3x3x3 Monkhorst-Pack grid.
 
-        >>> sc = SuperCell(1.)
-        >>> mp = MonkhorstPack(sc, [3, 3, 3])
-        >>> mp.replace([0, 0, 0], MonkhorstPack(sc, [3, 3, 3], size=1./3))
+        >>> lattice = Lattice(1.)
+        >>> mp = MonkhorstPack(lattice, [3, 3, 3])
+        >>> mp.replace([0, 0, 0], MonkhorstPack(lattice, [3, 3, 3], size=1./3))
 
         This example creates a zoomed-in view of the :math:`\Gamma`-point by replacing it with
         a 4x4x4 Monkhorst-Pack grid.
 
-        >>> sc = SuperCell(1.)
-        >>> mp = MonkhorstPack(sc, [3, 3, 3])
-        >>> mp.replace([0, 0, 0], MonkhorstPack(sc, [4, 4, 4], size=1./3))
+        >>> lattice = Lattice(1.)
+        >>> mp = MonkhorstPack(lattice, [3, 3, 3])
+        >>> mp.replace([0, 0, 0], MonkhorstPack(lattice, [4, 4, 4], size=1./3))
 
         This example creates a zoomed-in view of the :math:`\Gamma`-point by replacing it with
         a 4x4x1 Monkhorst-Pack grid.
 
-        >>> sc = SuperCell(1.)
-        >>> mp = MonkhorstPack(sc, [3, 3, 3])
-        >>> mp.replace([0, 0, 0], MonkhorstPack(sc, [4, 4, 1], size=1./3))
+        >>> lattice = Lattice(1.)
+        >>> mp = MonkhorstPack(lattice, [3, 3, 3])
+        >>> mp.replace([0, 0, 0], MonkhorstPack(lattice, [4, 4, 1], size=1./3))
 
         Raises
         ------
@@ -1145,7 +1145,7 @@ class BandStructure(BrillouinZone):
     ----------
     parent : object or array_like
        An object with associated `parent.cell` and `parent.rcell` or
-       an array of floats which may be turned into a `SuperCell`
+       an array of floats which may be turned into a `Lattice`
     points : array_like of float
        a list of points that are the *corners* of the path
     divisions : int or array_like of int
@@ -1168,16 +1168,16 @@ class BandStructure(BrillouinZone):
 
     Examples
     --------
-    >>> sc = SuperCell(10)
-    >>> bs = BandStructure(sc, [[0] * 3, [0.5] * 3], 200)
-    >>> bs = BandStructure(sc, [[0] * 3, [0.5] * 3, [1.] * 3], 200)
-    >>> bs = BandStructure(sc, [[0] * 3, [0.5] * 3, [1.] * 3], 200, ['Gamma', 'M', 'Gamma'])
+    >>> lattice = Lattice(10)
+    >>> bs = BandStructure(lattice, [[0] * 3, [0.5] * 3], 200)
+    >>> bs = BandStructure(lattice, [[0] * 3, [0.5] * 3, [1.] * 3], 200)
+    >>> bs = BandStructure(lattice, [[0] * 3, [0.5] * 3, [1.] * 3], 200, ['Gamma', 'M', 'Gamma'])
 
     A disconnected band structure may be created by either having a point of 0 length, or None.
     Note that the number of names does not contain the empty points (they are simply removed).
     Such a band-structure may be useful when one is not interested in a fully connected band structure.
 
-    >>> bs = BandStructure(sc, [[0, 0, 0], [0, 0.5, 0], None, [0.5, 0, 0], [0.5, 0.5, 0]], 200)
+    >>> bs = BandStructure(lattice, [[0, 0, 0], [0, 0.5, 0], None, [0.5, 0, 0], [0.5, 0.5, 0]], 200)
     """
 
     def __init__(self, parent, *args, **kwargs):

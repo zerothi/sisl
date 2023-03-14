@@ -11,7 +11,7 @@ from ..sile import add_sile, sile_fh_open, SileError
 from sisl._common import Opt
 from sisl._internal import set_module
 import sisl._array as _a
-from sisl import Geometry, Atom, SuperCell
+from sisl import Geometry, Atom, Lattice
 from sisl.utils import PropertyDict
 from sisl.utils.cmd import *
 from sisl.unit.siesta import unit_convert
@@ -139,7 +139,7 @@ class outSileSiesta(SileSiesta):
         if not Ang:
             cell *= Bohr2Ang
 
-        return SuperCell(cell)
+        return Lattice(cell)
 
     def _r_geometry_outcoor(self, line, atoms=None):
         """ Wrapper for reading the geometry as in the outcoor output """
@@ -185,7 +185,7 @@ class outSileSiesta(SileSiesta):
         elif not Ang:
             xyz *= Bohr2Ang
 
-        return Geometry(xyz, atoms, sc=cell)
+        return Geometry(xyz, atoms, lattice=cell)
 
     def _r_geometry_atomic(self, line, atoms=None):
         """ Wrapper for reading the geometry as in the outcoor output """
@@ -215,7 +215,7 @@ class outSileSiesta(SileSiesta):
         if not Ang:
             xyz *= Bohr2Ang
 
-        return Geometry(xyz, atoms, sc=cell)
+        return Geometry(xyz, atoms, lattice=cell)
 
     @sile_fh_open()
     def read_geometry(self, last=True, all=False):

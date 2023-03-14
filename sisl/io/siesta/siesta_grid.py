@@ -9,8 +9,8 @@ from .sile import SileCDFSiesta
 from ..sile import add_sile, sile_raise_write, SileError
 
 from sisl._internal import set_module
-from sisl.messages import info
-from sisl import SuperCell, Grid
+from sisl.messages import info, deprecate_argument
+from sisl import Lattice, Grid
 from sisl.unit.siesta import unit_convert
 
 
@@ -28,17 +28,18 @@ class gridncSileSiesta(SileCDFSiesta):
     The grid sile will automatically convert the units from Siesta units (Bohr, Ry) to sisl units (Ang, eV) provided the correct extension is present.
     """
 
-    def read_supercell(self):
-        """ Returns a SuperCell object from a Siesta.grid.nc file
+    def read_lattice(self):
+        """ Returns a Lattice object from a Siesta.grid.nc file
         """
         cell = np.array(self._value('cell'), np.float64)
         # Yes, this is ugly, I really should implement my unit-conversion tool
         cell *= Bohr2Ang
         cell.shape = (3, 3)
 
-        return SuperCell(cell)
+        return Lattice(cell)
 
-    def write_supercell(self, sc):
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", from_version="0.15")
+    def write_lattice(self, lattice):
         """ Write a supercell to the grid.nc file """
         sile_raise_write(self)
 
@@ -49,7 +50,7 @@ class gridncSileSiesta(SileCDFSiesta):
         v = self._crt_var(self, 'cell', 'f8', ('abc', 'xyz'))
         v.info = 'Unit cell'
         v.unit = 'Bohr'
-        v[:, :] = sc.cell[:, :] / Bohr2Ang
+        v[:, :] = lattice.cell[:, :] / Bohr2Ang
 
     def read_grid(self, index=0, name='gridfunc', *args, **kwargs):
         """ Reads a grid in the current Siesta.grid.nc file
@@ -107,7 +108,7 @@ class gridncSileSiesta(SileCDFSiesta):
             show_info = False
 
         # Swap as we swap back in the end
-        sc = self.read_supercell().swapaxes(0, 2)
+        lattice = self.read_lattice().swapaxes(0, 2)
 
         # Create the grid
         nx = len(self._dimension('n1'))
@@ -120,7 +121,7 @@ class gridncSileSiesta(SileCDFSiesta):
             v = self._variable(name)
 
         # Create the grid, Siesta uses periodic, always
-        grid = Grid([nz, ny, nx], bc=Grid.PERIODIC, sc=sc, dtype=v.dtype,
+        grid = Grid([nz, ny, nx], bc=Grid.PERIODIC, lattice=lattice, dtype=v.dtype,
                     geometry=kwargs.get("geometry", None))
 
         if v.ndim == 3:
@@ -144,7 +145,7 @@ class gridncSileSiesta(SileCDFSiesta):
         # Default to *index* variable
         spin = kwargs.get('index', spin)
 
-        self.write_supercell(grid.sc)
+        self.write_lattice(grid.lattice)
 
         if nspin is not None:
             self._crt_dim(self, 'spin', nspin)

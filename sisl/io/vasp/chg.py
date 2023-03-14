@@ -45,7 +45,7 @@ class chgSileVASP(carSileVASP):
         """
         index = kwargs.get("spin", index)
         geom = self.read_geometry()
-        V = geom.sc.volume
+        V = geom.lattice.volume
 
         rl = self.readline
 

@@ -22,6 +22,7 @@ from numpy import argsort, split, isin, concatenate
 from sisl._typing_ext.numpy import ArrayLike, NDArray
 if TYPE_CHECKING:
     from sisl.typing import AtomsArgument, OrbitalsArgument
+from .lattice import Lattice, LatticeChild
 from .orbital import Orbital
 from ._internal import set_module, singledispatchmethod
 from . import _plot as plt
@@ -36,7 +37,6 @@ from .utils import angle, direction
 from .utils import lstranges, strmap
 from .utils.mathematics import fnorm
 from .quaternion import Quaternion
-from .supercell import SuperCell, SuperCellChild
 from .atom import Atom, Atoms
 from .shape import Shape, Sphere, Cube
 from ._namedindex import NamedIndex
@@ -64,7 +64,7 @@ class AtomCategory(Category):
 
 
 @set_module("sisl")
-class Geometry(SuperCellChild):
+class Geometry(LatticeChild):
     """ Holds atomic information, coordinates, species, lattice vectors
 
     The `Geometry` class holds information regarding atomic coordinates,
@@ -79,7 +79,7 @@ class Geometry(SuperCellChild):
     .. code:: python
 
        >>> square = Geometry([[0.5, 0.5, 0.5]], Atom(1),
-       ...                   sc=SuperCell([1, 1, 10], nsc=[3, 3, 1]))
+       ...                   lattice=Lattice([1, 1, 10], nsc=[3, 3, 1]))
        >>> print(square)
        Geometry{na: 1, no: 1,
         Atoms{species: 1,
@@ -88,7 +88,7 @@ class Geometry(SuperCellChild):
          }: 1,
         },
         maxR: -1.00000,
-        SuperCell{volume: 1.0000e+01, nsc: [3 3 1]}
+        Lattice{volume: 1.0000e+01, nsc: [3 3 1]}
        }
 
 
@@ -99,7 +99,7 @@ class Geometry(SuperCellChild):
         ``xyz[i, :]`` is the atomic coordinate of the i'th atom.
     atoms : array_like or Atoms
         atomic species retrieved from the `PeriodicTable`
-    sc : SuperCell
+    lattice : Lattice
         the unit-cell describing the atoms in a periodic
         super-cell
 
@@ -110,7 +110,7 @@ class Geometry(SuperCellChild):
 
     >>> xyz = [[0, 0, 0],
     ...        [1, 1, 1]]
-    >>> sc = SuperCell([2,2,2])
+    >>> sc = Lattice([2,2,2])
     >>> g = Geometry(xyz, Atom('H'), sc)
 
     The following estimates the lattice vectors from the
@@ -136,7 +136,10 @@ class Geometry(SuperCellChild):
     Atom : contained atoms are each an object of this
     """
 
-    def __init__(self, xyz: ArrayLike, atoms=None, sc=None, names=None):
+    @deprecate_argument("sc", "lattice",
+                        "argument sc has been deprecated in favor of lattice, please update your code.",
+                        "0.15.0")
+    def __init__(self, xyz: ArrayLike, atoms=None, lattice=None, names=None):
 
         # Create the geometry coordinate, be aware that we do not copy!
         self.xyz = _a.asarrayd(xyz).reshape(-1, 3)
@@ -154,7 +157,7 @@ class Geometry(SuperCellChild):
         else:
             self._names = NamedIndex(names)
 
-        self.__init_sc(sc)
+        self.__init_lattice(lattice)
 
     # Define a dispatcher for converting and requesting
     # new Geometries
@@ -181,7 +184,7 @@ class Geometry(SuperCellChild):
                          )
     )
 
-    def __init_sc(self, sc):
+    def __init_lattice(self, lattice):
         """ Initializes the supercell by *calculating* the size if not supplied
 
         If the supercell has not been passed we estimate the unit cell size
@@ -190,9 +193,9 @@ class Geometry(SuperCellChild):
         """
         # We still need the *default* super cell for
         # estimating the supercell
-        self.set_supercell(sc)
+        self.set_lattice(lattice)
 
-        if sc is not None:
+        if lattice is not None:
             return
 
         # First create an initial guess for the supercell
@@ -205,7 +208,7 @@ class Geometry(SuperCellChild):
 
             # We create a molecule box with +10 A in each direction
             m, M = np.amin(self.xyz, axis=0), np.amax(self.xyz, axis=0) + 10.
-            self.set_supercell(M-m)
+            self.set_lattice(M-m)
             return
 
         sc_cart = _a.zerosd([3])
@@ -235,7 +238,7 @@ class Geometry(SuperCellChild):
             cart[i] = 0.
 
         # Re-set the supercell to the newly found one
-        self.set_supercell(sc_cart)
+        self.set_lattice(sc_cart)
 
     @property
     def atoms(self) -> Atoms:
@@ -448,7 +451,7 @@ class Geometry(SuperCellChild):
         -------
         Geometry
              the primary unit cell
-        SuperCell
+        Lattice
              the tiled supercell numbers used to find the primary unit cell (only if `ret_super` is true)
 
         Raises
@@ -517,13 +520,13 @@ class Geometry(SuperCellChild):
             raise SislError(f'{self.__class__.__name__}.as_primary could not determine the optimal supercell.')
 
         # Cut down the supercell (TODO this does not correct the number of supercell connections!)
-        sc = self.sc.copy()
+        lattice = self.lattice.copy()
         for i in range(3):
-            sc = sc.untile(supercell[i], i)
+            lattice = lattice.untile(supercell[i], i)
 
         # Now we need to find the atoms that are in the primary cell
         # We do this by finding all coordinates within the primary unit-cell
-        fxyz = dot(self.xyz, sc.icell.T)
+        fxyz = dot(self.xyz, lattice.icell.T)
         # Move to 0 and shift in 0.05 Ang in each direction
         fxyz -= fxyz.min(0)
 
@@ -539,7 +542,7 @@ class Geometry(SuperCellChild):
         ind = np.logical_and.reduce(fxyz < 1., axis=1).nonzero()[0]
 
         geom = self.sub(ind)
-        geom.set_supercell(sc)
+        geom.set_lattice(lattice)
         if ret_super:
             return geom, supercell
         return geom
@@ -697,7 +700,7 @@ class Geometry(SuperCellChild):
         s += str(self.atoms).replace('\n', '\n ')
         if len(self.names) > 0:
             s += ',\n ' + str(self.names).replace('\n', '\n ')
-        return (s + ',\n maxR: {0:.5f},\n {1}\n}}'.format(self.maxR(), str(self.sc).replace('\n', '\n '))).strip()
+        return (s + ',\n maxR: {0:.5f},\n {1}\n}}'.format(self.maxR(), str(self.lattice).replace('\n', '\n '))).strip()
 
     def __repr__(self) -> str:
         """ A simple, short string representation. """
@@ -1087,7 +1090,7 @@ class Geometry(SuperCellChild):
 
     def copy(self) -> Geometry:
         """ A copy of the object. """
-        g = self.__class__(np.copy(self.xyz), atoms=self.atoms.copy(), sc=self.sc.copy())
+        g = self.__class__(np.copy(self.xyz), atoms=self.atoms.copy(), lattice=self.lattice.copy())
         g._names = self.names.copy()
         return g
 
@@ -1435,7 +1438,7 @@ class Geometry(SuperCellChild):
                 lattice = (lattice,)
             fxyz = self.fxyz
             for ax in lattice:
-                atoms = _sort(fxyz[:, ax] * self.sc.length[ax], atoms, **kwargs)
+                atoms = _sort(fxyz[:, ax] * self.lattice.length[ax], atoms, **kwargs)
             return atoms
         funcs["lattice"] = _lattice
 
@@ -1726,11 +1729,11 @@ class Geometry(SuperCellChild):
 
         See Also
         --------
-        SuperCell.fit : update the supercell according to a reference supercell
+        Lattice.fit : update the supercell according to a reference supercell
         remove : the negative of this routine, i.e. remove a subset of atoms
         """
         atoms = self.sc2uc(atoms)
-        return self.__class__(self.xyz[atoms, :], atoms=self.atoms.sub(atoms), sc=self.sc.copy())
+        return self.__class__(self.xyz[atoms, :], atoms=self.atoms.sub(atoms), lattice=self.lattice.copy())
 
     def sub_orbital(self, atoms, orbitals) -> Geometry:
         r""" Retain only a subset of the orbitals on `atoms` according to `orbitals`
@@ -1978,12 +1981,12 @@ class Geometry(SuperCellChild):
         # Truncate to the correct segments
         lseg = segment % reps
         # Cut down cell
-        sc = self.sc.untile(reps, axis)
+        lattice = self.lattice.untile(reps, axis)
         # List of atoms
         n = self.na // reps
         off = n * lseg
         new = self.sub(_a.arangei(off, off + n))
-        new.set_supercell(sc)
+        new.set_lattice(lattice)
         if not np.allclose(new.tile(reps, axis).xyz, self.xyz, rtol=rtol, atol=atol):
             warn("The cut structure cannot be re-created by tiling\n"
                  "The tolerance between the coordinates can be altered using rtol, atol")
@@ -2006,7 +2009,7 @@ class Geometry(SuperCellChild):
 
         Examples
         --------
-        >>> geom = Geometry([[0, 0, 0], [0.5, 0, 0]], sc=1.)
+        >>> geom = Geometry([[0, 0, 0], [0.5, 0, 0]], lattice=1.)
         >>> g = geom.tile(2,axis=0)
         >>> print(g.xyz) # doctest: +NORMALIZE_WHITESPACE
         [[0.   0.   0. ]
@@ -2032,7 +2035,7 @@ class Geometry(SuperCellChild):
         if reps < 1:
             raise ValueError(f'{self.__class__.__name__}.tile requires a repetition above 0')
 
-        sc = self.sc.tile(reps, axis)
+        lattice = self.lattice.tile(reps, axis)
 
         # Our first repetition *must* be with
         # the former coordinate
@@ -2047,7 +2050,7 @@ class Geometry(SuperCellChild):
 
         # Create the geometry and return it (note the smaller atoms array
         # will also expand via tiling)
-        return self.__class__(xyz, atoms=self.atoms.tile(reps), sc=sc)
+        return self.__class__(xyz, atoms=self.atoms.tile(reps), lattice=lattice)
 
     def repeat(self, reps, axis) -> Geometry:
         """ Create a repeated geometry
@@ -2078,7 +2081,7 @@ class Geometry(SuperCellChild):
 
         Examples
         --------
-        >>> geom = Geometry([[0, 0, 0], [0.5, 0, 0]], sc=1)
+        >>> geom = Geometry([[0, 0, 0], [0.5, 0, 0]], lattice=1)
         >>> g = geom.repeat(2,axis=0)
         >>> print(g.xyz) # doctest: +NORMALIZE_WHITESPACE
         [[0.   0.   0. ]
@@ -2103,7 +2106,7 @@ class Geometry(SuperCellChild):
         if reps < 1:
             raise ValueError(f'{self.__class__.__name__}.repeat requires a repetition above 0')
 
-        sc = self.sc.repeat(reps, axis)
+        lattice = self.lattice.repeat(reps, axis)
 
         # Our first repetition *must* be with
         # the former coordinate
@@ -2118,7 +2121,7 @@ class Geometry(SuperCellChild):
         xyz.shape = (-1, 3)
 
         # Create the geometry and return it
-        return self.__class__(xyz, atoms=self.atoms.repeat(reps), sc=sc)
+        return self.__class__(xyz, atoms=self.atoms.repeat(reps), lattice=lattice)
 
     def __mul__(self, m, method='tile') -> Geometry:
         """ Implement easy tile/repeat function
@@ -2135,7 +2138,7 @@ class Geometry(SuperCellChild):
 
         Examples
         --------
-        >>> geometry = Geometry([0.] * 3, sc=[1.5, 3, 4])
+        >>> geometry = Geometry([0.] * 3, lattice=[1.5, 3, 4])
         >>> geometry * 2 == geometry.tile(2, 0).tile(2, 1).tile(2, 2)
         True
         >>> geometry * [2, 1, 2] == geometry.tile(2, 0).tile(2, 2)
@@ -2307,7 +2310,7 @@ class Geometry(SuperCellChild):
         See Also
         --------
         Quaternion : class to rotate
-        SuperCell.rotate : rotation passed to the contained supercell
+        Lattice.rotate : rotation passed to the contained supercell
         """
         if origin is None:
             origin = [0., 0., 0.]
@@ -2336,7 +2339,7 @@ class Geometry(SuperCellChild):
         vn /= fnorm(vn)
 
         # Rotate by direct call
-        sc = self.sc.rotate(angle, vn, rad=rad, what=what)
+        lattice = self.lattice.rotate(angle, vn, rad=rad, what=what)
 
         # Copy
         xyz = np.copy(self.xyz)
@@ -2356,7 +2359,7 @@ class Geometry(SuperCellChild):
             for i in idx:
                 xyz[atoms, i] = rotated[:, i]
 
-        return self.__class__(xyz, atoms=self.atoms.copy(), sc=sc)
+        return self.__class__(xyz, atoms=self.atoms.copy(), lattice=lattice)
 
     def rotate_miller(self, m, v) -> Geometry:
         """ Align Miller direction along ``v``
@@ -2404,7 +2407,7 @@ class Geometry(SuperCellChild):
         else:
             g.xyz[self._sanitize_atoms(atoms).ravel(), :] += np.asarray(v, g.xyz.dtype)
         if cell:
-            g.set_supercell(g.sc.translate(v))
+            g.set_lattice(g.lattice.translate(v))
         return g
     move = translate
 
@@ -2458,13 +2461,13 @@ class Geometry(SuperCellChild):
         xyz = np.copy(self.xyz)
         xyz[atoms_a, :] = self.xyz[atoms_b, :]
         xyz[atoms_b, :] = self.xyz[atoms_a, :]
-        return self.__class__(xyz, atoms=self.atoms.swap(atoms_a, atoms_b), sc=self.sc.copy())
+        return self.__class__(xyz, atoms=self.atoms.swap(atoms_a, atoms_b), lattice=self.lattice.copy())
 
     def swapaxes(self, axes_a: Union[int, str],
                  axes_b: Union[int, str], what: str="abc") -> Geometry:
         """ Swap the axes components by either lattice vectors (only cell), or Cartesian coordinates
 
-        See `SuperCell.swapaxes` for details.
+        See `Lattice.swapaxes` for details.
 
         Parameters
         ----------
@@ -2485,7 +2488,7 @@ class Geometry(SuperCellChild):
 
         See Also
         --------
-        SuperCell.swapaxes
+        Lattice.swapaxes
 
         Examples
         --------
@@ -2508,8 +2511,8 @@ class Geometry(SuperCellChild):
         """
         # swap supercell
         # We do not need to check argument types etc,
-        # SuperCell.swapaxes will do this for us
-        sc = self.sc.swapaxes(axes_a, axes_b, what)
+        # Lattice.swapaxes will do this for us
+        lattice = self.lattice.swapaxes(axes_a, axes_b, what)
 
         if isinstance(axes_a, int) and isinstance(axes_b, int):
             if "xyz" in what:
@@ -2527,7 +2530,7 @@ class Geometry(SuperCellChild):
             if aidx < 3:
                 idx[aidx], idx[bidx] = idx[bidx], idx[aidx]
 
-        return self.__class__(self.xyz[:, idx].copy(), atoms=self.atoms.copy(), sc=sc)
+        return self.__class__(self.xyz[:, idx].copy(), atoms=self.atoms.copy(), lattice=lattice)
 
     def center(self, atoms: Optional[AtomsArgument]=None,
                what: str="xyz") -> ndarray:
@@ -2550,7 +2553,7 @@ class Geometry(SuperCellChild):
             determine which center to calculate
         """
         if "cell" == what:
-            return self.sc.center()
+            return self.lattice.center()
 
         if atoms is None:
             g = self
@@ -2569,7 +2572,7 @@ class Geometry(SuperCellChild):
             avg_cos = (mass @ np.cos(theta)) / sum_mass
             avg_sin = (mass @ np.sin(theta)) / sum_mass
             avg_theta = np.arctan2(-avg_sin, -avg_cos) / (2*np.pi) + 0.5
-            return avg_theta @ g.sc.cell
+            return avg_theta @ g.lattice.cell
 
         if "mass" == what:
             mass = g.mass
@@ -2601,9 +2604,9 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        other : Geometry or SuperCell
+        other : Geometry or Lattice
             Other geometry class which needs to be appended
-            If a `SuperCell` only the super cell will be extended
+            If a `Lattice` only the super cell will be extended
         axis : int
             Cell direction to which the `other` geometry should be
             appended.
@@ -2623,11 +2626,11 @@ class Geometry(SuperCellChild):
         attach : attach a geometry
         insert : insert a geometry
         """
-        if isinstance(other, SuperCell):
+        if isinstance(other, Lattice):
             # Only extend the supercell.
             xyz = np.copy(self.xyz)
             atoms = self.atoms.copy()
-            sc = self.sc.append(other, axis)
+            lattice = self.lattice.append(other, axis)
             names = self._names.copy()
             if isinstance(offset, str):
                 if offset == "none":
@@ -2655,10 +2658,10 @@ class Geometry(SuperCellChild):
 
             xyz = np.append(self.xyz, offset + other.xyz, axis=0)
             atoms = self.atoms.append(other.atoms)
-            sc = self.sc.append(other.sc, axis)
+            lattice = self.lattice.append(other.lattice, axis)
             names = self._names.merge(other._names, offset=len(self))
 
-        return self.__class__(xyz, atoms=atoms, sc=sc, names=names)
+        return self.__class__(xyz, atoms=atoms, lattice=lattice, names=names)
 
     def prepend(self, other, axis, offset="none") -> Geometry:
         """ Prepend two structures along `axis`
@@ -2678,9 +2681,9 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        other : Geometry or SuperCell
+        other : Geometry or Lattice
             Other geometry class which needs to be prepended
-            If a `SuperCell` only the super cell will be extended
+            If a `Lattice` only the super cell will be extended
         axis : int
             Cell direction to which the `other` geometry should be
             prepended
@@ -2700,11 +2703,11 @@ class Geometry(SuperCellChild):
         attach : attach a geometry
         insert : insert a geometry
         """
-        if isinstance(other, SuperCell):
+        if isinstance(other, Lattice):
             # Only extend the supercell.
             xyz = np.copy(self.xyz)
             atoms = self.atoms.copy()
-            sc = self.sc.prepend(other, axis)
+            lattice = self.lattice.prepend(other, axis)
             names = self._names.copy()
             if isinstance(offset, str):
                 if offset == "none":
@@ -2732,20 +2735,20 @@ class Geometry(SuperCellChild):
 
             xyz = np.append(other.xyz, offset + self.xyz, axis=0)
             atoms = self.atoms.prepend(other.atoms)
-            sc = self.sc.prepend(other.sc, axis)
+            lattice = self.lattice.prepend(other.lattice, axis)
             names = other._names.merge(self._names, offset=len(other))
 
-        return self.__class__(xyz, atoms=atoms, sc=sc, names=names)
+        return self.__class__(xyz, atoms=atoms, lattice=lattice, names=names)
 
     def add(self, other, offset=(0, 0, 0)) -> Geometry:
-        """ Merge two geometries (or a Geometry and SuperCell) by adding the two atoms together
+        """ Merge two geometries (or a Geometry and Lattice) by adding the two atoms together
 
         If `other` is a Geometry only the atoms gets added, to also add the supercell vectors
-        simply do ``geom.add(other).add(other.sc)``.
+        simply do ``geom.add(other).add(other.lattice)``.
 
         Parameters
         ----------
-        other : Geometry or SuperCell
+        other : Geometry or Lattice
             Other geometry class which is added
         offset : (3,), optional
             offset in geometry of `other` when adding the atoms. Only if `other` is
@@ -2758,18 +2761,18 @@ class Geometry(SuperCellChild):
         attach : attach a geometry
         insert : insert a geometry
         """
-        if isinstance(other, SuperCell):
+        if isinstance(other, Lattice):
             xyz = self.xyz.copy() + _a.arrayd(offset)
-            sc = self.sc + other
+            lattice = self.lattice + other
             atoms = self.atoms.copy()
             names = self._names.copy()
         else:
             other = self.new(other)
             xyz = np.append(self.xyz, other.xyz + _a.arrayd(offset), axis=0)
-            sc = self.sc.copy()
+            lattice = self.lattice.copy()
             atoms = self.atoms.add(other.atoms)
             names = self._names.merge(other._names, offset=len(self))
-        return self.__class__(xyz, atoms=atoms, sc=sc, names=names)
+        return self.__class__(xyz, atoms=atoms, lattice=lattice, names=names)
 
     def insert(self, atom, other) -> Geometry:
         """ Inserts other atoms right before index
@@ -2797,19 +2800,19 @@ class Geometry(SuperCellChild):
         other = self.new(other)
         xyz = np.insert(self.xyz, atom, other.xyz, axis=0)
         atoms = self.atoms.insert(atom, other.atoms)
-        return self.__class__(xyz, atoms, sc=self.sc.copy())
+        return self.__class__(xyz, atoms, lattice=self.lattice.copy())
 
     def __add__(self, b) -> Geometry:
         """ Merge two geometries (or geometry and supercell)
 
         Parameters
         ----------
-        self, b : Geometry or SuperCell or tuple or list
+        self, b : Geometry or Lattice or tuple or list
            when adding a Geometry with a Geometry it defaults to using `add` function
            with the LHS retaining the cell-vectors.
            a tuple/list may be of length 2 with the first element being a Geometry and the second
            being an integer specifying the lattice vector where it is appended.
-           One may also use a `SuperCell` instead of a `Geometry` which behaves similarly.
+           One may also use a `Lattice` instead of a `Geometry` which behaves similarly.
 
         Examples
         --------
@@ -2825,7 +2828,7 @@ class Geometry(SuperCellChild):
         append : appending geometries
         prepend : prending geometries
         """
-        if isinstance(b, (SuperCell, Geometry)):
+        if isinstance(b, (Lattice, Geometry)):
             return self.add(b)
         return self.append(b[0], b[1])
 
@@ -2834,12 +2837,12 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        self, b : Geometry or SuperCell or tuple or list
+        self, b : Geometry or Lattice or tuple or list
            when adding a Geometry with a Geometry it defaults to using `add` function
            with the LHS retaining the cell-vectors.
            a tuple/list may be of length 2 with the first element being a Geometry and the second
            being an integer specifying the lattice vector where it is appended.
-           One may also use a `SuperCell` instead of a `Geometry` which behaves similarly.
+           One may also use a `Lattice` instead of a `Geometry` which behaves similarly.
 
         Examples
         --------
@@ -2855,7 +2858,7 @@ class Geometry(SuperCellChild):
         append : appending geometries
         prepend : prending geometries
         """
-        if isinstance(b, (SuperCell, Geometry)):
+        if isinstance(b, (Lattice, Geometry)):
             return b.add(self)
         return self + b
 
@@ -2970,7 +2973,7 @@ class Geometry(SuperCellChild):
             atoms = self._sanitize_atoms(atoms).ravel()
             xyz = np.copy(self.xyz)
             xyz[atoms, :] = self.xyz[atoms[::-1], :]
-        return self.__class__(xyz, atoms=self.atoms.reverse(atoms), sc=self.sc.copy())
+        return self.__class__(xyz, atoms=self.atoms.reverse(atoms), lattice=self.lattice.copy())
 
     def mirror(self, method, atoms: Optional[AtomsArgument]=None, point=(0, 0, 0)) -> Geometry:
         r""" Mirrors the atomic coordinates about a plane given by its normal vector
@@ -3058,12 +3061,12 @@ class Geometry(SuperCellChild):
 
         Examples
         --------
-        >>> geom = Geometry([[0, 0, 0], [0.5, 0, 0]], sc=1.)
+        >>> geom = Geometry([[0, 0, 0], [0.5, 0, 0]], lattice=1.)
         >>> print(geom.axyz(isc=[1,0,0])) # doctest: +NORMALIZE_WHITESPACE
         [[1.   0.   0. ]
          [1.5  0.   0. ]]
 
-        >>> geom = Geometry([[0, 0, 0], [0.5, 0, 0]], sc=1.)
+        >>> geom = Geometry([[0, 0, 0], [0.5, 0, 0]], lattice=1.)
         >>> print(geom.axyz(0)) # doctest: +NORMALIZE_WHITESPACE
         [0.  0.  0.]
 
@@ -3076,11 +3079,11 @@ class Geometry(SuperCellChild):
         if isc is None:
             # get offsets from atomic indices (note that this will be per atom)
             isc = self.a2isc(atoms)
-            offset = self.sc.offset(isc)
+            offset = self.lattice.offset(isc)
             return self.xyz[self.sc2uc(atoms), :] + offset
 
         # Neither of atoms, or isc are `None`, we add the offset to all coordinates
-        return self.axyz(atoms) + self.sc.offset(isc)
+        return self.axyz(atoms) + self.lattice.offset(isc)
 
     def scale(self, scale,
               what:str ="abc",
@@ -3103,7 +3106,7 @@ class Geometry(SuperCellChild):
         scale = np.asarray(scale)
 
         # Scale the supercell
-        sc = self.sc.scale(scale, what=what)
+        lattice = self.lattice.scale(scale, what=what)
 
         if what == "xyz":
             # It is faster to rescale coordinates by simply multiplying them by the scale
@@ -3112,15 +3115,15 @@ class Geometry(SuperCellChild):
 
         elif what == "abc":
             # Scale the coordinates by keeping fractional coordinates the same
-            xyz = self.fxyz @ sc.cell
+            xyz = self.fxyz @ lattice.cell
 
             if scale_atoms:
                 # To rescale atoms, we need to know the span of each cartesian coordinate before and
                 # after the scaling, and scale the atoms according to the coordinate that has
                 # been scaled by the largest factor.
-                prev_verts = self.sc.vertices().reshape(8, 3)
+                prev_verts = self.lattice.vertices().reshape(8, 3)
                 prev_span = prev_verts.max(axis=0) - prev_verts.min(axis=0)
-                scaled_verts = sc.vertices().reshape(8, 3)
+                scaled_verts = lattice.vertices().reshape(8, 3)
                 scaled_span = scaled_verts.max(axis=0) - scaled_verts.min(axis=0)
                 max_scale = (scaled_span / prev_span).max()
         else:
@@ -3132,7 +3135,7 @@ class Geometry(SuperCellChild):
         else:
             atoms = self.atoms.copy()
 
-        return self.__class__(xyz, atoms=atoms, sc=sc)
+        return self.__class__(xyz, atoms=atoms, lattice=lattice)
 
     def within_sc(self, shapes, isc=None,
                   atoms: Optional[AtomsArgument]=None, atoms_xyz=None,
@@ -3194,7 +3197,7 @@ class Geometry(SuperCellChild):
         # Get shape centers
         off = shapes[-1].center[:]
         # Get the supercell offset
-        soff = self.sc.offset(isc)[:]
+        soff = self.lattice.offset(isc)[:]
 
         # Get atomic coordinate in principal cell
         if atoms_xyz is None:
@@ -3365,7 +3368,7 @@ class Geometry(SuperCellChild):
             off = xyz_ia
 
         # Calculate the complete offset
-        foff = self.sc.offset(isc)[:] - off[:]
+        foff = self.lattice.offset(isc)[:] - off[:]
 
         # Get atomic coordinate in principal cell
         if atoms_xyz is None:
@@ -3602,8 +3605,8 @@ class Geometry(SuperCellChild):
         for s in range(self.n_s):
 
             na = self.na * s
-            isc = self.sc.sc_off[s, :]
-            sret = self.within_sc(shapes, self.sc.sc_off[s, :],
+            isc = self.lattice.sc_off[s, :]
+            sret = self.within_sc(shapes, self.lattice.sc_off[s, :],
                                   atoms=atoms, atoms_xyz=atoms_xyz,
                                   ret_xyz=ret_xyz, ret_rij=ret_rij)
             if n_ret == 0:
@@ -3730,7 +3733,7 @@ class Geometry(SuperCellChild):
         for s in range(self.n_s):
 
             na = self.na * s
-            isc = self.sc.sc_off[s, :]
+            isc = self.lattice.sc_off[s, :]
             sret = self.close_sc(xyz_ia, isc, R=R,
                                  atoms=atoms, atoms_xyz=atoms_xyz,
                                  ret_xyz=ret_xyz, ret_rij=ret_rij)
@@ -3809,7 +3812,7 @@ class Geometry(SuperCellChild):
         atoms1 = self._sanitize_atoms(atoms1)
         if atoms2 is None:
             # we only need to transpose atoms1
-            offset = self.sc.sc_index(-self.a2isc(atoms1)) * self.na
+            offset = self.lattice.sc_index(-self.a2isc(atoms1)) * self.na
             return atoms1 % self.na + offset
 
         atoms2 = self._sanitize_atoms(atoms2)
@@ -3824,7 +3827,7 @@ class Geometry(SuperCellChild):
 
         # Now convert atoms
         na = self.na
-        sc_index = self.sc.sc_index
+        sc_index = self.lattice.sc_index
         isc1 = self.a2isc(atoms1)
         isc2 = self.a2isc(atoms2)
 
@@ -3871,7 +3874,7 @@ class Geometry(SuperCellChild):
         orb1 = self._sanitize_orbs(orb1)
         if orb2 is None:
             # we only need to transpose orb1
-            offset = self.sc.sc_index(-self.o2isc(orb1)) * self.no
+            offset = self.lattice.sc_index(-self.o2isc(orb1)) * self.no
             return orb1 % self.no + offset
 
         orb2 = self._sanitize_orbs(orb2)
@@ -3886,7 +3889,7 @@ class Geometry(SuperCellChild):
 
         # Now convert orbs
         no = self.no
-        sc_index = self.sc.sc_index
+        sc_index = self.lattice.sc_index
         isc1 = self.o2isc(orb1)
         isc2 = self.o2isc(orb2)
 
@@ -4025,7 +4028,7 @@ class Geometry(SuperCellChild):
         atoms = self._sanitize_atoms(atoms) // self.na
         if atoms.ndim > 1:
             atoms = atoms.ravel()
-        return self.sc.sc_off[atoms, :]
+        return self.lattice.sc_off[atoms, :]
 
     # This function is a bit weird, it returns a real array,
     # however, there should be no ambiguity as it corresponds to th
@@ -4034,7 +4037,7 @@ class Geometry(SuperCellChild):
         """
         Returns the super-cell offset for a specific atom
         """
-        return self.sc.offset(self.a2isc(atoms))
+        return self.lattice.offset(self.a2isc(atoms))
 
     def o2isc(self, orbitals: OrbitalsArgument) -> ndarray:
         """
@@ -4045,15 +4048,15 @@ class Geometry(SuperCellChild):
         orbitals = self._sanitize_orbs(orbitals) // self.no
         if orbitals.ndim > 1:
             orbitals = orbitals.ravel()
-        return self.sc.sc_off[orbitals, :]
+        return self.lattice.sc_off[orbitals, :]
 
     def o2sc(self, orbitals: OrbitalsArgument) -> ndarray:
         """
         Returns the super-cell offset for a specific orbital.
         """
-        return self.sc.offset(self.o2isc(orbitals))
+        return self.lattice.offset(self.o2isc(orbitals))
 
-    def __plot__(self, axis=None, supercell=True, axes=False,
+    def __plot__(self, axis=None, lattice=True, axes=False,
                  atom_indices=False, *args, **kwargs):
         """ Plot the geometry in a specified ``matplotlib.Axes`` object.
 
@@ -4061,8 +4064,8 @@ class Geometry(SuperCellChild):
         ----------
         axis : array_like, optional
            only plot a subset of the axis, defaults to all axis
-        supercell : bool, optional
-           If `True` also plot the supercell structure
+        lattice : bool, optional
+           If `True` also plot the lattice structure
         atom_indices : bool, optional
            if true, also add atomic numbering in the plot (0-based)
         axes : bool or matplotlib.Axes, optional
@@ -4092,8 +4095,8 @@ class Geometry(SuperCellChild):
         axes = plt.get_axes(axes, **d)
 
         # Start by plotting the supercell
-        if supercell:
-            axes = self.sc.__plot__(axis, axes=axes, *args, **kwargs)
+        if lattice:
+            axes = self.lattice.__plot__(axis, axes=axes, *args, **kwargs)
 
         # Create short-hand
         xyz = self.xyz
@@ -4132,7 +4135,7 @@ class Geometry(SuperCellChild):
         other = self.new(other)
         if not isinstance(other, Geometry):
             return False
-        same = self.sc.equal(other.sc, tol=tol)
+        same = self.lattice.equal(other.lattice, tol=tol)
         same = same and np.allclose(self.xyz, other.xyz, atol=tol)
         same = same and self.atoms.equal(other.atoms, R)
         return same
@@ -4145,7 +4148,6 @@ class Geometry(SuperCellChild):
 
     def sparserij(self, dtype=np.float64, na_iR=1000, method='rand'):
         """ Return the sparse matrix with all distances in the matrix
-
         The sparse matrix will only be defined for the elements which have
         orbitals overlapping with other atoms.
 
@@ -4228,7 +4230,7 @@ class Geometry(SuperCellChild):
 
         Examples
         --------
-        >>> geom = Geometry([0]*3, Atom(1, R=1.), sc=SuperCell(1., nsc=[5, 5, 1]))
+        >>> geom = Geometry([0]*3, Atom(1, R=1.), lattice=Lattice(1., nsc=[5, 5, 1]))
         >>> geom.distance() # use geom.maxR() # doctest: +NORMALIZE_WHITESPACE
         array([1.])
         >>> geom.distance(tol=[0.5, 0.4, 0.3, 0.2])
@@ -4266,7 +4268,7 @@ class Geometry(SuperCellChild):
                 if i == 0 and j == 0 and k == 0:
                     continue
                 sc = [i, j, k]
-                off = self.sc.offset(sc)
+                off = self.lattice.offset(sc)
 
                 for ii, jj, kk in product([0, 1], [0, 1], [0, 1]):
                     o = self.cell[0, :] * ii + \
@@ -4345,7 +4347,7 @@ class Geometry(SuperCellChild):
 
         return d
 
-    def within_inf(self, sc, periodic=None, tol=1e-5, origin=None):
+    def within_inf(self, lattice, periodic=None, tol=1e-5, origin=None):
         """ Find all atoms within a provided supercell
 
         Note this function is rather different from `close` and `within`.
@@ -4353,7 +4355,7 @@ class Geometry(SuperCellChild):
         periodic system (where ``self.nsc > 1`` or `periodic` is true).
 
         Atomic coordinates lying on the boundary of the supercell will be duplicated
-        on the neighbouring supercell images. Thus performing `geom.within_inf(geom.sc)`
+        on the neighbouring supercell images. Thus performing `geom.within_inf(geom.lattice)`
         may result in more atoms than in the structure.
 
         Notes
@@ -4363,7 +4365,7 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        sc : SuperCell or SuperCellChild
+        lattice : Lattice or LatticeChild
             the supercell in which this geometry should be expanded into.
         periodic : list of bool
             explicitly define the periodic directions, by default the periodic
@@ -4378,7 +4380,7 @@ class Geometry(SuperCellChild):
         Returns
         -------
         numpy.ndarray
-           unit-cell atomic indices which are inside the `sc` cell
+           unit-cell atomic indices which are inside the `lattice` cell
         numpy.ndarray
            atomic coordinates for the `ia` atoms (including supercell offsets)
         numpy.ndarray
@@ -4396,8 +4398,8 @@ class Geometry(SuperCellChild):
         # enough to fully encompass the supercell
 
         # 1. Number of times each lattice vector must be expanded to fit
-        #    inside the "possibly" larger `sc`.
-        idx = dot(sc.cell, self.icell.T)
+        #    inside the "possibly" larger `lattice`.
+        idx = dot(lattice.cell, self.icell.T)
         tile_min = floor(idx.min(0))
         tile_max = ceil(idx.max(0)).astype(dtype=int32)
 
@@ -4410,7 +4412,7 @@ class Geometry(SuperCellChild):
         del idx, tmp
 
         # 1a) correct for origin displacement
-        idx = floor(dot(sc.origin, self.icell.T))
+        idx = floor(dot(lattice.origin, self.icell.T))
         tile_min = np.where(tile_min < idx, tile_min, idx).astype(dtype=int32)
         idx = floor(dot(origin, self.icell.T))
         tile_min = np.where(tile_min < idx, tile_min, idx).astype(dtype=int32)
@@ -4421,7 +4423,7 @@ class Geometry(SuperCellChild):
 
         # 3. Find the *new* origin according to the *negative* tilings.
         #    This is important for skewed cells as the placement of the new
-        #    larger geometry has to be shifted to have sc inside
+        #    larger geometry has to be shifted to have lattice inside
         big_origin = (tile_min.reshape(3, 1) * self.cell).sum(0)
 
         # The xyz geometry that fully encompass the (possibly) larger supercell
@@ -4429,7 +4431,7 @@ class Geometry(SuperCellChild):
         full_geom = (self * tile).translate(big_origin - origin)
 
         # Now we have to figure out all atomic coordinates within
-        cuboid = sc.toCuboid()
+        cuboid = lattice.toCuboid()
 
         # Make sure that full_geom doesn't return coordinates outside the unit cell
         # for non periodic directions
@@ -4537,18 +4539,18 @@ class Geometry(SuperCellChild):
     # Create pickling routines
     def __getstate__(self):
         """ Returns the state of this object """
-        d = self.sc.__getstate__()
+        d = self.lattice.__getstate__()
         d['xyz'] = self.xyz
         d['atoms'] = self.atoms.__getstate__()
         return d
 
     def __setstate__(self, d):
         """ Re-create the state of this object """
-        sc = SuperCell([1, 1, 1])
-        sc.__setstate__(d)
+        lattice = Lattice([1, 1, 1])
+        lattice.__setstate__(d)
         atoms = Atoms()
         atoms.__setstate__(d['atoms'])
-        self.__init__(d['xyz'], atoms=atoms, sc=sc)
+        self.__init__(d['xyz'], atoms=atoms, lattice=lattice)
 
     @classmethod
     def _ArgumentParser_args_single(cls):
@@ -4947,8 +4949,8 @@ class GeometryNewAseDispatcher(GeometryNewDispatcher):
         xyz = aseg.get_positions()
         cell = aseg.get_cell()
         nsc = [3 if pbc else 1 for pbc in aseg.pbc]
-        sc = SuperCell(cell, nsc=nsc)
-        return self._obj(xyz, atoms=Z, sc=sc, **kwargs)
+        lattice = Lattice(cell, nsc=nsc)
+        return self._obj(xyz, atoms=Z, lattice=lattice, **kwargs)
 new_dispatch.register("ase", GeometryNewAseDispatcher)
 
 # currently we can't ensure the ase Atoms type
@@ -4981,8 +4983,8 @@ class GeometryNewpymatgenDispatcher(GeometryNewDispatcher):
         else:
             cell = xyz.max() - xyz.min(0) + 15.
             nsc = [1, 1, 1]
-        sc = SuperCell(cell, nsc=nsc)
-        return self._obj(xyz, atoms=Z, sc=sc, **kwargs)
+        lattice = Lattice(cell, nsc=nsc)
+        return self._obj(xyz, atoms=Z, lattice=lattice, **kwargs)
 new_dispatch.register("pymatgen", GeometryNewpymatgenDispatcher)
 
 # currently we can't ensure the pymatgen classes
@@ -5229,7 +5231,7 @@ lattice vector.
         print('Cell:')
         for i in (0, 1, 2):
             print('  {:10.6f} {:10.6f} {:10.6f}'.format(*g.cell[i, :]))
-        print('SuperCell:')
+        print('Lattice:')
         print('  {:d} {:d} {:d}'.format(*g.nsc))
         print(' {:>10s} {:>10s} {:>10s}  {:>3s}'.format('x', 'y', 'z', 'Z'))
         for ia in g:

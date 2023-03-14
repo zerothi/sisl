@@ -46,7 +46,7 @@ class locpotSileVASP(carSileVASP):
         """
         index = kwargs.get("spin", index)
         geom = self.read_geometry()
-        V = geom.sc.volume
+        V = geom.lattice.volume
 
         # Now we are past the cell and geometry
         # We can now read the size of LOCPOT

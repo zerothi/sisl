@@ -7,7 +7,7 @@ import math as m
 
 import numpy as np
 
-from sisl import Geometry, Atom, SuperCell, Grid
+from sisl import Geometry, Atom, Lattice, Grid
 from sisl.grid import sgrid
 from sisl import get_sile
 
@@ -20,17 +20,17 @@ def setup():
         def __init__(self):
             bond = 1.42
             sq3h = 3.**.5 * 0.5
-            self.sc = SuperCell(np.array([[1.5, sq3h, 0.],
-                                          [1.5, -sq3h, 0.],
-                                          [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
+            self.lattice = Lattice(np.array([[1.5, sq3h, 0.],
+                                             [1.5, -sq3h, 0.],
+                                             [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
             C = Atom(Z=6, R=[bond * 1.01] * 2)
             self.g = Geometry(np.array([[0., 0., 0.],
                                         [1., 0., 0.]], np.float64) * bond,
-                              atoms=C, sc=self.sc)
+                              atoms=C, lattice=self.lattice)
             self.grid = Grid(0.2, geometry=self.g)
             self.grid.grid[:, :, :] = np.random.rand(*self.grid.shape)
 
-            self.mol = Geometry([[i, 0, 0] for i in range(10)], sc=[50])
+            self.mol = Geometry([[i, 0, 0] for i in range(10)], lattice=[50])
 
             self.grid_mol = Grid(0.2, geometry=self.mol)
             self.grid_mol.grid[:, :, :] = np.random.rand(*self.grid_mol.shape)

@@ -11,7 +11,7 @@ import numpy as np
 import sisl.geom as sisl_geom
 from sisl import SislWarning, SislError, SislDeprecation
 from sisl import Cube, Sphere
-from sisl import Geometry, Atom, SuperCell
+from sisl import Geometry, Atom, Lattice
 
 _dir = osp.join('sisl')
 
@@ -24,15 +24,15 @@ def setup():
         def __init__(self):
             bond = 1.42
             sq3h = 3.**.5 * 0.5
-            self.sc = SuperCell(np.array([[1.5, sq3h, 0.],
+            self.lattice = Lattice(np.array([[1.5, sq3h, 0.],
                                           [1.5, -sq3h, 0.],
                                           [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
             C = Atom(Z=6, R=[bond * 1.01]*2)
             self.g = Geometry(np.array([[0., 0., 0.],
                                         [1., 0., 0.]], np.float64) * bond,
-                              atoms=C, sc=self.sc)
+                              atoms=C, lattice=self.lattice)
 
-            self.mol = Geometry([[i, 0, 0] for i in range(10)], sc=[50])
+            self.mol = Geometry([[i, 0, 0] for i in range(10)], lattice=[50])
     return t()
 
 
@@ -49,7 +49,7 @@ class TestGeometry:
         for ia in setup.g:
             i += 1
         assert i == len(setup.g)
-        assert setup.g.no_s == 2 * len(setup.g) * np.prod(setup.g.sc.nsc)
+        assert setup.g.no_s == 2 * len(setup.g) * np.prod(setup.g.lattice.nsc)
 
     def test_properties(self, setup):
         assert 2 == len(setup.g)
@@ -99,22 +99,22 @@ class TestGeometry:
             t = setup.g.tile(0, 0)
 
     def test_tile1(self, setup):
-        cell = np.copy(setup.g.sc.cell)
+        cell = np.copy(setup.g.lattice.cell)
         cell[0, :] *= 2
         t = setup.g.tile(2, 0)
-        assert np.allclose(cell, t.sc.cell)
+        assert np.allclose(cell, t.lattice.cell)
         cell[1, :] *= 2
         t = t.tile(2, 1)
-        assert np.allclose(cell, t.sc.cell)
+        assert np.allclose(cell, t.lattice.cell)
         cell[2, :] *= 2
         t = t.tile(2, 2)
-        assert np.allclose(cell, t.sc.cell)
+        assert np.allclose(cell, t.lattice.cell)
 
     def test_tile2(self, setup):
-        cell = np.copy(setup.g.sc.cell)
+        cell = np.copy(setup.g.lattice.cell)
         cell[:, :] *= 2
         t = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
-        assert np.allclose(cell, t.sc.cell)
+        assert np.allclose(cell, t.lattice.cell)
 
     def test_sort(self, setup):
         t = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
@@ -124,35 +124,35 @@ class TestGeometry:
         assert np.allclose(ts.xyz, tS.xyz)
 
     def test_tile3(self, setup):
-        cell = np.copy(setup.g.sc.cell)
+        cell = np.copy(setup.g.lattice.cell)
         cell[:, :] *= 2
         t1 = setup.g * 2
-        cell = np.copy(setup.g.sc.cell)
+        cell = np.copy(setup.g.lattice.cell)
         cell[0, :] *= 2
         t1 = setup.g * (2, 0)
-        assert np.allclose(cell, t1.sc.cell)
+        assert np.allclose(cell, t1.lattice.cell)
         t = setup.g * ((2, 0), 'tile')
-        assert np.allclose(cell, t.sc.cell)
+        assert np.allclose(cell, t.lattice.cell)
         assert np.allclose(t1.xyz, t.xyz)
         cell[1, :] *= 2
         t1 = t * (2, 1)
-        assert np.allclose(cell, t1.sc.cell)
+        assert np.allclose(cell, t1.lattice.cell)
         t = t * ((2, 1), 'tile')
-        assert np.allclose(cell, t.sc.cell)
+        assert np.allclose(cell, t.lattice.cell)
         assert np.allclose(t1.xyz, t.xyz)
         cell[2, :] *= 2
         t1 = t * (2, 2)
-        assert np.allclose(cell, t1.sc.cell)
+        assert np.allclose(cell, t1.lattice.cell)
         t = t * ((2, 2), 'tile')
-        assert np.allclose(cell, t.sc.cell)
+        assert np.allclose(cell, t.lattice.cell)
         assert np.allclose(t1.xyz, t.xyz)
 
         # Full
         t = setup.g * [2, 2, 2]
-        assert np.allclose(cell, t.sc.cell)
+        assert np.allclose(cell, t.lattice.cell)
         assert np.allclose(t1.xyz, t.xyz)
         t = setup.g * ([2, 2, 2], 't')
-        assert np.allclose(cell, t.sc.cell)
+        assert np.allclose(cell, t.lattice.cell)
         assert np.allclose(t1.xyz, t.xyz)
 
     def test_tile4(self, setup):
@@ -169,47 +169,47 @@ class TestGeometry:
             t = setup.g.repeat(0, 0)
 
     def test_repeat1(self, setup):
-        cell = np.copy(setup.g.sc.cell)
+        cell = np.copy(setup.g.lattice.cell)
         cell[0, :] *= 2
         t = setup.g.repeat(2, 0)
-        assert np.allclose(cell, t.sc.cell)
+        assert np.allclose(cell, t.lattice.cell)
         cell[1, :] *= 2
         t = t.repeat(2, 1)
-        assert np.allclose(cell, t.sc.cell)
+        assert np.allclose(cell, t.lattice.cell)
         cell[2, :] *= 2
         t = t.repeat(2, 2)
-        assert np.allclose(cell, t.sc.cell)
+        assert np.allclose(cell, t.lattice.cell)
 
     def test_repeat2(self, setup):
-        cell = np.copy(setup.g.sc.cell)
+        cell = np.copy(setup.g.lattice.cell)
         cell[:, :] *= 2
         t = setup.g.repeat(2, 0).repeat(2, 1).repeat(2, 2)
-        assert np.allclose(cell, t.sc.cell)
+        assert np.allclose(cell, t.lattice.cell)
 
     def test_repeat3(self, setup):
-        cell = np.copy(setup.g.sc.cell)
+        cell = np.copy(setup.g.lattice.cell)
         cell[0, :] *= 2
         t1 = setup.g.repeat(2, 0)
-        assert np.allclose(cell, t1.sc.cell)
+        assert np.allclose(cell, t1.lattice.cell)
         t = setup.g * ((2, 0), 'repeat')
-        assert np.allclose(cell, t.sc.cell)
+        assert np.allclose(cell, t.lattice.cell)
         assert np.allclose(t1.xyz, t.xyz)
         cell[1, :] *= 2
         t1 = t.repeat(2, 1)
-        assert np.allclose(cell, t1.sc.cell)
+        assert np.allclose(cell, t1.lattice.cell)
         t = t * ((2, 1), 'r')
-        assert np.allclose(cell, t.sc.cell)
+        assert np.allclose(cell, t.lattice.cell)
         assert np.allclose(t1.xyz, t.xyz)
         cell[2, :] *= 2
         t1 = t.repeat(2, 2)
-        assert np.allclose(cell, t1.sc.cell)
+        assert np.allclose(cell, t1.lattice.cell)
         t = t * ((2, 2), 'repeat')
-        assert np.allclose(cell, t.sc.cell)
+        assert np.allclose(cell, t.lattice.cell)
         assert np.allclose(t1.xyz, t.xyz)
 
         # Full
         t = setup.g * ([2, 2, 2], 'r')
-        assert np.allclose(cell, t.sc.cell)
+        assert np.allclose(cell, t.lattice.cell)
         assert np.allclose(t1.xyz, t.xyz)
 
     def test_repeat4(self, setup):
@@ -247,7 +247,7 @@ class TestGeometry:
         assert np.allclose(setup.g[0], setup.g.xyz[0, :])
         assert np.allclose(setup.g[2], setup.g.axyz(2))
         isc = setup.g.a2isc(2)
-        off = setup.g.sc.offset(isc)
+        off = setup.g.lattice.offset(isc)
         assert np.allclose(setup.g.xyz[0] + off, setup.g.axyz(2))
         assert np.allclose(setup.g.xyz[0] + off, setup.g.axyz(0, isc))
         assert np.allclose(setup.g.xyz[0] + off, setup.g.axyz(isc=isc)[0])
@@ -376,18 +376,18 @@ class TestGeometry:
         assert setup.g == setup.g.copy()
 
     def test_nsc1(self, setup):
-        sc = setup.g.sc.copy()
-        nsc = np.copy(sc.nsc)
-        sc.set_nsc([5, 5, 0])
-        assert np.allclose([5, 5, 1], sc.nsc)
-        assert len(sc.sc_off) == np.prod(sc.nsc)
+        lattice = setup.g.lattice.copy()
+        nsc = np.copy(lattice.nsc)
+        lattice.set_nsc([5, 5, 0])
+        assert np.allclose([5, 5, 1], lattice.nsc)
+        assert len(lattice.sc_off) == np.prod(lattice.nsc)
 
     def test_nsc2(self, setup):
-        sc = setup.g.sc.copy()
-        nsc = np.copy(sc.nsc)
-        sc.set_nsc([0, 1, 0])
-        assert np.allclose([1, 1, 1], sc.nsc)
-        assert len(sc.sc_off) == np.prod(sc.nsc)
+        lattice = setup.g.lattice.copy()
+        nsc = np.copy(lattice.nsc)
+        lattice.set_nsc([0, 1, 0])
+        assert np.allclose([1, 1, 1], lattice.nsc)
+        assert len(lattice.sc_off) == np.prod(lattice.nsc)
 
     def test_rotate_deprecate(self, setup):
         rot1 = setup.g.rotate(180, "xz", what="xyz")
@@ -399,47 +399,47 @@ class TestGeometry:
 
     def test_rotation1(self, setup):
         rot = setup.g.rotate(180, [0, 0, 1], what="xyz+abc")
-        rot.sc.cell[2, 2] *= -1
-        assert np.allclose(-rot.sc.cell, setup.g.sc.cell)
+        rot.lattice.cell[2, 2] *= -1
+        assert np.allclose(-rot.lattice.cell, setup.g.lattice.cell)
         assert np.allclose(-rot.xyz, setup.g.xyz)
 
         rot = setup.g.rotate(np.pi, [0, 0, 1], rad=True, what="xyz+abc")
-        rot.sc.cell[2, 2] *= -1
-        assert np.allclose(-rot.sc.cell, setup.g.sc.cell)
+        rot.lattice.cell[2, 2] *= -1
+        assert np.allclose(-rot.lattice.cell, setup.g.lattice.cell)
         assert np.allclose(-rot.xyz, setup.g.xyz)
 
         rot = rot.rotate(180, "z", what="xyz+abc")
-        rot.sc.cell[2, 2] *= -1
-        assert np.allclose(rot.sc.cell, setup.g.sc.cell)
+        rot.lattice.cell[2, 2] *= -1
+        assert np.allclose(rot.lattice.cell, setup.g.lattice.cell)
         assert np.allclose(rot.xyz, setup.g.xyz)
 
     def test_rotation2(self, setup):
         rot = setup.g.rotate(180, "z", what='abc')
-        rot.sc.cell[2, 2] *= -1
-        assert np.allclose(-rot.sc.cell, setup.g.sc.cell)
+        rot.lattice.cell[2, 2] *= -1
+        assert np.allclose(-rot.lattice.cell, setup.g.lattice.cell)
         assert np.allclose(rot.xyz, setup.g.xyz)
 
         rot = setup.g.rotate(np.pi, [0, 0, 1], rad=True, what='abc')
-        rot.sc.cell[2, 2] *= -1
-        assert np.allclose(-rot.sc.cell, setup.g.sc.cell)
+        rot.lattice.cell[2, 2] *= -1
+        assert np.allclose(-rot.lattice.cell, setup.g.lattice.cell)
         assert np.allclose(rot.xyz, setup.g.xyz)
 
         rot = rot.rotate(180, [0, 0, 1], what='abc')
-        rot.sc.cell[2, 2] *= -1
-        assert np.allclose(rot.sc.cell, setup.g.sc.cell)
+        rot.lattice.cell[2, 2] *= -1
+        assert np.allclose(rot.lattice.cell, setup.g.lattice.cell)
         assert np.allclose(rot.xyz, setup.g.xyz)
 
     def test_rotation3(self, setup):
         rot = setup.g.rotate(180, [0, 0, 1], what='xyz')
-        assert np.allclose(rot.sc.cell, setup.g.sc.cell)
+        assert np.allclose(rot.lattice.cell, setup.g.lattice.cell)
         assert np.allclose(-rot.xyz, setup.g.xyz)
 
         rot = setup.g.rotate(np.pi, [0, 0, 1], rad=True, what='xyz')
-        assert np.allclose(rot.sc.cell, setup.g.sc.cell)
+        assert np.allclose(rot.lattice.cell, setup.g.lattice.cell)
         assert np.allclose(-rot.xyz, setup.g.xyz)
 
         rot = rot.rotate(180, "z", what='xyz')
-        assert np.allclose(rot.sc.cell, setup.g.sc.cell)
+        assert np.allclose(rot.lattice.cell, setup.g.lattice.cell)
         assert np.allclose(rot.xyz, setup.g.xyz)
 
     def test_rotation4(self, setup):
@@ -561,11 +561,11 @@ class TestGeometry:
             assert len(s) == len(setup.g) * 2
             assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :]* 2)
             assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :]* 2)
-            s = setup.g.append(setup.g.sc, axis)
+            s = setup.g.append(setup.g.lattice, axis)
             assert len(s) == len(setup.g)
             assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :]* 2)
             assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :]* 2)
-            s = setup.g.prepend(setup.g.sc, axis)
+            s = setup.g.prepend(setup.g.lattice, axis)
             assert len(s) == len(setup.g)
             assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :]* 2)
             assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :]* 2)
@@ -580,7 +580,7 @@ class TestGeometry:
 
     def test_append_prepend_offset(self, setup):
         for axis in [0, 1, 2]:
-            t = setup.g.sc.cell[axis, :].copy()
+            t = setup.g.lattice.cell[axis, :].copy()
             t *= 10. / (t ** 2).sum() ** 0.5
             s1 = setup.g.copy()
             s2 = setup.g.translate(t)
@@ -641,7 +641,7 @@ class TestGeometry:
 
     def test___add1__(self, setup):
         n = len(setup.g)
-        double = setup.g + setup.g + setup.g.sc
+        double = setup.g + setup.g + setup.g.lattice
         assert len(double) == n * 2
         assert np.allclose(setup.g.cell * 2, double.cell)
         assert np.allclose(setup.g.xyz[:n, :], double.xyz[:n, :])
@@ -690,7 +690,7 @@ class TestGeometry:
         double = setup.g.add(setup.g)
         assert len(double) == len(setup.g) * 2
         assert np.allclose(setup.g.cell, double.cell)
-        double = setup.g.add(setup.g).add(setup.g.sc)
+        double = setup.g.add(setup.g).add(setup.g.lattice)
         assert len(double) == len(setup.g) * 2
         assert np.allclose(setup.g.cell * 2, double.cell)
 
@@ -859,8 +859,8 @@ class TestGeometry:
 
     def test_within_inf1(self, setup):
         g = setup.g.translate([0.05] * 3)
-        sc_3x3 = g.sc.tile(3, 0).tile(3, 1)
-        assert len(g.within_inf(sc_3x3)[0]) == len(g) * 3 ** 2
+        lattice_3x3 = g.lattice.tile(3, 0).tile(3, 1)
+        assert len(g.within_inf(lattice_3x3)[0]) == len(g) * 3 ** 2
 
     def test_within_inf_nonperiodic(self, setup):
         g = setup.g.copy()
@@ -869,13 +869,13 @@ class TestGeometry:
         # we should get only the atoms in the unit cell.
         g.set_nsc([3,3,1])
 
-        ia, xyz, isc = g.within_inf(g.sc, periodic=[False, False, False])
+        ia, xyz, isc = g.within_inf(g.lattice, periodic=[False, False, False])
 
         assert len(ia) == g.na
         assert np.all(isc == 0)
 
         # Make sure that it also works with mixed periodic/non periodic directions
-        ia, xyz, isc = g.within_inf(g.sc, periodic=[True, False, False])
+        ia, xyz, isc = g.within_inf(g.lattice, periodic=[True, False, False])
 
         assert len(ia) > g.na
         assert np.any(isc[:, 0] != 0)
@@ -883,18 +883,18 @@ class TestGeometry:
 
     def test_within_inf2(self, setup):
         g = setup.mol.translate([0.05] * 3)
-        sc = SuperCell(1.5)
+        lattice = Lattice(1.5)
         for o in range(10):
             origin = [o - 0.5, -0.5, -0.5]
-            sc.origin = origin
-            idx = g.within_inf(sc)[0]
+            lattice.origin = origin
+            idx = g.within_inf(lattice)[0]
             assert len(idx) == 1
             assert idx[0] == o
 
     def test_within_inf_duplicates(self, setup):
         g = setup.g.copy()
-        sc_3x3 = g.sc.tile(3, 0).tile(3, 1)
-        assert len(g.within_inf(sc_3x3)[0]) == len(g) * 3 ** 2 + 7 # 3 per vector and 1 in the upper right corner
+        lattice_3x3 = g.lattice.tile(3, 0).tile(3, 1)
+        assert len(g.within_inf(lattice_3x3)[0]) == len(g) * 3 ** 2 + 7 # 3 per vector and 1 in the upper right corner
 
     def test_close_sizes(self, setup):
         point = 0
@@ -1100,14 +1100,14 @@ class TestGeometry:
     def test_unit_cell_estimation2(self, setup):
         # Create new geometry with only the coordinates
         # and atoms
-        s1 = SuperCell([2, 2, 2])
-        g1 = Geometry([[0, 0, 0], [1, 1, 1]], sc=s1)
+        s1 = Lattice([2, 2, 2])
+        g1 = Geometry([[0, 0, 0], [1, 1, 1]], lattice=s1)
         g2 = Geometry(np.copy(g1.xyz))
         assert np.allclose(g1.cell, g2.cell)
 
         # Assert that it correctly calculates the bond-length in the
         # directions of actual distance
-        g1 = Geometry([[0, 0, 0], [1, 1, 0]], atoms='H', sc=s1)
+        g1 = Geometry([[0, 0, 0], [1, 1, 0]], atoms='H', lattice=s1)
         g2 = Geometry(np.copy(g1.xyz))
         for i in range(2):
             assert np.allclose(g1.cell[i, :], g2.cell[i, :])
@@ -1152,7 +1152,7 @@ class TestGeometry:
 
     def test_distance6(self, setup):
         # Create a 1D chain
-        geom = Geometry([0]*3, Atom(1, R=1.), sc=1)
+        geom = Geometry([0]*3, Atom(1, R=1.), lattice=1)
         geom.set_nsc([77, 1, 1])
         d = geom.distance(0)
         assert len(d) == 1
@@ -1185,7 +1185,7 @@ class TestGeometry:
 
     def test_distance7(self, setup):
         # Create a 1D chain
-        geom = Geometry([0]*3, Atom(1, R=1.), sc=1)
+        geom = Geometry([0]*3, Atom(1, R=1.), lattice=1)
         geom.set_nsc([77, 1, 1])
         # Try with a short R and a long tolerance list
         # We know that the tolerance list prevails, because
@@ -1194,7 +1194,7 @@ class TestGeometry:
         assert np.allclose(d, [1.])
 
     def test_distance8(self, setup):
-        geom = Geometry([0]*3, Atom(1, R=1.), sc=1)
+        geom = Geometry([0]*3, Atom(1, R=1.), lattice=1)
         geom.set_nsc([77, 1, 1])
         d = geom.distance(0, method='min')
         assert len(d) == 1
@@ -1205,7 +1205,7 @@ class TestGeometry:
 
     def test_optimize_nsc1(self, setup):
         # Create a 1D chain
-        geom = Geometry([0]*3, Atom(1, R=1.), sc=1)
+        geom = Geometry([0]*3, Atom(1, R=1.), lattice=1)
         geom.set_nsc([77, 77, 77])
         assert np.allclose(geom.optimize_nsc(), [3, 3, 3])
         geom.set_nsc([77, 77, 77])
@@ -1283,13 +1283,21 @@ class TestGeometry:
             self.test_argumentparser2(setup, **setup.g._ArgumentParser_args_single())
 
     def test_set_sc(self, setup):
-        # Create new geometry with only the coordinates
-        # and atoms
-        s1 = SuperCell([2, 2, 2])
-        g1 = Geometry([[0, 0, 0], [1, 1, 1]], sc=[2, 2, 1])
+        # check for deprecation
+        s1 = Lattice([2, 2, 2])
+        g1 = Geometry([[0, 0, 0], [1, 1, 1]], lattice=[2, 2, 1])
         with pytest.warns(SislDeprecation) as deps:
             g1.set_sc(s1)
-        assert g1.sc == s1
+        assert g1.lattice == s1
+        assert len(deps) == 1
+    
+    def test_set_supercell(self, setup):
+        # check for deprecation
+        s1 = Lattice([2, 2, 2])
+        g1 = Geometry([[0, 0, 0], [1, 1, 1]], lattice=[2, 2, 1])
+        with pytest.warns(SislDeprecation) as deps:
+            g1.set_supercell(s1)
+        assert g1.lattice == s1
         assert len(deps) == 1
 
     def test_attach1(self, setup):
@@ -1454,7 +1462,7 @@ def test_geometry_sort_simple():
         s = bi.sort(axis=i)
         assert np.all(np.diff(s.xyz[:, i]) >= -atol)
         s = bi.sort(lattice=i)
-        assert np.all(np.diff(s.fxyz[:, i] * bi.sc.length[i]) >= -atol)
+        assert np.all(np.diff(s.fxyz[:, i] * bi.lattice.length[i]) >= -atol)
 
     s, idx = bi.sort(axis=0, lattice=1, ret_atoms=True)
     assert np.all(np.diff(s.xyz[:, 0]) >= -atol)
@@ -1465,7 +1473,7 @@ def test_geometry_sort_simple():
     assert np.all(np.diff(s.xyz[:, 0]) >= -atol)
     for ix in idx:
         # idx is according to bi
-        assert np.all(np.diff(bi.fxyz[ix, 1] * bi.sc.length[i]) <= atol)
+        assert np.all(np.diff(bi.fxyz[ix, 1] * bi.lattice.length[i]) <= atol)
 
 
 def test_geometry_sort_int():
@@ -1479,7 +1487,7 @@ def test_geometry_sort_int():
         s = bi.sort(axis0=i)
         assert np.all(np.diff(s.xyz[:, i]) >= -atol)
         s = bi.sort(lattice3=i)
-        assert np.all(np.diff(s.fxyz[:, i] * bi.sc.length[i]) >= -atol)
+        assert np.all(np.diff(s.fxyz[:, i] * bi.lattice.length[i]) >= -atol)
 
     s, idx = bi.sort(axis12314=0, lattice0=1, ret_atoms=True)
     assert np.all(np.diff(s.xyz[:, 0]) >= -atol)
@@ -1490,7 +1498,7 @@ def test_geometry_sort_int():
     assert np.all(np.diff(s.xyz[:, 0]) >= -atol)
     for ix in idx:
         # idx is according to bi
-        assert np.all(np.diff(bi.fxyz[ix, 1] * bi.sc.length[i]) <= atol)
+        assert np.all(np.diff(bi.fxyz[ix, 1] * bi.lattice.length[i]) <= atol)
 
 
 def test_geometry_sort_atom():

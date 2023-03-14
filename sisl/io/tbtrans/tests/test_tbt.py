@@ -540,7 +540,7 @@ def test_1_graphene_all_sparse_data_isc_request(sisl_files):
     tbt = sisl.get_sile(sisl_files(_dir, '1_graphene_all.TBT.nc'))
 
     # get supercell with isc
-    sc = tbt.read_supercell()
+    sc = tbt.read_lattice()
 
     # request the full matrix
     for elec in [0, 1]:

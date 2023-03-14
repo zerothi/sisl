@@ -25,7 +25,7 @@ from sisl.utils.mathematics import cart2spher
 from sisl.oplist import oplist
 import sisl._array as _a
 from sisl.messages import progressbar, SislError
-from sisl.supercell import SuperCell
+from sisl.lattice import Lattice
 from sisl.grid import Grid
 from sisl.unit import units
 
@@ -556,7 +556,7 @@ class GridApply(MonkhorstPackParentApply):
             if grid_unit == 'b':
                 cell = np.diag(mp._size)
             else:
-                cell = parent.sc.rcell * mp._size.reshape(1, -1) / units("Ang", grid_unit)
+                cell = parent.lattice.rcell * mp._size.reshape(1, -1) / units("Ang", grid_unit)
 
             # Find the grid origin
             origin = -(cell * 0.5).sum(0)
@@ -598,8 +598,8 @@ class GridApply(MonkhorstPackParentApply):
                                                    centered=mp._centered, trs=True)[1])
 
             # Create the grid in the reciprocal cell
-            sc = SuperCell(cell, origin=origin)
-            grid = Grid(diag, sc=sc, dtype=v.dtype)
+            lattice = Lattice(cell, origin=origin)
+            grid = Grid(diag, lattice=lattice, dtype=v.dtype)
             if data_axis is None:
                 grid[k2idx(k[0])] = v
             else:

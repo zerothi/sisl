@@ -238,16 +238,16 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         If one reduces the number of supercells, *any* sparse element
         that references the supercell will be deleted.
 
-        See `SuperCell.set_nsc` for allowed parameters.
+        See `Lattice.set_nsc` for allowed parameters.
 
         See Also
         --------
-        SuperCell.set_nsc : the underlying called method
+        Lattice.set_nsc : the underlying called method
         """
-        sc = self.sc.copy()
+        lattice = self.lattice.copy()
         # Try first in the new one, then we figure out what to do
-        sc.set_nsc(*args, **kwargs)
-        if allclose(sc.nsc, self.sc.nsc):
+        lattice.set_nsc(*args, **kwargs)
+        if allclose(lattice.nsc, self.lattice.nsc):
             return
 
         # Create an array of all things that should be translated
@@ -255,10 +255,10 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         new = []
         deleted = np.empty(self.n_s, np.bool_)
         deleted[:] = True
-        for i, sc_off in sc:
+        for i, sc_off in lattice:
             try:
                 # Luckily there are *only* one time wrap-arounds
-                j = self.sc.sc_index(sc_off)
+                j = self.lattice.sc_index(sc_off)
                 # Now do translation
                 old.append(j)
                 new.append(i)
@@ -274,11 +274,11 @@ class _SparseGeometry(NDArrayOperatorsMixin):
             old.append(j)
             # Move to the end (*HAS* to be higher than the number of
             # cells in the new supercell structure)
-            new.append(max(self.n_s, sc.n_s) + i)
+            new.append(max(self.n_s, lattice.n_s) + i)
 
         # Check that we will translate all indices in the old
         # sparsity pattern to the new one
-        if len(old) not in [self.n_s, sc.n_s]:
+        if len(old) not in [self.n_s, lattice.n_s]:
             raise SislError("Not all supercells are accounted for")
 
         old = _a.arrayi(old)
@@ -312,13 +312,13 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         else:
             max_n = 0
         # Make sure we delete all column values where we have put fake values
-        delete = _a.arangei(sc.n_s * size, max(max_n, self.shape[1]))
+        delete = _a.arangei(lattice.n_s * size, max(max_n, self.shape[1]))
         if len(delete) > 0:
             self._csr.delete_columns(delete, keep_shape=True)
 
         # Ensure the shape is correct
         shape = list(self._csr.shape)
-        shape[1] = size * sc.n_s
+        shape[1] = size * lattice.n_s
         self._csr._shape = tuple(shape)
         self._csr._clean_columns()
 
@@ -367,7 +367,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         T._csr._D = None
 
         # Short-links
-        sc = self.geometry.sc
+        lattice = self.geometry.lattice
 
         # Create "DOK" format indices
         csr = self._csr
@@ -398,10 +398,10 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         #  row, col, _D
 
         # Retrieve all sc-indices in the new transposed array
-        new_sc_off = sc.sc_index(- sc.sc_off)
+        new_sc_off = lattice.sc_index(- lattice.sc_off)
 
         # Calculate the row-offsets in the new sparse geometry
-        row += new_sc_off[sc.sc_index(sc.sc_off[col // size, :])] * size
+        row += new_sc_off[lattice.sc_index(lattice.sc_off[col // size, :])] * size
 
         # Now convert columns into unit-cell
         col %= size
@@ -681,7 +681,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         # create correct linear offset due to the segment.
         # Further below we will take out the linear indices by modulo and integer
         # division operations.
-        lsc = tile(self.geometry.sc.sc_off, (1, reps)).reshape(-1, reps, 3)
+        lsc = tile(self.geometry.lattice.sc_off, (1, reps)).reshape(-1, reps, 3)
         lsc[:, :, axis] = lsc[:, :, axis] * reps + _a.arangei(reps) - segment
         lsc.shape = (-1, 3)
 
@@ -1061,11 +1061,11 @@ class SparseAtom(_SparseGeometry):
         If one reduces the number of supercells *any* sparse element
         that references the supercell will be deleted.
 
-        See `SuperCell.set_nsc` for allowed parameters.
+        See `Lattice.set_nsc` for allowed parameters.
 
         See Also
         --------
-        SuperCell.set_nsc : the underlying called method
+        Lattice.set_nsc : the underlying called method
         """
         super().set_nsc(self.na, *args, **kwargs)
 
@@ -1519,11 +1519,11 @@ class SparseOrbital(_SparseGeometry):
         If one reduces the number of supercells *any* sparse element
         that references the supercell will be deleted.
 
-        See `SuperCell.set_nsc` for allowed parameters.
+        See `Lattice.set_nsc` for allowed parameters.
 
         See Also
         --------
-        SuperCell.set_nsc : the underlying called method
+        Lattice.set_nsc : the underlying called method
         """
         super().set_nsc(self.no, *args, **kwargs)
 
@@ -2138,7 +2138,7 @@ class SparseOrbital(_SparseGeometry):
         transfer_idx += _a.arangei(self.geometry.n_s).reshape(-1, 1) * other.geometry.no
         # Remove couplings along axis
         if not axis is None:
-            idx = (self.geometry.sc.sc_off[:, axis] != 0).nonzero()[0]
+            idx = (self.geometry.lattice.sc_off[:, axis] != 0).nonzero()[0]
             # Tell the routine to delete these indices
             transfer_idx[idx, :] = full_no_s + 1
         idx = array_arange(self._csr.ptr[:-1], n=self._csr.ncol)
@@ -2153,9 +2153,9 @@ class SparseOrbital(_SparseGeometry):
         o_idx = []
         s_idx = []
         idx_delete = []
-        for isc, sc in enumerate(other.geometry.sc.sc_off):
+        for isc, sc in enumerate(other.geometry.lattice.sc_off):
             try:
-                s_idx.append(self.geometry.sc.sc_index(sc))
+                s_idx.append(self.geometry.lattice.sc_index(sc))
                 o_idx.append(isc)
             except ValueError:
                 idx_delete.append(isc)
@@ -2168,16 +2168,16 @@ class SparseOrbital(_SparseGeometry):
 
         # Now figure out if the supercells can be kept, at all...
         # find SC indices in other corresponding to self
-        #o_idx_uc = other.geometry.sc.sc_index([0] * 3)
-        #o_idx_sc = _a.arangei(other.geometry.sc.n_s)
+        #o_idx_uc = other.geometry.lattice.sc_index([0] * 3)
+        #o_idx_sc = _a.arangei(other.geometry.lattice.n_s)
 
         # Remove couplings along axis
         for i in range(3):
             if i == axis:
-                idx = (other.geometry.sc.sc_off[:, axis] != 0).nonzero()[0]
+                idx = (other.geometry.lattice.sc_off[:, axis] != 0).nonzero()[0]
             elif not allclose(geom.cell[i, :], other.cell[i, :]):
                 # This will happen in case `axis` is None
-                idx = (other.geometry.sc.sc_off[:, i] != 0).nonzero()[0]
+                idx = (other.geometry.lattice.sc_off[:, i] != 0).nonzero()[0]
             else:
                 # When axis is not specified and cell parameters
                 # are commensurate, then we will not change couplings
@@ -2301,7 +2301,7 @@ class SparseOrbital(_SparseGeometry):
             raise ValueError(f"{self.__class__.__name__}.append requires sparse-geometries to have the same "
                              "number of supercells along all directions.")
 
-        if not allclose(self.geometry.sc._isc_off, other.geometry.sc._isc_off):
+        if not allclose(self.geometry.lattice._isc_off, other.geometry.lattice._isc_off):
             raise ValueError(f"{self.__class__.__name__}.append requires supercell offsets to be the same.")
 
         if self.dtype != other.dtype:
@@ -2360,8 +2360,8 @@ class SparseOrbital(_SparseGeometry):
         # 1. find overlapping atoms along axis
         idx_s_first, idx_o_first = self.geometry.overlap(other.geometry, eps=eps)
         idx_s_last, idx_o_last = self.geometry.overlap(other.geometry, eps=eps,
-                                                       offset=-self.geometry.sc.cell[axis, :],
-                                                       offset_other=-other.geometry.sc.cell[axis, :])
+                                                       offset=-self.geometry.lattice.cell[axis, :],
+                                                       offset_other=-other.geometry.lattice.cell[axis, :])
         # IFF idx_s_* contains duplicates, then we have multiple overlapping atoms which is not
         # allowed
         def _test(diff):
@@ -2381,8 +2381,8 @@ class SparseOrbital(_SparseGeometry):
             geom = spgeom.geometry
             # Find orbitals that we wish to exclude from the orbital connections
             # This ensures that we only find couplings crossing the supercell boundaries
-            irrelevant_sc = delete(_a.arangei(geom.sc.n_s), geom.sc.sc_index(isc))
-            sc_orbitals = _a.arangei(geom.no_s).reshape(geom.sc.n_s, -1)
+            irrelevant_sc = delete(_a.arangei(geom.lattice.n_s), geom.lattice.sc_index(isc))
+            sc_orbitals = _a.arangei(geom.no_s).reshape(geom.lattice.n_s, -1)
             exclude = sc_orbitals[irrelevant_sc, :].ravel()
             # get connections and transfer them to the unit-cell
             edges_sc = geom.o2a(spgeom.edges(orbitals=_a.arangei(geom.no), exclude=exclude), True)
@@ -2402,7 +2402,7 @@ class SparseOrbital(_SparseGeometry):
                 for isc in unique(isc_off):
                     idx = (isc_off == isc).nonzero()[0]
                     sc_off_atoms.append("{k}: {v}".format(
-                        k=str(geom.sc.sc_off[isc]),
+                        k=str(geom.lattice.sc_off[isc]),
                         v=list2str(np.sort(uca[idx]))))
                 sc_off_atoms = "\n   ".join(sc_off_atoms)
                 raise ValueError(f"{self.__class__.__name__}.append requires matching coupling elements.\n\n"
@@ -2434,13 +2434,13 @@ class SparseOrbital(_SparseGeometry):
         idx = _a.arangei(geom.n_s).reshape(-1, 1) * geom.no
 
         def _sc_index_sort(isc):
-            idx = geom.sc.sc_index(isc)
+            idx = geom.lattice.sc_index(isc)
             # Now sort so that all indices are corresponding one2one
             # This is important since two different supercell indices
             # need not be sorted in the same manner.
             # This ensures that there is a correspondance between
             # two different sparse elements
-            off = delete(geom.sc.sc_off[idx].T, axis, axis=0)
+            off = delete(geom.lattice.sc_off[idx].T, axis, axis=0)
             return idx[np.lexsort(off)]
 
         idx_iscP = idx[_sc_index_sort(isc_forward)]

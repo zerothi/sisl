@@ -245,7 +245,7 @@ def solve_poisson(geometry, shape, radius="empirical",
             import matplotlib.pyplot as plt
             slicex3 = np.index_exp[:] * 3
             axs = [
-                np.linspace(0, grid.sc.length[ax], shape, endpoint=False)
+                np.linspace(0, grid.lattice.length[ax], shape, endpoint=False)
                 for ax, shape in enumerate(grid.shape)
             ]
 
@@ -395,7 +395,7 @@ def fftpoisson_fix_run(args):
             dat = V.average(args.plot)
             import matplotlib.pyplot as plt
             axs = [
-                np.linspace(0, V.sc.length[ax], shape, endpoint=False) for ax, shape in enumerate(V.shape)
+                np.linspace(0, V.lattice.length[ax], shape, endpoint=False) for ax, shape in enumerate(V.shape)
             ]
             idx = list(range(3))
 

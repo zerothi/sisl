@@ -25,7 +25,7 @@ def test_default(sisl_tmp):
 
 def test_default_size(sisl_tmp):
     f = sisl_tmp('GRID.cube', _dir)
-    grid = Grid(0.2, sc=2.0)
+    grid = Grid(0.2, lattice=2.0)
     grid.grid = np.random.rand(*grid.shape)
     grid.write(f)
     read = grid.read(f)
@@ -36,7 +36,7 @@ def test_default_size(sisl_tmp):
 
 def test_geometry(sisl_tmp):
     f = sisl_tmp('GRID.cube', _dir)
-    geom = Geometry(np.random.rand(10, 3), np.random.randint(1, 70, 10), sc=[10, 10, 10, 45, 60, 90])
+    geom = Geometry(np.random.rand(10, 3), np.random.randint(1, 70, 10), lattice=[10, 10, 10, 45, 60, 90])
     grid = Grid(0.2, geometry=geom)
     grid.grid = np.random.rand(*grid.shape)
     grid.write(f)
@@ -58,7 +58,7 @@ def test_geometry(sisl_tmp):
 def test_imaginary(sisl_tmp):
     fr = sisl_tmp('GRID_real.cube', _dir)
     fi = sisl_tmp('GRID_imag.cube', _dir)
-    geom = Geometry(np.random.rand(10, 3), np.random.randint(1, 70, 10), sc=[10, 10, 10, 45, 60, 90])
+    geom = Geometry(np.random.rand(10, 3), np.random.randint(1, 70, 10), lattice=[10, 10, 10, 45, 60, 90])
     grid = Grid(0.2, geometry=geom, dtype=np.complex128)
     grid.grid = np.random.rand(*grid.shape) + 1j*np.random.rand(*grid.shape)
     grid.write(fr)
@@ -81,7 +81,7 @@ def test_imaginary(sisl_tmp):
 def test_imaginary_fail_shape(sisl_tmp):
     fr = sisl_tmp('GRID_real.cube', _dir)
     fi = sisl_tmp('GRID_imag.cube', _dir)
-    geom = Geometry(np.random.rand(10, 3), np.random.randint(1, 70, 10), sc=[10, 10, 10, 45, 60, 90])
+    geom = Geometry(np.random.rand(10, 3), np.random.randint(1, 70, 10), lattice=[10, 10, 10, 45, 60, 90])
     grid = Grid(0.2, geometry=geom, dtype=np.complex128)
     grid.grid = np.random.rand(*grid.shape) + 1j*np.random.rand(*grid.shape)
     grid.write(fr)
@@ -96,7 +96,7 @@ def test_imaginary_fail_shape(sisl_tmp):
 def test_imaginary_fail_geometry(sisl_tmp):
     fr = sisl_tmp('GRID_real.cube', _dir)
     fi = sisl_tmp('GRID_imag.cube', _dir)
-    geom = Geometry(np.random.rand(10, 3), np.random.randint(1, 70, 10), sc=[10, 10, 10, 45, 60, 90])
+    geom = Geometry(np.random.rand(10, 3), np.random.randint(1, 70, 10), lattice=[10, 10, 10, 45, 60, 90])
     grid = Grid(0.2, geometry=geom, dtype=np.complex128)
     grid.grid = np.random.rand(*grid.shape) + 1j*np.random.rand(*grid.shape)
     grid.write(fr)

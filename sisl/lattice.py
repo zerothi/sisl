@@ -1,7 +1,7 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-""" Define a supercell
+""" Define a lattice with cell-parameters and supercells
 
 This class is the basis of many different objects.
 """
@@ -25,11 +25,11 @@ from ._math_small import cross3, dot3
 from ._supercell import cell_invert, cell_reciprocal
 
 
-__all__ = ['SuperCell', 'SuperCellChild']
+__all__ = ["Lattice", "SuperCell", "LatticeChild"]
 
 
 @set_module("sisl")
-class SuperCell:
+class Lattice:
     r""" A cell class to retain lattice vectors and a supercell structure
 
     The supercell structure is comprising the *primary* unit-cell and neighbouring
@@ -50,7 +50,7 @@ class SuperCell:
        the origin of the supercell.
     """
 
-    # We limit the scope of this SuperCell object.
+    # We limit the scope of this Lattice object.
     __slots__ = ('cell', '_origin', 'nsc', 'n_s', '_sc_off', '_isc_off')
 
     def __init__(self, cell, nsc=None, origin=None):
@@ -173,7 +173,7 @@ class SuperCell:
 
         # Fill in zeros
         # This will purposefully raise an exception
-        # if the dimensions of the periodic ones
+        # if the dimensions of the periodic one
         # are not consistent.
         if dtype is None:
             try:
@@ -382,7 +382,7 @@ class SuperCell:
 
     def swapaxes(self, axes_a: Union[int, str],
                  axes_b: Union[int, str],
-                 what: str="abc") -> SuperCell:
+                 what: str="abc") -> Lattice:
         r""" Swaps axes `axes_a` and `axes_b`
 
         Swapaxes is a versatile method for changing the order
@@ -504,26 +504,26 @@ class SuperCell:
 
         All 6 faces of the supercell can be retrieved like this:
 
-        >>> sc = SuperCell(4)
-        >>> n1, p1 = sc.plane(0, 1, True)
-        >>> n2, p2 = sc.plane(0, 1, False)
-        >>> n3, p3 = sc.plane(0, 2, True)
-        >>> n4, p4 = sc.plane(0, 2, False)
-        >>> n5, p5 = sc.plane(1, 2, True)
-        >>> n6, p6 = sc.plane(1, 2, False)
+        >>> lattice = Lattice(4)
+        >>> n1, p1 = lattice.plane(0, 1, True)
+        >>> n2, p2 = lattice.plane(0, 1, False)
+        >>> n3, p3 = lattice.plane(0, 2, True)
+        >>> n4, p4 = lattice.plane(0, 2, False)
+        >>> n5, p5 = lattice.plane(1, 2, True)
+        >>> n6, p6 = lattice.plane(1, 2, False)
 
         However, for performance critical calculations it may be advantageous to
         do this:
 
-        >>> sc = SuperCell(4)
-        >>> uc = sc.cell.sum(0)
-        >>> n1, p1 = sc.plane(0, 1)
+        >>> lattice = Lattice(4)
+        >>> uc = lattice.cell.sum(0)
+        >>> n1, p1 = lattice.plane(0, 1)
         >>> n2 = -n1
         >>> p2 = p1 + uc
-        >>> n3, p3 = sc.plane(0, 2)
+        >>> n3, p3 = lattice.plane(0, 2)
         >>> n4 = -n3
         >>> p4 = p3 + uc
-        >>> n5, p5 = sc.plane(1, 2)
+        >>> n5, p5 = lattice.plane(1, 2)
         >>> n6 = -n5
         >>> p6 = p5 + uc
 
@@ -562,21 +562,21 @@ class SuperCell:
 
         Returns
         -------
-        SuperCell
+        Lattice
              enlarged supercell
         """
         # Simple form
         if isinstance(m, Integral):
             return self.tile(m, 0).tile(m, 1).tile(m, 2)
 
-        sc = self.copy()
+        lattice = self.copy()
         for i, r in enumerate(m):
-            sc = sc.tile(r, i)
-        return sc
+            lattice = lattice.tile(r, i)
+        return lattice
 
     @property
     def icell(self):
-        """ Returns the reciprocal (inverse) cell for the `SuperCell`.
+        """ Returns the reciprocal (inverse) cell for the `Lattice`.
 
         Note: The returned vectors are still in ``[0, :]`` format
         and not as returned by an inverse LAPACK algorithm.
@@ -585,7 +585,7 @@ class SuperCell:
 
     @property
     def rcell(self):
-        """ Returns the reciprocal cell for the `SuperCell` with ``2*np.pi``
+        """ Returns the reciprocal cell for the `Lattice` with ``2*np.pi``
 
         Note: The returned vectors are still in [0, :] format
         and not as returned by an inverse LAPACK algorithm.
@@ -628,7 +628,7 @@ class SuperCell:
                         "0.14.0")
     def rotate(self, angle, v,
                rad: bool=False,
-               what: str="abc") -> SuperCell:
+               what: str="abc") -> Lattice:
         """ Rotates the supercell, in-place by the angle around the vector
 
         One can control which cell vectors are rotated by designating them
@@ -675,11 +675,11 @@ class SuperCell:
 
         Parameters
         ----------
-        other : SuperCell, array_like
+        other : Lattice, array_like
            the lattice vectors of the other supercell to add
         """
-        if not isinstance(other, SuperCell):
-            other = SuperCell(other)
+        if not isinstance(other, Lattice):
+            other = Lattice(other)
         cell = self.cell + other.cell
         origin = self.origin + other.origin
         nsc = np.where(self.nsc > other.nsc, self.nsc, other.nsc)
@@ -839,7 +839,12 @@ class SuperCell:
         return self.tile(reps, axis)
 
     def untile(self, reps, axis):
-        """Reverses a `SuperCell.tile` and returns the segmented version
+        """Reverses a `Lattice.tile` and returns the segmented version
+
+        Notes
+        -----
+        Untiling will not correctly re-calculate nsc since it has no
+        knowledge of connections.
 
         See Also
         --------
@@ -852,15 +857,16 @@ class SuperCell:
     unrepeat = untile
 
     def append(self, other, axis):
-        """ Appends other `SuperCell` to this grid along axis """
+        """ Appends other `Lattice` to this grid along axis """
         cell = np.copy(self.cell)
         cell[axis, :] += other.cell[axis, :]
+        # TODO fix nsc here
         return self.copy(cell)
 
     def prepend(self, other, axis):
-        """ Prepends other `SuperCell` to this grid along axis
+        """ Prepends other `Lattice` to this grid along axis
 
-        For a `SuperCell` object this is equivalent to `append`.
+        For a `Lattice` object this is equivalent to `append`.
         """
         return self.append(other, axis)
 
@@ -878,7 +884,7 @@ class SuperCell:
     move = translate
 
     def center(self, axis=None):
-        """ Returns center of the `SuperCell`, possibly with respect to an axis """
+        """ Returns center of the `Lattice`, possibly with respect to an axis """
         if axis is None:
             return self.cell.sum(0) * 0.5
         return self.cell[axis, :] * 0.5
@@ -911,9 +917,9 @@ class SuperCell:
 
         Examples
         --------
-        >>> cell_1_1_1 = SuperCell.tocell(1.)
-        >>> cell_1_2_3 = SuperCell.tocell(1., 2., 3.)
-        >>> cell_1_2_3 = SuperCell.tocell([1., 2., 3.]) # same as above
+        >>> cell_1_1_1 = Lattice.tocell(1.)
+        >>> cell_1_2_3 = Lattice.tocell(1., 2., 3.)
+        >>> cell_1_2_3 = Lattice.tocell([1., 2., 3.]) # same as above
         """
         # Convert into true array (flattened)
         args = _a.asarrayd(args).ravel()
@@ -1002,7 +1008,7 @@ class SuperCell:
 
         Parameters
         ----------
-        other : SuperCell
+        other : Lattice
            the other object to check whether the axis are parallel
         axis : int or array_like
            only check the specified axis (default to all)
@@ -1051,7 +1057,7 @@ class SuperCell:
             return sile.read_supercell(*args, **kwargs)
         else:
             with get_sile(sile, mode='r') as fh:
-                return fh.read_supercell(*args, **kwargs)
+                return fh.read_lattice(*args, **kwargs)
 
     def equal(self, other, tol=1e-4):
         """ Check whether two supercell are equivalent
@@ -1061,7 +1067,7 @@ class SuperCell:
         tol : float, optional
             tolerance value for the cell vectors and origin
         """
-        if not isinstance(other, (SuperCell, SuperCellChild)):
+        if not isinstance(other, (Lattice, LatticeChild)):
             return False
         same = np.allclose(self.cell, other.cell, atol=tol)
         same = same and np.allclose(self.nsc, other.nsc)
@@ -1157,40 +1163,44 @@ class SuperCell:
         return axes
 
 
-class SuperCellChild:
-    """ Class to be inherited by using the ``self.sc`` as a `SuperCell` object
+# same reference
+SuperCell = Lattice
 
-    Initialize by a `SuperCell` object and get access to several different
-    routines directly related to the `SuperCell` class.
+
+class LatticeChild:
+    """ Class to be inherited by using the ``self.lattice`` as a `Lattice` object
+
+    Initialize by a `Lattice` object and get access to several different
+    routines directly related to the `Lattice` class.
     """
 
     def set_nsc(self, *args, **kwargs):
-        """ Set the number of super-cells in the `SuperCell` object
+        """ Set the number of super-cells in the `Lattice` object
 
         See `set_nsc` for allowed parameters.
 
         See Also
         --------
-        SuperCell.set_nsc : the underlying called method
+        Lattice.set_nsc : the underlying called method
         """
-        self.sc.set_nsc(*args, **kwargs)
+        self.lattice.set_nsc(*args, **kwargs)
 
-    def set_supercell(self, sc):
+    def set_lattice(self, lattice):
         """ Overwrites the local supercell """
-        if sc is None:
+        if lattice is None:
             # Default supercell is a simple
             # 1x1x1 unit-cell
-            self.sc = SuperCell([1., 1., 1.])
-        elif isinstance(sc, SuperCell):
-            self.sc = sc
-        elif isinstance(sc, SuperCellChild):
-            self.sc = sc.sc
+            self.lattice = Lattice([1., 1., 1.])
+        elif isinstance(lattice, Lattice):
+            self.lattice = lattice
+        elif isinstance(lattice, LatticeChild):
+            self.lattice = lattice.lattice
         else:
             # The supercell is given as a cell
-            self.sc = SuperCell(sc)
+            self.lattice = Lattice(lattice)
 
         # Loop over attributes in this class
-        # if it inherits SuperCellChild, we call
+        # if it inherits LatticeChild, we call
         # set_sc on that too.
         # Sadly, getattr fails for @property methods
         # which forces us to use try ... except
@@ -1198,96 +1208,69 @@ class SuperCellChild:
             warnings.simplefilter("ignore")
             for a in dir(self):
                 try:
-                    if isinstance(getattr(self, a), SuperCellChild):
-                        getattr(self, a).set_supercell(self.sc)
+                    if isinstance(getattr(self, a), LatticeChild):
+                        getattr(self, a).set_lattice(self.lattice)
                 except Exception:
                     pass
 
-    set_sc = deprecate_method("set_sc is deprecated; prefer to use set_supercell instead", "0.14")(set_supercell)
+    set_sc = deprecate_method("set_sc is deprecated; prefer to use set_lattice instead", "0.14")(set_lattice)
+    set_supercell = deprecate_method("set_sc is deprecated; prefer to use set_lattice instead", "0.15")(set_lattice)
 
     @property
     def length(self):
-        """ Returns the inherent `SuperCell` objects `length` """
-        return self.sc.length
+        """ Returns the inherent `Lattice` objects `length` """
+        return self.lattice.length
 
     @property
     def volume(self):
-        """ Returns the inherent `SuperCell` objects `volume` """
-        return self.sc.volume
+        """ Returns the inherent `Lattice` objects `volume` """
+        return self.lattice.volume
 
     def area(self, ax0, ax1):
         """ Calculate the area spanned by the two axis `ax0` and `ax1` """
-        return self.sc.area(ax0, ax1)
+        return self.lattice.area(ax0, ax1)
 
     @property
     def cell(self):
-        """ Returns the inherent `SuperCell` objects `cell` """
-        return self.sc.cell
+        """ Returns the inherent `Lattice` objects `cell` """
+        return self.lattice.cell
 
     @property
     def icell(self):
-        """ Returns the inherent `SuperCell` objects `icell` """
-        return self.sc.icell
+        """ Returns the inherent `Lattice` objects `icell` """
+        return self.lattice.icell
 
     @property
     def rcell(self):
-        """ Returns the inherent `SuperCell` objects `rcell` """
-        return self.sc.rcell
+        """ Returns the inherent `Lattice` objects `rcell` """
+        return self.lattice.rcell
 
     @property
     def origin(self):
-        """ Returns the inherent `SuperCell` objects `origin` """
-        return self.sc.origin
-
-    @property
-    def origo(self):
-        """ Returns the inherent `SuperCell` objects `origin` """
-        return self.sc.origo
+        """ Returns the inherent `Lattice` objects `origin` """
+        return self.lattice.origin
 
     @property
     def n_s(self):
-        """ Returns the inherent `SuperCell` objects `n_s` """
-        return self.sc.n_s
+        """ Returns the inherent `Lattice` objects `n_s` """
+        return self.lattice.n_s
 
     @property
     def nsc(self):
-        """ Returns the inherent `SuperCell` objects `nsc` """
-        return self.sc.nsc
+        """ Returns the inherent `Lattice` objects `nsc` """
+        return self.lattice.nsc
 
     @property
     def sc_off(self):
-        """ Returns the inherent `SuperCell` objects `sc_off` """
-        return self.sc.sc_off
+        """ Returns the inherent `Lattice` objects `sc_off` """
+        return self.lattice.sc_off
 
     @property
     def isc_off(self):
-        """ Returns the inherent `SuperCell` objects `isc_off` """
-        return self.sc.isc_off
-
-    def add_vacuum(self, vacuum, axis):
-        """ Add vacuum along the `axis` lattice vector
-
-        Parameters
-        ----------
-        vacuum : float
-           amount of vacuum added, in Ang
-        axis : int
-           the lattice vector to add vacuum along
-        """
-        copy = self.copy()
-        copy.set_supercell(self.sc.add_vacuum(vacuum, axis))
-        return copy
-
-    def _fill(self, non_filled, dtype=None):
-        return self.sc._fill(non_filled, dtype)
-
-    def _fill_sc(self, supercell_index):
-        return self.sc._fill_sc(supercell_index)
+        """ Returns the inherent `Lattice` objects `isc_off` """
+        return self.lattice.isc_off
 
     def sc_index(self, *args, **kwargs):
-        """ Call local `SuperCell` object `sc_index` function """
-        return self.sc.sc_index(*args, **kwargs)
+        """ Call local `Lattice` object `sc_index` function """
+        return self.lattice.sc_index(*args, **kwargs)
 
-    def is_orthogonal(self):
-        """ Return true if all cell vectors are linearly independent"""
-        return self.sc.is_orthogonal()
