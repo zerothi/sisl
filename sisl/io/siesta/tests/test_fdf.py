@@ -510,3 +510,19 @@ def test_fdf_block_write_print(sisl_tmp):
  {block_value[0]}
 %endblock hello
 """ == fdf.print("hello")
+
+
+def test_fdf_write_bandstructure(sisl_tmp, sisl_system):
+    f = sisl_tmp('gr.fdf', _dir)
+
+    bs = sisl.BandStructure(sisl_system.g, [
+        [0, 0, 0], [0.5, 0.5, 0.5],
+        [0.25, 0.5, 0]], 200, names=["Gamma", "Edge", "L"])
+
+    with fdfSileSiesta(f, "w") as fdf:
+        fdf.write_brillouinzone(bs)
+
+    with fdfSileSiesta(f) as fdf:
+        block = fdf.get("BandLines")
+    assert len(block) == 3
+
