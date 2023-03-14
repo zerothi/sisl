@@ -4,6 +4,7 @@
 from pathlib import Path
 import pytest
 import os.path as osp
+import sisl
 from sisl import geom
 from sisl import Geometry, Atom
 from sisl.io import fdfSileSiesta, SileError
