@@ -79,7 +79,7 @@ class gotSileGULP(SileGULP):
             raise ValueError(
                 'SileGULP tries to lookup the Lattice vectors '
                  'using key "' + self._keys['lattice'] + '". \n'
-                 'Use ".set_supercell_key(...)" to search for different name.\n'
+                 'Use ".set_lattice_key(...)" to search for different name.\n'
                  'This could not be found found in file: "' + self.file + '".')
 
         # skip 1 line
@@ -107,7 +107,7 @@ class gotSileGULP(SileGULP):
             if not f and ki == 0:
                 raise ValueError('SileGULP tries to lookup the Lattice vectors '
                                  'using key "' + self._keys['lattice'] + '". \n'
-                                 'Use ".set_supercell_key(...)" to search for different name.\n'
+                                 'Use ".set_lattice_key(...)" to search for different name.\n'
                                  'This could not be found found in file: "' + self.file + '".')
             elif f and ki == 0:
                 # supercell

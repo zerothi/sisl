@@ -644,7 +644,7 @@ class fdfSileSiesta(SileSiesta):
         """
         order = _listify_str(kwargs.pop("order", ["nc", "ORB_INDX"]))
         for f in order:
-            v = getattr(self, f"_r_supercell_nsc_{f.lower()}")(*args, **kwargs)
+            v = getattr(self, f"_r_lattice_nsc_{f.lower()}")(*args, **kwargs)
             if v is not None:
                 _track(self.read_lattice_nsc, f"found file {f}")
                 return v
@@ -652,16 +652,16 @@ class fdfSileSiesta(SileSiesta):
              "(no supercell connections)")
         return _a.onesi(3)
 
-    def _r_supercell_nsc_nc(self, *args, **kwargs):
+    def _r_lattice_nsc_nc(self, *args, **kwargs):
         f = self.dir_file(self.get("SystemLabel", default="siesta") + ".nc")
-        _track_file(self._r_supercell_nsc_nc, f)
+        _track_file(self._r_lattice_nsc_nc, f)
         if f.is_file():
             return ncSileSiesta(f).read_lattice_nsc()
         return None
 
-    def _r_supercell_nsc_orb_indx(self, *args, **kwargs):
+    def _r_lattice_nsc_orb_indx(self, *args, **kwargs):
         f = self.dir_file(self.get("SystemLabel", default="siesta") + ".ORB_INDX")
-        _track_file(self._r_supercell_nsc_orb_indx, f)
+        _track_file(self._r_lattice_nsc_orb_indx, f)
         if f.is_file():
             return orbindxSileSiesta(f).read_lattice_nsc()
         return None
@@ -695,13 +695,13 @@ class fdfSileSiesta(SileSiesta):
         else:
             order = _listify_str(kwargs.pop("order", ["fdf"]))
         for f in order:
-            v = getattr(self, f"_r_supercell_{f.lower()}")(*args, **kwargs)
+            v = getattr(self, f"_r_lattice_{f.lower()}")(*args, **kwargs)
             if v is not None:
                 _track(self.read_lattice, f"found file {f}")
                 return v
         return None
 
-    def _r_supercell_fdf(self, *args, **kwargs):
+    def _r_lattice_fdf(self, *args, **kwargs):
         """ Returns `Lattice` object from the FDF file """
         s = self.get("LatticeConstant", unit="Ang")
         if s is None:
@@ -731,18 +731,18 @@ class fdfSileSiesta(SileSiesta):
 
         return Lattice(cell, nsc=nsc)
 
-    def _r_supercell_nc(self):
+    def _r_lattice_nc(self):
         # Read supercell from <>.nc file
         f = self.dir_file(self.get("SystemLabel", default="siesta") + ".nc")
-        _track_file(self._r_supercell_nc, f)
+        _track_file(self._r_lattice_nc, f)
         if f.is_file():
             return ncSileSiesta(f).read_lattice()
         return None
 
-    def _r_supercell_xv(self, *args, **kwargs):
+    def _r_lattice_xv(self, *args, **kwargs):
         """ Returns `Lattice` object from the XV file """
         f = self.dir_file(self.get("SystemLabel", default="siesta") + ".XV")
-        _track_file(self._r_supercell_xv, f)
+        _track_file(self._r_lattice_xv, f)
         if f.is_file():
             nsc = self.read_lattice_nsc()
             lattice = xvSileSiesta(f).read_lattice()
@@ -750,11 +750,11 @@ class fdfSileSiesta(SileSiesta):
             return lattice
         return None
 
-    def _r_supercell_struct(self, *args, **kwargs):
+    def _r_lattice_struct(self, *args, **kwargs):
         """ Returns `Lattice` object from the STRUCT files """
         for end in ["STRUCT_NEXT_ITER", "STRUCT_OUT", "STRUCT_IN"]:
             f = self.dir_file(self.get("SystemLabel", default="siesta") + f".{end}")
-            _track_file(self._r_supercell_struct, f)
+            _track_file(self._r_lattice_struct, f)
             if f.is_file():
                 nsc = self.read_lattice_nsc()
                 lattice = structSileSiesta(f).read_lattice()
@@ -762,16 +762,16 @@ class fdfSileSiesta(SileSiesta):
                 return lattice
         return None
 
-    def _r_supercell_tshs(self, *args, **kwargs):
+    def _r_lattice_tshs(self, *args, **kwargs):
         f = self.dir_file(self.get("SystemLabel", default="siesta") + ".TSHS")
-        _track_file(self._r_supercell_tshs, f)
+        _track_file(self._r_lattice_tshs, f)
         if f.is_file():
             return tshsSileSiesta(f).read_lattice()
         return None
 
-    def _r_supercell_onlys(self, *args, **kwargs):
+    def _r_lattice_onlys(self, *args, **kwargs):
         f = self.dir_file(self.get("SystemLabel", default="siesta") + ".onlyS")
-        _track_file(self._r_supercell_onlys, f)
+        _track_file(self._r_lattice_onlys, f)
         if f.is_file():
             return onlysSileSiesta(f).read_lattice()
         return None

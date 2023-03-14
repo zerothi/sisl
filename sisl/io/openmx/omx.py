@@ -256,10 +256,10 @@ class omxSileOpenMX(SileOpenMX):
         Parameters
         ----------
         output: bool, optional
-            whether to read supercell from output files (default to read from
+            whether to read lattice from output files (default to read from
             the input file).
         order: {'dat', 'omx'}
-            the order of which to try and read the supercell.
+            the order of which to try and read the lattice
             If `order` is present `output` is disregarded.
         """
         order = kwargs.pop('order', ['dat', 'omx'])
@@ -339,7 +339,7 @@ class omxSileOpenMX(SileOpenMX):
         return atom
 
     def read_lattice(self, output=False, *args, **kwargs):
-        """ Reads supercell
+        """ Reads lattice
 
         One can limit the tried files to only one file by passing
         only a single file ending.
@@ -347,10 +347,10 @@ class omxSileOpenMX(SileOpenMX):
         Parameters
         ----------
         output: bool, optional
-            whether to read supercell from output files (default to read from
+            whether to read lattice from output files (default to read from
             the input file).
         order: {'dat', 'omx'}
-            the order of which to try and read the supercell.
+            the order of which to try and read the lattice.
             If `order` is present `output` is disregarded.
         """
         if output:
@@ -358,12 +358,12 @@ class omxSileOpenMX(SileOpenMX):
         else:
             order = kwargs.pop('order', ['dat', 'omx'])
         for f in order:
-            v = getattr(self, '_r_supercell_{}'.format(f.lower()))(*args, **kwargs)
+            v = getattr(self, '_r_lattice_{}'.format(f.lower()))(*args, **kwargs)
             if v is not None:
                 return v
         return None
 
-    def _r_supercell_omx(self, *args, **kwargs):
+    def _r_lattice_omx(self, *args, **kwargs):
         """ Returns `Lattice` object from the omx file """
         conv = self.get('Atoms.UnitVectors.Unit', default='Ang')
         if conv.upper() == 'AU':
@@ -384,7 +384,7 @@ class omxSileOpenMX(SileOpenMX):
 
         return Lattice(cell)
 
-    _r_supercell_dat = _r_supercell_omx
+    _r_lattice_dat = _r_lattice_omx
 
     def read_geometry(self, output=False, *args, **kwargs):
         """ Returns Geometry object

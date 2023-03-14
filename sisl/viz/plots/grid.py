@@ -8,7 +8,7 @@ from scipy.ndimage import affine_transform
 
 import sisl
 from sisl.messages import warn
-from sisl._supercell import cell_invert
+from sisl._lattice import cell_invert
 from sisl import _array as _a
 from ..plot import Plot, entry_point
 from ..input_fields import (

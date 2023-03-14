@@ -116,13 +116,13 @@ class outSileSiesta(SileSiesta):
 
         return [Atom(**atoms[tag]) for tag in order]
 
-    def _r_supercell_outcell(self):
+    def _r_lattice_outcell(self):
         """ Wrapper for reading the unit-cell from the outcoor block """
 
         # Read until outcell is found
         found, line = self.step_to("outcell: Unit cell vectors")
         if not found:
-            raise ValueError(f"{self.__class__.__name__}._r_supercell_outcell did not find outcell key")
+            raise ValueError(f"{self.__class__.__name__}._r_lattice_outcell did not find outcell key")
 
         Ang = 'Ang' in line
 
@@ -168,7 +168,7 @@ class outSileSiesta(SileSiesta):
         # Retrieve the unit-cell (but do not skip file-descriptor position)
         # This is because the current unit-cell is not always written.
         pos = self.fh.tell()
-        cell = self._r_supercell_outcell()
+        cell = self._r_lattice_outcell()
         if is_final and self.fh.tell() < pos:
             # we have wrapped around the file
             self.fh.seek(pos, os.SEEK_SET)
@@ -207,7 +207,7 @@ class outSileSiesta(SileSiesta):
         # Retrieve the unit-cell (but do not skip file-descriptor position)
         # This is because the current unit-cell is not always written.
         pos = self.fh.tell()
-        cell = self._r_supercell_outcell()
+        cell = self._r_lattice_outcell()
         self.fh.seek(pos, os.SEEK_SET)
 
         # Convert xyz

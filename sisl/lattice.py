@@ -22,7 +22,7 @@ from .utils.mathematics import fnorm
 from .shape.prism4 import Cuboid
 from .quaternion import Quaternion
 from ._math_small import cross3, dot3
-from ._supercell import cell_invert, cell_reciprocal
+from ._lattice import cell_invert, cell_reciprocal
 
 
 __all__ = ["Lattice", "SuperCell", "LatticeChild"]
@@ -1042,7 +1042,7 @@ class Lattice:
 
     @staticmethod
     def read(sile, *args, **kwargs):
-        """ Reads the supercell from the `Sile` using ``Sile.read_supercell``
+        """ Reads the supercell from the `Sile` using ``Sile.read_lattice``
 
         Parameters
         ----------
@@ -1054,7 +1054,7 @@ class Lattice:
         # have been imported previously
         from sisl.io import get_sile, BaseSile
         if isinstance(sile, BaseSile):
-            return sile.read_supercell(*args, **kwargs)
+            return sile.read_lattice(*args, **kwargs)
         else:
             with get_sile(sile, mode='r') as fh:
                 return fh.read_lattice(*args, **kwargs)
