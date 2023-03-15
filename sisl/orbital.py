@@ -292,17 +292,17 @@ class Orbital:
 
         # Since all these things depend on other elements
         # we will simply import them here.
-        from .supercell import SuperCell
+        from .lattice import Lattice
         from .geometry import Geometry
         from .grid import Grid
         from .atom import Atom
         from .physics.electron import wavefunction
-        sc = SuperCell(R*2, origin=[-R] * 3)
+        lattice = Lattice(R*2, origin=[-R] * 3)
         if isinstance(atom, Atom):
             atom = atom.copy(orbitals=self)
         else:
             atom = Atom(atom, self)
-        g = Geometry([0] * 3, atom, sc=sc)
+        g = Geometry([0] * 3, atom, lattice=lattice)
         G = Grid(precision, dtype=dtype, geometry=g)
         wavefunction(np.full(1, c), G, geometry=g)
         return G

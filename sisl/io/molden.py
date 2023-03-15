@@ -4,6 +4,7 @@
 # Import sile objects
 from .sile import *
 
+from sisl.messages import deprecate_argument
 from sisl._internal import set_module
 from sisl import Geometry
 
@@ -16,7 +17,8 @@ class moldenSile(Sile):
     """ Molden file object """
 
     @sile_fh_open()
-    def write_supercell(self, sc):
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", from_version="0.15")
+    def write_lattice(self, lattice):
         """ Writes the supercell to the contained file """
         # Check that we can write to the file
         sile_raise_write(self)
@@ -33,7 +35,7 @@ class moldenSile(Sile):
         sile_raise_write(self)
 
         # Be sure to write the supercell
-        self.write_supercell(geometry.sc)
+        self.write_lattice(geometry.lattice)
 
         # Write in ATOM mode
         self._write('[Atoms] Angs\n')

@@ -375,7 +375,7 @@ class BondLengthMap(GeometryPlot):
         if show_strain:
             self.bonds = self.relaxed_bonds
 
-            self.geometry.set_nsc(self.relaxed_geom.sc.nsc)
+            self.geometry.set_nsc(self.relaxed_geom.lattice.nsc)
         else:
             self.bonds = self.geom_bonds
 

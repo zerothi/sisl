@@ -13,7 +13,7 @@ _dir = osp.join('sisl', 'io', 'siesta')
 
 def test_si_pdos_kgrid_orb_indx(sisl_files):
     f = sisl_files(_dir, 'si_pdos_kgrid.ORB_INDX')
-    nsc = orbindxSileSiesta(f).read_supercell_nsc()
+    nsc = orbindxSileSiesta(f).read_lattice_nsc()
     assert np.all(nsc > 1)
     atoms = orbindxSileSiesta(f).read_basis()
 
@@ -25,7 +25,7 @@ def test_si_pdos_kgrid_orb_indx(sisl_files):
 
 def test_sih_orb_indx(sisl_files):
     f = sisl_files(_dir, 'sih.ORB_INDX')
-    nsc = orbindxSileSiesta(f).read_supercell_nsc()
+    nsc = orbindxSileSiesta(f).read_lattice_nsc()
     assert np.all(nsc == 1)
     atoms = orbindxSileSiesta(f).read_basis()
 

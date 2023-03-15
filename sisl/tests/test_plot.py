@@ -17,19 +17,19 @@ mlib3d = pytest.importorskip('mpl_toolkits.mplot3d')
 
 def test_supercell_2d():
     g = sisl.geom.graphene()
-    sisl.plot(g.sc, axis=[0, 1])
-    sisl.plot(g.sc, axis=[0, 2])
-    sisl.plot(g.sc, axis=[1, 2])
+    sisl.plot(g.lattice, axis=[0, 1])
+    sisl.plot(g.lattice, axis=[0, 2])
+    sisl.plot(g.lattice, axis=[1, 2])
     plt.close('all')
 
     ax = plt.subplot(111)
-    sisl.plot(g.sc, axis=[1, 2], axes=ax)
+    sisl.plot(g.lattice, axis=[1, 2], axes=ax)
     plt.close('all')
 
 
 def test_supercell_3d():
     g = sisl.geom.graphene()
-    sisl.plot(g.sc)
+    sisl.plot(g.lattice)
     plt.close('all')
 
 

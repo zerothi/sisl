@@ -7,7 +7,7 @@ from ..sile import add_sile, sile_fh_open, sile_raise_write, SileError
 from .sile import SileSiesta
 
 from sisl._internal import set_module
-from sisl import Geometry, Atom, AtomGhost, AtomUnknown, Atoms, SuperCell
+from sisl import Geometry, Atom, AtomGhost, AtomUnknown, Atoms, Lattice
 from sisl.unit.siesta import unit_convert
 
 __all__ = ['xvSileSiesta']
@@ -66,15 +66,15 @@ class xvSileSiesta(SileSiesta):
                 self._write(fmt_str.format(ips + 1, a.Z, *tmp))
 
     @sile_fh_open()
-    def read_supercell(self):
-        """ Returns `SuperCell` object from the XV file """
+    def read_lattice(self):
+        """ Returns `Lattice` object from the XV file """
 
         cell = np.empty([3, 3], np.float64)
         for i in range(3):
             cell[i, :] = list(map(float, self.readline().split()[:3]))
         cell *= Bohr2Ang
 
-        return SuperCell(cell)
+        return Lattice(cell)
 
     @sile_fh_open()
     def read_geometry(self, velocity=False, species_Z=False):
@@ -93,7 +93,7 @@ class xvSileSiesta(SileSiesta):
         Geometry
         velocity : only if `velocity` is true.
         """
-        sc = self.read_supercell()
+        lattice = self.read_lattice()
 
         # Read number of atoms
         na = int(self.readline())
@@ -127,7 +127,7 @@ class xvSileSiesta(SileSiesta):
             else:
                 atms2[idx] = atms[idx[0]]
 
-        geom = Geometry(xyz, atms2.reduce(), sc=sc)
+        geom = Geometry(xyz, atms2.reduce(), lattice=lattice)
         if velocity:
             return geom, vel
         return geom
@@ -140,7 +140,7 @@ class xvSileSiesta(SileSiesta):
         -------
         velocity : 
         """
-        self.read_supercell()
+        self.read_lattice()
         na = int(self.readline())
         vel = np.empty([na, 3], np.float64)
         for ia in range(na):

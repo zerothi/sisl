@@ -9,14 +9,14 @@ from typing import Union
 #from typing import TYPE_CHECKING, final
 
 from sisl import (
-    Geometry, SuperCell,
+    Geometry, Lattice,
     Atom, Atoms
 )
 
 
-# A SuperCell or a Geometry
+# A Lattice or a Geometry
 CellOrGeometry = Union[
-    SuperCell,
+    Lattice,
     Geometry,
 ]
 

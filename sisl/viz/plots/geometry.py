@@ -20,7 +20,7 @@ from ..input_fields import (
 )
 from ..plotutils import values_to_colors
 from sisl._dispatcher import AbstractDispatch
-from sisl._supercell import cell_invert
+from sisl._lattice import cell_invert
 
 
 class BoundGeometry(AbstractDispatch):

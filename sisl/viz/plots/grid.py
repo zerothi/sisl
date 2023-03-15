@@ -8,7 +8,7 @@ from scipy.ndimage import affine_transform
 
 import sisl
 from sisl.messages import warn
-from sisl._supercell import cell_invert
+from sisl._lattice import cell_invert
 from sisl import _array as _a
 from ..plot import Plot, entry_point
 from ..input_fields import (
@@ -877,7 +877,7 @@ class GridPlot(Plot):
 
         # Create a new grid with the new shape and the new cell (notice how the cell
         # is rescaled from the input cell to fit the actual coordinates of the system)
-        new_grid = grid.__class__((1, 1, 1), sc=cell*lengths.reshape(3, 1))
+        new_grid = grid.__class__((1, 1, 1), lattice=cell*lengths.reshape(3, 1))
         new_grid.grid = transformed_image
 
         # Find the offset between the origin before and after the transformation
@@ -1065,7 +1065,7 @@ class GridPlot(Plot):
         if mode == "as_is" and set(axes) - set(["x", "y", "z"]):
             raise ValueError("To perform a scan, the axes need to be cartesian. Please set the axes to a combination of 'x', 'y' and 'z'.")
 
-        if self.grid.sc.is_cartesian():
+        if self.grid.lattice.is_cartesian():
             grid = self.grid
         else:
             transform_bc = kwargs.pop("transform_bc", self.get_setting("transform_bc"))

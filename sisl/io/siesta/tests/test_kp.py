@@ -26,7 +26,7 @@ def test_kp_read_write(sisl_tmp):
     assert np.allclose(kpoints, bz.tocartesian(bz.k))
     assert np.allclose(weights, bz.weight)
 
-    bz2 = kpSileSiesta(f).read_brillouinzone(g.sc)
+    bz2 = kpSileSiesta(f).read_brillouinzone(g.lattice)
     assert np.allclose(bz2.k, bz.k)
     assert np.allclose(bz2.weight, bz.weight)
 
@@ -41,6 +41,6 @@ def test_rkp_read_write(sisl_tmp):
     assert np.allclose(kpoints, bz.k)
     assert np.allclose(weights, bz.weight)
 
-    bz2 = rkpSileSiesta(f).read_brillouinzone(g.sc)
+    bz2 = rkpSileSiesta(f).read_brillouinzone(g.lattice)
     assert np.allclose(bz2.k, bz.k)
     assert np.allclose(bz2.weight, bz.weight)

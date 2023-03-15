@@ -12,8 +12,8 @@ from scipy.sparse import lil_matrix
 from .sile import SileWannier90
 from ..sile import *
 
-# Import the geometry object
-from sisl import Geometry, SuperCell
+from sisl.messages import deprecate_argument
+from sisl import Geometry, Lattice
 from sisl.physics import Hamiltonian
 from sisl.unit import unit_convert
 
@@ -70,7 +70,7 @@ class winSileWannier90(SileWannier90):
             self._file = Path(self._seed + suffix)
 
     @sile_fh_open()
-    def _read_supercell(self):
+    def _read_lattice(self):
         """ Deferred routine """
 
         f, l = self.step_to('unit_cell_cart', case=False)
@@ -97,14 +97,14 @@ class winSileWannier90(SileWannier90):
         for i in [0, 1, 2]:
             cell[i, :] = [float(x) for x in lines[i].split()]
 
-        return SuperCell(cell * unit)
+        return Lattice(cell * unit)
 
-    def read_supercell(self):
-        """ Reads a `SuperCell` and creates the Wannier90 cell """
+    def read_lattice(self):
+        """ Reads a `Lattice` and creates the Wannier90 cell """
         # Reset
         self._set_file()
 
-        return self._read_supercell()
+        return self._read_lattice()
 
     @sile_fh_open()
     def _read_geometry_centres(self, *args, **kwargs):
@@ -128,7 +128,7 @@ class winSileWannier90(SileWannier90):
         return Geometry(xyz[:na, :], atoms='H')
 
     @sile_fh_open()
-    def _read_geometry(self, sc, *args, **kwargs):
+    def _read_geometry(self, lattice, *args, **kwargs):
         """ Defered routine """
 
         is_frac = True
@@ -170,32 +170,33 @@ class winSileWannier90(SileWannier90):
         xyz = np.array(xyz, np.float64) * unit
 
         if is_frac:
-            xyz = np.dot(sc.cell.T, xyz.T).T
+            xyz = np.dot(lattice.cell.T, xyz.T).T
 
-        return Geometry(xyz, atoms=s, sc=sc)
+        return Geometry(xyz, atoms=s, lattice=lattice)
 
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", from_version="0.15")
     def read_geometry(self, *args, **kwargs):
         """ Reads a `Geometry` and creates the Wannier90 cell """
 
         # Read in the super-cell
-        sc = self.read_supercell()
+        lattice = self.read_lattice()
 
         self._set_file('_centres.xyz')
         if self.file.is_file():
             geom = self._read_geometry_centres()
         else:
             self._set_file()
-            geom = self._read_geometry(sc, *args, **kwargs)
+            geom = self._read_geometry(lattice, *args, **kwargs)
 
         # Reset file
         self._set_file()
 
         # Specify the supercell and return
-        geom.set_sc(sc)
+        geom.set_lattice(lattice)
         return geom
 
     @sile_fh_open()
-    def _write_supercell(self, sc, fmt='.8f', *args, **kwargs):
+    def _write_lattice(self, lattice, fmt='.8f', *args, **kwargs):
         """ Writes the supercel to the contained file """
         # Check that we can write to the file
         sile_raise_write(self)
@@ -204,15 +205,16 @@ class winSileWannier90(SileWannier90):
 
         self._write('begin unit_cell_cart\n')
         self._write(' Ang\n')
-        self._write(fmt_str.format(*sc.cell[0, :]))
-        self._write(fmt_str.format(*sc.cell[1, :]))
-        self._write(fmt_str.format(*sc.cell[2, :]))
+        self._write(fmt_str.format(*lattice.cell[0, :]))
+        self._write(fmt_str.format(*lattice.cell[1, :]))
+        self._write(fmt_str.format(*lattice.cell[2, :]))
         self._write('end unit_cell_cart\n')
 
-    def write_supercell(self, sc, fmt='.8f', *args, **kwargs):
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", from_version="0.15")
+    def write_lattice(self, lattice, fmt='.8f', *args, **kwargs):
         """ Writes the supercell to the contained file """
         self._set_file()
-        self._write_supercell(sc, fmt, *args, **kwargs)
+        self._write_lattice(lattice, fmt, *args, **kwargs)
 
     @sile_fh_open()
     def _write_geometry(self, geom, fmt='.8f', *args, **kwargs):
@@ -220,10 +222,10 @@ class winSileWannier90(SileWannier90):
         # Check that we can write to the file
         sile_raise_write(self)
 
-        # We have to have the _write_supercell here
+        # We have to have the _write_lattice here
         # due to the open function re-instantiating the mode,
         # and if it isn't 'a', then it cleans it... :(
-        self._write_supercell(geom.sc, fmt, *args, **kwargs)
+        self._write_lattice(geom.lattice, fmt, *args, **kwargs)
 
         fmt_str = ' {{1:2s}} {{2:{0}}} {{3:{0}}} {{4:{0}}} # {{0}}\n'.format(fmt)
 

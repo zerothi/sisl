@@ -8,10 +8,11 @@ import numpy as np
 # Import sile objects
 from .sile import *
 
+from sisl.messages import deprecate_argument
 from sisl._internal import set_module
 from sisl import PeriodicTable, Grid
 from sisl._collection import Collection
-from sisl import Geometry, GeometryCollection, AtomUnknown, SuperCell
+from sisl import Geometry, GeometryCollection, AtomUnknown, Lattice
 from sisl.utils import str_spec
 import sisl._array as _a
 
@@ -105,12 +106,13 @@ class xsfSile(Sile):
             self._write(f"ANIMSTEPS {self._geometry_max}\n")
 
     @sile_fh_open(reset=reset_values(("_geometry_write", 0), animsteps=True))
-    def write_supercell(self, sc, fmt='.8f'):
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", from_version="0.15")
+    def write_lattice(self, lattice, fmt='.8f'):
         """ Writes the supercell to the contained file
 
         Parameters
         ----------
-        sc : SuperCell
+        lattice : Lattice
            the supercell to be written
         fmt : str, optional
            used format for the precision of the data
@@ -122,11 +124,11 @@ class xsfSile(Sile):
         from time import gmtime, strftime
         self._write_once('# File created by: sisl {}\n#\n'.format(strftime("%Y-%m-%d", gmtime())))
 
-        if all(sc.nsc == 1):
+        if all(lattice.nsc == 1):
             self._write_once("MOLECULE\n#\n")
-        elif all(sc.nsc[:2] > 1):
+        elif all(lattice.nsc[:2] > 1):
             self._write_once("SLAB\n#\n")
-        elif sc.nsc[0] > 1:
+        elif lattice.nsc[0] > 1:
             self._write_once("POLYMER\n#\n")
         else:
             self._write_once('CRYSTAL\n#\n')
@@ -137,14 +139,14 @@ class xsfSile(Sile):
         # We write the cell coordinates as the cell coordinates
         fmt_str = f'{{:{fmt}}} ' * 3 + '\n'
         for i in (0, 1, 2):
-            self._write(fmt_str.format(*sc.cell[i, :]))
+            self._write(fmt_str.format(*lattice.cell[i, :]))
 
         # Convert the unit cell to a conventional cell (90-90-90))
         # It seems this simply allows to store both formats in
         # the same file. However the below stuff is not correct.
         #self._write_once('#\n# Conventional lattice vectors:\n#\n')
         #self._write_key_index('CONVVEC')
-        #convcell = sc.toCuboid(True)._v
+        #convcell = lattice.toCuboid(True)._v
         #for i in [0, 1, 2]:
         #    self._write(fmt_str.format(*convcell[i, :]))
 
@@ -162,7 +164,7 @@ class xsfSile(Sile):
            auxiliary data associated with the geometry to be saved
            along side. Internally in XCrySDen this data is named *Forces*
         """
-        self.write_supercell(geometry.sc, fmt)
+        self.write_lattice(geometry.lattice, fmt)
 
         has_data = data is not None
         if has_data:
@@ -190,10 +192,10 @@ class xsfSile(Sile):
                 self._write(fmt_str.format(geometry.atoms[ia].Z, *geometry.xyz[ia, :]))
 
     @sile_fh_open()
-    def _r_geometry_next(self, sc=None, atoms=None, ret_data=False):
-        if sc is None:
+    def _r_geometry_next(self, lattice=None, atoms=None, ret_data=False):
+        if lattice is None:
             # fetch the prior read cell value
-            sc = self._read_cell
+            lattice = self._read_cell
 
         # initialize all things
         cell = None
@@ -288,12 +290,12 @@ class xsfSile(Sile):
         cell = None
 
         if primvec is not None:
-            cell = SuperCell(primvec, nsc=nsc)
-        elif sc is not None:
-            cell = sc
+            cell = Lattice(primvec, nsc=nsc)
+        elif lattice is not None:
+            cell = lattice
 
         elif typ == "MOLECULE":
-            cell = SuperCell(np.diag(xyz.max(0) - xyz.min(0) + 10.))
+            cell = Lattice(np.diag(xyz.max(0) - xyz.min(0) + 10.))
 
         if cell is None:
             raise ValueError(f"{self.__class__.__name__} could not find lattice parameters.")
@@ -311,18 +313,19 @@ class xsfSile(Sile):
                 return None, None
             return None
 
-        geom = Geometry(xyz, atoms=atoms, sc=cell)
+        geom = Geometry(xyz, atoms=atoms, lattice=cell)
         if ret_data:
             return geom, _a.arrayd(data)
         return geom
 
     @sile_read_multiple(postprocess=postprocess(GeometryCollection, Collection))
-    def read_geometry(self, sc=None, atoms=None, ret_data=False):
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", from_version="0.15")
+    def read_geometry(self, lattice=None, atoms=None, ret_data=False):
         """ Geometry contained in file, and optionally the associated data
 
         Parameters
         ----------
-        sc : SuperCell, optional
+        lattice : Lattice, optional
             the supercell in case the lattice vectors are not present in the current
             block.
         atoms : Atoms, optional
@@ -330,7 +333,7 @@ class xsfSile(Sile):
         ret_data : bool, optional
            in case the the file has auxiliary data, return that as well.
         """
-        return self._r_geometry_next(sc=sc, atoms=atoms, ret_data=ret_data)
+        return self._r_geometry_next(lattice=lattice, atoms=atoms, ret_data=ret_data)
 
     @sile_fh_open()
     def write_grid(self, *args, **kwargs):
@@ -338,8 +341,8 @@ class xsfSile(Sile):
 
         Examples
         --------
-        >>> g1 = Grid(0.1, sc=2.)
-        >>> g2 = Grid(0.1, sc=2.)
+        >>> g1 = Grid(0.1, lattice=2.)
+        >>> g2 = Grid(0.1, lattice=2.)
         >>> get_sile('output.xsf', 'w').write_grid(g1, g2)
 
         Parameters
@@ -364,7 +367,7 @@ class xsfSile(Sile):
 
         geom = kwargs.get('geometry', args[0].geometry)
         if geom is None:
-            geom = Geometry([0, 0, 0], AtomUnknown(999), sc=args[0].sc)
+            geom = Geometry([0, 0, 0], AtomUnknown(999), lattice=args[0].lattice)
         self.write_geometry(geom)
 
         # Buffer size for writing

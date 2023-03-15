@@ -26,9 +26,9 @@ def test_zz_dynamical_matrix(sisl_files):
 
 def test_zz_sc_geom(sisl_files):
     si = sisl.get_sile(sisl_files(_dir, 'zz.gout'))
-    sc = si.read_supercell()
+    lattice = si.read_lattice()
     geom = si.read_geometry()
-    assert sc == geom.sc
+    assert lattice == geom.lattice
 
 
 def test_graphene_8x8_untiling(sisl_files):

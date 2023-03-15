@@ -7,7 +7,7 @@ import numpy as np
 
 from pathlib import Path
 import pytest
-from sisl import Atom, Geometry, SuperCell, Hamiltonian, _environ
+from sisl import Atom, Geometry, Lattice, Hamiltonian, _environ
 
 
 # Here we create the necessary methods and fixtures to enabled/disable
@@ -137,26 +137,26 @@ def sisl_system():
     alat = 1.42
     sq3h = 3.**.5 * 0.5
     C = Atom(Z=6, R=1.42)
-    sc = SuperCell(np.array([[1.5, sq3h, 0.],
-                             [1.5, -sq3h, 0.],
-                             [0., 0., 10.]], np.float64) * alat,
-                   nsc=[3, 3, 1])
+    lattice = Lattice(np.array([[1.5, sq3h, 0.],
+                                [1.5, -sq3h, 0.],
+                                [0., 0., 10.]], np.float64) * alat,
+                      nsc=[3, 3, 1])
     d.g = Geometry(np.array([[0., 0., 0.],
                              [1., 0., 0.]], np.float64) * alat,
-                   atoms=C, sc=sc)
+                   atoms=C, lattice=lattice)
 
     d.R = np.array([0.1, 1.5])
     d.t = np.array([0., 2.7])
     d.tS = np.array([(0., 1.0),
                      (2.7, 0.)])
     d.C = Atom(Z=6, R=max(d.R))
-    d.sc = SuperCell(np.array([[1.5, sq3h, 0.],
-                               [1.5, -sq3h, 0.],
-                               [0., 0., 10.]], np.float64) * alat,
-                     nsc=[3, 3, 1])
+    d.lattice = Lattice(np.array([[1.5, sq3h, 0.],
+                                  [1.5, -sq3h, 0.],
+                                  [0., 0., 10.]], np.float64) * alat,
+                        nsc=[3, 3, 1])
     d.gtb = Geometry(np.array([[0., 0., 0.],
                                [1., 0., 0.]], np.float64) * alat,
-                     atoms=C, sc=sc)
+                     atoms=C, lattice=lattice)
 
     d.ham = Hamiltonian(d.gtb)
     d.ham.construct([(0.1, 1.5), (0.1, 2.7)])
@@ -203,7 +203,7 @@ def pytest_configure(config):
     for mark in ['io', 'generic', 'bloch', 'hamiltonian', 'geometry', 'geom', 'shape',
                  'state', 'electron', 'phonon', 'utils', 'unit', 'distribution',
                  'spin', 'self_energy', 'help', 'messages', 'namedindex', 'sparse',
-                 'supercell', 'sc', 'quaternion', 'sparse_geometry', 'sparse_orbital',
+                 'lattice', 'supercell', 'sc', 'quaternion', 'sparse_geometry', 'sparse_orbital',
                  'ranges', 'physics', "physics_feature",
                  'orbital', 'oplist', 'grid', 'atoms', 'atom', 'sgrid', 'sdata', 'sgeom',
                  'version',

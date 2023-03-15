@@ -215,7 +215,7 @@ class SparseOrbitalBZ(SparseOrbital):
            chosen gauge
         """
         k = _a.asarrayd(k).ravel()
-        return matrix_k(gauge, self, _dim, self.sc, k, dtype, format)
+        return matrix_k(gauge, self, _dim, self.lattice, k, dtype, format)
 
     def _dPk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", _dim=0):
         r""" Sparse matrix (``scipy.sparse.csr_matrix``) at `k` differentiated with respect to `k` for a polarized system
@@ -230,7 +230,7 @@ class SparseOrbitalBZ(SparseOrbital):
            chosen gauge
         """
         k = _a.asarrayd(k).ravel()
-        return matrix_dk(gauge, self, _dim, self.sc, k, dtype, format)
+        return matrix_dk(gauge, self, _dim, self.lattice, k, dtype, format)
 
     def _ddPk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", _dim=0):
         r""" Sparse matrix (``scipy.sparse.csr_matrix``) at `k` double differentiated with respect to `k` for a polarized system
@@ -245,7 +245,7 @@ class SparseOrbitalBZ(SparseOrbital):
            chosen gauge
         """
         k = _a.asarrayd(k).ravel()
-        return matrix_ddk(gauge, self, _dim, self.sc, k, dtype, format)
+        return matrix_ddk(gauge, self, _dim, self.lattice, k, dtype, format)
 
     def Sk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs): # pylint: disable=E0202
         r""" Setup the overlap matrix for a given k-point
@@ -416,7 +416,7 @@ class SparseOrbitalBZ(SparseOrbital):
            chosen gauge
         """
         k = _a.asarrayd(k).ravel()
-        return matrix_dk_nc_diag(gauge, self, self.S_idx, self.sc, k, dtype, format)
+        return matrix_dk_nc_diag(gauge, self, self.S_idx, self.lattice, k, dtype, format)
 
     def ddSk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr", *args, **kwargs): # pylint: disable=E0202
         r""" Setup the double :math:`k`-derivatie of the overlap matrix for a given k-point
@@ -496,7 +496,7 @@ class SparseOrbitalBZ(SparseOrbital):
            chosen gauge
         """
         k = _a.asarrayd(k).ravel()
-        return matrix_ddk_nc_diag(gauge, self, self.S_idx, self.sc, k, dtype, format)
+        return matrix_ddk_nc_diag(gauge, self, self.S_idx, self.lattice, k, dtype, format)
 
     def eig(self, k=(0, 0, 0), gauge="R", eigvals_only=True, **kwargs):
         r""" Returns the eigenvalues of the physical quantity (using the non-Hermitian solver)
@@ -875,7 +875,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
            chosen gauge
         """
         k = _a.asarrayd(k).ravel()
-        return matrix_k_nc(gauge, self, self.sc, k, dtype, format)
+        return matrix_k_nc(gauge, self, self.lattice, k, dtype, format)
 
     def _Pk_spin_orbit(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr"):
         r""" Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a spin-orbit system
@@ -890,7 +890,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
            chosen gauge
         """
         k = _a.asarrayd(k).ravel()
-        return matrix_k_so(gauge, self, self.sc, k, dtype, format)
+        return matrix_k_so(gauge, self, self.lattice, k, dtype, format)
 
     def _dPk_unpolarized(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr"):
         r""" Tuple of sparse matrix (``scipy.sparse.csr_matrix``) at `k`, differentiated with respect to `k`
@@ -935,7 +935,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
            chosen gauge
         """
         k = _a.asarrayd(k).ravel()
-        return matrix_dk_nc(gauge, self, self.sc, k, dtype, format)
+        return matrix_dk_nc(gauge, self, self.lattice, k, dtype, format)
 
     def _dPk_spin_orbit(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr"):
         r""" Tuple of sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system, differentiated with respect to `k`
@@ -950,7 +950,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
            chosen gauge
         """
         k = _a.asarrayd(k).ravel()
-        return matrix_dk_so(gauge, self, self.sc, k, dtype, format)
+        return matrix_dk_so(gauge, self, self.lattice, k, dtype, format)
 
     def _ddPk_non_colinear(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr"):
         r""" Tuple of sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system, differentiated with respect to `k` twice
@@ -965,7 +965,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
            chosen gauge
         """
         k = _a.asarrayd(k).ravel()
-        return matrix_ddk_nc(gauge, self, self.sc, k, dtype, format)
+        return matrix_ddk_nc(gauge, self, self.lattice, k, dtype, format)
 
     def _ddPk_spin_orbit(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr"):
         r""" Tuple of sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system, differentiated with respect to `k`
@@ -980,7 +980,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
            chosen gauge
         """
         k = _a.asarrayd(k).ravel()
-        return matrix_ddk_so(gauge, self, self.sc, k, dtype, format)
+        return matrix_ddk_so(gauge, self, self.lattice, k, dtype, format)
 
     def _Sk(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr"):
         r""" Overlap matrix in a ``scipy.sparse.csr_matrix`` at `k`.
@@ -1009,7 +1009,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
            chosen gauge
         """
         k = _a.asarrayd(k).ravel()
-        return matrix_k_nc_diag(gauge, self, self.S_idx, self.sc, k, dtype, format)
+        return matrix_k_nc_diag(gauge, self, self.S_idx, self.lattice, k, dtype, format)
 
     def _dSk_non_colinear(self, k=(0, 0, 0), dtype=None, gauge="R", format="csr"):
         r""" Overlap matrix (``scipy.sparse.csr_matrix``) at `k` for a non-collinear system
@@ -1024,7 +1024,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
            chosen gauge
         """
         k = _a.asarrayd(k).ravel()
-        return matrix_dk_nc_diag(gauge, self, self.S_idx, self.sc, k, dtype, format)
+        return matrix_dk_nc_diag(gauge, self, self.S_idx, self.lattice, k, dtype, format)
 
     def eig(self, k=(0, 0, 0), gauge="R", eigvals_only=True, **kwargs):
         r""" Returns the eigenvalues of the physical quantity (using the non-Hermitian solver)

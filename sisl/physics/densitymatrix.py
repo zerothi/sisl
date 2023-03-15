@@ -11,8 +11,7 @@ from scipy.sparse import csr_matrix, triu, tril
 from scipy.sparse import hstack as ss_hstack
 
 from sisl._internal import set_module
-from sisl.geometry import Geometry
-from sisl.supercell import SuperCell
+from sisl import Geometry, Lattice
 import sisl._array as _a
 from sisl._indices import indices_le, indices_fabs_le
 from sisl._math_small import xyz_to_spherical_cos_phi
@@ -535,14 +534,14 @@ class _densitymatrix(SparseOrbitalBZSpin):
         csrDM.prune()
 
         # 1. Ensure the grid has a geometry associated with it
-        sc = grid.sc.copy()
+        lattice = grid.lattice.copy()
         # Find the periodic directions
         pbc = [bc == grid.PERIODIC or geometry.nsc[i] > 1 for i, bc in enumerate(grid.bc[:, 0])]
         if grid.geometry is None:
             # Create the actual geometry that encompass the grid
-            ia, xyz, _ = geometry.within_inf(sc, periodic=pbc)
+            ia, xyz, _ = geometry.within_inf(lattice, periodic=pbc)
             if len(ia) > 0:
-                grid.set_geometry(Geometry(xyz, geometry.atoms[ia], sc=sc))
+                grid.set_geometry(Geometry(xyz, geometry.atoms[ia], lattice=lattice))
 
         # Instead of looping all atoms in the supercell we find the exact atoms
         # and their supercell indices.
@@ -551,13 +550,13 @@ class _densitymatrix(SparseOrbitalBZSpin):
         # supercell by add_R in each direction.
         # For extremely skewed lattices this will be way too much, hence we make
         # them square.
-        o = sc.toCuboid(True)
-        sc = SuperCell(o._v + np.diag(2 * add_R), origin=o.origin - add_R)
+        o = lattice.toCuboid(True)
+        lattice = Lattice(o._v + np.diag(2 * add_R), origin=o.origin - add_R)
 
         # Retrieve all atoms within the grid supercell
         # (and the neighbours that connect into the cell)
-        IA, XYZ, ISC = geometry.within_inf(sc, periodic=pbc)
-        XYZ -= grid.sc.origin.reshape(1, 3)
+        IA, XYZ, ISC = geometry.within_inf(lattice, periodic=pbc)
+        XYZ -= grid.lattice.origin.reshape(1, 3)
 
         # Retrieve progressbar
         eta = progressbar(len(IA), f"{self.__class__.__name__}.density", "atom", eta)

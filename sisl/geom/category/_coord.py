@@ -9,10 +9,11 @@ import numpy as np
 
 from sisl._category import CategoryMeta
 from sisl._internal import set_module
+from sisl.messages import deprecate_argument
 from sisl.utils.misc import direction
 from sisl.shape import *
-from sisl.supercell import SuperCell, SuperCellChild
-from sisl._supercell import cell_invert
+from sisl.lattice import Lattice, LatticeChild
+from sisl._lattice import cell_invert
 import sisl._array as _a
 from .base import AtomCategory, NullCategory
 
@@ -28,18 +29,18 @@ class AtomFracSite(AtomCategory):
 
     Parameters
     ----------
-    sc : SuperCell, SuperCellChild or argument to SuperCell
-       an object that defines the lattice vectors (will be passed through to `SuperCell`
-       if not an object instance of `SuperCell` or `SuperCellChild`
+    lattice : Lattice, LatticeChild or argument to Lattice
+       an object that defines the lattice vectors (will be passed through to `Lattice`
+       if not an object instance of `Lattice` or `LatticeChild`
     atol : float, optional
        the absolute tolerance (in Ang) to check whether the site is an integer
        site.
     offset : array_like, optional
        an offset made to the geometry coordinates before calculating the fractional
-       coordinates according to `sc`
+       coordinates according to `lattice`
     foffset : array_like, optional
        fractional offset of the fractional coordinates, this allows to select sub-regions
-       in the `sc` lattice vectors.
+       in the `lattice` lattice vectors.
 
     Examples
     --------
@@ -55,16 +56,17 @@ class AtomFracSite(AtomCategory):
     """
     __slots__ = (f"_{a}" for a in ("cell", "icell", "length", "atol", "offset", "foffset"))
 
-    def __init__(self, sc, atol=1.e-5, offset=(0., 0., 0.), foffset=(0., 0., 0.)):
-        if isinstance(sc, SuperCellChild):
-            sc = sc.sc
-        elif not isinstance(sc, SuperCell):
-            sc = SuperCell(sc)
+    @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", from_version="0.15")
+    def __init__(self, lattice, atol=1.e-5, offset=(0., 0., 0.), foffset=(0., 0., 0.)):
+        if isinstance(lattice, LatticeChild):
+            lattice = lattice.lattice
+        elif not isinstance(lattice, Lattice):
+            lattice = Lattice(lattice)
 
         # Unit-cell to fractionalize
-        self._cell = sc.cell.copy()
+        self._cell = lattice.cell.copy()
         # lengths of lattice vectors
-        self._length = sc.length.copy().reshape(1, 3)
+        self._length = lattice.length.copy().reshape(1, 3)
         # inverse cell (for fractional coordinate calculations)
         self._icell = cell_invert(self._cell)
         # absolute tolerance [Ang]

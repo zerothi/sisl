@@ -54,7 +54,7 @@ class TestGridPlot(_TestPlot):
             complex_grid_shape = (8, 10, 10)
             np.random.seed(1)
             values = np.random.random(complex_grid_shape).astype(np.complex128) + np.random.random(complex_grid_shape) * 1j
-            complex_grid = sisl.Grid(complex_grid_shape, sc=1)
+            complex_grid = sisl.Grid(complex_grid_shape, lattice=1)
             complex_grid.grid = values
 
             init_func = complex_grid.plot

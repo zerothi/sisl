@@ -8,7 +8,7 @@ import math as m
 import numpy as np
 
 from sisl import Sphere
-from sisl import Geometry, Atom, SuperCell
+from sisl import Geometry, Atom, Lattice
 
 
 @pytest.fixture
@@ -17,18 +17,18 @@ def setup():
         def __init__(self):
             bond = 1.42
             sq3h = 3.**.5 * 0.5
-            self.sc = SuperCell(np.array([[1.5, sq3h, 0.],
-                                          [1.5, -sq3h, 0.],
-                                          [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
+            self.lattice = Lattice(np.array([[1.5, sq3h, 0.],
+                                             [1.5, -sq3h, 0.],
+                                             [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
             C = Atom(Z=6, R=bond * 1.01)
             self.g = Geometry(np.array([[0., 0., 0.],
                                         [1., 0., 0.]], np.float64) * bond,
-                              atoms=C, sc=self.sc)
+                              atoms=C, lattice=self.lattice)
 
             C = Atom(Z=6, R=[bond * 1.01] * 2)
             self.g2 = Geometry(np.array([[0., 0., 0.],
                                          [1., 0., 0.]], np.float64) * bond,
-                               atoms=C, sc=self.sc)
+                               atoms=C, lattice=self.lattice)
     return t()
 
 

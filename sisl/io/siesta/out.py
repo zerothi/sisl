@@ -11,7 +11,7 @@ from ..sile import add_sile, sile_fh_open, SileError
 from sisl._common import Opt
 from sisl._internal import set_module
 import sisl._array as _a
-from sisl import Geometry, Atom, SuperCell
+from sisl import Geometry, Atom, Lattice
 from sisl.utils import PropertyDict
 from sisl.utils.cmd import *
 from sisl.unit.siesta import unit_convert
@@ -116,13 +116,13 @@ class outSileSiesta(SileSiesta):
 
         return [Atom(**atoms[tag]) for tag in order]
 
-    def _r_supercell_outcell(self):
+    def _r_lattice_outcell(self):
         """ Wrapper for reading the unit-cell from the outcoor block """
 
         # Read until outcell is found
         found, line = self.step_to("outcell: Unit cell vectors")
         if not found:
-            raise ValueError(f"{self.__class__.__name__}._r_supercell_outcell did not find outcell key")
+            raise ValueError(f"{self.__class__.__name__}._r_lattice_outcell did not find outcell key")
 
         Ang = 'Ang' in line
 
@@ -139,7 +139,7 @@ class outSileSiesta(SileSiesta):
         if not Ang:
             cell *= Bohr2Ang
 
-        return SuperCell(cell)
+        return Lattice(cell)
 
     def _r_geometry_outcoor(self, line, atoms=None):
         """ Wrapper for reading the geometry as in the outcoor output """
@@ -168,7 +168,7 @@ class outSileSiesta(SileSiesta):
         # Retrieve the unit-cell (but do not skip file-descriptor position)
         # This is because the current unit-cell is not always written.
         pos = self.fh.tell()
-        cell = self._r_supercell_outcell()
+        cell = self._r_lattice_outcell()
         if is_final and self.fh.tell() < pos:
             # we have wrapped around the file
             self.fh.seek(pos, os.SEEK_SET)
@@ -185,7 +185,7 @@ class outSileSiesta(SileSiesta):
         elif not Ang:
             xyz *= Bohr2Ang
 
-        return Geometry(xyz, atoms, sc=cell)
+        return Geometry(xyz, atoms, lattice=cell)
 
     def _r_geometry_atomic(self, line, atoms=None):
         """ Wrapper for reading the geometry as in the outcoor output """
@@ -207,7 +207,7 @@ class outSileSiesta(SileSiesta):
         # Retrieve the unit-cell (but do not skip file-descriptor position)
         # This is because the current unit-cell is not always written.
         pos = self.fh.tell()
-        cell = self._r_supercell_outcell()
+        cell = self._r_lattice_outcell()
         self.fh.seek(pos, os.SEEK_SET)
 
         # Convert xyz
@@ -215,7 +215,7 @@ class outSileSiesta(SileSiesta):
         if not Ang:
             xyz *= Bohr2Ang
 
-        return Geometry(xyz, atoms, sc=cell)
+        return Geometry(xyz, atoms, lattice=cell)
 
     @sile_fh_open()
     def read_geometry(self, last=True, all=False):

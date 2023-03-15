@@ -4,7 +4,7 @@
 import numpy as np
 
 from sisl._internal import set_module
-from sisl import Atom, Geometry, SuperCell
+from sisl import Atom, Geometry, Lattice
 from ._common import geometry_define_nsc
 
 __all__ = ['honeycomb', 'graphene']
@@ -32,21 +32,21 @@ def honeycomb(bond, atoms, orthogonal=False):
     """
     sq3h = 3.**.5 * 0.5
     if orthogonal:
-        sc = SuperCell(np.array([[3., 0., 0.],
+        lattice = Lattice(np.array([[3., 0., 0.],
                                  [0., 2 * sq3h, 0.],
                                  [0., 0., 10.]], np.float64) * bond)
         g = Geometry(np.array([[0., 0., 0.],
                                [0.5, sq3h, 0.],
                                [1.5, sq3h, 0.],
                                [2., 0., 0.]], np.float64) * bond,
-                     atoms, sc=sc)
+                     atoms, lattice=lattice)
     else:
-        sc = SuperCell(np.array([[1.5, -sq3h, 0.],
+        lattice = Lattice(np.array([[1.5, -sq3h, 0.],
                                  [1.5, sq3h, 0.],
                                  [0., 0., 10.]], np.float64) * bond)
         g = Geometry(np.array([[0., 0., 0.],
                                [1., 0., 0.]], np.float64) * bond,
-                     atoms, sc=sc)
+                     atoms, lattice=lattice)
     geometry_define_nsc(g, [True, True, False])
     return g
 

@@ -4,7 +4,7 @@
 import numpy as np
 
 from sisl._internal import set_module
-from sisl import Geometry, SuperCell
+from sisl import Geometry, Lattice
 from ._common import geometry_define_nsc, geometry2uc
 
 __all__ = ['sc', 'bcc', 'fcc', 'hcp', 'rocksalt']
@@ -32,10 +32,10 @@ def sc(alat, atom):
     atom : Atom
         the atom in the SC lattice
     """
-    sc = SuperCell(np.array([[1, 0, 0],
-                             [0, 1, 0],
-                             [0, 0, 1]], np.float64) * alat)
-    g = Geometry([0, 0, 0], atom, sc=sc)
+    lattice = Lattice(np.array([[1, 0, 0],
+                                [0, 1, 0],
+                                [0, 0, 1]], np.float64) * alat)
+    g = Geometry([0, 0, 0], atom, lattice=lattice)
     geometry_define_nsc(g)
     return g
 
@@ -54,16 +54,16 @@ def bcc(alat, atoms, orthogonal=False):
         whether the lattice is orthogonal (2 atoms)
     """
     if orthogonal:
-        sc = SuperCell(np.array([[1, 0, 0],
+        lattice = Lattice(np.array([[1, 0, 0],
                                  [0, 1, 0],
                                  [0, 0, 1]], np.float64) * alat)
         ah = alat / 2
-        g = Geometry([[0, 0, 0], [ah, ah, ah]], atoms, sc=sc)
+        g = Geometry([[0, 0, 0], [ah, ah, ah]], atoms, lattice=lattice)
     else:
-        sc = SuperCell(np.array([[-1, 1, 1],
+        lattice = Lattice(np.array([[-1, 1, 1],
                                  [1, -1, 1],
                                  [1, 1, -1]], np.float64) * alat / 2)
-        g = Geometry([0, 0, 0], atoms, sc=sc)
+        g = Geometry([0, 0, 0], atoms, lattice=lattice)
     geometry_define_nsc(g)
     return g
 
@@ -82,17 +82,17 @@ def fcc(alat, atoms, orthogonal=False):
         whether the lattice is orthogonal (4 atoms)
     """
     if orthogonal:
-        sc = SuperCell(np.array([[1, 0, 0],
+        lattice = Lattice(np.array([[1, 0, 0],
                                  [0, 1, 0],
                                  [0, 0, 1]], np.float64) * alat)
         ah = alat / 2
         g = Geometry([[0, 0, 0], [ah, ah, 0],
-                      [ah, 0, ah], [0, ah, ah]], atoms, sc=sc)
+                      [ah, 0, ah], [0, ah, ah]], atoms, lattice=lattice)
     else:
-        sc = SuperCell(np.array([[0, 1, 1],
+        lattice = Lattice(np.array([[0, 1, 1],
                                  [1, 0, 1],
                                  [1, 1, 0]], np.float64) * alat / 2)
-        g = Geometry([0, 0, 0], atoms, sc=sc)
+        g = Geometry([0, 0, 0], atoms, lattice=lattice)
     geometry_define_nsc(g)
     return g
 
@@ -116,26 +116,26 @@ def hcp(a, atoms, coa=1.63333, orthogonal=False):
     c = a * coa
     a3sq = a / 3 ** .5
     if orthogonal:
-        sc = SuperCell([[a + a * _c60 * 2, 0, 0],
+        lattice = Lattice([[a + a * _c60 * 2, 0, 0],
                         [0, a * _c30 * 2, 0],
                         [0, 0, c / 2]])
         gt = Geometry([[0, 0, 0],
                        [a, 0, 0],
                        [a * _s30, a * _c30, 0],
-                       [a * (1 + _s30), a * _c30, 0]], atoms, sc=sc)
+                       [a * (1 + _s30), a * _c30, 0]], atoms, lattice=lattice)
         # Create the rotated one on top
         gr = gt.copy()
         # mirror structure
-        gr.xyz[0, 1] += sc.cell[1, 1]
-        gr.xyz[1, 1] += sc.cell[1, 1]
+        gr.xyz[0, 1] += lattice.cell[1, 1]
+        gr.xyz[1, 1] += lattice.cell[1, 1]
         gr = gr.translate(-np.amin(gr.xyz, axis=0))
         # Now displace to get the correct offset
         gr = gr.translate([0, a * _s30 / 2, 0])
         g = gt.append(gr, 2)
     else:
-        sc = SuperCell([a, a, c, 90, 90, 60])
+        lattice = Lattice([a, a, c, 90, 90, 60])
         g = Geometry([[0, 0, 0], [a3sq * _c30, a3sq * _s30, c / 2]],
-                     atoms, sc=sc)
+                     atoms, lattice=lattice)
     geometry_define_nsc(g)
     return g
 

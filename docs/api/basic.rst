@@ -30,7 +30,7 @@ Simple objects
    Atoms
    Geometry
    GeometryCollection
-   SuperCell
+   Lattice
    Grid
 
 

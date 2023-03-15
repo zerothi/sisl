@@ -36,7 +36,7 @@ from .siesta_nc import ncSileSiesta
 from .struct import structSileSiesta
 from .xv import xvSileSiesta
 from sisl import Orbital, SphericalOrbital, Atom, AtomGhost, Atoms
-from sisl import Geometry, SuperCell, DynamicalMatrix
+from sisl import Geometry, Lattice, DynamicalMatrix
 
 from sisl.utils.cmd import default_ArgumentParser, default_namespace
 from sisl.utils.misc import merge_instances
@@ -494,12 +494,12 @@ class fdfSileSiesta(SileSiesta):
         return s
 
     @sile_fh_open()
-    def write_supercell(self, sc, fmt=".8f", *args, **kwargs):
+    def write_lattice(self, sc, fmt=".8f", *args, **kwargs):
         """ Writes the supercell
 
         Parameters
         ----------
-        sc : SuperCell
+        sc : Lattice
            supercell object to write
         fmt : str, optional
            precision used to store the lattice vectors
@@ -541,7 +541,7 @@ class fdfSileSiesta(SileSiesta):
         """
         sile_raise_write(self)
 
-        self.write_supercell(geometry.sc, fmt, *args, **kwargs)
+        self.write_lattice(geometry.lattice, fmt, *args, **kwargs)
 
         self._write(f"\nNumberOfAtoms {geometry.na}\n")
         unit = kwargs.get("unit", "Ang").capitalize()
@@ -634,7 +634,7 @@ class fdfSileSiesta(SileSiesta):
         self._write(f"  {ip}  {point[0]:.5f} {point[1]:.5f} {point[2]:.5f}  {name}\n")
         self._write("%endblock BandLines\n")
 
-    def read_supercell_nsc(self, *args, **kwargs):
+    def read_lattice_nsc(self, *args, **kwargs):
         """ Read supercell size using any method available
 
         Raises
@@ -644,30 +644,30 @@ class fdfSileSiesta(SileSiesta):
         """
         order = _listify_str(kwargs.pop("order", ["nc", "ORB_INDX"]))
         for f in order:
-            v = getattr(self, f"_r_supercell_nsc_{f.lower()}")(*args, **kwargs)
+            v = getattr(self, f"_r_lattice_nsc_{f.lower()}")(*args, **kwargs)
             if v is not None:
-                _track(self.read_supercell_nsc, f"found file {f}")
+                _track(self.read_lattice_nsc, f"found file {f}")
                 return v
         warn("number of supercells could not be read from output files. Assuming molecule cell "
              "(no supercell connections)")
         return _a.onesi(3)
 
-    def _r_supercell_nsc_nc(self, *args, **kwargs):
+    def _r_lattice_nsc_nc(self, *args, **kwargs):
         f = self.dir_file(self.get("SystemLabel", default="siesta") + ".nc")
-        _track_file(self._r_supercell_nsc_nc, f)
+        _track_file(self._r_lattice_nsc_nc, f)
         if f.is_file():
-            return ncSileSiesta(f).read_supercell_nsc()
+            return ncSileSiesta(f).read_lattice_nsc()
         return None
 
-    def _r_supercell_nsc_orb_indx(self, *args, **kwargs):
+    def _r_lattice_nsc_orb_indx(self, *args, **kwargs):
         f = self.dir_file(self.get("SystemLabel", default="siesta") + ".ORB_INDX")
-        _track_file(self._r_supercell_nsc_orb_indx, f)
+        _track_file(self._r_lattice_nsc_orb_indx, f)
         if f.is_file():
-            return orbindxSileSiesta(f).read_supercell_nsc()
+            return orbindxSileSiesta(f).read_lattice_nsc()
         return None
 
-    def read_supercell(self, output=False, *args, **kwargs):
-        """ Returns SuperCell object by reading fdf or Siesta output related files.
+    def read_lattice(self, output=False, *args, **kwargs):
+        """ Returns Lattice object by reading fdf or Siesta output related files.
 
         One can limit the tried files to only one file by passing
         only a single file ending.
@@ -685,24 +685,24 @@ class fdfSileSiesta(SileSiesta):
         Examples
         --------
         >>> fdf = get_sile("RUN.fdf")
-        >>> fdf.read_supercell() # read from fdf
-        >>> fdf.read_supercell(True) # read from [XV, nc, fdf]
-        >>> fdf.read_supercell(order=["nc"]) # read from [nc]
-        >>> fdf.read_supercell(True, order=["nc"]) # read from [nc]
+        >>> fdf.read_lattice() # read from fdf
+        >>> fdf.read_lattice(True) # read from [XV, nc, fdf]
+        >>> fdf.read_lattice(order=["nc"]) # read from [nc]
+        >>> fdf.read_lattice(True, order=["nc"]) # read from [nc]
         """
         if output:
             order = _listify_str(kwargs.pop("order", ["XV", "nc", "fdf"]))
         else:
             order = _listify_str(kwargs.pop("order", ["fdf"]))
         for f in order:
-            v = getattr(self, f"_r_supercell_{f.lower()}")(*args, **kwargs)
+            v = getattr(self, f"_r_lattice_{f.lower()}")(*args, **kwargs)
             if v is not None:
-                _track(self.read_supercell, f"found file {f}")
+                _track(self.read_lattice, f"found file {f}")
                 return v
         return None
 
-    def _r_supercell_fdf(self, *args, **kwargs):
-        """ Returns `SuperCell` object from the FDF file """
+    def _r_lattice_fdf(self, *args, **kwargs):
+        """ Returns `Lattice` object from the FDF file """
         s = self.get("LatticeConstant", unit="Ang")
         if s is None:
             raise SileError("Could not find LatticeConstant in file")
@@ -718,7 +718,7 @@ class fdfSileSiesta(SileSiesta):
             lc = self.get("LatticeParameters")
             if lc:
                 tmp = [float(k) for k in lc[0].split()[:6]]
-                cell = SuperCell.tocell(*tmp)
+                cell = Lattice.tocell(*tmp)
         if lc is None:
             # the fdf file contains neither the latticevectors or parameters
             raise SileError("Could not find LatticeVectors or LatticeParameters block in file")
@@ -727,54 +727,53 @@ class fdfSileSiesta(SileSiesta):
         # When reading from the fdf, the warning should be suppressed
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            nsc = self.read_supercell_nsc()
+            nsc = self.read_lattice_nsc()
 
-        return SuperCell(cell, nsc=nsc)
+        return Lattice(cell, nsc=nsc)
 
-    def _r_supercell_nc(self):
+    def _r_lattice_nc(self):
         # Read supercell from <>.nc file
         f = self.dir_file(self.get("SystemLabel", default="siesta") + ".nc")
-        _track_file(self._r_supercell_nc, f)
+        _track_file(self._r_lattice_nc, f)
         if f.is_file():
-            return ncSileSiesta(f).read_supercell()
+            return ncSileSiesta(f).read_lattice()
         return None
 
-    def _r_supercell_xv(self, *args, **kwargs):
-        """ Returns `SuperCell` object from the XV file """
+    def _r_lattice_xv(self, *args, **kwargs):
+        """ Returns `Lattice` object from the XV file """
         f = self.dir_file(self.get("SystemLabel", default="siesta") + ".XV")
-        _track_file(self._r_supercell_xv, f)
+        _track_file(self._r_lattice_xv, f)
         if f.is_file():
-            nsc = self.read_supercell_nsc()
-            sc = xvSileSiesta(f).read_supercell()
-            sc.set_nsc(nsc)
-            return sc
+            nsc = self.read_lattice_nsc()
+            lattice = xvSileSiesta(f).read_lattice()
+            lattice.set_nsc(nsc)
+            return lattice
         return None
 
-    def _r_supercell_struct(self, *args, **kwargs):
-        """ Returns `SuperCell` object from the STRUCT files """
-        sc = None
+    def _r_lattice_struct(self, *args, **kwargs):
+        """ Returns `Lattice` object from the STRUCT files """
         for end in ["STRUCT_NEXT_ITER", "STRUCT_OUT", "STRUCT_IN"]:
             f = self.dir_file(self.get("SystemLabel", default="siesta") + f".{end}")
-            _track_file(self._r_supercell_struct, f)
+            _track_file(self._r_lattice_struct, f)
             if f.is_file():
-                nsc = self.read_supercell_nsc()
-                sc = structSileSiesta(f).read_supercell()
-                sc.set_nsc(nsc)
-                break
-        return sc
-
-    def _r_supercell_tshs(self, *args, **kwargs):
-        f = self.dir_file(self.get("SystemLabel", default="siesta") + ".TSHS")
-        _track_file(self._r_supercell_tshs, f)
-        if f.is_file():
-            return tshsSileSiesta(f).read_supercell()
+                nsc = self.read_lattice_nsc()
+                lattice = structSileSiesta(f).read_lattice()
+                lattice.set_nsc(nsc)
+                return lattice
         return None
 
-    def _r_supercell_onlys(self, *args, **kwargs):
-        f = self.dir_file(self.get("SystemLabel", default="siesta") + ".onlyS")
-        _track_file(self._r_supercell_onlys, f)
+    def _r_lattice_tshs(self, *args, **kwargs):
+        f = self.dir_file(self.get("SystemLabel", default="siesta") + ".TSHS")
+        _track_file(self._r_lattice_tshs, f)
         if f.is_file():
-            return onlysSileSiesta(f).read_supercell()
+            return tshsSileSiesta(f).read_lattice()
+        return None
+
+    def _r_lattice_onlys(self, *args, **kwargs):
+        f = self.dir_file(self.get("SystemLabel", default="siesta") + ".onlyS")
+        _track_file(self._r_lattice_onlys, f)
+        if f.is_file():
+            return onlysSileSiesta(f).read_lattice()
         return None
 
     def read_force(self, *args, **kwargs):
@@ -1077,16 +1076,16 @@ class fdfSileSiesta(SileSiesta):
 
             # We have an actual supercell. Lets try and fix it.
             # First lets recreate the smallest geometry
-            sc = geom.sc.cell.copy()
-            sc[0, :] /= supercell[0]
-            sc[1, :] /= supercell[1]
-            sc[2, :] /= supercell[2]
+            cell = geom.lattice.cell.copy()
+            cell[0, :] /= supercell[0]
+            cell[1, :] /= supercell[1]
+            cell[2, :] /= supercell[2]
 
             # Ensure nsc is at least an odd number, later down we will symmetrize the FC matrix
             nsc = supercell + (supercell + 1) % 2
             if R > 0:
                 # Correct for the optional radius
-                sc_norm = fnorm(sc)
+                sc_norm = fnorm(cell)
                 # R is already "twice" the "orbital" range
                 nsc_R = 1 + 2 * np.ceil(R / sc_norm).astype(np.int32)
                 for i in range(3):
@@ -1094,12 +1093,12 @@ class fdfSileSiesta(SileSiesta):
                 del nsc_R
 
             # Construct the minimal unit-cell geometry
-            sc = SuperCell(sc, nsc=nsc)
+            lattice = Lattice(cell, nsc=nsc)
             # TODO check that the coordinates are in the cell
-            geom_small = Geometry(geom.xyz[FC_atoms], geom.atoms[FC_atoms], sc)
+            geom_small = Geometry(geom.xyz[FC_atoms], geom.atoms[FC_atoms], lattice)
 
             # Convert the big geometry's coordinates to fractional coordinates of the small unit-cell.
-            isc_xyz = (geom.xyz.dot(geom_small.sc.icell.T) -
+            isc_xyz = (geom.xyz.dot(geom_small.lattice.icell.T) -
                        np.tile(geom_small.fxyz, (np.product(supercell), 1)))
 
             axis_tiling = []
@@ -1251,7 +1250,7 @@ class fdfSileSiesta(SileSiesta):
 
             # When x, y, z are negative we simply look-up from the back of the array
             # which is exactly what is required
-            isc_off = geom.sc.isc_off
+            isc_off = geom.lattice.isc_off
             nxyz, na = geom.no, geom.na
             dist = geom.rij
 
@@ -1340,7 +1339,7 @@ class fdfSileSiesta(SileSiesta):
                     for atom, _ in geom.atoms.iter(True):
                         geom.atoms.replace(atom, basis[atom.Z-1])
                     geom.reduce()
-            nsc = self.read_supercell_nsc()
+            nsc = self.read_lattice_nsc()
             geom.set_nsc(nsc)
         return geom
 
@@ -1361,7 +1360,7 @@ class fdfSileSiesta(SileSiesta):
                         for atom, _ in geom.atoms.iter(True):
                             geom.atoms.replace(atom, basis[atom.Z-1])
                         geom.reduce()
-                nsc = self.read_supercell_nsc()
+                nsc = self.read_lattice_nsc()
                 geom.set_nsc(nsc)
                 break
         return geom
@@ -1397,7 +1396,7 @@ class fdfSileSiesta(SileSiesta):
 
         NOTE: Interaction range of the Atoms are currently not read.
         """
-        sc = self.read_supercell(order="fdf")
+        lattice = self.read_lattice(order="fdf")
 
         # No fractional coordinates
         is_frac = False
@@ -1457,7 +1456,7 @@ class fdfSileSiesta(SileSiesta):
             xyz[ia, :] = [float(k) for k in l[:3]]
             species[ia] = int(l[3]) - 1
         if is_frac:
-            xyz = np.dot(xyz, sc.cell)
+            xyz = np.dot(xyz, lattice.cell)
         xyz *= s
 
         # Read the block (not strictly needed, if so we simply set all atoms to H)
@@ -1474,12 +1473,12 @@ class fdfSileSiesta(SileSiesta):
         if isinstance(origin, str):
             opt = origin
             if opt.startswith("cop"):
-                origin = sc.cell.sum(0) * 0.5 - np.average(xyz, 0)
+                origin = lattice.cell.sum(0) * 0.5 - np.average(xyz, 0)
             elif opt.startswith("com"):
                 # TODO for ghost atoms its mass should not be used
                 w = atoms.mass
                 w /= w.sum()
-                origin = sc.cell.sum(0) * 0.5 - np.average(xyz, 0, weights=w)
+                origin = lattice.cell.sum(0) * 0.5 - np.average(xyz, 0, weights=w)
             elif opt.startswith("min"):
                 origin = - np.amin(xyz, 0)
             if len(opt) > 4:
@@ -1499,10 +1498,10 @@ class fdfSileSiesta(SileSiesta):
 
         # create geometry
         xyz += origin
-        geom = Geometry(xyz, atoms, sc=sc)
+        geom = Geometry(xyz, atoms, lattice=lattice)
 
         # and finally check for supercell constructs
-        supercell = self.get("SuperCell")
+        supercell = self.get("Lattice")
         if supercell is not None:
             # we need to expand
             # check that we are only dealing with an orthogonal supercell
@@ -1514,7 +1513,7 @@ class fdfSileSiesta(SileSiesta):
             diag = np.diag(supercell)
 
             if not np.allclose(supercell - np.diag(diag), 0):
-                raise SileError("SuperCell input is not diagonal, currently not implemented in sisl")
+                raise SileError("Lattice input is not diagonal, currently not implemented in sisl")
 
             # now tile it
             for axis, nt in enumerate(diag):

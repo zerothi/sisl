@@ -7,7 +7,7 @@ from numbers import Integral
 import numpy as np
 
 from sisl._internal import set_module
-from sisl import Atom, Geometry, SuperCell
+from sisl import Atom, Geometry, Lattice
 from ._common import geometry_define_nsc, geometry2uc
 
 __all__ = ['fcc_slab', 'bcc_slab', 'rocksalt_slab']
@@ -232,7 +232,7 @@ def _slab_with_vacuum(func, *args, **kwargs):
                    end=end.pop(0),
                    vacuum=None, **kwargs)
         # add vacuum
-        vacuum = SuperCell([0, 0, vacuums.pop(0)])
+        vacuum = Lattice([0, 0, vacuums.pop(0)])
         out = out.add(vacuum, offset=(0, 0, vacuum.cell[2, 2]))
         ivacuum += 1
         islab += 1
@@ -250,7 +250,7 @@ def _slab_with_vacuum(func, *args, **kwargs):
         if layer is None:
             dx = out.cell[2, 2] - out.xyz[:, 2].max()
             # this ensures the vacuum is exactly vacuums[iv]
-            vacuum = SuperCell([0, 0, vacuums.pop(0) - dx])
+            vacuum = Lattice([0, 0, vacuums.pop(0) - dx])
             ivacuum += 1
             out = out.add(vacuum)
         else:
@@ -396,57 +396,57 @@ def fcc_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=False, 
 
         info = _calc_info(start, end, layers, 2)
 
-        sc = SuperCell(np.array([0.5 ** 0.5, 0.5 ** 0.5, 0.5]) * alat)
-        g = Geometry([0, 0, 0], atoms=atoms, sc=sc)
+        lattice = Lattice(np.array([0.5 ** 0.5, 0.5 ** 0.5, 0.5]) * alat)
+        g = Geometry([0, 0, 0], atoms=atoms, lattice=lattice)
         g = g.tile(info.nlayers, 2)
 
         # slide AB layers relative to each other
         B = (info.offset + 1) % 2
-        g.xyz[B::2] += (sc.cell[0] + sc.cell[1]) / 2
+        g.xyz[B::2] += (lattice.cell[0] + lattice.cell[1]) / 2
 
     elif miller == (1, 1, 0):
 
         info = _calc_info(start, end, layers, 2)
 
-        sc = SuperCell(np.array([1., 0.5, 0.125]) ** 0.5 * alat)
-        g = Geometry([0, 0, 0], atoms=atoms, sc=sc)
+        lattice = Lattice(np.array([1., 0.5, 0.125]) ** 0.5 * alat)
+        g = Geometry([0, 0, 0], atoms=atoms, lattice=lattice)
         g = g.tile(info.nlayers, 2)
 
         # slide AB layers relative to each other
         B = (info.offset + 1) % 2
-        g.xyz[B::2] += (sc.cell[0] + sc.cell[1]) / 2
+        g.xyz[B::2] += (lattice.cell[0] + lattice.cell[1]) / 2
 
     elif miller == (1, 1, 1):
 
         info = _calc_info(start, end, layers, 3)
 
         if orthogonal:
-            sc = SuperCell(np.array([0.5, 4 * 0.375, 1 / 3]) ** 0.5 * alat)
+            lattice = Lattice(np.array([0.5, 4 * 0.375, 1 / 3]) ** 0.5 * alat)
             g = Geometry(np.array([[0, 0, 0],
                                    [0.125, 0.375, 0]]) ** 0.5 * alat,
-                         atoms=atoms, sc=sc)
+                         atoms=atoms, lattice=lattice)
             g = g.tile(info.nlayers, 2)
 
             # slide ABC layers relative to each other
             B = 2 * (info.offset + 1) % 6
             C = 2 * (info.offset + 2) % 6
-            vec = (3 * sc.cell[0] + sc.cell[1]) / 6
+            vec = (3 * lattice.cell[0] + lattice.cell[1]) / 6
             g.xyz[B::6] += vec
             g.xyz[B+1::6] += vec
             g.xyz[C::6] += 2 * vec
             g.xyz[C+1::6] += 2 * vec
 
         else:
-            sc = SuperCell(np.array([[0.5, 0, 0],
+            lattice = Lattice(np.array([[0.5, 0, 0],
                                      [0.125, 0.375, 0],
                                      [0, 0, 1 / 3]]) ** 0.5 * alat)
-            g = Geometry([0, 0, 0], atoms=atoms, sc=sc)
+            g = Geometry([0, 0, 0], atoms=atoms, lattice=lattice)
             g = g.tile(info.nlayers, 2)
 
             # slide ABC layers relative to each other
             B = (info.offset + 1) % 3
             C = (info.offset + 2) % 3
-            vec = (sc.cell[0] + sc.cell[1]) / 3
+            vec = (lattice.cell[0] + lattice.cell[1]) / 3
             g.xyz[B::3] += vec
             g.xyz[C::3] += 2 * vec
 
@@ -526,72 +526,72 @@ def bcc_slab(alat, atoms, miller, layers=None, vacuum=20., *, orthogonal=False, 
 
         info = _calc_info(start, end, layers, 2)
 
-        sc = SuperCell(np.array([1, 1, 0.5]) * alat)
-        g = Geometry([0, 0, 0], atoms=atoms, sc=sc)
+        lattice = Lattice(np.array([1, 1, 0.5]) * alat)
+        g = Geometry([0, 0, 0], atoms=atoms, lattice=lattice)
         g = g.tile(info.nlayers, 2)
 
         # slide AB layers relative to each other
         B = (info.offset + 1) % 2
-        g.xyz[B::2] += (sc.cell[0] + sc.cell[1]) / 2
+        g.xyz[B::2] += (lattice.cell[0] + lattice.cell[1]) / 2
 
     elif miller == (1, 1, 0):
 
         info = _calc_info(start, end, layers, 2)
 
         if orthogonal:
-            sc = SuperCell(np.array([1, 2, 0.5]) ** 0.5 * alat)
+            lattice = Lattice(np.array([1, 2, 0.5]) ** 0.5 * alat)
             g = Geometry(np.array([[0, 0, 0],
                                    [0.5, 0.5 ** 0.5, 0]]) * alat,
-                         atoms=atoms, sc=sc)
+                         atoms=atoms, lattice=lattice)
             g = g.tile(info.nlayers, 2)
 
             # slide ABC layers relative to each other
             B = 2 * (info.offset + 1) % 4
-            vec = sc.cell[1] / 2
+            vec = lattice.cell[1] / 2
             g.xyz[B::4] += vec
             g.xyz[B+1::4] += vec
 
         else:
-            sc = SuperCell(np.array([[1, 0, 0],
+            lattice = Lattice(np.array([[1, 0, 0],
                                      [0.5, 0.5 ** 0.5, 0],
                                      [0, 0, 0.5 ** 0.5]]) * alat)
-            g = Geometry([0, 0, 0], atoms=atoms, sc=sc)
+            g = Geometry([0, 0, 0], atoms=atoms, lattice=lattice)
             g = g.tile(info.nlayers, 2)
 
             # slide AB layers relative to each other
             B = (info.offset + 1) % 2
-            g.xyz[B::2] += sc.cell[0] / 2
+            g.xyz[B::2] += lattice.cell[0] / 2
 
     elif miller == (1, 1, 1):
 
         info = _calc_info(start, end, layers, 3)
 
         if orthogonal:
-            sc = SuperCell(np.array([2, 4 * 1.5, 1 / 12]) ** 0.5 * alat)
+            lattice = Lattice(np.array([2, 4 * 1.5, 1 / 12]) ** 0.5 * alat)
             g = Geometry(np.array([[0, 0, 0],
                                    [0.5, 1.5, 0]]) ** 0.5 * alat,
-                         atoms=atoms, sc=sc)
+                         atoms=atoms, lattice=lattice)
             g = g.tile(info.nlayers, 2)
 
             # slide ABC layers relative to each other
             B = 2 * (info.offset + 1) % 6
             C = 2 * (info.offset + 2) % 6
-            vec = (sc.cell[0] + sc.cell[1]) / 3
+            vec = (lattice.cell[0] + lattice.cell[1]) / 3
             for i in range(2):
                 g.xyz[B+i::6] += vec
                 g.xyz[C+i::6] += 2 * vec
 
         else:
-            sc = SuperCell(np.array([[2, 0, 0],
+            lattice = Lattice(np.array([[2, 0, 0],
                                      [0.5, 1.5, 0],
                                      [0, 0, 1 / 12]]) ** 0.5 * alat)
-            g = Geometry([0, 0, 0], atoms=atoms, sc=sc)
+            g = Geometry([0, 0, 0], atoms=atoms, lattice=lattice)
             g = g.tile(info.nlayers, 2)
 
             # slide ABC layers relative to each other
             B = (info.offset + 1) % 3
             C = (info.offset + 2) % 3
-            vec = (sc.cell[0] + sc.cell[1]) / 3
+            vec = (lattice.cell[0] + lattice.cell[1]) / 3
             g.xyz[B::3] += vec
             g.xyz[C::3] += 2 * vec
 

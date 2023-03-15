@@ -11,7 +11,7 @@ from ..sile import add_sile, sile_raise_write, SileError
 from sisl._internal import set_module
 from sisl._array import aranged, array_arange
 from sisl.unit.siesta import unit_convert
-from sisl import Geometry, Atom, AtomGhost, Atoms, SuperCell, Grid, SphericalOrbital
+from sisl import Geometry, Atom, AtomGhost, Atoms, Lattice, Grid, SphericalOrbital
 from sisl.sparse import _ncol_to_indptr
 from sisl.physics import SparseOrbitalBZ
 from sisl.physics import DensityMatrix, EnergyDensityMatrix
@@ -37,21 +37,21 @@ class ncSileSiesta(SileCDFSiesta):
     """ Generic NetCDF output file containing a large variety of information """
 
     @lru_cache(maxsize=1)
-    def read_supercell_nsc(self):
+    def read_lattice_nsc(self):
         """ Returns number of supercell connections """
         return np.array(self._value('nsc'), np.int32)
 
     @lru_cache(maxsize=1)
-    def read_supercell(self):
-        """ Returns a SuperCell object from a Siesta.nc file """
+    def read_lattice(self):
+        """ Returns a Lattice object from a Siesta.nc file """
         cell = np.array(self._value('cell'), np.float64)
         # Yes, this is ugly, I really should implement my unit-conversion tool
         cell *= Bohr2Ang
         cell.shape = (3, 3)
 
-        nsc = self.read_supercell_nsc()
+        nsc = self.read_lattice_nsc()
 
-        return SuperCell(cell, nsc=nsc)
+        return Lattice(cell, nsc=nsc)
 
     @lru_cache(maxsize=1)
     def read_basis(self):
@@ -136,7 +136,7 @@ class ncSileSiesta(SileCDFSiesta):
         """ Returns Geometry object from a Siesta.nc file """
 
         # Read supercell
-        sc = self.read_supercell()
+        lattice = self.read_lattice()
 
         xyz = np.array(self._value('xa'), np.float64)
         xyz.shape = (-1, 3)
@@ -151,7 +151,7 @@ class ncSileSiesta(SileCDFSiesta):
         xyz *= Bohr2Ang
 
         # Create and return geometry object
-        geom = Geometry(xyz, atom, sc=sc)
+        geom = Geometry(xyz, atom, lattice=lattice)
         return geom
 
     @lru_cache(maxsize=1)

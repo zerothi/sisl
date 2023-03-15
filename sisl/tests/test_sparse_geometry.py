@@ -7,7 +7,7 @@ import math as m
 import numpy as np
 import scipy as sc
 
-from sisl import Geometry, Atom, SuperCell
+from sisl import Geometry, Atom, Lattice
 from sisl.geom import fcc, graphene
 from sisl.sparse_geometry import *
 
@@ -134,7 +134,7 @@ class TestSparseAtom:
 
     def test_untile_wrong_usage(self):
         # one should not untile
-        geometry = Geometry([0] * 3, Atom(1, R=1.001), SuperCell(1, nsc=[1]* 3))
+        geometry = Geometry([0] * 3, Atom(1, R=1.001), Lattice(1, nsc=[1]* 3))
         geometry = geometry.tile(4, 0)
         s = SparseAtom(geometry)
         s.construct([[0.1, 1.01], [1, 2]])
@@ -150,7 +150,7 @@ class TestSparseAtom:
 
     def test_untile_segment_single(self):
         # one should not untile
-        geometry = Geometry([0] * 3, Atom(1, R=1.001), SuperCell(1, nsc=[1]* 3))
+        geometry = Geometry([0] * 3, Atom(1, R=1.001), Lattice(1, nsc=[1]* 3))
         geometry = geometry.tile(4, 0)
         s = SparseAtom(geometry)
         s.construct([[0.1, 1.01], [1, 2]])
@@ -170,7 +170,7 @@ class TestSparseAtom:
         # one should not untile
         nsc = [3] * 3
         nsc[axis] = 1
-        geometry = Geometry([0] * 3, Atom(1, R=1.001), SuperCell(1, nsc=nsc))
+        geometry = Geometry([0] * 3, Atom(1, R=1.001), Lattice(1, nsc=nsc))
         geometry = geometry.tile(4, axis)
         s = SparseAtom(geometry)
         s.construct([[0.1, 1.01], [1, 2]])
@@ -540,7 +540,7 @@ def test_sparse_atom_symmetric(n0, n1, n2):
         # Figure out the transposed supercell indices of the edges
         isc = - s.geometry.a2isc(edges)
         # Convert to supercell
-        IA = s.geometry.sc.sc_index(isc) * na + ia
+        IA = s.geometry.lattice.sc_index(isc) * na + ia
         # Figure out if 'ia' is also in the back-edges
         for ja, edge in zip(IA, edges % na):
             assert ja in s.edges(edge)
@@ -617,14 +617,14 @@ def test_sparse_orbital_add_axis(setup):
     s = SparseOrbital(g)
     s.construct([[0.1, 1.5], [1, 2]])
     s1 = s.add(s, axis=2)
-    s2 = SparseOrbital(g.append(SuperCell([0, 0, 10]), 2).add(g, offset=[0, 0, 5]))
+    s2 = SparseOrbital(g.append(Lattice([0, 0, 10]), 2).add(g, offset=[0, 0, 5]))
     s2.construct([[0.1, 1.5], [1, 2]])
     assert s1.spsame(s2)
 
 
 def test_sparse_orbital_add_no_axis():
     from sisl.geom import sc
-    g = (sc(1., Atom(1, R=1.5)) * 2).add(SuperCell([0, 0, 5]))
+    g = (sc(1., Atom(1, R=1.5)) * 2).add(Lattice([0, 0, 5]))
     s = SparseOrbital(g)
     s.construct([[0.1, 1.5], [1, 2]])
     s1 = s.add(s, offset=[0, 0, 3])

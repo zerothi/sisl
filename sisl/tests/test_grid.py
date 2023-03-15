@@ -7,7 +7,7 @@ import math as m
 import numpy as np
 from scipy.sparse import csr_matrix
 
-from sisl import SuperCell, SphericalOrbital, Atom, Geometry
+from sisl import Lattice, SphericalOrbital, Atom, Geometry
 from sisl import Grid
 from sisl import Ellipsoid, Cuboid
 
@@ -18,10 +18,10 @@ def setup():
         def __init__(self):
             alat = 1.42
             sq3h = 3.**.5 * 0.5
-            self.sc = SuperCell(np.array([[1.5, sq3h, 0.],
-                                          [1.5, -sq3h, 0.],
-                                          [0., 0., 10.]], np.float64) * alat, nsc=[3, 3, 1])
-            self.g = Grid([10, 10, 100], sc=self.sc)
+            self.lattice = Lattice(np.array([[1.5, sq3h, 0.],
+                                             [1.5, -sq3h, 0.],
+                                             [0., 0., 10.]], np.float64) * alat, nsc=[3, 3, 1])
+            self.g = Grid([10, 10, 100], lattice=self.lattice)
             self.g.fill(2.)
     return t()
 
@@ -33,7 +33,7 @@ class TestGrid:
         str(setup.g)
 
     def test_init(self, setup):
-        Grid(0.1, sc=setup.sc)
+        Grid(0.1, lattice=setup.lattice)
 
     def test_append(self, setup):
         g = setup.g.append(setup.g, 0)
@@ -97,7 +97,7 @@ class TestGrid:
         assert np.allclose((g - setup.g).grid, setup.g.grid)
 
     def test_add_fail1(self, setup):
-        g = Grid(np.array(setup.g.shape) // 2 + 1, sc=setup.g.sc.copy())
+        g = Grid(np.array(setup.g.shape) // 2 + 1, lattice=setup.g.lattice.copy())
         with pytest.raises(ValueError):
             setup.g + g
 
@@ -192,7 +192,7 @@ class TestGrid:
         pytest.importorskip("skimage", reason="scikit-image not available")
 
         # Build an empty grid
-        grid = Grid(0.1, sc=[[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+        grid = Grid(0.1, lattice=[[1, 0, 0], [0, 1, 0], [0, 0, 1]])
 
         # Fill it with some values that have a clear isosurface
         grid.grid = np.tile([1, 2, 3, 4, 5, 4, 3, 2, 1, 0], 100).reshape(10, 10, 10)
@@ -211,7 +211,7 @@ class TestGrid:
 
         # If the grid is non-orthogonal, there should be 20 unique values
         # (10 for each (HERE), see test_isosurface_orthogonal)
-        grid = Grid(0.1, sc=[[1, 0, 0], [0, 1, 0], [0, 2, 1]])
+        grid = Grid(0.1, lattice=[[1, 0, 0], [0, 1, 0], [0, 2, 1]])
 
         grid.grid = np.tile([1, 2, 3, 4, 5, 4, 3, 2, 1, 0], 100).reshape(10, 10, 10)
 
@@ -222,7 +222,7 @@ class TestGrid:
         assert np.unique(verts[:, 2]).shape == (2,)
 
     def test_smooth_gaussian(self, setup):
-        g = Grid(0.1, sc=[[2, 0, 0], [0, 2, 0], [0, 0, 2]])
+        g = Grid(0.1, lattice=[[2, 0, 0], [0, 2, 0], [0, 0, 2]])
         g[10, 10, 10] = 1
 
         # With a sigma of 0.3 Ang, that single value should be propagated
@@ -235,7 +235,7 @@ class TestGrid:
         assert np.any(smoothed.grid == 0)
 
     def test_smooth_uniform(self, setup):
-        g = Grid(0.1, sc=[[2, 0, 0], [0, 2, 0], [0, 0, 2]])
+        g = Grid(0.1, lattice=[[2, 0, 0], [0, 2, 0], [0, 0, 2]])
         g[10, 10, 10] = 1
 
         # With a radius of 0.7 Ang, that single value should be propagated
@@ -250,10 +250,10 @@ class TestGrid:
     def test_index_ndim1(self, setup):
         mid = np.array(setup.g.shape, np.int32) // 2 - 1
         v = [0.001, 0., 0.001]
-        idx = setup.g.index(setup.sc.center() - v)
+        idx = setup.g.index(setup.lattice.center() - v)
         assert np.all(mid == idx)
         for i in range(3):
-            idx = setup.g.index(setup.sc.center() - v, axis=i)
+            idx = setup.g.index(setup.lattice.center() - v, axis=i)
             assert idx == mid[i]
 
     def test_index_fail(self, setup):
@@ -263,11 +263,11 @@ class TestGrid:
     def test_index_ndim2(self, setup):
         mid = np.array(setup.g.shape, np.int32) // 2 - 1
         v = [0.001, 0., 0.001]
-        idx = setup.g.index([[0]*3, setup.sc.center() - v])
+        idx = setup.g.index([[0]*3, setup.lattice.center() - v])
         assert np.allclose([[0] * 3, mid], idx)
 
         for i in range(3):
-            idx = setup.g.index([[0]*3, setup.sc.center() - v], axis=i)
+            idx = setup.g.index([[0]*3, setup.lattice.center() - v], axis=i)
             assert np.allclose([[0, 0, 0][i], mid[i]], idx)
 
     def test_index_shape1(self, setup):
@@ -343,7 +343,7 @@ class TestGrid:
             assert setup.g.remove_part(1, i, above=True).shape[i] == 1
 
     def test_sub_fail(self, setup):
-        g = Grid(np.array(setup.g.shape) // 2 + 1, sc=setup.g.sc.copy())
+        g = Grid(np.array(setup.g.shape) // 2 + 1, lattice=setup.g.lattice.copy())
         with pytest.raises(ValueError):
             g.sub([], 0)
 
@@ -474,7 +474,7 @@ def test_grid_tile_sc():
 
 
 def test_grid_tile_geom():
-    grid = Grid([4, 5, 6], geometry=Geometry([0] * 3, Atom[4], sc=4.))
+    grid = Grid([4, 5, 6], geometry=Geometry([0] * 3, Atom[4], lattice=4.))
     grid2 = grid.tile(2, 2)
     assert grid.shape[:2] == grid2.shape[:2]
     assert grid.shape[2] == grid2.shape[2] // 2

@@ -120,7 +120,7 @@ def test_sparse_orbital_bz_hermitian(n0, n1, n2):
         # Figure out the transposed supercell indices of the edges
         isc = - s.geometry.o2isc(edges)
         # Convert to supercell
-        IO = s.geometry.sc.sc_index(isc) * no + io
+        IO = s.geometry.lattice.sc_index(isc) * no + io
         # Figure out if 'io' is also in the back-edges
         for jo, edge in zip(IO, edges % no):
             assert jo in s.edges(edge)

@@ -8,7 +8,7 @@ import math as m
 import numpy as np
 
 from sisl import SislError, geom
-from sisl import Geometry, Atom, SuperCell, SuperCellChild
+from sisl import Geometry, Atom, Lattice, LatticeChild
 from sisl import BrillouinZone, BandStructure
 from sisl import MonkhorstPack
 
@@ -20,16 +20,16 @@ pytestmark = [pytest.mark.physics, pytest.mark.brillouinzone, pytest.mark.bz]
 def setup():
     class t():
         def __init__(self):
-            self.s1 = SuperCell(1, nsc=[3, 3, 1])
-            self.s2 = SuperCell([2, 2, 10, 90, 90, 60], [5, 5, 1])
+            self.s1 = Lattice(1, nsc=[3, 3, 1])
+            self.s2 = Lattice([2, 2, 10, 90, 90, 60], [5, 5, 1])
     return t()
 
 
 class TestBrillouinZone:
 
     def setUp(self, setup):
-        setup.s1 = SuperCell(1, nsc=[3, 3, 1])
-        setup.s2 = SuperCell([2, 2, 10, 90, 90, 60], [5, 5, 1])
+        setup.s1 = Lattice(1, nsc=[3, 3, 1])
+        setup.s2 = Lattice([2, 2, 10, 90, 90, 60], [5, 5, 1])
 
     def test_bz1(self, setup):
         bz = BrillouinZone(1.)
@@ -67,11 +67,11 @@ class TestBrillouinZone:
     def test_volume_self(self):
         bz = BrillouinZone(1.)
         assert bz.volume(True)[1] == 0
-        bz = BrillouinZone(SuperCell(1, nsc=[3, 1, 1]))
+        bz = BrillouinZone(Lattice(1, nsc=[3, 1, 1]))
         assert bz.volume(True)[1] == 1
-        bz = BrillouinZone(SuperCell(1, nsc=[3, 3, 1]))
+        bz = BrillouinZone(Lattice(1, nsc=[3, 3, 1]))
         assert bz.volume(True)[1] == 2
-        bz = BrillouinZone(SuperCell(1, nsc=[3, 3, 3]))
+        bz = BrillouinZone(Lattice(1, nsc=[3, 3, 3]))
         assert bz.volume(True)[1] == 3
 
     def test_volume_direct(self):
@@ -94,9 +94,9 @@ class TestBrillouinZone:
             assert np.allclose(rec, k)
 
     def test_class1(self, setup):
-        class Test(SuperCellChild):
-            def __init__(self, sc):
-                self.set_supercell(sc)
+        class Test(LatticeChild):
+            def __init__(self, lattice):
+                self.set_lattice(lattice)
             def eigh(self, k, *args, **kwargs):
                 return np.arange(3)
             def eig(self, k, *args, **kwargs):
@@ -108,9 +108,9 @@ class TestBrillouinZone:
         assert np.allclose(bz_arr.eig(), np.arange(3)-1)
 
     def test_class2(self, setup):
-        class Test(SuperCellChild):
-            def __init__(self, sc):
-                self.set_supercell(sc)
+        class Test(LatticeChild):
+            def __init__(self, lattice):
+                self.set_lattice(lattice)
             def eigh(self, k, *args, **kwargs):
                 return np.arange(3)
             def eig(self, k, *args, **kwargs):
@@ -167,7 +167,7 @@ class TestBrillouinZone:
     def test_param_circle(self, n):
         bz = BrillouinZone.param_circle(1, 10, 0.1, n, [1/2] * 3)
         assert len(bz) == 10
-        sc = SuperCell(1)
+        sc = Lattice(1)
         bz_loop = BrillouinZone.param_circle(sc, 10, 0.1, n, [1/2] * 3, True)
         assert len(bz_loop) == 10
         assert not np.allclose(bz.k, bz_loop.k)
@@ -244,13 +244,13 @@ class TestBrillouinZone:
 class TestMonkhorstPack:
 
     def setUp(self, setup):
-        setup.s1 = SuperCell(1, nsc=[3, 3, 1])
-        setup.s2 = SuperCell([2, 2, 10, 90, 90, 60], [5, 5, 1])
+        setup.s1 = Lattice(1, nsc=[3, 3, 1])
+        setup.s2 = Lattice([2, 2, 10, 90, 90, 60], [5, 5, 1])
 
     def test_class(self, setup):
-        class Test(SuperCellChild):
-            def __init__(self, sc):
-                self.set_supercell(sc)
+        class Test(LatticeChild):
+            def __init__(self, lattice):
+                self.set_lattice(lattice)
             def eigh(self, k, *args, **kwargs):
                 return np.arange(3)
             def eig(self, k, *args, **kwargs):
@@ -278,9 +278,9 @@ class TestMonkhorstPack:
     @pytest.mark.parametrize("N", [2, 3, 4, 5, 7])
     @pytest.mark.parametrize("centered", [True, False])
     def test_asgrid(self, setup, N, centered):
-        class Test(SuperCellChild):
-            def __init__(self, sc):
-                self.set_supercell(sc)
+        class Test(LatticeChild):
+            def __init__(self, lattice):
+                self.set_lattice(lattice)
             def eigh(self, k, *args, **kwargs):
                 return np.arange(3)
         bz = MonkhorstPack(Test(setup.s1), [2] * 3).apply.grid
@@ -301,9 +301,9 @@ class TestMonkhorstPack:
             assert np.allclose(grid.shape, shape)
 
     def test_asgrid_fail(self, setup):
-        class Test(SuperCellChild):
-            def __init__(self, sc):
-                self.set_supercell(sc)
+        class Test(LatticeChild):
+            def __init__(self, lattice):
+                self.set_lattice(lattice)
             def eigh(self, k, *args, **kwargs):
                 return np.arange(3)
         bz = MonkhorstPack(Test(setup.s1), [2] * 3, displacement=[0.1] * 3).apply.grid
@@ -662,8 +662,8 @@ class TestMonkhorstPack:
 class TestBandStructure:
 
     def setUp(self, setup):
-        setup.s1 = SuperCell(1, nsc=[3, 3, 1])
-        setup.s2 = SuperCell([2, 2, 10, 90, 90, 60], [5, 5, 1])
+        setup.s1 = Lattice(1, nsc=[3, 3, 1])
+        setup.s2 = Lattice([2, 2, 10, 90, 90, 60], [5, 5, 1])
 
     def test_pbz1(self, setup):
         bz = BandStructure(setup.s1, [[0]*3, [.5]*3], 300)

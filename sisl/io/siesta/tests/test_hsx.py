@@ -124,6 +124,6 @@ def test_si_pdos_kgrid_hsx_1_same_tshs(sisl_files, sisl_tmp):
 
     gx = HSX.geometry
     gt = TSHS.geometry
-    assert np.allclose(gx.sc.cell, gt.sc.cell)
+    assert np.allclose(gx.lattice.cell, gt.lattice.cell)
     assert np.allclose(gx.xyz, gt.xyz)
     assert np.allclose(gx.nsc, gt.nsc)

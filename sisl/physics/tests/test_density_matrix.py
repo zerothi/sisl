@@ -6,7 +6,7 @@ import pytest
 import math as m
 import numpy as np
 
-from sisl import Geometry, Atom, SphericalOrbital, AtomicOrbital, SuperCell
+from sisl import Geometry, Atom, SphericalOrbital, AtomicOrbital, Lattice
 from sisl import Grid, Spin
 from sisl import DensityMatrix
 
@@ -17,9 +17,9 @@ def setup():
         def __init__(self):
             bond = 1.42
             sq3h = 3.**.5 * 0.5
-            self.sc = SuperCell(np.array([[1.5, sq3h, 0.],
-                                          [1.5, -sq3h, 0.],
-                                          [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
+            self.lattice = Lattice(np.array([[1.5, sq3h, 0.],
+                                             [1.5, -sq3h, 0.],
+                                             [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
 
             n = 60
             rf = np.linspace(0, bond * 1.01, n)
@@ -28,7 +28,7 @@ def setup():
             C = Atom(6, orb.toAtomicOrbital())
             self.g = Geometry(np.array([[0., 0., 0.],
                                         [1., 0., 0.]], np.float64) * bond,
-                              atoms=C, sc=self.sc)
+                              atoms=C, lattice=self.lattice)
             self.D = DensityMatrix(self.g)
             self.DS = DensityMatrix(self.g, orthogonal=False)
 
@@ -130,7 +130,7 @@ class TestDensityMatrix:
     def test_rho2(self, setup):
         bond = 1.42
         sq3h = 3.**.5 * 0.5
-        sc = SuperCell(np.array([[1.5, sq3h, 0.],
+        lattice = Lattice(np.array([[1.5, sq3h, 0.],
                                  [1.5, -sq3h, 0.],
                                  [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
 
@@ -141,7 +141,7 @@ class TestDensityMatrix:
         C = Atom(6, orb)
         g = Geometry(np.array([[0., 0., 0.],
                                [1., 0., 0.]], np.float64) * bond,
-                     atoms=C, sc=sc)
+                     atoms=C, lattice=lattice)
         D = DensityMatrix(g)
         D.construct([[0.1, bond + 0.01], [1., 0.1]])
         grid = Grid(0.2, geometry=D.geometry)
@@ -174,7 +174,7 @@ class TestDensityMatrix:
     def test_orbital_momentum(self, setup):
         bond = 1.42
         sq3h = 3.**.5 * 0.5
-        sc = SuperCell(np.array([[1.5, sq3h, 0.],
+        lattice = Lattice(np.array([[1.5, sq3h, 0.],
                                  [1.5, -sq3h, 0.],
                                  [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
 
@@ -182,7 +182,7 @@ class TestDensityMatrix:
         C = Atom(6, orb)
         g = Geometry(np.array([[0., 0., 0.],
                                [1., 0., 0.]], np.float64) * bond,
-                     atoms=C, sc=sc)
+                     atoms=C, lattice=lattice)
         D = DensityMatrix(g, spin=Spin('SO'))
         D.construct([[0.1, bond + 0.01], [(1., 0.5, 0.01, 0.01, 0.01, 0.01, 0., 0.), (0.1, 0.1, 0.1, 0.1, 0., 0., 0., 0.)]])
         D.orbital_momentum("atom")
@@ -191,7 +191,7 @@ class TestDensityMatrix:
     def test_spin_align_pol(self, setup):
         bond = 1.42
         sq3h = 3.**.5 * 0.5
-        sc = SuperCell(np.array([[1.5, sq3h, 0.],
+        lattice = Lattice(np.array([[1.5, sq3h, 0.],
                                  [1.5, -sq3h, 0.],
                                  [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
 
@@ -199,7 +199,7 @@ class TestDensityMatrix:
         C = Atom(6, orb)
         g = Geometry(np.array([[0., 0., 0.],
                                [1., 0., 0.]], np.float64) * bond,
-                     atoms=C, sc=sc)
+                     atoms=C, lattice=lattice)
         D = DensityMatrix(g, spin=Spin('p'))
         D.construct([[0.1, bond + 0.01], [(1., 0.5), (0.1, 0.2)]])
         D_mull = D.mulliken()
@@ -216,7 +216,7 @@ class TestDensityMatrix:
     def test_spin_align_nc(self, setup):
         bond = 1.42
         sq3h = 3.**.5 * 0.5
-        sc = SuperCell(np.array([[1.5, sq3h, 0.],
+        lattice = Lattice(np.array([[1.5, sq3h, 0.],
                                  [1.5, -sq3h, 0.],
                                  [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
 
@@ -224,7 +224,7 @@ class TestDensityMatrix:
         C = Atom(6, orb)
         g = Geometry(np.array([[0., 0., 0.],
                                [1., 0., 0.]], np.float64) * bond,
-                     atoms=C, sc=sc)
+                     atoms=C, lattice=lattice)
         D = DensityMatrix(g, spin=Spin('nc'))
         D.construct([[0.1, bond + 0.01], [(1., 0.5, 0.01, 0.01), (0.1, 0.2, 0.1, 0.1)]])
         D_mull = D.mulliken()
@@ -238,7 +238,7 @@ class TestDensityMatrix:
     def test_spin_align_so(self, setup):
         bond = 1.42
         sq3h = 3.**.5 * 0.5
-        sc = SuperCell(np.array([[1.5, sq3h, 0.],
+        lattice = Lattice(np.array([[1.5, sq3h, 0.],
                                  [1.5, -sq3h, 0.],
                                  [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
 
@@ -246,7 +246,7 @@ class TestDensityMatrix:
         C = Atom(6, orb)
         g = Geometry(np.array([[0., 0., 0.],
                                [1., 0., 0.]], np.float64) * bond,
-                     atoms=C, sc=sc)
+                     atoms=C, lattice=lattice)
         D = DensityMatrix(g, spin=Spin('SO'))
         D.construct([[0.1, bond + 0.01], [(1., 0.5, 0.01, 0.01, 0.01, 0.01, 0.2, 0.2), (0.1, 0.2, 0.1, 0.1, 0., 0.1, 0.2, 0.3)]])
         D_mull = D.mulliken()
@@ -259,7 +259,7 @@ class TestDensityMatrix:
     def test_spin_rotate_pol(self, setup):
         bond = 1.42
         sq3h = 3.**.5 * 0.5
-        sc = SuperCell(np.array([[1.5, sq3h, 0.],
+        lattice = Lattice(np.array([[1.5, sq3h, 0.],
                                  [1.5, -sq3h, 0.],
                                  [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
 
@@ -267,7 +267,7 @@ class TestDensityMatrix:
         C = Atom(6, orb)
         g = Geometry(np.array([[0., 0., 0.],
                                [1., 0., 0.]], np.float64) * bond,
-                     atoms=C, sc=sc)
+                     atoms=C, lattice=lattice)
         D = DensityMatrix(g, spin=Spin('p'))
         D.construct([[0.1, bond + 0.01], [(1., 0.5), (0.1, 0.2)]])
 
@@ -284,7 +284,7 @@ class TestDensityMatrix:
     def test_spin_rotate_nc(self, setup):
         bond = 1.42
         sq3h = 3.**.5 * 0.5
-        sc = SuperCell(np.array([[1.5, sq3h, 0.],
+        lattice = Lattice(np.array([[1.5, sq3h, 0.],
                                  [1.5, -sq3h, 0.],
                                  [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
 
@@ -292,7 +292,7 @@ class TestDensityMatrix:
         C = Atom(6, orb)
         g = Geometry(np.array([[0., 0., 0.],
                                [1., 0., 0.]], np.float64) * bond,
-                     atoms=C, sc=sc)
+                     atoms=C, lattice=lattice)
         D = DensityMatrix(g, spin=Spin('nc'))
         D.construct([[0.1, bond + 0.01], [(1., 0.5, 0.01, 0.01), (0.1, 0.2, 0.1, 0.1)]])
 
@@ -308,7 +308,7 @@ class TestDensityMatrix:
     def test_spin_rotate_so(self, setup):
         bond = 1.42
         sq3h = 3.**.5 * 0.5
-        sc = SuperCell(np.array([[1.5, sq3h, 0.],
+        lattice = Lattice(np.array([[1.5, sq3h, 0.],
                                  [1.5, -sq3h, 0.],
                                  [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
 
@@ -316,7 +316,7 @@ class TestDensityMatrix:
         C = Atom(6, orb)
         g = Geometry(np.array([[0., 0., 0.],
                                [1., 0., 0.]], np.float64) * bond,
-                     atoms=C, sc=sc)
+                     atoms=C, lattice=lattice)
         D = DensityMatrix(g, spin=Spin('SO'))
         D.construct([[0.1, bond + 0.01], [(1., 0.5, 0.01, 0.01, 0.01, 0.01, 0.2, 0.2), (0.1, 0.2, 0.1, 0.1, 0., 0.1, 0.2, 0.3)]])
         D_mull = D.mulliken()
@@ -334,14 +334,14 @@ class TestDensityMatrix:
     def test_rho_smaller_grid1(self, setup):
         D = setup.D.copy()
         D.construct(setup.func)
-        sc = setup.D.geometry.cell.copy() / 2
-        grid = Grid(0.2, geometry=setup.D.geometry.copy(), sc=sc)
+        lattice = setup.D.geometry.cell.copy() / 2
+        grid = Grid(0.2, geometry=setup.D.geometry.copy(), lattice=lattice)
         D.density(grid)
 
     def test_rho_fail_p(self, setup):
         bond = 1.42
         sq3h = 3.**.5 * 0.5
-        sc = SuperCell(np.array([[1.5, sq3h, 0.],
+        lattice = Lattice(np.array([[1.5, sq3h, 0.],
                                  [1.5, -sq3h, 0.],
                                  [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
 
@@ -352,7 +352,7 @@ class TestDensityMatrix:
         C = Atom(6, orb)
         g = Geometry(np.array([[0., 0., 0.],
                                [1., 0., 0.]], np.float64) * bond,
-                     atoms=C, sc=sc)
+                     atoms=C, lattice=lattice)
 
         D = DensityMatrix(g, spin=Spin('P'))
         D.construct([[0.1, bond + 0.01], [(1., 0.5), (0.1, 0.1)]])
@@ -363,7 +363,7 @@ class TestDensityMatrix:
     def test_rho_fail_nc(self, setup):
         bond = 1.42
         sq3h = 3.**.5 * 0.5
-        sc = SuperCell(np.array([[1.5, sq3h, 0.],
+        lattice = Lattice(np.array([[1.5, sq3h, 0.],
                                  [1.5, -sq3h, 0.],
                                  [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
 
@@ -374,7 +374,7 @@ class TestDensityMatrix:
         C = Atom(6, orb)
         g = Geometry(np.array([[0., 0., 0.],
                                [1., 0., 0.]], np.float64) * bond,
-                     atoms=C, sc=sc)
+                     atoms=C, lattice=lattice)
 
         D = DensityMatrix(g, spin=Spin('NC'))
         D.construct([[0.1, bond + 0.01], [(1., 0.5, 0.01, 0.01), (0.1, 0.1, 0.1, 0.1)]])
