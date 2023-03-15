@@ -14,7 +14,7 @@ from numbers import Integral
 import numpy as np
 from numpy import ndarray, dot
 
-from .messages import deprecate_argument, deprecate_method
+from .messages import deprecate_argument, deprecate_method, deprecate
 from ._internal import set_module
 from . import _plot as plt
 from . import _array as _a
@@ -1164,7 +1164,11 @@ class Lattice:
 
 
 # same reference
-SuperCell = Lattice
+class SuperCell(Lattice):
+    """ Deprecated class, please use `Lattice` instead """
+    def __init__(self, *args, **kwargs):
+        deprecate(f"{self.__class__.__name__} is deprecated; please use 'Lattice' class instead", "0.15")
+        super().__init__(*args, **kwargs)
 
 
 class LatticeChild:
@@ -1173,6 +1177,12 @@ class LatticeChild:
     Initialize by a `Lattice` object and get access to several different
     routines directly related to the `Lattice` class.
     """
+
+    @property
+    def sc(self):
+        """ Returns the lattice object (deprecated method) """
+        deprecate(f"{self.__class__.__name__}.sc is deprecated; please use 'lattice' instead", "0.15")
+        return self.lattice
 
     def set_nsc(self, *args, **kwargs):
         """ Set the number of super-cells in the `Lattice` object
@@ -1213,8 +1223,8 @@ class LatticeChild:
                 except Exception:
                     pass
 
-    set_sc = deprecate_method("set_sc is deprecated; prefer to use set_lattice instead", "0.14")(set_lattice)
-    set_supercell = deprecate_method("set_sc is deprecated; prefer to use set_lattice instead", "0.15")(set_lattice)
+    set_sc = deprecate_method("set_sc is deprecated; please use set_lattice instead", "0.14")(set_lattice)
+    set_supercell = deprecate_method("set_sc is deprecated; please use set_lattice instead", "0.15")(set_lattice)
 
     @property
     def length(self):

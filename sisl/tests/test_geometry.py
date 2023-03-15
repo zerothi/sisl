@@ -1704,3 +1704,8 @@ def test_translate2uc_axes():
     assert np.allclose(gr_once.xyz, gr_individual.xyz)
     gr_individual = gr_individual.translate2uc(axes=2)
     assert np.allclose(gr_once.xyz, gr_individual.xyz)
+
+
+def test_sc_warn():
+    with pytest.warns(SislDeprecation):
+        lattice = sisl_geom.graphene().sc

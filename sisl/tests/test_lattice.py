@@ -7,8 +7,9 @@ from pytest import approx
 import math as m
 import numpy as np
 
+import sisl
 import sisl.linalg as lin
-from sisl import Lattice, LatticeChild
+from sisl import Lattice, LatticeChild, SuperCell
 from sisl.geom import graphene
 
 
@@ -455,3 +456,8 @@ def test_lattice_indices():
     lattice = Lattice([1] * 3, nsc=[3, 5, 7])
     for i in range(lattice.n_s):
         assert i == lattice.sc_index(lattice.sc_off[i])
+
+
+def test_supercell_warn():
+    with pytest.warns(sisl.SislDeprecation):
+        lattice = SuperCell([1] * 3, nsc=[3, 5, 7])
