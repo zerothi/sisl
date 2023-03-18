@@ -96,16 +96,16 @@ jobs:
          ADD_FLAGS="-m ${{ github.event.inputs.marks }}"
         fi
         # --cov forces the reading of .coveragerc
-	ADD_TOOLS=""
-	for tool in btd models ; do
-	  ADD_TOOLS="$ADD_TOOLS $tool"
-	done
-	for tool in atom minimizer ; do
-	  ADD_TOOLS="$ADD_TOOLS siesta.$tool"
-	done
-	for tool in poisson ; do
-	  ADD_TOOLS="$ADD_TOOLS transiesta.$tool"
-	done
+        ADD_TOOLS=""
+        for tool in btd models ; do
+          ADD_TOOLS="$ADD_TOOLS $tool"
+        done
+        for tool in atom minimizer ; do
+          ADD_TOOLS="$ADD_TOOLS siesta.$tool"
+        done
+        for tool in poisson ; do
+          ADD_TOOLS="$ADD_TOOLS transiesta.$tool"
+        done
         py.test -vv -rX --cov --cov-report term-missing --cov-report xml --cov-config=../.coveragerc $ADD_FLAGS --pyargs sisl $ADD_TOOLS
         #cp coverage.xml ../
 
