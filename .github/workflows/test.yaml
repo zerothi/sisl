@@ -98,13 +98,13 @@ jobs:
         # --cov forces the reading of .coveragerc
         ADD_TOOLS=""
         for tool in btd models ; do
-          ADD_TOOLS="$ADD_TOOLS $tool"
+          ADD_TOOLS="$ADD_TOOLS sisl_toolbox.$tool"
         done
         for tool in atom minimizer ; do
-          ADD_TOOLS="$ADD_TOOLS siesta.$tool"
+          ADD_TOOLS="$ADD_TOOLS sisl_toolbox.siesta.$tool"
         done
         for tool in poisson ; do
-          ADD_TOOLS="$ADD_TOOLS transiesta.$tool"
+          ADD_TOOLS="$ADD_TOOLS sisl_toolbox.transiesta.$tool"
         done
         py.test -vv -rX --cov --cov-report term-missing --cov-report xml --cov-config=../.coveragerc $ADD_FLAGS --pyargs sisl $ADD_TOOLS
         #cp coverage.xml ../
