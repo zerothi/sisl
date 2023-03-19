@@ -187,7 +187,7 @@ we hit release version 1.0.0.
 - generic `transform` method for matrix transformations
 - doing ufunc.reduce on SparseCSR matrices; *wrong* values for e.g. np.prod, generally be **CAUTIOUS** with reduction operations
 - transposing a SparseCSR matrix
-- added pymatgen conversion (Geometry.to/from.pymatgen)
+- added pymatgen conversion (Geometry.to/new.pymatgen)
 - atom indexing by shapes #337
 
 ### Fixed
