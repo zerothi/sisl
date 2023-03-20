@@ -41,6 +41,7 @@ we hit release version 1.0.0.
 
 
 ### Fixed
+- interaction with pymatgen
 - fdfSileSiesta.includes would fail when empty lines were present, #555
   fixed and added test
 - Documentation now uses global references

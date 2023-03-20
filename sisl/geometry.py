@@ -4972,7 +4972,7 @@ class GeometryNewpymatgenDispatcher(GeometryNewDispatcher):
         Z = []
         xyz = []
         for site in struct.sites:
-            Z.append(site.species)
+            Z.append(site.specie.Z)
             xyz.append(site.coords)
         xyz = np.array(xyz)
 
