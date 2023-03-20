@@ -149,13 +149,14 @@ class fdfSileSiesta(SileSiesta):
         l = self.readline()
         while l != '':
             ls = l.split()
-            if "%include" == ls[0].lower():
-                add(ls[1])
-                self._pushfile(ls[1])
-            elif '<' in ls:
-                # TODO, in principle the < could contain
-                # include if this line is not a %block.
-                add(ls[ls.index('<')+1])
+            if ls:
+                if "%include" == ls[0].lower():
+                    add(ls[1])
+                    self._pushfile(ls[1])
+                elif '<' in ls:
+                    # TODO, in principle the < could contain
+                    # include if this line is not a %block.
+                    add(ls[ls.index('<')+1])
             l = self.readline()
             while l == '':
                 # last line of file

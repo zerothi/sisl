@@ -231,6 +231,7 @@ def test_include(sisl_tmp):
         fh.write(' %INCLUDE file2.fdf\n')
         fh.write('TestRy 1. Ry\n')
         fh.write('%block Hello < hello\n')
+        fh.write('\n')
         fh.write('TestLast 1. eV\n')
 
     hello = sisl_tmp('hello', _dir)
@@ -243,6 +244,7 @@ def test_include(sisl_tmp):
     file2 = sisl_tmp('file2.fdf', _dir)
     with open(file2, 'w') as fh:
         fh.write('Flag4 non\n')
+        fh.write('\n')
         fh.write('FakeReal 2.\n')
         fh.write('  %incLude file3.fdf')
 
@@ -251,6 +253,7 @@ def test_include(sisl_tmp):
         fh.write('Sub level\n')
         fh.write('Third level\n')
         fh.write('MyList [1 , 2 , 3]\n')
+
 
     fdf = fdfSileSiesta(f, base=sisl_tmp.getbase())
     assert fdf.includes() == [Path(hello), Path(file2), Path(file3)]

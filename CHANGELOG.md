@@ -41,6 +41,8 @@ we hit release version 1.0.0.
 
 
 ### Fixed
+- fdfSileSiesta.includes would fail when empty lines were present, #555
+  fixed and added test
 - Documentation now uses global references
 - Geometry.swapaxes would not swap latticevector cartesian coordinates, #539
 
