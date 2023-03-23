@@ -12,7 +12,6 @@
 |discord|_
 |buildstatus|_
 |codecov|_
-|codetriage|_
 
 
 .. title:: sisl: Toolbox for electronic structure calculations

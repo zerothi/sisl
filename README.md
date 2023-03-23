@@ -8,7 +8,6 @@
 [![Join discussion on Discord](https://img.shields.io/discord/742636379871379577.svg?label=&logo=discord&logoColor=ffffff&color=green&labelColor=red)](https://discord.gg/5XnFXFdkv2)
 [![Build Status](https://github.com/zerothi/sisl/actions/workflows/test.yaml/badge.svg?branch=main)](https://github.com/zerothi/sisl/actions/workflows/test.yaml)
 [![Checkout sisl code coverage](https://codecov.io/gh/zerothi/sisl/branch/main/graph/badge.svg)](https://codecov.io/gh/zerothi/sisl)
-[![Open Source Helpers](https://www.codetriage.com/zerothi/sisl/badges/users.svg)](https://www.codetriage.com/zerothi/sisl)
 
 
 Copyright Nick R. Papior 2023
