@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.fdfSileSiesta &mdash; sisl 0.1.dev1+g0d78d3d documentation</title>
+  <title>sisl.io.siesta.fdfSileSiesta &mdash; sisl 0.1.dev1+g76926d8 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -14,7 +14,6 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
@@ -24,7 +23,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="sisl.io.siesta.outSileSiesta" href="sisl.io.siesta.outSileSiesta.html" />
-    <link rel="prev" title="Siesta" href="../siesta.html" /> 
+    <link rel="prev" title="sisl.io.siesta.aniSileSiesta" href="sisl.io.siesta.aniSileSiesta.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -39,7 +38,7 @@
             sisl
           </a>
               <div class="version">
-                0.1.dev1+g0d78d3d
+                0.1.dev1+g76926d8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -94,6 +93,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../orca.html">ORCA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../scaleup.html">ScaleUP</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="../siesta.html">Siesta</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="sisl.io.siesta.aniSileSiesta.html">sisl.io.siesta.aniSileSiesta</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">sisl.io.siesta.fdfSileSiesta</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.io.siesta.outSileSiesta.html">sisl.io.siesta.outSileSiesta</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.io.siesta.xvSileSiesta.html">sisl.io.siesta.xvSileSiesta</a></li>
@@ -155,31 +155,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  
-<style>
-/* CSS overrides for sphinx_rtd_theme */
-
-/* 24px margin */
-.nbinput.nblast.container,
-.nboutput.nblast.container {
-    margin-bottom: 19px;  /* padding has already 5px */
-}
-
-/* ... except between code cells! */
-.nblast.container + .nbinput.container {
-    margin-top: -19px;
-}
-
-.admonition > p:before {
-    margin-right: 4px;  /* make room for the exclamation icon */
-}
-
-/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
-.math {
-    text-align: unset;
-}
-</style>
-<section id="sisl-io-siesta-fdfsilesiesta">
+  <section id="sisl-io-siesta-fdfsilesiesta">
 <h1>sisl.io.siesta.fdfSileSiesta<a class="headerlink" href="#sisl-io-siesta-fdfsilesiesta" title="Permalink to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="sisl.io.siesta.fdfSileSiesta">
@@ -253,14 +229,14 @@ By default the <code class="docutils literal notranslate"><span class="pre">base
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read_hamiltonian" title="sisl.io.siesta.fdfSileSiesta.read_hamiltonian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_hamiltonian</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Try and read the Hamiltonian by reading the &lt;&gt;.nc, &lt;&gt;.TSHS files, &lt;&gt;.HSX (in that order)</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read_lattice" title="sisl.io.siesta.fdfSileSiesta.read_lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_lattice</span></code></a>([output])</p></td>
+<td><p>Returns Lattice object by reading fdf or Siesta output related files.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read_lattice_nsc" title="sisl.io.siesta.fdfSileSiesta.read_lattice_nsc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_lattice_nsc</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Read supercell size using any method available</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read_overlap" title="sisl.io.siesta.fdfSileSiesta.read_overlap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_overlap</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Try and read the overlap matrix by reading the &lt;&gt;.nc, &lt;&gt;.TSHS files, &lt;&gt;.HSX, &lt;&gt;.onlyS (in that order)</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read_supercell" title="sisl.io.siesta.fdfSileSiesta.read_supercell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_supercell</span></code></a>([output])</p></td>
-<td><p>Returns SuperCell object by reading fdf or Siesta output related files.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.read_supercell_nsc" title="sisl.io.siesta.fdfSileSiesta.read_supercell_nsc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_supercell_nsc</span></code></a>(*args, **kwargs)</p></td>
-<td><p>Read supercell size using any method available</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.set" title="sisl.io.siesta.fdfSileSiesta.set"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set</span></code></a>(key, value[, keep])</p></td>
 <td><p>Add the key and value to the FDF file</p></td>
@@ -271,16 +247,19 @@ By default the <code class="docutils literal notranslate"><span class="pre">base
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.write" title="sisl.io.siesta.fdfSileSiesta.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Generic write method which should be overloaded in child-classes</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.write_geometry" title="sisl.io.siesta.fdfSileSiesta.write_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_geometry</span></code></a>(geometry[, fmt])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.write_brillouinzone" title="sisl.io.siesta.fdfSileSiesta.write_brillouinzone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_brillouinzone</span></code></a>(bz)</p></td>
+<td><p>Writes Brillouinzone information to the fdf input file</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.write_geometry" title="sisl.io.siesta.fdfSileSiesta.write_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_geometry</span></code></a>(geometry[, fmt])</p></td>
 <td><p>Writes the geometry</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.write_supercell" title="sisl.io.siesta.fdfSileSiesta.write_supercell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_supercell</span></code></a>(sc[, fmt])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.write_lattice" title="sisl.io.siesta.fdfSileSiesta.write_lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_lattice</span></code></a>(sc[, fmt])</p></td>
 <td><p>Writes the supercell</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.base_file" title="sisl.io.siesta.fdfSileSiesta.base_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base_file</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.base_file" title="sisl.io.siesta.fdfSileSiesta.base_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base_file</span></code></a></p></td>
 <td><p>File of the current <em class="xref py py-obj">Sile</em></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.file" title="sisl.io.siesta.fdfSileSiesta.file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">file</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.fdfSileSiesta.file" title="sisl.io.siesta.fdfSileSiesta.file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">file</span></code></a></p></td>
 <td><p>File of the current <em class="xref py py-obj">Sile</em></p></td>
 </tr>
 </tbody>
@@ -579,23 +558,9 @@ By default this is <code class="docutils literal notranslate"><span class="pre">
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="sisl.io.siesta.fdfSileSiesta.read_overlap">
-<span class="sig-name descname"><span class="pre">read_overlap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.read_overlap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.read_overlap" title="Permalink to this definition"></a></dt>
-<dd><p>Try and read the overlap matrix by reading the &lt;&gt;.nc, &lt;&gt;.TSHS files, &lt;&gt;.HSX, &lt;&gt;.onlyS (in that order)</p>
-<p>One can limit the tried files to only one file by passing
-only a single file ending.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – the order of which to try and read the overlap matrix
-By default this is <code class="docutils literal notranslate"><span class="pre">[&quot;nc&quot;,</span> <span class="pre">&quot;TSHS&quot;,</span> <span class="pre">&quot;HSX&quot;,</span> <span class="pre">&quot;onlyS&quot;]</span></code>.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="sisl.io.siesta.fdfSileSiesta.read_supercell">
-<span class="sig-name descname"><span class="pre">read_supercell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.read_supercell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.read_supercell" title="Permalink to this definition"></a></dt>
-<dd><p>Returns SuperCell object by reading fdf or Siesta output related files.</p>
+<dt class="sig sig-object py" id="sisl.io.siesta.fdfSileSiesta.read_lattice">
+<span class="sig-name descname"><span class="pre">read_lattice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.read_lattice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.read_lattice" title="Permalink to this definition"></a></dt>
+<dd><p>Returns Lattice object by reading fdf or Siesta output related files.</p>
 <p>One can limit the tried files to only one file by passing
 only a single file ending.</p>
 <dl class="field-list simple">
@@ -611,21 +576,35 @@ If <em class="xref py py-obj">order</em> is present <em class="xref py py-obj">o
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fdf</span> <span class="o">=</span> <span class="n">get_sile</span><span class="p">(</span><span class="s2">&quot;RUN.fdf&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fdf</span><span class="o">.</span><span class="n">read_supercell</span><span class="p">()</span> <span class="c1"># read from fdf</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fdf</span><span class="o">.</span><span class="n">read_supercell</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># read from [XV, nc, fdf]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fdf</span><span class="o">.</span><span class="n">read_supercell</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;nc&quot;</span><span class="p">])</span> <span class="c1"># read from [nc]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fdf</span><span class="o">.</span><span class="n">read_supercell</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;nc&quot;</span><span class="p">])</span> <span class="c1"># read from [nc]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fdf</span><span class="o">.</span><span class="n">read_lattice</span><span class="p">()</span> <span class="c1"># read from fdf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fdf</span><span class="o">.</span><span class="n">read_lattice</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># read from [XV, nc, fdf]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fdf</span><span class="o">.</span><span class="n">read_lattice</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;nc&quot;</span><span class="p">])</span> <span class="c1"># read from [nc]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fdf</span><span class="o">.</span><span class="n">read_lattice</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;nc&quot;</span><span class="p">])</span> <span class="c1"># read from [nc]</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="sisl.io.siesta.fdfSileSiesta.read_supercell_nsc">
-<span class="sig-name descname"><span class="pre">read_supercell_nsc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.read_supercell_nsc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.read_supercell_nsc" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="sisl.io.siesta.fdfSileSiesta.read_lattice_nsc">
+<span class="sig-name descname"><span class="pre">read_lattice_nsc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.read_lattice_nsc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.read_lattice_nsc" title="Permalink to this definition"></a></dt>
 <dd><p>Read supercell size using any method available</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>SislWarning</strong> – if none of the files can be read</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.fdfSileSiesta.read_overlap">
+<span class="sig-name descname"><span class="pre">read_overlap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.read_overlap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.read_overlap" title="Permalink to this definition"></a></dt>
+<dd><p>Try and read the overlap matrix by reading the &lt;&gt;.nc, &lt;&gt;.TSHS files, &lt;&gt;.HSX, &lt;&gt;.onlyS (in that order)</p>
+<p>One can limit the tried files to only one file by passing
+only a single file ending.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – the order of which to try and read the overlap matrix
+By default this is <code class="docutils literal notranslate"><span class="pre">[&quot;nc&quot;,</span> <span class="pre">&quot;TSHS&quot;,</span> <span class="pre">&quot;HSX&quot;,</span> <span class="pre">&quot;onlyS&quot;]</span></code>.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -676,6 +655,22 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.fdfSileSiesta.write_brillouinzone">
+<span class="sig-name descname"><span class="pre">write_brillouinzone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bz</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.write_brillouinzone"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.write_brillouinzone" title="Permalink to this definition"></a></dt>
+<dd><p>Writes Brillouinzone information to the fdf input file</p>
+<p>The <em class="xref py py-obj">bz</em> object will be written as options in the input file.
+The class of <em class="xref py py-obj">bz</em> decides which options gets written. For instance
+a <em class="xref py py-obj">BandStructure</em> class will write the corresponding <code class="docutils literal notranslate"><span class="pre">BandLines</span></code> block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>bz</strong> (<a class="reference internal" href="../../generated/sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><em>BrillouinZone</em></a>) – which setting to write to the file</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Currently, only the <em class="xref py py-obj">BandStructure</em> class may be accepted as <em class="xref py py-obj">bz</em>.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.siesta.fdfSileSiesta.write_geometry">
 <span class="sig-name descname"><span class="pre">write_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.8f'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.write_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.write_geometry" title="Permalink to this definition"></a></dt>
 <dd><p>Writes the geometry</p>
@@ -692,13 +687,13 @@ fractional and frac are the same.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="sisl.io.siesta.fdfSileSiesta.write_supercell">
-<span class="sig-name descname"><span class="pre">write_supercell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.8f'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.write_supercell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.write_supercell" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="sisl.io.siesta.fdfSileSiesta.write_lattice">
+<span class="sig-name descname"><span class="pre">write_lattice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.8f'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/fdf.html#fdfSileSiesta.write_lattice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.fdfSileSiesta.write_lattice" title="Permalink to this definition"></a></dt>
 <dd><p>Writes the supercell</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>sc</strong> (<a class="reference internal" href="../../generated/sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><em>SuperCell</em></a>) – supercell object to write</p></li>
+<li><p><strong>sc</strong> (<a class="reference internal" href="../../generated/sisl.Lattice.html#sisl.Lattice" title="sisl.Lattice"><em>Lattice</em></a>) – supercell object to write</p></li>
 <li><p><strong>fmt</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – precision used to store the lattice vectors</p></li>
 <li><p><strong>unit</strong> (<em>{&quot;Ang&quot;</em><em>, </em><em>&quot;Bohr&quot;}</em>) – the unit used when writing the data.</p></li>
 </ul>
@@ -714,7 +709,7 @@ fractional and frac are the same.</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../siesta.html" class="btn btn-neutral float-left" title="Siesta" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sisl.io.siesta.aniSileSiesta.html" class="btn btn-neutral float-left" title="sisl.io.siesta.aniSileSiesta" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="sisl.io.siesta.outSileSiesta.html" class="btn btn-neutral float-right" title="sisl.io.siesta.outSileSiesta" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

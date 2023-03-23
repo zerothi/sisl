@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.sile &mdash; sisl 0.1.dev1+g0d78d3d documentation</title>
+  <title>sisl.io.sile &mdash; sisl 0.1.dev1+g76926d8 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -13,7 +13,6 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
@@ -36,7 +35,7 @@
             sisl
           </a>
               <div class="version">
-                0.1.dev1+g0d78d3d
+                0.1.dev1+g76926d8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -104,14 +103,15 @@
 <span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
 <span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span><span class="p">,</span> <span class="n">reduce</span>
 <span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">splitext</span><span class="p">,</span> <span class="n">basename</span>
 <span class="kn">import</span> <span class="nn">gzip</span>
 <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">TextIOBase</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">SislWarning</span><span class="p">,</span> <span class="n">SislInfo</span>
+<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">SislWarning</span><span class="p">,</span> <span class="n">SislInfo</span><span class="p">,</span> <span class="n">deprecate</span>
 <span class="kn">from</span> <span class="nn">sisl.utils.misc</span> <span class="kn">import</span> <span class="n">str_spec</span>
 <span class="kn">from</span> <span class="nn">._help</span> <span class="kn">import</span> <span class="o">*</span>
 
@@ -139,6 +139,7 @@
 <span class="c1"># Decorators or sile-specific functions</span>
 <span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span>
     <span class="s1">&#39;sile_fh_open&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;sile_read_multiple&#39;</span><span class="p">,</span>
     <span class="s1">&#39;sile_raise_write&#39;</span><span class="p">,</span>
     <span class="s1">&#39;sile_raise_read&#39;</span>
 <span class="p">]</span>
@@ -578,6 +579,12 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Override to check the handle &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;fh&#39;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The filehandle for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="si">}</span><span class="s2"> has not been opened yet...&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;read_supercell&quot;</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;read_lattice&quot;</span><span class="p">):</span>
+            <span class="n">deprecate</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.read_supercell is deprecated in favor of read_lattice&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;read_lattice&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;write_supercell&quot;</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;write_lattice&quot;</span><span class="p">):</span>
+            <span class="n">deprecate</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.write_supercell is deprecated in favor of write_lattice&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;write_lattice&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
@@ -618,7 +625,7 @@
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_file</span><span class="si">!s}</span><span class="s2">, base=</span><span class="si">{</span><span class="n">d</span><span class="si">!s}</span><span class="s2">)&quot;</span>
 
 
-<span class="k">def</span> <span class="nf">sile_fh_open</span><span class="p">(</span><span class="n">from_closed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">sile_fh_open</span><span class="p">(</span><span class="n">from_closed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Method decorator for objects to directly implement opening of the</span>
 <span class="sd">    file-handle upon entry (if it isn&#39;t already).</span>
 
@@ -626,27 +633,194 @@
 <span class="sd">    ----------</span>
 <span class="sd">    from_closed : bool, optional</span>
 <span class="sd">       ensure the wrapped function *must* open the file, otherwise it will seek to 0.</span>
+<span class="sd">    reset : callable, optional</span>
+<span class="sd">       in case the file gets opened a new, then the `reset` method will be called as</span>
+<span class="sd">       ``reset(self)``</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">reset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">pass</span>
+
     <span class="k">if</span> <span class="n">from_closed</span><span class="p">:</span>
         <span class="k">def</span> <span class="nf">_wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+            <span class="k">nonlocal</span> <span class="n">reset</span>
             <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
             <span class="k">def</span> <span class="nf">pre_open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
                 <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;fh&quot;</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
                     <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                 <span class="k">with</span> <span class="bp">self</span><span class="p">:</span>
+                    <span class="n">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
                     <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">pre_open</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">def</span> <span class="nf">_wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+            <span class="k">nonlocal</span> <span class="n">reset</span>
             <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
             <span class="k">def</span> <span class="nf">pre_open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
                 <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;fh&quot;</span><span class="p">):</span>
                     <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                 <span class="k">with</span> <span class="bp">self</span><span class="p">:</span>
+                    <span class="n">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
                     <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">pre_open</span>
     <span class="k">return</span> <span class="n">_wrapper</span>
+
+
+<span class="k">def</span> <span class="nf">sile_read_multiple</span><span class="p">(</span><span class="n">start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">stop</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">step</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="nb">all</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                       <span class="n">skip_call</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]]]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">pre_call</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]]]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">post_call</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]]]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">postprocess</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Method decorator for doing multiple reads</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    start : int, optional</span>
+<span class="sd">       position of first read</span>
+<span class="sd">    stop : int, optional</span>
+<span class="sd">       position of last read</span>
+<span class="sd">    step : int, optional</span>
+<span class="sd">       number of steps to take (if any at all).</span>
+<span class="sd">    all : bool, optional</span>
+<span class="sd">       read all entries, `start`, `stop` and `step` will not be altered</span>
+<span class="sd">       unless they are set to None.</span>
+<span class="sd">    skip_call : function, optional</span>
+<span class="sd">       read method without actual data processing.</span>
+<span class="sd">       The skip call must something different from ``None`` if it succeeds.</span>
+<span class="sd">    pre_call : function, optional</span>
+<span class="sd">       function to be applied before each read call.</span>
+<span class="sd">       Does *not* apply to the `skip_call`.</span>
+<span class="sd">    post_call : function, optional</span>
+<span class="sd">       function to be applied after each read call</span>
+<span class="sd">       Does *not* apply to the `skip_call`.</span>
+<span class="sd">    postprocess : function, optional</span>
+<span class="sd">       function to be applied on the returned data before it gets returned.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    single entry or list from multiple reads</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+        <span class="c1"># ensure we can access the callables</span>
+        <span class="k">nonlocal</span> <span class="n">skip_call</span><span class="p">,</span> <span class="n">pre_call</span><span class="p">,</span> <span class="n">post_call</span><span class="p">,</span> <span class="n">postprocess</span>
+
+        <span class="k">if</span> <span class="n">pre_call</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">def</span> <span class="nf">pre_call</span><span class="p">():</span> <span class="k">pass</span>
+
+        <span class="k">if</span> <span class="n">post_call</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">def</span> <span class="nf">post_call</span><span class="p">():</span> <span class="k">pass</span>
+
+        <span class="k">if</span> <span class="n">postprocess</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="n">x</span><span class="p">):</span> <span class="k">return</span> <span class="n">x</span>
+
+        <span class="k">def</span> <span class="nf">wrap_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="n">pre_call</span><span class="p">()</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">post_call</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">r</span>
+
+        <span class="c1"># if skip_call is not set, we&#39;ll simply use func.</span>
+        <span class="c1"># Only in this case will pre and post be called</span>
+        <span class="c1"># as well.</span>
+        <span class="c1"># they should be equivalent but skip can be used to</span>
+        <span class="c1"># skip some processing of the read data.</span>
+        <span class="k">if</span> <span class="n">skip_call</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">skip_call</span> <span class="o">=</span> <span class="n">wrap_func</span>
+
+        <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">multiple</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="nb">all</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="bp">self</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="nb">all</span><span class="p">:</span>
+                <span class="c1"># parse everything, but still obey inputs</span>
+                <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">if</span> <span class="n">stop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">stop</span> <span class="o">=</span> <span class="mi">100000000000</span>
+                <span class="k">if</span> <span class="n">step</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">step</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># behave like range(stop) | range(start, stop, step)</span>
+                <span class="c1"># almost.</span>
+                <span class="c1">#  step only =&gt; start, step = 0, inf</span>
+                <span class="c1">#  start only =&gt; stop = start + 1</span>
+                <span class="c1">#  stop only =&gt; start = stop - 1</span>
+                <span class="k">if</span> <span class="n">step</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="k">if</span> <span class="n">stop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">stop</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+                <span class="k">elif</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">stop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="n">stop</span> <span class="o">=</span> <span class="mi">1</span>
+
+                <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">stop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">start</span> <span class="o">=</span> <span class="n">stop</span> <span class="o">-</span> <span class="mi">1</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">if</span> <span class="n">stop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># this will only occur if start is given, but not stop</span>
+                    <span class="n">stop</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="k">elif</span> <span class="n">stop</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">stop</span> <span class="o">=</span> <span class="mi">1000000000000</span>
+                <span class="k">if</span> <span class="n">step</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># only handle cases where the requested number of</span>
+                    <span class="c1"># elements is longer than 1, then step should be defined,</span>
+                    <span class="c1"># else we resort to returning a single entity (not postprocessed)</span>
+                    <span class="k">if</span> <span class="n">stop</span> <span class="o">-</span> <span class="n">start</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">step</span> <span class="o">=</span> <span class="mi">1</span>
+
+            <span class="k">if</span> <span class="n">stop</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># TODO this will probably fail if users do stop=-4 (to not have the last 3 items)</span>
+                <span class="c1"># It should be done in a different manner</span>
+                <span class="n">stop</span> <span class="o">=</span> <span class="mi">100000000000</span>
+
+            <span class="k">def</span> <span class="nf">check_none</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="ow">and</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">r</span> <span class="ow">is</span> <span class="kc">None</span>
+
+            <span class="c1"># start by reading past start, this is regardless of what we</span>
+            <span class="c1"># are about to do</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">):</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="n">skip_call</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">check_none</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">r</span>
+
+            <span class="k">if</span> <span class="n">step</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># read a single element and return</span>
+                <span class="k">def</span> <span class="nf">ret_func</span><span class="p">():</span>
+                    <span class="k">return</span> <span class="n">wrap_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># read a set of geometries and return</span>
+                <span class="k">def</span> <span class="nf">ret_func</span><span class="p">():</span>
+                    <span class="n">R</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+                        <span class="n">r</span> <span class="o">=</span> <span class="n">wrap_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">check_none</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
+                            <span class="k">break</span>
+                        <span class="n">R</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+
+                        <span class="c1"># skip the middle steps</span>
+                        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">step</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                            <span class="n">r</span> <span class="o">=</span> <span class="n">skip_call</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">check_none</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
+                                <span class="k">return</span> <span class="n">postprocess</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">postprocess</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;fh&quot;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">ret_func</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">with</span> <span class="bp">self</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">ret_func</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">multiple</span>
+    <span class="k">return</span> <span class="n">decorator</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io&quot;</span><span class="p">)</span>

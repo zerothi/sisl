@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.densitymatrix &mdash; sisl 0.1.dev1+g0d78d3d documentation</title>
+  <title>sisl.physics.densitymatrix &mdash; sisl 0.1.dev1+g76926d8 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -13,7 +13,6 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
@@ -36,7 +35,7 @@
             sisl
           </a>
               <div class="version">
-                0.1.dev1+g0d78d3d
+                0.1.dev1+g76926d8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -114,8 +113,7 @@
 <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">hstack</span> <span class="k">as</span> <span class="n">ss_hstack</span>
 
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span> <span class="nn">sisl.geometry</span> <span class="kn">import</span> <span class="n">Geometry</span>
-<span class="kn">from</span> <span class="nn">sisl.supercell</span> <span class="kn">import</span> <span class="n">SuperCell</span>
+<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Lattice</span>
 <span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
 <span class="kn">from</span> <span class="nn">sisl._indices</span> <span class="kn">import</span> <span class="n">indices_le</span><span class="p">,</span> <span class="n">indices_fabs_le</span>
 <span class="kn">from</span> <span class="nn">sisl._math_small</span> <span class="kn">import</span> <span class="n">xyz_to_spherical_cos_phi</span>
@@ -638,14 +636,14 @@
         <span class="n">csrDM</span><span class="o">.</span><span class="n">prune</span><span class="p">()</span>
 
         <span class="c1"># 1. Ensure the grid has a geometry associated with it</span>
-        <span class="n">sc</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">lattice</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="c1"># Find the periodic directions</span>
         <span class="n">pbc</span> <span class="o">=</span> <span class="p">[</span><span class="n">bc</span> <span class="o">==</span> <span class="n">grid</span><span class="o">.</span><span class="n">PERIODIC</span> <span class="ow">or</span> <span class="n">geometry</span><span class="o">.</span><span class="n">nsc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">bc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">bc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])]</span>
         <span class="k">if</span> <span class="n">grid</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># Create the actual geometry that encompass the grid</span>
-            <span class="n">ia</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">within_inf</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="n">pbc</span><span class="p">)</span>
+            <span class="n">ia</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">within_inf</span><span class="p">(</span><span class="n">lattice</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="n">pbc</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ia</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">grid</span><span class="o">.</span><span class="n">set_geometry</span><span class="p">(</span><span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">geometry</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">ia</span><span class="p">],</span> <span class="n">sc</span><span class="o">=</span><span class="n">sc</span><span class="p">))</span>
+                <span class="n">grid</span><span class="o">.</span><span class="n">set_geometry</span><span class="p">(</span><span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">geometry</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">ia</span><span class="p">],</span> <span class="n">lattice</span><span class="o">=</span><span class="n">lattice</span><span class="p">))</span>
 
         <span class="c1"># Instead of looping all atoms in the supercell we find the exact atoms</span>
         <span class="c1"># and their supercell indices.</span>
@@ -654,13 +652,13 @@
         <span class="c1"># supercell by add_R in each direction.</span>
         <span class="c1"># For extremely skewed lattices this will be way too much, hence we make</span>
         <span class="c1"># them square.</span>
-        <span class="n">o</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">toCuboid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">sc</span> <span class="o">=</span> <span class="n">SuperCell</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">_v</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">add_R</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="n">o</span><span class="o">.</span><span class="n">origin</span> <span class="o">-</span> <span class="n">add_R</span><span class="p">)</span>
+        <span class="n">o</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">toCuboid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">lattice</span> <span class="o">=</span> <span class="n">Lattice</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">_v</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">add_R</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="n">o</span><span class="o">.</span><span class="n">origin</span> <span class="o">-</span> <span class="n">add_R</span><span class="p">)</span>
 
         <span class="c1"># Retrieve all atoms within the grid supercell</span>
         <span class="c1"># (and the neighbours that connect into the cell)</span>
-        <span class="n">IA</span><span class="p">,</span> <span class="n">XYZ</span><span class="p">,</span> <span class="n">ISC</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">within_inf</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="n">pbc</span><span class="p">)</span>
-        <span class="n">XYZ</span> <span class="o">-=</span> <span class="n">grid</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">IA</span><span class="p">,</span> <span class="n">XYZ</span><span class="p">,</span> <span class="n">ISC</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">within_inf</span><span class="p">(</span><span class="n">lattice</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="n">pbc</span><span class="p">)</span>
+        <span class="n">XYZ</span> <span class="o">-=</span> <span class="n">grid</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
         <span class="c1"># Retrieve progressbar</span>
         <span class="n">eta</span> <span class="o">=</span> <span class="n">progressbar</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">IA</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.density&quot;</span><span class="p">,</span> <span class="s2">&quot;atom&quot;</span><span class="p">,</span> <span class="n">eta</span><span class="p">)</span>

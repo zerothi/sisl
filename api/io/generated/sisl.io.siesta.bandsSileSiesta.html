@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.bandsSileSiesta &mdash; sisl 0.1.dev1+g0d78d3d documentation</title>
+  <title>sisl.io.siesta.bandsSileSiesta &mdash; sisl 0.1.dev1+g76926d8 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -14,7 +14,6 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
@@ -39,7 +38,7 @@
             sisl
           </a>
               <div class="version">
-                0.1.dev1+g0d78d3d
+                0.1.dev1+g76926d8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -94,6 +93,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../orca.html">ORCA</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../scaleup.html">ScaleUP</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="../siesta.html">Siesta</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="sisl.io.siesta.aniSileSiesta.html">sisl.io.siesta.aniSileSiesta</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.io.siesta.fdfSileSiesta.html">sisl.io.siesta.fdfSileSiesta</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.io.siesta.outSileSiesta.html">sisl.io.siesta.outSileSiesta</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.io.siesta.xvSileSiesta.html">sisl.io.siesta.xvSileSiesta</a></li>
@@ -155,31 +155,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  
-<style>
-/* CSS overrides for sphinx_rtd_theme */
-
-/* 24px margin */
-.nbinput.nblast.container,
-.nboutput.nblast.container {
-    margin-bottom: 19px;  /* padding has already 5px */
-}
-
-/* ... except between code cells! */
-.nblast.container + .nbinput.container {
-    margin-top: -19px;
-}
-
-.admonition > p:before {
-    margin-right: 4px;  /* make room for the exclamation icon */
-}
-
-/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
-.math {
-    text-align: unset;
-}
-</style>
-<section id="sisl-io-siesta-bandssilesiesta">
+  <section id="sisl-io-siesta-bandssilesiesta">
 <h1>sisl.io.siesta.bandsSileSiesta<a class="headerlink" href="#sisl-io-siesta-bandssilesiesta" title="Permalink to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="sisl.io.siesta.bandsSileSiesta">
@@ -268,7 +244,7 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 <p>The energy levels are shifted with respect to the Fermi-level.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>as_dataarray</strong> (<em>boolean</em><em>, </em><em>optional</em>) – if <em class="xref py py-obj">True</em>, the information is returned as an <a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2023.2.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a>
+<dd class="field-odd"><p><strong>as_dataarray</strong> (<em>boolean</em><em>, </em><em>optional</em>) – if <em class="xref py py-obj">True</em>, the information is returned as an <a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2023.3.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a>
 Ticks (if read) are stored as an attribute of the DataArray
 (under <em class="xref py py-obj">array.ticks</em> and <em class="xref py py-obj">array.ticklabels</em>)</p>
 </dd>

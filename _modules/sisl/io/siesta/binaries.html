@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.binaries &mdash; sisl 0.1.dev1+g0d78d3d documentation</title>
+  <title>sisl.io.siesta.binaries &mdash; sisl 0.1.dev1+g76926d8 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -13,7 +13,6 @@
     <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
         <script src="../../../../_static/doctools.js"></script>
         <script src="../../../../_static/sphinx_highlight.js"></script>
@@ -36,7 +35,7 @@
             sisl
           </a>
               <div class="version">
-                0.1.dev1+g0d78d3d
+                0.1.dev1+g76926d8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -122,7 +121,7 @@
 <span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">info</span><span class="p">,</span> <span class="n">warn</span><span class="p">,</span> <span class="n">SislError</span>
 
 <span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
-<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">Atoms</span><span class="p">,</span> <span class="n">SuperCell</span><span class="p">,</span> <span class="n">Grid</span><span class="p">,</span> <span class="n">SparseCSR</span>
+<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">Atoms</span><span class="p">,</span> <span class="n">Lattice</span><span class="p">,</span> <span class="n">Grid</span><span class="p">,</span> <span class="n">SparseCSR</span>
 <span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">AtomicOrbital</span>
 <span class="kn">from</span> <span class="nn">sisl.sparse</span> <span class="kn">import</span> <span class="n">_ncol_to_indptr</span>
 <span class="kn">from</span> <span class="nn">sisl.unit.siesta</span> <span class="kn">import</span> <span class="n">unit_convert</span>
@@ -208,10 +207,10 @@
         <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2"> has mismatched atomic coordinates, will copy geometry and use file XYZ.&quot;</span><span class="p">)</span>
         <span class="n">geom</span><span class="p">,</span> <span class="n">is_copy</span> <span class="o">=</span> <span class="n">get_copy</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">is_copy</span><span class="p">)</span>
         <span class="n">geom</span><span class="o">.</span><span class="n">xyz</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">geom_b</span><span class="o">.</span><span class="n">xyz</span><span class="p">[:,</span> <span class="p">:]</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">geom_b</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span> <span class="n">geom</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">geom_b</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span> <span class="n">geom</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">cell</span><span class="p">):</span>
         <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2"> has non-equal lattice vectors, will copy geometry and use file lattice.&quot;</span><span class="p">)</span>
         <span class="n">geom</span><span class="p">,</span> <span class="n">is_copy</span> <span class="o">=</span> <span class="n">get_copy</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">is_copy</span><span class="p">)</span>
-        <span class="n">geom</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">geom_b</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">[:,</span> <span class="p">:]</span>
+        <span class="n">geom</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">cell</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">geom_b</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">cell</span><span class="p">[:,</span> <span class="p">:]</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">geom_b</span><span class="o">.</span><span class="n">nsc</span><span class="p">,</span> <span class="n">geom</span><span class="o">.</span><span class="n">nsc</span><span class="p">):</span>
         <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2"> has non-equal number of supercells, will copy geometry and use file supercell count.&quot;</span><span class="p">)</span>
         <span class="n">geom</span><span class="p">,</span> <span class="n">is_copy</span> <span class="o">=</span> <span class="n">get_copy</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">is_copy</span><span class="p">)</span>
@@ -261,12 +260,12 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; The version of the file &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_tshs_version</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
 
-<div class="viewcode-block" id="onlysSileSiesta.read_supercell"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.onlysSileSiesta.html#sisl.io.siesta.onlysSileSiesta.read_supercell">[docs]</a>    <span class="k">def</span> <span class="nf">read_supercell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a SuperCell object from a TranSiesta file &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="onlysSileSiesta.read_lattice"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.onlysSileSiesta.html#sisl.io.siesta.onlysSileSiesta.read_lattice">[docs]</a>    <span class="k">def</span> <span class="nf">read_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a Lattice object from a TranSiesta file &quot;&quot;&quot;</span>
         <span class="n">n_s</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_tshs_sizes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)[</span><span class="mi">3</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s2">&quot;read_supercell&quot;</span><span class="p">,</span> <span class="s2">&quot;could not read sizes.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s2">&quot;read_lattice&quot;</span><span class="p">,</span> <span class="s2">&quot;could not read sizes.&quot;</span><span class="p">)</span>
         <span class="n">arr</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_tshs_cell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">n_s</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s2">&quot;read_supercell&quot;</span><span class="p">,</span> <span class="s2">&quot;could not read cell.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s2">&quot;read_lattice&quot;</span><span class="p">,</span> <span class="s2">&quot;could not read cell.&quot;</span><span class="p">)</span>
         <span class="n">nsc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
         <span class="c1"># We have to transpose since the data is read *as-is*</span>
         <span class="c1"># The cell in fortran files are (:, A1)</span>
@@ -275,19 +274,19 @@
         <span class="c1"># Note that care must be taken for the different data-structures</span>
         <span class="c1"># In particular not all data needs to be transposed (sparse H and S)</span>
         <span class="n">cell</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">_Bohr2Ang</span>
-        <span class="k">return</span> <span class="n">SuperCell</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="n">nsc</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Lattice</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="n">nsc</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="onlysSileSiesta.read_geometry"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.onlysSileSiesta.html#sisl.io.siesta.onlysSileSiesta.read_geometry">[docs]</a>    <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns Geometry object from a TranSiesta file &quot;&quot;&quot;</span>
 
         <span class="c1"># Read supercell</span>
-        <span class="n">sc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_supercell</span><span class="p">()</span>
+        <span class="n">lattice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_lattice</span><span class="p">()</span>
 
         <span class="n">na</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_tshs_sizes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s2">&quot;read_geometry&quot;</span><span class="p">,</span> <span class="s2">&quot;could not read sizes.&quot;</span><span class="p">)</span>
         <span class="n">arr</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_tshs_geom</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">na</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s2">&quot;read_geometry&quot;</span><span class="p">,</span> <span class="s2">&quot;could not read geometry.&quot;</span><span class="p">)</span>
-        <span class="c1"># see onlysSileSiesta.read_supercell for .T</span>
+        <span class="c1"># see onlysSileSiesta.read_lattice for .T</span>
         <span class="n">xyz</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">_Bohr2Ang</span>
         <span class="n">lasto</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
@@ -329,7 +328,7 @@
                     <span class="n">atom</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">Z</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.</span> <span class="k">for</span> <span class="n">io</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">no</span><span class="p">)],</span> <span class="n">mass</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">mass</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">tag</span><span class="p">))</span>
 
         <span class="c1"># Create and return geometry object</span>
-        <span class="k">return</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">atom</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="n">sc</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">atom</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="n">lattice</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="onlysSileSiesta.read_overlap"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.onlysSileSiesta.html#sisl.io.siesta.onlysSileSiesta.read_overlap">[docs]</a>    <span class="k">def</span> <span class="nf">read_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the overlap matrix from the TranSiesta file &quot;&quot;&quot;</span>
@@ -339,7 +338,7 @@
         <span class="c1"># read the sizes used...</span>
         <span class="n">sizes</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_tshs_sizes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s2">&quot;read_overlap&quot;</span><span class="p">,</span> <span class="s2">&quot;could not read sizes.&quot;</span><span class="p">)</span>
-        <span class="c1"># see onlysSileSiesta.read_supercell for .T</span>
+        <span class="c1"># see onlysSileSiesta.read_lattice for .T</span>
         <span class="n">isc</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_tshs_cell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">sizes</span><span class="p">[</span><span class="mi">3</span><span class="p">])[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s2">&quot;read_overlap&quot;</span><span class="p">,</span> <span class="s2">&quot;could not read cell.&quot;</span><span class="p">)</span>
         <span class="n">no</span> <span class="o">=</span> <span class="n">sizes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
@@ -424,7 +423,7 @@
         <span class="c1"># read the sizes used...</span>
         <span class="n">sizes</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_tshs_sizes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s2">&quot;read_hamiltonian&quot;</span><span class="p">,</span> <span class="s2">&quot;could not read sizes.&quot;</span><span class="p">)</span>
-        <span class="c1"># see onlysSileSiesta.read_supercell for .T</span>
+        <span class="c1"># see onlysSileSiesta.read_lattice for .T</span>
         <span class="n">isc</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_tshs_cell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">sizes</span><span class="p">[</span><span class="mi">3</span><span class="p">])[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s2">&quot;read_hamiltonian&quot;</span><span class="p">,</span> <span class="s2">&quot;could not read cell.&quot;</span><span class="p">)</span>
         <span class="n">spin</span> <span class="o">=</span> <span class="n">sizes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -509,7 +508,7 @@
         <span class="n">nsc</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">nsc</span><span class="p">[:]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
         <span class="n">isc</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">siesta_sc_off</span><span class="p">(</span><span class="o">*</span><span class="n">nsc</span><span class="p">)</span>
 
-        <span class="c1"># see onlysSileSiesta.read_supercell for .T</span>
+        <span class="c1"># see onlysSileSiesta.read_lattice for .T</span>
         <span class="n">_siesta</span><span class="o">.</span><span class="n">write_tshs_hs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">nsc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">nsc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">nsc</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
                               <span class="n">cell</span><span class="o">.</span><span class="n">T</span> <span class="o">/</span> <span class="n">_Bohr2Ang</span><span class="p">,</span> <span class="n">xyz</span><span class="o">.</span><span class="n">T</span> <span class="o">/</span> <span class="n">_Bohr2Ang</span><span class="p">,</span> <span class="n">H</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">firsto</span><span class="p">,</span>
                               <span class="n">csr</span><span class="o">.</span><span class="n">ncol</span><span class="p">,</span> <span class="n">csr</span><span class="o">.</span><span class="n">col</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
@@ -545,8 +544,8 @@
             <span class="c1"># We truly, have no clue,</span>
             <span class="c1"># Just generate a boxed system</span>
             <span class="n">xyz</span> <span class="o">=</span> <span class="p">[[</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">no</span><span class="p">)]</span>
-            <span class="n">sc</span> <span class="o">=</span> <span class="n">SuperCell</span><span class="p">([</span><span class="n">no</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">nsc</span><span class="o">=</span><span class="n">nsc</span><span class="p">)</span>
-            <span class="n">geom</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">Atom</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">sc</span><span class="o">=</span><span class="n">sc</span><span class="p">)</span>
+            <span class="n">lattice</span> <span class="o">=</span> <span class="n">Lattice</span><span class="p">([</span><span class="n">no</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">nsc</span><span class="o">=</span><span class="n">nsc</span><span class="p">)</span>
+            <span class="n">geom</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">Atom</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">lattice</span><span class="o">=</span><span class="n">lattice</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">nsc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">nsc</span> <span class="o">!=</span> <span class="n">nsc</span><span class="p">):</span>
             <span class="c1"># We have to update the number of supercells!</span>
@@ -608,7 +607,7 @@
         <span class="c1"># Ensure shapes (say if only 1 spin)</span>
         <span class="n">dm</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">DM</span><span class="o">.</span><span class="n">spin</span><span class="p">))</span>
 
-        <span class="n">nsc</span> <span class="o">=</span> <span class="n">DM</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">nsc</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="n">nsc</span> <span class="o">=</span> <span class="n">DM</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">nsc</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
 
         <span class="n">_siesta</span><span class="o">.</span><span class="n">write_dm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">nsc</span><span class="p">,</span> <span class="n">csr</span><span class="o">.</span><span class="n">ncol</span><span class="p">,</span> <span class="n">csr</span><span class="o">.</span><span class="n">col</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">_toF</span><span class="p">(</span><span class="n">dm</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s2">&quot;write_density_matrix&quot;</span><span class="p">,</span> <span class="s2">&quot;could not write density matrix.&quot;</span><span class="p">)</span></div>
@@ -640,8 +639,8 @@
             <span class="c1"># We truly, have no clue,</span>
             <span class="c1"># Just generate a boxed system</span>
             <span class="n">xyz</span> <span class="o">=</span> <span class="p">[[</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">no</span><span class="p">)]</span>
-            <span class="n">sc</span> <span class="o">=</span> <span class="n">SuperCell</span><span class="p">([</span><span class="n">no</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">nsc</span><span class="o">=</span><span class="n">nsc</span><span class="p">)</span>
-            <span class="n">geom</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">Atom</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">sc</span><span class="o">=</span><span class="n">sc</span><span class="p">)</span>
+            <span class="n">lattice</span> <span class="o">=</span> <span class="n">Lattice</span><span class="p">([</span><span class="n">no</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">nsc</span><span class="o">=</span><span class="n">nsc</span><span class="p">)</span>
+            <span class="n">geom</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">Atom</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">lattice</span><span class="o">=</span><span class="n">lattice</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">nsc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">nsc</span> <span class="o">!=</span> <span class="n">nsc</span><span class="p">):</span>
             <span class="c1"># We have to update the number of supercells!</span>
@@ -735,7 +734,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">edm</span> <span class="o">=</span> <span class="n">EDMcsr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="p">:</span><span class="n">EDM</span><span class="o">.</span><span class="n">S_idx</span><span class="p">]</span>
 
-        <span class="n">nsc</span> <span class="o">=</span> <span class="n">DM</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">nsc</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="n">nsc</span> <span class="o">=</span> <span class="n">DM</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">nsc</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
 
         <span class="n">_siesta</span><span class="o">.</span><span class="n">write_tsde_dm_edm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">nsc</span><span class="p">,</span> <span class="n">DMcsr</span><span class="o">.</span><span class="n">ncol</span><span class="p">,</span> <span class="n">DMcsr</span><span class="o">.</span><span class="n">col</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
                                   <span class="n">_toF</span><span class="p">(</span><span class="n">dm</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
@@ -901,7 +900,7 @@
             <span class="n">n_s</span> <span class="o">=</span> <span class="n">xij</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="n">xij</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">n_s</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="c1"># easy!!</span>
-                <span class="k">return</span> <span class="n">SuperCell</span><span class="p">(</span><span class="n">xyz</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">xyz</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mf">10.</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">Lattice</span><span class="p">(</span><span class="n">xyz</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">xyz</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mf">10.</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span>
 
             <span class="n">sc_off</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">zerosd</span><span class="p">([</span><span class="n">n_s</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
             <span class="n">mark</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">zerosi</span><span class="p">(</span><span class="n">n_s</span><span class="p">)</span>
@@ -1013,14 +1012,14 @@
                     <span class="n">cell</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">cart_dir</span><span class="p">]</span> <span class="o">=</span> <span class="n">xyz</span><span class="p">[:,</span> <span class="n">cart_dir</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">xyz</span><span class="p">[:,</span> <span class="n">cart_dir</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">+</span> <span class="mf">10.</span>
                     <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
 
-            <span class="k">return</span> <span class="n">SuperCell</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">nsc</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Lattice</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">nsc</span><span class="p">)</span>
 
         <span class="c1"># now we have all orbitals, ensure compatibility with passed geometry</span>
         <span class="k">if</span> <span class="n">geometry</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">atm_xij</span> <span class="o">=</span> <span class="n">convert_to_atom</span><span class="p">(</span><span class="n">geom_handle</span><span class="p">,</span> <span class="n">xij</span><span class="p">)</span>
             <span class="n">xyz</span> <span class="o">=</span> <span class="n">coord_from_xij</span><span class="p">(</span><span class="n">atm_xij</span><span class="p">)</span>
-            <span class="n">sc</span> <span class="o">=</span> <span class="n">sc_from_xij</span><span class="p">(</span><span class="n">atm_xij</span><span class="p">,</span> <span class="n">xyz</span><span class="p">)</span>
-            <span class="n">geometry</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">geom_handle</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">sc</span><span class="p">)</span>
+            <span class="n">lattice</span> <span class="o">=</span> <span class="n">sc_from_xij</span><span class="p">(</span><span class="n">atm_xij</span><span class="p">,</span> <span class="n">xyz</span><span class="p">)</span>
+            <span class="n">geometry</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">geom_handle</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">lattice</span><span class="p">)</span>
 
             <span class="c1"># Move coordinates into unit-cell</span>
             <span class="n">geometry</span><span class="o">.</span><span class="n">xyz</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">(</span><span class="n">geometry</span><span class="o">.</span><span class="n">fxyz</span> <span class="o">%</span> <span class="mf">1.</span><span class="p">)</span> <span class="o">@</span> <span class="n">geometry</span><span class="o">.</span><span class="n">cell</span>
@@ -1028,8 +1027,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">geometry</span><span class="o">.</span><span class="n">n_s</span> <span class="o">!=</span> <span class="n">xij</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="n">xij</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
                 <span class="n">atm_xij</span> <span class="o">=</span> <span class="n">convert_to_atom</span><span class="p">(</span><span class="n">geom_handle</span><span class="p">,</span> <span class="n">xij</span><span class="p">)</span>
-                <span class="n">sc</span> <span class="o">=</span> <span class="n">sc_from_xij</span><span class="p">(</span><span class="n">atm_xij</span><span class="p">,</span> <span class="n">coord_from_xij</span><span class="p">(</span><span class="n">atm_xij</span><span class="p">))</span>
-                <span class="n">geometry</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">nsc</span><span class="p">)</span>
+                <span class="n">lattice</span> <span class="o">=</span> <span class="n">sc_from_xij</span><span class="p">(</span><span class="n">atm_xij</span><span class="p">,</span> <span class="n">coord_from_xij</span><span class="p">(</span><span class="n">atm_xij</span><span class="p">))</span>
+                <span class="n">geometry</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">(</span><span class="n">lattice</span><span class="o">.</span><span class="n">nsc</span><span class="p">)</span>
 
             <span class="k">def</span> <span class="nf">conv</span><span class="p">(</span><span class="n">orbs</span><span class="p">,</span> <span class="n">atm</span><span class="p">):</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">orbs</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">atm</span><span class="p">):</span>
@@ -1141,8 +1140,8 @@
 
         <span class="n">cell</span><span class="p">,</span> <span class="n">nsc</span><span class="p">,</span> <span class="n">xa</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_geom1</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">na</span><span class="p">)</span>
 
-        <span class="n">sc</span> <span class="o">=</span> <span class="n">SuperCell</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">_Bohr2Ang</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="n">nsc</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">xa</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">_Bohr2Ang</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="n">sc</span><span class="p">)</span>
+        <span class="n">lattice</span> <span class="o">=</span> <span class="n">Lattice</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">_Bohr2Ang</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="n">nsc</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">xa</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">_Bohr2Ang</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="n">lattice</span><span class="p">)</span>
 
 <div class="viewcode-block" id="hsxSileSiesta.read_geometry"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.hsxSileSiesta.html#sisl.io.siesta.hsxSileSiesta.read_geometry">[docs]</a>    <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Read the geometry from the file</span>
@@ -1340,7 +1339,7 @@
 <span class="sd">    geometry : Geometry, optional</span>
 <span class="sd">        a geometry contains a cell with corresponding lattice vectors</span>
 <span class="sd">        used to convert k [1/Ang] -&gt; [b]</span>
-<span class="sd">    sc : SuperCell, optional</span>
+<span class="sd">    lattice : Lattice, optional</span>
 <span class="sd">        a supercell contains the lattice vectors to convert k</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1352,8 +1351,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="c1"># default sc</span>
-        <span class="n">sc</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># default lattice</span>
+        <span class="n">lattice</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="c1"># In case the instantiation was called with wfsxSileSiesta(&quot;path&quot;, geometry=geometry)</span>
         <span class="n">parent</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;parent&quot;</span><span class="p">)</span>
@@ -1361,36 +1360,36 @@
             <span class="n">geometry</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">Geometry</span><span class="p">):</span>
             <span class="n">geometry</span> <span class="o">=</span> <span class="n">parent</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">SuperCell</span><span class="p">):</span>
-            <span class="n">sc</span> <span class="o">=</span> <span class="n">parent</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">Lattice</span><span class="p">):</span>
+            <span class="n">lattice</span> <span class="o">=</span> <span class="n">parent</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">geometry</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">geometry</span>
 
         <span class="n">geometry</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;geometry&quot;</span><span class="p">,</span> <span class="n">geometry</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">geometry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">sc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">sc</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">sc</span>
+        <span class="k">if</span> <span class="n">geometry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">lattice</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">lattice</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span>
 
-        <span class="n">sc</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sc&quot;</span><span class="p">,</span> <span class="n">sc</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">sc</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">geometry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(geometry=Geometry, sc=None) is not an allowed argument combination.&quot;</span><span class="p">)</span>
+        <span class="n">lattice</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;lattice&quot;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sc&quot;</span><span class="p">,</span> <span class="n">lattice</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">lattice</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">geometry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(geometry=Geometry, lattice=None) is not an allowed argument combination.&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">parent</span> <span class="o">=</span> <span class="n">geometry</span>
         <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">parent</span> <span class="o">=</span> <span class="n">sc</span>
+            <span class="n">parent</span> <span class="o">=</span> <span class="n">lattice</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="n">parent</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_geometry</span> <span class="o">=</span> <span class="n">geometry</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_sc</span> <span class="o">=</span> <span class="n">sc</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geometry</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lattice</span> <span class="o">=</span> <span class="n">lattice</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geometry</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lattice</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">def</span> <span class="nf">conv</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="mf">0.</span><span class="p">):</span>
                     <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> cannot convert stored k-points from 1/Ang to reduced coordinates. &quot;</span>
-                         <span class="s2">&quot;Please ensure parent=Hamiltonian, geometry=Geometry, or sc=SuperCell to ensure reduced k.&quot;</span><span class="p">)</span>
+                         <span class="s2">&quot;Please ensure parent=Hamiltonian, geometry=Geometry, or lattice=Lattice to ensure reduced k.&quot;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">k</span> <span class="o">/</span> <span class="n">_Bohr2Ang</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">def</span> <span class="nf">conv</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
-                <span class="k">return</span> <span class="p">(</span><span class="n">k</span> <span class="o">@</span> <span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">_Bohr2Ang</span><span class="p">)</span>
+                <span class="k">return</span> <span class="p">(</span><span class="n">k</span> <span class="o">@</span> <span class="n">lattice</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">_Bohr2Ang</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_convert_k</span> <span class="o">=</span> <span class="n">conv</span>
 
     <span class="k">def</span> <span class="nf">_open_wfsx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">rewind</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -1657,7 +1656,7 @@
             <span class="n">info</span><span class="p">[</span><span class="s2">&quot;spin&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ispin</span>
 
         <span class="c1"># `eig` is already in eV</span>
-        <span class="c1"># See onlysSileSiesta.read_supercell to understand why we transpose `state`</span>
+        <span class="c1"># See onlysSileSiesta.read_lattice to understand why we transpose `state`</span>
         <span class="k">return</span> <span class="n">EigenstateElectron</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">eig</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="p">,</span> <span class="o">**</span><span class="n">info</span><span class="p">)</span>
 
 <div class="viewcode-block" id="wfsxSileSiesta.read_sizes"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.wfsxSileSiesta.html#sisl.io.siesta.wfsxSileSiesta.read_sizes">[docs]</a>    <span class="k">def</span> <span class="nf">read_sizes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1800,13 +1799,13 @@
 <span class="sd">    units (Bohr, Ry) to sisl units (Ang, eV) provided the correct extension is present.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">read_supercell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">read_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Return the cell contained in the file &quot;&quot;&quot;</span>
 
         <span class="n">cell</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_grid_cell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">_Bohr2Ang</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s2">&quot;read_supercell&quot;</span><span class="p">,</span> <span class="s2">&quot;could not read cell.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s2">&quot;read_lattice&quot;</span><span class="p">,</span> <span class="s2">&quot;could not read cell.&quot;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">SuperCell</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Lattice</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">read_grid_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Query grid size information such as the grid size and number of spin components</span>
@@ -1840,7 +1839,7 @@
         <span class="n">index</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
         <span class="c1"># Read the sizes and cell</span>
         <span class="n">nspin</span><span class="p">,</span> <span class="n">mesh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_grid_size</span><span class="p">()</span>
-        <span class="n">sc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_supercell</span><span class="p">()</span>
+        <span class="n">lattice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_lattice</span><span class="p">()</span>
         <span class="n">grid</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_grid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">nspin</span><span class="p">,</span> <span class="n">mesh</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mesh</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">mesh</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s2">&quot;read_grid&quot;</span><span class="p">,</span> <span class="s2">&quot;could not read grid.&quot;</span><span class="p">)</span>
 
@@ -1851,7 +1850,7 @@
 
         <span class="c1"># Simply create the grid (with no information)</span>
         <span class="c1"># We will overwrite the actual grid</span>
-        <span class="n">g</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">sc</span><span class="o">=</span><span class="n">sc</span><span class="p">)</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">lattice</span><span class="o">=</span><span class="n">lattice</span><span class="p">)</span>
         <span class="c1"># NOTE: there is no need to swap-axes since the returned array is in F ordering</span>
         <span class="c1">#       and thus the first axis is the fast (x, y, z) is retained</span>
         <span class="n">g</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">grid</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_unit</span>
@@ -2247,7 +2246,7 @@
         <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">obj</span> <span class="o">=</span> <span class="n">bz</span><span class="o">.</span><span class="n">parent</span>
         <span class="n">nspin</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">spin</span><span class="p">)</span>
-        <span class="n">cell</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">cell</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">cell</span>
         <span class="n">na_u</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">na</span>
         <span class="n">no_u</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">no</span>
         <span class="n">xa</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">xyz</span>
@@ -2285,7 +2284,7 @@
 
         <span class="c1"># Now write to it...</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_step_counter</span><span class="p">(</span><span class="s2">&quot;write_header&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">read</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="c1"># see onlysSileSiesta.read_supercell for .T</span>
+        <span class="c1"># see onlysSileSiesta.read_lattice for .T</span>
         <span class="n">_siesta</span><span class="o">.</span><span class="n">write_gf_header</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iu</span><span class="p">,</span> <span class="n">nspin</span><span class="p">,</span> <span class="n">_toF</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">_Bohr2Ang</span><span class="p">),</span>
                                 <span class="n">na_u</span><span class="p">,</span> <span class="n">no_u</span><span class="p">,</span> <span class="n">no_u</span><span class="p">,</span> <span class="n">_toF</span><span class="p">(</span><span class="n">xa</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">_Bohr2Ang</span><span class="p">),</span>
                                 <span class="n">lasto</span><span class="p">,</span> <span class="n">bloch</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">mu</span> <span class="o">*</span> <span class="n">_eV2Ry</span><span class="p">,</span> <span class="n">_toF</span><span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.tsvncSileSiesta &mdash; sisl 0.1.dev1+g0d78d3d documentation</title>
+  <title>sisl.io.siesta.tsvncSileSiesta &mdash; sisl 0.1.dev1+g76926d8 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -14,7 +14,6 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
@@ -39,7 +38,7 @@
             sisl
           </a>
               <div class="version">
-                0.1.dev1+g0d78d3d
+                0.1.dev1+g76926d8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -138,31 +137,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  
-<style>
-/* CSS overrides for sphinx_rtd_theme */
-
-/* 24px margin */
-.nbinput.nblast.container,
-.nboutput.nblast.container {
-    margin-bottom: 19px;  /* padding has already 5px */
-}
-
-/* ... except between code cells! */
-.nblast.container + .nbinput.container {
-    margin-top: -19px;
-}
-
-.admonition > p:before {
-    margin-right: 4px;  /* make room for the exclamation icon */
-}
-
-/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
-.math {
-    text-align: unset;
-}
-</style>
-<section id="sisl-io-siesta-tsvncsilesiesta">
+  <section id="sisl-io-siesta-tsvncsilesiesta">
 <h1>sisl.io.siesta.tsvncSileSiesta<a class="headerlink" href="#sisl-io-siesta-tsvncsilesiesta" title="Permalink to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="sisl.io.siesta.tsvncSileSiesta">
@@ -196,8 +171,8 @@ which complements N-electrode calculations in TranSiesta.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.tsvncSileSiesta.read_grid" title="sisl.io.siesta.tsvncSileSiesta.read_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_grid</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Reads the TranSiesta potential input grid</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.tsvncSileSiesta.read_supercell" title="sisl.io.siesta.tsvncSileSiesta.read_supercell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_supercell</span></code></a>()</p></td>
-<td><p>Returns a SuperCell object from a Siesta.grid.nc file</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.tsvncSileSiesta.read_lattice" title="sisl.io.siesta.tsvncSileSiesta.read_lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_lattice</span></code></a>()</p></td>
+<td><p>Returns a Lattice object from a Siesta.grid.nc file</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.tsvncSileSiesta.write" title="sisl.io.siesta.tsvncSileSiesta.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Generic write method which should be overloaded in child-classes</p></td>
@@ -205,7 +180,7 @@ which complements N-electrode calculations in TranSiesta.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.tsvncSileSiesta.write_grid" title="sisl.io.siesta.tsvncSileSiesta.write_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_grid</span></code></a>(grid)</p></td>
 <td><p>Write the Poisson solution to the TSV.nc file</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.tsvncSileSiesta.write_supercell" title="sisl.io.siesta.tsvncSileSiesta.write_supercell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_supercell</span></code></a>(sc)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.tsvncSileSiesta.write_lattice" title="sisl.io.siesta.tsvncSileSiesta.write_lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_lattice</span></code></a>(lattice)</p></td>
 <td><p>Write a supercell to the grid.nc file</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.tsvncSileSiesta.base_file" title="sisl.io.siesta.tsvncSileSiesta.base_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base_file</span></code></a></p></td>
@@ -310,9 +285,9 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="sisl.io.siesta.tsvncSileSiesta.read_supercell">
-<span class="sig-name descname"><span class="pre">read_supercell</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.siesta.tsvncSileSiesta.read_supercell" title="Permalink to this definition"></a></dt>
-<dd><p>Returns a SuperCell object from a Siesta.grid.nc file</p>
+<dt class="sig sig-object py" id="sisl.io.siesta.tsvncSileSiesta.read_lattice">
+<span class="sig-name descname"><span class="pre">read_lattice</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.siesta.tsvncSileSiesta.read_lattice" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a Lattice object from a Siesta.grid.nc file</p>
 </dd></dl>
 
 <dl class="py method">
@@ -339,8 +314,8 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="sisl.io.siesta.tsvncSileSiesta.write_supercell">
-<span class="sig-name descname"><span class="pre">write_supercell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.siesta.tsvncSileSiesta.write_supercell" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="sisl.io.siesta.tsvncSileSiesta.write_lattice">
+<span class="sig-name descname"><span class="pre">write_lattice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lattice</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.siesta.tsvncSileSiesta.write_lattice" title="Permalink to this definition"></a></dt>
 <dd><p>Write a supercell to the grid.nc file</p>
 </dd></dl>
 

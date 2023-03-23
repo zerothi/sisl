@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.sparse_geometry &mdash; sisl 0.1.dev1+g0d78d3d documentation</title>
+  <title>sisl.sparse_geometry &mdash; sisl 0.1.dev1+g76926d8 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -13,7 +13,6 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
@@ -36,7 +35,7 @@
             sisl
           </a>
               <div class="version">
-                0.1.dev1+g0d78d3d
+                0.1.dev1+g76926d8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -341,16 +340,16 @@
 <span class="sd">        If one reduces the number of supercells, *any* sparse element</span>
 <span class="sd">        that references the supercell will be deleted.</span>
 
-<span class="sd">        See `SuperCell.set_nsc` for allowed parameters.</span>
+<span class="sd">        See `Lattice.set_nsc` for allowed parameters.</span>
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
-<span class="sd">        SuperCell.set_nsc : the underlying called method</span>
+<span class="sd">        Lattice.set_nsc : the underlying called method</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">sc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">lattice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="c1"># Try first in the new one, then we figure out what to do</span>
-        <span class="n">sc</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">allclose</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">nsc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">nsc</span><span class="p">):</span>
+        <span class="n">lattice</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">allclose</span><span class="p">(</span><span class="n">lattice</span><span class="o">.</span><span class="n">nsc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">nsc</span><span class="p">):</span>
             <span class="k">return</span>
 
         <span class="c1"># Create an array of all things that should be translated</span>
@@ -358,10 +357,10 @@
         <span class="n">new</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">deleted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_s</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">)</span>
         <span class="n">deleted</span><span class="p">[:]</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sc_off</span> <span class="ow">in</span> <span class="n">sc</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sc_off</span> <span class="ow">in</span> <span class="n">lattice</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="c1"># Luckily there are *only* one time wrap-arounds</span>
-                <span class="n">j</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">sc_index</span><span class="p">(</span><span class="n">sc_off</span><span class="p">)</span>
+                <span class="n">j</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">sc_index</span><span class="p">(</span><span class="n">sc_off</span><span class="p">)</span>
                 <span class="c1"># Now do translation</span>
                 <span class="n">old</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
                 <span class="n">new</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
@@ -377,11 +376,11 @@
             <span class="n">old</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
             <span class="c1"># Move to the end (*HAS* to be higher than the number of</span>
             <span class="c1"># cells in the new supercell structure)</span>
-            <span class="n">new</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_s</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">n_s</span><span class="p">)</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span>
+            <span class="n">new</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_s</span><span class="p">,</span> <span class="n">lattice</span><span class="o">.</span><span class="n">n_s</span><span class="p">)</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span>
 
         <span class="c1"># Check that we will translate all indices in the old</span>
         <span class="c1"># sparsity pattern to the new one</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">old</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">n_s</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">n_s</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">old</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">n_s</span><span class="p">,</span> <span class="n">lattice</span><span class="o">.</span><span class="n">n_s</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span><span class="s2">&quot;Not all supercells are accounted for&quot;</span><span class="p">)</span>
 
         <span class="n">old</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayi</span><span class="p">(</span><span class="n">old</span><span class="p">)</span>
@@ -415,13 +414,13 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">max_n</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="c1"># Make sure we delete all column values where we have put fake values</span>
-        <span class="n">delete</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">n_s</span> <span class="o">*</span> <span class="n">size</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="n">delete</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="n">lattice</span><span class="o">.</span><span class="n">n_s</span> <span class="o">*</span> <span class="n">size</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">delete</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">delete_columns</span><span class="p">(</span><span class="n">delete</span><span class="p">,</span> <span class="n">keep_shape</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># Ensure the shape is correct</span>
         <span class="n">shape</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-        <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">size</span> <span class="o">*</span> <span class="n">sc</span><span class="o">.</span><span class="n">n_s</span>
+        <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">size</span> <span class="o">*</span> <span class="n">lattice</span><span class="o">.</span><span class="n">n_s</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_clean_columns</span><span class="p">()</span>
 
@@ -470,7 +469,7 @@
         <span class="n">T</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="c1"># Short-links</span>
-        <span class="n">sc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">sc</span>
+        <span class="n">lattice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span>
 
         <span class="c1"># Create &quot;DOK&quot; format indices</span>
         <span class="n">csr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span>
@@ -501,10 +500,10 @@
         <span class="c1">#  row, col, _D</span>
 
         <span class="c1"># Retrieve all sc-indices in the new transposed array</span>
-        <span class="n">new_sc_off</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">sc_index</span><span class="p">(</span><span class="o">-</span> <span class="n">sc</span><span class="o">.</span><span class="n">sc_off</span><span class="p">)</span>
+        <span class="n">new_sc_off</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">sc_index</span><span class="p">(</span><span class="o">-</span> <span class="n">lattice</span><span class="o">.</span><span class="n">sc_off</span><span class="p">)</span>
 
         <span class="c1"># Calculate the row-offsets in the new sparse geometry</span>
-        <span class="n">row</span> <span class="o">+=</span> <span class="n">new_sc_off</span><span class="p">[</span><span class="n">sc</span><span class="o">.</span><span class="n">sc_index</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">sc_off</span><span class="p">[</span><span class="n">col</span> <span class="o">//</span> <span class="n">size</span><span class="p">,</span> <span class="p">:])]</span> <span class="o">*</span> <span class="n">size</span>
+        <span class="n">row</span> <span class="o">+=</span> <span class="n">new_sc_off</span><span class="p">[</span><span class="n">lattice</span><span class="o">.</span><span class="n">sc_index</span><span class="p">(</span><span class="n">lattice</span><span class="o">.</span><span class="n">sc_off</span><span class="p">[</span><span class="n">col</span> <span class="o">//</span> <span class="n">size</span><span class="p">,</span> <span class="p">:])]</span> <span class="o">*</span> <span class="n">size</span>
 
         <span class="c1"># Now convert columns into unit-cell</span>
         <span class="n">col</span> <span class="o">%=</span> <span class="n">size</span>
@@ -784,7 +783,7 @@
         <span class="c1"># create correct linear offset due to the segment.</span>
         <span class="c1"># Further below we will take out the linear indices by modulo and integer</span>
         <span class="c1"># division operations.</span>
-        <span class="n">lsc</span> <span class="o">=</span> <span class="n">tile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">sc_off</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">reps</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">reps</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">lsc</span> <span class="o">=</span> <span class="n">tile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">sc_off</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">reps</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">reps</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
         <span class="n">lsc</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">lsc</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">axis</span><span class="p">]</span> <span class="o">*</span> <span class="n">reps</span> <span class="o">+</span> <span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="n">reps</span><span class="p">)</span> <span class="o">-</span> <span class="n">segment</span>
         <span class="n">lsc</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
@@ -1164,11 +1163,11 @@
 <span class="sd">        If one reduces the number of supercells *any* sparse element</span>
 <span class="sd">        that references the supercell will be deleted.</span>
 
-<span class="sd">        See `SuperCell.set_nsc` for allowed parameters.</span>
+<span class="sd">        See `Lattice.set_nsc` for allowed parameters.</span>
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
-<span class="sd">        SuperCell.set_nsc : the underlying called method</span>
+<span class="sd">        Lattice.set_nsc : the underlying called method</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">na</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
@@ -1622,11 +1621,11 @@
 <span class="sd">        If one reduces the number of supercells *any* sparse element</span>
 <span class="sd">        that references the supercell will be deleted.</span>
 
-<span class="sd">        See `SuperCell.set_nsc` for allowed parameters.</span>
+<span class="sd">        See `Lattice.set_nsc` for allowed parameters.</span>
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
-<span class="sd">        SuperCell.set_nsc : the underlying called method</span>
+<span class="sd">        Lattice.set_nsc : the underlying called method</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">no</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
@@ -2241,7 +2240,7 @@
         <span class="n">transfer_idx</span> <span class="o">+=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">n_s</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">other</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">no</span>
         <span class="c1"># Remove couplings along axis</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">axis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">sc_off</span><span class="p">[:,</span> <span class="n">axis</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">sc_off</span><span class="p">[:,</span> <span class="n">axis</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
             <span class="c1"># Tell the routine to delete these indices</span>
             <span class="n">transfer_idx</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">full_no_s</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="n">array_arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">ptr</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">ncol</span><span class="p">)</span>
@@ -2256,9 +2255,9 @@
         <span class="n">o_idx</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">s_idx</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">idx_delete</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">isc</span><span class="p">,</span> <span class="n">sc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">sc_off</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">isc</span><span class="p">,</span> <span class="n">sc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">sc_off</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">s_idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">sc_index</span><span class="p">(</span><span class="n">sc</span><span class="p">))</span>
+                <span class="n">s_idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">sc_index</span><span class="p">(</span><span class="n">sc</span><span class="p">))</span>
                 <span class="n">o_idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">isc</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
                 <span class="n">idx_delete</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">isc</span><span class="p">)</span>
@@ -2271,16 +2270,16 @@
 
         <span class="c1"># Now figure out if the supercells can be kept, at all...</span>
         <span class="c1"># find SC indices in other corresponding to self</span>
-        <span class="c1">#o_idx_uc = other.geometry.sc.sc_index([0] * 3)</span>
-        <span class="c1">#o_idx_sc = _a.arangei(other.geometry.sc.n_s)</span>
+        <span class="c1">#o_idx_uc = other.geometry.lattice.sc_index([0] * 3)</span>
+        <span class="c1">#o_idx_sc = _a.arangei(other.geometry.lattice.n_s)</span>
 
         <span class="c1"># Remove couplings along axis</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">axis</span><span class="p">:</span>
-                <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">sc_off</span><span class="p">[:,</span> <span class="n">axis</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">sc_off</span><span class="p">[:,</span> <span class="n">axis</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">elif</span> <span class="ow">not</span> <span class="n">allclose</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span> <span class="n">other</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]):</span>
                 <span class="c1"># This will happen in case `axis` is None</span>
-                <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">sc_off</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">sc_off</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># When axis is not specified and cell parameters</span>
                 <span class="c1"># are commensurate, then we will not change couplings</span>
@@ -2404,7 +2403,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.append requires sparse-geometries to have the same &quot;</span>
                              <span class="s2">&quot;number of supercells along all directions.&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">_isc_off</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">_isc_off</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">_isc_off</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">_isc_off</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.append requires supercell offsets to be the same.&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">dtype</span><span class="p">:</span>
@@ -2463,8 +2462,8 @@
         <span class="c1"># 1. find overlapping atoms along axis</span>
         <span class="n">idx_s_first</span><span class="p">,</span> <span class="n">idx_o_first</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">overlap</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">)</span>
         <span class="n">idx_s_last</span><span class="p">,</span> <span class="n">idx_o_last</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">overlap</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">,</span>
-                                                       <span class="n">offset</span><span class="o">=-</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">axis</span><span class="p">,</span> <span class="p">:],</span>
-                                                       <span class="n">offset_other</span><span class="o">=-</span><span class="n">other</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">axis</span><span class="p">,</span> <span class="p">:])</span>
+                                                       <span class="n">offset</span><span class="o">=-</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">axis</span><span class="p">,</span> <span class="p">:],</span>
+                                                       <span class="n">offset_other</span><span class="o">=-</span><span class="n">other</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">axis</span><span class="p">,</span> <span class="p">:])</span>
         <span class="c1"># IFF idx_s_* contains duplicates, then we have multiple overlapping atoms which is not</span>
         <span class="c1"># allowed</span>
         <span class="k">def</span> <span class="nf">_test</span><span class="p">(</span><span class="n">diff</span><span class="p">):</span>
@@ -2484,8 +2483,8 @@
             <span class="n">geom</span> <span class="o">=</span> <span class="n">spgeom</span><span class="o">.</span><span class="n">geometry</span>
             <span class="c1"># Find orbitals that we wish to exclude from the orbital connections</span>
             <span class="c1"># This ensures that we only find couplings crossing the supercell boundaries</span>
-            <span class="n">irrelevant_sc</span> <span class="o">=</span> <span class="n">delete</span><span class="p">(</span><span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">n_s</span><span class="p">),</span> <span class="n">geom</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">sc_index</span><span class="p">(</span><span class="n">isc</span><span class="p">))</span>
-            <span class="n">sc_orbitals</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">no_s</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">n_s</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">irrelevant_sc</span> <span class="o">=</span> <span class="n">delete</span><span class="p">(</span><span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">n_s</span><span class="p">),</span> <span class="n">geom</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">sc_index</span><span class="p">(</span><span class="n">isc</span><span class="p">))</span>
+            <span class="n">sc_orbitals</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">no_s</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">n_s</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">exclude</span> <span class="o">=</span> <span class="n">sc_orbitals</span><span class="p">[</span><span class="n">irrelevant_sc</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
             <span class="c1"># get connections and transfer them to the unit-cell</span>
             <span class="n">edges_sc</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">spgeom</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">orbitals</span><span class="o">=</span><span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">no</span><span class="p">),</span> <span class="n">exclude</span><span class="o">=</span><span class="n">exclude</span><span class="p">),</span> <span class="kc">True</span><span class="p">)</span>
@@ -2505,7 +2504,7 @@
                 <span class="k">for</span> <span class="n">isc</span> <span class="ow">in</span> <span class="n">unique</span><span class="p">(</span><span class="n">isc_off</span><span class="p">):</span>
                     <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">isc_off</span> <span class="o">==</span> <span class="n">isc</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
                     <span class="n">sc_off_atoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{k}</span><span class="s2">: </span><span class="si">{v}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="n">k</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">sc_off</span><span class="p">[</span><span class="n">isc</span><span class="p">]),</span>
+                        <span class="n">k</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">sc_off</span><span class="p">[</span><span class="n">isc</span><span class="p">]),</span>
                         <span class="n">v</span><span class="o">=</span><span class="n">list2str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">uca</span><span class="p">[</span><span class="n">idx</span><span class="p">]))))</span>
                 <span class="n">sc_off_atoms</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">   &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sc_off_atoms</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.append requires matching coupling elements.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
@@ -2537,13 +2536,13 @@
         <span class="n">idx</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">n_s</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">geom</span><span class="o">.</span><span class="n">no</span>
 
         <span class="k">def</span> <span class="nf">_sc_index_sort</span><span class="p">(</span><span class="n">isc</span><span class="p">):</span>
-            <span class="n">idx</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">sc_index</span><span class="p">(</span><span class="n">isc</span><span class="p">)</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">sc_index</span><span class="p">(</span><span class="n">isc</span><span class="p">)</span>
             <span class="c1"># Now sort so that all indices are corresponding one2one</span>
             <span class="c1"># This is important since two different supercell indices</span>
             <span class="c1"># need not be sorted in the same manner.</span>
             <span class="c1"># This ensures that there is a correspondance between</span>
             <span class="c1"># two different sparse elements</span>
-            <span class="n">off</span> <span class="o">=</span> <span class="n">delete</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">sc_off</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">off</span> <span class="o">=</span> <span class="n">delete</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">sc_off</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">idx</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">lexsort</span><span class="p">(</span><span class="n">off</span><span class="p">)]</span>
 
         <span class="n">idx_iscP</span> <span class="o">=</span> <span class="n">idx</span><span class="p">[</span><span class="n">_sc_index_sort</span><span class="p">(</span><span class="n">isc_forward</span><span class="p">)]</span>

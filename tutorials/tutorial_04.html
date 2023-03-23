@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Specifying super-cell information &mdash; sisl 0.1.dev1+g0d78d3d documentation</title>
+  <title>Specifying super-cell information &mdash; sisl 0.1.dev1+g76926d8 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -14,7 +14,6 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/sphinx_highlight.js"></script>
@@ -41,7 +40,7 @@
             sisl
           </a>
               <div class="version">
-                0.1.dev1+g0d78d3d
+                0.1.dev1+g76926d8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -123,31 +122,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  
-<style>
-/* CSS overrides for sphinx_rtd_theme */
-
-/* 24px margin */
-.nbinput.nblast.container,
-.nboutput.nblast.container {
-    margin-bottom: 19px;  /* padding has already 5px */
-}
-
-/* ... except between code cells! */
-.nblast.container + .nbinput.container {
-    margin-top: -19px;
-}
-
-.admonition > p:before {
-    margin-right: 4px;  /* make room for the exclamation icon */
-}
-
-/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
-.math {
-    text-align: unset;
-}
-</style>
-<section id="specifying-super-cell-information">
+  <section id="specifying-super-cell-information">
 <span id="tutorial-04"></span><h1>Specifying super-cell information<a class="headerlink" href="#specifying-super-cell-information" title="Permalink to this heading"></a></h1>
 <p>An important thing when dealing with geometries in how the <em>super-cell</em> is
 used. First, recall that the number of supercells can be retrieved by:</p>
@@ -159,7 +134,7 @@ used. First, recall that the number of supercells can be retrieved by:</p>
 <span class="go"> },</span>
 <span class="go"> nsc: [1, 1, 1], maxR: -1.0</span>
 <span class="go">}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">geometry</span><span class="o">.</span><span class="n">nsc</span> <span class="c1"># or geometry.sc.nsc</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">geometry</span><span class="o">.</span><span class="n">nsc</span> <span class="c1"># or geometry.lattice.nsc</span>
 <span class="go">array([1, 1, 1], dtype=int32)</span>
 </pre></div>
 </div>
@@ -169,7 +144,7 @@ the <em class="xref py py-obj">Geometry.close</em> or <em class="xref py py-obj"
 depending on the size of the supercell.</p>
 <p>Specifying the number of super-cells may be done when creating the geometry,
 or after it has been created:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">geometry</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="n">sc</span><span class="o">=</span><span class="n">SuperCell</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">geometry</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="n">lattice</span><span class="o">=</span><span class="n">Lattice</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">geometry</span><span class="o">.</span><span class="n">nsc</span>
 <span class="go">array([3, 3, 3], dtype=int32)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">geometry</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
@@ -187,7 +162,7 @@ in the negative, hence the primary unit-cell plus 2 per neighbouring cell.</p>
 <p>Here we show a square 2D lattice with one atom in the unit-cell and a supercell
 which extends 2 cells along the Cartesian <span class="math notranslate nohighlight">\(x\)</span> lattice vector (5 in total) and 1
 cell along the Cartesian <span class="math notranslate nohighlight">\(y\)</span> lattice vector (3 in total):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">square</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">([[</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">0</span><span class="p">]],</span> <span class="n">sc</span><span class="o">=</span><span class="n">SuperCell</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">square</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">([[</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">0</span><span class="p">]],</span> <span class="n">lattice</span><span class="o">=</span><span class="n">Lattice</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">],</span> <span class="n">nsc</span><span class="o">=</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
 </pre></div>
 </div>
 <p>which results in this underlying geometry:</p>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.fhiaims._geometry &mdash; sisl 0.1.dev1+g0d78d3d documentation</title>
+  <title>sisl.io.fhiaims._geometry &mdash; sisl 0.1.dev1+g76926d8 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -13,7 +13,6 @@
     <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
         <script src="../../../../_static/doctools.js"></script>
         <script src="../../../../_static/sphinx_highlight.js"></script>
@@ -36,7 +35,7 @@
             sisl
           </a>
               <div class="version">
-                0.1.dev1+g0d78d3d
+                0.1.dev1+g76926d8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -114,8 +113,9 @@
 
 <span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileFHIaims</span>
 
+<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">deprecate_argument</span>
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">SuperCell</span>
+<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Lattice</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;inSileFHIaims&quot;</span><span class="p">]</span>
@@ -125,22 +125,23 @@
 <span class="k">class</span> <span class="nc">inSileFHIaims</span><span class="p">(</span><span class="n">SileFHIaims</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; FHI-aims geometry file object &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="inSileFHIaims.write_supercell"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.fhiaims.inSileFHIaims.html#sisl.io.fhiaims.inSileFHIaims.write_supercell">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">write_supercell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sc</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;.8f&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="inSileFHIaims.write_lattice"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.fhiaims.inSileFHIaims.html#sisl.io.fhiaims.inSileFHIaims.write_lattice">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
+    <span class="nd">@deprecate_argument</span><span class="p">(</span><span class="s2">&quot;sc&quot;</span><span class="p">,</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span> <span class="s2">&quot;use lattice= instead of sc=&quot;</span><span class="p">,</span> <span class="n">from_version</span><span class="o">=</span><span class="s2">&quot;0.15&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">write_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;.8f&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Writes the supercell to the contained file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        sc : SuperCell</span>
+<span class="sd">        lattice : Lattice</span>
 <span class="sd">           the supercell to be written</span>
 <span class="sd">        fmt : str, optional</span>
 <span class="sd">           used format for the precision of the data</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sile_raise_write</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">_fmt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;lattice_vector </span><span class="se">{{</span><span class="s2">:</span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="se">}}</span><span class="s2"> </span><span class="se">{{</span><span class="s2">:</span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="se">}}</span><span class="s2"> </span><span class="se">{{</span><span class="s2">:</span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="se">}}\n</span><span class="s2">&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">_fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">_fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">_fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">_fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">lattice</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">_fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">lattice</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">_fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">lattice</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span></div>
 
 <div class="viewcode-block" id="inSileFHIaims.write_geometry"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.fhiaims.inSileFHIaims.html#sisl.io.fhiaims.inSileFHIaims.write_geometry">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">write_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;.8f&quot;</span><span class="p">,</span> <span class="n">as_frac</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">velocity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">moment</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -162,7 +163,7 @@
         <span class="c1"># Check that we can write to the file</span>
         <span class="n">sile_raise_write</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">write_supercell</span><span class="p">(</span><span class="n">geometry</span><span class="o">.</span><span class="n">sc</span><span class="p">,</span> <span class="n">fmt</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write_lattice</span><span class="p">(</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span><span class="p">,</span> <span class="n">fmt</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">as_frac</span><span class="p">:</span>
             <span class="n">xyz</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">fxyz</span>
@@ -182,8 +183,8 @@
             <span class="k">if</span> <span class="n">moment</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">_fmtm</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">moment</span><span class="p">[</span><span class="n">ia</span><span class="p">]))</span></div>
 
-<div class="viewcode-block" id="inSileFHIaims.read_supercell"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.fhiaims.inSileFHIaims.html#sisl.io.fhiaims.inSileFHIaims.read_supercell">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">read_supercell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="inSileFHIaims.read_lattice"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.fhiaims.inSileFHIaims.html#sisl.io.fhiaims.inSileFHIaims.read_lattice">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">read_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads supercell object from the file &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
@@ -193,7 +194,7 @@
             <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;lattice_vector&quot;</span><span class="p">):</span>
                 <span class="n">cell</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]])</span>
 
-        <span class="k">return</span> <span class="n">SuperCell</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Lattice</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="inSileFHIaims.read_geometry"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.fhiaims.inSileFHIaims.html#sisl.io.fhiaims.inSileFHIaims.read_geometry">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">velocity</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">moment</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -218,7 +219,7 @@
 <span class="sd">        moment : array_like</span>
 <span class="sd">            array of initial moments of each atom, will only be returned if `moment` is true</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">sc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_supercell</span><span class="p">()</span>
+        <span class="n">lattice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_lattice</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">sp</span> <span class="o">=</span> <span class="p">[]</span>
@@ -237,7 +238,7 @@
             <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;atom&quot;</span><span class="p">:</span>
                 <span class="n">xyz</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]])</span>
             <span class="k">elif</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;atom_frac&quot;</span><span class="p">:</span>
-                <span class="n">xyz</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]]</span> <span class="o">@</span> <span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
+                <span class="n">xyz</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]]</span> <span class="o">@</span> <span class="n">lattice</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;velocity&quot;</span><span class="p">:</span>
                 <span class="c1"># ensure xyz and v are same length</span>
                 <span class="n">ensure_length</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
@@ -254,7 +255,7 @@
             <span class="c1"># we found an atom</span>
             <span class="n">sp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
 
-        <span class="n">ret</span> <span class="o">=</span> <span class="p">(</span><span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="n">sp</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="n">sc</span><span class="p">),</span> <span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">(</span><span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="n">sp</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="n">lattice</span><span class="p">),</span> <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">velocity</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">moment</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.openmx.omxSileOpenMX &mdash; sisl 0.1.dev1+g0d78d3d documentation</title>
+  <title>sisl.io.openmx.omxSileOpenMX &mdash; sisl 0.1.dev1+g76926d8 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -14,7 +14,6 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
@@ -23,7 +22,7 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="ORCA" href="../orca.html" />
+    <link rel="next" title="sisl.io.openmx.mdSileOpenMX" href="sisl.io.openmx.mdSileOpenMX.html" />
     <link rel="prev" title="OpenMX" href="../openmx.html" /> 
 </head>
 
@@ -39,7 +38,7 @@
             sisl
           </a>
               <div class="version">
-                0.1.dev1+g0d78d3d
+                0.1.dev1+g76926d8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -92,6 +91,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../gulp.html">GULP</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="../openmx.html">OpenMX</a><ul class="current">
 <li class="toctree-l4 current"><a class="current reference internal" href="#">sisl.io.openmx.omxSileOpenMX</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.io.openmx.mdSileOpenMX.html">sisl.io.openmx.mdSileOpenMX</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../orca.html">ORCA</a></li>
@@ -135,31 +135,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  
-<style>
-/* CSS overrides for sphinx_rtd_theme */
-
-/* 24px margin */
-.nbinput.nblast.container,
-.nboutput.nblast.container {
-    margin-bottom: 19px;  /* padding has already 5px */
-}
-
-/* ... except between code cells! */
-.nblast.container + .nbinput.container {
-    margin-top: -19px;
-}
-
-.admonition > p:before {
-    margin-right: 4px;  /* make room for the exclamation icon */
-}
-
-/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
-.math {
-    text-align: unset;
-}
-</style>
-<section id="sisl-io-openmx-omxsileopenmx">
+  <section id="sisl-io-openmx-omxsileopenmx">
 <h1>sisl.io.openmx.omxSileOpenMX<a class="headerlink" href="#sisl-io-openmx-omxsileopenmx" title="Permalink to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="sisl.io.openmx.omxSileOpenMX">
@@ -209,8 +185,8 @@ named <code class="docutils literal notranslate"><span class="pre">input.dat</sp
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.openmx.omxSileOpenMX.read_geometry" title="sisl.io.openmx.omxSileOpenMX.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a>([output])</p></td>
 <td><p>Returns Geometry object</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.openmx.omxSileOpenMX.read_supercell" title="sisl.io.openmx.omxSileOpenMX.read_supercell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_supercell</span></code></a>([output])</p></td>
-<td><p>Reads supercell</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.openmx.omxSileOpenMX.read_lattice" title="sisl.io.openmx.omxSileOpenMX.read_lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_lattice</span></code></a>([output])</p></td>
+<td><p>Reads lattice</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.openmx.omxSileOpenMX.type" title="sisl.io.openmx.omxSileOpenMX.type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">type</span></code></a>(label)</p></td>
 <td><p>Return the type of the fdf-keyword</p></td>
@@ -300,9 +276,9 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>output</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether to read supercell from output files (default to read from
+<li><p><strong>output</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether to read lattice from output files (default to read from
 the input file).</p></li>
-<li><p><strong>order</strong> (<em>{'dat'</em><em>, </em><em>'omx'}</em>) – the order of which to try and read the supercell.
+<li><p><strong>order</strong> (<em>{'dat'</em><em>, </em><em>'omx'}</em>) – the order of which to try and read the lattice
 If <em class="xref py py-obj">order</em> is present <em class="xref py py-obj">output</em> is disregarded.</p></li>
 </ul>
 </dd>
@@ -328,17 +304,17 @@ If <em class="xref py py-obj">order</em> is present <em class="xref py py-obj">o
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="sisl.io.openmx.omxSileOpenMX.read_supercell">
-<span class="sig-name descname"><span class="pre">read_supercell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/openmx/omx.html#omxSileOpenMX.read_supercell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.openmx.omxSileOpenMX.read_supercell" title="Permalink to this definition"></a></dt>
-<dd><p>Reads supercell</p>
+<dt class="sig sig-object py" id="sisl.io.openmx.omxSileOpenMX.read_lattice">
+<span class="sig-name descname"><span class="pre">read_lattice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/openmx/omx.html#omxSileOpenMX.read_lattice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.openmx.omxSileOpenMX.read_lattice" title="Permalink to this definition"></a></dt>
+<dd><p>Reads lattice</p>
 <p>One can limit the tried files to only one file by passing
 only a single file ending.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>output</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether to read supercell from output files (default to read from
+<li><p><strong>output</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether to read lattice from output files (default to read from
 the input file).</p></li>
-<li><p><strong>order</strong> (<em>{'dat'</em><em>, </em><em>'omx'}</em>) – the order of which to try and read the supercell.
+<li><p><strong>order</strong> (<em>{'dat'</em><em>, </em><em>'omx'}</em>) – the order of which to try and read the lattice.
 If <em class="xref py py-obj">order</em> is present <em class="xref py py-obj">output</em> is disregarded.</p></li>
 </ul>
 </dd>
@@ -382,7 +358,7 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../openmx.html" class="btn btn-neutral float-left" title="OpenMX" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../orca.html" class="btn btn-neutral float-right" title="ORCA" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="sisl.io.openmx.mdSileOpenMX.html" class="btn btn-neutral float-right" title="sisl.io.openmx.mdSileOpenMX" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

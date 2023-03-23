@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.tbtrans.tbtncSileTBtrans &mdash; sisl 0.1.dev1+g0d78d3d documentation</title>
+  <title>sisl.io.tbtrans.tbtncSileTBtrans &mdash; sisl 0.1.dev1+g76926d8 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -14,7 +14,6 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
@@ -41,7 +40,7 @@
             sisl
           </a>
               <div class="version">
-                0.1.dev1+g0d78d3d
+                0.1.dev1+g76926d8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -142,31 +141,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  
-<style>
-/* CSS overrides for sphinx_rtd_theme */
-
-/* 24px margin */
-.nbinput.nblast.container,
-.nboutput.nblast.container {
-    margin-bottom: 19px;  /* padding has already 5px */
-}
-
-/* ... except between code cells! */
-.nblast.container + .nbinput.container {
-    margin-top: -19px;
-}
-
-.admonition > p:before {
-    margin-right: 4px;  /* make room for the exclamation icon */
-}
-
-/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
-.math {
-    text-align: unset;
-}
-</style>
-<section id="sisl-io-tbtrans-tbtncsiletbtrans">
+  <section id="sisl-io-tbtrans-tbtncsiletbtrans">
 <h1>sisl.io.tbtrans.tbtncSileTBtrans<a class="headerlink" href="#sisl-io-tbtrans-tbtncsiletbtrans" title="Permalink to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="sisl.io.tbtrans.tbtncSileTBtrans">
@@ -344,8 +319,8 @@ tool, with the execption that the command-line tool uses Fortran indexing number
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.tbtncSileTBtrans.read_geometry" title="sisl.io.tbtrans.tbtncSileTBtrans.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Returns <cite>Geometry</cite> object from this file</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.tbtncSileTBtrans.read_supercell" title="sisl.io.tbtrans.tbtncSileTBtrans.read_supercell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_supercell</span></code></a>()</p></td>
-<td><p>Returns <cite>SuperCell</cite> object from this file</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.tbtrans.tbtncSileTBtrans.read_lattice" title="sisl.io.tbtrans.tbtncSileTBtrans.read_lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_lattice</span></code></a>()</p></td>
+<td><p>Returns <cite>Lattice</cite> object from this file</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.tbtrans.tbtncSileTBtrans.reflection" title="sisl.io.tbtrans.tbtncSileTBtrans.reflection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reflection</span></code></a>([elec, kavg, from_single])</p></td>
 <td><p>Reflection into electrode <cite>elec</cite></p></td>
@@ -968,7 +943,7 @@ To only get unit cell orbital currents, pass <code class="docutils literal notra
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Jij</span> <span class="o">=</span> <span class="n">tbt</span><span class="o">.</span><span class="n">orbital_current</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span> <span class="c1"># orbital current originating from electrode ``0``</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Jij</span> <span class="o">=</span> <span class="n">tbt</span><span class="o">.</span><span class="n">orbital_current</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span> <span class="c1"># orbital current originating from electrode ``0``</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Ja</span> <span class="o">=</span> <span class="n">tbt</span><span class="o">.</span><span class="n">sparse_orbital_to_scalar</span><span class="p">(</span><span class="n">Jij</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1042,7 +1017,7 @@ To only get unit cell orbital currents, pass <code class="docutils literal notra
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Jij</span> <span class="o">=</span> <span class="n">tbt</span><span class="o">.</span><span class="n">orbital_transmission</span><span class="p">(</span><span class="o">-</span><span class="mf">1.</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span> <span class="c1"># transmission @ E=-1 eV from electrode ``0``</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Jij</span> <span class="o">=</span> <span class="n">tbt</span><span class="o">.</span><span class="n">orbital_transmission</span><span class="p">(</span><span class="o">-</span><span class="mf">1.</span><span class="p">,</span> <span class="n">what</span><span class="s2">&quot;all&quot;</span><span class="p">)</span> <span class="c1"># transmission @ E=-1 eV from electrode ``0``</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Ja</span> <span class="o">=</span> <span class="n">tbt</span><span class="o">.</span><span class="n">sparse_orbital_to_scalar</span><span class="p">(</span><span class="n">Jij</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1086,7 +1061,7 @@ To only get unit cell orbital currents, pass <code class="docutils literal notra
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.tbtrans.tbtncSileTBtrans.bond_current">
-<span class="sig-name descname"><span class="pre">bond_current</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elec_other</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/tbtrans/tbt.html#tbtncSileTBtrans.bond_current"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.tbtrans.tbtncSileTBtrans.bond_current" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">bond_current</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elec_other</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">what</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/tbtrans/tbt.html#tbtncSileTBtrans.bond_current"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.tbtrans.tbtncSileTBtrans.bond_current" title="Permalink to this definition"></a></dt>
 <dd><p>Bond current between atoms (sum of orbital currents)</p>
 <p>Short hand function for calling <cite>orbital_current</cite> and <cite>sparse_orbital_to_atom</cite>.</p>
 <p>The bond currents are a sum over all orbital currents:</p>
@@ -1103,7 +1078,7 @@ is returned</p></li>
 <li><p><strong>isc</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the returned bond currents from the unit-cell (<code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">None,</span> <span class="pre">None]</span></code>) (default) to
 the given supercell. If <code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">None,</span> <span class="pre">None]</span></code> is passed all
 bond currents are returned.</p></li>
-<li><p><strong>only</strong> (<em>{&quot;+&quot;/&quot;out&quot;</em><em>, </em><em>&quot;-&quot;/&quot;in&quot;</em><em>, </em><em>&quot;all&quot;/&quot;both&quot;}</em>) – If +/out is supplied only the positive currents are used (going out)
+<li><p><strong>what</strong> (<em>{&quot;all&quot;/&quot;both&quot;/&quot;+-&quot;/&quot;inout&quot;</em><em>, </em><em>&quot;+&quot;/&quot;out&quot;</em><em>, </em><em>&quot;-&quot;/&quot;in&quot;}</em>) – If +/out is supplied only the positive currents are used (going out)
 for -/in, only the negative currents are used (going in),
 else return both. Please see discussion in <cite>orbital_current</cite>.</p></li>
 <li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain currents for a subset of orbitals before calculating bond current
@@ -1120,9 +1095,9 @@ One may figure out the connections via <cite>~sisl.geometry.Geometry.sc_index</c
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Jij</span> <span class="o">=</span> <span class="n">tbt</span><span class="o">.</span><span class="n">orbital_current</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="s2">&quot;out&quot;</span><span class="p">)</span> <span class="c1"># orbital current originating from electrode ``0``</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Jij</span> <span class="o">=</span> <span class="n">tbt</span><span class="o">.</span><span class="n">orbital_current</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="s2">&quot;out&quot;</span><span class="p">)</span> <span class="c1"># orbital current originating from electrode ``0``</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Jab1</span> <span class="o">=</span> <span class="n">tbt</span><span class="o">.</span><span class="n">sparse_orbital_to_atom</span><span class="p">(</span><span class="n">Jij</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Jab2</span> <span class="o">=</span> <span class="n">tbt</span><span class="o">.</span><span class="n">bond_current</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="s2">&quot;out&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Jab2</span> <span class="o">=</span> <span class="n">tbt</span><span class="o">.</span><span class="n">bond_current</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="s2">&quot;out&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Jab1</span> <span class="o">==</span> <span class="n">Jab2</span>
 <span class="go">True</span>
 </pre></div>
@@ -1155,7 +1130,7 @@ no bias window.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.tbtrans.tbtncSileTBtrans.bond_transmission">
-<span class="sig-name descname"><span class="pre">bond_transmission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/tbtrans/tbt.html#tbtncSileTBtrans.bond_transmission"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.tbtrans.tbtncSileTBtrans.bond_transmission" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">bond_transmission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">what</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/tbtrans/tbt.html#tbtncSileTBtrans.bond_transmission"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.tbtrans.tbtncSileTBtrans.bond_transmission" title="Permalink to this definition"></a></dt>
 <dd><p>Bond transmission between atoms at a specific energy</p>
 <p>Short hand function for calling <cite>orbital_transmission</cite> and <cite>sparse_orbital_to_atom</cite>.</p>
 <p>The bond transmissions are a sum over all orbital transmissions</p>
@@ -1173,7 +1148,7 @@ as an index.</p></li>
 is returned</p></li>
 <li><p><strong>isc</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the returned transmissions from the unit-cell (<code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">None,</span> <span class="pre">None]</span></code>) (default) to
 the given supercell. If <code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">None,</span> <span class="pre">None]</span></code> is passed all transmissions are returned.</p></li>
-<li><p><strong>only</strong> (<em>{&quot;+&quot;/&quot;out&quot;</em><em>, </em><em>&quot;-&quot;/&quot;in&quot;</em><em>, </em><em>&quot;all&quot;/&quot;both&quot;}</em>) – If +/out is supplied only the positive transmissions are used (going out)
+<li><p><strong>what</strong> (<em>{&quot;all&quot;/&quot;both&quot;/&quot;+-&quot;/&quot;inout&quot;</em><em>, </em><em>&quot;+&quot;/&quot;out&quot;</em><em>, </em><em>&quot;-&quot;/&quot;in&quot;}</em>) – If +/out is supplied only the positive transmissions are used (going out)
 for -/in, only the negative transmissions are used (going in),
 else return both. Please see discussion in <cite>orbital_transmission</cite>.</p></li>
 <li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain transmissions for a subset of orbitals before calculating bond transmissions
@@ -1189,9 +1164,9 @@ One may figure out the connections via <cite>~sisl.geometry.Geometry.sc_index</c
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Jij</span> <span class="o">=</span> <span class="n">tbt</span><span class="o">.</span><span class="n">orbital_transmission</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="s2">&quot;out&quot;</span><span class="p">)</span> <span class="c1"># orbital transmission @ E = -1 eV originating from electrode ``0``</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Jab1</span> <span class="o">=</span> <span class="n">tbt</span><span class="o">.</span><span class="n">sparse_orbital_to_atom</span><span class="p">(</span><span class="n">Jij</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Jab2</span> <span class="o">=</span> <span class="n">tbt</span><span class="o">.</span><span class="n">bond_transmission</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="s2">&quot;out&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Jij</span> <span class="o">=</span> <span class="n">tbt</span><span class="o">.</span><span class="n">orbital_transmission</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="s2">&quot;out&quot;</span><span class="p">)</span> <span class="c1"># orbital transmission @ E = -1 eV originating from electrode ``0``</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Jab1</span> <span class="o">=</span> <span class="n">tbt</span><span class="o">.</span><span class="n">sparse_orbital_to_atom</span><span class="p">(</span><span class="n">Jij</span><span class="p">)[</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Jab2</span> <span class="o">=</span> <span class="n">tbt</span><span class="o">.</span><span class="n">bond_transmission</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="s2">&quot;out&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Jab1</span> <span class="o">==</span> <span class="n">Jab2</span>
 <span class="go">True</span>
 </pre></div>
@@ -2052,7 +2027,7 @@ other are set to 0.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.tbtrans.tbtncSileTBtrans.orbital_current">
-<span class="sig-name descname"><span class="pre">orbital_current</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elec_other</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/tbtrans/tbt.html#tbtncSileTBtrans.orbital_current"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.tbtrans.tbtncSileTBtrans.orbital_current" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">orbital_current</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elec_other</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">what</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/tbtrans/tbt.html#tbtncSileTBtrans.orbital_current"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.tbtrans.tbtncSileTBtrans.orbital_current" title="Permalink to this definition"></a></dt>
 <dd><p>Orbital current originating from <cite>elec</cite> as a sparse matrix</p>
 <p>This is the bias window integrated quantity of <cite>orbital_transmission</cite>. As such it
 represents how the current is flowing at an applied bias from a given electrode.</p>
@@ -2070,8 +2045,7 @@ is returned</p></li>
 <li><p><strong>isc</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the returned bond currents from the unit-cell (<code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">None,</span> <span class="pre">None]</span></code>) to
 the given supercell, the default is all orbital currents for the supercell.
 To only get unit cell orbital currents, pass <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></code>.</p></li>
-<li><p><strong>only</strong> (<em>{&quot;all&quot;/&quot;both&quot;</em><em>, </em><em>&quot;+&quot;/&quot;out&quot;</em><em>, </em><em>&quot;-&quot;/&quot;in&quot;}</em>) – which orbital currents to return, all, positive (outgoing) or negative (incoming)
-values only.
+<li><p><strong>what</strong> (<em>{&quot;all&quot;/&quot;both&quot;/&quot;+-&quot;/&quot;inout&quot;</em><em>, </em><em>&quot;+&quot;/&quot;out&quot;</em><em>, </em><em>&quot;-&quot;/&quot;in&quot;}</em>) – which orbital currents to return, all, positive (outgoing) or negative (incoming).
 Default to <code class="docutils literal notranslate"><span class="pre">&quot;all&quot;</span></code> because it can then be used in the subsequent default
 arguments for <cite>sparse_orbital_to_atom</cite> and <cite>sparse_orbital_to_scalar</cite>.</p></li>
 <li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain orbital currents for a subset of orbitals.</p></li>
@@ -2109,23 +2083,23 @@ no bias window.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.tbtrans.tbtncSileTBtrans.orbital_transmission">
-<span class="sig-name descname"><span class="pre">orbital_transmission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/tbtrans/tbt.html#tbtncSileTBtrans.orbital_transmission"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.tbtrans.tbtncSileTBtrans.orbital_transmission" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">orbital_transmission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">what</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/tbtrans/tbt.html#tbtncSileTBtrans.orbital_transmission"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.tbtrans.tbtncSileTBtrans.orbital_transmission" title="Permalink to this definition"></a></dt>
 <dd><p>Transmission at energy <cite>E</cite> between orbitals originating from <cite>elec</cite></p>
 <p>Each matrix element of the sparse matrix corresponds to the orbital indices of the
 underlying geometry (including buffer and electrode atoms).</p>
 <p>When requesting orbital-transmissions it is vital to consider how the data needs to be analysed
 before extracting the data. For instance, if only local transmission pathways are interesting one should
-use <code class="docutils literal notranslate"><span class="pre">only=&quot;+&quot;</span></code> to only retain the positive orbital transmissions.
+use <code class="docutils literal notranslate"><span class="pre">what=&quot;+&quot;</span></code> to retain the positive orbital transmissions.
 While if one is interested in the transmission between subset of orbitals,
-<code class="docutils literal notranslate"><span class="pre">only=&quot;all&quot;</span></code> is the correct method to account for loop transmissions.</p>
+<code class="docutils literal notranslate"><span class="pre">what=&quot;all&quot;</span></code> is the correct method to account for loop transmissions.</p>
 <p>The orbital transmissions are calculated as described in the TBtrans manual:</p>
 <div class="math notranslate nohighlight">
 \[T_{\mu \nu}(E) = i [
 (\mathbf H_{\nu\mu} - E\mathbf S_{\nu\mu}) \mathbf A_{\mu\nu}(E)
--
+-:
 (\mathbf H_{\mu\nu} - E\mathbf S_{\mu\nu}) \mathbf A_{\nu\mu}(E)],\]</div>
 <p>It is easy to show that the above matrix obeys <span class="math notranslate nohighlight">\(T_{\mu\nu}=-T_{\nu\mu}\)</span>.</p>
-<p>For inexperienced users it is adviced to try out all three values of <code class="docutils literal notranslate"><span class="pre">only</span></code> to ensure
+<p>For inexperienced users it is adviced to try out all three values of <code class="docutils literal notranslate"><span class="pre">what</span></code> to ensure
 the correct physics is obtained.</p>
 <p>This becomes even more important when the orbital transmissions are calculated with magnetic
 fields. With <span class="math notranslate nohighlight">\(\mathbf B\)</span> fields local transmission loops may form and the pathways does
@@ -2145,8 +2119,7 @@ is returned</p></li>
 <li><p><strong>isc</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the returned transmissions from the unit-cell (<code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">None,</span> <span class="pre">None]</span></code>) to
 the given supercell, the default is all transmissions for the supercell.
 To only get unit cell transmissions, pass <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></code>.</p></li>
-<li><p><strong>only</strong> (<em>{&quot;all&quot;/&quot;both&quot;</em><em>, </em><em>&quot;+&quot;/&quot;out&quot;</em><em>, </em><em>&quot;-&quot;/&quot;in&quot;}</em>) – which transmissions to return, all, positive (outgoing) or negative (incoming)
-values only.</p></li>
+<li><p><strong>what</strong> (<em>{&quot;all&quot;/&quot;both&quot;/&quot;+-&quot;/&quot;inout&quot;</em><em>, </em><em>&quot;+&quot;/&quot;out&quot;</em><em>, </em><em>&quot;-&quot;/&quot;in&quot;}</em>) – which transmissions to return, all, positive (outgoing) or negative (incoming).</p></li>
 <li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain transmissions for a subset of orbitals (including their supercell equivalents)</p></li>
 </ul>
 </dd>
@@ -2288,9 +2261,9 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="sisl.io.tbtrans.tbtncSileTBtrans.read_supercell">
-<span class="sig-name descname"><span class="pre">read_supercell</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.tbtncSileTBtrans.read_supercell" title="Permalink to this definition"></a></dt>
-<dd><p>Returns <cite>SuperCell</cite> object from this file</p>
+<dt class="sig sig-object py" id="sisl.io.tbtrans.tbtncSileTBtrans.read_lattice">
+<span class="sig-name descname"><span class="pre">read_lattice</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.tbtrans.tbtncSileTBtrans.read_lattice" title="Permalink to this definition"></a></dt>
+<dd><p>Returns <cite>Lattice</cite> object from this file</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2449,7 +2422,7 @@ A_\alpha^{|o|} &amp;=\frac{1}{2} \sum_\beta \sum_{\nu\in \alpha}\sum_{\mu\in \be
 <p>This routine may be moved to a <code class="docutils literal notranslate"><span class="pre">sisl.utility</span></code> at some point since it would
 be a generic routine usable for other parts of <cite>sisl</cite>.</p>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Jij</span> <span class="o">=</span> <span class="n">tbt</span><span class="o">.</span><span class="n">orbital_current</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.03</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">)</span> <span class="c1"># orbital current @ E = -1 eV originating from electrode ``0``</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Jij</span> <span class="o">=</span> <span class="n">tbt</span><span class="o">.</span><span class="n">orbital_current</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.03</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">)</span> <span class="c1"># orbital current @ E = -1 eV originating from electrode ``0``</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Ja</span> <span class="o">=</span> <span class="n">tbt</span><span class="o">.</span><span class="n">sparse_orbital_to_scalar</span><span class="p">(</span><span class="n">Jij</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -2584,7 +2557,7 @@ is returned</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.tbtrans.tbtncSileTBtrans.vector_current">
-<span class="sig-name descname"><span class="pre">vector_current</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elec_other</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/tbtrans/tbt.html#tbtncSileTBtrans.vector_current"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.tbtrans.tbtncSileTBtrans.vector_current" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">vector_current</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elec_other</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">what</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/tbtrans/tbt.html#tbtncSileTBtrans.vector_current"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.tbtrans.tbtncSileTBtrans.vector_current" title="Permalink to this definition"></a></dt>
 <dd><p>Vector for each atom being the sum of bond currents times the normalized bond vector between the atoms</p>
 <p>The vector current is defined as:</p>
 <div class="math notranslate nohighlight">
@@ -2602,7 +2575,7 @@ is returned</p></li>
 <li><p><strong>isc</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the returned currents from the unit-cell (<code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">None,</span> <span class="pre">None]</span></code>) to
 the given supercell, the default is all currents for the supercell.
 To only get unit cell orbital currents, pass <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></code>.</p></li>
-<li><p><strong>only</strong> (<em>{&quot;+&quot;/&quot;out&quot;</em><em>, </em><em>&quot;-&quot;/&quot;in&quot;</em><em>, </em><em>&quot;all&quot;/&quot;both&quot;}</em>) – By default only sum <em>outgoing</em> currents (<code class="docutils literal notranslate"><span class="pre">&quot;out&quot;</span></code>).
+<li><p><strong>what</strong> (<em>{&quot;all&quot;/&quot;both&quot;/&quot;+-&quot;/&quot;inout&quot;</em><em>, </em><em>&quot;+&quot;/&quot;out&quot;</em><em>, </em><em>&quot;-&quot;/&quot;in&quot;}</em>) – The <em>outgoing</em> currents may be retrieved by <code class="docutils literal notranslate"><span class="pre">&quot;out&quot;</span></code>.
 The <em>incoming</em> currents may be retrieved by <code class="docutils literal notranslate"><span class="pre">&quot;in&quot;</span></code>, while the
 average incoming and outgoing direction can be obtained with <code class="docutils literal notranslate"><span class="pre">&quot;both&quot;</span></code>.
 In the last case the vector currents are divided by 2 to ensure the length
@@ -2648,7 +2621,7 @@ no bias window.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.tbtrans.tbtncSileTBtrans.vector_transmission">
-<span class="sig-name descname"><span class="pre">vector_transmission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/tbtrans/tbt.html#tbtncSileTBtrans.vector_transmission"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.tbtrans.tbtncSileTBtrans.vector_transmission" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">vector_transmission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kavg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">what</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/tbtrans/tbt.html#tbtncSileTBtrans.vector_transmission"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.tbtrans.tbtncSileTBtrans.vector_transmission" title="Permalink to this definition"></a></dt>
 <dd><p>Vector for each atom being the sum of bond transmissions times the normalized bond vector between the atoms</p>
 <p>The vector transmission is defined as:</p>
 <div class="math notranslate nohighlight">
@@ -2668,7 +2641,7 @@ is returned</p></li>
 <li><p><strong>isc</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the returned vectors from the unit-cell (<code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">None,</span> <span class="pre">None]</span></code>) to
 the given supercell, the default is all vectors for the supercell.
 To only get unit cell vectors, pass <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></code>.</p></li>
-<li><p><strong>only</strong> (<em>{&quot;+&quot;/&quot;out&quot;</em><em>, </em><em>&quot;-&quot;/&quot;in&quot;</em><em>, </em><em>&quot;all&quot;/&quot;both&quot;}</em>) – By default only sum <em>outgoing</em> vectors (<code class="docutils literal notranslate"><span class="pre">&quot;out&quot;</span></code>).
+<li><p><strong>what</strong> (<em>{&quot;all&quot;/&quot;both&quot;/&quot;+-&quot;/&quot;inout&quot;</em><em>, </em><em>&quot;+&quot;/&quot;out&quot;</em><em>, </em><em>&quot;-&quot;/&quot;in&quot;}</em>) – The <em>outgoing</em> vectors may be retrieved by <code class="docutils literal notranslate"><span class="pre">&quot;out&quot;</span></code>.
 The <em>incoming</em> vectors may be retrieved by <code class="docutils literal notranslate"><span class="pre">&quot;in&quot;</span></code>, while the
 average incoming and outgoing direction can be obtained with <code class="docutils literal notranslate"><span class="pre">&quot;both&quot;</span></code>.
 In the last case the vector transmissions are divided by 2 to ensure the length

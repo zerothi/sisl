@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.bigdft.ascii &mdash; sisl 0.1.dev1+g0d78d3d documentation</title>
+  <title>sisl.io.bigdft.ascii &mdash; sisl 0.1.dev1+g76926d8 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -13,7 +13,6 @@
     <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
         <script src="../../../../_static/doctools.js"></script>
         <script src="../../../../_static/sphinx_highlight.js"></script>
@@ -36,7 +35,7 @@
             sisl
           </a>
               <div class="version">
-                0.1.dev1+g0d78d3d
+                0.1.dev1+g76926d8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -112,7 +111,7 @@
 <span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="o">*</span>
 
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">SuperCell</span>
+<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">Lattice</span>
 <span class="kn">from</span> <span class="nn">sisl.unit</span> <span class="kn">import</span> <span class="n">unit_convert</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -213,9 +212,9 @@
         <span class="c1"># Create the supercell</span>
         <span class="k">if</span> <span class="n">is_angdeg</span><span class="p">:</span>
             <span class="c1"># The input is in skewed axis</span>
-            <span class="n">sc</span> <span class="o">=</span> <span class="n">SuperCell</span><span class="p">([</span><span class="n">dxx</span><span class="p">,</span> <span class="n">dyx</span><span class="p">,</span> <span class="n">dyy</span><span class="p">,</span> <span class="n">dzx</span><span class="p">,</span> <span class="n">dzy</span><span class="p">,</span> <span class="n">dzz</span><span class="p">])</span>
+            <span class="n">lattice</span> <span class="o">=</span> <span class="n">Lattice</span><span class="p">([</span><span class="n">dxx</span><span class="p">,</span> <span class="n">dyx</span><span class="p">,</span> <span class="n">dyy</span><span class="p">,</span> <span class="n">dzx</span><span class="p">,</span> <span class="n">dzy</span><span class="p">,</span> <span class="n">dzz</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">sc</span> <span class="o">=</span> <span class="n">SuperCell</span><span class="p">([[</span><span class="n">dxx</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="n">dyx</span><span class="p">,</span> <span class="n">dyy</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="n">dzx</span><span class="p">,</span> <span class="n">dzy</span><span class="p">,</span> <span class="n">dzz</span><span class="p">]])</span>
+            <span class="n">lattice</span> <span class="o">=</span> <span class="n">Lattice</span><span class="p">([[</span><span class="n">dxx</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="n">dyx</span><span class="p">,</span> <span class="n">dyy</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="n">dzx</span><span class="p">,</span> <span class="n">dzy</span><span class="p">,</span> <span class="n">dzz</span><span class="p">]])</span>
 
         <span class="c1"># Now create the geometry</span>
         <span class="n">xyz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
@@ -223,7 +222,7 @@
         <span class="k">if</span> <span class="n">is_frac</span><span class="p">:</span>
             <span class="c1"># Transform from fractional to actual</span>
             <span class="c1"># coordinates</span>
-            <span class="n">xyz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+            <span class="n">xyz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">lattice</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
 
         <span class="k">elif</span> <span class="n">is_bohr</span><span class="p">:</span>
             <span class="c1"># Not when fractional coordinates are used</span>
@@ -231,7 +230,7 @@
             <span class="c1"># correct unit</span>
             <span class="n">xyz</span> <span class="o">*=</span> <span class="n">Bohr2Ang</span>
 
-        <span class="k">return</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">spec</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="n">sc</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">spec</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="n">lattice</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="asciiSileBigDFT.write_geometry"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.bigdft.asciiSileBigDFT.html#sisl.io.bigdft.asciiSileBigDFT.write_geometry">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">write_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geom</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;.8f&#39;</span><span class="p">):</span>

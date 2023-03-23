@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.grid &mdash; sisl 0.1.dev1+g0d78d3d documentation</title>
+  <title>sisl.grid &mdash; sisl 0.1.dev1+g76926d8 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -13,7 +13,6 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
@@ -36,7 +35,7 @@
             sisl
           </a>
               <div class="version">
-                0.1.dev1+g0d78d3d
+                0.1.dev1+g76926d8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -116,6 +115,7 @@
 <span class="kn">from</span> <span class="nn">scipy.ndimage</span> <span class="kn">import</span> <span class="n">zoom</span> <span class="k">as</span> <span class="n">ndimage_zoom</span>
 
 <span class="kn">from</span> <span class="nn">._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span> <span class="nn">.messages</span> <span class="kn">import</span> <span class="n">deprecate_argument</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_array</span> <span class="k">as</span> <span class="n">_a</span>
 <span class="kn">from</span> <span class="nn">._help</span> <span class="kn">import</span> <span class="n">dtype_complex_to_real</span><span class="p">,</span> <span class="n">wrap_filterwarnings</span>
 <span class="kn">from</span> <span class="nn">.shape</span> <span class="kn">import</span> <span class="n">Shape</span>
@@ -124,14 +124,14 @@
 <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">import_attr</span>
 <span class="kn">from</span> <span class="nn">.utils.mathematics</span> <span class="kn">import</span> <span class="n">fnorm</span>
 
-<span class="kn">from</span> <span class="nn">.supercell</span> <span class="kn">import</span> <span class="n">SuperCellChild</span>
+<span class="kn">from</span> <span class="nn">.lattice</span> <span class="kn">import</span> <span class="n">LatticeChild</span>
 <span class="kn">from</span> <span class="nn">.geometry</span> <span class="kn">import</span> <span class="n">Geometry</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Grid&#39;</span><span class="p">,</span> <span class="s1">&#39;sgrid&#39;</span><span class="p">]</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">Grid</span><span class="p">(</span><span class="n">SuperCellChild</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Grid</span><span class="p">(</span><span class="n">LatticeChild</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Real-space grid information with associated geometry.</span>
 
 <span class="sd">    This grid object handles cell vectors and divisions of said grid.</span>
@@ -143,25 +143,25 @@
 <span class="sd">        a list of integers specifies the exact grid size.</span>
 <span class="sd">    bc : list of int (3, 2) or (3, ), optional</span>
 <span class="sd">        the boundary conditions for each of the cell&#39;s planes. Default to periodic BC.</span>
-<span class="sd">    sc : SuperCell, optional</span>
-<span class="sd">        the supercell that this grid represents. `sc` has precedence if both `geometry` and `sc`</span>
-<span class="sd">        has been specified. Default to ``[1, 1, 1]``.</span>
+<span class="sd">    lattice : Lattice, optional</span>
+<span class="sd">        the lattice that this grid represents. `lattice` has precedence if both `geometry` and `lattice`</span>
+<span class="sd">        has been specified. Defaults to ``[1, 1, 1]``.</span>
 <span class="sd">    dtype : numpy.dtype, optional</span>
 <span class="sd">        the data-type of the grid, default to `numpy.float64`.</span>
 <span class="sd">    geometry : Geometry, optional</span>
-<span class="sd">        associated geometry with the grid. If `sc` has not been passed the supercell will</span>
+<span class="sd">        associated geometry with the grid. If `lattice` has not been passed the lattice will</span>
 <span class="sd">        be taken from this geometry.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; grid1 = Grid(0.1, sc=10)</span>
-<span class="sd">    &gt;&gt;&gt; grid2 = Grid(0.1, sc=SuperCell(10))</span>
-<span class="sd">    &gt;&gt;&gt; grid3 = Grid(0.1, sc=SuperCell([10] * 3))</span>
+<span class="sd">    &gt;&gt;&gt; grid1 = Grid(0.1, lattice=10)</span>
+<span class="sd">    &gt;&gt;&gt; grid2 = Grid(0.1, lattice=Lattice(10))</span>
+<span class="sd">    &gt;&gt;&gt; grid3 = Grid(0.1, lattice=Lattice([10] * 3))</span>
 <span class="sd">    &gt;&gt;&gt; grid1 == grid2</span>
 <span class="sd">    True</span>
 <span class="sd">    &gt;&gt;&gt; grid1 == grid3</span>
 <span class="sd">    True</span>
-<span class="sd">    &gt;&gt;&gt; grid = Grid(0.1, sc=10, dtype=np.complex128)</span>
+<span class="sd">    &gt;&gt;&gt; grid = Grid(0.1, lattice=10, dtype=np.complex128)</span>
 <span class="sd">    &gt;&gt;&gt; grid == grid1</span>
 <span class="sd">    False</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -175,11 +175,14 @@
     <span class="c1">#: Constant for defining an open boundary condition</span>
     <span class="n">OPEN</span> <span class="o">=</span> <span class="mi">4</span>
 
-<div class="viewcode-block" id="Grid.__init__"><a class="viewcode-back" href="../../api/generated/sisl.Grid.html#sisl.Grid.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">bc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Grid.__init__"><a class="viewcode-back" href="../../api/generated/sisl.Grid.html#sisl.Grid.__init__">[docs]</a>    <span class="nd">@deprecate_argument</span><span class="p">(</span><span class="s2">&quot;sc&quot;</span><span class="p">,</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;argument sc has been deprecated in favor of lattice, please update your code.&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;0.15.0&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">bc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">bc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">bc</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">self</span><span class="o">.</span><span class="n">PERIODIC</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_supercell</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_lattice</span><span class="p">(</span><span class="n">lattice</span><span class="p">)</span>
 
         <span class="c1"># Create the atomic structure in the grid, if possible</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_geometry</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
@@ -195,10 +198,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">set_bc</span><span class="p">(</span><span class="n">bc</span><span class="p">)</span>
 
         <span class="c1"># If the user sets the super-cell, that has precedence.</span>
-        <span class="k">if</span> <span class="n">sc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">lattice</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_sc</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_sc</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">set_lattice</span><span class="p">(</span><span class="n">lattice</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_lattice</span><span class="p">(</span><span class="n">lattice</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Grid value at `key` &quot;&quot;&quot;</span>
@@ -221,7 +224,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="n">geometry</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_sc</span><span class="p">(</span><span class="n">geometry</span><span class="o">.</span><span class="n">sc</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_lattice</span><span class="p">(</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Grid.fill"><a class="viewcode-back" href="../../api/generated/sisl.Grid.html#sisl.Grid.fill">[docs]</a>    <span class="k">def</span> <span class="nf">fill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Fill the grid with this value</span>
@@ -472,9 +475,9 @@
     <span class="n">set_boundary_condition</span> <span class="o">=</span> <span class="n">set_bc</span>
 
     <span class="k">def</span> <span class="nf">__sc_geometry_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Internal routine for copying the SuperCell and Geometry &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Internal routine for copying the Lattice and Geometry &quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="n">d</span><span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">d</span><span class="p">[</span><span class="s1">&#39;lattice&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">d</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">d</span>
@@ -492,7 +495,7 @@
         <span class="k">return</span> <span class="n">grid</span></div>
 
 <div class="viewcode-block" id="Grid.swapaxes"><a class="viewcode-back" href="../../api/generated/sisl.Grid.html#sisl.Grid.swapaxes">[docs]</a>    <span class="k">def</span> <span class="nf">swapaxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Swap two axes in the grid (also swaps axes in the supercell)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Swap two axes in the grid (also swaps axes in the lattice)</span>
 
 <span class="sd">        If ``swapaxes(0,1)`` it returns the 0 in the 1 values.</span>
 
@@ -507,7 +510,7 @@
         <span class="n">idx</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="n">b</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
         <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__sc_geometry_dict</span><span class="p">()</span>
-        <span class="n">d</span><span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+        <span class="n">d</span><span class="p">[</span><span class="s1">&#39;lattice&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;lattice&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
         <span class="n">d</span><span class="p">[</span><span class="s1">&#39;dtype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span>
         <span class="n">grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">bc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bc</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="o">**</span><span class="n">d</span><span class="p">)</span>
         <span class="c1"># We need to force the C-order or we loose the contiguity</span>
@@ -523,7 +526,7 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dvolume</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Volume of the grid voxel elements &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">volume</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">volume</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span>
 
     <span class="k">def</span> <span class="nf">_copy_sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">scale_geometry</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="c1"># First calculate the new shape</span>
@@ -536,12 +539,12 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You cannot retain no indices.&#39;</span><span class="p">)</span>
         <span class="n">grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">bc</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bc</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">__sc_geometry_dict</span><span class="p">())</span>
         <span class="c1"># Update cell shape (the cell is smaller now)</span>
-        <span class="n">grid</span><span class="o">.</span><span class="n">set_sc</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">set_lattice</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">scale_geometry</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
             <span class="n">fxyz</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">fxyz</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-            <span class="n">geom</span><span class="o">.</span><span class="n">set_supercell</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">sc</span><span class="p">)</span>
-            <span class="n">geom</span><span class="o">.</span><span class="n">xyz</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">fxyz</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
+            <span class="n">geom</span><span class="o">.</span><span class="n">set_lattice</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">lattice</span><span class="p">)</span>
+            <span class="n">geom</span><span class="o">.</span><span class="n">xyz</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">fxyz</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
             <span class="n">grid</span><span class="o">.</span><span class="n">set_geometry</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">grid</span>
@@ -682,7 +685,7 @@
             <span class="n">min_xyz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dcell</span><span class="p">[</span><span class="n">axis</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="c1"># Now shift the geometry according to what is retained</span>
             <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="o">-</span><span class="n">min_xyz</span><span class="p">)</span>
-            <span class="n">geom</span><span class="o">.</span><span class="n">set_supercell</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">sc</span><span class="p">)</span>
+            <span class="n">geom</span><span class="o">.</span><span class="n">set_lattice</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">lattice</span><span class="p">)</span>
             <span class="n">grid</span><span class="o">.</span><span class="n">set_geometry</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy_sub</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">),</span> <span class="n">axis</span><span class="p">,</span> <span class="n">scale_geometry</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -735,7 +738,7 @@
         <span class="n">reps_all</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">reps</span>
         <span class="n">grid</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span> <span class="n">reps_all</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">grid</span><span class="o">.</span><span class="n">set_sc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="p">))</span>
+            <span class="n">grid</span><span class="o">.</span><span class="n">set_lattice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">grid</span><span class="o">.</span><span class="n">set_geometry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">grid</span></div>
@@ -1052,7 +1055,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">s</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="se">\n</span><span class="s1">}}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">s</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="se">\n</span><span class="s1">}}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">))</span>
+            <span class="n">s</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="se">\n</span><span class="s1">}}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">s</span>
 
     <span class="k">def</span> <span class="nf">_check_compatibility</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
@@ -1623,7 +1626,7 @@
                     <span class="k">if</span> <span class="s2">&quot;.&quot;</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
                         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">length</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)))</span>
                     <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-                <span class="n">shape</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">_conv_shape</span><span class="p">,</span> <span class="n">ns</span><span class="o">.</span><span class="n">_grid</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">length</span><span class="p">,</span> <span class="n">values</span><span class="p">[:</span><span class="mi">3</span><span class="p">]))</span>
+                <span class="n">shape</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">_conv_shape</span><span class="p">,</span> <span class="n">ns</span><span class="o">.</span><span class="n">_grid</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">length</span><span class="p">,</span> <span class="n">values</span><span class="p">[:</span><span class="mi">3</span><span class="p">]))</span>
                 <span class="c1"># shorten list for easier arguments</span>
                 <span class="n">values</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -1633,7 +1636,7 @@
                        <span class="n">action</span><span class="o">=</span><span class="n">InterpGrid</span><span class="p">,</span>
                        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Interpolate grid for higher or lower density (minimum 3 arguments)</span>
 <span class="s2">Requires at least 3 arguments, number of points along 1st, 2nd and 3rd lattice vector. These may contain a &quot;.&quot; to signal a distance in angstrom of each voxel.</span>
-<span class="s2">For instance --interp 0.1 10 100 will result in an interpolated shape of [nint(grid.sc.length / 0.1), 10, 100].</span>
+<span class="s2">For instance --interp 0.1 10 100 will result in an interpolated shape of [nint(grid.lattice.length / 0.1), 10, 100].</span>
 
 <span class="s2">The 4th optional argument is the order of interpolation; an integer 0&lt;=i&lt;=5 (default 1)</span>
 <span class="s2">The 5th optional argument is the mode to interpolate; wrap/mirror/constant/reflect/nearest</span>
@@ -1675,7 +1678,7 @@
                 <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
                     <span class="n">shape</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">ax</span><span class="p">]</span>
                     <span class="k">if</span> <span class="n">shape</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                        <span class="n">axs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">length</span><span class="p">[</span><span class="n">ax</span><span class="p">],</span> <span class="n">shape</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+                        <span class="n">axs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">length</span><span class="p">[</span><span class="n">ax</span><span class="p">],</span> <span class="n">shape</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
                         <span class="n">idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
 
                 <span class="c1"># Now plot data</span>
@@ -1718,7 +1721,7 @@
                     <span class="c1"># the distance along the lattice vector</span>
                     <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 
-                    <span class="n">dx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">length</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="n">dx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">length</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
                     <span class="n">sile</span><span class="o">.</span><span class="n">write_data</span><span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;Either of these two cases are not fullfilled:</span>
@@ -1814,7 +1817,7 @@
         <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="n">input_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">stdout_grid</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">Geometry</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+            <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">Geometry</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span>
 

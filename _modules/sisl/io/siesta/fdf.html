@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.fdf &mdash; sisl 0.1.dev1+g0d78d3d documentation</title>
+  <title>sisl.io.siesta.fdf &mdash; sisl 0.1.dev1+g76926d8 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -13,7 +13,6 @@
     <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
         <script src="../../../../_static/doctools.js"></script>
         <script src="../../../../_static/sphinx_highlight.js"></script>
@@ -36,7 +35,7 @@
             sisl
           </a>
               <div class="version">
-                0.1.dev1+g0d78d3d
+                0.1.dev1+g76926d8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -124,6 +123,7 @@
 <span class="kn">from</span> <span class="nn">sisl.utils.ranges</span> <span class="kn">import</span> <span class="n">list2str</span>
 <span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">warn</span>
 <span class="kn">from</span> <span class="nn">sisl.utils.mathematics</span> <span class="kn">import</span> <span class="n">fnorm</span>
+<span class="kn">from</span> <span class="nn">sisl.physics</span> <span class="kn">import</span> <span class="n">BandStructure</span>
 
 <span class="kn">from</span> <span class="nn">.bands</span> <span class="kn">import</span> <span class="n">bandsSileSiesta</span>
 <span class="kn">from</span> <span class="nn">.basis</span> <span class="kn">import</span> <span class="n">ionxmlSileSiesta</span><span class="p">,</span> <span class="n">ionncSileSiesta</span>
@@ -138,7 +138,7 @@
 <span class="kn">from</span> <span class="nn">.struct</span> <span class="kn">import</span> <span class="n">structSileSiesta</span>
 <span class="kn">from</span> <span class="nn">.xv</span> <span class="kn">import</span> <span class="n">xvSileSiesta</span>
 <span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Orbital</span><span class="p">,</span> <span class="n">SphericalOrbital</span><span class="p">,</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">AtomGhost</span><span class="p">,</span> <span class="n">Atoms</span>
-<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">SuperCell</span><span class="p">,</span> <span class="n">DynamicalMatrix</span>
+<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Lattice</span><span class="p">,</span> <span class="n">DynamicalMatrix</span>
 
 <span class="kn">from</span> <span class="nn">sisl.utils.cmd</span> <span class="kn">import</span> <span class="n">default_ArgumentParser</span><span class="p">,</span> <span class="n">default_namespace</span>
 <span class="kn">from</span> <span class="nn">sisl.utils.misc</span> <span class="kn">import</span> <span class="n">merge_instances</span>
@@ -251,13 +251,14 @@
         <span class="n">l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
         <span class="k">while</span> <span class="n">l</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
             <span class="n">ls</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-            <span class="k">if</span> <span class="s2">&quot;</span><span class="si">%i</span><span class="s2">nclude&quot;</span> <span class="o">==</span> <span class="n">ls</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
-                <span class="n">add</span><span class="p">(</span><span class="n">ls</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_pushfile</span><span class="p">(</span><span class="n">ls</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-            <span class="k">elif</span> <span class="s1">&#39;&lt;&#39;</span> <span class="ow">in</span> <span class="n">ls</span><span class="p">:</span>
-                <span class="c1"># TODO, in principle the &lt; could contain</span>
-                <span class="c1"># include if this line is not a %block.</span>
-                <span class="n">add</span><span class="p">(</span><span class="n">ls</span><span class="p">[</span><span class="n">ls</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;&lt;&#39;</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">ls</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s2">&quot;</span><span class="si">%i</span><span class="s2">nclude&quot;</span> <span class="o">==</span> <span class="n">ls</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                    <span class="n">add</span><span class="p">(</span><span class="n">ls</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_pushfile</span><span class="p">(</span><span class="n">ls</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">elif</span> <span class="s1">&#39;&lt;&#39;</span> <span class="ow">in</span> <span class="n">ls</span><span class="p">:</span>
+                    <span class="c1"># TODO, in principle the &lt; could contain</span>
+                    <span class="c1"># include if this line is not a %block.</span>
+                    <span class="n">add</span><span class="p">(</span><span class="n">ls</span><span class="p">[</span><span class="n">ls</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;&lt;&#39;</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
             <span class="n">l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
             <span class="k">while</span> <span class="n">l</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
                 <span class="c1"># last line of file</span>
@@ -595,13 +596,13 @@
             <span class="n">s</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="k">return</span> <span class="n">s</span></div>
 
-<div class="viewcode-block" id="fdfSileSiesta.write_supercell"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.write_supercell">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">write_supercell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sc</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;.8f&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="fdfSileSiesta.write_lattice"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.write_lattice">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">write_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sc</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;.8f&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Writes the supercell</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        sc : SuperCell</span>
+<span class="sd">        sc : Lattice</span>
 <span class="sd">           supercell object to write</span>
 <span class="sd">        fmt : str, optional</span>
 <span class="sd">           precision used to store the lattice vectors</span>
@@ -643,7 +644,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sile_raise_write</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">write_supercell</span><span class="p">(</span><span class="n">geometry</span><span class="o">.</span><span class="n">sc</span><span class="p">,</span> <span class="n">fmt</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write_lattice</span><span class="p">(</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span><span class="p">,</span> <span class="n">fmt</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">NumberOfAtoms </span><span class="si">{</span><span class="n">geometry</span><span class="o">.</span><span class="n">na</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">unit</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;unit&quot;</span><span class="p">,</span> <span class="s2">&quot;Ang&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
@@ -705,7 +706,38 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">_write_block</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%e</span><span class="s2">ndblock</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="fdfSileSiesta.read_supercell_nsc"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.read_supercell_nsc">[docs]</a>    <span class="k">def</span> <span class="nf">read_supercell_nsc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="fdfSileSiesta.write_brillouinzone"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.write_brillouinzone">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">write_brillouinzone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bz</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Writes Brillouinzone information to the fdf input file</span>
+
+<span class="sd">        The `bz` object will be written as options in the input file.</span>
+<span class="sd">        The class of `bz` decides which options gets written. For instance</span>
+<span class="sd">        a `BandStructure` class will write the corresponding ``BandLines`` block.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        bz : BrillouinZone</span>
+<span class="sd">            which setting to write to the file</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Currently, only the `BandStructure` class may be accepted as `bz`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sile_raise_write</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bz</span><span class="p">,</span> <span class="n">BandStructure</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.write_brillouinzone only implements BandStructure object writing.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s2">&quot;BandLinesScale ReciprocalLatticeVectors</span><span class="se">\n</span><span class="s2">%block BandLines</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">ip</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">divs</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bz</span><span class="o">.</span><span class="n">divisions</span><span class="p">,</span> <span class="n">bz</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="n">bz</span><span class="o">.</span><span class="n">names</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">ip</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">point</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">ip</span> <span class="o">=</span> <span class="n">divs</span>
+        <span class="n">point</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">bz</span><span class="o">.</span><span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">bz</span><span class="o">.</span><span class="n">names</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">ip</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">point</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%e</span><span class="s2">ndblock BandLines</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="fdfSileSiesta.read_lattice_nsc"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.read_lattice_nsc">[docs]</a>    <span class="k">def</span> <span class="nf">read_lattice_nsc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Read supercell size using any method available</span>
 
 <span class="sd">        Raises</span>
@@ -715,30 +747,30 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">order</span> <span class="o">=</span> <span class="n">_listify_str</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nc&quot;</span><span class="p">,</span> <span class="s2">&quot;ORB_INDX&quot;</span><span class="p">]))</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_supercell_nsc_</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_lattice_nsc_</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">_track</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">read_supercell_nsc</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;found file </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">_track</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">read_lattice_nsc</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;found file </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">v</span>
         <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;number of supercells could not be read from output files. Assuming molecule cell &quot;</span>
              <span class="s2">&quot;(no supercell connections)&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_a</span><span class="o">.</span><span class="n">onesi</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_r_supercell_nsc_nc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_r_lattice_nsc_nc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.nc&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_supercell_nsc_nc</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_lattice_nsc_nc</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
-            <span class="k">return</span> <span class="n">ncSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_supercell_nsc</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">ncSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_lattice_nsc</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_r_supercell_nsc_orb_indx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_r_lattice_nsc_orb_indx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.ORB_INDX&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_supercell_nsc_orb_indx</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_lattice_nsc_orb_indx</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
-            <span class="k">return</span> <span class="n">orbindxSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_supercell_nsc</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">orbindxSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_lattice_nsc</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="fdfSileSiesta.read_supercell"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.read_supercell">[docs]</a>    <span class="k">def</span> <span class="nf">read_supercell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns SuperCell object by reading fdf or Siesta output related files.</span>
+<div class="viewcode-block" id="fdfSileSiesta.read_lattice"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.read_lattice">[docs]</a>    <span class="k">def</span> <span class="nf">read_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns Lattice object by reading fdf or Siesta output related files.</span>
 
 <span class="sd">        One can limit the tried files to only one file by passing</span>
 <span class="sd">        only a single file ending.</span>
@@ -756,24 +788,24 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; fdf = get_sile(&quot;RUN.fdf&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; fdf.read_supercell() # read from fdf</span>
-<span class="sd">        &gt;&gt;&gt; fdf.read_supercell(True) # read from [XV, nc, fdf]</span>
-<span class="sd">        &gt;&gt;&gt; fdf.read_supercell(order=[&quot;nc&quot;]) # read from [nc]</span>
-<span class="sd">        &gt;&gt;&gt; fdf.read_supercell(True, order=[&quot;nc&quot;]) # read from [nc]</span>
+<span class="sd">        &gt;&gt;&gt; fdf.read_lattice() # read from fdf</span>
+<span class="sd">        &gt;&gt;&gt; fdf.read_lattice(True) # read from [XV, nc, fdf]</span>
+<span class="sd">        &gt;&gt;&gt; fdf.read_lattice(order=[&quot;nc&quot;]) # read from [nc]</span>
+<span class="sd">        &gt;&gt;&gt; fdf.read_lattice(True, order=[&quot;nc&quot;]) # read from [nc]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">output</span><span class="p">:</span>
             <span class="n">order</span> <span class="o">=</span> <span class="n">_listify_str</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;XV&quot;</span><span class="p">,</span> <span class="s2">&quot;nc&quot;</span><span class="p">,</span> <span class="s2">&quot;fdf&quot;</span><span class="p">]))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">order</span> <span class="o">=</span> <span class="n">_listify_str</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;fdf&quot;</span><span class="p">]))</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_supercell_</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_r_lattice_</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">_track</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">read_supercell</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;found file </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">_track</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">read_lattice</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;found file </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">v</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
-    <span class="k">def</span> <span class="nf">_r_supercell_fdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns `SuperCell` object from the FDF file &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_r_lattice_fdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns `Lattice` object from the FDF file &quot;&quot;&quot;</span>
         <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;LatticeConstant&quot;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;Ang&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">s</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="s2">&quot;Could not find LatticeConstant in file&quot;</span><span class="p">)</span>
@@ -789,7 +821,7 @@
             <span class="n">lc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;LatticeParameters&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">lc</span><span class="p">:</span>
                 <span class="n">tmp</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">lc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[:</span><span class="mi">6</span><span class="p">]]</span>
-                <span class="n">cell</span> <span class="o">=</span> <span class="n">SuperCell</span><span class="o">.</span><span class="n">tocell</span><span class="p">(</span><span class="o">*</span><span class="n">tmp</span><span class="p">)</span>
+                <span class="n">cell</span> <span class="o">=</span> <span class="n">Lattice</span><span class="o">.</span><span class="n">tocell</span><span class="p">(</span><span class="o">*</span><span class="n">tmp</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">lc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># the fdf file contains neither the latticevectors or parameters</span>
             <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="s2">&quot;Could not find LatticeVectors or LatticeParameters block in file&quot;</span><span class="p">)</span>
@@ -798,54 +830,53 @@
         <span class="c1"># When reading from the fdf, the warning should be suppressed</span>
         <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
-            <span class="n">nsc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_supercell_nsc</span><span class="p">()</span>
+            <span class="n">nsc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_lattice_nsc</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="n">SuperCell</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="n">nsc</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Lattice</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="n">nsc</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_r_supercell_nc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_r_lattice_nc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Read supercell from &lt;&gt;.nc file</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.nc&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_supercell_nc</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_lattice_nc</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
-            <span class="k">return</span> <span class="n">ncSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_supercell</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">ncSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_lattice</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_r_supercell_xv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns `SuperCell` object from the XV file &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_r_lattice_xv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns `Lattice` object from the XV file &quot;&quot;&quot;</span>
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.XV&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_supercell_xv</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_lattice_xv</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
-            <span class="n">nsc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_supercell_nsc</span><span class="p">()</span>
-            <span class="n">sc</span> <span class="o">=</span> <span class="n">xvSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_supercell</span><span class="p">()</span>
-            <span class="n">sc</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">(</span><span class="n">nsc</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">sc</span>
+            <span class="n">nsc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_lattice_nsc</span><span class="p">()</span>
+            <span class="n">lattice</span> <span class="o">=</span> <span class="n">xvSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_lattice</span><span class="p">()</span>
+            <span class="n">lattice</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">(</span><span class="n">nsc</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">lattice</span>
         <span class="k">return</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_r_supercell_struct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns `SuperCell` object from the STRUCT files &quot;&quot;&quot;</span>
-        <span class="n">sc</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">def</span> <span class="nf">_r_lattice_struct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns `Lattice` object from the STRUCT files &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">end</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;STRUCT_NEXT_ITER&quot;</span><span class="p">,</span> <span class="s2">&quot;STRUCT_OUT&quot;</span><span class="p">,</span> <span class="s2">&quot;STRUCT_IN&quot;</span><span class="p">]:</span>
             <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;.</span><span class="si">{</span><span class="n">end</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_supercell_struct</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+            <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_lattice_struct</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
-                <span class="n">nsc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_supercell_nsc</span><span class="p">()</span>
-                <span class="n">sc</span> <span class="o">=</span> <span class="n">structSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_supercell</span><span class="p">()</span>
-                <span class="n">sc</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">(</span><span class="n">nsc</span><span class="p">)</span>
-                <span class="k">break</span>
-        <span class="k">return</span> <span class="n">sc</span>
-
-    <span class="k">def</span> <span class="nf">_r_supercell_tshs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.TSHS&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_supercell_tshs</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
-            <span class="k">return</span> <span class="n">tshsSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_supercell</span><span class="p">()</span>
+                <span class="n">nsc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_lattice_nsc</span><span class="p">()</span>
+                <span class="n">lattice</span> <span class="o">=</span> <span class="n">structSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_lattice</span><span class="p">()</span>
+                <span class="n">lattice</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">(</span><span class="n">nsc</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">lattice</span>
         <span class="k">return</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_r_supercell_onlys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.onlyS&quot;</span><span class="p">)</span>
-        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_supercell_onlys</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_r_lattice_tshs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.TSHS&quot;</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_lattice_tshs</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
-            <span class="k">return</span> <span class="n">onlysSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_supercell</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">tshsSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_lattice</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_r_lattice_onlys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SystemLabel&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;siesta&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.onlyS&quot;</span><span class="p">)</span>
+        <span class="n">_track_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_lattice_onlys</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">onlysSileSiesta</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">read_lattice</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="fdfSileSiesta.read_force"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.fdfSileSiesta.html#sisl.io.siesta.fdfSileSiesta.read_force">[docs]</a>    <span class="k">def</span> <span class="nf">read_force</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -1148,16 +1179,16 @@
 
             <span class="c1"># We have an actual supercell. Lets try and fix it.</span>
             <span class="c1"># First lets recreate the smallest geometry</span>
-            <span class="n">sc</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-            <span class="n">sc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">/=</span> <span class="n">supercell</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">sc</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">/=</span> <span class="n">supercell</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">sc</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]</span> <span class="o">/=</span> <span class="n">supercell</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">cell</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">/=</span> <span class="n">supercell</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">/=</span> <span class="n">supercell</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]</span> <span class="o">/=</span> <span class="n">supercell</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
 
             <span class="c1"># Ensure nsc is at least an odd number, later down we will symmetrize the FC matrix</span>
             <span class="n">nsc</span> <span class="o">=</span> <span class="n">supercell</span> <span class="o">+</span> <span class="p">(</span><span class="n">supercell</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span>
             <span class="k">if</span> <span class="n">R</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="c1"># Correct for the optional radius</span>
-                <span class="n">sc_norm</span> <span class="o">=</span> <span class="n">fnorm</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+                <span class="n">sc_norm</span> <span class="o">=</span> <span class="n">fnorm</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
                 <span class="c1"># R is already &quot;twice&quot; the &quot;orbital&quot; range</span>
                 <span class="n">nsc_R</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">R</span> <span class="o">/</span> <span class="n">sc_norm</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
@@ -1165,12 +1196,12 @@
                 <span class="k">del</span> <span class="n">nsc_R</span>
 
             <span class="c1"># Construct the minimal unit-cell geometry</span>
-            <span class="n">sc</span> <span class="o">=</span> <span class="n">SuperCell</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="n">nsc</span><span class="p">)</span>
+            <span class="n">lattice</span> <span class="o">=</span> <span class="n">Lattice</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="n">nsc</span><span class="p">)</span>
             <span class="c1"># TODO check that the coordinates are in the cell</span>
-            <span class="n">geom_small</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">FC_atoms</span><span class="p">],</span> <span class="n">geom</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">FC_atoms</span><span class="p">],</span> <span class="n">sc</span><span class="p">)</span>
+            <span class="n">geom_small</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">FC_atoms</span><span class="p">],</span> <span class="n">geom</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">FC_atoms</span><span class="p">],</span> <span class="n">lattice</span><span class="p">)</span>
 
             <span class="c1"># Convert the big geometry&#39;s coordinates to fractional coordinates of the small unit-cell.</span>
-            <span class="n">isc_xyz</span> <span class="o">=</span> <span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">xyz</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">geom_small</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">icell</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">-</span>
+            <span class="n">isc_xyz</span> <span class="o">=</span> <span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">xyz</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">geom_small</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">icell</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">-</span>
                        <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">geom_small</span><span class="o">.</span><span class="n">fxyz</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">supercell</span><span class="p">),</span> <span class="mi">1</span><span class="p">)))</span>
 
             <span class="n">axis_tiling</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1322,7 +1353,7 @@
 
             <span class="c1"># When x, y, z are negative we simply look-up from the back of the array</span>
             <span class="c1"># which is exactly what is required</span>
-            <span class="n">isc_off</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">isc_off</span>
+            <span class="n">isc_off</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">isc_off</span>
             <span class="n">nxyz</span><span class="p">,</span> <span class="n">na</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">no</span><span class="p">,</span> <span class="n">geom</span><span class="o">.</span><span class="n">na</span>
             <span class="n">dist</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">rij</span>
 
@@ -1411,7 +1442,7 @@
                     <span class="k">for</span> <span class="n">atom</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">geom</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="kc">True</span><span class="p">):</span>
                         <span class="n">geom</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">basis</span><span class="p">[</span><span class="n">atom</span><span class="o">.</span><span class="n">Z</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
                     <span class="n">geom</span><span class="o">.</span><span class="n">reduce</span><span class="p">()</span>
-            <span class="n">nsc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_supercell_nsc</span><span class="p">()</span>
+            <span class="n">nsc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_lattice_nsc</span><span class="p">()</span>
             <span class="n">geom</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">(</span><span class="n">nsc</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">geom</span>
 
@@ -1432,7 +1463,7 @@
                         <span class="k">for</span> <span class="n">atom</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">geom</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="kc">True</span><span class="p">):</span>
                             <span class="n">geom</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">basis</span><span class="p">[</span><span class="n">atom</span><span class="o">.</span><span class="n">Z</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
                         <span class="n">geom</span><span class="o">.</span><span class="n">reduce</span><span class="p">()</span>
-                <span class="n">nsc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_supercell_nsc</span><span class="p">()</span>
+                <span class="n">nsc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_lattice_nsc</span><span class="p">()</span>
                 <span class="n">geom</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">(</span><span class="n">nsc</span><span class="p">)</span>
                 <span class="k">break</span>
         <span class="k">return</span> <span class="n">geom</span>
@@ -1468,7 +1499,7 @@
 
 <span class="sd">        NOTE: Interaction range of the Atoms are currently not read.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">sc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_supercell</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s2">&quot;fdf&quot;</span><span class="p">)</span>
+        <span class="n">lattice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_lattice</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s2">&quot;fdf&quot;</span><span class="p">)</span>
 
         <span class="c1"># No fractional coordinates</span>
         <span class="n">is_frac</span> <span class="o">=</span> <span class="kc">False</span>
@@ -1528,7 +1559,7 @@
             <span class="n">xyz</span><span class="p">[</span><span class="n">ia</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">l</span><span class="p">[:</span><span class="mi">3</span><span class="p">]]</span>
             <span class="n">species</span><span class="p">[</span><span class="n">ia</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="n">is_frac</span><span class="p">:</span>
-            <span class="n">xyz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
+            <span class="n">xyz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">lattice</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
         <span class="n">xyz</span> <span class="o">*=</span> <span class="n">s</span>
 
         <span class="c1"># Read the block (not strictly needed, if so we simply set all atoms to H)</span>
@@ -1545,12 +1576,12 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">origin</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">opt</span> <span class="o">=</span> <span class="n">origin</span>
             <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;cop&quot;</span><span class="p">):</span>
-                <span class="n">origin</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="n">origin</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">opt</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;com&quot;</span><span class="p">):</span>
                 <span class="c1"># TODO for ghost atoms its mass should not be used</span>
                 <span class="n">w</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">mass</span>
                 <span class="n">w</span> <span class="o">/=</span> <span class="n">w</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-                <span class="n">origin</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">w</span><span class="p">)</span>
+                <span class="n">origin</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">w</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">opt</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;min&quot;</span><span class="p">):</span>
                 <span class="n">origin</span> <span class="o">=</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">opt</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">4</span><span class="p">:</span>
@@ -1570,10 +1601,10 @@
 
         <span class="c1"># create geometry</span>
         <span class="n">xyz</span> <span class="o">+=</span> <span class="n">origin</span>
-        <span class="n">geom</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="n">sc</span><span class="p">)</span>
+        <span class="n">geom</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="n">lattice</span><span class="p">)</span>
 
         <span class="c1"># and finally check for supercell constructs</span>
-        <span class="n">supercell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SuperCell&quot;</span><span class="p">)</span>
+        <span class="n">supercell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Lattice&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">supercell</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># we need to expand</span>
             <span class="c1"># check that we are only dealing with an orthogonal supercell</span>
@@ -1585,7 +1616,7 @@
             <span class="n">diag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">supercell</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">supercell</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">diag</span><span class="p">),</span> <span class="mi">0</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="s2">&quot;SuperCell input is not diagonal, currently not implemented in sisl&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="s2">&quot;Lattice input is not diagonal, currently not implemented in sisl&quot;</span><span class="p">)</span>
 
             <span class="c1"># now tile it</span>
             <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="n">nt</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">diag</span><span class="p">):</span>

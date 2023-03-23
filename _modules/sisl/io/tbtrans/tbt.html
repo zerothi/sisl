@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.tbtrans.tbt &mdash; sisl 0.1.dev1+g0d78d3d documentation</title>
+  <title>sisl.io.tbtrans.tbt &mdash; sisl 0.1.dev1+g76926d8 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -13,7 +13,6 @@
     <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
         <script src="../../../../_static/doctools.js"></script>
         <script src="../../../../_static/sphinx_highlight.js"></script>
@@ -36,7 +35,7 @@
             sisl
           </a>
               <div class="version">
-                0.1.dev1+g0d78d3d
+                0.1.dev1+g76926d8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -134,7 +133,7 @@
 <span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Atoms</span>
 <span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">constant</span>
 <span class="kn">from</span> <span class="nn">sisl.sparse</span> <span class="kn">import</span> <span class="n">_ncol_to_indptr</span>
-<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">warn</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">SislError</span>
+<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">warn</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">deprecate</span><span class="p">,</span> <span class="n">deprecate_argument</span>
 <span class="kn">from</span> <span class="nn">sisl._help</span> <span class="kn">import</span> <span class="n">wrap_filterwarnings</span>
 <span class="kn">from</span> <span class="nn">sisl.unit.siesta</span> <span class="kn">import</span> <span class="n">unit_convert</span>
 <span class="kn">from</span> <span class="nn">sisl.physics.distribution</span> <span class="kn">import</span> <span class="n">fermi_dirac</span>
@@ -1407,7 +1406,7 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; Jij = tbt.orbital_current(0, -1.03, only=&quot;both&quot;) # orbital current @ E = -1 eV originating from electrode ``0``</span>
+<span class="sd">        &gt;&gt;&gt; Jij = tbt.orbital_current(0, -1.03, what=&quot;both&quot;) # orbital current @ E = -1 eV originating from electrode ``0``</span>
 <span class="sd">        &gt;&gt;&gt; Ja = tbt.sparse_orbital_to_scalar(Jij)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Create the bond-currents with all summations</span>
@@ -1432,7 +1431,14 @@
 
         <span class="k">return</span> <span class="n">Da</span></div>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.orbital_transmission"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.orbital_transmission">[docs]</a>    <span class="k">def</span> <span class="nf">orbital_transmission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.orbital_transmission"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.orbital_transmission">[docs]</a>    <span class="nd">@deprecate_argument</span><span class="p">(</span><span class="s2">&quot;only&quot;</span><span class="p">,</span> <span class="s2">&quot;what&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;argument only has been deprecated in favor of what, please update your code.&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;0.14.0&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">orbital_transmission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                             <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                             <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">what</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
+                             <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Transmission at energy `E` between orbitals originating from `elec`</span>
 
 <span class="sd">        Each matrix element of the sparse matrix corresponds to the orbital indices of the</span>
@@ -1440,21 +1446,21 @@
 
 <span class="sd">        When requesting orbital-transmissions it is vital to consider how the data needs to be analysed</span>
 <span class="sd">        before extracting the data. For instance, if only local transmission pathways are interesting one should</span>
-<span class="sd">        use ``only=&quot;+&quot;`` to only retain the positive orbital transmissions.</span>
+<span class="sd">        use ``what=&quot;+&quot;`` to retain the positive orbital transmissions.</span>
 <span class="sd">        While if one is interested in the transmission between subset of orbitals,</span>
-<span class="sd">        ``only=&quot;all&quot;`` is the correct method to account for loop transmissions.</span>
+<span class="sd">        ``what=&quot;all&quot;`` is the correct method to account for loop transmissions.</span>
 
 <span class="sd">        The orbital transmissions are calculated as described in the TBtrans manual:</span>
 
 <span class="sd">        .. math::</span>
 <span class="sd">            T_{\mu \nu}(E) = i [</span>
 <span class="sd">            (\mathbf H_{\nu\mu} - E\mathbf S_{\nu\mu}) \mathbf A_{\mu\nu}(E)</span>
-<span class="sd">            -</span>
+<span class="sd">            -:</span>
 <span class="sd">            (\mathbf H_{\mu\nu} - E\mathbf S_{\mu\nu}) \mathbf A_{\nu\mu}(E)],</span>
 
 <span class="sd">        It is easy to show that the above matrix obeys :math:`T_{\mu\nu}=-T_{\nu\mu}`.</span>
 
-<span class="sd">        For inexperienced users it is adviced to try out all three values of ``only`` to ensure</span>
+<span class="sd">        For inexperienced users it is adviced to try out all three values of ``what`` to ensure</span>
 <span class="sd">        the correct physics is obtained.</span>
 
 <span class="sd">        This becomes even more important when the orbital transmissions are calculated with magnetic</span>
@@ -1480,9 +1486,8 @@
 <span class="sd">           the returned transmissions from the unit-cell (``[None, None, None]``) to</span>
 <span class="sd">           the given supercell, the default is all transmissions for the supercell.</span>
 <span class="sd">           To only get unit cell transmissions, pass ``[0, 0, 0]``.</span>
-<span class="sd">        only : {&quot;all&quot;/&quot;both&quot;, &quot;+&quot;/&quot;out&quot;, &quot;-&quot;/&quot;in&quot;}</span>
-<span class="sd">           which transmissions to return, all, positive (outgoing) or negative (incoming)</span>
-<span class="sd">           values only.</span>
+<span class="sd">        what : {&quot;all&quot;/&quot;both&quot;/&quot;+-&quot;/&quot;inout&quot;, &quot;+&quot;/&quot;out&quot;, &quot;-&quot;/&quot;in&quot;}</span>
+<span class="sd">           which transmissions to return, all, positive (outgoing) or negative (incoming).</span>
 <span class="sd">        orbitals : array-like or dict, optional</span>
 <span class="sd">           only retain transmissions for a subset of orbitals (including their supercell equivalents)</span>
 
@@ -1514,13 +1519,13 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">J</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sparse_matrix</span><span class="p">(</span><span class="s1">&#39;J&#39;</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">kavg</span><span class="p">,</span> <span class="n">isc</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">only</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;out&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">what</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;out&quot;</span><span class="p">):</span>
             <span class="n">J</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">J</span><span class="o">.</span><span class="n">data</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">elif</span> <span class="n">only</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;in&quot;</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="n">what</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;in&quot;</span><span class="p">):</span>
             <span class="n">J</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">J</span><span class="o">.</span><span class="n">data</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">elif</span> <span class="n">only</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;both&quot;</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.orbital_transmission &#39;only&#39; keyword has &quot;</span>
-                             <span class="s2">&quot;wrong value [all/both, +/out,-/in] allowed.&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">what</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;both&quot;</span><span class="p">,</span> <span class="s2">&quot;+-&quot;</span><span class="p">,</span> <span class="s2">&quot;-+&quot;</span><span class="p">,</span> <span class="s2">&quot;inout&quot;</span><span class="p">,</span> <span class="s2">&quot;outin&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.orbital_transmission &#39;what&#39; keyword has &quot;</span>
+                             <span class="s2">&quot;wrong value [all/both/+-, +/out,-/in] allowed.&quot;</span><span class="p">)</span>
 
         <span class="c1"># do not delete explicit 0&#39;s as the user can then know the sparse matrices</span>
         <span class="c1"># calculated.</span>
@@ -1528,7 +1533,11 @@
 
         <span class="k">return</span> <span class="n">J</span></div>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.orbital_current"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.orbital_current">[docs]</a>    <span class="k">def</span> <span class="nf">orbital_current</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">elec_other</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.orbital_current"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.orbital_current">[docs]</a>    <span class="nd">@deprecate_argument</span><span class="p">(</span><span class="s2">&quot;only&quot;</span><span class="p">,</span> <span class="s2">&quot;what&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;argument only has been deprecated in favor of what, please update your code.&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;0.14.0&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">orbital_current</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">elec_other</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">what</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Orbital current originating from `elec` as a sparse matrix</span>
 
 <span class="sd">        This is the bias window integrated quantity of `orbital_transmission`. As such it</span>
@@ -1553,9 +1562,8 @@
 <span class="sd">           the returned bond currents from the unit-cell (``[None, None, None]``) to</span>
 <span class="sd">           the given supercell, the default is all orbital currents for the supercell.</span>
 <span class="sd">           To only get unit cell orbital currents, pass ``[0, 0, 0]``.</span>
-<span class="sd">        only : {&quot;all&quot;/&quot;both&quot;, &quot;+&quot;/&quot;out&quot;, &quot;-&quot;/&quot;in&quot;}</span>
-<span class="sd">           which orbital currents to return, all, positive (outgoing) or negative (incoming)</span>
-<span class="sd">           values only.</span>
+<span class="sd">        what : {&quot;all&quot;/&quot;both&quot;/&quot;+-&quot;/&quot;inout&quot;, &quot;+&quot;/&quot;out&quot;, &quot;-&quot;/&quot;in&quot;}</span>
+<span class="sd">           which orbital currents to return, all, positive (outgoing) or negative (incoming).</span>
 <span class="sd">           Default to ``&quot;all&quot;`` because it can then be used in the subsequent default</span>
 <span class="sd">           arguments for `sparse_orbital_to_atom` and `sparse_orbital_to_scalar`.</span>
 <span class="sd">        orbitals : array-like or dict, optional</span>
@@ -1607,18 +1615,26 @@
             <span class="s2">&quot;-&quot;</span><span class="p">:</span> <span class="n">func_in</span><span class="p">,</span>
             <span class="s2">&quot;in&quot;</span><span class="p">:</span> <span class="n">func_in</span><span class="p">,</span>
             <span class="s2">&quot;all&quot;</span><span class="p">:</span> <span class="n">func_all</span><span class="p">,</span>
+            <span class="s2">&quot;inout&quot;</span><span class="p">:</span> <span class="n">func_all</span><span class="p">,</span>
+            <span class="s2">&quot;outin&quot;</span><span class="p">:</span> <span class="n">func_all</span><span class="p">,</span>
+            <span class="s2">&quot;+-&quot;</span><span class="p">:</span> <span class="n">func_all</span><span class="p">,</span>
+            <span class="s2">&quot;-+&quot;</span><span class="p">:</span> <span class="n">func_all</span><span class="p">,</span>
             <span class="s2">&quot;both&quot;</span><span class="p">:</span> <span class="n">func_all</span><span class="p">,</span>
-        <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">only</span><span class="p">)</span>
+        <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">what</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">getdata</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.orbital_current &#39;only&#39; keyword has &quot;</span>
-                             <span class="s2">&quot;wrong value [all/both, +/out,-/in] allowed.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.orbital_current &#39;what&#39; keyword has &quot;</span>
+                             <span class="s2">&quot;wrong value [all/both/+-/inout, +/out,-/in] allowed.&quot;</span><span class="p">)</span>
 
         <span class="n">J</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="n">getdata</span><span class="p">,</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">integrator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="p">)),</span> <span class="mf">0.</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sparse_data_to_matrix</span><span class="p">(</span><span class="n">J</span><span class="p">,</span> <span class="n">isc</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">)</span> <span class="o">*</span> <span class="n">constant</span><span class="o">.</span><span class="n">q</span> <span class="o">/</span> <span class="n">constant</span><span class="o">.</span><span class="n">h</span><span class="p">(</span><span class="s2">&quot;eV s&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.bond_transmission"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.bond_transmission">[docs]</a>    <span class="k">def</span> <span class="nf">bond_transmission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.bond_transmission"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.bond_transmission">[docs]</a>    <span class="nd">@deprecate_argument</span><span class="p">(</span><span class="s2">&quot;only&quot;</span><span class="p">,</span> <span class="s2">&quot;what&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;argument only has been deprecated in favor of what, please update your code.&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;0.14.0&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">bond_transmission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                          <span class="n">what</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Bond transmission between atoms at a specific energy</span>
 
 <span class="sd">        Short hand function for calling `orbital_transmission` and `sparse_orbital_to_atom`.</span>
@@ -1643,7 +1659,7 @@
 <span class="sd">        isc : array_like, optional</span>
 <span class="sd">           the returned transmissions from the unit-cell (``[None, None, None]``) (default) to</span>
 <span class="sd">           the given supercell. If ``[None, None, None]`` is passed all transmissions are returned.</span>
-<span class="sd">        only : {&quot;+&quot;/&quot;out&quot;, &quot;-&quot;/&quot;in&quot;, &quot;all&quot;/&quot;both&quot;}</span>
+<span class="sd">        what : {&quot;all&quot;/&quot;both&quot;/&quot;+-&quot;/&quot;inout&quot;, &quot;+&quot;/&quot;out&quot;, &quot;-&quot;/&quot;in&quot;}</span>
 <span class="sd">           If +/out is supplied only the positive transmissions are used (going out)</span>
 <span class="sd">           for -/in, only the negative transmissions are used (going in),</span>
 <span class="sd">           else return both. Please see discussion in `orbital_transmission`.</span>
@@ -1658,9 +1674,9 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; Jij = tbt.orbital_transmission(-1.0, only=&quot;out&quot;) # orbital transmission @ E = -1 eV originating from electrode ``0``</span>
-<span class="sd">        &gt;&gt;&gt; Jab1 = tbt.sparse_orbital_to_atom(Jij)</span>
-<span class="sd">        &gt;&gt;&gt; Jab2 = tbt.bond_transmission(-1.0, only=&quot;out&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; Jij = tbt.orbital_transmission(-1.0, what=&quot;out&quot;) # orbital transmission @ E = -1 eV originating from electrode ``0``</span>
+<span class="sd">        &gt;&gt;&gt; Jab1 = tbt.sparse_orbital_to_atom(Jij)[</span>
+<span class="sd">        &gt;&gt;&gt; Jab2 = tbt.bond_transmission(-1.0, what=&quot;out&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; Jab1 == Jab2</span>
 <span class="sd">        True</span>
 
@@ -1675,11 +1691,15 @@
 <span class="sd">        atom_current : the atomic current for each atom (scalar representation of bond-currents)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Jij</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">orbital_transmission</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="n">kavg</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="n">isc</span><span class="p">,</span>
-                                        <span class="n">only</span><span class="o">=</span><span class="n">only</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="n">orbitals</span><span class="p">)</span>
+                                        <span class="n">what</span><span class="o">=</span><span class="n">what</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="n">orbitals</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sparse_orbital_to_atom</span><span class="p">(</span><span class="n">Jij</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="n">uc</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.bond_current"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.bond_current">[docs]</a>    <span class="k">def</span> <span class="nf">bond_current</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">elec_other</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.bond_current"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.bond_current">[docs]</a>    <span class="nd">@deprecate_argument</span><span class="p">(</span><span class="s2">&quot;only&quot;</span><span class="p">,</span> <span class="s2">&quot;what&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;argument only has been deprecated in favor of what, please update your code.&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;0.14.0&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">bond_current</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">elec_other</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">what</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Bond current between atoms (sum of orbital currents)</span>
 
 <span class="sd">        Short hand function for calling `orbital_current` and `sparse_orbital_to_atom`.</span>
@@ -1703,7 +1723,7 @@
 <span class="sd">           the returned bond currents from the unit-cell (``[None, None, None]``) (default) to</span>
 <span class="sd">           the given supercell. If ``[None, None, None]`` is passed all</span>
 <span class="sd">           bond currents are returned.</span>
-<span class="sd">        only : {&quot;+&quot;/&quot;out&quot;, &quot;-&quot;/&quot;in&quot;, &quot;all&quot;/&quot;both&quot;}</span>
+<span class="sd">        what : {&quot;all&quot;/&quot;both&quot;/&quot;+-&quot;/&quot;inout&quot;, &quot;+&quot;/&quot;out&quot;, &quot;-&quot;/&quot;in&quot;}</span>
 <span class="sd">           If +/out is supplied only the positive currents are used (going out)</span>
 <span class="sd">           for -/in, only the negative currents are used (going in),</span>
 <span class="sd">           else return both. Please see discussion in `orbital_current`.</span>
@@ -1719,9 +1739,9 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; Jij = tbt.orbital_current(0, 1, only=&quot;out&quot;) # orbital current originating from electrode ``0``</span>
+<span class="sd">        &gt;&gt;&gt; Jij = tbt.orbital_current(0, 1, what=&quot;out&quot;) # orbital current originating from electrode ``0``</span>
 <span class="sd">        &gt;&gt;&gt; Jab1 = tbt.sparse_orbital_to_atom(Jij)</span>
-<span class="sd">        &gt;&gt;&gt; Jab2 = tbt.bond_current(0, 1, only=&quot;out&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; Jab2 = tbt.bond_current(0, 1, what=&quot;out&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; Jab1 == Jab2</span>
 <span class="sd">        True</span>
 
@@ -1744,11 +1764,15 @@
 <span class="sd">        atom_current : the atomic current for each atom (scalar representation of bond-currents)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Jij</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">orbital_current</span><span class="p">(</span><span class="n">elec</span><span class="p">,</span> <span class="n">elec_other</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="n">kavg</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="n">isc</span><span class="p">,</span>
-                                   <span class="n">only</span><span class="o">=</span><span class="n">only</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="n">orbitals</span><span class="p">)</span>
+                                   <span class="n">what</span><span class="o">=</span><span class="n">what</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="n">orbitals</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sparse_orbital_to_atom</span><span class="p">(</span><span class="n">Jij</span><span class="p">,</span> <span class="n">uc</span><span class="o">=</span><span class="n">uc</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.vector_transmission"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.vector_transmission">[docs]</a>    <span class="k">def</span> <span class="nf">vector_transmission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.vector_transmission"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.vector_transmission">[docs]</a>    <span class="nd">@deprecate_argument</span><span class="p">(</span><span class="s2">&quot;only&quot;</span><span class="p">,</span> <span class="s2">&quot;what&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;argument only has been deprecated in favor of what, please update your code.&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;0.14.0&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">vector_transmission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                            <span class="n">what</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Vector for each atom being the sum of bond transmissions times the normalized bond vector between the atoms</span>
 
 <span class="sd">        The vector transmission is defined as:</span>
@@ -1775,8 +1799,8 @@
 <span class="sd">           the returned vectors from the unit-cell (``[None, None, None]``) to</span>
 <span class="sd">           the given supercell, the default is all vectors for the supercell.</span>
 <span class="sd">           To only get unit cell vectors, pass ``[0, 0, 0]``.</span>
-<span class="sd">        only : {&quot;+&quot;/&quot;out&quot;, &quot;-&quot;/&quot;in&quot;, &quot;all&quot;/&quot;both&quot;}</span>
-<span class="sd">           By default only sum *outgoing* vectors (``&quot;out&quot;``).</span>
+<span class="sd">        what : {&quot;all&quot;/&quot;both&quot;/&quot;+-&quot;/&quot;inout&quot;, &quot;+&quot;/&quot;out&quot;, &quot;-&quot;/&quot;in&quot;}</span>
+<span class="sd">           The *outgoing* vectors may be retrieved by ``&quot;out&quot;``.</span>
 <span class="sd">           The *incoming* vectors may be retrieved by ``&quot;in&quot;``, while the</span>
 <span class="sd">           average incoming and outgoing direction can be obtained with ``&quot;both&quot;``.</span>
 <span class="sd">           In the last case the vector transmissions are divided by 2 to ensure the length</span>
@@ -1801,9 +1825,9 @@
 <span class="sd">        atom_current : the atomic current for each atom (scalar representation of bond-currents)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Jab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bond_transmission</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="n">kavg</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="n">isc</span><span class="p">,</span>
-                                <span class="n">only</span><span class="o">=</span><span class="n">only</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="n">orbitals</span><span class="p">)</span>
+                                     <span class="n">what</span><span class="o">=</span><span class="n">what</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="n">orbitals</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">only</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;both&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">what</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;both&quot;</span><span class="p">,</span> <span class="s2">&quot;+-&quot;</span><span class="p">,</span> <span class="s2">&quot;-+&quot;</span><span class="p">,</span> <span class="s2">&quot;inout&quot;</span><span class="p">,</span> <span class="s2">&quot;outin&quot;</span><span class="p">):</span>
             <span class="c1"># When we divide by two one can *always* compare the bulk</span>
             <span class="c1"># vector currents using either of the sum-rules.</span>
             <span class="c1"># I.e. it will be much easier to distinguish differences</span>
@@ -1812,7 +1836,11 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sparse_atom_to_vector</span><span class="p">(</span><span class="n">Jab</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="tbtncSileTBtrans.vector_current"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.vector_current">[docs]</a>    <span class="k">def</span> <span class="nf">vector_current</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">elec_other</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
+<div class="viewcode-block" id="tbtncSileTBtrans.vector_current"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtncSileTBtrans.html#sisl.io.tbtrans.tbtncSileTBtrans.vector_current">[docs]</a>    <span class="nd">@deprecate_argument</span><span class="p">(</span><span class="s2">&quot;only&quot;</span><span class="p">,</span> <span class="s2">&quot;what&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;argument only has been deprecated in favor of what, please update your code.&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;0.14.0&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">vector_current</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">elec_other</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">what</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Vector for each atom being the sum of bond currents times the normalized bond vector between the atoms</span>
 
 <span class="sd">        The vector current is defined as:</span>
@@ -1837,8 +1865,8 @@
 <span class="sd">           the returned currents from the unit-cell (``[None, None, None]``) to</span>
 <span class="sd">           the given supercell, the default is all currents for the supercell.</span>
 <span class="sd">           To only get unit cell orbital currents, pass ``[0, 0, 0]``.</span>
-<span class="sd">        only : {&quot;+&quot;/&quot;out&quot;, &quot;-&quot;/&quot;in&quot;, &quot;all&quot;/&quot;both&quot;}</span>
-<span class="sd">           By default only sum *outgoing* currents (``&quot;out&quot;``).</span>
+<span class="sd">        what : {&quot;all&quot;/&quot;both&quot;/&quot;+-&quot;/&quot;inout&quot;, &quot;+&quot;/&quot;out&quot;, &quot;-&quot;/&quot;in&quot;}</span>
+<span class="sd">           The *outgoing* currents may be retrieved by ``&quot;out&quot;``.</span>
 <span class="sd">           The *incoming* currents may be retrieved by ``&quot;in&quot;``, while the</span>
 <span class="sd">           average incoming and outgoing direction can be obtained with ``&quot;both&quot;``.</span>
 <span class="sd">           In the last case the vector currents are divided by 2 to ensure the length</span>
@@ -1871,9 +1899,9 @@
 <span class="sd">        atom_current : the atomic current for each atom (scalar representation of bond-currents)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Jab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bond_current</span><span class="p">(</span><span class="n">elec</span><span class="p">,</span> <span class="n">elec_other</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="n">kavg</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="n">isc</span><span class="p">,</span>
-                                <span class="n">only</span><span class="o">=</span><span class="n">only</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="n">orbitals</span><span class="p">)</span>
+                                <span class="n">what</span><span class="o">=</span><span class="n">what</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="n">orbitals</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">only</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;both&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">what</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;both&quot;</span><span class="p">,</span> <span class="s2">&quot;+-&quot;</span><span class="p">,</span> <span class="s2">&quot;-+&quot;</span><span class="p">,</span> <span class="s2">&quot;inout&quot;</span><span class="p">,</span> <span class="s2">&quot;outin&quot;</span><span class="p">):</span>
             <span class="c1"># When we divide by two one can *always* compare the bulk</span>
             <span class="c1"># vector currents using either of the sum-rules.</span>
             <span class="c1"># I.e. it will be much easier to distinguish differences</span>
@@ -1933,7 +1961,7 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; Jij = tbt.orbital_transmission(-1., only=&quot;all&quot;) # transmission @ E=-1 eV from electrode ``0``</span>
+<span class="sd">        &gt;&gt;&gt; Jij = tbt.orbital_transmission(-1., what&quot;all&quot;) # transmission @ E=-1 eV from electrode ``0``</span>
 <span class="sd">        &gt;&gt;&gt; Ja = tbt.sparse_orbital_to_scalar(Jij)</span>
 
 <span class="sd">        See Also</span>
@@ -1947,7 +1975,7 @@
 <span class="sd">        atom_current : the atomic current for each atom (scalar representation of bond-currents)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Jij</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">orbital_transmission</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="n">kavg</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="n">isc</span><span class="p">,</span>
-                                   <span class="n">only</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="n">orbitals</span><span class="p">)</span>
+                                        <span class="n">what</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="n">orbitals</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sparse_orbital_to_scalar</span><span class="p">(</span><span class="n">Jij</span><span class="p">,</span> <span class="n">activity</span><span class="o">=</span><span class="n">activity</span><span class="p">)</span></div>
 
@@ -2000,7 +2028,7 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; Jij = tbt.orbital_current(0, 1, only=&quot;all&quot;) # orbital current originating from electrode ``0``</span>
+<span class="sd">        &gt;&gt;&gt; Jij = tbt.orbital_current(0, 1, what=&quot;all&quot;) # orbital current originating from electrode ``0``</span>
 <span class="sd">        &gt;&gt;&gt; Ja = tbt.sparse_orbital_to_scalar(Jij)</span>
 
 <span class="sd">        Notes</span>
@@ -2022,7 +2050,7 @@
 <span class="sd">        atom_transmission : energy resolved atomic transmission for each atom (scalar representation of bond-transmissions)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Jij</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">orbital_current</span><span class="p">(</span><span class="n">elec</span><span class="p">,</span> <span class="n">elec_other</span><span class="p">,</span> <span class="n">kavg</span><span class="o">=</span><span class="n">kavg</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="n">isc</span><span class="p">,</span>
-                                   <span class="n">only</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="n">orbitals</span><span class="p">)</span>
+                                   <span class="n">what</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="n">orbitals</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sparse_orbital_to_scalar</span><span class="p">(</span><span class="n">Jij</span><span class="p">,</span> <span class="n">activity</span><span class="o">=</span><span class="n">activity</span><span class="p">)</span></div>
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.xsf &mdash; sisl 0.1.dev1+g0d78d3d documentation</title>
+  <title>sisl.io.xsf &mdash; sisl 0.1.dev1+g76926d8 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
@@ -13,7 +13,6 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
@@ -36,7 +35,7 @@
             sisl
           </a>
               <div class="version">
-                0.1.dev1+g0d78d3d
+                0.1.dev1+g76926d8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -111,14 +110,16 @@
 <span class="c1"># Import sile objects</span>
 <span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="o">*</span>
 
+<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">deprecate_argument</span>
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">PeriodicTable</span>
-<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">AtomUnknown</span><span class="p">,</span> <span class="n">SuperCell</span>
+<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">PeriodicTable</span><span class="p">,</span> <span class="n">Grid</span>
+<span class="kn">from</span> <span class="nn">sisl._collection</span> <span class="kn">import</span> <span class="n">Collection</span>
+<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">GeometryCollection</span><span class="p">,</span> <span class="n">AtomUnknown</span><span class="p">,</span> <span class="n">Lattice</span>
 <span class="kn">from</span> <span class="nn">sisl.utils</span> <span class="kn">import</span> <span class="n">str_spec</span>
 <span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
 
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;xsfSile&#39;</span><span class="p">,</span> <span class="s1">&#39;axsfSile&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;xsfSile&quot;</span><span class="p">]</span>
 
 
 <span class="k">def</span> <span class="nf">_get_kw_index</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
@@ -129,35 +130,95 @@
     <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">kl</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span>
 
 
+<span class="k">def</span> <span class="nf">reset_values</span><span class="p">(</span><span class="o">*</span><span class="n">names_values</span><span class="p">,</span> <span class="n">animsteps</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">animsteps</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">nonlocal</span> <span class="n">names_values</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write_animsteps</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">names_values</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">nonlocal</span> <span class="n">names_values</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">names_values</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">reset</span>
+
+
+<span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="o">*</span><span class="n">funcs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Post-processes the returned value according to the funcs for multiple data &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="n">ret</span><span class="p">):</span>
+        <span class="k">nonlocal</span> <span class="n">funcs</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="n">rets</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">ret</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">func</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">ret</span><span class="p">),</span> <span class="n">funcs</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">funcs</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">ret</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">post</span>
+
+        
+<span class="c1"># Implementation notice!</span>
+<span class="c1"># The XSF files are compatible with Vesta, but ONLY</span>
+<span class="c1"># if there are no empty lines!</span>
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">xsfSile</span><span class="p">(</span><span class="n">Sile</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; XSF file for XCrySDen &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; XSF file for XCrySDen</span>
+
+<span class="sd">    When creating an XSF file one must denote how many geometries to write out.</span>
+<span class="sd">    It is also necessary to use the xsf in a context manager, otherwise it will</span>
+<span class="sd">    overwrite itself repeatedly.</span>
+
+<span class="sd">    &gt;&gt;&gt; with xsfSile(&#39;file.xsf&#39;, &#39;w&#39;, steps=100) as xsf:</span>
+<span class="sd">    ...     for i in range(100):</span>
+<span class="sd">    ...         xsf.write_geometry(geom)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    steps : int, optional</span>
+<span class="sd">        number of steps the xsf file contains. Defaults to 1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Setup the `xsfSile` after initialization &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_comment</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;#&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s2">&quot;w&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_max</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;steps&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_max</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;steps&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_write</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_read_type</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_read_cell</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">_write_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
-    <span class="n">_write_once</span> <span class="o">=</span> <span class="n">Sile</span><span class="o">.</span><span class="n">_write</span>
+    <span class="k">def</span> <span class="nf">_write_key_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="c1"># index is 1-based in file</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_max</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_geometry_write</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="xsfSile.write_supercell"><a class="viewcode-back" href="../../../api/io/generated/sisl.io.xsfSile.html#sisl.io.xsfSile.write_supercell">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">write_supercell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sc</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;.8f&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_write_once</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_write</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_write_animsteps</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_max</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ANIMSTEPS </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_geometry_max</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="xsfSile.write_lattice"><a class="viewcode-back" href="../../../api/io/generated/sisl.io.xsfSile.html#sisl.io.xsfSile.write_lattice">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="n">reset</span><span class="o">=</span><span class="n">reset_values</span><span class="p">((</span><span class="s2">&quot;_geometry_write&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">animsteps</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+    <span class="nd">@deprecate_argument</span><span class="p">(</span><span class="s2">&quot;sc&quot;</span><span class="p">,</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span> <span class="s2">&quot;use lattice= instead of sc=&quot;</span><span class="p">,</span> <span class="n">from_version</span><span class="o">=</span><span class="s2">&quot;0.15&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">write_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;.8f&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Writes the supercell to the contained file</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        sc : SuperCell</span>
+<span class="sd">        lattice : Lattice</span>
 <span class="sd">           the supercell to be written</span>
 <span class="sd">        fmt : str, optional</span>
 <span class="sd">           used format for the precision of the data</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Implementation notice!</span>
-        <span class="c1"># The XSF files are compatible with Vesta, but ONLY</span>
-        <span class="c1"># if there are no empty lines!</span>
-
         <span class="c1"># Check that we can write to the file</span>
         <span class="n">sile_raise_write</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
@@ -165,26 +226,33 @@
         <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">gmtime</span><span class="p">,</span> <span class="n">strftime</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_write_once</span><span class="p">(</span><span class="s1">&#39;# File created by: sisl </span><span class="si">{}</span><span class="se">\n</span><span class="s1">#</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">gmtime</span><span class="p">())))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write_once</span><span class="p">(</span><span class="s1">&#39;CRYSTAL</span><span class="se">\n</span><span class="s1">#</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">lattice</span><span class="o">.</span><span class="n">nsc</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write_once</span><span class="p">(</span><span class="s2">&quot;MOLECULE</span><span class="se">\n</span><span class="s2">#</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">all</span><span class="p">(</span><span class="n">lattice</span><span class="o">.</span><span class="n">nsc</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write_once</span><span class="p">(</span><span class="s2">&quot;SLAB</span><span class="se">\n</span><span class="s2">#</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">lattice</span><span class="o">.</span><span class="n">nsc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write_once</span><span class="p">(</span><span class="s2">&quot;POLYMER</span><span class="se">\n</span><span class="s2">#</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write_once</span><span class="p">(</span><span class="s1">&#39;CRYSTAL</span><span class="se">\n</span><span class="s1">#</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_write_once</span><span class="p">(</span><span class="s1">&#39;# Primitive lattice vectors:</span><span class="se">\n</span><span class="s1">#</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write_key</span><span class="p">(</span><span class="s1">&#39;PRIMVEC&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_key_index</span><span class="p">(</span><span class="s1">&#39;PRIMVEC&#39;</span><span class="p">)</span>
 
         <span class="c1"># We write the cell coordinates as the cell coordinates</span>
         <span class="n">fmt_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">{{</span><span class="s1">:</span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="se">}}</span><span class="s1"> &#39;</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">fmt_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">fmt_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">lattice</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]))</span></div>
 
         <span class="c1"># Convert the unit cell to a conventional cell (90-90-90))</span>
         <span class="c1"># It seems this simply allows to store both formats in</span>
-        <span class="c1"># the same file.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write_once</span><span class="p">(</span><span class="s1">&#39;#</span><span class="se">\n</span><span class="s1"># Conventional lattice vectors:</span><span class="se">\n</span><span class="s1">#</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write_key</span><span class="p">(</span><span class="s1">&#39;CONVVEC&#39;</span><span class="p">)</span>
-        <span class="n">convcell</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">toCuboid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">_v</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">fmt_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">convcell</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]))</span></div>
+        <span class="c1"># the same file. However the below stuff is not correct.</span>
+        <span class="c1">#self._write_once(&#39;#\n# Conventional lattice vectors:\n#\n&#39;)</span>
+        <span class="c1">#self._write_key_index(&#39;CONVVEC&#39;)</span>
+        <span class="c1">#convcell = lattice.toCuboid(True)._v</span>
+        <span class="c1">#for i in [0, 1, 2]:</span>
+        <span class="c1">#    self._write(fmt_str.format(*convcell[i, :]))</span>
 
-<div class="viewcode-block" id="xsfSile.write_geometry"><a class="viewcode-back" href="../../../api/io/generated/sisl.io.xsfSile.html#sisl.io.xsfSile.write_geometry">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
+<div class="viewcode-block" id="xsfSile.write_geometry"><a class="viewcode-back" href="../../../api/io/generated/sisl.io.xsfSile.html#sisl.io.xsfSile.write_geometry">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="n">reset</span><span class="o">=</span><span class="n">reset_values</span><span class="p">((</span><span class="s2">&quot;_geometry_write&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">animsteps</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
     <span class="k">def</span> <span class="nf">write_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;.8f&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Writes the geometry to the contained file</span>
 
@@ -198,14 +266,15 @@
 <span class="sd">           auxiliary data associated with the geometry to be saved</span>
 <span class="sd">           along side. Internally in XCrySDen this data is named *Forces*</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">write_supercell</span><span class="p">(</span><span class="n">geometry</span><span class="o">.</span><span class="n">sc</span><span class="p">,</span> <span class="n">fmt</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write_lattice</span><span class="p">(</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span><span class="p">,</span> <span class="n">fmt</span><span class="p">)</span>
 
         <span class="n">has_data</span> <span class="o">=</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">has_data</span><span class="p">:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_write_once</span><span class="p">(</span><span class="s1">&#39;#</span><span class="se">\n</span><span class="s1"># Atomic coordinates (in primitive coordinates)</span><span class="se">\n</span><span class="s1">#</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write_key</span><span class="p">(</span><span class="s2">&quot;PRIMCOORD&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_write</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_key_index</span><span class="p">(</span><span class="s2">&quot;PRIMCOORD&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span><span class="si">}</span><span class="s1"> 1</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="n">non_valid_Z</span> <span class="o">=</span> <span class="p">(</span><span class="n">geometry</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">Z</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
@@ -225,147 +294,148 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">fmt_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">geometry</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">ia</span><span class="p">]</span><span class="o">.</span><span class="n">Z</span><span class="p">,</span> <span class="o">*</span><span class="n">geometry</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">ia</span><span class="p">,</span> <span class="p">:]))</span></div>
 
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">_r_geometry_multiple</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">steps</span><span class="p">,</span> <span class="n">ret_data</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">squeeze</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="n">asteps</span> <span class="o">=</span> <span class="n">steps</span>
-        <span class="n">steps</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">step</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">steps</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">_r_geometry_next</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ret_data</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">lattice</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># fetch the prior read cell value</span>
+            <span class="n">lattice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_cell</span>
 
         <span class="c1"># initialize all things</span>
-        <span class="n">cell</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">steps</span><span class="p">)</span>
-        <span class="n">cell_set</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">steps</span><span class="p">)</span>
-        <span class="n">xyz_set</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">steps</span><span class="p">)</span>
-        <span class="n">atom</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">steps</span><span class="p">]</span>
-        <span class="n">xyz</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">steps</span><span class="p">]</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">steps</span><span class="p">]</span>
-        <span class="n">data_set</span> <span class="o">=</span> <span class="p">[</span><span class="ow">not</span> <span class="n">ret_data</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">steps</span><span class="p">]</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">convvec</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">primvec</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">atoms_r</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">xyz</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="n">line</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span>
-        <span class="n">all_loaded</span> <span class="o">=</span> <span class="kc">False</span>
-
-        <span class="n">pt</span> <span class="o">=</span> <span class="n">PeriodicTable</span><span class="p">()</span>
-
-        <span class="k">while</span> <span class="n">line</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">all_loaded</span><span class="p">:</span>
+        <span class="k">while</span> <span class="n">line</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
             <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
 
             <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">isspace</span><span class="p">():</span>
                 <span class="k">continue</span>
-            <span class="n">kw</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">kw</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;CONVVEC&quot;</span><span class="p">,</span> <span class="s2">&quot;PRIMVEC&quot;</span><span class="p">,</span> <span class="s2">&quot;PRIMCOORD&quot;</span><span class="p">):</span>
-                <span class="k">continue</span>
 
-            <span class="n">step</span> <span class="o">=</span> <span class="n">_get_kw_index</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">step</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">step</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">steps</span><span class="p">:</span>
-                <span class="k">continue</span>
-
-            <span class="k">if</span> <span class="n">step</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">steps</span> <span class="ow">and</span> <span class="n">step</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-                <span class="n">step</span> <span class="o">=</span> <span class="n">idstep</span> <span class="o">=</span> <span class="n">istep</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">idstep</span> <span class="o">=</span> <span class="n">steps</span><span class="p">[</span><span class="n">step</span><span class="p">]</span>
-                <span class="n">istep</span> <span class="o">=</span> <span class="n">idstep</span>
-
-            <span class="k">if</span> <span class="n">kw</span> <span class="o">==</span> <span class="s2">&quot;CONVVEC&quot;</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">step</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">cell_set</span><span class="p">):</span>
-                        <span class="n">cell_set</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell_set</span><span class="p">)</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="k">continue</span>
-                <span class="k">elif</span> <span class="n">cell_set</span><span class="p">[</span><span class="n">istep</span><span class="p">]:</span>
-                    <span class="k">continue</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">cell_set</span><span class="p">[</span><span class="n">istep</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-
-                <span class="n">icell</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">zerosd</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;CONVVEC&quot;</span><span class="p">):</span>
+                <span class="n">convvec</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">emptyd</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
-                    <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-                    <span class="n">icell</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">step</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">cell</span> <span class="o">=</span> <span class="p">[</span><span class="n">icell</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">cell</span><span class="p">[</span><span class="n">istep</span><span class="p">]</span> <span class="o">=</span> <span class="n">icell</span>
+                    <span class="n">convvec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
 
-            <span class="k">elif</span> <span class="n">kw</span> <span class="o">==</span> <span class="s2">&quot;PRIMVEC&quot;</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">step</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">cell_set</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell_set</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">cell_set</span><span class="p">[</span><span class="n">istep</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-
-                <span class="n">icell</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">zerosd</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;PRIMVEC&quot;</span><span class="p">):</span>
+                <span class="n">primvec</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">emptyd</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
-                    <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-                    <span class="n">icell</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">step</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">cell</span> <span class="o">=</span> <span class="p">[</span><span class="n">icell</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">cell</span><span class="p">[</span><span class="n">istep</span><span class="p">]</span> <span class="o">=</span> <span class="n">icell</span>
+                    <span class="n">primvec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
 
-            <span class="k">elif</span> <span class="n">kw</span> <span class="o">==</span> <span class="s2">&quot;PRIMCOORD&quot;</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">step</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
-                        <span class="s2">&quot; contains an unindexed (or somehow malformed) &#39;PRIMCOORD&#39;&quot;</span>
-                        <span class="s2">&quot; section but you&#39;ve asked for a particular index. This&quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot; shouldn&#39;t happen. line:</span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">&quot;</span>
-                    <span class="p">)</span>
-
-                <span class="n">iatom</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="n">ixyz</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="n">idata</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;PRIMCOORD&quot;</span><span class="p">):</span>
+                <span class="c1"># get number of atoms</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-                <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+                <span class="n">na</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">xyz</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">emptyd</span><span class="p">([</span><span class="n">na</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+                <span class="n">atoms_r</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">na</span><span class="p">):</span>
                     <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">xyz_set</span><span class="p">[</span><span class="n">istep</span><span class="p">]:</span>
-                        <span class="n">iatom</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pt</span><span class="o">.</span><span class="n">Z</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-                        <span class="n">ixyz</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]])</span>
+                    <span class="n">atoms_r</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="n">xyz</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
                     <span class="k">if</span> <span class="n">ret_data</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">4</span><span class="p">:</span>
-                        <span class="n">idata</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="p">[</span><span class="mi">4</span><span class="p">:]])</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">xyz_set</span><span class="p">[</span><span class="n">istep</span><span class="p">]:</span>
-                    <span class="n">atom</span><span class="p">[</span><span class="n">istep</span><span class="p">]</span> <span class="o">=</span> <span class="n">iatom</span>
-                    <span class="n">xyz</span><span class="p">[</span><span class="n">istep</span><span class="p">]</span> <span class="o">=</span> <span class="n">ixyz</span>
-                    <span class="n">xyz_set</span><span class="p">[</span><span class="n">istep</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="n">data</span><span class="p">[</span><span class="n">idstep</span><span class="p">]</span> <span class="o">=</span> <span class="n">idata</span>
-                <span class="n">data_set</span><span class="p">[</span><span class="n">idstep</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="p">[</span><span class="mi">4</span><span class="p">:]])</span>
 
-            <span class="n">all_loaded</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span><span class="n">xyz_set</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="n">cell_set</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="n">data_set</span><span class="p">)</span>
+                <span class="c1"># the primcoord should always come after conv/prim-vec</span>
+                <span class="k">break</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">xyz_set</span><span class="p">):</span>
-            <span class="n">which</span> <span class="o">=</span> <span class="p">[</span><span class="n">asteps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">flatnonzero</span><span class="p">(</span><span class="n">xyz_set</span><span class="p">)]</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> file did not contain atom coordinates for the following requested index: </span><span class="si">{</span><span class="n">which</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;ATOMS&quot;</span><span class="p">):</span>
+                <span class="c1"># molecule specification</span>
+                <span class="k">def</span> <span class="nf">next</span><span class="p">():</span>
+                    <span class="n">point</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+                        <span class="k">return</span> <span class="p">[]</span>
+                    <span class="k">return</span> <span class="n">line</span>
 
-        <span class="k">if</span> <span class="n">ret_data</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">data</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">steps</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">xyz</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="n">xyz</span><span class="p">,</span> <span class="n">atoms_r</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+                <span class="n">lines</span> <span class="o">=</span> <span class="nb">next</span><span class="p">()</span>
+                <span class="k">while</span> <span class="n">lines</span><span class="p">:</span>
+                    <span class="n">atoms_r</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="n">xyz</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="n">ret_data</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">4</span><span class="p">:</span>
+                        <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">4</span><span class="p">:])</span>
+                    <span class="n">lines</span> <span class="o">=</span> <span class="nb">next</span><span class="p">()</span>
+                <span class="n">xyz</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ret_data</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
-        <span class="n">xyz</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
-        <span class="n">cell</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
-        <span class="n">atom</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayi</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
+                <span class="c1"># the ATOMS key should always come after conv/prim-vec</span>
+                <span class="k">break</span>
 
-        <span class="n">geoms</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">istep</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">steps</span><span class="p">)):</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">geoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="p">[</span><span class="n">istep</span><span class="p">],</span> <span class="n">sc</span><span class="o">=</span><span class="n">SuperCell</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="n">istep</span><span class="p">])))</span>
-            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">atom</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">999</span><span class="p">:</span>
-                <span class="c1"># should we perhaps do AtomUnknown?</span>
-                <span class="n">geoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">geoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="p">[</span><span class="n">istep</span><span class="p">],</span> <span class="n">atoms</span><span class="o">=</span><span class="n">atom</span><span class="p">[</span><span class="n">istep</span><span class="p">],</span> <span class="n">sc</span><span class="o">=</span><span class="n">SuperCell</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="n">istep</span><span class="p">])))</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;CONVCOORD&quot;</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> does not implement reading CONVCOORD&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">squeeze</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">steps</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">geoms</span> <span class="o">=</span> <span class="n">geoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;CRYSTAL&quot;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_read_type</span> <span class="o">=</span> <span class="s2">&quot;CRYSTAL&quot;</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;SLAB&quot;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_read_type</span> <span class="o">=</span> <span class="s2">&quot;SLAB&quot;</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;POLYMER&quot;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_read_type</span> <span class="o">=</span> <span class="s2">&quot;POLYMER&quot;</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;MOLECULE&quot;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_read_type</span> <span class="o">=</span> <span class="s2">&quot;MOLECULE&quot;</span>
+
+        <span class="n">typ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_type</span>
+        <span class="k">if</span> <span class="n">typ</span> <span class="o">==</span> <span class="s2">&quot;CRYSTAL&quot;</span><span class="p">:</span>
+            <span class="n">nsc</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">typ</span> <span class="o">==</span> <span class="s2">&quot;SLAB&quot;</span><span class="p">:</span>
+            <span class="n">nsc</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">typ</span> <span class="o">==</span> <span class="s2">&quot;POLYMER&quot;</span><span class="p">:</span>
+            <span class="n">nsc</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">nsc</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">cell</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">primvec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cell</span> <span class="o">=</span> <span class="n">Lattice</span><span class="p">(</span><span class="n">primvec</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="n">nsc</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">lattice</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cell</span> <span class="o">=</span> <span class="n">lattice</span>
+
+        <span class="k">elif</span> <span class="n">typ</span> <span class="o">==</span> <span class="s2">&quot;MOLECULE&quot;</span><span class="p">:</span>
+            <span class="n">cell</span> <span class="o">=</span> <span class="n">Lattice</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">xyz</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">xyz</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mf">10.</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">cell</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> could not find lattice parameters.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># overwrite the currently read cell</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_read_cell</span> <span class="o">=</span> <span class="n">cell</span>
+
+        <span class="k">if</span> <span class="n">atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># this ensures that we will not parse atoms unless required</span>
+            <span class="n">pt</span> <span class="o">=</span> <span class="n">PeriodicTable</span><span class="p">()</span>
+            <span class="n">atoms</span> <span class="o">=</span> <span class="p">[</span><span class="n">pt</span><span class="o">.</span><span class="n">Z</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span> <span class="k">for</span> <span class="n">Z</span> <span class="ow">in</span> <span class="n">atoms_r</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">xyz</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">ret_data</span><span class="p">:</span>
-                <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+            <span class="k">return</span> <span class="kc">None</span>
 
+        <span class="n">geom</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="n">atoms</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="n">cell</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ret_data</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">geoms</span><span class="p">,</span> <span class="n">data</span>
-        <span class="k">return</span> <span class="n">geoms</span>
+            <span class="k">return</span> <span class="n">geom</span><span class="p">,</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">geom</span>
 
-<div class="viewcode-block" id="xsfSile.read_geometry"><a class="viewcode-back" href="../../../api/io/generated/sisl.io.xsfSile.html#sisl.io.xsfSile.read_geometry">[docs]</a>    <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ret_data</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="xsfSile.read_geometry"><a class="viewcode-back" href="../../../api/io/generated/sisl.io.xsfSile.html#sisl.io.xsfSile.read_geometry">[docs]</a>    <span class="nd">@sile_read_multiple</span><span class="p">(</span><span class="n">postprocess</span><span class="o">=</span><span class="n">postprocess</span><span class="p">(</span><span class="n">GeometryCollection</span><span class="p">,</span> <span class="n">Collection</span><span class="p">))</span>
+    <span class="nd">@deprecate_argument</span><span class="p">(</span><span class="s2">&quot;sc&quot;</span><span class="p">,</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span> <span class="s2">&quot;use lattice= instead of sc=&quot;</span><span class="p">,</span> <span class="n">from_version</span><span class="o">=</span><span class="s2">&quot;0.15&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ret_data</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Geometry contained in file, and optionally the associated data</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
+<span class="sd">        lattice : Lattice, optional</span>
+<span class="sd">            the supercell in case the lattice vectors are not present in the current</span>
+<span class="sd">            block.</span>
+<span class="sd">        atoms : Atoms, optional</span>
+<span class="sd">            atomic species used regardless of the contained atomic species</span>
 <span class="sd">        ret_data : bool, optional</span>
 <span class="sd">           in case the the file has auxiliary data, return that as well.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_geometry_multiple</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">ret_data</span><span class="o">=</span><span class="n">ret_data</span><span class="p">,</span> <span class="n">squeeze</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_geometry_next</span><span class="p">(</span><span class="n">lattice</span><span class="o">=</span><span class="n">lattice</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="n">atoms</span><span class="p">,</span> <span class="n">ret_data</span><span class="o">=</span><span class="n">ret_data</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="xsfSile.write_grid"><a class="viewcode-back" href="../../../api/io/generated/sisl.io.xsfSile.html#sisl.io.xsfSile.write_grid">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">write_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -373,8 +443,8 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; g1 = Grid(0.1, sc=2.)</span>
-<span class="sd">        &gt;&gt;&gt; g2 = Grid(0.1, sc=2.)</span>
+<span class="sd">        &gt;&gt;&gt; g1 = Grid(0.1, lattice=2.)</span>
+<span class="sd">        &gt;&gt;&gt; g2 = Grid(0.1, lattice=2.)</span>
 <span class="sd">        &gt;&gt;&gt; get_sile(&#39;output.xsf&#39;, &#39;w&#39;).write_grid(g1, g2)</span>
 
 <span class="sd">        Parameters</span>
@@ -392,20 +462,24 @@
 <span class="sd">            size of the buffer while writing the data, (6144)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sile_raise_write</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="c1"># for now we do not allow an animation with grid data... should this</span>
+        <span class="c1"># even work?</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_max</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.write_grid not allowed in an animation file.&quot;</span><span class="p">)</span>
 
         <span class="n">geom</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;geometry&#39;</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">geometry</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">geom</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">geom</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">AtomUnknown</span><span class="p">(</span><span class="mi">999</span><span class="p">),</span> <span class="n">sc</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">sc</span><span class="p">)</span>
+            <span class="n">geom</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">AtomUnknown</span><span class="p">(</span><span class="mi">999</span><span class="p">),</span> <span class="n">lattice</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lattice</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_geometry</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
 
         <span class="c1"># Buffer size for writing</span>
-        <span class="n">buffersize</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;buffersize&#39;</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="mi">6144</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">size</span><span class="p">))</span>
+        <span class="n">buffersize</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;buffersize&#39;</span><span class="p">,</span> <span class="mi">6144</span><span class="p">),</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
 
         <span class="c1"># Format for precision</span>
         <span class="n">fmt</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fmt&#39;</span><span class="p">,</span> <span class="s1">&#39;.5e&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s1">&#39;BEGIN_BLOCK_DATAGRID_3D</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;sisl_grid_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)))</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;sisl_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)))</span>
         <span class="c1"># Transfer all spaces to underscores (no spaces allowed)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">_v3</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;{:&#39;</span> <span class="o">+</span> <span class="n">fmt</span> <span class="o">+</span> <span class="s1">&#39;} &#39;</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
@@ -419,9 +493,16 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s1">&#39;  &#39;</span> <span class="o">+</span> <span class="n">_v3</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">grid</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]))</span>
 
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">grid</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">Grid</span><span class="p">):</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;grid</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># it must be a tuple</span>
+                <span class="n">name</span><span class="p">,</span> <span class="n">grid</span> <span class="o">=</span> <span class="n">grid</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;grid</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
             <span class="n">is_complex</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">iscomplexobj</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">grid</span><span class="p">)</span>
 
-            <span class="n">name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;grid</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">is_complex</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; BEGIN_DATAGRID_3D_real_</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
@@ -552,102 +633,8 @@
 <span class="s2">                       &quot;&quot;&quot;</span><span class="p">)</span>
 
 
-<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">axsfSile</span><span class="p">(</span><span class="n">xsfSile</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; AXSF file for XCrySDen</span>
-
-<span class="sd">    When creating an AXSF file one must denote how many geometries to write out.</span>
-<span class="sd">    It is also necessary to use the axsf in a context manager, otherwise it will</span>
-<span class="sd">    overwrite itself repeatedly.</span>
-
-<span class="sd">    &gt;&gt;&gt; with axsfSile(&#39;file.axsf&#39;, &#39;w&#39;, steps=100) as axsf:</span>
-<span class="sd">    ...     for i in range(100):</span>
-<span class="sd">    ...         axsf.write_geometry(geom)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-        <span class="c1"># Index of last written geometry (or current geom when writing one)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-
-        <span class="c1"># Total number of geometries intended to be written</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_count</span> <span class="o">=</span> <span class="n">steps</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_count</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="s2">&quot;w&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;In write mode, the intended positive number of geometries must be passed in the&quot;</span>
-                <span class="s2">&quot; `steps` keyword.&quot;</span>
-            <span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_incr_index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Increment the geometry index &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_index</span> <span class="o">+=</span> <span class="mi">1</span>
-
-    <span class="k">def</span> <span class="nf">_write_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_geometry_index</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_write_once</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_index</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
-
-<div class="viewcode-block" id="axsfSile.write_geometry"><a class="viewcode-back" href="../../../api/io/generated/sisl.io.axsfSile.html#sisl.io.axsfSile.write_geometry">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">write_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;.8f&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Writes the geometry to the contained file</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        geometry : Geometry</span>
-<span class="sd">           the geometry to be written</span>
-<span class="sd">        fmt : str, optional</span>
-<span class="sd">           used format for the precision of the data</span>
-<span class="sd">        data : (geometry.na, 3), optional</span>
-<span class="sd">           auxiliary data associated with the geometry to be saved</span>
-<span class="sd">           along side. Internally in XCrySDen this data is named *Forces*</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_incr_index</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write_once</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ANIMSTEPS </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_geometry_count</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">write_geometry</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="n">fmt</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="axsfSile.read_geometry"><a class="viewcode-back" href="../../../api/io/generated/sisl.io.axsfSile.html#sisl.io.axsfSile.read_geometry">[docs]</a>    <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">ret_data</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Geometries and (possibly) associated data stored in the AXSF file</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        index : int or iterable of int or None, optional</span>
-<span class="sd">            The indices to load (0-indexed). If None, load all.</span>
-<span class="sd">            If an integer is passed, a single Geometry is returned, and the leading dimension on data is removed.</span>
-<span class="sd">        ret_data : bool, optional</span>
-<span class="sd">            in case the file has auxiliary data, return that as well.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        geometries : list of Geometry or Geometry</span>
-<span class="sd">            A list of geometries (or a single Geometries) corresponding to requested indices.</span>
-<span class="sd">        data : ndarray of shape (nindex, natoms, nperatom) and dtype float64</span>
-<span class="sd">            Only returned if `data` is True.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">squeeze</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">Integral</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_geometry_count</span><span class="p">())</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">index</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayi</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
-            <span class="n">index</span><span class="p">[</span><span class="n">index</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_geometry_count</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_geometry_multiple</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">ret_data</span><span class="o">=</span><span class="n">ret_data</span><span class="p">,</span> <span class="n">squeeze</span><span class="o">=</span><span class="n">squeeze</span><span class="p">)</span></div>
-
-    <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="k">def</span> <span class="nf">_r_geometry_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span>
-        <span class="k">while</span> <span class="n">line</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
-            <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;ANIMSTEPS&quot;</span><span class="p">):</span>
-                <span class="k">return</span> <span class="n">_get_kw_index</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> did not find &#39;ANIMSTEPS&#39; in the file...&quot;</span><span class="p">)</span>
-
-    <span class="n">write_grid</span> <span class="o">=</span> <span class="kc">None</span>
-
-
 <span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;xsf&#39;</span><span class="p">,</span> <span class="n">xsfSile</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;axsf&#39;</span><span class="p">,</span> <span class="n">axsfSile</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;axsf&#39;</span><span class="p">,</span> <span class="n">xsfSile</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
            </div>

@@ -4,17 +4,17 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Adding new backends &mdash; sisl 0.1.dev1+g0d78d3d documentation</title>
+  <title>Adding new backends &mdash; sisl 0.1.dev1+g76926d8 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/sg_gallery.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/nbsphinx-code-cells.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
@@ -41,7 +41,7 @@
             sisl
           </a>
               <div class="version">
-                0.1.dev1+g0d78d3d
+                0.1.dev1+g76926d8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -121,286 +121,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  
-<style>
-/* CSS for nbsphinx extension */
-
-/* remove conflicting styling from Sphinx themes */
-div.nbinput.container div.prompt *,
-div.nboutput.container div.prompt *,
-div.nbinput.container div.input_area pre,
-div.nboutput.container div.output_area pre,
-div.nbinput.container div.input_area .highlight,
-div.nboutput.container div.output_area .highlight {
-    border: none;
-    padding: 0;
-    margin: 0;
-    box-shadow: none;
-}
-
-div.nbinput.container > div[class*=highlight],
-div.nboutput.container > div[class*=highlight] {
-    margin: 0;
-}
-
-div.nbinput.container div.prompt *,
-div.nboutput.container div.prompt * {
-    background: none;
-}
-
-div.nboutput.container div.output_area .highlight,
-div.nboutput.container div.output_area pre {
-    background: unset;
-}
-
-div.nboutput.container div.output_area div.highlight {
-    color: unset;  /* override Pygments text color */
-}
-
-/* avoid gaps between output lines */
-div.nboutput.container div[class*=highlight] pre {
-    line-height: normal;
-}
-
-/* input/output containers */
-div.nbinput.container,
-div.nboutput.container {
-    display: -webkit-flex;
-    display: flex;
-    align-items: flex-start;
-    margin: 0;
-    width: 100%;
-}
-@media (max-width: 540px) {
-    div.nbinput.container,
-    div.nboutput.container {
-        flex-direction: column;
-    }
-}
-
-/* input container */
-div.nbinput.container {
-    padding-top: 5px;
-}
-
-/* last container */
-div.nblast.container {
-    padding-bottom: 5px;
-}
-
-/* input prompt */
-div.nbinput.container div.prompt pre {
-    color: #307FC1;
-}
-
-/* output prompt */
-div.nboutput.container div.prompt pre {
-    color: #BF5B3D;
-}
-
-/* all prompts */
-div.nbinput.container div.prompt,
-div.nboutput.container div.prompt {
-    width: 4.5ex;
-    padding-top: 5px;
-    position: relative;
-    user-select: none;
-}
-
-div.nbinput.container div.prompt > div,
-div.nboutput.container div.prompt > div {
-    position: absolute;
-    right: 0;
-    margin-right: 0.3ex;
-}
-
-@media (max-width: 540px) {
-    div.nbinput.container div.prompt,
-    div.nboutput.container div.prompt {
-        width: unset;
-        text-align: left;
-        padding: 0.4em;
-    }
-    div.nboutput.container div.prompt.empty {
-        padding: 0;
-    }
-
-    div.nbinput.container div.prompt > div,
-    div.nboutput.container div.prompt > div {
-        position: unset;
-    }
-}
-
-/* disable scrollbars and line breaks on prompts */
-div.nbinput.container div.prompt pre,
-div.nboutput.container div.prompt pre {
-    overflow: hidden;
-    white-space: pre;
-}
-
-/* input/output area */
-div.nbinput.container div.input_area,
-div.nboutput.container div.output_area {
-    -webkit-flex: 1;
-    flex: 1;
-    overflow: auto;
-}
-@media (max-width: 540px) {
-    div.nbinput.container div.input_area,
-    div.nboutput.container div.output_area {
-        width: 100%;
-    }
-}
-
-/* input area */
-div.nbinput.container div.input_area {
-    border: 1px solid #e0e0e0;
-    border-radius: 2px;
-    /*background: #f5f5f5;*/
-}
-
-/* override MathJax center alignment in output cells */
-div.nboutput.container div[class*=MathJax] {
-    text-align: left !important;
-}
-
-/* override sphinx.ext.imgmath center alignment in output cells */
-div.nboutput.container div.math p {
-    text-align: left;
-}
-
-/* standard error */
-div.nboutput.container div.output_area.stderr {
-    background: #fdd;
-}
-
-/* ANSI colors */
-.ansi-black-fg { color: #3E424D; }
-.ansi-black-bg { background-color: #3E424D; }
-.ansi-black-intense-fg { color: #282C36; }
-.ansi-black-intense-bg { background-color: #282C36; }
-.ansi-red-fg { color: #E75C58; }
-.ansi-red-bg { background-color: #E75C58; }
-.ansi-red-intense-fg { color: #B22B31; }
-.ansi-red-intense-bg { background-color: #B22B31; }
-.ansi-green-fg { color: #00A250; }
-.ansi-green-bg { background-color: #00A250; }
-.ansi-green-intense-fg { color: #007427; }
-.ansi-green-intense-bg { background-color: #007427; }
-.ansi-yellow-fg { color: #DDB62B; }
-.ansi-yellow-bg { background-color: #DDB62B; }
-.ansi-yellow-intense-fg { color: #B27D12; }
-.ansi-yellow-intense-bg { background-color: #B27D12; }
-.ansi-blue-fg { color: #208FFB; }
-.ansi-blue-bg { background-color: #208FFB; }
-.ansi-blue-intense-fg { color: #0065CA; }
-.ansi-blue-intense-bg { background-color: #0065CA; }
-.ansi-magenta-fg { color: #D160C4; }
-.ansi-magenta-bg { background-color: #D160C4; }
-.ansi-magenta-intense-fg { color: #A03196; }
-.ansi-magenta-intense-bg { background-color: #A03196; }
-.ansi-cyan-fg { color: #60C6C8; }
-.ansi-cyan-bg { background-color: #60C6C8; }
-.ansi-cyan-intense-fg { color: #258F8F; }
-.ansi-cyan-intense-bg { background-color: #258F8F; }
-.ansi-white-fg { color: #C5C1B4; }
-.ansi-white-bg { background-color: #C5C1B4; }
-.ansi-white-intense-fg { color: #A1A6B2; }
-.ansi-white-intense-bg { background-color: #A1A6B2; }
-
-.ansi-default-inverse-fg { color: #FFFFFF; }
-.ansi-default-inverse-bg { background-color: #000000; }
-
-.ansi-bold { font-weight: bold; }
-.ansi-underline { text-decoration: underline; }
-
-
-div.nbinput.container div.input_area div[class*=highlight] > pre,
-div.nboutput.container div.output_area div[class*=highlight] > pre,
-div.nboutput.container div.output_area div[class*=highlight].math,
-div.nboutput.container div.output_area.rendered_html,
-div.nboutput.container div.output_area > div.output_javascript,
-div.nboutput.container div.output_area:not(.rendered_html) > img{
-    padding: 5px;
-    margin: 0;
-}
-
-/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
-div.nbinput.container div.input_area > div[class^='highlight'],
-div.nboutput.container div.output_area > div[class^='highlight']{
-    overflow-y: hidden;
-}
-
-/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
-.prompt .copybtn {
-    display: none;
-}
-
-/* Some additional styling taken form the Jupyter notebook CSS */
-.jp-RenderedHTMLCommon table,
-div.rendered_html table {
-  border: none;
-  border-collapse: collapse;
-  border-spacing: 0;
-  color: black;
-  font-size: 12px;
-  table-layout: fixed;
-}
-.jp-RenderedHTMLCommon thead,
-div.rendered_html thead {
-  border-bottom: 1px solid black;
-  vertical-align: bottom;
-}
-.jp-RenderedHTMLCommon tr,
-.jp-RenderedHTMLCommon th,
-.jp-RenderedHTMLCommon td,
-div.rendered_html tr,
-div.rendered_html th,
-div.rendered_html td {
-  text-align: right;
-  vertical-align: middle;
-  padding: 0.5em 0.5em;
-  line-height: normal;
-  white-space: normal;
-  max-width: none;
-  border: none;
-}
-.jp-RenderedHTMLCommon th,
-div.rendered_html th {
-  font-weight: bold;
-}
-.jp-RenderedHTMLCommon tbody tr:nth-child(odd),
-div.rendered_html tbody tr:nth-child(odd) {
-  background: #f5f5f5;
-}
-.jp-RenderedHTMLCommon tbody tr:hover,
-div.rendered_html tbody tr:hover {
-  background: rgba(66, 165, 245, 0.2);
-}
-
-/* CSS overrides for sphinx_rtd_theme */
-
-/* 24px margin */
-.nbinput.nblast.container,
-.nboutput.nblast.container {
-    margin-bottom: 19px;  /* padding has already 5px */
-}
-
-/* ... except between code cells! */
-.nblast.container + .nbinput.container {
-    margin-top: -19px;
-}
-
-.admonition > p:before {
-    margin-right: 4px;  /* make room for the exclamation icon */
-}
-
-/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
-.math {
-    text-align: unset;
-}
-</style>
-<div align="right">
+  <div align="right">
 Download IPython notebook <a href="https://raw.githubusercontent.com/zerothi/sisl/master//home/runner/work/sisl/sisl/docs/visualization/viz_module/diy/Adding new backends.ipynb"> here</a>.
 <span style="white-space: nowrap;"><a href="https://mybinder.org/v2/gh/zerothi/sisl/master?filepath=/home/runner/work/sisl/sisl/docs/visualization/viz_module/diy/Adding new backends.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>.</span>
 </div><section id="Adding-new-backends">
@@ -474,7 +195,7 @@ Download IPython notebook <a href="https://raw.githubusercontent.com/zerothi/sis
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"version_major": 2, "version_minor": 0, "model_id": "287e8807513b4a5888da9fd19574439a"}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"version_major": 2, "version_minor": 0, "model_id": "b12ed3a060214ce7b7d3b248d17a25cd"}</script></div>
 </div>
 <p>Now that we know that it can be registered, we can try to add new functionality. But of course, <strong>we need to know how the backend works</strong> if we need to modify it. All backends to draw bands inherit from <code class="docutils literal notranslate"><span class="pre">BandsBackend</span></code>, and you can find some information there on how it works. Let’s read its documentation:</p>
 <div class="nbinput docutils container">
@@ -541,7 +262,7 @@ Draws the bands provided by a `BandsPlot`
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"version_major": 2, "version_minor": 0, "model_id": "f6b8e6501c1547f7ac1575a3aebd56c0"}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"version_major": 2, "version_minor": 0, "model_id": "cb8c6d67acf34bd98030b1316ce0e5ab"}</script></div>
 </div>
 <p>This is not very interesting, but it does its job at illustrating the fact that you can register a slightly modified <em>backend</em>.</p>
 <p>You could use your fresh knowledge to, for example draw something after the bands are drawn:</p>
@@ -572,7 +293,7 @@ Draws the bands provided by a `BandsPlot`
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"version_major": 2, "version_minor": 0, "model_id": "66bb3a9e772f47a38fb600bce9d5cce6"}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"version_major": 2, "version_minor": 0, "model_id": "120f47b1d50c48faac4a504b6d1b481b"}</script></div>
 </div>
 <p>We finish this section by stating that:</p>
 <ul class="simple">
@@ -712,7 +433,7 @@ draw_gap(self, ks, Es, color, name, **kwargs)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"version_major": 2, "version_minor": 0, "model_id": "b2887d98ad0c44c0a80943f0eb0ec2d6"}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"version_major": 2, "version_minor": 0, "model_id": "98ebdde5fc234f7d898e8b4b2f577532"}</script></div>
 </div>
 <p>Beautiful!</p>
 <p>So, to end this section, just two remarks:</p>
@@ -917,7 +638,7 @@ LINE: Gap (X-X)
 <p><em>It wasn’t that difficult, right?</em></p>
 <p>We are very thankful that you took the time to understand how to build backends on top of the <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> framework! Any feedback on it will be highly appreciated and we are looking forward to see your implementations!</p>
 <script type="application/vnd.jupyter.widget-state+json">
-{"state": {"287e8807513b4a5888da9fd19574439a": {"model_name": "FigureModel", "model_module": "jupyterlab-plotly", "model_module_version": "^5.13.0", "state": {"_config": {"plotlyServerURL": "https://plot.ly"}, "_data": [{"hoverinfo": "name", "hovertemplate": "%{y:.2f} eV", "line": {"color": "black", "width": 1.0}, "mode": "lines", "name": "0", "opacity": 1, "x": {"dtype": "float64", "shape": [10]}, "y": {"dtype": "float64", "shape": [10]}, "type": "scatter", "uid": "346bc183-ea79-49ab-b6a4-1b579913ca8d"}, {"hoverinfo": "name", "hovertemplate": "%{y:.2f} eV", "line": {"color": "black", "width": 1.0}, "mode": "lines", "name": "1", "opacity": 1, "x": {"dtype": "float64", "shape": [10]}, "y": {"dtype": "float64", "shape": [10]}, "type": "scatter", "uid": "290edb1d-ae48-45c6-bdcc-cf9da5235b12"}, {"hoverinfo": "name", "hovertemplate": "%{y:.2f} eV", "line": {"color": "black", "width": 1.0}, "mode": "lines", "name": "2", "opacity": 1, "x": {"dtype": "float64", "shape": [10]}, "y": {"dtype": "float64", "shape": [10]}, "type": "scatter", "uid": "68c85316-2964-4272-8720-198945752498"}, {"hoverinfo": "name", "hovertemplate": "%{y:.2f} eV", "line": {"color": "black", "width": 1.0}, "mode": "lines", "name": "3", "opacity": 1, "x": {"dtype": "float64", "shape": [10]}, "y": {"dtype": "float64", "shape": [10]}, "type": "scatter", "uid": "6c4ac3ef-71bc-4420-80b8-6411b95fa14c"}], "_dom_classes": [], "_js2py_layoutDelta": {}, "_js2py_pointsCallback": {}, "_js2py_relayout": {}, "_js2py_restyle": {}, "_js2py_traceDeltas": {}, "_js2py_update": {}, "_last_layout_edit_id": 0, "_last_trace_edit_id": 0, "_layout": {"template": {"layout": {"hovermode": "closest", "paper_bgcolor": "white", "plot_bgcolor": "white", "scene": {"xaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "yaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "zaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}}, "xaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "yaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}}}, "xaxis": {"mirror": true, "range": [0.0, 0.7374630642229563], "showgrid": true, "ticktext": ["Gamma", "X"], "tickvals": [0.0, 0.7374630642229563], "title": {"text": "K"}}, "yaxis": {"mirror": true, "range": [-8.099999999999982, 8.1], "title": {"text": "Energy [eV]"}}}, "_model_module": "jupyterlab-plotly", "_model_module_version": "^5.13.0", "_model_name": "FigureModel", "_py2js_addTraces": {}, "_py2js_animate": {}, "_py2js_deleteTraces": {}, "_py2js_moveTraces": {}, "_py2js_relayout": {}, "_py2js_removeLayoutProps": {}, "_py2js_removeTraceProps": {}, "_py2js_restyle": {}, "_py2js_update": {}, "_view_count": 0, "_view_module": "jupyterlab-plotly", "_view_module_version": "^5.13.0", "_view_name": "FigureView", "tabbable": null, "tooltip": null}, "buffers": [{"data": "AAAAAAAAAAAu1InKCvq0Py7UicoK+sQ/Rb7OLxB3zz8u1InKCvrUPzpJLH2NONo/Rb7OLxB33z+pmThxyVriPy7UicoK+uQ/tA7bI0yZ5z8=", "encoding": "base64", "path": ["_data", 0, "x", "buffer"]}, {"data": "KTMzMzMzIMB1sQ3ULCUgwNw91oZ89h/A1DIfGKtrH8DUHJz1VqsewAhr2BiMtx3AXzZDJfmSHMDwcUMC/UAbwNtL4eK8xRnAqPDZ3kcmGMA=", "encoding": "base64", "path": ["_data", 0, "y", "buffer"]}, {"data": "AAAAAAAAAAAu1InKCvq0Py7UicoK+sQ/Rb7OLxB3zz8u1InKCvrUPzpJLH2NONo/Rb7OLxB33z+pmThxyVriPy7UicoK+uQ/tA7bI0yZ5z8=", "encoding": "base64", "path": ["_data", 1, "x", "buffer"]}, {"data": "jJmZmZmZBcA46a7lIj8GwJiHZM6NEAjAmEJ3rejECsA4WvpPiw0OwFjhxlbg1BDAgwCiKca0EsAaPCNCC5UUwEPt7qDQaBbAqPDZ3kcmGMA=", "encoding": "base64", "path": ["_data", 1, "y", "buffer"]}, {"data": "AAAAAAAAAAAu1InKCvq0Py7UicoK+sQ/Rb7OLxB3zz8u1InKCvrUPzpJLH2NONo/Rb7OLxB33z+pmThxyVriPy7UicoK+uQ/tA7bI0yZ5z8=", "encoding": "base64", "path": ["_data", 2, "x", "buffer"]}, {"data": "tpmZmZmZBUBg6a7lIj8GQL6HZM6NEAhAskJ3rejECkBQWvpPiw0OQGThxlbg1BBAlACiKca0EkAjPCNCC5UUQEft7qDQaBZAsPDZ3kcmGEA=", "encoding": "base64", "path": ["_data", 2, "y", "buffer"]}, {"data": "AAAAAAAAAAAu1InKCvq0Py7UicoK+sQ/Rb7OLxB3zz8u1InKCvrUPzpJLH2NONo/Rb7OLxB33z+pmThxyVriPy7UicoK+uQ/tA7bI0yZ5z8=", "encoding": "base64", "path": ["_data", 3, "x", "buffer"]}, {"data": "MzMzMzMzIEB/sQ3ULCUgQPI91oZ89h9A7DIfGKtrH0DmHJz1VqseQBlr2BiMtx1AbzZDJfmSHED9cUMC/UAbQOFL4eK8xRlAsPDZ3kcmGEA=", "encoding": "base64", "path": ["_data", 3, "y", "buffer"]}]}, "f6b8e6501c1547f7ac1575a3aebd56c0": {"model_name": "FigureModel", "model_module": "jupyterlab-plotly", "model_module_version": "^5.13.0", "state": {"_config": {"plotlyServerURL": "https://plot.ly"}, "_data": [{"hoverinfo": "name", "hovertemplate": "%{y:.2f} eV", "line": {"color": "black", "width": 1.0}, "mode": "lines", "name": "0", "opacity": 1, "showlegend": true, "x": {"dtype": "float64", "shape": [10]}, "y": {"dtype": "float64", "shape": [10]}, "type": "scatter", "uid": "d820f486-f67d-4014-8097-08d3a1cae9f1"}, {"hoverinfo": "name", "hovertemplate": "%{y:.2f} eV", "line": {"color": "black", "width": 1.0}, "mode": "lines", "name": "1", "opacity": 1, "showlegend": true, "x": {"dtype": "float64", "shape": [10]}, "y": {"dtype": "float64", "shape": [10]}, "type": "scatter", "uid": "3b5374c6-4ed7-477f-a70d-d9f5e25f04e1"}, {"hoverinfo": "name", "hovertemplate": "%{y:.2f} eV", "line": {"color": "black", "width": 1.0}, "mode": "lines", "name": "2", "opacity": 1, "showlegend": false, "x": {"dtype": "float64", "shape": [10]}, "y": {"dtype": "float64", "shape": [10]}, "type": "scatter", "uid": "a9b62736-4af8-4020-bf21-04902a0fe921"}, {"hoverinfo": "name", "hovertemplate": "%{y:.2f} eV", "line": {"color": "black", "width": 1.0}, "mode": "lines", "name": "3", "opacity": 1, "showlegend": false, "x": {"dtype": "float64", "shape": [10]}, "y": {"dtype": "float64", "shape": [10]}, "type": "scatter", "uid": "7bebf4b7-537c-4f37-85de-3d06ccce8506"}], "_dom_classes": [], "_js2py_layoutDelta": {}, "_js2py_pointsCallback": {}, "_js2py_relayout": {}, "_js2py_restyle": {}, "_js2py_traceDeltas": {}, "_js2py_update": {}, "_last_layout_edit_id": 0, "_last_trace_edit_id": 0, "_layout": {"template": {"layout": {"hovermode": "closest", "paper_bgcolor": "white", "plot_bgcolor": "white", "scene": {"xaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "yaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "zaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}}, "xaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "yaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}}}, "xaxis": {"mirror": true, "range": [0.0, 0.7374630642229563], "showgrid": true, "ticktext": ["Gamma", "X"], "tickvals": [0.0, 0.7374630642229563], "title": {"text": "K"}}, "yaxis": {"mirror": true, "range": [-8.099999999999982, 8.1], "title": {"text": "Energy [eV]"}}}, "_model_module": "jupyterlab-plotly", "_model_module_version": "^5.13.0", "_model_name": "FigureModel", "_py2js_addTraces": {}, "_py2js_animate": {}, "_py2js_deleteTraces": {}, "_py2js_moveTraces": {}, "_py2js_relayout": {}, "_py2js_removeLayoutProps": {}, "_py2js_removeTraceProps": {}, "_py2js_restyle": {}, "_py2js_update": {}, "_view_count": 0, "_view_module": "jupyterlab-plotly", "_view_module_version": "^5.13.0", "_view_name": "FigureView", "tabbable": null, "tooltip": null}, "buffers": [{"data": "AAAAAAAAAAAu1InKCvq0Py7UicoK+sQ/Rb7OLxB3zz8u1InKCvrUPzpJLH2NONo/Rb7OLxB33z+pmThxyVriPy7UicoK+uQ/tA7bI0yZ5z8=", "encoding": "base64", "path": ["_data", 0, "x", "buffer"]}, {"data": "KTMzMzMzIMB1sQ3ULCUgwNw91oZ89h/A1DIfGKtrH8DUHJz1VqsewAhr2BiMtx3AXzZDJfmSHMDwcUMC/UAbwNtL4eK8xRnAqPDZ3kcmGMA=", "encoding": "base64", "path": ["_data", 0, "y", "buffer"]}, {"data": "AAAAAAAAAAAu1InKCvq0Py7UicoK+sQ/Rb7OLxB3zz8u1InKCvrUPzpJLH2NONo/Rb7OLxB33z+pmThxyVriPy7UicoK+uQ/tA7bI0yZ5z8=", "encoding": "base64", "path": ["_data", 1, "x", "buffer"]}, {"data": "jJmZmZmZBcA46a7lIj8GwJiHZM6NEAjAmEJ3rejECsA4WvpPiw0OwFjhxlbg1BDAgwCiKca0EsAaPCNCC5UUwEPt7qDQaBbAqPDZ3kcmGMA=", "encoding": "base64", "path": ["_data", 1, "y", "buffer"]}, {"data": "AAAAAAAAAAAu1InKCvq0Py7UicoK+sQ/Rb7OLxB3zz8u1InKCvrUPzpJLH2NONo/Rb7OLxB33z+pmThxyVriPy7UicoK+uQ/tA7bI0yZ5z8=", "encoding": "base64", "path": ["_data", 2, "x", "buffer"]}, {"data": "tpmZmZmZBUBg6a7lIj8GQL6HZM6NEAhAskJ3rejECkBQWvpPiw0OQGThxlbg1BBAlACiKca0EkAjPCNCC5UUQEft7qDQaBZAsPDZ3kcmGEA=", "encoding": "base64", "path": ["_data", 2, "y", "buffer"]}, {"data": "AAAAAAAAAAAu1InKCvq0Py7UicoK+sQ/Rb7OLxB3zz8u1InKCvrUPzpJLH2NONo/Rb7OLxB33z+pmThxyVriPy7UicoK+uQ/tA7bI0yZ5z8=", "encoding": "base64", "path": ["_data", 3, "x", "buffer"]}, {"data": "MzMzMzMzIEB/sQ3ULCUgQPI91oZ89h9A7DIfGKtrH0DmHJz1VqseQBlr2BiMtx1AbzZDJfmSHED9cUMC/UAbQOFL4eK8xRlAsPDZ3kcmGEA=", "encoding": "base64", "path": ["_data", 3, "y", "buffer"]}]}, "66bb3a9e772f47a38fb600bce9d5cce6": {"model_name": "FigureModel", "model_module": "jupyterlab-plotly", "model_module_version": "^5.13.0", "state": {"_config": {"plotlyServerURL": "https://plot.ly"}, "_data": [{"hoverinfo": "name", "hovertemplate": "%{y:.2f} eV", "line": {"color": "black", "width": 1.0}, "mode": "lines", "name": "0", "opacity": 1, "x": {"dtype": "float64", "shape": [10]}, "y": {"dtype": "float64", "shape": [10]}, "type": "scatter", "uid": "4eee2ccd-7917-4273-9a58-7bed555e6de0"}, {"hoverinfo": "name", "hovertemplate": "%{y:.2f} eV", "line": {"color": "black", "width": 1.0}, "mode": "lines", "name": "1", "opacity": 1, "x": {"dtype": "float64", "shape": [10]}, "y": {"dtype": "float64", "shape": [10]}, "type": "scatter", "uid": "1aba7d05-c88d-4b05-886c-9214032295c9"}, {"hoverinfo": "name", "hovertemplate": "%{y:.2f} eV", "line": {"color": "black", "width": 1.0}, "mode": "lines", "name": "2", "opacity": 1, "x": {"dtype": "float64", "shape": [10]}, "y": {"dtype": "float64", "shape": [10]}, "type": "scatter", "uid": "c5305597-dea7-4bcd-8b4a-a75a79ff2e3c"}, {"hoverinfo": "name", "hovertemplate": "%{y:.2f} eV", "line": {"color": "black", "width": 1.0}, "mode": "lines", "name": "3", "opacity": 1, "x": {"dtype": "float64", "shape": [10]}, "y": {"dtype": "float64", "shape": [10]}, "type": "scatter", "uid": "2013f1f3-0bdb-4974-b783-aa545514f20b"}], "_dom_classes": [], "_js2py_layoutDelta": {}, "_js2py_pointsCallback": {}, "_js2py_relayout": {}, "_js2py_restyle": {}, "_js2py_traceDeltas": {}, "_js2py_update": {}, "_last_layout_edit_id": 0, "_last_trace_edit_id": 0, "_layout": {"shapes": [{"line": {"color": "red"}, "type": "line", "x0": 0, "x1": 1, "xref": "x domain", "y0": -2, "y1": -2, "yref": "y"}], "template": {"layout": {"hovermode": "closest", "paper_bgcolor": "white", "plot_bgcolor": "white", "scene": {"xaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "yaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "zaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}}, "xaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "yaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}}}, "xaxis": {"mirror": true, "range": [0.0, 0.7374630642229563], "showgrid": true, "ticktext": ["Gamma", "X"], "tickvals": [0.0, 0.7374630642229563], "title": {"text": "K"}}, "yaxis": {"mirror": true, "range": [-8.099999999999982, 8.1], "title": {"text": "Energy [eV]"}}}, "_model_module": "jupyterlab-plotly", "_model_module_version": "^5.13.0", "_model_name": "FigureModel", "_py2js_addTraces": {}, "_py2js_animate": {}, "_py2js_deleteTraces": {}, "_py2js_moveTraces": {}, "_py2js_relayout": {}, "_py2js_removeLayoutProps": {}, "_py2js_removeTraceProps": {}, "_py2js_restyle": {}, "_py2js_update": {}, "_view_count": 0, "_view_module": "jupyterlab-plotly", "_view_module_version": "^5.13.0", "_view_name": "FigureView", "tabbable": null, "tooltip": null}, "buffers": [{"data": "AAAAAAAAAAAu1InKCvq0Py7UicoK+sQ/Rb7OLxB3zz8u1InKCvrUPzpJLH2NONo/Rb7OLxB33z+pmThxyVriPy7UicoK+uQ/tA7bI0yZ5z8=", "encoding": "base64", "path": ["_data", 0, "x", "buffer"]}, {"data": "KTMzMzMzIMB1sQ3ULCUgwNw91oZ89h/A1DIfGKtrH8DUHJz1VqsewAhr2BiMtx3AXzZDJfmSHMDwcUMC/UAbwNtL4eK8xRnAqPDZ3kcmGMA=", "encoding": "base64", "path": ["_data", 0, "y", "buffer"]}, {"data": "AAAAAAAAAAAu1InKCvq0Py7UicoK+sQ/Rb7OLxB3zz8u1InKCvrUPzpJLH2NONo/Rb7OLxB33z+pmThxyVriPy7UicoK+uQ/tA7bI0yZ5z8=", "encoding": "base64", "path": ["_data", 1, "x", "buffer"]}, {"data": "jJmZmZmZBcA46a7lIj8GwJiHZM6NEAjAmEJ3rejECsA4WvpPiw0OwFjhxlbg1BDAgwCiKca0EsAaPCNCC5UUwEPt7qDQaBbAqPDZ3kcmGMA=", "encoding": "base64", "path": ["_data", 1, "y", "buffer"]}, {"data": "AAAAAAAAAAAu1InKCvq0Py7UicoK+sQ/Rb7OLxB3zz8u1InKCvrUPzpJLH2NONo/Rb7OLxB33z+pmThxyVriPy7UicoK+uQ/tA7bI0yZ5z8=", "encoding": "base64", "path": ["_data", 2, "x", "buffer"]}, {"data": "tpmZmZmZBUBg6a7lIj8GQL6HZM6NEAhAskJ3rejECkBQWvpPiw0OQGThxlbg1BBAlACiKca0EkAjPCNCC5UUQEft7qDQaBZAsPDZ3kcmGEA=", "encoding": "base64", "path": ["_data", 2, "y", "buffer"]}, {"data": "AAAAAAAAAAAu1InKCvq0Py7UicoK+sQ/Rb7OLxB3zz8u1InKCvrUPzpJLH2NONo/Rb7OLxB33z+pmThxyVriPy7UicoK+uQ/tA7bI0yZ5z8=", "encoding": "base64", "path": ["_data", 3, "x", "buffer"]}, {"data": "MzMzMzMzIEB/sQ3ULCUgQPI91oZ89h9A7DIfGKtrH0DmHJz1VqseQBlr2BiMtx1AbzZDJfmSHED9cUMC/UAbQOFL4eK8xRlAsPDZ3kcmGEA=", "encoding": "base64", "path": ["_data", 3, "y", "buffer"]}]}, "b2887d98ad0c44c0a80943f0eb0ec2d6": {"model_name": "FigureModel", "model_module": "jupyterlab-plotly", "model_module_version": "^5.13.0", "state": {"_config": {"plotlyServerURL": "https://plot.ly"}, "_data": [{"line": {"color": "black", "width": 1.0}, "mode": "lines", "name": "0", "opacity": 1, "x": {"dtype": "float64", "shape": [10]}, "y": {"dtype": "float64", "shape": [10]}, "type": "scatter", "uid": "e12e54d2-65ae-4230-9f52-ac13533a29e5"}, {"line": {"color": "black", "width": 1.0}, "mode": "lines", "name": "1", "opacity": 1, "x": {"dtype": "float64", "shape": [10]}, "y": {"dtype": "float64", "shape": [10]}, "type": "scatter", "uid": "84f0346a-e762-4f91-b8ac-ae761a727d13"}, {"line": {"color": "black", "width": 1.0}, "mode": "lines", "name": "2", "opacity": 1, "x": {"dtype": "float64", "shape": [10]}, "y": {"dtype": "float64", "shape": [10]}, "type": "scatter", "uid": "53351e9f-35fe-47e6-af09-fc3a68e29852"}, {"line": {"color": "black", "width": 1.0}, "mode": "lines", "name": "3", "opacity": 1, "x": {"dtype": "float64", "shape": [10]}, "y": {"dtype": "float64", "shape": [10]}, "type": "scatter", "uid": "770cd15c-5124-44c0-b696-830900f65314"}, {"marker": {"size": 20, "symbol": ["triangle-up", "triangle-down"]}, "mode": "lines+markers", "name": "Gap", "opacity": 1, "text": "5.40 eV", "x": [0.0, 0.0], "y": [-2.699999999999994, 2.7000000000000126], "type": "scatter", "uid": "daaeb07e-d38f-4847-b577-1ab85a6bad09"}], "_dom_classes": [], "_js2py_layoutDelta": {}, "_js2py_pointsCallback": {}, "_js2py_relayout": {}, "_js2py_restyle": {}, "_js2py_traceDeltas": {}, "_js2py_update": {}, "_last_layout_edit_id": 0, "_last_trace_edit_id": 0, "_layout": {"template": {"layout": {"hovermode": "closest", "paper_bgcolor": "white", "plot_bgcolor": "white", "scene": {"xaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "yaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "zaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}}, "xaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "yaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}}}}, "_model_module": "jupyterlab-plotly", "_model_module_version": "^5.13.0", "_model_name": "FigureModel", "_py2js_addTraces": {}, "_py2js_animate": {}, "_py2js_deleteTraces": {}, "_py2js_moveTraces": {}, "_py2js_relayout": {}, "_py2js_removeLayoutProps": {}, "_py2js_removeTraceProps": {}, "_py2js_restyle": {}, "_py2js_update": {}, "_view_count": 0, "_view_module": "jupyterlab-plotly", "_view_module_version": "^5.13.0", "_view_name": "FigureView", "tabbable": null, "tooltip": null}, "buffers": [{"data": "AAAAAAAAAAAu1InKCvq0Py7UicoK+sQ/Rb7OLxB3zz8u1InKCvrUPzpJLH2NONo/Rb7OLxB33z+pmThxyVriPy7UicoK+uQ/tA7bI0yZ5z8=", "encoding": "base64", "path": ["_data", 0, "x", "buffer"]}, {"data": "KTMzMzMzIMB1sQ3ULCUgwNw91oZ89h/A1DIfGKtrH8DUHJz1VqsewAhr2BiMtx3AXzZDJfmSHMDwcUMC/UAbwNtL4eK8xRnAqPDZ3kcmGMA=", "encoding": "base64", "path": ["_data", 0, "y", "buffer"]}, {"data": "AAAAAAAAAAAu1InKCvq0Py7UicoK+sQ/Rb7OLxB3zz8u1InKCvrUPzpJLH2NONo/Rb7OLxB33z+pmThxyVriPy7UicoK+uQ/tA7bI0yZ5z8=", "encoding": "base64", "path": ["_data", 1, "x", "buffer"]}, {"data": "jJmZmZmZBcA46a7lIj8GwJiHZM6NEAjAmEJ3rejECsA4WvpPiw0OwFjhxlbg1BDAgwCiKca0EsAaPCNCC5UUwEPt7qDQaBbAqPDZ3kcmGMA=", "encoding": "base64", "path": ["_data", 1, "y", "buffer"]}, {"data": "AAAAAAAAAAAu1InKCvq0Py7UicoK+sQ/Rb7OLxB3zz8u1InKCvrUPzpJLH2NONo/Rb7OLxB33z+pmThxyVriPy7UicoK+uQ/tA7bI0yZ5z8=", "encoding": "base64", "path": ["_data", 2, "x", "buffer"]}, {"data": "tpmZmZmZBUBg6a7lIj8GQL6HZM6NEAhAskJ3rejECkBQWvpPiw0OQGThxlbg1BBAlACiKca0EkAjPCNCC5UUQEft7qDQaBZAsPDZ3kcmGEA=", "encoding": "base64", "path": ["_data", 2, "y", "buffer"]}, {"data": "AAAAAAAAAAAu1InKCvq0Py7UicoK+sQ/Rb7OLxB3zz8u1InKCvrUPzpJLH2NONo/Rb7OLxB33z+pmThxyVriPy7UicoK+uQ/tA7bI0yZ5z8=", "encoding": "base64", "path": ["_data", 3, "x", "buffer"]}, {"data": "MzMzMzMzIEB/sQ3ULCUgQPI91oZ89h9A7DIfGKtrH0DmHJz1VqseQBlr2BiMtx1AbzZDJfmSHED9cUMC/UAbQOFL4eK8xRlAsPDZ3kcmGEA=", "encoding": "base64", "path": ["_data", 3, "y", "buffer"]}]}}, "version_major": 2, "version_minor": 0}
+{"state": {"b12ed3a060214ce7b7d3b248d17a25cd": {"model_name": "FigureModel", "model_module": "jupyterlab-plotly", "model_module_version": "^5.13.1", "state": {"_config": {"plotlyServerURL": "https://plot.ly"}, "_data": [{"hoverinfo": "name", "hovertemplate": "%{y:.2f} eV", "line": {"color": "black", "width": 1.0}, "mode": "lines", "name": "0", "opacity": 1, "x": {"dtype": "float64", "shape": [10]}, "y": {"dtype": "float64", "shape": [10]}, "type": "scatter", "uid": "bf6036a5-c0b4-4b83-ad52-80cf08c58fdb"}, {"hoverinfo": "name", "hovertemplate": "%{y:.2f} eV", "line": {"color": "black", "width": 1.0}, "mode": "lines", "name": "1", "opacity": 1, "x": {"dtype": "float64", "shape": [10]}, "y": {"dtype": "float64", "shape": [10]}, "type": "scatter", "uid": "056d524c-a741-4e33-a9fa-1dfe4a9b81da"}, {"hoverinfo": "name", "hovertemplate": "%{y:.2f} eV", "line": {"color": "black", "width": 1.0}, "mode": "lines", "name": "2", "opacity": 1, "x": {"dtype": "float64", "shape": [10]}, "y": {"dtype": "float64", "shape": [10]}, "type": "scatter", "uid": "17c1a69a-cc23-4e33-859d-985b8c6a1e9a"}, {"hoverinfo": "name", "hovertemplate": "%{y:.2f} eV", "line": {"color": "black", "width": 1.0}, "mode": "lines", "name": "3", "opacity": 1, "x": {"dtype": "float64", "shape": [10]}, "y": {"dtype": "float64", "shape": [10]}, "type": "scatter", "uid": "7494faa0-9fa5-4297-b40e-50d698c4ce70"}], "_dom_classes": [], "_js2py_layoutDelta": {}, "_js2py_pointsCallback": {}, "_js2py_relayout": {}, "_js2py_restyle": {}, "_js2py_traceDeltas": {}, "_js2py_update": {}, "_last_layout_edit_id": 0, "_last_trace_edit_id": 0, "_layout": {"template": {"layout": {"hovermode": "closest", "paper_bgcolor": "white", "plot_bgcolor": "white", "scene": {"xaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "yaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "zaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}}, "xaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "yaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}}}, "xaxis": {"mirror": true, "range": [0.0, 0.7374630642229563], "showgrid": true, "ticktext": ["Gamma", "X"], "tickvals": [0.0, 0.7374630642229563], "title": {"text": "K"}}, "yaxis": {"mirror": true, "range": [-8.099999999999982, 8.1], "title": {"text": "Energy [eV]"}}}, "_model_module": "jupyterlab-plotly", "_model_module_version": "^5.13.1", "_model_name": "FigureModel", "_py2js_addTraces": {}, "_py2js_animate": {}, "_py2js_deleteTraces": {}, "_py2js_moveTraces": {}, "_py2js_relayout": {}, "_py2js_removeLayoutProps": {}, "_py2js_removeTraceProps": {}, "_py2js_restyle": {}, "_py2js_update": {}, "_view_count": 0, "_view_module": "jupyterlab-plotly", "_view_module_version": "^5.13.1", "_view_name": "FigureView", "tabbable": null, "tooltip": null}, "buffers": [{"data": "AAAAAAAAAAAu1InKCvq0Py7UicoK+sQ/Rb7OLxB3zz8u1InKCvrUPzpJLH2NONo/Rb7OLxB33z+pmThxyVriPy7UicoK+uQ/tA7bI0yZ5z8=", "encoding": "base64", "path": ["_data", 0, "x", "buffer"]}, {"data": "KTMzMzMzIMB1sQ3ULCUgwNw91oZ89h/A1DIfGKtrH8DUHJz1VqsewAhr2BiMtx3AXzZDJfmSHMDwcUMC/UAbwNtL4eK8xRnAqPDZ3kcmGMA=", "encoding": "base64", "path": ["_data", 0, "y", "buffer"]}, {"data": "AAAAAAAAAAAu1InKCvq0Py7UicoK+sQ/Rb7OLxB3zz8u1InKCvrUPzpJLH2NONo/Rb7OLxB33z+pmThxyVriPy7UicoK+uQ/tA7bI0yZ5z8=", "encoding": "base64", "path": ["_data", 1, "x", "buffer"]}, {"data": "jJmZmZmZBcA46a7lIj8GwJiHZM6NEAjAmEJ3rejECsA4WvpPiw0OwFjhxlbg1BDAgwCiKca0EsAaPCNCC5UUwEPt7qDQaBbAqPDZ3kcmGMA=", "encoding": "base64", "path": ["_data", 1, "y", "buffer"]}, {"data": "AAAAAAAAAAAu1InKCvq0Py7UicoK+sQ/Rb7OLxB3zz8u1InKCvrUPzpJLH2NONo/Rb7OLxB33z+pmThxyVriPy7UicoK+uQ/tA7bI0yZ5z8=", "encoding": "base64", "path": ["_data", 2, "x", "buffer"]}, {"data": "tpmZmZmZBUBg6a7lIj8GQL6HZM6NEAhAskJ3rejECkBQWvpPiw0OQGThxlbg1BBAlACiKca0EkAjPCNCC5UUQEft7qDQaBZAsPDZ3kcmGEA=", "encoding": "base64", "path": ["_data", 2, "y", "buffer"]}, {"data": "AAAAAAAAAAAu1InKCvq0Py7UicoK+sQ/Rb7OLxB3zz8u1InKCvrUPzpJLH2NONo/Rb7OLxB33z+pmThxyVriPy7UicoK+uQ/tA7bI0yZ5z8=", "encoding": "base64", "path": ["_data", 3, "x", "buffer"]}, {"data": "MzMzMzMzIEB/sQ3ULCUgQPI91oZ89h9A7DIfGKtrH0DmHJz1VqseQBlr2BiMtx1AbzZDJfmSHED9cUMC/UAbQOFL4eK8xRlAsPDZ3kcmGEA=", "encoding": "base64", "path": ["_data", 3, "y", "buffer"]}]}, "cb8c6d67acf34bd98030b1316ce0e5ab": {"model_name": "FigureModel", "model_module": "jupyterlab-plotly", "model_module_version": "^5.13.1", "state": {"_config": {"plotlyServerURL": "https://plot.ly"}, "_data": [{"hoverinfo": "name", "hovertemplate": "%{y:.2f} eV", "line": {"color": "black", "width": 1.0}, "mode": "lines", "name": "0", "opacity": 1, "showlegend": true, "x": {"dtype": "float64", "shape": [10]}, "y": {"dtype": "float64", "shape": [10]}, "type": "scatter", "uid": "a4a7c3e8-fcad-4452-b789-5993f8a4b3c4"}, {"hoverinfo": "name", "hovertemplate": "%{y:.2f} eV", "line": {"color": "black", "width": 1.0}, "mode": "lines", "name": "1", "opacity": 1, "showlegend": true, "x": {"dtype": "float64", "shape": [10]}, "y": {"dtype": "float64", "shape": [10]}, "type": "scatter", "uid": "ea245566-3b9c-4e48-9e53-0bb998bd6352"}, {"hoverinfo": "name", "hovertemplate": "%{y:.2f} eV", "line": {"color": "black", "width": 1.0}, "mode": "lines", "name": "2", "opacity": 1, "showlegend": false, "x": {"dtype": "float64", "shape": [10]}, "y": {"dtype": "float64", "shape": [10]}, "type": "scatter", "uid": "fdb5b7b6-6508-4041-a65c-aeb1af237bd1"}, {"hoverinfo": "name", "hovertemplate": "%{y:.2f} eV", "line": {"color": "black", "width": 1.0}, "mode": "lines", "name": "3", "opacity": 1, "showlegend": false, "x": {"dtype": "float64", "shape": [10]}, "y": {"dtype": "float64", "shape": [10]}, "type": "scatter", "uid": "2e2c14ca-42ce-4c87-8074-0658c60dc240"}], "_dom_classes": [], "_js2py_layoutDelta": {}, "_js2py_pointsCallback": {}, "_js2py_relayout": {}, "_js2py_restyle": {}, "_js2py_traceDeltas": {}, "_js2py_update": {}, "_last_layout_edit_id": 0, "_last_trace_edit_id": 0, "_layout": {"template": {"layout": {"hovermode": "closest", "paper_bgcolor": "white", "plot_bgcolor": "white", "scene": {"xaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "yaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "zaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}}, "xaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "yaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}}}, "xaxis": {"mirror": true, "range": [0.0, 0.7374630642229563], "showgrid": true, "ticktext": ["Gamma", "X"], "tickvals": [0.0, 0.7374630642229563], "title": {"text": "K"}}, "yaxis": {"mirror": true, "range": [-8.099999999999982, 8.1], "title": {"text": "Energy [eV]"}}}, "_model_module": "jupyterlab-plotly", "_model_module_version": "^5.13.1", "_model_name": "FigureModel", "_py2js_addTraces": {}, "_py2js_animate": {}, "_py2js_deleteTraces": {}, "_py2js_moveTraces": {}, "_py2js_relayout": {}, "_py2js_removeLayoutProps": {}, "_py2js_removeTraceProps": {}, "_py2js_restyle": {}, "_py2js_update": {}, "_view_count": 0, "_view_module": "jupyterlab-plotly", "_view_module_version": "^5.13.1", "_view_name": "FigureView", "tabbable": null, "tooltip": null}, "buffers": [{"data": "AAAAAAAAAAAu1InKCvq0Py7UicoK+sQ/Rb7OLxB3zz8u1InKCvrUPzpJLH2NONo/Rb7OLxB33z+pmThxyVriPy7UicoK+uQ/tA7bI0yZ5z8=", "encoding": "base64", "path": ["_data", 0, "x", "buffer"]}, {"data": "KTMzMzMzIMB1sQ3ULCUgwNw91oZ89h/A1DIfGKtrH8DUHJz1VqsewAhr2BiMtx3AXzZDJfmSHMDwcUMC/UAbwNtL4eK8xRnAqPDZ3kcmGMA=", "encoding": "base64", "path": ["_data", 0, "y", "buffer"]}, {"data": "AAAAAAAAAAAu1InKCvq0Py7UicoK+sQ/Rb7OLxB3zz8u1InKCvrUPzpJLH2NONo/Rb7OLxB33z+pmThxyVriPy7UicoK+uQ/tA7bI0yZ5z8=", "encoding": "base64", "path": ["_data", 1, "x", "buffer"]}, {"data": "jJmZmZmZBcA46a7lIj8GwJiHZM6NEAjAmEJ3rejECsA4WvpPiw0OwFjhxlbg1BDAgwCiKca0EsAaPCNCC5UUwEPt7qDQaBbAqPDZ3kcmGMA=", "encoding": "base64", "path": ["_data", 1, "y", "buffer"]}, {"data": "AAAAAAAAAAAu1InKCvq0Py7UicoK+sQ/Rb7OLxB3zz8u1InKCvrUPzpJLH2NONo/Rb7OLxB33z+pmThxyVriPy7UicoK+uQ/tA7bI0yZ5z8=", "encoding": "base64", "path": ["_data", 2, "x", "buffer"]}, {"data": "tpmZmZmZBUBg6a7lIj8GQL6HZM6NEAhAskJ3rejECkBQWvpPiw0OQGThxlbg1BBAlACiKca0EkAjPCNCC5UUQEft7qDQaBZAsPDZ3kcmGEA=", "encoding": "base64", "path": ["_data", 2, "y", "buffer"]}, {"data": "AAAAAAAAAAAu1InKCvq0Py7UicoK+sQ/Rb7OLxB3zz8u1InKCvrUPzpJLH2NONo/Rb7OLxB33z+pmThxyVriPy7UicoK+uQ/tA7bI0yZ5z8=", "encoding": "base64", "path": ["_data", 3, "x", "buffer"]}, {"data": "MzMzMzMzIEB/sQ3ULCUgQPI91oZ89h9A7DIfGKtrH0DmHJz1VqseQBlr2BiMtx1AbzZDJfmSHED9cUMC/UAbQOFL4eK8xRlAsPDZ3kcmGEA=", "encoding": "base64", "path": ["_data", 3, "y", "buffer"]}]}, "120f47b1d50c48faac4a504b6d1b481b": {"model_name": "FigureModel", "model_module": "jupyterlab-plotly", "model_module_version": "^5.13.1", "state": {"_config": {"plotlyServerURL": "https://plot.ly"}, "_data": [{"hoverinfo": "name", "hovertemplate": "%{y:.2f} eV", "line": {"color": "black", "width": 1.0}, "mode": "lines", "name": "0", "opacity": 1, "x": {"dtype": "float64", "shape": [10]}, "y": {"dtype": "float64", "shape": [10]}, "type": "scatter", "uid": "e2e3cfa7-7961-4f22-abce-77b160695597"}, {"hoverinfo": "name", "hovertemplate": "%{y:.2f} eV", "line": {"color": "black", "width": 1.0}, "mode": "lines", "name": "1", "opacity": 1, "x": {"dtype": "float64", "shape": [10]}, "y": {"dtype": "float64", "shape": [10]}, "type": "scatter", "uid": "0553a8a9-28f0-4f12-a8cf-d2a9504c2fb2"}, {"hoverinfo": "name", "hovertemplate": "%{y:.2f} eV", "line": {"color": "black", "width": 1.0}, "mode": "lines", "name": "2", "opacity": 1, "x": {"dtype": "float64", "shape": [10]}, "y": {"dtype": "float64", "shape": [10]}, "type": "scatter", "uid": "694051f8-cfca-41fe-809a-58f2bb3c701a"}, {"hoverinfo": "name", "hovertemplate": "%{y:.2f} eV", "line": {"color": "black", "width": 1.0}, "mode": "lines", "name": "3", "opacity": 1, "x": {"dtype": "float64", "shape": [10]}, "y": {"dtype": "float64", "shape": [10]}, "type": "scatter", "uid": "48be602a-86e6-4750-8846-03fa47c78e77"}], "_dom_classes": [], "_js2py_layoutDelta": {}, "_js2py_pointsCallback": {}, "_js2py_relayout": {}, "_js2py_restyle": {}, "_js2py_traceDeltas": {}, "_js2py_update": {}, "_last_layout_edit_id": 0, "_last_trace_edit_id": 0, "_layout": {"shapes": [{"line": {"color": "red"}, "type": "line", "x0": 0, "x1": 1, "xref": "x domain", "y0": -2, "y1": -2, "yref": "y"}], "template": {"layout": {"hovermode": "closest", "paper_bgcolor": "white", "plot_bgcolor": "white", "scene": {"xaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "yaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "zaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}}, "xaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "yaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}}}, "xaxis": {"mirror": true, "range": [0.0, 0.7374630642229563], "showgrid": true, "ticktext": ["Gamma", "X"], "tickvals": [0.0, 0.7374630642229563], "title": {"text": "K"}}, "yaxis": {"mirror": true, "range": [-8.099999999999982, 8.1], "title": {"text": "Energy [eV]"}}}, "_model_module": "jupyterlab-plotly", "_model_module_version": "^5.13.1", "_model_name": "FigureModel", "_py2js_addTraces": {}, "_py2js_animate": {}, "_py2js_deleteTraces": {}, "_py2js_moveTraces": {}, "_py2js_relayout": {}, "_py2js_removeLayoutProps": {}, "_py2js_removeTraceProps": {}, "_py2js_restyle": {}, "_py2js_update": {}, "_view_count": 0, "_view_module": "jupyterlab-plotly", "_view_module_version": "^5.13.1", "_view_name": "FigureView", "tabbable": null, "tooltip": null}, "buffers": [{"data": "AAAAAAAAAAAu1InKCvq0Py7UicoK+sQ/Rb7OLxB3zz8u1InKCvrUPzpJLH2NONo/Rb7OLxB33z+pmThxyVriPy7UicoK+uQ/tA7bI0yZ5z8=", "encoding": "base64", "path": ["_data", 0, "x", "buffer"]}, {"data": "KTMzMzMzIMB1sQ3ULCUgwNw91oZ89h/A1DIfGKtrH8DUHJz1VqsewAhr2BiMtx3AXzZDJfmSHMDwcUMC/UAbwNtL4eK8xRnAqPDZ3kcmGMA=", "encoding": "base64", "path": ["_data", 0, "y", "buffer"]}, {"data": "AAAAAAAAAAAu1InKCvq0Py7UicoK+sQ/Rb7OLxB3zz8u1InKCvrUPzpJLH2NONo/Rb7OLxB33z+pmThxyVriPy7UicoK+uQ/tA7bI0yZ5z8=", "encoding": "base64", "path": ["_data", 1, "x", "buffer"]}, {"data": "jJmZmZmZBcA46a7lIj8GwJiHZM6NEAjAmEJ3rejECsA4WvpPiw0OwFjhxlbg1BDAgwCiKca0EsAaPCNCC5UUwEPt7qDQaBbAqPDZ3kcmGMA=", "encoding": "base64", "path": ["_data", 1, "y", "buffer"]}, {"data": "AAAAAAAAAAAu1InKCvq0Py7UicoK+sQ/Rb7OLxB3zz8u1InKCvrUPzpJLH2NONo/Rb7OLxB33z+pmThxyVriPy7UicoK+uQ/tA7bI0yZ5z8=", "encoding": "base64", "path": ["_data", 2, "x", "buffer"]}, {"data": "tpmZmZmZBUBg6a7lIj8GQL6HZM6NEAhAskJ3rejECkBQWvpPiw0OQGThxlbg1BBAlACiKca0EkAjPCNCC5UUQEft7qDQaBZAsPDZ3kcmGEA=", "encoding": "base64", "path": ["_data", 2, "y", "buffer"]}, {"data": "AAAAAAAAAAAu1InKCvq0Py7UicoK+sQ/Rb7OLxB3zz8u1InKCvrUPzpJLH2NONo/Rb7OLxB33z+pmThxyVriPy7UicoK+uQ/tA7bI0yZ5z8=", "encoding": "base64", "path": ["_data", 3, "x", "buffer"]}, {"data": "MzMzMzMzIEB/sQ3ULCUgQPI91oZ89h9A7DIfGKtrH0DmHJz1VqseQBlr2BiMtx1AbzZDJfmSHED9cUMC/UAbQOFL4eK8xRlAsPDZ3kcmGEA=", "encoding": "base64", "path": ["_data", 3, "y", "buffer"]}]}, "98ebdde5fc234f7d898e8b4b2f577532": {"model_name": "FigureModel", "model_module": "jupyterlab-plotly", "model_module_version": "^5.13.1", "state": {"_config": {"plotlyServerURL": "https://plot.ly"}, "_data": [{"line": {"color": "black", "width": 1.0}, "mode": "lines", "name": "0", "opacity": 1, "x": {"dtype": "float64", "shape": [10]}, "y": {"dtype": "float64", "shape": [10]}, "type": "scatter", "uid": "f42c70ef-2253-45b7-97c5-5e66b1ecfbd6"}, {"line": {"color": "black", "width": 1.0}, "mode": "lines", "name": "1", "opacity": 1, "x": {"dtype": "float64", "shape": [10]}, "y": {"dtype": "float64", "shape": [10]}, "type": "scatter", "uid": "6784e8b9-b517-4d8a-bcf4-984dfde80736"}, {"line": {"color": "black", "width": 1.0}, "mode": "lines", "name": "2", "opacity": 1, "x": {"dtype": "float64", "shape": [10]}, "y": {"dtype": "float64", "shape": [10]}, "type": "scatter", "uid": "18ce93a5-ecc9-4ac6-95d3-c43c46cc49e6"}, {"line": {"color": "black", "width": 1.0}, "mode": "lines", "name": "3", "opacity": 1, "x": {"dtype": "float64", "shape": [10]}, "y": {"dtype": "float64", "shape": [10]}, "type": "scatter", "uid": "0dd1398e-56bb-4d3e-858c-68d7666c2a0e"}, {"marker": {"size": 20, "symbol": ["triangle-up", "triangle-down"]}, "mode": "lines+markers", "name": "Gap", "opacity": 1, "text": "5.40 eV", "x": [0.0, 0.0], "y": [-2.699999999999994, 2.7000000000000126], "type": "scatter", "uid": "20f536c6-b854-4835-a1cf-3ea8f2d674a7"}], "_dom_classes": [], "_js2py_layoutDelta": {}, "_js2py_pointsCallback": {}, "_js2py_relayout": {}, "_js2py_restyle": {}, "_js2py_traceDeltas": {}, "_js2py_update": {}, "_last_layout_edit_id": 0, "_last_trace_edit_id": 0, "_layout": {"template": {"layout": {"hovermode": "closest", "paper_bgcolor": "white", "plot_bgcolor": "white", "scene": {"xaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "yaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "zaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}}, "xaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "yaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}}}}, "_model_module": "jupyterlab-plotly", "_model_module_version": "^5.13.1", "_model_name": "FigureModel", "_py2js_addTraces": {}, "_py2js_animate": {}, "_py2js_deleteTraces": {}, "_py2js_moveTraces": {}, "_py2js_relayout": {}, "_py2js_removeLayoutProps": {}, "_py2js_removeTraceProps": {}, "_py2js_restyle": {}, "_py2js_update": {}, "_view_count": 0, "_view_module": "jupyterlab-plotly", "_view_module_version": "^5.13.1", "_view_name": "FigureView", "tabbable": null, "tooltip": null}, "buffers": [{"data": "AAAAAAAAAAAu1InKCvq0Py7UicoK+sQ/Rb7OLxB3zz8u1InKCvrUPzpJLH2NONo/Rb7OLxB33z+pmThxyVriPy7UicoK+uQ/tA7bI0yZ5z8=", "encoding": "base64", "path": ["_data", 0, "x", "buffer"]}, {"data": "KTMzMzMzIMB1sQ3ULCUgwNw91oZ89h/A1DIfGKtrH8DUHJz1VqsewAhr2BiMtx3AXzZDJfmSHMDwcUMC/UAbwNtL4eK8xRnAqPDZ3kcmGMA=", "encoding": "base64", "path": ["_data", 0, "y", "buffer"]}, {"data": "AAAAAAAAAAAu1InKCvq0Py7UicoK+sQ/Rb7OLxB3zz8u1InKCvrUPzpJLH2NONo/Rb7OLxB33z+pmThxyVriPy7UicoK+uQ/tA7bI0yZ5z8=", "encoding": "base64", "path": ["_data", 1, "x", "buffer"]}, {"data": "jJmZmZmZBcA46a7lIj8GwJiHZM6NEAjAmEJ3rejECsA4WvpPiw0OwFjhxlbg1BDAgwCiKca0EsAaPCNCC5UUwEPt7qDQaBbAqPDZ3kcmGMA=", "encoding": "base64", "path": ["_data", 1, "y", "buffer"]}, {"data": "AAAAAAAAAAAu1InKCvq0Py7UicoK+sQ/Rb7OLxB3zz8u1InKCvrUPzpJLH2NONo/Rb7OLxB33z+pmThxyVriPy7UicoK+uQ/tA7bI0yZ5z8=", "encoding": "base64", "path": ["_data", 2, "x", "buffer"]}, {"data": "tpmZmZmZBUBg6a7lIj8GQL6HZM6NEAhAskJ3rejECkBQWvpPiw0OQGThxlbg1BBAlACiKca0EkAjPCNCC5UUQEft7qDQaBZAsPDZ3kcmGEA=", "encoding": "base64", "path": ["_data", 2, "y", "buffer"]}, {"data": "AAAAAAAAAAAu1InKCvq0Py7UicoK+sQ/Rb7OLxB3zz8u1InKCvrUPzpJLH2NONo/Rb7OLxB33z+pmThxyVriPy7UicoK+uQ/tA7bI0yZ5z8=", "encoding": "base64", "path": ["_data", 3, "x", "buffer"]}, {"data": "MzMzMzMzIEB/sQ3ULCUgQPI91oZ89h9A7DIfGKtrH0DmHJz1VqseQBlr2BiMtx1AbzZDJfmSHED9cUMC/UAbQOFL4eK8xRlAsPDZ3kcmGEA=", "encoding": "base64", "path": ["_data", 3, "y", "buffer"]}]}}, "version_major": 2, "version_minor": 0}
 </script></section>
 </section>
 

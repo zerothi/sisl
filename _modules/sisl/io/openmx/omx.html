@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.openmx.omx &mdash; sisl 0.1.dev1+g0d78d3d documentation</title>
+  <title>sisl.io.openmx.omx &mdash; sisl 0.1.dev1+g76926d8 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -13,7 +13,6 @@
     <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
         <script src="../../../../_static/doctools.js"></script>
         <script src="../../../../_static/sphinx_highlight.js"></script>
@@ -36,7 +35,7 @@
             sisl
           </a>
               <div class="version">
-                0.1.dev1+g0d78d3d
+                0.1.dev1+g76926d8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -114,7 +113,7 @@
 <span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileOpenMX</span>
 
-<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">SphericalOrbital</span><span class="p">,</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">SuperCell</span>
+<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">SphericalOrbital</span><span class="p">,</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">Lattice</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;omxSileOpenMX&#39;</span><span class="p">]</span>
@@ -359,10 +358,10 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        output: bool, optional</span>
-<span class="sd">            whether to read supercell from output files (default to read from</span>
+<span class="sd">            whether to read lattice from output files (default to read from</span>
 <span class="sd">            the input file).</span>
 <span class="sd">        order: {&#39;dat&#39;, &#39;omx&#39;}</span>
-<span class="sd">            the order of which to try and read the supercell.</span>
+<span class="sd">            the order of which to try and read the lattice</span>
 <span class="sd">            If `order` is present `output` is disregarded.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">order</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;order&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;dat&#39;</span><span class="p">,</span> <span class="s1">&#39;omx&#39;</span><span class="p">])</span>
@@ -441,8 +440,8 @@
             <span class="n">atom</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Atom</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">orbs</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
         <span class="k">return</span> <span class="n">atom</span>
 
-<div class="viewcode-block" id="omxSileOpenMX.read_supercell"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.openmx.omxSileOpenMX.html#sisl.io.openmx.omxSileOpenMX.read_supercell">[docs]</a>    <span class="k">def</span> <span class="nf">read_supercell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads supercell</span>
+<div class="viewcode-block" id="omxSileOpenMX.read_lattice"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.openmx.omxSileOpenMX.html#sisl.io.openmx.omxSileOpenMX.read_lattice">[docs]</a>    <span class="k">def</span> <span class="nf">read_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads lattice</span>
 
 <span class="sd">        One can limit the tried files to only one file by passing</span>
 <span class="sd">        only a single file ending.</span>
@@ -450,10 +449,10 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        output: bool, optional</span>
-<span class="sd">            whether to read supercell from output files (default to read from</span>
+<span class="sd">            whether to read lattice from output files (default to read from</span>
 <span class="sd">            the input file).</span>
 <span class="sd">        order: {&#39;dat&#39;, &#39;omx&#39;}</span>
-<span class="sd">            the order of which to try and read the supercell.</span>
+<span class="sd">            the order of which to try and read the lattice.</span>
 <span class="sd">            If `order` is present `output` is disregarded.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">output</span><span class="p">:</span>
@@ -461,13 +460,13 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">order</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;order&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;dat&#39;</span><span class="p">,</span> <span class="s1">&#39;omx&#39;</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_r_supercell_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()))(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_r_lattice_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()))(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">v</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
-    <span class="k">def</span> <span class="nf">_r_supercell_omx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns `SuperCell` object from the omx file &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_r_lattice_omx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns `Lattice` object from the omx file &quot;&quot;&quot;</span>
         <span class="n">conv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Atoms.UnitVectors.Unit&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;Ang&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">conv</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;AU&#39;</span><span class="p">:</span>
             <span class="n">conv</span> <span class="o">=</span> <span class="n">units</span><span class="p">(</span><span class="s1">&#39;Bohr&#39;</span><span class="p">,</span> <span class="s1">&#39;Ang&#39;</span><span class="p">)</span>
@@ -485,9 +484,9 @@
             <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="s1">&#39;Could not find Atoms.UnitVectors in file&#39;</span><span class="p">)</span>
         <span class="n">cell</span> <span class="o">*=</span> <span class="n">conv</span>
 
-        <span class="k">return</span> <span class="n">SuperCell</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Lattice</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
 
-    <span class="n">_r_supercell_dat</span> <span class="o">=</span> <span class="n">_r_supercell_omx</span>
+    <span class="n">_r_lattice_dat</span> <span class="o">=</span> <span class="n">_r_lattice_omx</span>
 
 <div class="viewcode-block" id="omxSileOpenMX.read_geometry"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.openmx.omxSileOpenMX.html#sisl.io.openmx.omxSileOpenMX.read_geometry">[docs]</a>    <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns Geometry object</span>
@@ -516,7 +515,7 @@
 
     <span class="k">def</span> <span class="nf">_r_geometry_omx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns `Geometry` &quot;&quot;&quot;</span>
-        <span class="n">sc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_supercell</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;omx&#39;</span><span class="p">])</span>
+        <span class="n">lattice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_lattice</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;omx&#39;</span><span class="p">])</span>
 
         <span class="n">na</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Atoms.Number&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">conv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Atoms.SpeciesAndCoordinates.Unit&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;Ang&#39;</span><span class="p">)</span>
@@ -551,9 +550,9 @@
         <span class="k">if</span> <span class="n">conv</span> <span class="o">==</span> <span class="s1">&#39;AU&#39;</span><span class="p">:</span>
             <span class="n">xyz</span> <span class="o">*=</span> <span class="n">units</span><span class="p">(</span><span class="s1">&#39;Bohr&#39;</span><span class="p">,</span> <span class="s1">&#39;Ang&#39;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">conv</span> <span class="o">==</span> <span class="s1">&#39;FRAC&#39;</span><span class="p">:</span>
-            <span class="n">xyz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
+            <span class="n">xyz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">lattice</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="n">atom</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="n">sc</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="n">atom</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="n">lattice</span><span class="p">)</span>
 
     <span class="n">_r_geometry_dat</span> <span class="o">=</span> <span class="n">_r_geometry_omx</span></div>
 

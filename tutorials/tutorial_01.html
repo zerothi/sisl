@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Geometry creation – part 1 &mdash; sisl 0.1.dev1+g0d78d3d documentation</title>
+  <title>Geometry creation – part 1 &mdash; sisl 0.1.dev1+g76926d8 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
@@ -14,7 +14,6 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/sphinx_highlight.js"></script>
@@ -39,7 +38,7 @@
             sisl
           </a>
               <div class="version">
-                0.1.dev1+g0d78d3d
+                0.1.dev1+g76926d8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -117,31 +116,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  
-<style>
-/* CSS overrides for sphinx_rtd_theme */
-
-/* 24px margin */
-.nbinput.nblast.container,
-.nboutput.nblast.container {
-    margin-bottom: 19px;  /* padding has already 5px */
-}
-
-/* ... except between code cells! */
-.nblast.container + .nbinput.container {
-    margin-top: -19px;
-}
-
-.admonition > p:before {
-    margin-right: 4px;  /* make room for the exclamation icon */
-}
-
-/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
-.math {
-    text-align: unset;
-}
-</style>
-<section id="geometry-creation-part-1">
+  <section id="geometry-creation-part-1">
 <span id="tutorial-01"></span><h1>Geometry creation – part 1<a class="headerlink" href="#geometry-creation-part-1" title="Permalink to this heading"></a></h1>
 <p>To create a <em class="xref py py-obj">Geometry</em> one needs to define a set of attributes.
 The <em>only</em> required information is the atomic coordinates:</p>
@@ -156,7 +131,7 @@ The <em>only</em> required information is the atomic coordinates:</p>
 </pre></div>
 </div>
 <p>this will create a <em class="xref py py-obj">Geometry</em> object with 1 Hydrogen atom with a single orbital
-(default if not specified), and a supercell of 10 A in each Cartesian direction.
+(default if not specified), and a lattice of 10 A in each Cartesian direction.
 When printing a <em class="xref py py-obj">Geometry</em> object a list of information is printed in an
 XML-like fashion. <code class="docutils literal notranslate"><span class="pre">na</span></code> corresponds to the total number of atoms in the
 geometry, while <code class="docutils literal notranslate"><span class="pre">no</span></code> refers to the total number of orbitals.

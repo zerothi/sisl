@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.vasp.car &mdash; sisl 0.1.dev1+g0d78d3d documentation</title>
+  <title>sisl.io.vasp.car &mdash; sisl 0.1.dev1+g76926d8 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -13,7 +13,6 @@
     <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
         <script src="../../../../_static/doctools.js"></script>
         <script src="../../../../_static/sphinx_highlight.js"></script>
@@ -36,7 +35,7 @@
             sisl
           </a>
               <div class="version">
-                0.1.dev1+g0d78d3d
+                0.1.dev1+g76926d8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -113,7 +112,7 @@
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
 <span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">warn</span>
-<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">PeriodicTable</span><span class="p">,</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">SuperCell</span>
+<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">PeriodicTable</span><span class="p">,</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">Lattice</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;carSileVASP&#39;</span><span class="p">]</span>
@@ -221,9 +220,9 @@
         <span class="k">for</span> <span class="n">ia</span> <span class="ow">in</span> <span class="n">geometry</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">geometry</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">ia</span><span class="p">,</span> <span class="p">:])</span> <span class="o">+</span> <span class="n">todyn</span><span class="p">(</span><span class="n">dynamic</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="n">ia</span><span class="p">]]))</span></div>
 
-<div class="viewcode-block" id="carSileVASP.read_supercell"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.vasp.carSileVASP.html#sisl.io.vasp.carSileVASP.read_supercell">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">read_supercell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns `SuperCell` object from the CONTCAR/POSCAR file &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="carSileVASP.read_lattice"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.vasp.carSileVASP.html#sisl.io.vasp.carSileVASP.read_lattice">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">read_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns `Lattice` object from the CONTCAR/POSCAR file &quot;&quot;&quot;</span>
 
         <span class="c1"># read first line</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>  <span class="c1"># LABEL</span>
@@ -236,7 +235,7 @@
             <span class="n">cell</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[:</span><span class="mi">3</span><span class="p">]))</span>
         <span class="n">cell</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scale</span>
 
-        <span class="k">return</span> <span class="n">SuperCell</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Lattice</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="carSileVASP.read_geometry"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.vasp.carSileVASP.html#sisl.io.vasp.carSileVASP.read_geometry">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ret_dynamic</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -250,7 +249,7 @@
 <span class="sd">           also return selective dynamics (if present), if not, None will</span>
 <span class="sd">           be returned.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">sc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_supercell</span><span class="p">()</span>
+        <span class="n">lattice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_lattice</span><span class="p">()</span>
 
         <span class="c1"># The species labels are not always included in *CAR</span>
         <span class="n">line1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
@@ -307,10 +306,10 @@
             <span class="c1"># The unit of the coordinates are cartesian</span>
             <span class="n">xyz</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scale</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">xyz</span> <span class="o">=</span> <span class="n">xyz</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
+            <span class="n">xyz</span> <span class="o">=</span> <span class="n">xyz</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">lattice</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
 
         <span class="c1"># The POT/CONT-CAR does not contain information on the atomic species</span>
-        <span class="n">geom</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="o">=</span><span class="n">xyz</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="n">atom</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="n">sc</span><span class="p">)</span>
+        <span class="n">geom</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="o">=</span><span class="n">xyz</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="n">atom</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="n">lattice</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ret_dynamic</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">geom</span><span class="p">,</span> <span class="n">dynamic</span>
         <span class="k">return</span> <span class="n">geom</span></div>

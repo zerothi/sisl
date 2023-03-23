@@ -4,17 +4,17 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Siesta — graphene &mdash; sisl 0.1.dev1+g0d78d3d documentation</title>
+  <title>Siesta — graphene &mdash; sisl 0.1.dev1+g76926d8 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
       <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/nbsphinx-code-cells.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/sphinx_highlight.js"></script>
@@ -41,7 +41,7 @@
             sisl
           </a>
               <div class="version">
-                0.1.dev1+g0d78d3d
+                0.1.dev1+g76926d8
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -122,286 +122,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  
-<style>
-/* CSS for nbsphinx extension */
-
-/* remove conflicting styling from Sphinx themes */
-div.nbinput.container div.prompt *,
-div.nboutput.container div.prompt *,
-div.nbinput.container div.input_area pre,
-div.nboutput.container div.output_area pre,
-div.nbinput.container div.input_area .highlight,
-div.nboutput.container div.output_area .highlight {
-    border: none;
-    padding: 0;
-    margin: 0;
-    box-shadow: none;
-}
-
-div.nbinput.container > div[class*=highlight],
-div.nboutput.container > div[class*=highlight] {
-    margin: 0;
-}
-
-div.nbinput.container div.prompt *,
-div.nboutput.container div.prompt * {
-    background: none;
-}
-
-div.nboutput.container div.output_area .highlight,
-div.nboutput.container div.output_area pre {
-    background: unset;
-}
-
-div.nboutput.container div.output_area div.highlight {
-    color: unset;  /* override Pygments text color */
-}
-
-/* avoid gaps between output lines */
-div.nboutput.container div[class*=highlight] pre {
-    line-height: normal;
-}
-
-/* input/output containers */
-div.nbinput.container,
-div.nboutput.container {
-    display: -webkit-flex;
-    display: flex;
-    align-items: flex-start;
-    margin: 0;
-    width: 100%;
-}
-@media (max-width: 540px) {
-    div.nbinput.container,
-    div.nboutput.container {
-        flex-direction: column;
-    }
-}
-
-/* input container */
-div.nbinput.container {
-    padding-top: 5px;
-}
-
-/* last container */
-div.nblast.container {
-    padding-bottom: 5px;
-}
-
-/* input prompt */
-div.nbinput.container div.prompt pre {
-    color: #307FC1;
-}
-
-/* output prompt */
-div.nboutput.container div.prompt pre {
-    color: #BF5B3D;
-}
-
-/* all prompts */
-div.nbinput.container div.prompt,
-div.nboutput.container div.prompt {
-    width: 4.5ex;
-    padding-top: 5px;
-    position: relative;
-    user-select: none;
-}
-
-div.nbinput.container div.prompt > div,
-div.nboutput.container div.prompt > div {
-    position: absolute;
-    right: 0;
-    margin-right: 0.3ex;
-}
-
-@media (max-width: 540px) {
-    div.nbinput.container div.prompt,
-    div.nboutput.container div.prompt {
-        width: unset;
-        text-align: left;
-        padding: 0.4em;
-    }
-    div.nboutput.container div.prompt.empty {
-        padding: 0;
-    }
-
-    div.nbinput.container div.prompt > div,
-    div.nboutput.container div.prompt > div {
-        position: unset;
-    }
-}
-
-/* disable scrollbars and line breaks on prompts */
-div.nbinput.container div.prompt pre,
-div.nboutput.container div.prompt pre {
-    overflow: hidden;
-    white-space: pre;
-}
-
-/* input/output area */
-div.nbinput.container div.input_area,
-div.nboutput.container div.output_area {
-    -webkit-flex: 1;
-    flex: 1;
-    overflow: auto;
-}
-@media (max-width: 540px) {
-    div.nbinput.container div.input_area,
-    div.nboutput.container div.output_area {
-        width: 100%;
-    }
-}
-
-/* input area */
-div.nbinput.container div.input_area {
-    border: 1px solid #e0e0e0;
-    border-radius: 2px;
-    /*background: #f5f5f5;*/
-}
-
-/* override MathJax center alignment in output cells */
-div.nboutput.container div[class*=MathJax] {
-    text-align: left !important;
-}
-
-/* override sphinx.ext.imgmath center alignment in output cells */
-div.nboutput.container div.math p {
-    text-align: left;
-}
-
-/* standard error */
-div.nboutput.container div.output_area.stderr {
-    background: #fdd;
-}
-
-/* ANSI colors */
-.ansi-black-fg { color: #3E424D; }
-.ansi-black-bg { background-color: #3E424D; }
-.ansi-black-intense-fg { color: #282C36; }
-.ansi-black-intense-bg { background-color: #282C36; }
-.ansi-red-fg { color: #E75C58; }
-.ansi-red-bg { background-color: #E75C58; }
-.ansi-red-intense-fg { color: #B22B31; }
-.ansi-red-intense-bg { background-color: #B22B31; }
-.ansi-green-fg { color: #00A250; }
-.ansi-green-bg { background-color: #00A250; }
-.ansi-green-intense-fg { color: #007427; }
-.ansi-green-intense-bg { background-color: #007427; }
-.ansi-yellow-fg { color: #DDB62B; }
-.ansi-yellow-bg { background-color: #DDB62B; }
-.ansi-yellow-intense-fg { color: #B27D12; }
-.ansi-yellow-intense-bg { background-color: #B27D12; }
-.ansi-blue-fg { color: #208FFB; }
-.ansi-blue-bg { background-color: #208FFB; }
-.ansi-blue-intense-fg { color: #0065CA; }
-.ansi-blue-intense-bg { background-color: #0065CA; }
-.ansi-magenta-fg { color: #D160C4; }
-.ansi-magenta-bg { background-color: #D160C4; }
-.ansi-magenta-intense-fg { color: #A03196; }
-.ansi-magenta-intense-bg { background-color: #A03196; }
-.ansi-cyan-fg { color: #60C6C8; }
-.ansi-cyan-bg { background-color: #60C6C8; }
-.ansi-cyan-intense-fg { color: #258F8F; }
-.ansi-cyan-intense-bg { background-color: #258F8F; }
-.ansi-white-fg { color: #C5C1B4; }
-.ansi-white-bg { background-color: #C5C1B4; }
-.ansi-white-intense-fg { color: #A1A6B2; }
-.ansi-white-intense-bg { background-color: #A1A6B2; }
-
-.ansi-default-inverse-fg { color: #FFFFFF; }
-.ansi-default-inverse-bg { background-color: #000000; }
-
-.ansi-bold { font-weight: bold; }
-.ansi-underline { text-decoration: underline; }
-
-
-div.nbinput.container div.input_area div[class*=highlight] > pre,
-div.nboutput.container div.output_area div[class*=highlight] > pre,
-div.nboutput.container div.output_area div[class*=highlight].math,
-div.nboutput.container div.output_area.rendered_html,
-div.nboutput.container div.output_area > div.output_javascript,
-div.nboutput.container div.output_area:not(.rendered_html) > img{
-    padding: 5px;
-    margin: 0;
-}
-
-/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
-div.nbinput.container div.input_area > div[class^='highlight'],
-div.nboutput.container div.output_area > div[class^='highlight']{
-    overflow-y: hidden;
-}
-
-/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
-.prompt .copybtn {
-    display: none;
-}
-
-/* Some additional styling taken form the Jupyter notebook CSS */
-.jp-RenderedHTMLCommon table,
-div.rendered_html table {
-  border: none;
-  border-collapse: collapse;
-  border-spacing: 0;
-  color: black;
-  font-size: 12px;
-  table-layout: fixed;
-}
-.jp-RenderedHTMLCommon thead,
-div.rendered_html thead {
-  border-bottom: 1px solid black;
-  vertical-align: bottom;
-}
-.jp-RenderedHTMLCommon tr,
-.jp-RenderedHTMLCommon th,
-.jp-RenderedHTMLCommon td,
-div.rendered_html tr,
-div.rendered_html th,
-div.rendered_html td {
-  text-align: right;
-  vertical-align: middle;
-  padding: 0.5em 0.5em;
-  line-height: normal;
-  white-space: normal;
-  max-width: none;
-  border: none;
-}
-.jp-RenderedHTMLCommon th,
-div.rendered_html th {
-  font-weight: bold;
-}
-.jp-RenderedHTMLCommon tbody tr:nth-child(odd),
-div.rendered_html tbody tr:nth-child(odd) {
-  background: #f5f5f5;
-}
-.jp-RenderedHTMLCommon tbody tr:hover,
-div.rendered_html tbody tr:hover {
-  background: rgba(66, 165, 245, 0.2);
-}
-
-/* CSS overrides for sphinx_rtd_theme */
-
-/* 24px margin */
-.nbinput.nblast.container,
-.nboutput.nblast.container {
-    margin-bottom: 19px;  /* padding has already 5px */
-}
-
-/* ... except between code cells! */
-.nblast.container + .nbinput.container {
-    margin-top: -19px;
-}
-
-.admonition > p:before {
-    margin-right: 4px;  /* make room for the exclamation icon */
-}
-
-/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
-.math {
-    text-align: unset;
-}
-</style>
-<div align="right">
+  <div align="right">
 Download IPython notebook <a href="https://raw.githubusercontent.com/zerothi/sisl/master//home/runner/work/sisl/sisl/docs/tutorials/tutorial_siesta_2.ipynb"> here</a>.
 <span style="white-space: nowrap;"><a href="https://mybinder.org/v2/gh/zerothi/sisl/master?filepath=/home/runner/work/sisl/sisl/docs/tutorials/tutorial_siesta_2.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>.</span>
 </div><div class="nbinput nblast docutils container">
@@ -418,8 +139,8 @@ Download IPython notebook <a href="https://raw.githubusercontent.com/zerothi/sis
 </pre></div>
 </div>
 </div>
-<section id="Siesta-—-graphene">
-<h1>Siesta — graphene<a class="headerlink" href="#Siesta-—-graphene" title="Permalink to this heading"></a></h1>
+<section id="Siesta-----graphene">
+<h1>Siesta — graphene<a class="headerlink" href="#Siesta-----graphene" title="Permalink to this heading"></a></h1>
 <p>This tutorial will describe a complete walk-through of a large fraction of the <code class="docutils literal notranslate"><span class="pre">sisl</span></code> functionalities that may be related to the <a class="reference external" href="https://gitlab.com/siesta-project/siesta">Siesta code</a>.</p>
 <p>Contrary to the <span class="math notranslate nohighlight">\(\mathrm H_2\mathrm O\)</span> system this tutorial will emphasize the usefulness of performing bandstructures etc. directly in Python using sisl.</p>
 <section id="Creating-the-geometry">
@@ -446,7 +167,7 @@ Download IPython notebook <a href="https://raw.githubusercontent.com/zerothi/sis
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"version_major": 2, "version_minor": 0, "model_id": "abe559ed9564401899c16a05d7ca0e20"}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"version_major": 2, "version_minor": 0, "model_id": "712b1e3075fa414d972753f61c468b3a"}</script></div>
 </div>
 <p>Now we need to create the input fdf file for Siesta:</p>
 <div class="nbinput nblast docutils container">
@@ -508,7 +229,7 @@ Hamiltonian{non-zero: 5994, orthogonal: False,
    }: 2,
   },
   maxR: 2.57730,
-  SuperCell{nsc: [5 5 1],
+  Lattice{nsc: [5 5 1],
    A=[2.160, 1.247, 0.000],
    B=[2.160, -1.247, 0.000],
    C=[0.000, 0.000, 14.400],
@@ -716,11 +437,26 @@ Orbital index of p_z: [2]
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+dep:0: SislDeprecation:
+
+Geometry.sc is deprecated; please use &#39;lattice&#39; instead [&gt;=0.15]
+
+dep:0: SislDeprecation:
+
+__init__ argument sc has been deprecated in favor of lattice, please update your code. [&gt;=0.15.0]
+
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_tutorial_siesta_2_19_0.png" src="../_images/tutorials_tutorial_siesta_2_19_0.png" />
+<img alt="../_images/tutorials_tutorial_siesta_2_19_1.png" src="../_images/tutorials_tutorial_siesta_2_19_1.png" />
 </div>
 </div>
 <p>We will now try and plot the real-space wavefunction for a finite <span class="math notranslate nohighlight">\(k\)</span>. By choosing the <span class="math notranslate nohighlight">\([1/2, 0, 0]\)</span> point we know it must have a periodicity of 2 along the first lattice vector (this lattice vector is pointing right-up), and full periodicity along the second lattice vector. Since we have a finite <span class="math notranslate nohighlight">\(k\)</span> the grid data-type <em>must</em> be complex because the eigenstates have complex components. And thus we will plot both the real and imaginary part.</p>
@@ -751,6 +487,14 @@ Orbital index of p_z: [2]
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
+dep:0: SislDeprecation:
+
+Geometry.sc is deprecated; please use &#39;lattice&#39; instead [&gt;=0.15]
+
+dep:0: SislDeprecation:
+
+__init__ argument sc has been deprecated in favor of lattice, please update your code. [&gt;=0.15.0]
+
 info:0: SislInfo:
 
 wavefunction: k != Gamma is currently untested!
@@ -765,7 +509,7 @@ wavefunction: k != Gamma is currently untested!
 </div>
 </div>
 <script type="application/vnd.jupyter.widget-state+json">
-{"state": {"abe559ed9564401899c16a05d7ca0e20": {"model_name": "FigureModel", "model_module": "jupyterlab-plotly", "model_module_version": "^5.13.0", "state": {"_config": {"plotlyServerURL": "https://plot.ly"}, "_data": [{"line": {"color": "#cccccc", "width": 3}, "mode": "lines", "name": "bonds", "opacity": 1, "x": [0.0, 1.44, null, 0.0, -0.7200000000000002, null, 0.0, -0.7200000000000002, null, 1.44, 2.16, null, 1.44, 2.16, null], "y": [0.0, 0.0, null, 0.0, -1.2470765814495914, null, 0.0, 1.2470765814495914, null, 0.0, -1.2470765814495914, null, 0.0, 1.2470765814495914, null], "type": "scatter", "uid": "b113d660-bece-4afc-b854-75b8881a6baf"}, {"marker": {"color": ["grey", "grey"], "opacity": {"dtype": "float64", "shape": [2]}, "size": {"dtype": "float64", "shape": [2]}}, "mode": "markers", "name": "Atoms", "opacity": 1, "text": ["[0. 0. 0.]<br>0 (C)", "[1.44 0.   0.  ]<br>1 (C)"], "x": {"dtype": "float64", "shape": [2]}, "y": {"dtype": "float64", "shape": [2]}, "type": "scatter", "uid": "f54b69a8-b454-4358-a34d-e014f9bfdfe7"}, {"line": {"color": "green"}, "mode": "lines", "name": "Unit cell", "opacity": 1, "x": {"dtype": "float64", "shape": [19]}, "y": {"dtype": "float64", "shape": [19]}, "type": "scatter", "uid": "8984fffc-1feb-4de7-bec9-edf7a46c194b"}], "_dom_classes": [], "_js2py_layoutDelta": {}, "_js2py_pointsCallback": {}, "_js2py_relayout": {}, "_js2py_restyle": {}, "_js2py_traceDeltas": {}, "_js2py_update": {}, "_last_layout_edit_id": 0, "_last_trace_edit_id": 0, "_layout": {"template": {"layout": {"hovermode": "closest", "paper_bgcolor": "white", "plot_bgcolor": "white", "scene": {"xaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "yaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "zaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}}, "xaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "yaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}}}, "xaxis": {"showgrid": false, "title": {"text": "X axis [Ang]"}, "zeroline": false}, "yaxis": {"scaleanchor": "x", "scaleratio": 1, "showgrid": false, "title": {"text": "Y axis [Ang]"}, "zeroline": false}}, "_model_module": "jupyterlab-plotly", "_model_module_version": "^5.13.0", "_model_name": "FigureModel", "_py2js_addTraces": {}, "_py2js_animate": {}, "_py2js_deleteTraces": {}, "_py2js_moveTraces": {}, "_py2js_relayout": {}, "_py2js_removeLayoutProps": {}, "_py2js_removeTraceProps": {}, "_py2js_restyle": {}, "_py2js_update": {}, "_view_count": 0, "_view_module": "jupyterlab-plotly", "_view_module_version": "^5.13.0", "_view_name": "FigureView", "tabbable": null, "tooltip": null}, "buffers": [{"data": "AAAAAAAA8D8AAAAAAADwPw==", "encoding": "base64", "path": ["_data", 1, "marker", "opacity", "buffer"]}, {"data": "cT0K16NwJUBxPQrXo3AlQA==", "encoding": "base64", "path": ["_data", 1, "marker", "size", "buffer"]}, {"data": "AAAAAAAAAAAK16NwPQr3Pw==", "encoding": "base64", "path": ["_data", 1, "x", "buffer"]}, {"data": "AAAAAAAAAAAAAAAAAAAAAA==", "encoding": "base64", "path": ["_data", 1, "y", "buffer"]}, {"data": "AAAAAAAAAABI4XoUrkcBQEjhehSuRxFASOF6FK5HEUBI4XoUrkcBQEjhehSuRwFAAAAAAAAA+H9I4XoUrkcBQAAAAAAAAAAAAAAAAAAAAABI4XoUrkcBQEjhehSuRwFAAAAAAAAAAAAAAAAAAAD4f0jhehSuRxFASOF6FK5HAUAAAAAAAAD4f0jhehSuRxFASOF6FK5HAUA=", "encoding": "base64", "path": ["_data", 2, "x", "buffer"]}, {"data": "AAAAAAAAAACE786SBvTzPwAAAAAAAAAAAAAAAAAAAACE786SBvTzP4TvzpIG9PM/AAAAAAAA+H+E786SBvTzPwAAAAAAAAAAAAAAAAAAAACE786SBvTzv4TvzpIG9PO/AAAAAAAAAAAAAAAAAAD4fwAAAAAAAAAAhO/Okgb0878AAAAAAAD4fwAAAAAAAAAAhO/Okgb0878=", "encoding": "base64", "path": ["_data", 2, "y", "buffer"]}]}}, "version_major": 2, "version_minor": 0}
+{"state": {"712b1e3075fa414d972753f61c468b3a": {"model_name": "FigureModel", "model_module": "jupyterlab-plotly", "model_module_version": "^5.13.1", "state": {"_config": {"plotlyServerURL": "https://plot.ly"}, "_data": [{"line": {"color": "#cccccc", "width": 3}, "mode": "lines", "name": "bonds", "opacity": 1, "x": [0.0, 1.44, null, 0.0, -0.7200000000000002, null, 0.0, -0.7200000000000002, null, 1.44, 2.16, null, 1.44, 2.16, null], "y": [0.0, 0.0, null, 0.0, -1.2470765814495914, null, 0.0, 1.2470765814495914, null, 0.0, -1.2470765814495914, null, 0.0, 1.2470765814495914, null], "type": "scatter", "uid": "5139871d-c186-4339-8824-53e22daad519"}, {"marker": {"color": ["grey", "grey"], "opacity": {"dtype": "float64", "shape": [2]}, "size": {"dtype": "float64", "shape": [2]}}, "mode": "markers", "name": "Atoms", "opacity": 1, "text": ["[0. 0. 0.]<br>0 (C)", "[1.44 0.   0.  ]<br>1 (C)"], "x": {"dtype": "float64", "shape": [2]}, "y": {"dtype": "float64", "shape": [2]}, "type": "scatter", "uid": "957aa494-14e5-4584-9d56-07eeb816139d"}, {"line": {"color": "green"}, "mode": "lines", "name": "Unit cell", "opacity": 1, "x": {"dtype": "float64", "shape": [19]}, "y": {"dtype": "float64", "shape": [19]}, "type": "scatter", "uid": "4e683b94-7466-4551-ba18-6f8322db7af9"}], "_dom_classes": [], "_js2py_layoutDelta": {}, "_js2py_pointsCallback": {}, "_js2py_relayout": {}, "_js2py_restyle": {}, "_js2py_traceDeltas": {}, "_js2py_update": {}, "_last_layout_edit_id": 0, "_last_trace_edit_id": 0, "_layout": {"template": {"layout": {"hovermode": "closest", "paper_bgcolor": "white", "plot_bgcolor": "white", "scene": {"xaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "yaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "zaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}}, "xaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "yaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}}}, "xaxis": {"showgrid": false, "title": {"text": "X axis [Ang]"}, "zeroline": false}, "yaxis": {"scaleanchor": "x", "scaleratio": 1, "showgrid": false, "title": {"text": "Y axis [Ang]"}, "zeroline": false}}, "_model_module": "jupyterlab-plotly", "_model_module_version": "^5.13.1", "_model_name": "FigureModel", "_py2js_addTraces": {}, "_py2js_animate": {}, "_py2js_deleteTraces": {}, "_py2js_moveTraces": {}, "_py2js_relayout": {}, "_py2js_removeLayoutProps": {}, "_py2js_removeTraceProps": {}, "_py2js_restyle": {}, "_py2js_update": {}, "_view_count": 0, "_view_module": "jupyterlab-plotly", "_view_module_version": "^5.13.1", "_view_name": "FigureView", "tabbable": null, "tooltip": null}, "buffers": [{"data": "AAAAAAAA8D8AAAAAAADwPw==", "encoding": "base64", "path": ["_data", 1, "marker", "opacity", "buffer"]}, {"data": "cT0K16NwJUBxPQrXo3AlQA==", "encoding": "base64", "path": ["_data", 1, "marker", "size", "buffer"]}, {"data": "AAAAAAAAAAAK16NwPQr3Pw==", "encoding": "base64", "path": ["_data", 1, "x", "buffer"]}, {"data": "AAAAAAAAAAAAAAAAAAAAAA==", "encoding": "base64", "path": ["_data", 1, "y", "buffer"]}, {"data": "AAAAAAAAAABI4XoUrkcBQEjhehSuRxFASOF6FK5HEUBI4XoUrkcBQEjhehSuRwFAAAAAAAAA+H9I4XoUrkcBQAAAAAAAAAAAAAAAAAAAAABI4XoUrkcBQEjhehSuRwFAAAAAAAAAAAAAAAAAAAD4f0jhehSuRxFASOF6FK5HAUAAAAAAAAD4f0jhehSuRxFASOF6FK5HAUA=", "encoding": "base64", "path": ["_data", 2, "x", "buffer"]}, {"data": "AAAAAAAAAACE786SBvTzPwAAAAAAAAAAAAAAAAAAAACE786SBvTzP4TvzpIG9PM/AAAAAAAA+H+E786SBvTzPwAAAAAAAAAAAAAAAAAAAACE786SBvTzv4TvzpIG9PO/AAAAAAAAAAAAAAAAAAD4fwAAAAAAAAAAhO/Okgb0878AAAAAAAD4fwAAAAAAAAAAhO/Okgb0878=", "encoding": "base64", "path": ["_data", 2, "y", "buffer"]}]}}, "version_major": 2, "version_minor": 0}
 </script></section>
 </section>
 
