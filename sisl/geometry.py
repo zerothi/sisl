@@ -2774,6 +2774,33 @@ class Geometry(LatticeChild):
             names = self._names.merge(other._names, offset=len(self))
         return self.__class__(xyz, atoms=atoms, lattice=lattice, names=names)
 
+    def add_vacuum(self, vacuum, axis):
+        """ Add vacuum along the `axis` lattice vector
+
+        When the vacuum is bigger than the maximum orbital ranges the
+        number of supercells along that axis will be truncated to 1 (de-couple
+        images).
+
+        Parameters
+        ----------
+        vacuum : float
+           amount of vacuum added, in Ang
+        axis : int
+           the lattice vector to add vacuum along
+
+        Returns
+        -------
+        Geometry : a new geometry with added vacuum
+        """
+        new = self.copy()
+        new.set_lattice(self.lattice.add_vacuum(vacuum, axis))
+        if vacuum > self.maxR():
+            # only overwrite along axis
+            nsc = [None for _ in range(3)]
+            nsc[axis] = 1
+            new.lattice.set_nsc(nsc)
+        return new
+
     def insert(self, atom, other) -> Geometry:
         """ Inserts other atoms right before index
 
