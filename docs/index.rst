@@ -4,14 +4,9 @@
    contain the root `toctree` directive.
 
 
-|pypi|_
-|conda|_
-|license|_
-|zenodo|_
+|pypi| |conda| |license| |zenodo|
 
-|discord|_
-|buildstatus|_
-|codecov|_
+|discord| |buildstatus| |codecov| |python-versions|
 
 
 .. title:: sisl: Toolbox for electronic structure calculations
@@ -136,25 +131,28 @@ a table of contents for the sub-modules may be found :ref:`here <modindex>`.
 
 
 .. |buildstatus| image:: https://github.com/zerothi/sisl/actions/workflows/test.yaml/badge.svg?branch=main
-.. _buildstatus: https://github.com/zerothi/sisl/actions/workflows/test.yaml
+   :target: https://github.com/zerothi/sisl/actions/workflows/test.yaml
 
 .. |pypi| image:: https://badge.fury.io/py/sisl.svg
-.. _pypi: https://badge.fury.io/py/sisl
+   :target: https://pypi.org/project/sisl
 
 .. |license| image:: https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg
-.. _license: https://www.mozilla.org/en-US/MPL/2.0/
+   :target: https://www.mozilla.org/en-US/MPL/2.0/
 
 .. |conda| image:: https://anaconda.org/conda-forge/sisl/badges/version.svg
-.. _conda: https://anaconda.org/conda-forge/sisl
+   :target: https://anaconda.org/conda-forge/sisl
 
 .. |codecov| image:: https://codecov.io/gh/zerothi/sisl/branch/main/graph/badge.svg
-.. _codecov: https://codecov.io/gh/zerothi/sisl
+   :target: https://codecov.io/gh/zerothi/sisl
 
 .. |zenodo| image:: https://zenodo.org/badge/doi/10.5281/zenodo.597181.svg
-.. _zenodo: https://doi.org/10.5281/zenodo.597181
+   :target: https://doi.org/10.5281/zenodo.597181
 
 .. |discord| image:: https://img.shields.io/discord/742636379871379577.svg?label=&logo=discord&logoColor=ffffff&color=green&labelColor=red
-.. _discord: https://discord.gg/5XnFXFdkv2
+   :target: https://discord.gg/5XnFXFdkv2
 
 .. |codetriage| image:: https://www.codetriage.com/zerothi/sisl/badges/users.svg
-.. _codetriage: https://www.codetriage.com/zerothi/sisl
+   :target: https://www.codetriage.com/zerothi/sisl
+
+.. |python-versions| image:: https://img.shields.io/pypi/pyversions/sisl.svg
+   :target: https://pypi.org/project/sisl/
