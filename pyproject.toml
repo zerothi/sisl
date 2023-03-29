@@ -80,10 +80,11 @@ stoolbox = "sisl_toolbox.cli:stoolbox_cli"
 
 
 [project.urls]
+Url = "https://zerothi.github.io/sisl"
 Homepage = "https://zerothi.github.io/sisl"
 Releases = "https://github.com/zerothi/sisl/releases"
 Documentation = "https://zerothi.github.io/sisl"
-Repository = "https://github.com/zerothi/sisl"
+Repository = "https://github.com/zerothi/sisl.git"
 Source = "https://github.com/zerothi/sisl"
 "Bug Tracker" = https://github.com/zerothi/sisl/issues
 Discussions = https://github.com/zerothi/sisl/discussions
