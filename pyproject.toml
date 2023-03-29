@@ -85,6 +85,10 @@ Releases = "https://github.com/zerothi/sisl/releases"
 Documentation = "https://zerothi.github.io/sisl"
 Repository = "https://github.com/zerothi/sisl"
 Source = "https://github.com/zerothi/sisl"
+Bug Tracker = https://github.com/zerothi/sisl/issues
+Discussions = https://github.com/zerothi/sisl/discussions
+Changelog = https://zerothi.github.io/sisl/changelog/index.html
+Chat = https://discord.gg/5XnFXFdkv2
 
 
 [project.optional-dependencies]
