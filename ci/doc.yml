@@ -9,6 +9,8 @@ dependencies:
   - wheel
   - setuptools>=46
   - setuptools_scm>=6.2
+  - cmake>=3.16
+  - scikit-build>=0.17
   - pyparsing>=1.5.7
   - numpy>=1.13
   - cython>=0.28

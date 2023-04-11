@@ -2,6 +2,8 @@
 wheel
 setuptools>=46.0
 setuptools_scm>=6.2
+cmake>=3.16
+scikit-build>=0.17
 # For running
 cython
 numpy>=1.13

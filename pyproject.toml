@@ -12,15 +12,17 @@
 # TODO update this together with setup.cfg
 requires = [
     "wheel",
-    "setuptools>=46.0, <=59.2",
+    "setuptools>=46.0",
     "setuptools_scm[toml]>=6.2",
-    "Cython>=0.28",
+    "cython>=0.28",
     # see https://github.com/scipy/oldest-supported-numpy/
     # should fix #310
     "oldest-supported-numpy; sys_platform != 'win32'",
     # TODO work-arounds for windows installations where -mno-cygwin is passed
     "numpy==1.19.5 ; sys_platform == 'win32' and python_version <= '3.9'",
     "numpy==1.21.5 ; sys_platform == 'win32' and python_version >= '3.10'",
+    # we need scikit-build for cmake-builds
+    "cmake>=3.16", "scikit-build>=0.17", "ninja",
 ]
 build-backend = "setuptools.build_meta"
 
@@ -90,6 +92,14 @@ Source = "https://github.com/zerothi/sisl"
 Discussions = "https://github.com/zerothi/sisl/discussions"
 Changelog = "https://zerothi.github.io/sisl/changelog/index.html"
 Chat = "https://discord.gg/5XnFXFdkv2"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+namespaces = true
+
+[tool.setuptools_scm]
+write_to = "src/sisl/_version.py"
+fallback_version = "0.0.0.dev+$Format:%H$"
 
 
 [project.optional-dependencies]
@@ -240,9 +250,6 @@ deps = -rdocs/requirements.txt
 commands = pytest -s -rXs {posargs}
 """
 
-[tool.setuptools_scm]
-write_to = "sisl/_version.py"
-fallback_version = "0.0.0.dev+$Format:%H$"
 
 # Options for cibuildwheel
 [tool.cibuildwheel]
@@ -265,9 +272,9 @@ repair-wheel-command = "delvewheel repair --no-mangle-all --ignore-in-wheel -w {
 [tool.isort]
 # how should sorting be done
 sections = ['FUTURE', 'STDLIB', 'THIRDPARTY', 'FIRSTPARTY', 'LOCALFOLDER']
-src_paths = ["toolbox", "sisl"]
+src_paths = ["src"]
 known_first_party = ["sisl_toolbox", "sisl"]
 line_length=90
 overwrite_in_place = true
-extend_skip = ["sisl/__init__.py"]
+extend_skip = ["src/sisl/__init__.py"]
 

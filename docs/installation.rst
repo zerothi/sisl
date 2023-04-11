@@ -123,6 +123,11 @@ Manual installation
 The regular :code:`pip` codes may be used to install git clones or downloaded
 tarballs.
 
+Manual installations requires these packages:
+
+- `cmake`_ 3.16 or later
+- `scikit-build`_ 0.13 or later
+
 Simply download the release tar from `this page <gh-releases_>`_, or clone
 the `git repository <sisl-git_>`_ for the latest developments
 
