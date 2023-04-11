@@ -42,10 +42,12 @@ add_f2py_target(${siesta_module} ${siesta_signature}
   OUTPUT_VAR siesta_c
   )
 
+foreach(file IN LISTS ${siesta_c})
+  set_source_files_properties(${file} PROPERTIES GENERATED TRUE)
+endforeach()
+
 # Create siesta library with the C-interfaces + fortran sources
-add_library(${siesta_module} MODULE
-  ${siesta_c}
-  ${siesta_sources})
+add_library(${siesta_module} MODULE ${siesta_c} ${siesta_sources})
 target_link_libraries(${siesta_module} ${F2PY_LIBRARIES})
 target_include_directories(${siesta_module} PRIVATE ${F2PY_INCLUDE_DIRS})
 python_extension_module(${siesta_module})

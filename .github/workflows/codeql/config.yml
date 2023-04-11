@@ -4,5 +4,4 @@ queries:
   - uses: security-and-quality
 
 paths:
-  - toolbox
-  - sisl
+  - src
