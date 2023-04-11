@@ -59,7 +59,7 @@ When wanting to pass options to :code:`pip` simply use the following
 
 .. code-block:: bash
 
-   python3 -m pip install --install-option="--compiler=intelem" --install-option="--fcompiler-intelem" sisl
+   python3 -m pip install --global-option=... sisl
 
 note that options are accummulated.
 
@@ -110,7 +110,7 @@ while also using :code:`pip` to install sisl, the procedure would be:
    conda create -n sisl-dev
    conda activate sisl-dev
    conda config --add channels conda-forge
-   conda install -c conda-forge fortran-compiler c-compiler python=3.9
+   conda install -c conda-forge fortran-compiler c-compiler python=3.11 cmake scikit-build
    conda install -c conda-forge scipy netcdf4 cftime plotly matplotlib
 
 
@@ -122,6 +122,11 @@ Manual installation
 
 The regular :code:`pip` codes may be used to install git clones or downloaded
 tarballs.
+
+Manual installations requires these packages:
+
+- `cmake`_ 3.16 or later
+- `scikit-build`_ 0.17 or later
 
 Simply download the release tar from `this page <gh-releases_>`_, or clone
 the `git repository <sisl-git_>`_ for the latest developments
@@ -139,16 +144,11 @@ the compilers used. Typically one may do
 
 .. code-block:: bash
 
-   python3 -m pip install . --prefix=<prefix> --install-option='--fcompiler=gfortran' --install-option='--compiler=mingw32'
+   python3 -m pip install . --prefix=<prefix>
 
 but sometimes ``setuptools`` does not intercept the flags in the build process.
-To remedy this please ensure ``%HOME%\pydistutils.cfg`` contains the build options:
-
-.. code-block:: bash
-
-   [build]
-   compiler = mingw32
-   fcompiler = gfortran
+Since 3.12 ``distutils`` has been deprecated and one needs to pass explicit linker flags to the CMake environment.
+If problems arise, please help out the community by figuring out how this works on Windows.
 
 Adapt to compilers. For an explanation, see `here <https://docs.python.org/3/install/index.html#location-and-names-of-config-files>`_
 or the `user issue <https://github.com/zerothi/sisl/issues/244>`_ which spurred this content.
@@ -190,6 +190,8 @@ For source/development installations some basic packages are required:
 - `Cython`_
 - C compiler
 - fortran compiler
+- CMake + Ninja
+- scikit-build
 
 To install the development version using :code:`pip` you may use the URL command:
 
