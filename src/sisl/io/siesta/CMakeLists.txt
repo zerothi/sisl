@@ -6,6 +6,13 @@ set_property(DIRECTORY
   ${NUMPY_INCLUDE_PATH}
   )
 
+# Ensure the directory we will work in exists.
+# Probably not needed, but here since the scikit-build
+# f2py function creates it.
+# Most likely because f2py will cd into the directory, before
+# creating the signature file.
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+
 # Define all the sources required
 set(siesta_sources)
 set(siesta_sources_full)

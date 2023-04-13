@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 3.13)
 
+message(NOTICE "Building with CMake version: ${CMAKE_VERSION}")
+if(SKBUILD)
+  message(NOTICE "Building with scikit-build")
+endif()
+
 project(sisl
   DESCRIPTION "Cythonized or fortran codes"
   HOMEPAGE_URL "https://github.com/zerothi/sisl"
@@ -22,10 +27,6 @@ include(CMakePrintHelpers)
 
 
 list(APPEND CMAKE_MESSAGE_INDENT "  ")
-
-if(SKBUILD)
-  message(NOTICE "Building from scikit-build")
-endif()
 
 message(NOTICE "Python variables:")
 cmake_print_variables(Python_INCLUDE_DIRS)
