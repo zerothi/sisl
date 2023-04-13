@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.13)
 
-message(NOTICE "Building with CMake version: ${CMAKE_VERSION}")
+message(STATUS "Building with CMake version: ${CMAKE_VERSION}")
 if(SKBUILD)
-  message(NOTICE "Building with scikit-build")
+  message(STATUS "Building with scikit-build")
 endif()
 
 project(sisl
@@ -28,13 +28,13 @@ include(CMakePrintHelpers)
 
 list(APPEND CMAKE_MESSAGE_INDENT "  ")
 
-message(NOTICE "Python variables:")
+message(STATUS "Python variables:")
 cmake_print_variables(Python_INCLUDE_DIRS)
 cmake_print_variables(F2PY_INCLUDE_DIR)
 cmake_print_variables(F2PY_INCLUDE_DIRS)
 cmake_print_variables(F2PY_LIBRARIES)
 cmake_print_variables(Python_NumPy_INCLUDE_DIRS)
-message(NOTICE "General compilation flags")
+message(STATUS "General compilation flags")
 cmake_print_variables(CMAKE_C_FLAGS)
 cmake_print_variables(CMAKE_CXX_FLAGS)
 cmake_print_variables(CMAKE_Fortran_FLAGS)
