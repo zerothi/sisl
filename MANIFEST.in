@@ -24,6 +24,7 @@ prune docs/build
 prune docs/**/generated
 graft src
 include src/sisl/_version.py
+include data
 
 prune __pycache__
 

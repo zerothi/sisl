@@ -20,7 +20,13 @@ set_target_properties(_f2py_runtime_library PROPERTIES POSITION_INDEPENDENT_CODE
 # Print out the discovered paths
 include(CMakePrintHelpers)
 
+
 list(APPEND CMAKE_MESSAGE_INDENT "  ")
+
+if(SKBUILD)
+  message(NOTICE "Building from scikit-build")
+endif()
+
 message(NOTICE "Python variables:")
 cmake_print_variables(Python_INCLUDE_DIRS)
 cmake_print_variables(F2PY_INCLUDE_DIR)

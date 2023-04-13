@@ -27,6 +27,7 @@ set(siesta_module "_siesta")
 
 # generate the signature file
 set(siesta_signature "${CMAKE_CURRENT_BINARY_DIR}/_siesta_signature.pyf")
+
 add_custom_command(
   OUTPUT ${siesta_signature}
   COMMAND ${F2PY_EXECUTABLE} -m ${siesta_module} ${siesta_sources} -h ${siesta_signature}
@@ -34,17 +35,15 @@ add_custom_command(
   DEPENDS ${siesta_sources}
   COMMENT "Generating signature file from all siesta/_src/ files"
   )
-set_source_files_properties(${siesta_signature} PROPERTIES GENERATED TRUE)
 
 # Convert signature file to a C-module
-add_f2py_target(${siesta_module} ${siesta_signature}
-  DEPENDS ${siesta_signature}
+add_f2py_target(
+  # NAME:
+  ${siesta_module}
+  # F2PYInput (actual source)
+  ${siesta_signature}
   OUTPUT_VAR siesta_c
   )
-
-foreach(file IN LISTS ${siesta_c})
-  set_source_files_properties(${file} PROPERTIES GENERATED TRUE)
-endforeach()
 
 # Create siesta library with the C-interfaces + fortran sources
 add_library(${siesta_module} MODULE ${siesta_c} ${siesta_sources})

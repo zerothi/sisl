@@ -93,6 +93,10 @@ Discussions = "https://github.com/zerothi/sisl/discussions"
 Changelog = "https://zerothi.github.io/sisl/changelog/index.html"
 Chat = "https://discord.gg/5XnFXFdkv2"
 
+[tool.setuptools]
+# also default to true, but..
+include-package-data = true
+
 [tool.setuptools.packages.find]
 where = ["src"]
 namespaces = true
