@@ -8,6 +8,7 @@ set_property(DIRECTORY
 
 # Define all the sources required
 set(siesta_sources)
+set(siesta_sources_full)
 foreach(f
     io_m
     siesta_sc_off
@@ -20,6 +21,8 @@ foreach(f
     hs_read
     wfsx_read)
   list(APPEND siesta_sources _src/${f}.f90)
+  get_source_file_property(source_loc _src/${f}.f90 LOCATION)
+  list(APPEND siesta_sources_full ${source_loc})
 endforeach()
 
 # The module file for the signatures
@@ -30,8 +33,8 @@ set(siesta_signature "${CMAKE_CURRENT_BINARY_DIR}/_siesta_signature.pyf")
 
 add_custom_command(
   OUTPUT ${siesta_signature}
-  COMMAND ${F2PY_EXECUTABLE} -m ${siesta_module} ${siesta_sources} -h ${siesta_signature}
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  COMMAND ${F2PY_EXECUTABLE} -m ${siesta_module} ${siesta_sources_full} -h ${siesta_signature}
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   DEPENDS ${siesta_sources}
   COMMENT "Generating signature file from all siesta/_src/ files"
   )
