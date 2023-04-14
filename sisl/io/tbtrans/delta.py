@@ -17,7 +17,10 @@ from sisl.sparse import _ncol_to_indptr
 from sisl.messages import warn, deprecate_argument
 from sisl.unit.siesta import unit_convert
 from ..siesta._help import _csr_to_siesta, _csr_from_sc_off, _mat_spin_convert
-from ..siesta._siesta import siesta_sc_off
+try:
+    from ..siesta._siesta import siesta_sc_off
+except:
+    pass
 
 
 __all__ = ['deltancSileTBtrans']
