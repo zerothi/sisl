@@ -14,7 +14,7 @@ requires = [
     "wheel",
     "setuptools>=46.0",
     "setuptools_scm[toml]>=6.2",
-    "cython>=0.28",
+    "Cython>=0.28",
     # see https://github.com/scipy/oldest-supported-numpy/
     # should fix #310
     "oldest-supported-numpy; sys_platform != 'win32'",
@@ -22,13 +22,20 @@ requires = [
     "numpy==1.19.5 ; sys_platform == 'win32' and python_version <= '3.9'",
     "numpy==1.21.5 ; sys_platform == 'win32' and python_version >= '3.10'",
     # we need scikit-build for cmake-builds
-    "cmake>=3.16", "scikit-build>=0.17", "ninja",
+    "cmake>=3.16", "ninja",
+    "scikit-build>=0.17",
 ]
 build-backend = "setuptools.build_meta"
 
 # Top most items are probably changed the most
 [project]
 requires-python = ">=3.7"
+
+name = "sisl"
+description = "Manipulation and post-processing of DFT output and creating tight-binding models for NEGF transport"
+readme = "README.md"
+license = {text = "MPL-2.0"}
+keywords = ["tight-binding", "DFT", "LCAO", "NEGF", "physics"]
 
 dependencies = [
     # TODO work-arounds for windows installations
@@ -39,13 +46,6 @@ dependencies = [
     "netCDF4",
     "pyparsing>=1.5.7"
 ]
-
-
-name = "sisl"
-description = "Manipulation and post-processing of DFT output and creating tight-binding models for NEGF transport"
-readme = "README.md"
-license = {text = "MPL-2.0"}
-keywords = ["tight-binding", "DFT", "LCAO", "NEGF", "physics"]
 
 authors = [
     {name = "Nick Papior", email = "nickpapior@gmail.com"}
@@ -58,7 +58,6 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
     "Operating System :: OS Independent",
-    "Programming Language :: Fortran",
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
@@ -66,6 +65,7 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Cython",
+    "Programming Language :: Fortran",
     "Topic :: Scientific/Engineering",
     "Topic :: Scientific/Engineering :: Physics",
     "Topic :: Utilities"
@@ -73,6 +73,29 @@ classifiers = [
 
 # We purposefully get the version dynamically
 dynamic = ["version"]
+
+[tool.setuptools]
+platforms = ["any"]
+zip-safe = false
+# also default to true, but..
+include-package-data = true
+
+
+[tool.setuptools.packages.find]
+# all sub-folders will be packages
+where = ["src"]
+# sisl_toolbox is a namespace package
+namespaces = true
+
+#[tool.setuptools.package-data]
+## all pxd files
+#"*" = ["*.pxd"]
+#"sisl_toolbox.siesta.minimizer" = ["*.yaml"]
+
+[tool.setuptools_scm]
+write_to = "src/sisl/_version.py"
+fallback_version = "0.0.0.dev+$Format:%H$"
+
 
 [project.scripts]
 sgeom = "sisl.geometry:sgeom"
@@ -92,18 +115,6 @@ Source = "https://github.com/zerothi/sisl"
 Discussions = "https://github.com/zerothi/sisl/discussions"
 Changelog = "https://zerothi.github.io/sisl/changelog/index.html"
 Chat = "https://discord.gg/5XnFXFdkv2"
-
-[tool.setuptools]
-# also default to true, but..
-include-package-data = true
-
-[tool.setuptools.packages.find]
-where = ["src"]
-namespaces = true
-
-[tool.setuptools_scm]
-write_to = "src/sisl/_version.py"
-fallback_version = "0.0.0.dev+$Format:%H$"
 
 
 [project.optional-dependencies]
@@ -183,14 +194,16 @@ test = [
 
 [tool.pytest.ini_options]
 testpaths = [
-    "sisl"
+    "src"
 ]
 markers = [
     "slow: mark a test as slow",
 ]
 
-addopts = "-rXs --durations=20"
+addopts = "-rXs --durations=20 --cov"
 
+[tool.coverage.run]
+source = ["src"]
 
 
 [tool.pylint]
@@ -222,13 +235,12 @@ extension-pkg-allow-list = [
    "scipy"
 ]
 
+
 [tool.pylint.format]
 # Currently no formatting rules
 
 [tool.pylint.messages_control]
 max-line-length = 110
-
-
 
 disable = [
     "invalid-name",

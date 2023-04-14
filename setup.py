@@ -12,20 +12,10 @@ from skbuild import setup
 # without causing namespace problems.
 packages = setuptools.find_namespace_packages(where="src")
 
-# Please update MANIFEST.in file for stuff to be shipped in the distribution.
-# Otherwise we should use package_data to ensure it gets installed.
-package_data = {p: ["*.pxd"] for p in packages}
-package_data["sisl_toolbox.siesta.minimizer"] = ["*.yaml"]
-
-
 metadata = dict(
     # Ensure the packages are being found in the correct locations
     package_dir={"": "src"},
-    # This forces MANIFEST.in usage
-    include_package_data=True,
-    package_data=package_data,
     packages=packages,
-    platforms=["any"],
 )
 
 if __name__ == "__main__":
