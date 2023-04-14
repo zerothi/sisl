@@ -11,6 +11,9 @@ project(sisl
   LANGUAGES C CXX Fortran
   )
 
+# Print out the discovered paths
+include(CMakePrintHelpers)
+
 # Enable python packages
 find_package(PythonLibs REQUIRED) # libraries
 find_package(PythonInterp REQUIRED) # interpreter
@@ -22,24 +25,28 @@ find_package(F2PY REQUIRED)
 # see https://github.com/scikit-build/scikit-build/pull/495/
 set_target_properties(_f2py_runtime_library PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
-# Print out the discovered paths
-include(CMakePrintHelpers)
 
-
-list(APPEND CMAKE_MESSAGE_INDENT "  ")
 
 message(STATUS "Python variables:")
+list(APPEND CMAKE_MESSAGE_INDENT "  ")
+
 cmake_print_variables(Python_INCLUDE_DIRS)
 cmake_print_variables(F2PY_INCLUDE_DIR)
 cmake_print_variables(F2PY_INCLUDE_DIRS)
 cmake_print_variables(F2PY_LIBRARIES)
 cmake_print_variables(Python_NumPy_INCLUDE_DIRS)
+
+list(POP_BACK CMAKE_MESSAGE_INDENT)
+
 message(STATUS "General compilation flags")
+list(APPEND CMAKE_MESSAGE_INDENT "  ")
+
 cmake_print_variables(CMAKE_C_FLAGS)
 cmake_print_variables(CMAKE_CXX_FLAGS)
 cmake_print_variables(CMAKE_Fortran_FLAGS)
 
 list(POP_BACK CMAKE_MESSAGE_INDENT)
+
 
 # We will never use the deprecated API any-more
 add_compile_definitions(NPY_NO_DEPRECATED_API=0)
@@ -80,7 +87,14 @@ function(add_cython_library_module)
   endif()
 
   # Create the cythonized sources
-  add_cython_target(${_c_CYTHON} ${_c_SOURCE} ${_c_PY} OUTPUT_VAR _c_output_var)
+  add_cython_target(
+    # NAME
+    ${_c_CYTHON}
+    # SOURCE
+    ${_c_SOURCE}
+    # Python version
+    ${_c_PY}
+    OUTPUT_VAR _c_output_var)
   if( DEFINED _c_OUTPUT_VAR)
     # propagate back
     set(${_c_OUTPUT_VAR} ${_c_output_var} PARENT_SCOPE)
@@ -94,8 +108,6 @@ function(add_cython_library_module)
 
 endfunction()
 
-
-# CMake + scikit-build
 
 # Add the sisl directory (nested CMakeLists.txt files)
 add_subdirectory("src")
