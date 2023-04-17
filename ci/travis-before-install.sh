@@ -25,7 +25,7 @@ gcc --version
 popd
 
 # setuptools is part of requirements.txt
-python -m pip install --upgrade pip wheel
+python -m pip install --upgrade pip wheel cython scikit-build
 
 # fetch all common requirements (for running)
 # then append the test specific requirements

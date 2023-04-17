@@ -1,4 +1,7 @@
 __pycache__
+ci
+.git
+.github
 .eggs
 .pytest_cache
 dist
@@ -7,12 +10,14 @@ build
 *.so
 *.c
 __config__.py
+
 docs/build
-docs/api-generated
+docs/*/generated/
 docs/sisl
-sisl.egg-info
-sisl/io/siesta/_siesta.so
-sisl/**/*.html
-sisl/_version.py
+
+*/sisl.egg-info
+src/sisl/**/*.html
+src/sisl/_version.py
+
 .ipynb_checkpoints/
 .vscode/

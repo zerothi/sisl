@@ -11,8 +11,6 @@
 [build-system]
 # TODO update this together with setup.cfg
 requires = [
-    "wheel",
-    "setuptools>=46.0, <=59.2",
     "setuptools_scm[toml]>=6.2",
     "Cython>=0.28",
     # see https://github.com/scipy/oldest-supported-numpy/
@@ -21,12 +19,19 @@ requires = [
     # TODO work-arounds for windows installations where -mno-cygwin is passed
     "numpy==1.19.5 ; sys_platform == 'win32' and python_version <= '3.9'",
     "numpy==1.21.5 ; sys_platform == 'win32' and python_version >= '3.10'",
+    "scikit-build-core[pyproject]",
 ]
-build-backend = "setuptools.build_meta"
+build-backend = "scikit_build_core.build"
 
 # Top most items are probably changed the most
 [project]
 requires-python = ">=3.7"
+
+name = "sisl"
+description = "Manipulation and post-processing of DFT output and creating tight-binding models for NEGF transport"
+readme = "README.md"
+license = {text = "MPL-2.0"}
+keywords = ["tight-binding", "DFT", "LCAO", "NEGF", "physics"]
 
 dependencies = [
     # TODO work-arounds for windows installations
@@ -37,13 +42,6 @@ dependencies = [
     "netCDF4",
     "pyparsing>=1.5.7"
 ]
-
-
-name = "sisl"
-description = "Manipulation and post-processing of DFT output and creating tight-binding models for NEGF transport"
-readme = "README.md"
-license = {text = "MPL-2.0"}
-keywords = ["tight-binding", "DFT", "LCAO", "NEGF", "physics"]
 
 authors = [
     {name = "Nick Papior", email = "nickpapior@gmail.com"}
@@ -56,7 +54,6 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
     "Operating System :: OS Independent",
-    "Programming Language :: Fortran",
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
@@ -64,6 +61,7 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Cython",
+    "Programming Language :: Fortran",
     "Topic :: Scientific/Engineering",
     "Topic :: Scientific/Engineering :: Physics",
     "Topic :: Utilities"
@@ -71,6 +69,33 @@ classifiers = [
 
 # We purposefully get the version dynamically
 dynamic = ["version"]
+
+
+[tool.setuptools_scm]
+write_to = "src/sisl/_version.py"
+fallback_version = "0.0.0.dev+$Format:%H$"
+
+
+[tool.scikit-build]
+
+wheel.packages = ["src/sisl", "src/sisl_toolbox"]
+
+# required for dynamic metadata
+experimental = true
+
+metadata.version.provider = "scikit_build_core.metadata.setuptools_scm"
+
+# define a consistent build directory
+build-dir = "build/{wheel_tag}"
+
+# cmake and ninja stuff
+cmake.verbose = true
+cmake.minimum-version = "3.20"
+
+# source configuration
+sdist.reproducible = true
+sdist.include = ["src/sisl/_version.py", "*/CMakeLists.txt"]
+
 
 [project.scripts]
 sgeom = "sisl.geometry:sgeom"
@@ -169,14 +194,16 @@ test = [
 
 [tool.pytest.ini_options]
 testpaths = [
-    "sisl"
+    "src"
 ]
 markers = [
     "slow: mark a test as slow",
 ]
 
-addopts = "-rXs --durations=20"
+addopts = "-rXs --durations=20 --cov"
 
+[tool.coverage.run]
+source = ["src"]
 
 
 [tool.pylint]
@@ -208,13 +235,12 @@ extension-pkg-allow-list = [
    "scipy"
 ]
 
+
 [tool.pylint.format]
 # Currently no formatting rules
 
 [tool.pylint.messages_control]
 max-line-length = 110
-
-
 
 disable = [
     "invalid-name",
@@ -240,9 +266,6 @@ deps = -rdocs/requirements.txt
 commands = pytest -s -rXs {posargs}
 """
 
-[tool.setuptools_scm]
-write_to = "sisl/_version.py"
-fallback_version = "0.0.0.dev+$Format:%H$"
 
 # Options for cibuildwheel
 [tool.cibuildwheel]
@@ -265,9 +288,9 @@ repair-wheel-command = "delvewheel repair --no-mangle-all --ignore-in-wheel -w {
 [tool.isort]
 # how should sorting be done
 sections = ['FUTURE', 'STDLIB', 'THIRDPARTY', 'FIRSTPARTY', 'LOCALFOLDER']
-src_paths = ["toolbox", "sisl"]
+src_paths = ["src"]
 known_first_party = ["sisl_toolbox", "sisl"]
 line_length=90
 overwrite_in_place = true
-extend_skip = ["sisl/__init__.py"]
+extend_skip = ["src/sisl/__init__.py"]
 
