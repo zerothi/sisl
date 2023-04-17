@@ -75,6 +75,47 @@ set_property(TARGET f2py_fortranobject PROPERTY POSITION_INDEPENDENT_CODE ON)
 set(F2PY_LIBRARIES f2py_fortranobject)
 
 
+set(F2PY_REPORT_ON_ARRAY_COPY 10
+  CACHE STRING
+  "The minimum size of arrays before warning about copies")
+option(WITH_F2PY_REPORT_COPY
+  "Add instructions to track f2py-copies on routine calls use -DF2PY_REPORT_ON_ARRAY_COPY=<int> as well" FALSE)#
+option(WITH_F2PY_REPORT_EXIT
+  "Report timings on routine exits" FALSE)
+option(WITH_FORTRAN
+  "Whether to compile and ship fortran sources (default True)" TRUE)
+
+if(WITH_F2PY_REPORT_EXIT)
+  target_compile_definitions(f2py_fortranobject PRIVATE F2PY_REPORT_ATEXIT)
+endif()
+if(WITH_F2PY_REPORT_COPY)
+  target_compile_definitions(f2py_fortranobject PRIVATE F2PY_REPORT_ON_ARRAY_COPY=${F2PY_REPORT_ON_ARRAY_COPY})
+endif()
+
+
+#option(WITH_COVERAGE
+#  "Add instructions for coverage in Cython files" FALSE)
+option(WITH_LINE_DIRECTIVES
+  "Create line-directives in cythonized sources" FALSE)
+option(WITH_ANNOTATE
+  "Create html file outputs that can be used for figuring out performance bottlenecks in cython sources" FALSE)
+option(WITH_GDB
+  "Add GDB-enabled Cython sources" FALSE)
+
+
+# Parse options to global options
+if(WITH_ANNOTATE)
+  list(APPEND CYTHON_FLAGS --annotate)
+endif()
+if(WITH_LINE_DIRECTIVES)
+  list(APPEND CYTHON_FLAGS --line-directives)
+endif()
+if(WITH_GDB)
+  list(APPEND CYTHON_FLAGS --gdb)
+endif()
+
+# Add definitions for f2py sources
+
 
 message(STATUS "Python variables:")
 list(APPEND CMAKE_MESSAGE_INDENT "  ")
@@ -94,6 +135,29 @@ cmake_print_variables(CMAKE_Fortran_FLAGS)
 
 list(POP_BACK CMAKE_MESSAGE_INDENT)
 
+message(STATUS "Options")
+list(APPEND CMAKE_MESSAGE_INDENT "  ")
+
+cmake_print_variables(WITH_COVERAGE)
+cmake_print_variables(WITH_ANNOTATE)
+cmake_print_variables(WITH_LINE_DIRECTIVES)
+cmake_print_variables(WITH_GDB)
+cmake_print_variables(WITH_F2PY_REPORT_COPY)
+if(WITH_F2PY_REPORT_COPY)
+  cmake_print_variables(F2PY_REPORT_ON_ARRAY_COPY)
+endif()
+cmake_print_variables(WITH_F2PY_REPORT_EXIT)
+
+list(POP_BACK CMAKE_MESSAGE_INDENT)
+
+function(sisl_has_substring _bool _string _substring)
+  string(FIND "${_string}" "${_substring}" index)
+  if(${index} EQUAL -1)
+    set(${_bool} FALSE PARENT_SCOPE)
+  else()
+    set(${_bool} TRUE PARENT_SCOPE)
+  endif()
+endfunction()
 
 function(sisl_file_as_gentarget _name _output)
   if(IS_ABSOLUTE "${_name}")
@@ -144,7 +208,7 @@ function(add_cython_library)
     set(_c_CYTHON_EXECUTABLE "${CYTHON_EXECUTABLE}")
   endif()
   if(NOT DEFINED _c_CYTHON_FLAGS)
-    set(_c_CYTHON_FLAGS "-3")
+    set(_c_CYTHON_FLAGS "-3" ${CYTHON_FLAGS})
   endif()
 
   # Figure out the extension and convert to proper extension
@@ -171,17 +235,31 @@ function(add_cython_library)
   set(_comment "Cythonizing source ${_c_SOURCE} into ${_c_output_base}")
 
   if( _c_ANNOTATE )
-    set(_comment "${_comment} | annotation")
     list(APPEND _c_CYTHON_FLAGS --annotate)
   endif()
+  sisl_has_substring(_has "${_c_CYTHON_FLAGS}" "--annotate")
+  if(_has)
+    set(_comment "${_comment} | annotation")
+  endif()
+
   if( _c_GDB )
-    set(_comment "${_comment} | GDB")
     list(APPEND _c_CYTHON_FLAGS --gdb)
   endif()
+  sisl_has_substring(_has "${_c_CYTHON_FLAGS}" "--gdb")
+  if(_has)
+    set(_comment "${_comment} | GDB")
+  endif()
+
   if( _c_LINE_DIRECTIVES )
-    set(_comment "${_comment} | line-directives")
     list(APPEND _c_CYTHON_FLAGS --line-directives)
   endif()
+  sisl_has_substring(_has "${_c_CYTHON_FLAGS}" "--line-directives")
+  if(_has)
+    set(_comment "${_comment} | line-directives")
+  endif()
+
+  # ensure no two flags will be present
+  list(REMOVE_DUPLICATES _c_CYTHON_FLAGS)
 
   # Add include directories
   foreach(dir IN LISTS _c_INCLUDE_DIRS)
@@ -437,6 +515,7 @@ function(add_f2py_library)
   python_add_library(${_f_LIBRARY} WITH_SOABI
     MODULE "${_module_file}" ${_f_SOURCES} ${_wrappers}
     )
+
   target_link_libraries(${_f_LIBRARY} PRIVATE ${F2PY_LIBRARIES})
   # ensure direct dependency on the source generator (for parallel builds)
   add_dependencies(${_f_LIBRARY} ${_gen_target})

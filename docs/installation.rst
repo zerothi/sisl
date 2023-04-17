@@ -59,7 +59,7 @@ When wanting to pass options to :code:`pip` simply use the following
 
 .. code-block:: bash
 
-   python3 -m pip install --global-option=... sisl
+   python3 -m pip install --config-settings=cmake.define.CMAKE_BUILD_PARALLEL_LEVEL=5 sisl
 
 note that options are accummulated.
 
@@ -110,7 +110,7 @@ while also using :code:`pip` to install sisl, the procedure would be:
    conda create -n sisl-dev
    conda activate sisl-dev
    conda config --add channels conda-forge
-   conda install -c conda-forge fortran-compiler c-compiler python=3.11 cmake scikit-build
+   conda install -c conda-forge fortran-compiler c-compiler python=3.11 scikit-build-core
    conda install -c conda-forge scipy netcdf4 cftime plotly matplotlib
 
 
@@ -125,8 +125,9 @@ tarballs.
 
 Manual installations requires these packages:
 
-- `cmake`_ 3.16 or later
-- `scikit-build`_ 0.17 or later
+- `setuptools_scm`_ (with toml support) 6.2 or later
+- `scikit-build-core`_
+- `Cython`_ 0.28 or later
 
 Simply download the release tar from `this page <gh-releases_>`_, or clone
 the `git repository <sisl-git_>`_ for the latest developments
@@ -134,6 +135,35 @@ the `git repository <sisl-git_>`_ for the latest developments
 .. code-block:: bash
 
    python3 -m pip install . --prefix=<prefix>
+
+There exists a set of compile time definitions that may be handy for developers.
+These are all CMake definitions and can be added like this:
+
+.. code-block:: bash
+
+   python3 -m pip install --config-settings=cmake.define.WITH_FORTRAN=YES .
+
+The options are:
+
+- `WITH_FORTRAN` default to ON
+  If OFF, no fortran sources will be compiled, this may be useful in debug
+  situations, but are required for full support with externally created fortran
+  files, such as output files from DFT codes.
+- `WITH_F2PY_REPORT_EXIT` default to OFF
+  If ON, the compile definition `-DF2PY_REPORT_ATEXIT` will be set.
+- `WITH_F2PY_REPORT_COPY` default to OFF
+  If ON, error messages will be printed while running when the array size
+  has some certain size (see `F2PY_REPORT_ON_ARRAY_COPY`)
+- `F2PY_REPORT_ON_ARRAY_COPY` default 10
+  Minimum (total) number of array elements an array should have before
+  an error is created when reporting a copy, `WITH_F2PY_REPORT_COPY` must
+  also be ON for this to take effect.
+- `WITH_LINE_DIRECTIVES` default to OFF
+  Add line-directives when cythonizing sources
+- `WITH_GDB` default to OFF
+  Add information for the GDB debugger
+- `WITH_ANNOTATE` default to OFF
+  create annotation output (html format) that can be viewed
 
 
 Windows
@@ -189,9 +219,8 @@ For source/development installations some basic packages are required:
 
 - `Cython`_
 - C compiler
-- fortran compiler
-- CMake + Ninja
-- scikit-build
+- fortran compiler (much recommended)
+- `scikit-build-core`_
 
 To install the development version using :code:`pip` you may use the URL command:
 
@@ -200,16 +229,3 @@ To install the development version using :code:`pip` you may use the URL command
    python3 -m pip install -U git+https://github.com/zerothi/sisl.git
 
 Otherwise follow the manual installation by cloning the `git repository <sisl-git_>`_.
-Remark that the :code:`git+https` protocol is buggy (as of pip v19.0.3) because you cannot pass compiler
-options to :code:`setuptools`. If you want to install the development version with e.g.
-the Intel compilers you should do:
-
-.. code-block:: bash
-
-   git clone git+https://github.com/zerothi/sisl.git
-   cd sisl
-   python3 -m pip install . -U --build-option="--compiler=intelem" --build-option="--fcompiler=intelem" .
-
-which will pass the correct options to the build system.
-
-The `-U` flag ensures that prior installations are overwritten.

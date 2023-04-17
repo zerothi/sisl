@@ -17,19 +17,22 @@ list(TRANSFORM siesta_sources APPEND .f90)
 # The module file for the signatures
 set(siesta_module "_siesta")
 
-create_f2py_signature(
-  SIGNATURE _siesta_signature.pyf
-  MODULE ${siesta_module}
-  SOURCES ${siesta_sources}
-  OUTPUT _siesta_signature
-  )
+if(WITH_FORTRAN)
+  create_f2py_signature(
+    SIGNATURE _siesta_signature.pyf
+    MODULE ${siesta_module}
+    SOURCES ${siesta_sources}
+    OUTPUT _siesta_signature
+    )
 
-add_f2py_library(
-  # We have one module (io_m) and no f-files with common blocks
-  # Nor do we have any f90 files with functions that should be exposed
-  WITH_F90_WRAPPER
-  SIGNATURE "${_siesta_signature}"
-  )
+  add_f2py_library(
+    # We have one module (io_m) and no f-files with common blocks
+    # Nor do we have any f90 files with functions that should be exposed
+    # Hence we only have the f90-wrapper
+    WITH_F90_WRAPPER
+    SIGNATURE "${_siesta_signature}"
+    )
 
-install(TARGETS ${siesta_module} LIBRARY
-  DESTINATION ${SKBUILD_PROJECT_NAME}/io/siesta)
+  install(TARGETS ${siesta_module} LIBRARY
+    DESTINATION ${SKBUILD_PROJECT_NAME}/io/siesta)
+endif()
