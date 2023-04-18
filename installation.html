@@ -4,9 +4,10 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installation &mdash; sisl 0.1.dev1+g85435d4 documentation</title>
+  <title>Installation &mdash; sisl 0.1.dev1+g17a8fcd documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
       <link rel="stylesheet" href="_static/plot_directive.css" type="text/css" />
       <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
       <link rel="stylesheet" href="_static/sg_gallery.css" type="text/css" />
@@ -17,6 +18,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/tabs.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script src="_static/js/theme.js"></script>
@@ -38,7 +40,7 @@
             sisl
           </a>
               <div class="version">
-                0.1.dev1+g85435d4
+                0.1.dev1+g17a8fcd
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -160,7 +162,7 @@ will be used if later installed.</p>
 extended analysis methods. These are not required and may be installed later if their usage
 is desired.</p>
 <p>When wanting to pass options to <code class="code docutils literal notranslate"><span class="pre">pip</span></code> simply use the following</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--install-option<span class="o">=</span><span class="s2">&quot;--compiler=intelem&quot;</span><span class="w"> </span>--install-option<span class="o">=</span><span class="s2">&quot;--fcompiler-intelem&quot;</span><span class="w"> </span>sisl
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--config-settings<span class="o">=</span>cmake.define.CMAKE_BUILD_PARALLEL_LEVEL<span class="o">=</span><span class="m">5</span><span class="w"> </span>sisl
 </pre></div>
 </div>
 <p>note that options are accummulated.</p>
@@ -196,7 +198,7 @@ while also using <code class="code docutils literal notranslate"><span class="pr
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>sisl-dev
 conda<span class="w"> </span>activate<span class="w"> </span>sisl-dev
 conda<span class="w"> </span>config<span class="w"> </span>--add<span class="w"> </span>channels<span class="w"> </span>conda-forge
-conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>fortran-compiler<span class="w"> </span>c-compiler<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.9
+conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>fortran-compiler<span class="w"> </span>c-compiler<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.11<span class="w"> </span>scikit-build-core
 conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>scipy<span class="w"> </span>netcdf4<span class="w"> </span>cftime<span class="w"> </span>plotly<span class="w"> </span>matplotlib
 </pre></div>
 </div>
@@ -207,25 +209,54 @@ conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> <
 <h2>Manual installation<a class="headerlink" href="#manual-installation" title="Permalink to this heading"></a></h2>
 <p>The regular <code class="code docutils literal notranslate"><span class="pre">pip</span></code> codes may be used to install git clones or downloaded
 tarballs.</p>
+<p>Manual installations requires these packages:</p>
+<ul class="simple">
+<li><p><a href="#id2"><span class="problematic" id="id3">`setuptools_scm`_</span></a> (with toml support) 6.2 or later</p></li>
+<li><p><a class="reference external" href="https://scikit-build-core.readthedocs.io/en/latest/">scikit-build-core</a></p></li>
+<li><p><a class="reference external" href="https://cython.org/">Cython</a> 0.28 or later</p></li>
+</ul>
 <p>Simply download the release tar from <a class="reference external" href="https://github.com/zerothi/sisl/releases">this page</a>, or clone
 the <a class="reference external" href="https://github.com/zerothi/sisl/">git repository</a> for the latest developments</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>.<span class="w"> </span>--prefix<span class="o">=</span>&lt;prefix&gt;
 </pre></div>
 </div>
+<p>There exists a set of compile time definitions that may be handy for developers.
+These are all CMake definitions and can be added like this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--config-settings<span class="o">=</span>cmake.define.WITH_FORTRAN<span class="o">=</span>YES<span class="w"> </span>.
+</pre></div>
+</div>
+<p>The options are:</p>
+<ul class="simple">
+<li><p><em class="xref py py-obj">WITH_FORTRAN</em> default to ON
+If OFF, no fortran sources will be compiled, this may be useful in debug
+situations, but are required for full support with externally created fortran
+files, such as output files from DFT codes.</p></li>
+<li><p><em class="xref py py-obj">WITH_F2PY_REPORT_EXIT</em> default to OFF
+If ON, the compile definition <em class="xref py py-obj">-DF2PY_REPORT_ATEXIT</em> will be set.</p></li>
+<li><p><em class="xref py py-obj">WITH_F2PY_REPORT_COPY</em> default to OFF
+If ON, error messages will be printed while running when the array size
+has some certain size (see <em class="xref py py-obj">F2PY_REPORT_ON_ARRAY_COPY</em>)</p></li>
+<li><p><em class="xref py py-obj">F2PY_REPORT_ON_ARRAY_COPY</em> default 10
+Minimum (total) number of array elements an array should have before
+an error is created when reporting a copy, <em class="xref py py-obj">WITH_F2PY_REPORT_COPY</em> must
+also be ON for this to take effect.</p></li>
+<li><p><em class="xref py py-obj">WITH_LINE_DIRECTIVES</em> default to OFF
+Add line-directives when cythonizing sources</p></li>
+<li><p><em class="xref py py-obj">WITH_GDB</em> default to OFF
+Add information for the GDB debugger</p></li>
+<li><p><em class="xref py py-obj">WITH_ANNOTATE</em> default to OFF
+create annotation output (html format) that can be viewed</p></li>
+</ul>
 <section id="windows">
 <h3>Windows<a class="headerlink" href="#windows" title="Permalink to this heading"></a></h3>
 <p>To install <a class="reference internal" href="api/index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> on Windows one will require a specification of
 the compilers used. Typically one may do</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>.<span class="w"> </span>--prefix<span class="o">=</span>&lt;prefix&gt;<span class="w"> </span>--install-option<span class="o">=</span><span class="s1">&#39;--fcompiler=gfortran&#39;</span><span class="w"> </span>--install-option<span class="o">=</span><span class="s1">&#39;--compiler=mingw32&#39;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>.<span class="w"> </span>--prefix<span class="o">=</span>&lt;prefix&gt;
 </pre></div>
 </div>
 <p>but sometimes <code class="docutils literal notranslate"><span class="pre">setuptools</span></code> does not intercept the flags in the build process.
-To remedy this please ensure <code class="docutils literal notranslate"><span class="pre">%HOME%\pydistutils.cfg</span></code> contains the build options:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>build<span class="o">]</span>
-<span class="nv">compiler</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>mingw32
-<span class="nv">fcompiler</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>gfortran
-</pre></div>
-</div>
+Since 3.12 <code class="docutils literal notranslate"><span class="pre">distutils</span></code> has been deprecated and one needs to pass explicit linker flags to the CMake environment.
+If problems arise, please help out the community by figuring out how this works on Windows.</p>
 <p>Adapt to compilers. For an explanation, see <a class="reference external" href="https://docs.python.org/3/install/index.html#location-and-names-of-config-files">here</a>
 or the <a class="reference external" href="https://github.com/zerothi/sisl/issues/244">user issue</a> which spurred this content.</p>
 </section>
@@ -254,23 +285,14 @@ and setting the environment variable <em class="xref py py-obj">SISL_FILES_TESTS
 <ul class="simple">
 <li><p><a class="reference external" href="https://cython.org/">Cython</a></p></li>
 <li><p>C compiler</p></li>
-<li><p>fortran compiler</p></li>
+<li><p>fortran compiler (much recommended)</p></li>
+<li><p><a class="reference external" href="https://scikit-build-core.readthedocs.io/en/latest/">scikit-build-core</a></p></li>
 </ul>
 <p>To install the development version using <code class="code docutils literal notranslate"><span class="pre">pip</span></code> you may use the URL command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>git+https://github.com/zerothi/sisl.git
 </pre></div>
 </div>
-<p>Otherwise follow the manual installation by cloning the <a class="reference external" href="https://github.com/zerothi/sisl/">git repository</a>.
-Remark that the <code class="code docutils literal notranslate"><span class="pre">git+https</span></code> protocol is buggy (as of pip v19.0.3) because you cannot pass compiler
-options to <code class="code docutils literal notranslate"><span class="pre">setuptools</span></code>. If you want to install the development version with e.g.
-the Intel compilers you should do:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git+https://github.com/zerothi/sisl.git
-<span class="nb">cd</span><span class="w"> </span>sisl
-python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>.<span class="w"> </span>-U<span class="w"> </span>--build-option<span class="o">=</span><span class="s2">&quot;--compiler=intelem&quot;</span><span class="w"> </span>--build-option<span class="o">=</span><span class="s2">&quot;--fcompiler=intelem&quot;</span><span class="w"> </span>.
-</pre></div>
-</div>
-<p>which will pass the correct options to the build system.</p>
-<p>The <em class="xref py py-obj">-U</em> flag ensures that prior installations are overwritten.</p>
+<p>Otherwise follow the manual installation by cloning the <a class="reference external" href="https://github.com/zerothi/sisl/">git repository</a>.</p>
 </section>
 </section>
 
