@@ -38,7 +38,7 @@ we hit release version 1.0.0.
 - Geometry.swapaxes and SuperCell.swapaxes, these are now more versatile by
 	allowing multiple swaps in a single run, #539
 - deprecated `set_sc`
-- internal build-system is changed to `scikit-build`, the `distutils` will be
+- internal build-system is changed to `scikit-build-core`, the `distutils` will be
   deprecated in Python>=3.12 so it was a needed change.
   This resulted in a directory restructuring
 

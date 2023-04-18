@@ -53,12 +53,12 @@ jobs:
       - name: Setup python environment
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: '3.11'
 
       - name: Install sisl + documentation dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install Cython scikit-build
+          python -m pip install Cython "scikit-build-core[pyproject]"
           python -m pip install -r docs/requirements.txt
           python -m pip install .[viz]
 
