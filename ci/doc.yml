@@ -23,7 +23,7 @@ dependencies:
   - dill>=0.3.2
   - scikit-image
   - plotly>=5.12.0
-  - sphinx
+  - sphinx<6
   - sphinx_rtd_theme
   - sphinx-gallery
   - sphinxcontrib-bibtex
