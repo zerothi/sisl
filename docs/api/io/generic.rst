@@ -14,5 +14,4 @@ Generic files
    ~sisl.io.cubeSile
    ~sisl.io.moldenSile
    ~sisl.io.xsfSile
-   ~sisl.io.axsfSile
 

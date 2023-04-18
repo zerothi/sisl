@@ -4,6 +4,11 @@ which python
 which python3
 which sphinx-build
 
+if [ -n "$PYTHONUSERBASE" ]; then
+  v=$(python3 -c "from sys import version_info as v ; print(f'{v[0]}.{v[1]}', end='')")
+  export PYTHONPATH=$PYTHONUSERBASE/lib/python${v}/site-packages:$PYTHONPATH
+fi
+
 # Ensure single-core
 export SISL_NUM_PROCS=1
 # Inform to the workflow visualization function that the 

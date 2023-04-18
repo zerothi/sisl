@@ -25,7 +25,7 @@ made available through the `stoolbox`.
 import sys
 from functools import reduce
 from pathlib import Path
-from collections import Iterable
+from collections.abc import Iterable
 
 import numpy as np
 from scipy.interpolate import interp1d

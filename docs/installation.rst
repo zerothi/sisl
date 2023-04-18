@@ -13,7 +13,7 @@ Running sisl requires these versions:
 
 - `Python`_ 3.7 or above
 - `numpy`_ (1.13 or later)
-- `scipy`_ (0.18 or later)
+- `scipy`_ (1.5 or later)
 - `netCDF4-python <netcdf4-py_>`_
 - `pyparsing`_ (1.5.7 or later)
 
@@ -34,107 +34,92 @@ be considered by developers of Cython modules.
 
 .. _installation-pip:
 
-pip
----
 
-Installing sisl using PyPi can be done using
+Installation of the stable sisl releases can be done by following the common conventions
+using :code:`pip` or :code:`conda` methods:
 
-.. code-block:: bash
+.. tab:: pip
 
-   python3 -m pip install sisl
-   # for better analysis
-   python3 -m pip install sisl[analysis]
-   # for advanced plotting functionality
-   python3 -m pip install sisl[viz]
+   pip will install from pre-build wheels when they are found, if not it will try and
+   install from a source-distribution.
 
+   .. code-block:: bash
 
-:code:`pip` will automatically install the required dependencies. The optional dependencies
-will be used if later installed.
+      python3 -m pip install sisl
+      # for better analysis
+      python3 -m pip install sisl[analysis]
+      # for advanced plotting functionality
+      python3 -m pip install sisl[viz]
 
-The latter installations call also installs dependent packages which are part of
-extended analysis methods. These are not required and may be installed later if their usage
-is desired.
+.. tab:: conda
 
-When wanting to pass options to :code:`pip` simply use the following
+   Conda enviroments are clever, but fragile. It is recommended to contain the
+   sisl installation in a separate environment to decouple it from other fragile
+   components. Their inter-dependencies may result in problematic installations.
 
-.. code-block:: bash
+   .. code-block:: bash
 
-   python3 -m pip install --config-settings=cmake.define.CMAKE_BUILD_PARALLEL_LEVEL=5 sisl
+      conda create -n sisl
+      conda activate sisl
+      conda config --add channels conda-forge
+      conda install -c conda-forge python sisl
 
-note that options are accummulated.
+.. tab:: dev|pip
 
+   This is equivalent to a development installation which requires a C and fortran compiler
+   as well as some other packages:
 
-.. _installation-conda:
+   .. code-block:: bash
 
-conda
------
+      python3 -m pip install setuptools_scm "scikit-build-core[pyproject]" Cython
+      python3 -m pip install git+https://github.com/zerothi/sisl.git --prefix <prefix>
 
-It is recommended to install sisl in a separate environment to decouple its dependencies
-from other packages that may be installed.
-To find more information about the conda-forge enabled versions please see
-`here <conda-releases_>`_.
+   The remaining dependencies should automatically be installed.
 
-conda is a somewhat fragile environment when users want to update/upgrade packages.
-Therefore when conda installations fails, or when it will not update to a more recent version it
-is advisable to create a new environment (starting from scratch) to ensure that your currently
-installed packages are not limiting the upgrading of other packages.
+.. tab:: dev|conda
 
-For sisl there are two options, whether one wants to use a stable sisl release, or be
-able to install the latest development version from `here <sisl-git_>`_.
+   Using conda as development environment can be done, but may be a bit more cumbersome
+   to work with. To install sisl from sources one needs a conda environment with the following
+   content:
 
-Stable
-~~~~~~
+   .. code-block:: bash
 
-Installing the stable sisl release in conda all that is needed is:
+      conda create -n sisl
+      conda activate sisl
+      conda config --add channels conda-forge
+      conda install -c conda-forge fortran-compiler c-compiler python scikit-build-core pyproject-metadata
+      conda install -c conda-forge cython scipy netcdf4 cftime plotly matplotlib
 
+   subsequent installations of sisl should follow :code:`dev|pip` tab
 
-.. code-block:: bash
+.. tab:: editable|pip
 
-   conda create -n sisl
-   conda activate sisl
-   conda config --add channels conda-forge
-   conda install -c conda-forge python=3.9 scipy matplotlib plotly netcdf4 sisl
+   Editable installs are currently not fully supported by :code:`scikit-build-core` and
+   is considered experimental. One _may_ get it to work by doing:
 
-which will install all dependencies including the graphical visualization
-capabilities of sisl.
+   .. code-block:: bash
 
+       git clone git+https://github.com/zerothi/sisl.git
+       cd sisl
+       python3 -m pip install -e .
+       bash tools/fixeditable.bash
 
-Development
-~~~~~~~~~~~
-
-Installing the development version of sisl requires some other basic packages
-while also using :code:`pip` to install sisl, the procedure would be:
-
-.. code-block:: bash
-
-   conda create -n sisl-dev
-   conda activate sisl-dev
-   conda config --add channels conda-forge
-   conda install -c conda-forge fortran-compiler c-compiler python=3.11 scikit-build-core
-   conda install -c conda-forge scipy netcdf4 cftime plotly matplotlib
+   where the last script should (in theory) correct the editable paths and
+   ensure a consistent importable editable installation. If this causes
+   problems, feel free to open up issues.
 
 
-Subsequent installation of sisl in your conda enviroment would follow :ref:`installation-development`.
 
-
-Manual installation
--------------------
-
-The regular :code:`pip` codes may be used to install git clones or downloaded
-tarballs.
-
-Manual installations requires these packages:
-
-- `setuptools_scm`_ (with toml support) 6.2 or later
-- `scikit-build-core`_
-- `Cython`_ 0.28 or later
-
-Simply download the release tar from `this page <gh-releases_>`_, or clone
-the `git repository <sisl-git_>`_ for the latest developments
+Passing options to the build-system through :code:`pip` should de done with
+the following convention
 
 .. code-block:: bash
 
-   python3 -m pip install . --prefix=<prefix>
+   python3 -m pip install --config-settings=cmake.define.CMAKE_BUILD_PARALLEL_LEVEL=5 ...
+
+In the above case the compilation of the C/Fortran sources are compiled in parallel using 5
+cores. This may greatly reduce compilation times.
+
 
 There exists a set of compile time definitions that may be handy for developers.
 These are all CMake definitions and can be added like this:
@@ -185,6 +170,7 @@ or the `user issue <https://github.com/zerothi/sisl/issues/244>`_ which spurred 
 
 .. _installation-testing:
 
+
 Testing your installation
 -------------------------
 
@@ -209,23 +195,3 @@ A basic procedure would be:
    git clone https://github.com/zerothi/sisl-files.git
    SISL_FILES_TESTS=$(pwd)/sisl-files/tests pytest --pyargs sisl
 
-
-.. _installation-development:
-
-Development version
--------------------
-
-For source/development installations some basic packages are required:
-
-- `Cython`_
-- C compiler
-- fortran compiler (much recommended)
-- `scikit-build-core`_
-
-To install the development version using :code:`pip` you may use the URL command:
-
-.. code-block:: bash
-
-   python3 -m pip install -U git+https://github.com/zerothi/sisl.git
-
-Otherwise follow the manual installation by cloning the `git repository <sisl-git_>`_.
