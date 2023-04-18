@@ -71,6 +71,7 @@ extensions = [
     "sphinx.ext.todo",
     "sphinx.ext.viewcode",
     "sphinx_autodoc_typehints",
+    "sphinxcontrib.jquery", # a bug in 4.1.0 means search didn't work without explicit extension
     "sphinx_inline_tabs",
     # plotting and advanced usage
     "matplotlib.sphinxext.plot_directive",
@@ -84,6 +85,7 @@ extensions = [
 ]
 napoleon_numpy_docstring = True
 napoleon_use_param = True
+
 
 # There currently is a bug with mathjax >= 3, so we resort to 2.7.7
 mathjax_path = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"
@@ -124,6 +126,13 @@ else:
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 version = version("sisl")
+if "dev" in version:
+    v_pre, v_suf = version.split("+")
+    # remove dev (we don't need step)
+    v_pre = v_pre.split(".dev")[0]
+    # remove g in gHASH
+    v_suf = v_suf[1:].split('.')[1]
+    version = f"{v_pre}-{v_suf}"
 release = version
 print(f"sisl version {version}")
 
@@ -166,10 +175,18 @@ todo_include_todos = True
 # -- Options for HTML output ----------------------------------------------
 
 html_theme = "sphinx_rtd_theme"
+#html_theme = "furo"
+
+if html_theme == "furo":
+    html_theme_options = {
+        "source_repository": "https://github.com/zerothi/sisl/",
+        "source_branch": "main",
+        "source_directory": "docs/",
+    }
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-html_title = f"sisl {release} documentation"
+html_title = f"sisl {release}"
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 html_short_title = "sisl"

@@ -1,3 +1,4 @@
 CITATION.cff export-subst
 pyproject.toml export-subst
+.git_archival.txt export-subst
 
