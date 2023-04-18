@@ -28,6 +28,7 @@ dependencies:
   - sphinx-gallery
   - sphinxcontrib-bibtex
   - sphinx-autodoc-typehints
+  - sphinx-inline-tabs
   - numpydoc
   - nbsphinx
   - jupyter_client

@@ -19,6 +19,7 @@ plotly>=5.12.0
 sphinx-gallery
 sphinx-rtd-theme
 sphinx-autodoc-typehints
+sphinx-inline-tabs
 sphinxcontrib-bibtex
 tqdm
 ipywidgets
