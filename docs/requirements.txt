@@ -1,9 +1,3 @@
-# For installation
-wheel
-setuptools_scm>=6.2
-scikit-build-core
-cython
-# For running
 numpy>=1.13
 scipy>=1.5.0
 netCDF4

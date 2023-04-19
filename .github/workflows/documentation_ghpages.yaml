@@ -55,14 +55,13 @@ jobs:
         with:
           python-version: '3.11'
 
+      - uses: r-lib/actions/setup-pandoc@v2
+
       - name: Install sisl + documentation dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install Cython "scikit-build-core[pyproject]"
           python -m pip install -r docs/requirements.txt
           python -m pip install .[viz]
-
-      - uses: r-lib/actions/setup-pandoc@v2
 
       - name: Build the documentation using the sisl-files as well
         run: |
