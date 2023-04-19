@@ -4,10 +4,9 @@
 
 try:
     from . import _siesta
-    found_bin_module = True
-except Exception as e:
-    print(e)
-    found_bin_module = False
+    has_fortran_module = True
+except ImportError:
+    has_fortran_module = False
 
 from sisl._internal import set_module
 from ..sile import Sile, SileCDF, SileBin, SileError

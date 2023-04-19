@@ -19,8 +19,10 @@ from sisl.unit.siesta import unit_convert
 from ..siesta._help import _csr_to_siesta, _csr_from_sc_off, _mat_spin_convert
 try:
     from ..siesta._siesta import siesta_sc_off
-except:
-    pass
+    # TODO add checks
+    has_fortran_module = True
+except ImportError:
+    has_fortran_module = False
 
 
 __all__ = ['deltancSileTBtrans']

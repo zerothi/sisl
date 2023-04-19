@@ -22,8 +22,10 @@ from .._help import grid_reduce_indices
 from ._help import *
 try:
     from . import _siesta
-except Exception:
-    pass
+    # TODO make checks where appropiate
+    has_fortran_module = True
+except ImportError:
+    has_fortran_module = False
 
 
 __all__ = ['ncSileSiesta']

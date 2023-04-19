@@ -6,10 +6,11 @@ if(SKBUILD)
   message(STATUS "Building with scikit-build-core: ${SKBUILD_CORE_VERSION}")
 endif()
 
+
 project(sisl
   DESCRIPTION "Cythonized or fortran codes"
   HOMEPAGE_URL "https://github.com/zerothi/sisl"
-  LANGUAGES C CXX Fortran
+  LANGUAGES C CXX
   # cmake requires a version of X.Y.Z or some other form, it does not accept setuptools_scm dirty tags
   #  VERSION "${SKBUILD_PROJECT_VERSION}"
   )
@@ -38,42 +39,7 @@ add_compile_definitions(CYTHON_NO_PYINIT_EXPORT=1)
 set(CMAKE_SHARED_MODULE_PREFIX "")
 
 
-# Retrieve header information
-# Define f2py executable
-set(F2PY_EXECUTABLE "${PYTHON_EXECUTABLE}" -m numpy.f2py)
-
-# Get numpy.f2py header
-set(Python_NumPy_F2Py_INCLUDE_DIR)
-foreach(dir IN LISTS Python_NumPy_INCLUDE_DIRS)
-  if(IS_DIRECTORY "${dir}/../../f2py/src")
-    set(Python_NumPy_F2Py_INCLUDE_DIR "${dir}/../../f2py/src")
-    break()
-  endif()
-endforeach()
-
-
-if(NOT Python_NumPy_F2Py_INCLUDE_DIR)
-  message(STATUS "Could not locate f2py sources in ${NumPy_NumPy_INCLUDE_DIRS}/../../f2py/src/ trying numpy.f2py.get_include()")
-  execute_process(COMMAND
-    "${PYTHON_EXECUTABLE}" -c "import numpy.f2py; print(numpy.f2py.get_include())"
-    OUTPUT_VARIABLE Python_NumPy_F2Py_INCLUDE_DIR
-    RESULT_VARIABLE NumPy_F2Py_ERR
-    OUTPUT_STRIP_TRAILING_WHITESPACE)
-  if(NumPy_F2Py_ERR)
-    message(SEND_ERROR "ERROR: NumPy.F2PY header not found (${err}), looked in: ${NumPy_NumPy_INCLUDE_DIRS}/../../f2py/src.")
-  endif()
-endif()
-
-list(POP_BACK CMAKE_MESSAGE_INDENT)
-
-
-# f2py requires a basic object
-add_library(f2py_fortranobject OBJECT "${Python_NumPy_F2Py_INCLUDE_DIR}/fortranobject.c")
-target_link_libraries(f2py_fortranobject PUBLIC Python::NumPy)
-target_include_directories(f2py_fortranobject PUBLIC "${Python_NumPy_F2Py_INCLUDE_DIR}")
-set_property(TARGET f2py_fortranobject PROPERTY POSITION_INDEPENDENT_CODE ON)
-set(F2PY_LIBRARIES f2py_fortranobject)
-
+# Define all options for the user
 
 set(F2PY_REPORT_ON_ARRAY_COPY 10
   CACHE STRING
@@ -84,13 +50,6 @@ option(WITH_F2PY_REPORT_EXIT
   "Report timings on routine exits" FALSE)
 option(WITH_FORTRAN
   "Whether to compile and ship fortran sources (default True)" TRUE)
-
-if(WITH_F2PY_REPORT_EXIT)
-  target_compile_definitions(f2py_fortranobject PRIVATE F2PY_REPORT_ATEXIT)
-endif()
-if(WITH_F2PY_REPORT_COPY)
-  target_compile_definitions(f2py_fortranobject PRIVATE F2PY_REPORT_ON_ARRAY_COPY=${F2PY_REPORT_ON_ARRAY_COPY})
-endif()
 
 
 #option(WITH_COVERAGE
@@ -103,7 +62,56 @@ option(WITH_GDB
   "Add GDB-enabled Cython sources" FALSE)
 
 
-# Parse options to global options
+# Decide for fortran stuff
+if(WITH_FORTRAN)
+
+  # add the language
+  enable_language(Fortran)
+
+  # Retrieve header information
+  # Define f2py executable
+  set(F2PY_EXECUTABLE "${PYTHON_EXECUTABLE}" -m numpy.f2py)
+
+  # Get numpy.f2py header
+  set(Python_NumPy_F2Py_INCLUDE_DIR)
+  foreach(dir IN LISTS Python_NumPy_INCLUDE_DIRS)
+    if(IS_DIRECTORY "${dir}/../../f2py/src")
+      set(Python_NumPy_F2Py_INCLUDE_DIR "${dir}/../../f2py/src")
+      break()
+    endif()
+  endforeach()
+
+
+  if(NOT Python_NumPy_F2Py_INCLUDE_DIR)
+    message(STATUS "Could not locate f2py sources in ${NumPy_NumPy_INCLUDE_DIRS}/../../f2py/src/ trying numpy.f2py.get_include()")
+    execute_process(COMMAND
+      "${PYTHON_EXECUTABLE}" -c "import numpy.f2py; print(numpy.f2py.get_include())"
+      OUTPUT_VARIABLE Python_NumPy_F2Py_INCLUDE_DIR
+      RESULT_VARIABLE NumPy_F2Py_ERR
+      OUTPUT_STRIP_TRAILING_WHITESPACE)
+    if(NumPy_F2Py_ERR)
+      message(SEND_ERROR "ERROR: NumPy.F2PY header not found (${err}), looked in: ${NumPy_NumPy_INCLUDE_DIRS}/../../f2py/src.")
+    endif()
+  endif()
+
+  # f2py requires a basic object
+  add_library(f2py_fortranobject OBJECT "${Python_NumPy_F2Py_INCLUDE_DIR}/fortranobject.c")
+  target_link_libraries(f2py_fortranobject PUBLIC Python::NumPy)
+  target_include_directories(f2py_fortranobject PUBLIC "${Python_NumPy_F2Py_INCLUDE_DIR}")
+  set_property(TARGET f2py_fortranobject PROPERTY POSITION_INDEPENDENT_CODE ON)
+  set(F2PY_LIBRARIES f2py_fortranobject)
+
+  if(WITH_F2PY_REPORT_EXIT)
+    target_compile_definitions(f2py_fortranobject PRIVATE F2PY_REPORT_ATEXIT)
+  endif()
+  if(WITH_F2PY_REPORT_COPY)
+    target_compile_definitions(f2py_fortranobject PRIVATE F2PY_REPORT_ON_ARRAY_COPY=${F2PY_REPORT_ON_ARRAY_COPY})
+  endif()
+
+endif(WITH_FORTRAN)
+
+
+# Parse Cython global options
 if(WITH_ANNOTATE)
   list(APPEND CYTHON_FLAGS --annotate)
 endif()
@@ -114,7 +122,24 @@ if(WITH_GDB)
   list(APPEND CYTHON_FLAGS --gdb)
 endif()
 
-# Add definitions for f2py sources
+message(STATUS "sisl options")
+list(APPEND CMAKE_MESSAGE_INDENT "  ")
+
+cmake_print_variables(WITH_COVERAGE)
+cmake_print_variables(WITH_ANNOTATE)
+cmake_print_variables(WITH_LINE_DIRECTIVES)
+cmake_print_variables(WITH_GDB)
+
+cmake_print_variables(WITH_FORTRAN)
+if(WITH_FORTRAN)
+  cmake_print_variables(WITH_F2PY_REPORT_COPY)
+  if(WITH_F2PY_REPORT_COPY)
+    cmake_print_variables(F2PY_REPORT_ON_ARRAY_COPY)
+  endif()
+  cmake_print_variables(WITH_F2PY_REPORT_EXIT)
+endif()
+
+list(POP_BACK CMAKE_MESSAGE_INDENT)
 
 
 message(STATUS "Python variables:")
@@ -122,33 +147,25 @@ list(APPEND CMAKE_MESSAGE_INDENT "  ")
 
 cmake_print_variables(Python_INCLUDE_DIRS)
 cmake_print_variables(Python_NumPy_INCLUDE_DIRS)
-cmake_print_variables(Python_NumPy_F2Py_INCLUDE_DIR)
+if(WITH_FORTRAN)
+  cmake_print_variables(Python_NumPy_F2Py_INCLUDE_DIR)
+endif()
 
 list(POP_BACK CMAKE_MESSAGE_INDENT)
+
 
 message(STATUS "Compilation flags")
 list(APPEND CMAKE_MESSAGE_INDENT "  ")
 
 cmake_print_variables(CMAKE_C_FLAGS)
 cmake_print_variables(CMAKE_CXX_FLAGS)
-cmake_print_variables(CMAKE_Fortran_FLAGS)
-
-list(POP_BACK CMAKE_MESSAGE_INDENT)
-
-message(STATUS "Options")
-list(APPEND CMAKE_MESSAGE_INDENT "  ")
-
-cmake_print_variables(WITH_COVERAGE)
-cmake_print_variables(WITH_ANNOTATE)
-cmake_print_variables(WITH_LINE_DIRECTIVES)
-cmake_print_variables(WITH_GDB)
-cmake_print_variables(WITH_F2PY_REPORT_COPY)
-if(WITH_F2PY_REPORT_COPY)
-  cmake_print_variables(F2PY_REPORT_ON_ARRAY_COPY)
+if(WITH_FORTRAN)
+  cmake_print_variables(CMAKE_Fortran_FLAGS)
 endif()
-cmake_print_variables(WITH_F2PY_REPORT_EXIT)
 
 list(POP_BACK CMAKE_MESSAGE_INDENT)
+
+
 
 function(sisl_has_substring _bool _string _substring)
   string(FIND "${_string}" "${_substring}" index)

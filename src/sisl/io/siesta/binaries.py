@@ -8,10 +8,9 @@ import numpy as np
 
 try:
     from . import _siesta
-    found_module = True
-except Exception as e:
-    print(e)
-    found_module = False
+    has_fortran_module = True
+except ImportError:
+    has_fortran_module = False
 
 from ..sile import add_sile, SileError, SileWarning
 from .sile import SileBinSiesta
@@ -2275,7 +2274,7 @@ def _type(name, obj, dic=None):
 tsgfSileSiesta = _type("tsgfSileSiesta", _gfSileSiesta)
 gridSileSiesta = _type("gridSileSiesta", _gridSileSiesta, {"grid_unit": 1.})
 
-if found_module:
+if has_fortran_module:
     add_sile("TSHS", tshsSileSiesta)
     add_sile("onlyS", onlysSileSiesta)
     add_sile("TSDE", tsdeSileSiesta)

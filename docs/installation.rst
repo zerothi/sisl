@@ -95,7 +95,7 @@ using :code:`pip` or :code:`conda` methods:
 .. tab:: editable|pip
 
    Editable installs are currently not fully supported by :code:`scikit-build-core` and
-   is considered experimental. One _may_ get it to work by doing:
+   is considered experimental. One *may* get it to work by doing:
 
    .. code-block:: bash
 

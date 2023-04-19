@@ -7,9 +7,9 @@ from sisl import SislError
 import sisl._array as _a
 try:
     from . import _siesta
-    found_module = True
-except Exception as e:
-    found_module = False
+    has_fortran_module = True
+except ImportError:
+    has_fortran_module = False
 
 __all__ = ['_csr_from_siesta', '_csr_from_sc_off']
 __all__ += ['_csr_to_siesta', '_csr_to_sc_off']
@@ -59,7 +59,7 @@ def _csr_to_siesta(geom, csr, diag=True):
     _csr_to_sc_off(geom, _siesta.siesta_sc_off(*geom.nsc).T, csr)
 
 
-if not found_module:
+if not has_fortran_module:
     def _csr_from_siesta(geom, csr):
         raise SislError('sisl cannot convert the sparse matrix from a Siesta conforming sparsity pattern! Please install with fortran support!')
 
