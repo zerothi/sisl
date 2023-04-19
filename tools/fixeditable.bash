@@ -4,14 +4,38 @@
 # files.
 # This small script will try to fix these inconsistencies
 
+_dryrun=0
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -n)
+      _dryrun=1
+      ;;
+  esac
+  shift
+done
+
+# determine the python executable (most likely python3)
+pyexe=$(which python3 2>/dev/null)
+if [[ "$pyexe" =~ "*not found" ]]; then
+  pyexe=$(which python 2>/dev/null)
+fi
+if [[ "$pyexe" =~ "*not found" ]]; then
+  echo "Could not determine the python executable, which python[3] did not work"
+  exit 1
+fi
+
 # First we need to locate the editable installation directory
-editable_loc=$(python -m pip show sisl | grep "Location:" | awk '{print $2}')
+editable_loc=$($pyexe -m pip show sisl | grep "Location:" | awk '{print $2}')
+
+# Retrieve the python version
+pv=$(python3 -c "from sys import version_info as v ; print(f'{v[0]}.{v[1]}', end='')")
+pvd=${pv//./}
 
 # Get the build location
 # If we are in the current directory:
 cwd=..
 [ -d src ] && cwd=.
-_indices=$(find ${cwd}/ -name "_indices*.so")
+_indices=$(find ${cwd}/ -name "_indices*.so" | grep "cpython-$pvd-")
 suffix=${_indices#*_indices}
 build_loc=$(readlink -e $(dirname $(dirname $_indices)))
 out=_sisl_editable.py.replacement
@@ -20,6 +44,7 @@ out=_sisl_editable.py.replacement
 tmpfile=$(mktemp /tmp/sisl-$(basename $0).XXXXXX)
 
 echo "Found this information:"
+echo "Python executable and major.minor version: $pyexe [$pv]"
 echo "Build output for libraries: $build_loc"
 echo "Suffix for library outputs: $suffix"
 echo "Editable location for imports etc: $editable_loc"
@@ -57,8 +82,14 @@ for line in lines:
 f.close()
 EOF
 
-python $tmpfile
-if [ -e $out ]; then
-  mv $out $editable_loc/_sisl_editable.py
+
+if [ $_dryrun -eq 1 ]; then
+  echo ""
+  echo "Dryrun -- nothing actually done"
+else
+  $pyexe $tmpfile
+  if [ -e $out ]; then
+    mv $out $editable_loc/_sisl_editable.py
+  fi
+  rm -f $out
 fi
-rm -f $out
