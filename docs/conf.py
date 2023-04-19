@@ -131,7 +131,9 @@ if "dev" in version:
     # remove dev (we don't need step)
     v_pre = v_pre.split(".dev")[0]
     # remove g in gHASH
-    v_suf = v_suf[1:].split('.')[1]
+    v_suf = v_suf[1:]
+    if "." in v_suf:
+        v_suf = v_suf.split(".")[0]
     version = f"{v_pre}-{v_suf}"
 release = version
 print(f"sisl version {version}")
