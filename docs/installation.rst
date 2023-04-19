@@ -130,25 +130,32 @@ These are all CMake definitions and can be added like this:
 
 The options are:
 
-- `WITH_FORTRAN` default to ON
+- ``WITH_FORTRAN`` default to ON
   If OFF, no fortran sources will be compiled, this may be useful in debug
   situations, but are required for full support with externally created fortran
   files, such as output files from DFT codes.
-- `WITH_F2PY_REPORT_EXIT` default to OFF
-  If ON, the compile definition `-DF2PY_REPORT_ATEXIT` will be set.
-- `WITH_F2PY_REPORT_COPY` default to OFF
+- ``WITH_F2PY_REPORT_EXIT`` default to OFF
+  If ON, the compile definition ``-DF2PY_REPORT_ATEXIT`` will be set.
+- ``WITH_F2PY_REPORT_COPY`` default to OFF
   If ON, error messages will be printed while running when the array size
-  has some certain size (see `F2PY_REPORT_ON_ARRAY_COPY`)
-- `F2PY_REPORT_ON_ARRAY_COPY` default 10
+  has some certain size (see ``F2PY_REPORT_ON_ARRAY_COPY``)
+- ``F2PY_REPORT_ON_ARRAY_COPY`` default 10
   Minimum (total) number of array elements an array should have before
-  an error is created when reporting a copy, `WITH_F2PY_REPORT_COPY` must
+  an error is created when reporting a copy, ``WITH_F2PY_REPORT_COPY`` must
   also be ON for this to take effect.
-- `WITH_LINE_DIRECTIVES` default to OFF
+- ``WITH_LINE_DIRECTIVES`` default to OFF
   Add line-directives when cythonizing sources
-- `WITH_GDB` default to OFF
+- ``WITH_GDB`` default to OFF
   Add information for the GDB debugger
-- `WITH_ANNOTATE` default to OFF
+- ``WITH_ANNOTATE`` default to OFF
   create annotation output (html format) that can be viewed
+
+.. warning::
+
+   Only developers should play with these flags at install time.
+
+   And in particular using ``WITH_FORTRAN=OFF`` will reduce the functionality
+   of sisl (no fortran binary file support).
 
 
 Windows
