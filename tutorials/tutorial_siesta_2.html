@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Siesta — graphene &mdash; sisl 0.1.dev1+g17a8fcd documentation</title>
+  <title>Siesta — graphene &mdash; sisl 0.1-4d1be02</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/tabs.css" type="text/css" />
@@ -12,10 +12,13 @@
       <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
       <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
       <link rel="stylesheet" href="../_static/nbsphinx-code-cells.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom_styles.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/sphinx_highlight.js"></script>
@@ -43,7 +46,7 @@
             sisl
           </a>
               <div class="version">
-                0.1.dev1+g17a8fcd
+                0.1-4d1be02
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -169,7 +172,7 @@ Download IPython notebook <a href="https://raw.githubusercontent.com/zerothi/sis
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"version_major": 2, "version_minor": 0, "model_id": "854e655cb1fb48998eefe38a6fdccb5f"}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"version_major": 2, "version_minor": 0, "model_id": "34b7dd13ba264d84b7bf5fdac2cb5101"}</script></div>
 </div>
 <p>Now we need to create the input fdf file for Siesta:</p>
 <div class="nbinput nblast docutils container">
@@ -419,7 +422,7 @@ Orbital index of p_z: [2]
 <span class="n">es</span> <span class="o">=</span> <span class="n">es</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">idx_valence</span><span class="p">)</span>
 
 <span class="c1"># Generate a grid encompassing a 2x2 graphene unit-cell</span>
-<span class="n">g</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="n">H</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="n">H</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 <span class="c1"># Calculate the real-space wavefunctions</span>
 <span class="n">es</span><span class="o">.</span><span class="n">wavefunction</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
 
@@ -439,26 +442,11 @@ Orbital index of p_z: [2]
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-dep:0: SislDeprecation:
-
-Geometry.sc is deprecated; please use &#39;lattice&#39; instead [&gt;=0.15]
-
-dep:0: SislDeprecation:
-
-__init__ argument sc has been deprecated in favor of lattice, please update your code. [&gt;=0.15.0]
-
-</pre></div></div>
-</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/tutorials_tutorial_siesta_2_19_1.png" src="../_images/tutorials_tutorial_siesta_2_19_1.png" />
+<img alt="../_images/tutorials_tutorial_siesta_2_19_0.png" src="../_images/tutorials_tutorial_siesta_2_19_0.png" />
 </div>
 </div>
 <p>We will now try and plot the real-space wavefunction for a finite <span class="math notranslate nohighlight">\(k\)</span>. By choosing the <span class="math notranslate nohighlight">\([1/2, 0, 0]\)</span> point we know it must have a periodicity of 2 along the first lattice vector (this lattice vector is pointing right-up), and full periodicity along the second lattice vector. Since we have a finite <span class="math notranslate nohighlight">\(k\)</span> the grid data-type <em>must</em> be complex because the eigenstates have complex components. And thus we will plot both the real and imaginary part.</p>
@@ -470,7 +458,7 @@ __init__ argument sc has been deprecated in favor of lattice, please update your
 <span class="n">es</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">([</span><span class="mf">1.</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 <span class="n">idx_valence</span> <span class="o">=</span> <span class="p">(</span><span class="n">es</span><span class="o">.</span><span class="n">eig</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
 <span class="n">es</span> <span class="o">=</span> <span class="n">es</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">idx_valence</span><span class="p">)</span>
-<span class="n">g</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="n">H</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="n">H</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 <span class="n">es</span><span class="o">.</span><span class="n">wavefunction</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
 <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[:</span><span class="n">g</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">:</span><span class="n">g</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
 <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">g</span><span class="o">.</span><span class="n">dcell</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="n">g</span><span class="o">.</span><span class="n">dcell</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">x</span> <span class="o">*</span> <span class="n">g</span><span class="o">.</span><span class="n">dcell</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="n">g</span><span class="o">.</span><span class="n">dcell</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
@@ -489,14 +477,6 @@ __init__ argument sc has been deprecated in favor of lattice, please update your
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-dep:0: SislDeprecation:
-
-Geometry.sc is deprecated; please use &#39;lattice&#39; instead [&gt;=0.15]
-
-dep:0: SislDeprecation:
-
-__init__ argument sc has been deprecated in favor of lattice, please update your code. [&gt;=0.15.0]
-
 info:0: SislInfo:
 
 wavefunction: k != Gamma is currently untested!
@@ -511,7 +491,7 @@ wavefunction: k != Gamma is currently untested!
 </div>
 </div>
 <script type="application/vnd.jupyter.widget-state+json">
-{"state": {"854e655cb1fb48998eefe38a6fdccb5f": {"model_name": "FigureModel", "model_module": "jupyterlab-plotly", "model_module_version": "^5.14.1", "state": {"_config": {"plotlyServerURL": "https://plot.ly"}, "_data": [{"line": {"color": "#cccccc", "width": 3}, "mode": "lines", "name": "bonds", "opacity": 1, "x": [0.0, 1.44, null, 0.0, -0.7200000000000002, null, 0.0, -0.7200000000000002, null, 1.44, 2.16, null, 1.44, 2.16, null], "y": [0.0, 0.0, null, 0.0, -1.2470765814495914, null, 0.0, 1.2470765814495914, null, 0.0, -1.2470765814495914, null, 0.0, 1.2470765814495914, null], "type": "scatter", "uid": "040605bb-c68e-470a-9db5-550503ef2ed6"}, {"marker": {"color": ["grey", "grey"], "opacity": {"dtype": "float64", "shape": [2]}, "size": {"dtype": "float64", "shape": [2]}}, "mode": "markers", "name": "Atoms", "opacity": 1, "text": ["[0. 0. 0.]<br>0 (C)", "[1.44 0.   0.  ]<br>1 (C)"], "x": {"dtype": "float64", "shape": [2]}, "y": {"dtype": "float64", "shape": [2]}, "type": "scatter", "uid": "95ef3928-c102-4f36-a419-29b3e3e260a3"}, {"line": {"color": "green"}, "mode": "lines", "name": "Unit cell", "opacity": 1, "x": {"dtype": "float64", "shape": [19]}, "y": {"dtype": "float64", "shape": [19]}, "type": "scatter", "uid": "e8e2caad-3690-486f-8fc1-d3c95c4fdf19"}], "_dom_classes": [], "_js2py_layoutDelta": {}, "_js2py_pointsCallback": {}, "_js2py_relayout": {}, "_js2py_restyle": {}, "_js2py_traceDeltas": {}, "_js2py_update": {}, "_last_layout_edit_id": 0, "_last_trace_edit_id": 0, "_layout": {"template": {"layout": {"hovermode": "closest", "paper_bgcolor": "white", "plot_bgcolor": "white", "scene": {"xaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "yaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "zaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}}, "xaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "yaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}}}, "xaxis": {"showgrid": false, "title": {"text": "X axis [Ang]"}, "zeroline": false}, "yaxis": {"scaleanchor": "x", "scaleratio": 1, "showgrid": false, "title": {"text": "Y axis [Ang]"}, "zeroline": false}}, "_model_module": "jupyterlab-plotly", "_model_module_version": "^5.14.1", "_model_name": "FigureModel", "_py2js_addTraces": {}, "_py2js_animate": {}, "_py2js_deleteTraces": {}, "_py2js_moveTraces": {}, "_py2js_relayout": {}, "_py2js_removeLayoutProps": {}, "_py2js_removeTraceProps": {}, "_py2js_restyle": {}, "_py2js_update": {}, "_view_count": 0, "_view_module": "jupyterlab-plotly", "_view_module_version": "^5.14.1", "_view_name": "FigureView", "tabbable": null, "tooltip": null}, "buffers": [{"data": "AAAAAAAA8D8AAAAAAADwPw==", "encoding": "base64", "path": ["_data", 1, "marker", "opacity", "buffer"]}, {"data": "cT0K16NwJUBxPQrXo3AlQA==", "encoding": "base64", "path": ["_data", 1, "marker", "size", "buffer"]}, {"data": "AAAAAAAAAAAK16NwPQr3Pw==", "encoding": "base64", "path": ["_data", 1, "x", "buffer"]}, {"data": "AAAAAAAAAAAAAAAAAAAAAA==", "encoding": "base64", "path": ["_data", 1, "y", "buffer"]}, {"data": "AAAAAAAAAABI4XoUrkcBQEjhehSuRxFASOF6FK5HEUBI4XoUrkcBQEjhehSuRwFAAAAAAAAA+H9I4XoUrkcBQAAAAAAAAAAAAAAAAAAAAABI4XoUrkcBQEjhehSuRwFAAAAAAAAAAAAAAAAAAAD4f0jhehSuRxFASOF6FK5HAUAAAAAAAAD4f0jhehSuRxFASOF6FK5HAUA=", "encoding": "base64", "path": ["_data", 2, "x", "buffer"]}, {"data": "AAAAAAAAAACE786SBvTzPwAAAAAAAAAAAAAAAAAAAACE786SBvTzP4TvzpIG9PM/AAAAAAAA+H+E786SBvTzPwAAAAAAAAAAAAAAAAAAAACE786SBvTzv4TvzpIG9PO/AAAAAAAAAAAAAAAAAAD4fwAAAAAAAAAAhO/Okgb0878AAAAAAAD4fwAAAAAAAAAAhO/Okgb0878=", "encoding": "base64", "path": ["_data", 2, "y", "buffer"]}]}}, "version_major": 2, "version_minor": 0}
+{"state": {"34b7dd13ba264d84b7bf5fdac2cb5101": {"model_name": "FigureModel", "model_module": "jupyterlab-plotly", "model_module_version": "^5.14.1", "state": {"_config": {"plotlyServerURL": "https://plot.ly"}, "_data": [{"line": {"color": "#cccccc", "width": 3}, "mode": "lines", "name": "bonds", "opacity": 1, "x": [0.0, 1.44, null, 0.0, -0.7200000000000002, null, 0.0, -0.7200000000000002, null, 1.44, 2.16, null, 1.44, 2.16, null], "y": [0.0, 0.0, null, 0.0, -1.2470765814495914, null, 0.0, 1.2470765814495914, null, 0.0, -1.2470765814495914, null, 0.0, 1.2470765814495914, null], "type": "scatter", "uid": "bcaea03a-ac17-4fe0-a320-f3fec816e159"}, {"marker": {"color": ["grey", "grey"], "opacity": {"dtype": "float64", "shape": [2]}, "size": {"dtype": "float64", "shape": [2]}}, "mode": "markers", "name": "Atoms", "opacity": 1, "text": ["[0. 0. 0.]<br>0 (C)", "[1.44 0.   0.  ]<br>1 (C)"], "x": {"dtype": "float64", "shape": [2]}, "y": {"dtype": "float64", "shape": [2]}, "type": "scatter", "uid": "63b6c465-0002-48e5-a2bd-5610cd81bb99"}, {"line": {"color": "green"}, "mode": "lines", "name": "Unit cell", "opacity": 1, "x": {"dtype": "float64", "shape": [19]}, "y": {"dtype": "float64", "shape": [19]}, "type": "scatter", "uid": "5de5a712-104a-48d0-aa2c-a176b3bdf2be"}], "_dom_classes": [], "_js2py_layoutDelta": {}, "_js2py_pointsCallback": {}, "_js2py_relayout": {}, "_js2py_restyle": {}, "_js2py_traceDeltas": {}, "_js2py_update": {}, "_last_layout_edit_id": 0, "_last_trace_edit_id": 0, "_layout": {"template": {"layout": {"hovermode": "closest", "paper_bgcolor": "white", "plot_bgcolor": "white", "scene": {"xaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "yaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "zaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}}, "xaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "yaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}}}, "xaxis": {"showgrid": false, "title": {"text": "X axis [Ang]"}, "zeroline": false}, "yaxis": {"scaleanchor": "x", "scaleratio": 1, "showgrid": false, "title": {"text": "Y axis [Ang]"}, "zeroline": false}}, "_model_module": "jupyterlab-plotly", "_model_module_version": "^5.14.1", "_model_name": "FigureModel", "_py2js_addTraces": {}, "_py2js_animate": {}, "_py2js_deleteTraces": {}, "_py2js_moveTraces": {}, "_py2js_relayout": {}, "_py2js_removeLayoutProps": {}, "_py2js_removeTraceProps": {}, "_py2js_restyle": {}, "_py2js_update": {}, "_view_count": 0, "_view_module": "jupyterlab-plotly", "_view_module_version": "^5.14.1", "_view_name": "FigureView", "tabbable": null, "tooltip": null}, "buffers": [{"data": "AAAAAAAA8D8AAAAAAADwPw==", "encoding": "base64", "path": ["_data", 1, "marker", "opacity", "buffer"]}, {"data": "cT0K16NwJUBxPQrXo3AlQA==", "encoding": "base64", "path": ["_data", 1, "marker", "size", "buffer"]}, {"data": "AAAAAAAAAAAK16NwPQr3Pw==", "encoding": "base64", "path": ["_data", 1, "x", "buffer"]}, {"data": "AAAAAAAAAAAAAAAAAAAAAA==", "encoding": "base64", "path": ["_data", 1, "y", "buffer"]}, {"data": "AAAAAAAAAABI4XoUrkcBQEjhehSuRxFASOF6FK5HEUBI4XoUrkcBQEjhehSuRwFAAAAAAAAA+H9I4XoUrkcBQAAAAAAAAAAAAAAAAAAAAABI4XoUrkcBQEjhehSuRwFAAAAAAAAAAAAAAAAAAAD4f0jhehSuRxFASOF6FK5HAUAAAAAAAAD4f0jhehSuRxFASOF6FK5HAUA=", "encoding": "base64", "path": ["_data", 2, "x", "buffer"]}, {"data": "AAAAAAAAAACE786SBvTzPwAAAAAAAAAAAAAAAAAAAACE786SBvTzP4TvzpIG9PM/AAAAAAAA+H+E786SBvTzPwAAAAAAAAAAAAAAAAAAAACE786SBvTzv4TvzpIG9PO/AAAAAAAAAAAAAAAAAAD4fwAAAAAAAAAAhO/Okgb0878AAAAAAAD4fwAAAAAAAAAAhO/Okgb0878=", "encoding": "base64", "path": ["_data", 2, "y", "buffer"]}]}}, "version_major": 2, "version_minor": 0}
 </script></section>
 </section>
 
