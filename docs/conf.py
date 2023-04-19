@@ -201,6 +201,11 @@ if os.path.exists('_static'):
 else:
     html_static_path = []
 
+# Add any extra style files that we need
+html_css_files = [
+    'css/custom_styles.css',
+]
+
 # If false, no index is generated.
 html_use_modindex = True
 html_use_index = True
