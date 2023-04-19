@@ -1,0 +1,24 @@
+/*STYLES TO MAKE TABS MORE VISUAL*/
+
+/*The parent container of tabs*/
+.tab-set {
+  border: 1px solid #ccc
+}
+
+/*Individual box of each tab*/
+.tab-set > label {
+  margin-bottom: 0
+}
+
+/*Container appearing below the tabs, with the contents of the active tab*/
+.tab-content {
+  background-color: aliceblue;
+  padding: 20px
+}
+
+/*Initial paragraph of the content. By default there's a top margin 
+ but we already specify a padding of 20 px for the content no matter what the
+ first child is.*/
+.tab-content > p:first-child {
+  margin-top: 0
+}
