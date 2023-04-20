@@ -30,7 +30,13 @@ name = "sisl"
 description = "Manipulation and post-processing of DFT output and creating tight-binding models for NEGF transport"
 readme = "README.md"
 license = {text = "MPL-2.0"}
-keywords = ["tight-binding", "DFT", "LCAO", "NEGF", "physics"]
+keywords = [
+    "tight-binding",
+    "DFT",
+    "LCAO",
+    "NEGF",
+    "physics"
+]
 
 dependencies = [
     # TODO work-arounds for windows installations
@@ -51,19 +57,22 @@ classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
     "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
     "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: C",
+    "Programming Language :: Fortran",
+    "Programming Language :: Python",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
-    "Programming Language :: Cython",
-    "Programming Language :: Fortran",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Software Development",
     "Topic :: Scientific/Engineering",
     "Topic :: Scientific/Engineering :: Physics",
-    "Topic :: Utilities"
+    "Operating System :: OS Independent",
 ]
 
 # We purposefully get the version dynamically
