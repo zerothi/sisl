@@ -447,12 +447,11 @@ function(add_f2py_library)
     set(_f_LIBRARY "${_f_MODULE}")
   endif()
 
-  if(NOT DEFINED _f_SOURCES)
-    get_source_file_property(_f_SOURCES "${_f_SIGNATURE}" SISL_FROM_SOURCES)
-  endif()
-  if(NOT _f_SOURCES)
-    message(SEND_ERROR "add_f2py_library missing SOURCES argument and/or the signature file misses the property SISL_FROM_SOURCES")
-  endif()
+  get_source_file_property(_sig_SOURCES "${_f_SIGNATURE}" SISL_FROM_SOURCES)
+  # Add signature sources
+  list(PREPEND _f_SOURCES ${_sig_SOURCES})
+  # If the user has accidentially supplide duplicates, lets remove them
+  list(REMOVE_DUPLICATES _f_SOURCES)
 
   # retrieve the signatures target creator
   get_source_file_property(_gen_signature_target "${_f_SIGNATURE}" SISL_GENERATE_TARGET)
