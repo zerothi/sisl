@@ -365,7 +365,10 @@ function(create_f2py_signature)
       list(APPEND _sources_all "${CMAKE_CURRENT_SOURCE_DIR}/${s}")
     else()
       # this will add the only|skip: : segments, if present
-      list(APPEND _sources_all "${s}")
+      # Since the skip:...: is generally quoted, we will ensure
+      # unpacking it.
+      separate_arguments(seg UNIX_COMMAND ${s})
+      list(APPEND _sources_all ${seg})
     endif()
   endforeach()
 

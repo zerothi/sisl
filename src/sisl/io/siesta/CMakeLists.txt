@@ -1,6 +1,6 @@
 # Define all the sources required
 set(siesta_sources
-    io_m
+    io_m "skip: iostat_update iostat_reset :"
     siesta_sc_off
     hsx_read hsx_write
     dm_read dm_write
@@ -11,8 +11,8 @@ set(siesta_sources
     hs_read
     wfsx_read
   )
-list(TRANSFORM siesta_sources PREPEND _src/)
-list(TRANSFORM siesta_sources APPEND .f90)
+list(TRANSFORM siesta_sources PREPEND _src/ REGEX "[^:]$")
+list(TRANSFORM siesta_sources APPEND .f90 REGEX "[^:]$")
 
 # The module file for the signatures
 set(siesta_module "_siesta")

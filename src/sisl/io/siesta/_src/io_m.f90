@@ -5,6 +5,7 @@
 module io_m
 
   implicit none
+  private
 
   public :: open_file
   public :: open_file_read
@@ -13,8 +14,9 @@ module io_m
   public :: iostat_reset
   public :: iostat_update
   public :: iostat_query
+  public :: close_file
 
-  integer, private :: io_stat = 0
+  integer :: io_stat = 0
 
 contains
 
