@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installation &mdash; sisl 0.1-4d1be02</title>
+  <title>Installation &mdash; sisl 0.1-2eca529</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
@@ -43,7 +43,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-4d1be02
+                0.1-2eca529
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -215,26 +215,32 @@ These are all CMake definitions and can be added like this:</p>
 </div>
 <p>The options are:</p>
 <ul class="simple">
-<li><p><em class="xref py py-obj">WITH_FORTRAN</em> default to ON
+<li><p><code class="docutils literal notranslate"><span class="pre">WITH_FORTRAN</span></code> default to ON
 If OFF, no fortran sources will be compiled, this may be useful in debug
 situations, but are required for full support with externally created fortran
 files, such as output files from DFT codes.</p></li>
-<li><p><em class="xref py py-obj">WITH_F2PY_REPORT_EXIT</em> default to OFF
-If ON, the compile definition <em class="xref py py-obj">-DF2PY_REPORT_ATEXIT</em> will be set.</p></li>
-<li><p><em class="xref py py-obj">WITH_F2PY_REPORT_COPY</em> default to OFF
+<li><p><code class="docutils literal notranslate"><span class="pre">WITH_F2PY_REPORT_EXIT</span></code> default to OFF
+If ON, the compile definition <code class="docutils literal notranslate"><span class="pre">-DF2PY_REPORT_ATEXIT</span></code> will be set.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">WITH_F2PY_REPORT_COPY</span></code> default to OFF
 If ON, error messages will be printed while running when the array size
-has some certain size (see <em class="xref py py-obj">F2PY_REPORT_ON_ARRAY_COPY</em>)</p></li>
-<li><p><em class="xref py py-obj">F2PY_REPORT_ON_ARRAY_COPY</em> default 10
+has some certain size (see <code class="docutils literal notranslate"><span class="pre">F2PY_REPORT_ON_ARRAY_COPY</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">F2PY_REPORT_ON_ARRAY_COPY</span></code> default 10
 Minimum (total) number of array elements an array should have before
-an error is created when reporting a copy, <em class="xref py py-obj">WITH_F2PY_REPORT_COPY</em> must
+an error is created when reporting a copy, <code class="docutils literal notranslate"><span class="pre">WITH_F2PY_REPORT_COPY</span></code> must
 also be ON for this to take effect.</p></li>
-<li><p><em class="xref py py-obj">WITH_LINE_DIRECTIVES</em> default to OFF
+<li><p><code class="docutils literal notranslate"><span class="pre">WITH_LINE_DIRECTIVES</span></code> default to OFF
 Add line-directives when cythonizing sources</p></li>
-<li><p><em class="xref py py-obj">WITH_GDB</em> default to OFF
+<li><p><code class="docutils literal notranslate"><span class="pre">WITH_GDB</span></code> default to OFF
 Add information for the GDB debugger</p></li>
-<li><p><em class="xref py py-obj">WITH_ANNOTATE</em> default to OFF
+<li><p><code class="docutils literal notranslate"><span class="pre">WITH_ANNOTATE</span></code> default to OFF
 create annotation output (html format) that can be viewed</p></li>
 </ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Only developers should play with these flags at install time.</p>
+<p>And in particular using <code class="docutils literal notranslate"><span class="pre">WITH_FORTRAN=OFF</span></code> will reduce the functionality
+of sisl (no fortran binary file support).</p>
+</div>
 <section id="windows">
 <h3>Windows<a class="headerlink" href="#windows" title="Permalink to this heading"></a></h3>
 <p>To install <a class="reference internal" href="api/index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> on Windows one will require a specification of
