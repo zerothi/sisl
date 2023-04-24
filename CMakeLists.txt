@@ -35,7 +35,7 @@ add_compile_definitions(NPY_NO_DEPRECATED_API=0)
 add_compile_definitions(CYTHON_NO_PYINIT_EXPORT=1)
 
 # All libraries in sisl will *not* be prefixed with
-# lib, perhaps we should change this
+#: lib, perhaps we should change this
 set(CMAKE_SHARED_MODULE_PREFIX "")
 
 
@@ -164,6 +164,35 @@ if(WITH_FORTRAN)
 endif()
 
 list(POP_BACK CMAKE_MESSAGE_INDENT)
+
+
+# Document the properties that we are dealing with
+# user-added properties on individual files
+define_property(SOURCE
+  PROPERTY SISL_SIGNATURE_SKIP
+  BRIEF_DOCS "Pass which subroutines/functions to skip in the signature generation of a source file (in create_f2py_signature)"
+  FULL_DOCS "See BRIEF_DOCS"
+  )
+define_property(SOURCE
+  PROPERTY SISL_SIGNATURE_ONLY
+  BRIEF_DOCS "Pass which subroutines/functions to retain (skip the rest) in the signature generation of a source file (in create_f2py_signature)"
+  FULL_DOCS "See BRIEF_DOCS"
+  )
+define_property(SOURCE
+  PROPERTY SISL_GENERATE_TARGET
+  BRIEF_DOCS "The target that generates a specific file, be it Cython or f2py signature file. Can be used for dependency management"
+  FULL_DOCS "See BRIEF_DOCS"
+  )
+define_property(SOURCE
+  PROPERTY SISL_MODULE_NAME
+  BRIEF_DOCS "The module name passed when the signature file was created (necessary to be equivalent in the library creation"
+  FULL_DOCS "See BRIEF_DOCS"
+  )
+define_property(SOURCE
+  PROPERTY SISL_FROM_SOURCES
+  BRIEF_DOCS "The sources that generated the signature file in create_f2py_signature; automatic usage of these sources in add_f2py_library"
+  FULL_DOCS "See BRIEF_DOCS"
+  )
 
 
 
@@ -354,9 +383,25 @@ function(create_f2py_signature)
   endif()
 
   # Create the full-path sources
+  macro(config_prefix prefix name)
+    if(${name})
+      set(${name} "${prefix}: ${${name}} :")
+    else()
+      # clear
+      unset(${name})
+    endif()
+  endmacro()
+  macro(get_config source)
+    get_filename_component(name "${source}" NAME)
+    get_source_file_property(s_skip "${name}" SISL_SIGNATURE_SKIP)
+    config_prefix("skip" s_skip)
+    get_source_file_property(s_only "${name}" SISL_SIGNATURE_ONLY)
+    config_prefix("only" s_only)
+  endmacro()
   set(_sources)
   set(_sources_all)
   foreach(s IN LISTS _f_SOURCES)
+    get_config("${s}")
     if(IS_ABSOLUTE "${s}")
       list(APPEND _sources "${s}")
       list(APPEND _sources_all "${s}")
@@ -370,6 +415,8 @@ function(create_f2py_signature)
       separate_arguments(seg UNIX_COMMAND ${s})
       list(APPEND _sources_all ${seg})
     endif()
+    # Add the properties of the signature handling
+    list(APPEND _sources_all ${seg} ${s_skip} ${s_only})
   endforeach()
 
   sisl_file_as_gentarget(${_f_SIGNATURE} _gen_target)
@@ -428,13 +475,13 @@ function(add_f2py_library)
   set(oneValueArgs
     SIGNATURE # in
     LIBRARY # in[opt] default to module name
-    MODULE # in[opt] default to get_property({SIGNATURE} F2PY_MODULE)
+    MODULE # in[opt] default to get_property({SIGNATURE} SISL_MODULE_NAME)
     F2PY_EXECUTABLE # in[opt]
     F2PY_FLAGS # in[opt]
     OUTPUTS # out
     )
   set(multiValueArgs
-    SOURCES # in[opt] default to get_property({SIGNATURE} F2PY_SOURCES)
+    SOURCES # in[opt] addition to get_property({SIGNATURE} SISL_FROM_SOURCES)
     DEPENDS # in[opt]
     )
   cmake_parse_arguments(_f "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
@@ -473,7 +520,7 @@ function(add_f2py_library)
   set(_has_f FALSE)
   set(_has_f90 FALSE)
   set(_has_unknown)
-  foreach(f IN LISTS _f_SOURCES)
+  foreach(f IN LISTS _sig_SOURCES)
     cmake_path(GET f EXTENSION LAST_ONLY ext)
     if(${ext} STREQUAL ".f")
       set(_has_f TRUE)

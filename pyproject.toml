@@ -25,6 +25,7 @@ build-backend = "scikit_build_core.build"
 # Top most items are probably changed the most
 [project]
 requires-python = ">=3.7"
+version = "0.13.0"
 
 name = "sisl"
 description = "Manipulation and post-processing of DFT output and creating tight-binding models for NEGF transport"
