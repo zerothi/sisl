@@ -1240,6 +1240,10 @@ class RealSpaceSI(SelfEnergy):
         self.set_options(**options)
         self.initialize()
 
+    def __len__(self):
+        r"""Dimension of the self-energy"""
+        return len(self.surface) * np.prod(self._unfold)
+
     def __str__(self):
         """ String representation of RealSpaceSI """
         d = {"class": self.__class__.__name__}
@@ -1253,7 +1257,9 @@ class RealSpaceSI(SelfEnergy):
         return  ("{class}{{unfold: [{u0}, {u1}, {u2}],\n "
                  "k-axes: {k}, trs: {trs},\n "
                  "bz: {bz},\n "
-                 "semi-infinite:\n  {semi},\n "
+                 "semi-infinite:\n"
+                 "  bulk: {self._options['semi_bulk']},\n"
+                 "  {semi},\n "
                  "surface:\n  {surface}\n}}").format(**d)
 
     def set_options(self, **options):
