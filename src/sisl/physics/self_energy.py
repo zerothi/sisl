@@ -241,8 +241,19 @@ class RecursiveSI(SemiInfinite):
         # Already now limit the sparse matrices
         self.spgeom1.set_nsc(nsc)
         if self.spgeom1.nnz < old_nnz:
-            warn(self.__class__.__name__ + ": SparseGeometry has connections across the first neighbouring cell. "
-                 "These values will be forced to 0 as the principal cell-interaction is a requirement")
+            # Now figure out how many elements, and the maximum values
+            # Extend the supercell and get the difference in elements
+            diff = self.spgeom1.copy()
+            diff.set_nsc(spgeom.geometry.lattice.nsc)
+            # calculate difference from full matrix, and the *trimmed* one
+            # This has to be done before removing the unit-cell couplings [0, 0, 0]
+            diff = abs(spgeom - diff)
+            diff.eliminate_zeros()
+            rem_nnz = diff.nnz
+            diff = np.amax(diff, axis=(0, 1))
+            warn(f"{self.__class__.__name__}: {spgeom.__class__.__name__} has connections across the first neighbouring cell. "
+                 f"{rem_nnz} non-zero values will be forced to 0 as the principal cell-interaction is a requirement. "
+                 f"The maximum values of the removed connections are: {diff}")
 
         # I.e. we will delete all interactions that are un-important
         n_s = self.spgeom1.geometry.lattice.n_s

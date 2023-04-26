@@ -12,6 +12,7 @@ from sisl import Geometry, Atom, Lattice, Hamiltonian
 from sisl import BrillouinZone, Bloch
 from sisl import SelfEnergy, WideBandSE, SemiInfinite, RecursiveSI
 from sisl import RealSpaceSE, RealSpaceSI
+import sisl
 
 
 pytestmark = [pytest.mark.physics, pytest.mark.self_energy,
@@ -85,6 +86,19 @@ def test_sancho_orthogonal_dtype(setup):
     assert s64.dtype == np.complex64
     assert s128.dtype == np.complex128
     assert np.allclose(s64, s128)
+
+
+def test_sancho_warning():
+    lattice = Lattice([1, 1, 10], nsc=[5, 5, 1])
+    C = Atom(Z=6, R=[2 * 1.01])
+    g = Geometry([[0., 0., 0.]],
+                 atoms=C, lattice=lattice)
+    H = Hamiltonian(g)
+    func = H.create_construct([0.1, 1.01, 2.01], [0., -2., -1.])
+    H.construct(func)
+
+    with pytest.warns(sisl.SislWarning, match=r"first neighbouring cell.*\[1.\]"):
+        RecursiveSI(H, '+A')
 
 
 def test_sancho_non_orthogonal(setup):
