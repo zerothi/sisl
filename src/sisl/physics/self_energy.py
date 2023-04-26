@@ -122,7 +122,7 @@ class WideBandSE(SelfEnergy):
     spgeom : SparseGeometry or int
        for a `SparseGeometry` only the length will be queried.
     eta : float
-       the imaginary part of the self-energy
+       the imaginary part (:math:`\eta`) of the self-energy
     """
 
     def __init__(self, spgeom, eta):
@@ -167,7 +167,7 @@ class SemiInfinite(SelfEnergy):
     infinite : str
        axis specification for the semi-infinite direction (`+A`/`-A`/`+B`/`-B`/`+C`/`-C`)
     eta : float, optional
-       the default imaginary part of the self-energy calculation
+       the default imaginary part (:math:`\eta`) of the self-energy calculation
     """
 
     def __init__(self, spgeom, infinite, eta=1e-4):
@@ -616,16 +616,16 @@ class RealSpaceSE(SelfEnergy):
         The resulting Green function/self-energy ordering is always tiled along
         the semi-infinite direction first, and then the other directions in order.
     eta : float, optional
-        imaginary part in the self-energy calculations (default 1e-4 eV)
+        imaginary part (:math:`\eta`) in the self-energy calculations (default 1e-4 eV)
     dk : float, optional
         fineness of the default integration grid, specified in units of Ang, default to 1000 which
-        translates to 1000 k-points along reciprocal cells of length 1. Ang^-1.
+        translates to 1000 k-points along reciprocal cells of length :math:`1. \mathrm{Ang}^{-1}`.
     bz : BrillouinZone, optional
         integration k-points, if not passed the number of k-points will be determined using
         `dk` and time-reversal symmetry will be determined by `trs`, the number of points refers
         to the unfolded system.
     trs : bool, optional
-        whether time-reversal symmetry is used in the BrillouinZone integration, default
+        whether time-reversal symmetry is used in the `BrillouinZone` integration, default
         to true.
 
     Examples
@@ -715,16 +715,16 @@ class RealSpaceSE(SelfEnergy):
         Parameters
         ----------
         eta : float, optional
-            imaginary part in the self-energy calculations (default 1e-4 eV)
+            imaginary part (:math:`\eta`) in the self-energy calculations (default 1e-4 eV)
         dk : float, optional
             fineness of the default integration grid, specified in units of Ang, default to 1000 which
-            translates to 1000 k-points along reciprocal cells of length 1. Ang^-1.
+            translates to 1000 k-points along reciprocal cells of length :math:`1. \mathrm{Ang}^{-1}`.
         bz : BrillouinZone, optional
             integration k-points, if not passed the number of k-points will be determined using
             `dk` and time-reversal symmetry will be determined by `trs`, the number of points refers
             to the unfolded system.
         trs : bool, optional
-            whether time-reversal symmetry is used in the BrillouinZone integration, default
+            whether time-reversal symmetry is used in the `BrillouinZone` integration, default
             to true.
         """
         self._options.update(options)
@@ -1133,16 +1133,16 @@ class RealSpaceSI(SelfEnergy):
         number of times the `surface` structure is tiled along each direction
         Since this is a surface there will maximally be 2 unfolds being non-unity.
     eta : float, optional
-        imaginary part in the self-energy calculations (default 1e-4 eV)
+        imaginary part (:math:`\eta`) in the self-energy calculations (default 1e-4 eV)
     dk : float, optional
         fineness of the default integration grid, specified in units of Ang, default to 1000 which
-        translates to 1000 k-points along reciprocal cells of length 1. Ang^-1.
+        translates to 1000 k-points along reciprocal cells of length :math:`1. \mathrm{Ang}^{-1}`.
     bz : BrillouinZone, optional
         integration k-points, if not passed the number of k-points will be determined using
         `dk` and time-reversal symmetry will be determined by `trs`, the number of points refers
         to the unfolded system.
     trs : bool, optional
-        whether time-reversal symmetry is used in the BrillouinZone integration, default
+        whether time-reversal symmetry is used in the `BrillouinZone` integration, default
         to true.
 
     Examples
@@ -1283,16 +1283,16 @@ class RealSpaceSI(SelfEnergy):
         semi_bulk : bool, optional
             whether the semi-infinite matrix elements are used for in the surface. Default to true.
         eta : float, optional
-            imaginary part in the self-energy calculations (default 1e-4 eV)
+            imaginary part (:math:`\eta`) in the self-energy calculations (default 1e-4 eV)
         dk : float, optional
             fineness of the default integration grid, specified in units of Ang, default to 1000 which
-            translates to 1000 k-points along reciprocal cells of length 1. Ang^-1.
+            translates to 1000 k-points along reciprocal cells of length :math:`1. \mathrm{Ang}^{-1}`.
         bz : BrillouinZone, optional
             integration k-points, if not passed the number of k-points will be determined using
             `dk` and time-reversal symmetry will be determined by `trs`, the number of points refers
             to the unfolded system.
         trs : bool, optional
-            whether time-reversal symmetry is used in the BrillouinZone integration, default
+            whether time-reversal symmetry is used in the `BrillouinZone` integration, default
             to true.
         """
         self._options.update(options)
