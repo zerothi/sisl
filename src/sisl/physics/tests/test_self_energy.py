@@ -348,6 +348,18 @@ def test_real_space_SE_fail_nsc_semi_fully_periodic():
         RSE = RealSpaceSE(H, 1, 0, (3, 4, 1), dk=100)
 
 
+def test_real_space_SE_spin_orbit():
+    sq = Geometry([0] * 3, Atom(1, 1.01), [1])
+    sq.set_nsc([3, 3, 3])
+    H = Hamiltonian(sq, spin="SOC")
+    on = [4, 0, 0, 0, 0, 0, 0, 0]
+    off = [-1, 0, 0, 0, 0, 0, 0, 0]
+    H.construct([(0.1, 1.1), (on, off)])
+    RS = RealSpaceSE(H, 0, (1, 2), (2, 2, 2), dk=1.4)
+    RS.self_energy(0.1)
+    RS.self_energy(0.1, coupling=True)
+
+
 @pytest.mark.parametrize("k_axes", [0])
 @pytest.mark.parametrize("trs", [True, False])
 @pytest.mark.parametrize("bz", [None, BrillouinZone([1])])
@@ -434,3 +446,19 @@ def test_real_space_SI_fail_unfold_in_semi(setup):
     surf.set_nsc(b=1)
     with pytest.raises(ValueError):
         RSI = RealSpaceSI(semi, surf, 0, (2, 2, 1))
+
+
+def test_real_space_SI_spin_orbit():
+    sq = Geometry([0] * 3, Atom(1, 1.01), [1])
+    sq.set_nsc([3, 3, 1])
+    H = Hamiltonian(sq, spin="SOC")
+    on = [4, 0, 0, 0, 0, 0, 0, 0]
+    off = [-1, 0, 0, 0, 0, 0, 0, 0]
+    H.construct([(0.1, 1.1), (on, off)])
+    semi = RecursiveSI(H, '-B')
+    surf = H.tile(4, 1)
+    surf.set_nsc(b=1)
+    RS = RealSpaceSI(semi, surf, 0, (2, 1, 1), dk=1.5)
+    RS.self_energy(0.1)
+    RS.self_energy(0.1, coupling=True)
+

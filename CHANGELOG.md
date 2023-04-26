@@ -45,6 +45,7 @@ we hit release version 1.0.0.
 
 
 ### Fixed
+- spin-orbit Hamiltonians in `RealSpaceSE` and `RealSpaceSI`, fixes #567
 - ufunc reductions on `SparseGeometry` where `axis` arguments reduces
   dimensionality
 - interaction with pymatgen

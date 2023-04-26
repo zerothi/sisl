@@ -836,7 +836,17 @@ class RealSpaceSE(SelfEnergy):
         # Create temporary access elements in the calculation dictionary
         # to be used in .green and .self_energy
         P0 = self.real_space_parent()
+
         V_atoms = self.real_space_coupling(True)[1]
+        orbs = P0.a2o(V_atoms, True)
+        try:
+            if not P0.spin.is_diagonal:
+                # expand in case we have a non-colinear|spin-orbit
+                orbs = np.repeat(orbs, 2) * 2
+                orbs[1::2] += 1
+        except AttributeError:
+            pass
+
         self._calc = {
             # The below algorithm requires the direction to be negative
             # if changed, B, C should be reversed below
@@ -845,7 +855,7 @@ class RealSpaceSE(SelfEnergy):
             "P0": P0.Pk,
             "S0": P0.Sk,
             # Orbitals in the coupling atoms
-            "orbs": P0.a2o(V_atoms, True).reshape(-1, 1),
+            "orbs": orbs.reshape(-1, 1),
         }
 
         # Update the BrillouinZone integration grid in case it isn't specified
@@ -986,7 +996,7 @@ class RealSpaceSE(SelfEnergy):
         getrf = linalg_info("getrf", dtype)
         getri = linalg_info("getri", dtype)
         getri_lwork = linalg_info("getri_lwork", dtype)
-        lwork = int(1.01 * _compute_lwork(getri_lwork, self._calc["SE"].spgeom0.shape[0]))
+        lwork = int(1.01 * _compute_lwork(getri_lwork, len(self._calc["SE"].spgeom0)))
         def inv(A):
             lu, piv, info = getrf(A, overwrite_a=True)
             if info == 0:
@@ -1233,7 +1243,15 @@ class RealSpaceSI(SelfEnergy):
                              "and surface atoms does not coincide!")
 
         # Surface orbitals to put in the semi-infinite self-energy into.
-        self._surface_orbs = self.surface.geometry.a2o(atoms, True).reshape(-1, 1)
+        orbs = self.surface.geometry.a2o(atoms, True)
+        try:
+            if not self.surface.spin.is_diagonal:
+                # expand in case we have a non-colinear|spin-orbit
+                orbs = np.repeat(orbs, 2) * 2
+                orbs[1::2] += 1
+        except AttributeError:
+            pass
+        self._surface_orbs = orbs.reshape(-1, 1)
 
         self._options = {
             # For true, the semi-infinite direction will use the bulk values for the
@@ -1440,13 +1458,23 @@ class RealSpaceSI(SelfEnergy):
         sampling times the unfolding (per :math:`\mathbf k` direction).
         """
         P0 = self.real_space_parent()
+
         V_atoms = self.real_space_coupling(True)[1]
+        orbs = P0.a2o(V_atoms, True)
+        try:
+            if not P0.spin.is_diagonal:
+                # expand in case we have a non-colinear|spin-orbit
+                orbs = np.repeat(orbs, 2) * 2
+                orbs[1::2] += 1
+        except AttributeError:
+            pass
+
         self._calc = {
             # Used to calculate the real-space self-energy
             "P0": P0.Pk,
             "S0": P0.Sk,
             # Orbitals in the coupling atoms
-            "orbs": P0.a2o(V_atoms, True).reshape(-1, 1),
+            "orbs": orbs.reshape(-1, 1),
         }
 
         # Update the BrillouinZone integration grid in case it isn't specified
@@ -1582,7 +1610,7 @@ class RealSpaceSI(SelfEnergy):
         getrf = linalg_info("getrf", dtype)
         getri = linalg_info("getri", dtype)
         getri_lwork = linalg_info("getri_lwork", dtype)
-        lwork = int(1.01 * _compute_lwork(getri_lwork, M0.shape[0]))
+        lwork = int(1.01 * _compute_lwork(getri_lwork, len(M0)))
         def inv(A):
             lu, piv, info = getrf(A, overwrite_a=True)
             if info == 0:
