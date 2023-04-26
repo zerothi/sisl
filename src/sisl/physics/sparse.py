@@ -108,8 +108,7 @@ class SparseOrbitalBZ(SparseOrbital):
     def __str__(self):
         r""" Representation of the model """
         s = f"{self.__class__.__name__}{{dim: {self.dim}, non-zero: {self.nnz}, orthogonal: {self.orthogonal}\n "
-        s += str(self.geometry).replace("\n", "\n ")
-        return s + "\n}"
+        return s + str(self.geometry).replace("\n", "\n ") + "\n}"
 
     def __repr__(self):
         g = self.geometry

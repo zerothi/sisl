@@ -208,9 +208,8 @@ class _SparseGeometry(NDArrayOperatorsMixin):
 
     def __str__(self):
         """ Representation of the sparse model """
-        s = self.__class__.__name__ + f'{{dim: {self.dim}, non-zero: {self.nnz}, kind={self.dkind}\n '
-        s += str(self.geometry).replace('\n', '\n ')
-        return s + '\n}'
+        s = f"{self.__class__.__name__}{{dim: {self.dim}, non-zero: {self.nnz}, kind={self.dkind}\n "
+        return s + str(self.geometry).replace('\n', '\n ') + "\n}"
 
     def __repr__(self):
         return f"<{self.__module__}.{self.__class__.__name__} shape={self._csr.shape[:-1]}, dim={self.dim}, nnz={self.nnz}, kind={self.dkind}>"
@@ -952,9 +951,11 @@ class _SparseGeometry(NDArrayOperatorsMixin):
 
         result = self._csr.__array_ufunc__(ufunc, method, *sp_inputs, **kwargs)
 
-        if out is None:
+        if out is None and isinstance(result, SparseCSR):
             out = obj.copy()
             out._csr = result
+        else:
+            out = result
         return out
 
     def __getstate__(self):

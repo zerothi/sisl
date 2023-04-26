@@ -1939,6 +1939,19 @@ def _ufunc_reduce(ufunc, array, axis=0, *args, **kwargs):
     if np.asarray(kwargs.get("initial", 0.)).ndim > 1:
         raise ValueError(f"{array.__class__.__name__}.{ufunc.__name__}.reduce currently does not implement initial values in different dimensions")
 
+    if isinstance(axis, (tuple, list, np.ndarray)):
+        if len(axis) == 1:
+            axis = axis[0]
+        else:
+            def wrap_axis(axis):
+                if axis < 0:
+                    return axis + len(array.shape)
+                return axis
+            axis = tuple(wrap_axis(ax) for ax in axis)
+            if axis == (0, 1) or axis == (1, 0):
+                return ufunc.reduce(array._D, axis=0, *args, **kwargs)
+            raise NotImplementedError
+
     # correct axis
     if axis is None:
         # reduction on all axes
@@ -1952,8 +1965,6 @@ def _ufunc_reduce(ufunc, array, axis=0, *args, **kwargs):
         array = array.transpose(sort=False)
     elif axis == 1:
         pass
-    elif axis == (0, 1) or axis == (1, 0):
-        return ufunc.reduce(array._D, axis=0, *args, **kwargs)
     elif axis == 2:
         out = array.copy(dims=range(array.shape[2] - 1), dtype=kwargs.get("dtype"))
         out._D[:, 0] = ufunc.reduce(array._D, axis=1, *args, **kwargs)

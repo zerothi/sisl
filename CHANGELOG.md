@@ -44,6 +44,8 @@ we hit release version 1.0.0.
 
 
 ### Fixed
+- ufunc reductions on `SparseGeometry` where `axis` arguments reduces
+  dimensionality
 - interaction with pymatgen
 - fdfSileSiesta.includes would fail when empty lines were present, #555
   fixed and added test
