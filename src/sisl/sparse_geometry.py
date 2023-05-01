@@ -655,7 +655,23 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         return self.sub(full)
 
     def untile(self, prefix, reps, axis, segment=0, *args, sym=True, **kwargs):
-        """ Cuts the sparse model into different parts. """
+        """ Untiles a sparse model into a minimum segment, reverse of `tile`
+
+        Parameters
+        ----------
+        prefix : {a, o}
+           which quantity to request for the size of the matrix
+        reps : int
+           number of untiles that needs to be performed
+        axis : int
+           which axis we need to untile (length with be ``1/reps`` along this axis)
+        segment : int, optional
+           which segment to return, default to the first segment. For a fully symmetric
+           system there should not be a difference, requesting different segments can
+           be used to assert this is the case.
+        sym : bool, optional
+           whether to symmetrize before returning
+        """
         # Create new geometry
         with warnings.catch_warnings(record=True) as w:
             # Cause all warnings to always be triggered.
