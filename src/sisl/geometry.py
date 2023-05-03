@@ -4836,6 +4836,27 @@ class Geometry(LatticeChild):
                        action=ReduceUntile,
                        help='Untiles the geometry into `reps` parts along the unit-cell direction `dir` (opposite of --tile).')
 
+        # append another geometry
+        class Geometryend(argparse.Action):
+            def __call__(self, parser, ns, values, option_string=None):
+                # Create an atom from the input
+                f = Path(values[0])
+                geom = Geometry.read(values[0])
+                d = direction(values[1])
+                ns._geometry = getattr(ns._geometry, self._method_pend)(geom, d)
+
+        class GeometryAppend(Geometryend):
+            _method_pend = "append"
+        p.add_argument(*opts('--append'), nargs=2, metavar=('GEOM', 'DIR'),
+                       action=GeometryAppend,
+                       help='Appends another Geometry along direction DIR.')
+
+        class GeometryPrepend(Geometryend):
+            _method_pend = "prepend"
+        p.add_argument(*opts('--prepend'), nargs=2, metavar=('GEOM', 'DIR'),
+                       action=GeometryPrepend,
+                       help='Prepends another Geometry along direction DIR.')
+
         # Sort
         class Sort(argparse.Action):
             def __call__(self, parser, ns, values, option_string=None):

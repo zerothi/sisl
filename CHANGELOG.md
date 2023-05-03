@@ -8,6 +8,7 @@ we hit release version 1.0.0.
 ## [X.Y.Z] - YYYY-MM-DD
 
 ### Added
+- enabled `Geometry.append|prepend` in `sgeom` command (reads other files)
 - added `fdfSileSiesta.write_brillouinzone` to easily write BandLines to the fdf output,
   see #141
 - added `aniSileSiesta` for MD output of Siesta, #544
