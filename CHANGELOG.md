@@ -46,6 +46,9 @@ we hit release version 1.0.0.
 
 
 ### Fixed
+- MonkhorstPack.replace now checks for symmetry k-points if the BZ is using
+  trs. Additionally the displacements are moved to the primitive point before
+  comparing, this partly fixed #568
 - spin-orbit Hamiltonians in `RealSpaceSE` and `RealSpaceSI`, fixes #567
 - ufunc reductions on `SparseGeometry` where `axis` arguments reduces
   dimensionality

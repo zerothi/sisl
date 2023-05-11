@@ -741,7 +741,9 @@ class MonkhorstPack(BrillouinZone):
         elif isinstance(displacement, Real):
             displacement = _a.fulld(3, displacement)
         else:
+            # transfer the displacement to the primitive cell
             displacement = _a.asarrayd(displacement)
+        displacement = self.in_primitive(displacement)
 
         if size is None:
             size = _a.onesd(3)
@@ -848,8 +850,13 @@ class MonkhorstPack(BrillouinZone):
         self._centered = centered
         self._trs = i_trs
 
+    @property
+    def displacement(self):
+        """ Displacement for this Monkhorst-Pack grid """
+        return self._displ
+
     def __str__(self):
-        """ String representation of MonkhorstPack """
+        """ String representation of `MonkhorstPack` """
         if isinstance(self.parent, Lattice):
             p = self.parent
         else:
@@ -1051,7 +1058,6 @@ class MonkhorstPack(BrillouinZone):
         if check_vol:
             # We can easily figure out the BZ that each k-point is averaging
             k_vol = self._size / self._diag
-            print(np.prod(k_vol), self.weight.min())
 
             # Compare against the size of this one
             # Since we can remove more than one k-point, we require that the
@@ -1076,9 +1082,19 @@ class MonkhorstPack(BrillouinZone):
             k = self.k[idx]
         else:
             # find k-points in batches of 200 MB
-            k = k.reshape(-1, 3)
+            k = self.in_primitive(k).reshape(-1, 3)
             idx = batched_indices(self.k, k, atol=dk, batch_size=200,
                                   diff_func=self.in_primitive)[0]
+            if self._trs >= 0: # TRS along a given axis, we can search the mirrored values
+                idx2 = batched_indices(self.k, -k, atol=dk, batch_size=200,
+                                       diff_func=self.in_primitive)[0]
+                idx = np.concatenate((idx, idx2))
+                # we may find 2 indices for gamm-point in this case... not useful
+                idx = np.unique(idx)
+
+        if len(idx) == 0:
+            raise SislError(f"{self.__class__.__name__}.reduce found no k-points to replace. "
+                            f"Searched with precision: {dk.ravel()}")
 
         # Idea of fast replacements is attributed @ahkole in #454, but the resulting code needed some
         # changes since that code was not stable againts *wrong input*, i.e. k=[0, 0, 0]
@@ -1098,6 +1114,8 @@ class MonkhorstPack(BrillouinZone):
         if displacement is None:
             displ_nk = 1
         else:
+            # Ensure we are in the central k-grid
+            displacement = self.in_primitive(displacement)
             displ_nk = len(displacement)
 
         # Now we have the k-points we need to remove
@@ -1126,7 +1144,8 @@ class MonkhorstPack(BrillouinZone):
             #print(total_weight, replace_weight)
             #print(mp)
             raise SislError(f"{self.__class__.__name__}.reduce found inconsistent replacement weights "
-                            f"self={total_weight} vs. mp={replace_weight}.")
+                            f"self={total_weight} vs. mp={replace_weight}. "
+                            f"Replacement indices: {idx}.")
 
         # delete and append new k-points and weights
         if displacement is None:

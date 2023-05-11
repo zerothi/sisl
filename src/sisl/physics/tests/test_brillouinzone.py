@@ -654,6 +654,23 @@ class TestMonkhorstPack:
         assert len(bz) == N_bz + N_bz_gamma - 1
         assert bz.weight.sum() == pytest.approx(1.)
 
+    def test_replace_trs_neg(self):
+        g = geom.graphene()
+        bz_big = MonkhorstPack(g, [6, 6, 1], trs=True)
+        N_bz_big = len(bz_big)
+        bz_small = MonkhorstPack(g, [3, 3, 3], size=[1/6, 1/6, 1], displacement=[2/3, 1/3, 0], trs=True)
+        N_bz_small = len(bz_small)
+
+        # it should be the same for both negative|positive displ
+        bz_pos = bz_big.copy()
+        bz_neg = bz_big.copy()
+
+        bz_pos.replace(bz_small.displacement, bz_small)
+        bz_neg.replace(-bz_small.displacement, bz_small)
+        for bz in [bz_pos, bz_neg]:
+            assert len(bz) == N_bz_big + N_bz_small - 1
+            assert bz.weight.sum() == pytest.approx(1.)
+
     def test_in_primitive(self):
         assert np.allclose(MonkhorstPack.in_primitive([[1.] * 3, [-1.] * 3]), 0)
 
