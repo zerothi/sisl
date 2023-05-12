@@ -323,6 +323,10 @@ class xsfSile(Sile):
     def read_geometry(self, lattice=None, atoms=None, ret_data=False):
         """ Geometry contained in file, and optionally the associated data
 
+        If the file contains more geometries, one can read multiple geometries
+        by using the arguments `start`, `stop` and `step`.
+        The default is to read the first geometry, only.
+
         Parameters
         ----------
         lattice : Lattice, optional
@@ -332,6 +336,15 @@ class xsfSile(Sile):
             atomic species used regardless of the contained atomic species
         ret_data : bool, optional
            in case the the file has auxiliary data, return that as well.
+        start : int, optional
+            start reading geometries from `start`
+        stop : int, optional
+            stop reading geometries at `stop`
+        step : int, optional
+            step-count between reading geometries
+        all : bool, optional
+            set `start`, `step` and `stop` (if not set) to read
+            as many geometries as possible.
         """
         return self._r_geometry_next(lattice=lattice, atoms=atoms, ret_data=ret_data)
 
