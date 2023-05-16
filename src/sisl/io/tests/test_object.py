@@ -262,7 +262,7 @@ class TestObject:
             pass
 
     @pytest.mark.parametrize("sile", _my_intersect(["read_lattice"], ["write_lattice"]))
-    def test_read_write_supercell(self, sisl_tmp, sisl_system, sile):
+    def test_read_write_lattice(self, sisl_tmp, sisl_system, sile):
         L = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc").lattice
         L.set_nsc([1, 1, 1])
         f = sisl_tmp("test_read_write_geom.win", _dir)
@@ -273,11 +273,11 @@ class TestObject:
             pytest.xfail("Windows reading/writing supercell fails for some unknown reason")
 
         # Write
-        sile(f, mode="w").write_supercell(L)
+        sile(f, mode="w").write_lattice(L)
         # Read 1
         try:
             with sile(f, mode='r') as s:
-                l = s.read_supercell()
+                l = s.read_lattice()
             assert l.equal(L, tol=1e-3) # pdb files have 8.3 for atomic coordinates
         except UnicodeDecodeError as e:
             pass
