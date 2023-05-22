@@ -471,14 +471,14 @@ class Hamiltonian(SparseOrbitalBZSpin):
             # We could reduce it depending on the temperature,
             # however the distribution does not have the kT
             # parameter available.
-            min_Ef, max_Ef = eig.min(), eig.max()
-
             nextafter = np.nextafter
+            
+            # calculate boundaries
+            min_Ef, max_Ef = eig.min(), eig.max()
+            Ef = (min_Ef + max_Ef) * 0.5
             while nextafter(min_Ef, max_Ef) < max_Ef:
-                Ef = (min_Ef + max_Ef) * 0.5
-
                 # Calculate guessed charge
-                qt = (distribution(eig, mu=Ef) * w).sum()
+               qt = (distribution(eig, mu=Ef) * w).sum()
 
                 if abs(qt - q) < q_tol:
                     return Ef
@@ -487,6 +487,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
                     max_Ef = Ef
                 elif qt <= q:
                     min_Ef = Ef
+                Ef = (min_Ef + max_Ef) * 0.5
 
             return Ef
 
