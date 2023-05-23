@@ -478,7 +478,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
             Ef = (min_Ef + max_Ef) * 0.5
             while nextafter(min_Ef, max_Ef) < max_Ef:
                 # Calculate guessed charge
-               qt = (distribution(eig, mu=Ef) * w).sum()
+                qt = (distribution(eig, mu=Ef) * w).sum()
 
                 if abs(qt - q) < q_tol:
                     return Ef
