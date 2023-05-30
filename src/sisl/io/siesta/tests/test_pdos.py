@@ -29,7 +29,7 @@ def test_si_pdos_gamma_xarray(sisl_files):
     assert len(X.E) == 500
     assert len(X.spin) == 1
     assert X.spin[0] == 'sum'
-    size = np.product(X.shape[2:])
+    size = np.prod(X.shape[2:])
     assert size >= X.geometry.no
 
 
@@ -49,5 +49,5 @@ def test_si_pdos_kgrid_xarray(sisl_files):
     assert len(X.E) == 500
     assert len(X.spin) == 1
     assert X.spin[0] == 'sum'
-    size = np.product(X.shape[2:])
+    size = np.prod(X.shape[2:])
     assert size >= X.geometry.no

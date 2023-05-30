@@ -501,7 +501,7 @@ class Geometry(LatticeChild):
 
                 if diff_bin.sum() == 0:
                     supercell[axis] = n_bin
-                    if np.product(supercell) > n_supercells:
+                    if np.prod(supercell) > n_supercells:
                         # For geometries with more than 1 atom in the primary unit cell
                         # we can get false positives (each layer can be split again)
                         # We will search again the max-value supercell
@@ -510,13 +510,13 @@ class Geometry(LatticeChild):
                         supercell[i_max] = 1
 
             # Quick escape if hit the correct number of supercells
-            if np.product(supercell) == n_supercells:
+            if np.prod(supercell) == n_supercells:
                 break
 
             n_bin -= 1
 
         # Check that the number of supercells match
-        if np.product(supercell) != n_supercells:
+        if np.prod(supercell) != n_supercells:
             raise SislError(f'{self.__class__.__name__}.as_primary could not determine the optimal supercell.')
 
         # Cut down the supercell (TODO this does not correct the number of supercell connections!)

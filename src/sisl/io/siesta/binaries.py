@@ -1092,7 +1092,7 @@ class hsxSileSiesta(SileBinSiesta):
         _mat_spin_convert(H)
 
         # Convert the supercells to sisl supercells
-        if no_s // no == np.product(geom.nsc):
+        if no_s // no == np.prod(geom.nsc):
             _csr_from_siesta(geom, H._csr)
 
         return H.transpose(spin=False, sort=kwargs.get("sort", True))
@@ -1169,7 +1169,7 @@ class hsxSileSiesta(SileBinSiesta):
         S._csr._D[:, 0] = dS[:]
 
         # Convert the supercells to sisl supercells
-        if no_s // no == np.product(geom.nsc):
+        if no_s // no == np.prod(geom.nsc):
             _csr_from_siesta(geom, S._csr)
 
         # not really necessary with Hermitian transposing, but for consistency
