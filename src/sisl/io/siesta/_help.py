@@ -135,6 +135,28 @@ def _mat_spin_convert(M, spin=None):
         M._D[:, 3] = -M._D[:, 3]
 
 
+def _geom2hsx(geometry):
+    """ Convert the geometry into the correct lists of species and lists """
+    atoms = geometry.atoms
+    nspecie = atoms.nspecie
+    isa = atoms.specie
+    label, Z, no = [], [], []
+    n, l, zeta = [], [], []
+    for atom in atoms.atom:
+        label.append(atom.tag)
+        Z.append(atom.Z)
+        no.append(len(atom))
+        try:
+            n.append([orb.n for orb in atom])
+            l.append([orb.l for orb in atom])
+            zeta.append([orb.zeta for orb in atom])
+        except Exception:
+            n.append([-1 for orb in atom])
+            l.append([-1 for orb in atom])
+            zeta.append([1 for orb in atom])
+    return (label, Z, no), (n, l, zeta)
+
+
 def _fc_correct(fc, trans_inv=True, sum0=True, hermitian=True):
     r""" Correct a force-constant matrix to retain translational invariance and sum of forces == 0 on atoms
 

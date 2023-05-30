@@ -46,6 +46,8 @@ we hit release version 1.0.0.
 
 
 ### Fixed
+- rare cases for non-Gamma calculations with actual Gamma matrices resulted
+  in crashes #572
 - MonkhorstPack.replace now checks for symmetry k-points if the BZ is using
   trs. Additionally the displacements are moved to the primitive point before
   comparing, this partly fixed #568

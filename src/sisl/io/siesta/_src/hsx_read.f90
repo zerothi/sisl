@@ -369,10 +369,8 @@ subroutine read_hsx_hsx0(fname, nspin, no_u, no_s, maxnh, &
   call iostat_update(ierr)
   if ( Gamma ) then
     if ( no_u /= no_s ) then
-      stop 'Error in reading data, not allocated, Gamma'
+      stop 'Error in reading data, Gamma=true, no_u/=no_s'
     end if
-  else if ( no_u == no_s ) then
-    stop 'Error in reading data, not allocated, Gamma'
   end if
 
 ! Read out indxuo
