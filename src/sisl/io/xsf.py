@@ -48,7 +48,6 @@ def postprocess(*funcs):
     def post(ret):
         nonlocal funcs
         if isinstance(ret[0], tuple):
-            rets = zip(*ret)
             return tuple(func(r) for r, func in zip(zip(*ret), funcs))
         return funcs[0](ret)
     return post
