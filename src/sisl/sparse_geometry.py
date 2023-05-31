@@ -953,25 +953,38 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         obj = None
         for inp in inputs:
             if isinstance(inp, _SparseGeometry):
-                # simply store a reference
-                # if needed we will copy it later
                 if obj is None:
+                    # simply store a reference to the first argument that is a sparsegeometry
                     obj = inp
                 sp_inputs.append(inp._csr)
             else:
                 sp_inputs.append(inp)
 
-        out = kwargs.get("out", None)
+        # determine if the user requested output into
+        # a specific container
+        out = kwargs.pop("out", None)
         if out is not None:
             (out,) = out
+            # ensure the output returns in this field
             kwargs["out"] = (out._csr,)
 
         result = self._csr.__array_ufunc__(ufunc, method, *sp_inputs, **kwargs)
 
-        if out is None:
-            out = obj.copy()
+        if out is not None:
+            # check that the resulting variable is indeed a sparsecsr
+            assert isinstance(result, SparseCSR), \
+                    f"{self.__class__.__name__} ({ufunc.__name__}) requires out= to match the resulting operator"
+
         if isinstance(result, SparseCSR):
-            out._csr = result
+            # return a copy with the sparse result into the output sparse
+            # matrix. If out was not None, the result should already
+            # be stored in it.
+            if out is None:
+                out = obj.copy()
+                out._csr = result
+        else:
+            # likely reductions etc.
+            out = result
         return out
 
     def __getstate__(self):

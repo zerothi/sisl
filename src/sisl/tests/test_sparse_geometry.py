@@ -499,6 +499,17 @@ class TestSparseAtom:
         assert isinstance(s, SparseAtom)
         assert s.dtype == np.complex128
 
+    def test_numpy_reduction(self, setup):
+        g = graphene(atoms=Atom(6, R=1.43))
+        S = SparseAtom(g)
+        I = np.ones(1, dtype=np.complex128)[0]
+        # Create initial stuff
+        for i in range(2):
+            j = range(i, i+2)
+            S[i, j] = 1
+        S.finalize()
+        assert np.sum(S, axis=(0, 1)) == pytest.approx(1 * 2 * 2)
+
     def test_fromsp1(self, setup):
         g = setup.g.repeat(2, 0).tile(2, 1)
         lil = sc.sparse.lil_matrix((g.na, g.na_s), dtype=np.int32)
