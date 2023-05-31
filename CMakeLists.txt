@@ -386,7 +386,7 @@ function(create_f2py_signature)
   macro(config_prefix prefix var)
     if(${var})
       message(VERBOSE "${name}[${prefix}]: ${${var}}")
-      set(${var} "${prefix}: ${${var}} :")
+      set(${var} ${prefix}: ${${var}} :)
     else()
       # clear
       unset(${var})

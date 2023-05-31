@@ -25,8 +25,13 @@ list(TRANSFORM sig_sources APPEND .f90 REGEX "[^:]$")
 # Specify the SKIP|ONLY properties to denote which
 # routines to be put into the signature handling.
 get_filename_component(name _src/io_m.f90 NAME)
-set_source_files_properties(${name}
-  PROPERTIES SISL_SIGNATURE_SKIP "iostat_update iostat_reset"
+set_source_files_properties("${name}"
+  PROPERTIES SISL_SIGNATURE_SKIP "iostat_update;iostat_reset"
+  )
+
+get_filename_component(name _src/hsx_write.f90 NAME)
+set_source_files_properties("${name}"
+  PROPERTIES SISL_SIGNATURE_SKIP "write_hsx1"
   )
 
 # Additional sources which we do not need interfaces
