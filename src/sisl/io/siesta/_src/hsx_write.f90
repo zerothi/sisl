@@ -87,8 +87,8 @@ subroutine write_hsx1(fname, &
     ! first geometry stuff
     nspecies, &
     na_u, xa, isa, lasto, &
-    label, Z, no, n, l, zeta, &
-    ucell, nsc, isc_off, &
+    label, Z, no_max, no, n, l, zeta, &
+    ucell, n_s, nsc, isc_off, &
     nspin, &
     no_u, no_s, nnz, &
     ncol, row, &
@@ -108,9 +108,9 @@ subroutine write_hsx1(fname, &
   real(r8) :: xa(3,na_u)
   real(r8) :: ucell(3,3)
   character(len=*) :: label(nspecies)
-  integer :: Z(nspecies), no(nspecies)
-  integer, dimension(nspecies, maxval(no)) :: n, l, zeta
-  integer :: nsc(3), isc_off(3, product(nsc))
+  integer :: Z(nspecies), no_max, no(nspecies)
+  integer, dimension(nspecies, no_max) :: n, l, zeta
+  integer :: n_s, nsc(3), isc_off(3, n_s)
   integer :: nspin, no_u, no_s, nnz
   integer :: ncol(no_u), row(nnz)
   real(r8) :: H(nnz, nspin), S(nnz)
@@ -119,8 +119,8 @@ subroutine write_hsx1(fname, &
 
 ! Define f2py intents
 !f2py intent(in) :: fname, nspecies, na_u, xa, isa, lasto
-!f2py intent(in) :: label, Z, no, n, l, zeta
-!f2py intent(in) :: ucell, nsc, isc_off, nspin
+!f2py intent(in) :: label, Z, no_max, no, n, l, zeta
+!f2py intent(in) :: ucell, n_s, nsc, isc_off, nspin
 !f2py intent(in) :: no_u, no_s, nnz, ncol, row
 !f2py intent(in) :: H, S, is_dp, Ef, Qtot, temp
 

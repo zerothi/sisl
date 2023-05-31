@@ -472,7 +472,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
             # however the distribution does not have the kT
             # parameter available.
             nextafter = np.nextafter
-            
+
             # calculate boundaries
             min_Ef, max_Ef = eig.min(), eig.max()
             Ef = (min_Ef + max_Ef) * 0.5

@@ -383,12 +383,13 @@ function(create_f2py_signature)
   endif()
 
   # Create the full-path sources
-  macro(config_prefix prefix name)
-    if(${name})
-      set(${name} "${prefix}: ${${name}} :")
+  macro(config_prefix prefix var)
+    if(${var})
+      message(VERBOSE "${name}[${prefix}]: ${${var}}")
+      set(${var} "${prefix}: ${${var}} :")
     else()
       # clear
-      unset(${name})
+      unset(${var})
     endif()
   endmacro()
   macro(get_config source)
