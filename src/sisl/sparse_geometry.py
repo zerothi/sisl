@@ -955,7 +955,8 @@ class _SparseGeometry(NDArrayOperatorsMixin):
             if isinstance(inp, _SparseGeometry):
                 # simply store a reference
                 # if needed we will copy it later
-                obj = inp
+                if obj is None:
+                    obj = inp
                 sp_inputs.append(inp._csr)
             else:
                 sp_inputs.append(inp)
@@ -967,11 +968,10 @@ class _SparseGeometry(NDArrayOperatorsMixin):
 
         result = self._csr.__array_ufunc__(ufunc, method, *sp_inputs, **kwargs)
 
-        if out is None and isinstance(result, SparseCSR):
+        if out is None:
             out = obj.copy()
+        if isinstance(result, SparseCSR):
             out._csr = result
-        else:
-            out = result
         return out
 
     def __getstate__(self):

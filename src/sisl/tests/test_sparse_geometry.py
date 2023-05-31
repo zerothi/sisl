@@ -416,6 +416,38 @@ class TestSparseAtom:
         assert len(s.edges(0)) == 4
         assert len(s.edges(0, exclude=[0])) == 3
 
+    def test_op_numpy_iscalar(self, setup):
+        g = graphene(atoms=Atom(6, R=1.43))
+        S = SparseAtom(g, dtype=np.complex128)
+        I = np.float32(1)
+        # Create initial stuff
+        for i in range(10):
+            j = range(i, i*2)
+            S[0, j] = i
+        S.finalize()
+
+        Ssum = S._csr._D.sum()
+
+        S += I
+        assert isinstance(S, SparseAtom)
+        assert S._csr._D.sum() == Ssum + S.nnz
+
+        S -= I
+        assert isinstance(S, SparseAtom)
+        assert S._csr._D.sum() == Ssum
+
+        S *= I
+        assert isinstance(S, SparseAtom)
+        assert S._csr._D.sum() == Ssum
+
+        S /= I
+        assert isinstance(S, SparseAtom)
+        assert S._csr._D.sum() == Ssum
+
+        S **= I
+        assert isinstance(S, SparseAtom)
+        assert S._csr._D.sum() == Ssum
+
     def test_op_numpy_scalar(self, setup):
         g = graphene(atoms=Atom(6, R=1.43))
         S = SparseAtom(g)
