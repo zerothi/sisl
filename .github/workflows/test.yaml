@@ -69,7 +69,7 @@ jobs:
     - name: Ensure system dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install gfortran
+        sudo apt-get install gcc gfortran
 
     - name: Python installation
       uses: actions/setup-python@v4
@@ -81,7 +81,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install Cython "scikit-build-core[pyproject]"
         python -m pip install -r ci/requirements.txt -r ci/requirements-viz.txt -r requirements.txt
-        python -m pip install -vvv .
+        CC=gcc FC=gfortran python -m pip install -vvv .
 
     - name: Running sisl tests
       env:

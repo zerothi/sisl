@@ -1,7 +1,7 @@
 ! This Source Code Form is subject to the terms of the Mozilla Public
 ! License, v. 2.0. If a copy of the MPL was not distributed with this
 ! file, You can obtain one at https://mozilla.org/MPL/2.0/.
-subroutine write_hsx(fname, Gamma, no_u, no_s, nspin, maxnh, &
+subroutine write_hsx0(fname, Gamma, no_u, no_s, nspin, maxnh, &
     numh, listhptr, listh, H, S, xij, Qtot, temp)
 
   use precision, only: r4, r8
@@ -81,10 +81,9 @@ subroutine write_hsx(fname, Gamma, no_u, no_s, nspin, maxnh, &
 
   call close_file(iu)
 
-end subroutine write_hsx
+end subroutine write_hsx0
 
 subroutine write_hsx1(fname, &
-    ! first geometry stuff
     nspecies, &
     na_u, xa, isa, lasto, &
     label, Z, no_max, no, n, l, zeta, &
