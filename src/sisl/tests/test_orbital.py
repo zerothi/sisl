@@ -190,7 +190,7 @@ class Test_sphericalorbital:
     def test_same1(self):
         rf = r_f(6)
         o0 = SphericalOrbital(0, rf)
-        o1 = Orbital(5.0)
+        o1 = Orbital(o0.R)
         assert o0.equal(o1)
         assert not o0.equal(Orbital(3.))
 
@@ -359,11 +359,11 @@ class Test_hydrogenicorbital:
         orb = HydrogenicOrbital(2, 1, 0, 3.2)
 
     def test_normalization(self):
-        x = np.linspace(0, 10, 1000)
         for n in range(6):
             zeff = n * 0.9
             for l in range(n):
                 orb = HydrogenicOrbital(n, l, 0, zeff)
+                x = np.linspace(0, orb.R, 1000, endpoint=True)
                 Rnl = orb.radial(x)
                 I = np.trapz(x ** 2 * Rnl ** 2, x=x)
                 assert abs(I - 1) < 1e-4
@@ -407,12 +407,14 @@ class Test_GTO:
         alpha = [1, 2]
         coeff = [0.1, 0.44]
         orb = GTOrbital(2, 1, 0, alpha, coeff)
+        assert orb.R > 0
 
     def test_gto_funcs(self):
         alpha = [0.1688, 0.6239, 3.425]
         coeff = [0.4, 0.7, 1.3]
         x = np.linspace(0, 10, 1000)
         orb = GTOrbital(2, 1, 0, alpha, coeff, R=x[-1])
+        assert orb.R == pytest.approx(x[-1])
         Rnl = orb.radial(x)
 
         R = np.random.rand(10, 3)
@@ -430,12 +432,14 @@ class Test_STO:
         alpha = [1, 2]
         coeff = [0.1, 0.44]
         orb = STOrbital(2, 1, 0, alpha, coeff)
+        assert orb.R > 0
 
     def test_sto_funcs(self):
         alpha = [0.1688, 0.6239, 3.425]
         coeff = [0.4, 0.7, 1.3]
         x = np.linspace(0, 10, 1000)
         orb = STOrbital(2, 1, 0, alpha, coeff, R=x[-1])
+        assert orb.R == pytest.approx(x[-1])
         Rnl = orb.radial(x)
 
         R = np.random.rand(10, 3)

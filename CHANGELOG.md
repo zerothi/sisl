@@ -40,6 +40,10 @@ we hit release version 1.0.0.
 
 ### Changed
 - bumped Python requirement to >=3.8
+- orbitals `R` arguments will now by default determine the minimal radii
+  that contains 99.99% of the function integrand. The argument now
+  accepts values -1:0 which is a fraction of the integrand that the function
+  should contain, a positive value will explicitly set the range #574
 - Added printout of the removed couplings in the `RecursiveSI`
 - `SuperCell` class is officially deprecated in favor of `Lattice`, see #95 for details
   The old class will still be accessible and usable for some time (at least a year)

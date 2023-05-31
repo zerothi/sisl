@@ -2,6 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from functools import partial
+from collections import namedtuple
 from collections.abc import Iterable
 from numbers import Integral, Real
 from math import pi
@@ -11,9 +12,15 @@ from math import factorial as fact
 import numpy as np
 from numpy import cos, sin
 from numpy import take, sqrt, square
+import scipy
 from scipy.special import lpmv, factorial, eval_genlaguerre
+if scipy.__version__ < "0.16.0":
+    from scipy.integrate import cumtrapz as cumulative_trapezoid
+else:
+    from scipy.integrate import cumulative_trapezoid
 from scipy.interpolate import UnivariateSpline
 
+from .messages import warn
 from ._internal import set_module
 from . import _plot as plt
 from . import _array as _a
@@ -316,7 +323,70 @@ class Orbital:
         self.__init__(d["R"], q0=d["q0"], tag=d["tag"])
 
 
-def _set_radial(self, *args, **kwargs):
+def _radial_find_min_R(radial_func, contains, maxR=100):
+    """ Minimize the maximum radius such that the integrated function `radial_func**2*r**3` contains `contains` of the integrand
+
+    Parameters
+    ----------
+    radial_func : callable
+       the function that returns the radial part
+    contains : float
+       how much of a percentage the squared function should contain @ R
+    maxR : float, optional
+       maximally searched ``R``, in case there is no cross-over of the integrand
+       containing `contains` in this range a ``-contains`` will be returned to
+       signal it could not be found
+    """
+    # Determine the maximum R
+    # We should never expect a radial components above
+    assert maxR > 0.05, "maxR too small (> 0.05)"
+    assert contains > 0, "contains too small (> 0)"
+
+    # Precision of 0.01 A @ 99.99% (default) of the integrand
+    # The subsequent integral will have a precision of 0.0001 A
+    dr = (0.01, 0.0001)
+
+    def func(r):
+        return radial_func(r) ** 2 * r ** 3
+
+    r = np.arange(0., maxR + dr[0]/2, dr[0])
+    f = func(r)
+    intf = cumulative_trapezoid(f, dx=dr[0], initial=0)
+    integrand = intf[-1] * contains
+
+    # we'll accept a containment of 99.99% of the integrand
+    idx = (intf >= integrand).nonzero()[0]
+    if len(idx) > 0 and idx.min() > 0:
+        idx = idx.min()
+
+        # in the trapezoid integration each point is half contributed
+        # to the previous point and half to the following point.
+        # Here intf[idx-1] is the closed integral from 0:r[idx-1]
+        idxm_integrand = intf[idx-1]
+
+        # Preset R
+        R = r[idx]
+
+        r = np.arange(R - dr[0], min(R + dr[0]*2 + dr[1]/2, maxR), dr[1])
+        f = func(r)
+        intf = cumulative_trapezoid(f, dx=dr[1], initial=0) + idxm_integrand
+
+        # Find minimum R and focus around this point
+        idx = (intf >= integrand).nonzero()[0]
+        if len(idx) > 0:
+            R = r[idx.min()]
+        return R
+
+    try:
+        func_name = radial_func.__class__.__name__
+    except AttributeError:
+        func_name = radial_func.__name__
+
+    warn(f"{func_name} failed to detect a proper radius for integration purposes, retaining R=-{contains}")
+    return -contains
+
+
+def _set_radial(self, *args, **kwargs) -> None:
     r""" Update the internal radial function used as a :math:`f(|\mathbf r|)`
 
     This can be called in several ways:
@@ -373,46 +443,22 @@ def _set_radial(self, *args, **kwargs):
     >>> np.allclose(f_univariate, f_spline)
     True
     """
-    R = kwargs.pop("R", -1.)
-    set_R = R <= 0.
+    R = kwargs.get("R", -0.9999)
+    if R is None:
+        R = -0.9999
+    # a too low value cannot be used to specify it 
+    set_R = -1 <= R and R < 0.
 
     if len(args) == 0:
-        # Return immediately
         def f0(R):
-            """ A zero radial part (always) """
-            return R * 0.
-        self.set_radial(f0)
+            return np.zeros_like(R)
+        self.set_radial(f0, **kwargs)
+        # we cannot set R since it will always give the largest distance
 
     elif len(args) == 1 and callable(args[0]):
         self._radial = args[0]
-
-        # Determine the maximum R
-        # We should never expect a radial components above
-        # 50 Ang (is this not fine? ;))
-        # Precision of 0.05 A
         if set_R:
-            r = np.linspace(0.05, 50, 1000)
-            f = square(self._radial(r))
-
-            # Find maximum R and focus around this point
-            idx = (f > 0).nonzero()[0]
-            if len(idx) > 0:
-                idx = idx.max()
-                # Assert that we actually hit where there are zeros
-                if idx < len(r) - 1:
-                    idx += 1
-                # Preset R
-                R = r[idx]
-                # This should give us a precision of 0.0001 A
-                r = np.linspace(r[idx]-0.055+0.0001, r[idx]+0.055, 1100)
-                f = square(self._radial(r))
-                # Find minimum R and focus around this point
-                idx = (f > 0).nonzero()[0]
-                if len(idx) > 0:
-                    idx = idx.max()
-                    if idx < len(r) - 1:
-                        idx += 1
-                    R = r[idx]
+            R = _radial_find_min_R(args[0], contains=-R)
 
     elif len(args) > 1:
 
@@ -430,9 +476,17 @@ def _set_radial(self, *args, **kwargs):
         # I can see that this function is *much* faster than
         # interp1d, AND it yields same results with these arguments.
         interp = partial(UnivariateSpline, k=3, s=0, ext=1, check_finite=False)
-        interp = kwargs.get("interp", interp)
+        interp = kwargs.pop("interp", interp)(r, f)
 
-        R = self.set_radial(interp(r, f), **kwargs)
+        if set_R:
+            # TODO figure out if we should limit maxR to r[-1]
+            # This would partly make sense, however, an interpolation could converge to
+            # 0. Perhaps we should just append lots of 0s to f?
+            R = _radial_find_min_R(interp, contains=-R)
+            kwargs["R"] = R
+
+        # this will defer the actual R designation (whether it should be set or not)
+        self.set_radial(interp, **kwargs)
 
     elif set_R:
         raise ValueError("Arguments for set_radial are in-correct, please see the documentation of SphericalOrbital.set_radial")
@@ -502,6 +556,12 @@ class SphericalOrbital(Orbital):
     rf_or_func : tuple of (r, f) or func
        radial components as a tuple/list, or the function which can interpolate to any R
        See `set_radial` for details.
+    R : float, optional
+       Manually specify the range of the radial function.
+       By supplying a negative number will retain that percentage
+       of the integration of the radial function. For instance ``R=-0.99`` will
+       determine the distance `R` that contains :math:`99\%` of the function.
+       Default to :math:`99.99\%` of the function.
     q0 : float, optional
        initial charge
     tag : str, optional
@@ -737,6 +797,12 @@ class AtomicOrbital(Orbital):
     ----------
     *args : list of arguments
         list of arguments can be in different input options
+    R : float, optional
+       Manually specify the range of the radial function.
+       By supplying a negative number will retain that percentage
+       of the integration of the radial function. For instance ``R=-0.99`` will
+       determine the distance `R` that contains :math:`99\%` of the function.
+       Default to :math:`99.99\%` of the function.
     q0 : float, optional
         initial charge
     tag : str, optional
@@ -860,18 +926,6 @@ class AtomicOrbital(Orbital):
                     if isinstance(args[0], bool):
                         P = args.pop(0)
 
-        # Now we should figure out how the spherical orbital
-        # has been passed.
-        # There are two options:
-        #  1. The radial function is passed as two arrays: r, f
-        #  2. The SphericalOrbital-class is passed which already contains
-        #     the relevant information.
-        # Figure out if it is a sphericalorbital
-        if len(args) > 0:
-            if isinstance(args[0], SphericalOrbital):
-                self._orb = args.pop(0)
-            else:
-                self._orb = SphericalOrbital(l, args.pop(0), q0=self.q0)
 
         if l is None:
             raise ValueError(f"{self.__class__.__name__} l is not defined")
@@ -898,21 +952,30 @@ class AtomicOrbital(Orbital):
         if abs(self.m) > self.l:
             raise ValueError(f"{self.__class__.__name__} requires |m| <= l.")
 
-        # Retrieve user-passed spherical orbital
-        s = kwargs.get("spherical", None)
+       # Now we should figure out how the spherical orbital
+        # has been passed.
+        # There are two options:
+        #  1. The radial function is passed as two arrays: r, f
+        #  2. The SphericalOrbital-class is passed which already contains
+        #     the relevant information.
+        # Figure out if it is a sphericalorbital
+        if len(args) > 0:
+            s = args.pop(0)
+            if "spherical" in kwargs:
+                raise ValueError(f"{self.__class__.__name__} multiple values for the spherical "
+                                 "orbital is present, 1) argument, 2) spherical=. Only supply one of them.")
+
+        else:
+            # in case the class has its own radial implementation, we might as well rely on that one
+            s = kwargs.get("spherical", getattr(self, "_radial", None))
 
         if s is None:
-            # Expect the orbital to already be set
-            pass
+            self._orb = Orbital(self.R, q0=self.q0)
         elif isinstance(s, Orbital):
             self._orb = s
         else:
-            self._orb = SphericalOrbital(l, s, q0=self.q0)
-
-        if self._orb is None:
-            # Default orbital to none, this will not create any radial functions
-            # But any use of the orbital will still work
-            self._orb = Orbital(self.R, q0=self.q0)
+            # Determine the correct R if requested a sub-set
+            self._orb = SphericalOrbital(l, s, q0=self.q0, R=kwargs.get("R"))
 
         self._R = self._orb.R
 
@@ -1169,7 +1232,11 @@ class HydrogenicOrbital(AtomicOrbital):
     Z : float
         effective atomic number
     R : float, optional
-        max range of the constructed orbital, defaults to 10 Ang
+       Manually specify the range of the radial function.
+       By supplying a negative number will retain that percentage
+       of the integration of the radial function. For instance ``R=-0.99`` will
+       determine the distance `R` that contains :math:`99\%` of the function.
+       Default to :math:`99.99\%` of the function.
 
     Examples
     --------
@@ -1181,18 +1248,25 @@ class HydrogenicOrbital(AtomicOrbital):
 
         self._Z = Z
 
-        R = kwargs.get("R", 10.)
-        r = np.linspace(0, R, 1000)
+        Helper = namedtuple("Helper", ["Z", "prefactor"])
         z = 2 * Z / (n * a0("Ang"))
         pref = (z ** 3 * factorial(n - l - 1) / (2 * n * factorial(n + l))) ** 0.5
-        L = eval_genlaguerre(n - l - 1, 2 * l + 1, z * r)
-        Rnl = pref * np.exp(-z * r / 2) * (z * r) ** l * L
+        self._radial_helper = Helper(z, pref)
 
-        super().__init__(n, l, m, (r, Rnl), **kwargs)
+        super().__init__(n, l, m, **kwargs)
 
     def copy(self):
         """ Create an exact copy of this object """
         return self.__class__(self.n, self.l, self.m, self._Z, q0=self.q0, tag=self.tag)
+
+    def _radial(self, r):
+        r""" Radial functional for the Hydrogenic orbital """
+        H = self._radial_helper
+        n = self.n
+        l = self.l
+        zr = H.Z * r
+        L = H.prefactor * eval_genlaguerre(n - l - 1, 2 * l + 1, zr)
+        return np.exp(-zr * 0.5) * zr ** l * L
 
     def __getstate__(self):
         """ Return the state of this object """
@@ -1289,11 +1363,12 @@ class _ExponentialOrbital(Orbital):
         if abs(self.m) > self.l:
             raise ValueError(f"{self.__class__.__name__} requires |m| <= l.")
 
-        if len(args) == 0 and "R" not in kwargs:
-            # ensure R is present
-            kwargs["R"] = -1.
+        # update R in case the user did not specify it
+        R = kwargs.pop("R", -0.9999)
+        if R < 0:
+            R = _radial_find_min_R(self._radial, contains=-R)
 
-        super().__init__(*args, **kwargs)
+        super().__init__(*args, R=R, **kwargs)
 
     def copy(self):
         """ Create an exact copy of this object """
@@ -1450,13 +1525,19 @@ class GTOrbital(_ExponentialOrbital):
        a conversion from online tables is necessary.
     coeff : float or array_like
        contraction factors
+    R : float, optional
+       Manually specify the range of the radial function.
+       By supplying a negative number will retain that percentage
+       of the integration of the radial function. For instance ``R=-0.99`` will
+       determine the distance `R` that contains :math:`99\%` of the function.
+       Default to :math:`99.99\%` of the function.
     q0 : float, optional
         initial charge
     tag : str, optional
         user defined tag
     """
 
-    __slots__ = tuple()
+    __slots__ = ()
 
     radial = _radial
 
@@ -1508,13 +1589,19 @@ class STOrbital(_ExponentialOrbital):
        a conversion from online tables is necessary.
     coeff : float or array_like
        contraction factors
+    R : float, optional
+       Manually specify the range of the radial function.
+       By supplying a negative number will retain that percentage
+       of the integration of the radial function. For instance ``R=-0.99`` will
+       determine the distance `R` that contains :math:`99\%` of the function.
+       Default to :math:`99.99\%` of the function.
     q0 : float, optional
         initial charge
     tag : str, optional
         user defined tag
     """
 
-    __slots__ = tuple()
+    __slots__ = ()
 
     radial = _radial
 
