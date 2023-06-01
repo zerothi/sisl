@@ -8,6 +8,8 @@ from numbers import Integral, Real
 from math import pi
 from math import sqrt as msqrt
 from math import factorial as fact
+from typing import Callable, Optional, Tuple
+import numpy.typing as npt
 
 import numpy as np
 from numpy import cos, sin
@@ -368,7 +370,13 @@ class Orbital:
         self.__init__(d["R"], q0=d["q0"], tag=d["tag"])
 
 
-def radial_minimize_range(radial_func, contains, maxR=100, func=None):
+
+RadialFuncT = Callable[[npt.ArrayLike], npt.NDArray]
+def radial_minimize_range(radial_func: Callable[[RadialFuncT], npt.NDArray],
+                          contains: float,
+                          dr: Tuple[float, float]=(0.01, 0.0001),
+                          maxR: float=100,
+                          func: Optional[Callable[[RadialFuncT, npt.ArrayLike], npt.NDArray]]=None) -> float:
     """ Minimize the maximum radius such that the integrated function `radial_func**2*r**3` contains `contains` of the integrand
 
     Parameters
@@ -377,6 +385,10 @@ def radial_minimize_range(radial_func, contains, maxR=100, func=None):
        the function that returns the radial part
     contains : float
        how much of a percentage the squared function should contain @ R
+    dr : tuple of float, optional
+       the precision of the integral. First number is the coarse integral.
+       The second number determines the fine-integral to exactly determine R between
+       coarser points.
     maxR : float, optional
        maximally searched ``R``, in case there is no cross-over of the integrand
        containing `contains` in this range a ``-contains`` will be returned to
@@ -389,10 +401,7 @@ def radial_minimize_range(radial_func, contains, maxR=100, func=None):
     # We should never expect a radial components above
     assert maxR > 0.05, "maxR too small (> 0.05)"
     assert contains > 0, "contains too small (> 0)"
-
-    # Precision of 0.01 A @ 99.99% (default) of the integrand
-    # The subsequent integral will have a precision of 0.0001 A
-    dr = (0.01, 0.0001)
+    assert len(dr) == 2, "number of sub-divisions is not 2: dr argument"
 
     def func_base(func, r):
         # finding the best integral function for locating max
