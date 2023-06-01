@@ -154,7 +154,7 @@ class Test_sphericalorbital:
     def test_radial_func1(self):
         r = np.linspace(0, 4, 300)
         f = np.exp(-r)
-        o = SphericalOrbital(1, (r, f))
+        o = SphericalOrbital(1, (r, f), R=4.)
         str(o)
         def i_univariate(r, f):
             return interp.UnivariateSpline(r, f, k=5, s=0, ext=1, check_finite=False)
