@@ -31,10 +31,6 @@ jobs:
         include:
           ## Window 64 bit
           #- os: windows-latest
-          #  python: 37
-          #  bitness: 64
-          #  platform_id: win_amd64
-          #- os: windows-latest
           #  python: 38
           #  bitness: 64
           #  platform_id: win_amd64
@@ -48,11 +44,6 @@ jobs:
           #  platform_id: win_amd64
 
           # Linux 64 bit manylinux2014
-          - os: ubuntu-latest
-            python: 37
-            bitness: 64
-            platform_id: manylinux_x86_64
-            manylinux_image: manylinux2014
           - os: ubuntu-latest
             python: 38
             bitness: 64
@@ -78,11 +69,6 @@ jobs:
           # NumPy on Python 3.10 only supports 64bit and is only available with manylinux2014
           # hence 310 and 311 are not added here
           - os: ubuntu-latest
-            python: 37
-            bitness: 64
-            platform_id: manylinux_x86_64
-            manylinux_image: manylinux2010
-          - os: ubuntu-latest
             python: 38
             bitness: 64
             platform_id: manylinux_x86_64
@@ -95,10 +81,6 @@ jobs:
 
 
           # MacOS x86_64
-          - os: macos-latest
-            bitness: 64
-            python: 37
-            platform_id: macosx_x86_64
           - os: macos-latest
             bitness: 64
             python: 38

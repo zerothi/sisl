@@ -11,7 +11,7 @@ Required dependencies
 
 Running sisl requires these versions:
 
-- `Python`_ 3.7 or above
+- `Python`_ 3.8 or above
 - `numpy`_ (1.13 or later)
 - `scipy`_ (1.5 or later)
 - `netCDF4-python <netcdf4-py_>`_

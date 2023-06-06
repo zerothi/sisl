@@ -24,7 +24,7 @@ build-backend = "scikit_build_core.build"
 
 # Top most items are probably changed the most
 [project]
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 version = "0.13.0"
 
 name = "sisl"
@@ -63,7 +63,6 @@ classifiers = [
     "Programming Language :: C",
     "Programming Language :: Fortran",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
