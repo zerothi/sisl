@@ -53,6 +53,12 @@ class Test_orbital:
         assert orb == orb.copy()
         assert orb != 1.
 
+    def test_copy(self):
+        orb = Orbital(1.)
+        assert orb.R == orb.copy().R
+        orb = Orbital(-1.)
+        assert orb.R == orb.copy().R
+
     def test_psi1(self):
         # Orbital does not have radial part
         with pytest.raises(NotImplementedError):
@@ -101,6 +107,14 @@ class Test_sphericalorbital:
         str(orb)
         orb = SphericalOrbital(1, rf, tag='none')
         str(orb)
+
+    def test_copy(self):
+        rf = r_f(6)
+        orb = SphericalOrbital(1, rf, R=2.)
+        assert orb.R == orb.copy().R
+        assert orb.R == pytest.approx(2.)
+        orb = SphericalOrbital(1, rf)
+        assert orb.R == orb.copy().R
 
     def test_set_radial1(self):
         rf = r_f(6)
@@ -312,6 +326,14 @@ class Test_atomicorbital:
         with pytest.raises(ValueError):
             AtomicOrbital(5, _max_l + 1, 0)
 
+    def test_copy(self):
+        rf = r_f(6)
+        orb = AtomicOrbital('pzP', rf, R=2.)
+        assert orb.R == orb.copy().R
+        assert orb.R == pytest.approx(2.)
+        orb = AtomicOrbital('pzP', rf)
+        assert orb.R == orb.copy().R
+
     def test_radial1(self):
         rf = r_f(6)
         r = np.linspace(0, 6, 100)
@@ -358,6 +380,22 @@ class Test_hydrogenicorbital:
     def test_init(self):
         orb = HydrogenicOrbital(2, 1, 0, 3.2)
 
+    def test_basic1(self):
+        orb = HydrogenicOrbital(2, 1, 0, 3.2, R=4.)
+        assert orb.R == orb.copy().R
+        assert orb.R == pytest.approx(4.)
+        orb = HydrogenicOrbital(2, 1, 0, 3.2)
+        assert orb.R == orb.copy().R
+
+    def test_copy(self):
+        orb = HydrogenicOrbital(2, 1, 0, 3.2, tag='test', q0=2.5)
+        orb2 = orb.copy()
+        assert orb.n == orb2.n
+        assert orb.l == orb2.l
+        assert orb.m == orb2.m
+        assert orb.q0 == orb2.q0
+        assert orb.tag == orb2.tag
+
     def test_normalization(self):
         for n in range(6):
             zeff = n * 0.9
@@ -377,15 +415,6 @@ class Test_hydrogenicorbital:
                     g = orb.toGrid(0.1)
                     I = (g.grid ** 2).sum() * g.dvolume
                     assert abs(I - 1) < 1e-3
-
-    def test_copy(self):
-        orb = HydrogenicOrbital(2, 1, 0, 3.2, tag='test', q0=2.5)
-        orb2 = orb.copy()
-        assert orb.n == orb2.n
-        assert orb.l == orb2.l
-        assert orb.m == orb2.m
-        assert orb.q0 == orb2.q0
-        assert orb.tag == orb2.tag
 
     def test_pickle(self):
         import pickle as p
@@ -408,6 +437,15 @@ class Test_GTO:
         coeff = [0.1, 0.44]
         orb = GTOrbital(2, 1, 0, alpha, coeff)
         assert orb.R > 0
+
+    def test_copy(self):
+        alpha = [1, 2]
+        coeff = [0.1, 0.44]
+        orb = GTOrbital(2, 1, 0, alpha, coeff, R=4.)
+        assert orb.R == orb.copy().R
+        assert orb.R == pytest.approx(4.)
+        orb = GTOrbital(2, 1, 0, alpha, coeff)
+        assert orb.R == orb.copy().R
 
     def test_gto_funcs(self):
         alpha = [0.1688, 0.6239, 3.425]
@@ -433,6 +471,15 @@ class Test_STO:
         coeff = [0.1, 0.44]
         orb = STOrbital(2, 1, 0, alpha, coeff)
         assert orb.R > 0
+
+    def test_copy(self):
+        alpha = [1, 2]
+        coeff = [0.1, 0.44]
+        orb = STOrbital(2, 1, 0, alpha, coeff, R=4.)
+        assert orb.R == orb.copy().R
+        assert orb.R == pytest.approx(4.)
+        orb = STOrbital(2, 1, 0, alpha, coeff)
+        assert orb.R == orb.copy().R
 
     def test_sto_funcs(self):
         alpha = [0.1688, 0.6239, 3.425]
