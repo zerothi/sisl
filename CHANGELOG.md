@@ -8,6 +8,20 @@ we hit release version 1.0.0.
 ## [X.Y.Z] - YYYY-MM-DD
 
 ### Added
+- allowed sile specifiers to be more explicit:
+     - "hello.xyz{contains=<name>}" equivalent to "hello.xyz{<name>}"
+     - "hello.xyz{startswith=<name>}" class name should start with `<name>`
+     - "hello.xyz{endswith=<name>}" class name should end with `<name>`
+        This is useful for defining a currently working code:
+
+            SISL_IO_DEFAULT=siesta
+
+- added environment variable ``SISL_IO_DEFAULT`` which appends a sile specifier
+  if not explicitly added. I.e. ``get_sile("hello.xyz")`` is equivalent to
+  ``get_sile("hello.xyz{os.environ["SISL_IO_DEFAULT"]}"``.
+  Fixes #576
+- added a context manager for manipulating the global env-vars in temporary
+  locations. ``with sisl_environ(SISL_IO_DEFAULT=...)``
 - enabled `Geometry.append|prepend` in `sgeom` command (reads other files)
 - added `fdfSileSiesta.write_brillouinzone` to easily write BandLines to the fdf output,
   see #141
@@ -25,40 +39,41 @@ we hit release version 1.0.0.
 - `BrillouinZone.merge` allows simple merging of several objects, #537
 
 ### Changed
+- bumped Python requirement to >=3.8
 - Added printout of the removed couplings in the `RecursiveSI`
-- SuperCell class is officially deprecated in favor of Lattice, see #95 for details
+- `SuperCell` class is officially deprecated in favor of `Lattice`, see #95 for details
   The old class will still be accessible and usable for some time (at least a year)
 - Enabled EigenState.wavefunction(grid) to accept grid as the initialization of
-	the grid argument, so one does not need to produce the Grid on before-hand
-- Geometry.rotate(only=) to (what=), this is to unify the interfaces across, #541
+	the grid argument, so one does not need to produce the `Grid` on before-hand
+- ``Geometry.rotate(only=)`` to ``(what=)``, this is to unify the interfaces across, #541
   Also changed the default value to be "xyz" if atoms is Not none
-- tbtncSileTBtrans(only=) arguments are changed to (what=) #541
+- ``tbtncSileTBtrans(only=)`` arguments are changed to (what=) #541
 - `SelfEnergy.scattering_matrix` is changed to `SelfEnergy.broadening_matrix`
   ince the scattering matrix is an S-matrix usage.
   Also changed `se2scat` to `se2broadening` #529
 - allow `BrillouinZone` initialization with scalar weights for all k-points #537
-- Geometry.swapaxes and SuperCell.swapaxes, these are now more versatile by
+- `Geometry.swapaxes` and `SuperCell.swapaxes`, these are now more versatile by
 	allowing multiple swaps in a single run, #539
 - deprecated `set_sc`
 - internal build-system is changed to `scikit-build-core`, the `distutils` will be
   deprecated in Python>=3.12 so it was a needed change.
-  This resulted in a directory restructuring
+  This resulted in a directory restructuring.
 
 
 ### Fixed
 - rare cases for non-Gamma calculations with actual Gamma matrices resulted
   in crashes #572
-- MonkhorstPack.replace now checks for symmetry k-points if the BZ is using
+- `MonkhorstPack.replace` now checks for symmetry k-points if the BZ is using
   trs. Additionally the displacements are moved to the primitive point before
   comparing, this partly fixed #568
 - spin-orbit Hamiltonians in `RealSpaceSE` and `RealSpaceSI`, fixes #567
 - ufunc reductions on `SparseGeometry` where `axis` arguments reduces
   dimensionality
 - interaction with pymatgen
-- fdfSileSiesta.includes would fail when empty lines were present, #555
+- `fdfSileSiesta.includes` would fail when empty lines were present, #555
   fixed and added test
 - Documentation now uses global references
-- Geometry.swapaxes would not swap latticevector cartesian coordinates, #539
+- `Geometry.swapaxes` would not swap latticevector cartesian coordinates, #539
 
 
 ### toolbox.btd

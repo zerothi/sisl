@@ -34,7 +34,6 @@ import numpy as np
 from numpy import fabs, delete
 
 from sisl._internal import set_module
-from sisl.messages import deprecate_method
 import sisl._array as _a
 from sisl import units, constant
 from sisl._help import dtype_complex_to_real

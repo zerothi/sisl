@@ -5,15 +5,16 @@ import numpy as np
 from .sile import SileORCA
 from ..sile import add_sile, sile_fh_open
 
+from sisl.messages import deprecation
 from sisl.utils import PropertyDict
 from sisl._internal import set_module
 from sisl.unit import units
 
-__all__ = ['outputSileORCA']
+__all__ = ["outputSileORCA", "outSileORCA"]
 
 
 @set_module("sisl.io.orca")
-class outputSileORCA(SileORCA):
+class outSileORCA(SileORCA):
     """ Output file from ORCA """
 
     def _setup(self, *args, **kwargs):
@@ -389,4 +390,8 @@ class outputSileORCA(SileORCA):
         return None
 
 
-add_sile('output', outputSileORCA, gzip=True)
+outputSileORCA = deprecation("outputSileORCA has been deprecated in favor of outSileOrca.", "0.15")(outSileORCA)
+
+add_sile("output", outSileORCA, gzip=True, case=False)
+add_sile("orca.out", outSileORCA, gzip=True, case=False)
+add_sile("out", outSileORCA, gzip=True, case=False)

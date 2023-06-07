@@ -2,14 +2,36 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import os
+from contextlib import contextmanager
 from pathlib import Path
 from textwrap import dedent
 
-__all__ = ["register_environ_variable", "get_environ_variable"]
+
+__all__ = ["register_environ_variable", "get_environ_variable", "sisl_environ"]
+
 
 # Local variable for retaining the variables, may be used for
 # extroversion
 SISL_ENVIRON = {}
+
+
+@contextmanager
+def sisl_environ(**environ):
+    r""" Create a new context for temporary overwriting the sisl environment variables
+
+    Parameters
+    ----------
+    environ : dict, optional
+        the temporary environment variables that should be used in this context
+    """
+    global SISL_ENVIRON
+    old = {}
+    for key, value in environ.items():
+        old[key] = SISL_ENVIRON[key]["value"]
+        SISL_ENVIRON[key]["value"] = value
+    yield # nothing to yield
+    for key in environ:
+        SISL_ENVIRON[key]["value"] = old[key]
 
 
 def register_environ_variable(name, default,
@@ -50,6 +72,7 @@ def register_environ_variable(name, default,
         "default": default,
         "description": description,
         "process": process,
+        "value": os.environ.get(name, default),
     }
 
 
@@ -62,9 +85,7 @@ def get_environ_variable(name):
         the name of the environment variable.
     """
     variable = SISL_ENVIRON[name]
-    value = variable["process"](os.environ.get(name, variable["default"]))
-    variable["value"] = value
-    return value
+    return variable["process"](variable["value"])
 
 
 # We register a few variables that may be used several places
@@ -103,3 +124,7 @@ register_environ_variable("SISL_VIZ_AUTOLOAD", "false",
 register_environ_variable("SISL_SHOW_PROGRESS", "false",
                           "Whether routines which can enable progress bars should show them by default or not.",
                           process=lambda val: val and val.lower().strip() in ["1", "t", "true"])
+
+register_environ_variable("SISL_IO_DEFAULT", "",
+                          "The default DFT code for processing files, Siles will be compared with endswidth(<>).",
+                          process=lambda val: val.lower())

@@ -8,6 +8,7 @@ import numpy as np
 import os
 from pathlib import Path
 
+from sisl._environ import sisl_environ
 from sisl.io import *
 from sisl.io.siesta.binaries import _gfSileSiesta
 from sisl.io.tbtrans._cdf import *
@@ -46,12 +47,12 @@ def test_get_sile1():
     cls = gsc("test.fdf{xyz}")
     assert issubclass(cls, xyzSile)
 
-    cls = gsc(Path("test.fdf{xyz}"))
+    cls = gsc(Path("test.fdf{startswith=xyz}"))
     assert issubclass(cls, xyzSile)
 
     cls = gsc("test.xyz{fdf}")
     assert issubclass(cls, fdfSileSiesta)
-    cls = gsc("test.cube{fdf}")
+    cls = gsc("test.cube{startswith=fdf}")
     assert issubclass(cls, fdfSileSiesta)
 
 
@@ -59,6 +60,13 @@ def test_get_sile2():
     # requesting non implemented files
     with pytest.raises(NotImplementedError):
         gsc("test.this_file_does_not_exist")
+
+
+def test_get_out_context():
+    with sisl_environ(SISL_IO_DEFAULT="siesta"):
+        assert issubclass(gsc("test.out"), outSileSiesta)
+    with sisl_environ(SISL_IO_DEFAULT="orca"):
+        assert issubclass(gsc("test.out"), outSileORCA)
 
 
 class TestObject:

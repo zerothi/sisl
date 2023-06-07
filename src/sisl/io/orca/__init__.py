@@ -9,5 +9,5 @@ ORCA
    txtSileORCA - ORCA property.txt file
 """
 from .sile import *
+from .out import *
 from .txt import *
-from .output import *

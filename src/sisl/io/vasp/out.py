@@ -144,4 +144,6 @@ class outSileVASP(SileVASP):
             return E[-1]
         return None
 
-add_sile('OUTCAR', outSileVASP, gzip=True)
+add_sile("OUTCAR", outSileVASP, gzip=True)
+add_sile("vasp.out", outSileVASP, case=False, gzip=True)
+add_sile("out", outSileVASP, case=False, gzip=True)

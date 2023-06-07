@@ -2,14 +2,17 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from typing import Optional, Callable, Any
+from itertools import product
 from functools import wraps, reduce
 from os.path import splitext, basename
 import gzip
 from io import TextIOBase
 from pathlib import Path
+from operator import contains, and_
 
 from sisl._internal import set_module
 from sisl.messages import SislWarning, SislInfo, deprecate
+from sisl._environ import get_environ_variable
 from sisl.utils.misc import str_spec
 from ._help import *
 
@@ -58,6 +61,13 @@ __siles = []
 class _sile_rule:
     """ Internal data-structure to check whether a file is the same as this sile """
 
+    COMPARISONS = {
+        "contains": contains,
+        "in": contains,
+        "endswith": str.endswith,
+        "startswith": str.startswith,
+    }
+
     __slots__ = ('cls', 'case', 'suffix', 'gzip', 'bases', 'base_names')
 
     def __init__(self, cls, suffix, case=True, gzip=False):
@@ -77,6 +87,10 @@ class _sile_rule:
         for b in self.bases:
             s += f' {b.__name__},\n '
         return s[:-3] + '\n}'
+
+    def __repr__(self):
+        return (f"<{self.cls.__name__}, case={self.case}, "
+                f"suffix={self.suffix}, gzip={self.gzip}>")
 
     def build_bases(self):
         """ Return a list of all classes that this file is inheriting from (except Sile, SileBin or SileCDF) """
@@ -98,32 +112,34 @@ class _sile_rule:
 
         return children
 
-    def in_bases(self, base):
-        """ Whether any of the inherited bases starts with `base` in their class-name (non-case sensitive) """
+    def in_bases(self, base, method="contains"):
+        """ Whether any of the inherited bases compares with `base` in their class-name (lower-case sensitive) """
         if base is None:
             return True
         elif isinstance(base, object):
             base = base.__name__.lower()
+        comparison = self.COMPARISONS[method]
         for b in self.base_names:
-            if b.startswith(base) or base in b:
+            if comparison(b, base):
                 return True
         return False
 
-    def get_base(self, base):
-        """ Whether any of the inherited bases starts with `base` in their class-name (non-case sensitive) """
+    def get_base(self, base, method="contains"):
+        """ Whether any of the inherited bases compares with `base` in their class-name (lower-case sensitive) """
         if base is None:
             return None
+        comparison = self.COMPARISONS[method]
         for bn, b in zip(self.base_names, self.bases):
-            if bn.startswith(base) or base in bn:
+            if comparison(bn, base):
                 return b
         return None
 
-    def in_class(self, base):
-        """ Whether any of the inherited bases starts with `base` in their class-name (non-case sensitive) """
+    def in_class(self, base, method="contains"):
+        """ Whether any of the inherited bases compares with `base` in their class-name (lower-case sensitive) """
         if base is None:
             return False
-        n = self.cls.__name__.lower()
-        return (n.startswith(base) or base in n)
+        comparison = self.COMPARISONS[method]
+        return comparison(self.cls.__name__.lower(), base)
 
     def is_suffix(self, suffix):
         if not self.case:
@@ -134,12 +150,16 @@ class _sile_rule:
             return True
         if not self.gzip:
             return False
-        return suffix == (my_suffix + ".gz")
+        return suffix == f"{my_suffix}.gz"
 
     def is_class(self, cls):
+        if cls is None:
+            return False
         return self.cls == cls
 
     def is_subclass(self, cls):
+        if cls is None:
+            return False
         return issubclass(self.cls, cls)
 
 
@@ -165,6 +185,9 @@ def add_sile(suffix, cls, case=True, gzip=False):
          output.
     """
     global __sile_rules, __siles
+
+    if not issubclass(cls, BaseSile):
+        raise ValueError(f"Class {cls.__name__} must be a subclass of BaseSile!")
 
     # Only add pure suffixes...
     if suffix.startswith('.'):
@@ -207,28 +230,87 @@ def get_sile_class(filename, *args, **kwargs):
 
     # Split filename into proper file name and
     # the Specification of the type
-    tmp_file, fcls = str_spec(str(filename))
+    tmp_file, specification = str_spec(str(filename))
 
-    if cls is None and not fcls is None:
+    # Now check whether we have a specific checker
+    if specification is None:
+        # ensure to grab nothing
+        specification = get_environ_variable("SISL_IO_DEFAULT").strip()
+    elif specification.strip() == "":
+        specification = ""
+
+    # extract which comparsion method
+    if "=" in specification:
+        method, cls_search = specification.split("=", 1)
+        if "=" in cls_search:
+            raise ValueError(f"Comparison specification currently only supports one level of comparison(single =); got {specification}")
+    else:
+        method, cls_search = "contains", specification
+
+    # searchable rules
+    eligible_rules = []
+    if cls is None and not cls_search is None:
+
         # cls has not been set, and fcls is found
         # Figure out if fcls is a valid sile, if not
         # do nothing (it may be part of the file name)
         # Which is REALLY obscure... but....)
-        fclsl = fcls.lower()
+        cls_searchl = cls_search.lower()
         for sr in __sile_rules:
-            if sr.in_class(fclsl):
-                cls = sr.cls
-            else:
-                cls = sr.get_base(fclsl)
-            if cls is not None:
-                filename = tmp_file
-                break
+            if sr.in_class(cls_searchl, method=method):
+                eligible_rules.append(sr)
+
+        if eligible_rules:
+            # we have at least one eligible rule
+            filename = tmp_file
+        else:
+            warn(f"Specification requirement of the file did not result in any found files: {specification}")
+
+    else:
+        # search everything
+        eligible_rules = __sile_rules
+
+    if eligible_rules:
+        if len(eligible_rules) == 1:
+            return eligible_rules[0].cls
+    else:
+        # nothing has been found, this may meen that we need to search *everything*
+        eligible_rules = __sile_rules
 
     try:
         # Create list of endings on this file
         f = basename(filename)
         end_list = []
         end = ''
+
+        def try_methods(eligibles, prefixes=("read_",)):
+            """ return only those who can actually perform the read actions """
+            def has(keys):
+                nonlocal prefixes
+                has_keys = []
+                for key in keys:
+                    for prefix in prefixes:
+                        if key.startswith(prefix):
+                            has_keys.append(key)
+                return has_keys
+
+            outs = []
+            for e in eligibles:
+                attrs = has(e.cls.__dict__.keys())
+                try:
+                    sile = e.cls(filename)
+                except Exception:
+                    outs.append(e)
+                    continue
+                for attr in attrs:
+                    try:
+                        getattr(sile, attr)()
+                        # if one succeeds, we will assume it is working
+                        outs.append(e)
+                        break
+                    except Exception:
+                        pass
+            return outs
 
         # Check for files without ending, or that they are directly zipped
         lext = splitext(f)
@@ -241,34 +323,40 @@ def get_sile_class(filename, *args, **kwargs):
             lext = splitext(lext[0])
 
         # We also check the entire file name
-        #  (mainly for VASP)
         end_list.append(f)
         # Reverse to start by the longest extension
         # (allows grid.nc extensions, etc.)
         end_list = list(reversed(end_list))
 
-        # First we check for class AND file ending
-        clss = None
-        for end in end_list:
-            for sr in __sile_rules:
+        def get_eligibles(end, rules):
+            nonlocal cls
+            eligibles = []
+            for sr in rules:
                 if sr.is_class(cls):
                     # class-specification has precedence
                     # This should only occur when the
                     # class-specification is exact (i.e. xyzSile)
-                    return sr.cls
+                    return [sr]
                 elif sr.is_suffix(end):
-                    if cls is None:
-                        return sr.cls
-                    elif sr.is_subclass(cls):
-                        return sr.cls
-                    clss = sr.cls
-            if clss is not None:
-                return clss
+                    if sr.is_subclass(cls):
+                        return [sr]
+                    eligibles.append(sr)
+            return eligibles
 
-        if clss is None:
-            raise NotImplementedError("Sile for file '{}' could not be found, "
-                                      "possibly the file has not been implemented.".format(filename))
-        return clss
+        # First we check for class AND file ending
+        for end, rules in product(end_list, (eligible_rules, __sile_rules)):
+             eligibles = get_eligibles(end, rules)
+             # Determine whether we have found a compatible sile
+             if len(eligibles) == 1:
+                return eligibles[0].cls
+             elif len(eligibles) > 1:
+                workable_eligibles = try_methods(eligibles)
+                if len(workable_eligibles) == 1:
+                    return workable_eligibles[0].cls
+                raise ValueError(f"Cannot determine the exact Sile requested, multiple hits: {tuple(e.cls.__name__ for e in eligibles)}")
+
+        raise NotImplementedError(f"Sile for file '{filename}' could not be found, "
+                                  "possibly the file has not been implemented.")
 
     except Exception as e:
         raise e
@@ -294,7 +382,7 @@ def get_sile(file, *args, **kwargs):
        will read the file ``water.dat`` using the `xyzSile` class.
     cls : class
        In case there are several files with similar file-suffixes
-       you may query the exact base-class that should be chosen.
+       you may query the exact base-less that should be chosen.
        If there are several files with similar file-endings this
        function returns a random one.
 
@@ -312,6 +400,11 @@ def get_sile(file, *args, **kwargs):
     >>> cls = get_sile_class("anyfile.xyz")
     >>> obj = cls("water.dat")
     >>> another_xyz = cls("water2.dat")
+
+    To narrow the search one can clarify whether it should start or
+    end with a string:
+
+    >>> cls = get_sile_class("water.dat{startswith=xyz}")
     """
     cls = kwargs.pop('cls', None)
     sile = get_sile_class(file, *args, cls=cls, **kwargs)

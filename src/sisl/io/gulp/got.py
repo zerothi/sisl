@@ -8,7 +8,7 @@ import numpy as np
 
 from sisl._internal import set_module
 from sisl.messages import info, warn
-from sisl.messages import deprecate_argument, deprecate_method
+from sisl.messages import deprecate_argument, deprecation
 from .sile import SileGULP
 from .fc import fcSileGULP
 from ..sile import add_sile, sile_fh_open
@@ -17,7 +17,7 @@ from sisl import constant, units
 from sisl.physics import DynamicalMatrix
 
 
-__all__ = ['gotSileGULP']
+__all__ = ["gotSileGULP"]
 
 
 @set_module("sisl.io.gulp")
@@ -51,7 +51,7 @@ class gotSileGULP(SileGULP):
         """ Overwrites internal key lookup value for the cell vectors """
         self.set_key('lattice', key)
 
-    set_supercell_key = deprecate_method("set_supercell_key is deprecated in favor of set_lattice_key", "0.15")(set_lattice_key)
+    set_supercell_key = deprecation("set_supercell_key is deprecated in favor of set_lattice_key", "0.15")(set_lattice_key)
 
     @sile_fh_open()
     def read_lattice_nsc(self, key=None):
@@ -298,5 +298,6 @@ class gotSileGULP(SileGULP):
 
 
 # Old-style GULP output
-add_sile('gout', gotSileGULP, gzip=True)
-add_sile('got', gotSileGULP, gzip=True)
+add_sile("gout", gotSileGULP, gzip=True)
+add_sile("got", gotSileGULP, gzip=True)
+add_sile("out", gotSileGULP, gzip=True)

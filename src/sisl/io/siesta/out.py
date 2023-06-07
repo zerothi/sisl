@@ -1379,4 +1379,5 @@ class outSileSiesta(SileSiesta):
         return md_scf_charge[imd][iscf]
 
 
+add_sile("siesta.out", outSileSiesta, case=False, gzip=True)
 add_sile("out", outSileSiesta, case=False, gzip=True)

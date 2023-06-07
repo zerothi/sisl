@@ -28,7 +28,7 @@ from ._environ import get_environ_variable
 
 
 __all__ = ['SislDeprecation', 'SislInfo', 'SislWarning', 'SislException', 'SislError']
-__all__ += ['warn', 'info', 'deprecate', "deprecate_method", "deprecate_argument"]
+__all__ += ['warn', 'info', 'deprecate', "deprecation", "deprecate_argument"]
 __all__ += ['progressbar', 'tqdm_eta']
 
 # The local registry for warnings issued
@@ -99,8 +99,8 @@ def deprecate_argument(old, new, message, from_version=None):
 
 
 @set_module("sisl")
-def deprecate_method(message, from_version=None):
-    """ Decorator for deprecating a method
+def deprecation(message, from_version=None):
+    """ Decorator for deprecating a method or a class
 
     Parameters
     ----------
@@ -109,11 +109,18 @@ def deprecate_method(message, from_version=None):
     from_version : optional
        which version to deprecate this method from
     """
-    def install_deprecate(func):
-        @wraps(func)
-        def wrapped(*args, **kwargs):
-            deprecate(message, from_version)
-            return func(*args, **kwargs)
+    def install_deprecate(cls_or_func):
+        if isinstance(cls_or_func, type):
+            # we have a class
+            class wrapped(cls_or_func):
+                @deprecation(message, from_version)
+                def __init__(self, *args, **kwargs):
+                    super().__init__(*args, **kwargs)
+        else:
+            @wraps(cls_or_func)
+            def wrapped(*args, **kwargs):
+                deprecate(message, from_version)
+                return cls_or_func(*args, **kwargs)
         return wrapped
     return install_deprecate
 
@@ -266,4 +273,4 @@ def progressbar(total, desc, unit, eta, **kwargs):
         bar = Fake()
     return bar
 
-tqdm_eta = deprecate_method("Use sisl.messages.progress_bar instead", "0.13")(progressbar)
+tqdm_eta = deprecation("Use sisl.messages.progress_bar instead", "0.13")(progressbar)

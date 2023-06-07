@@ -14,6 +14,18 @@ Since sisl may be used with many other packages all files are name *siles*
 to distinguish them from files from other packages.
 
 
+General file retrieval is done through the file extensions and through
+specifications at read time.
+For instance
+
+    >>> get_sile("hello.xyz")
+
+will automatically recognize the `xyzSile`. If one wishes to explicitly
+specify the filetype one can denote using a specifier:
+
+    >>> get_sile("this_file_is_in_xyz_format.dat{xyz}")
+
+
 Basic IO methods/classes
 ========================
 
@@ -39,6 +51,10 @@ BigDFT
 
    asciiSileBigDFT - the input for BigDFT
 
+FHIaims
+=======
+
+   inSileFHIaims - input file for FHIaims
 
 GULP
 ====
@@ -56,7 +72,7 @@ OpenMX
 ORCA
 ====
 
-   outputSileORCA - standard output file
+   outSileORCA - standard output file
    txtSileORCA - property.txt file
 
 
@@ -71,35 +87,32 @@ ScaleUp
 Siesta
 ======
 
-   fdfSileSiesta - input file
-   outSileSiesta - output file
-   xvSileSiesta - xyz and vxyz file
+   aniSileSiesta - xyz file in a trajectory format
    bandsSileSiesta - band structure information
-   eigSileSiesta - EIG file
-   pdosSileSiesta - PDOS file
-   gridSileSiesta - Grid charge information (binary)
-   gridncSileSiesta - NetCDF grid output files (netcdf)
+   ionxmlSileSiesta - Basis-information from the ion.xml files
+   ionncSileSiesta - Basis-information from the ion.nc files
    onlysSileSiesta - Overlap matrix information
    dmSileSiesta - density matrix information
    hsxSileSiesta - Hamiltonian and overlap matrix information
-   wfsxSileSiesta - wavefunctions
+   gridSileSiesta - Grid charge information (binary)
+   gridncSileSiesta - NetCDF grid output files (netcdf)
    ncSileSiesta - NetCDF output file
-   ionxmlSileSiesta - Basis-information from the ion.xml files
-   ionncSileSiesta - Basis-information from the ion.nc files
-   orbindxSileSiesta - Basis set information (no geometry information)
-   faSileSiesta - Forces on atoms
-   fcSileSiesta - Force constant matrix
-   kpSileSiesta - k-points from simulation
-   rkpSileSiesta - k-points to simulation
-
-
-TranSiesta
-==========
-
    tshsSileSiesta - TranSiesta Hamiltonian
    tsdeSileSiesta - TranSiesta (energy) density matrix
    tsgfSileSiesta - TranSiesta surface Green function files
    tsvncSileSiesta - TranSiesta specific Hartree potential file
+   wfsxSileSiesta - wavefunctions
+   eigSileSiesta - EIG file
+   faSileSiesta - Forces on atoms
+   fcSileSiesta - Force constant matrix
+   fdfSileSiesta - input file
+   kpSileSiesta - k-points from simulation
+   rkpSileSiesta - k-points to simulation
+   orbindxSileSiesta - Basis set information (no geometry information)
+   structSileSiesta - structure information
+   outSileSiesta - output file
+   pdosSileSiesta - PDOS file
+   xvSileSiesta - xyz and vxyz file
 
 
 TBtrans

@@ -14,7 +14,7 @@ from numbers import Integral
 import numpy as np
 from numpy import ndarray, dot
 
-from .messages import deprecate_argument, deprecate_method, deprecate
+from .messages import deprecate_argument, deprecation, deprecate
 from ._internal import set_module
 from . import _plot as plt
 from . import _array as _a
@@ -1223,8 +1223,8 @@ class LatticeChild:
                 except Exception:
                     pass
 
-    set_sc = deprecate_method("set_sc is deprecated; please use set_lattice instead", "0.14")(set_lattice)
-    set_supercell = deprecate_method("set_sc is deprecated; please use set_lattice instead", "0.15")(set_lattice)
+    set_sc = deprecation("set_sc is deprecated; please use set_lattice instead", "0.14")(set_lattice)
+    set_supercell = deprecation("set_sc is deprecated; please use set_lattice instead", "0.15")(set_lattice)
 
     @property
     def length(self):
