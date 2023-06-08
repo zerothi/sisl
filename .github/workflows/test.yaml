@@ -47,7 +47,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.11']
+        os: [windows-latest, ubuntu-latest]
+        python-version: ['3.8', '3.11']
 
     steps:
     - name: Checkout sisl
