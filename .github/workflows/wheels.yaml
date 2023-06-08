@@ -190,7 +190,7 @@ jobs:
           sleep 10
           version=${GITHUB_REF#refs/*/v}
           version=${version#refs/*/}
-          python -m pip install --find-links dist --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ sisl[test]==${version}
+          python -m pip install --progress-bar=off --find-links dist --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ sisl[test]==${version}
 
       - name: Test the installation
         run: |

@@ -78,9 +78,9 @@ jobs:
 
     - name: Install sisl + dependencies
       run: |
-        python -m pip install --upgrade pip
-        python -m pip install Cython "scikit-build-core[pyproject]"
-        python -m pip install -r ci/requirements.txt -r ci/requirements-viz.txt -r requirements.txt
+        python -m pip install --progress-bar=off --upgrade pip
+        python -m pip install --progress-bar=off Cython "scikit-build-core[pyproject]"
+        python -m pip install --progress-bar=off -r ci/requirements.txt -r ci/requirements-viz.txt -r requirements.txt
         CC=gcc FC=gfortran python -m pip install -vvv .
 
     - name: Running sisl tests
