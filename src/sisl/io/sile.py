@@ -724,13 +724,14 @@ def sile_read_multiple(start: Optional[int]=None,
         @wraps(func)
         def multiple(*args, start=start, stop=stop, step=step, all=all, **kwargs):
             self = args[0]
+            inf = 100000000000
 
             if all:
                 # parse everything, but still obey inputs
                 if start is None:
                     start = 0
                 if stop is None:
-                    stop = 100000000000
+                    stop = inf
                 if step is None:
                     step = 1
             else:
@@ -743,7 +744,7 @@ def sile_read_multiple(start: Optional[int]=None,
                     if start is None:
                         start = 0
                     if stop is None:
-                        stop = -1
+                        stop = inf
                 elif start is None and stop is None:
                     start = 0
                     stop = 1
@@ -753,56 +754,69 @@ def sile_read_multiple(start: Optional[int]=None,
                         start = stop - 1
                     else:
                         start = 0
-                if stop is None:
+                if stop is None and start > 0:
                     # this will only occur if start is given, but not stop
                     stop = start + 1
-                elif stop < 0:
-                    stop = 1000000000000
-                if step is None:
+                if step is None and stop is not None:
                     # only handle cases where the requested number of
                     # elements is longer than 1, then step should be defined,
                     # else we resort to returning a single entity (not postprocessed)
                     if stop - start > 1:
                         step = 1
 
-            if stop < 0:
-                # TODO this will probably fail if users do stop=-4 (to not have the last 3 items)
-                # It should be done in a different manner
-                stop = 100000000000
-
             def check_none(r):
                 if isinstance(r, tuple):
                     return reduce(lambda x, y: x and y is None, r, True)
                 return r is None
 
-            # start by reading past start, this is regardless of what we
-            # are about to do
-            for _ in range(start):
-                r = skip_call(*args, **kwargs)
-                if check_none(r):
-                    return r
-
-            if step is None:
-                # read a single element and return
-                def ret_func():
-                    return wrap_func(*args, **kwargs)
-
-            else:
-                # read a set of geometries and return
+            slc = None
+            if start < 0:
+                slc = slice(start, stop, step)
+            elif stop < 0:
+                slc = slice(start, stop, step)
+            if slc:
+                # read all entries and build slice at the end
                 def ret_func():
                     R = []
-                    for _ in range(start, stop, step):
+                    for _ in range(inf):
                         r = wrap_func(*args, **kwargs)
                         if check_none(r):
                             break
                         R.append(r)
-
-                        # skip the middle steps
-                        for _ in range(step-1):
-                            r = skip_call(*args, **kwargs)
-                            if check_none(r):
-                                return postprocess(R)
+                    R = R[slc]
+                    if len(R) == 1:
+                        return R[0]
                     return postprocess(R)
+
+            else:
+                # start by reading past start, this is regardless of what we
+                # are about to do
+                for _ in range(start):
+                    r = skip_call(*args, **kwargs)
+                    if check_none(r):
+                        return r
+
+                if step is None:
+                    # read a single element and return
+                    def ret_func():
+                        return wrap_func(*args, **kwargs)
+
+                else:
+                    # read a set of geometries and return
+                    def ret_func():
+                        R = []
+                        for _ in range(start, stop, step):
+                            r = wrap_func(*args, **kwargs)
+                            if check_none(r):
+                                break
+                            R.append(r)
+
+                            # skip the middle steps
+                            for _ in range(step-1):
+                                r = skip_call(*args, **kwargs)
+                                if check_none(r):
+                                    return postprocess(R)
+                        return postprocess(R)
 
             if hasattr(self, "fh"):
                 return ret_func()
