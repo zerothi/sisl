@@ -9,6 +9,7 @@ import operator as op
 from numbers import Integral
 from math import pi
 import importlib
+from collections import UserDict
 
 
 __all__ = ["merge_instances", "str_spec", "direction", "angle"]
@@ -404,7 +405,7 @@ def lazy_import(name, package=None):
     return module
 
 
-class PropertyDict(dict):
+class PropertyDict(UserDict):
     """ Simple dictionary which may access items as properties as well """
 
     def __getattr__(self, name):
