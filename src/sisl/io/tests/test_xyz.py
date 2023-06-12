@@ -111,7 +111,7 @@ C   3.00000  0.00000000  0.00000000
     g = xyzSile(f).read_geometry(start=1, stop=2)
     assert g.na == 2
 
-    g = xyzSile(f).read_geometry()
+    g = xyzSile(f).read_geometry(stop=None)
     assert len(g) == 4
     assert g[0].na == 1 and g[1].na == 2
 
