@@ -5,9 +5,9 @@
 ORCA
 ====
 
-   outputSileORCA - ORCA output file
+   stdoutSileORCA - ORCA output file
    txtSileORCA - ORCA property.txt file
 """
 from .sile import *
-from .out import *
+from .stdout import *
 from .txt import *

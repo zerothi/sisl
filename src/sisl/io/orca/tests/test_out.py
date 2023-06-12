@@ -5,7 +5,7 @@ import sys
 import pytest
 import os.path as osp
 import sisl
-from sisl.io.orca.out import *
+from sisl.io.orca.stdout import *
 import numpy as np
 
 

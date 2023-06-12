@@ -15,9 +15,9 @@ from sisl import Geometry, Atom, Lattice
 from sisl.utils import PropertyDict
 from sisl.utils.cmd import *
 from sisl.unit.siesta import unit_convert
-from sisl.messages import warn
+from sisl.messages import deprecation, warn
 
-__all__ = ['outSileSiesta']
+__all__ = ["stdoutSileSiesta", "outSileSiesta"]
 
 
 Bohr2Ang = unit_convert('Bohr', 'Ang')
@@ -33,7 +33,7 @@ def _ensure_atoms(atoms):
 
 
 @set_module("sisl.io.siesta")
-class outSileSiesta(SileSiesta):
+class stdoutSileSiesta(SileSiesta):
     """ Output file from Siesta
 
     This enables reading the output quantities from the Siesta output.
@@ -1379,5 +1379,7 @@ class outSileSiesta(SileSiesta):
         return md_scf_charge[imd][iscf]
 
 
-add_sile("siesta.out", outSileSiesta, case=False, gzip=True)
-add_sile("out", outSileSiesta, case=False, gzip=True)
+outSileSiesta = deprecation("outSileSiesta has been deprecated in favor of stdoutSileSiesta.", "0.15")(stdoutSileSiesta)
+
+add_sile("siesta.out", stdoutSileSiesta, case=False, gzip=True)
+add_sile("out", stdoutSileSiesta, case=False, gzip=True)

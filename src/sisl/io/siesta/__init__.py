@@ -15,7 +15,7 @@ Remark that the `gridSileSiesta` file encompass all ``RHO``, ``RHOINIT``, ``DRHO
 
    aniSileSiesta - ANI file
    fdfSileSiesta - input file
-   outSileSiesta - output file
+   stdoutSileSiesta - output file
    xvSileSiesta - xyz and vxyz file
    bandsSileSiesta - band structure information
    eigSileSiesta - EIG file
@@ -56,7 +56,7 @@ from .fc import *
 from .fdf import *
 from .kp import *
 from .orb_indx import *
-from .out import *
+from .stdout import *
 from .pdos import *
 from .struct import *
 from .siesta_nc import *

@@ -39,6 +39,8 @@ we hit release version 1.0.0.
 - `BrillouinZone.merge` allows simple merging of several objects, #537
 
 ### Changed
+- all out files have been renamed to stdout to clarify they are
+  user determined output file names, suggestion by @tfrederiksen
 - bumped Python requirement to >=3.8
 - orbitals `R` arguments will now by default determine the minimal radii
   that contains 99.99% of the function integrand. The argument now

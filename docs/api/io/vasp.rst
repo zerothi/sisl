@@ -12,8 +12,9 @@ VASP
    doscarSileVASP
    eigenvalSileVASP
    chgSileVASP
+   outcarSileVASP
    locpotSileVASP
-   outSileVASP
+   stdoutSileVASP
 
 
 .. autosummary::

@@ -8,11 +8,11 @@ from sisl.utils import PropertyDict
 from sisl._internal import set_module
 
 
-__all__ = ['outSileVASP']
+__all__ = ["stdoutSileVASP", "outSileVASP"]
 
 
 @set_module("sisl.io.vasp")
-class outSileVASP(SileVASP):
+class stdoutSileVASP(SileVASP):
     """ Output file from VASP """
 
     def _setup(self, *args, **kwargs):
@@ -144,6 +144,9 @@ class outSileVASP(SileVASP):
             return E[-1]
         return None
 
-add_sile("OUTCAR", outSileVASP, gzip=True)
-add_sile("vasp.out", outSileVASP, case=False, gzip=True)
-add_sile("out", outSileVASP, case=False, gzip=True)
+
+outSileVASP = deprecation("outSileVASP has been deprecated in favor of stdoutSileVASP.", "0.15")(stdoutSileVASP)
+
+add_sile("OUTCAR", stdoutSileVASP, gzip=True)
+add_sile("vasp.out", stdoutSileVASP, case=False, gzip=True)
+add_sile("out", stdoutSileVASP, case=False, gzip=True)

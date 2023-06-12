@@ -10,11 +10,11 @@ from sisl.utils import PropertyDict
 from sisl._internal import set_module
 from sisl.unit import units
 
-__all__ = ["outputSileORCA", "outSileORCA"]
+__all__ = ["outputSileORCA", "stdoutSileORCA"]
 
 
 @set_module("sisl.io.orca")
-class outSileORCA(SileORCA):
+class stdoutSileORCA(SileORCA):
     """ Output file from ORCA """
 
     def _setup(self, *args, **kwargs):
@@ -390,8 +390,8 @@ class outSileORCA(SileORCA):
         return None
 
 
-outputSileORCA = deprecation("outputSileORCA has been deprecated in favor of outSileOrca.", "0.15")(outSileORCA)
+outputSileORCA = deprecation("outputSileORCA has been deprecated in favor of outSileOrca.", "0.15")(stdoutSileORCA)
 
-add_sile("output", outSileORCA, gzip=True, case=False)
-add_sile("orca.out", outSileORCA, gzip=True, case=False)
-add_sile("out", outSileORCA, gzip=True, case=False)
+add_sile("output", stdoutSileORCA, gzip=True, case=False)
+add_sile("orca.out", stdoutSileORCA, gzip=True, case=False)
+add_sile("out", stdoutSileORCA, gzip=True, case=False)

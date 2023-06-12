@@ -8,7 +8,7 @@ ORCA
 .. autosummary::
    :toctree: generated/
 
-   outputSileORCA - standard output file
+   stdoutSileORCA - standard output file
    txtSileORCA - property.txt output file
 
 

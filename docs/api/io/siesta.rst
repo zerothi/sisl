@@ -10,7 +10,7 @@ Siesta
 
    aniSileSiesta - ANI file
    fdfSileSiesta - input file
-   outSileSiesta - output file
+   stdoutSileSiesta - output file
    xvSileSiesta - xyz and vxyz file
    bandsSileSiesta - band structure information
    eigSileSiesta - EIG file

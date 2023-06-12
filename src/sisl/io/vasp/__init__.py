@@ -10,7 +10,7 @@ VASP
    eigenvalSileVASP
    chgSileVASP
    locpotSileVASP
-   outSileVASP
+   stdoutSileVASP
 
 """
 from .sile import *
@@ -19,4 +19,4 @@ from .eigenval import *
 from .doscar import *
 from .chg import *
 from .locpot import *
-from .out import *
+from .stdout import *
