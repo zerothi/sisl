@@ -16,8 +16,8 @@ __all__ = ["aniSileSiesta"]
 @set_module("sisl.io.siesta")
 class aniSileSiesta(xyzSile, SileSiesta):
 
-    def read_geometry(self, *args, **kwargs):
-        return super().read_geometry(*args, **kwargs)
+    def read_geometry(self, *args, stop=None, **kwargs):
+        return super().read_geometry(*args, stop=stop, **kwargs)
 
 
 add_sile('ANI', aniSileSiesta, gzip=True)
