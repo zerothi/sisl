@@ -102,8 +102,8 @@ class xyzSile(Sile):
     @sile_fh_open()
     @sile_read_multiple(skip_call=_r_geometry_skip, postprocess=GeometryCollection)
     @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", from_version="0.15")
-    def read_geometry(self, atoms=None, lattice=None):
-        """ Returns Geometry object from the XYZ file
+    def read_geometry(self, stop=1, atoms=None, lattice=None):
+        """ Returns Geometry object(s) from the XYZ file
 
         If the file contains more geometries, one can read multiple geometries
         by using the arguments `start`, `stop` and `step`.
@@ -121,9 +121,6 @@ class xyzSile(Sile):
             stop reading geometries at `stop`
         step : int, optional
             step-count between reading geometries
-        all : bool, optional
-            set `start`, `step` and `stop` (if not set) to read
-            as many geometries as possible.
         """
         line = self.readline()
         if line == '':

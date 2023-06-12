@@ -660,7 +660,6 @@ def sile_fh_open(from_closed=False, reset=None):
 def sile_read_multiple(start: Optional[int]=None,
                        stop: Optional[int]=None,
                        step: Optional[int]=None,
-                       all: bool=False,
                        skip_call: Optional[Callable[..., Optional[Any]]]=None,
                        pre_call: Optional[Callable[..., Optional[Any]]]=None,
                        post_call: Optional[Callable[..., Optional[Any]]]=None,
@@ -675,9 +674,6 @@ def sile_read_multiple(start: Optional[int]=None,
        position of last read
     step : int, optional
        number of steps to take (if any at all).
-    all : bool, optional
-       read all entries, `start`, `stop` and `step` will not be altered
-       unless they are set to None.
     skip_call : function, optional
        read method without actual data processing.
        The skip call must something different from ``None`` if it succeeds.
@@ -722,60 +718,24 @@ def sile_read_multiple(start: Optional[int]=None,
             skip_call = wrap_func
 
         @wraps(func)
-        def multiple(*args, start=start, stop=stop, step=step, all=all, **kwargs):
+        def multiple(*args, start=start, stop=stop, step=step, **kwargs):
             self = args[0]
             inf = 100000000000
-
-            if all:
-                # parse everything, but still obey inputs
-                if start is None:
-                    start = 0
-                if stop is None:
-                    stop = inf
-                if step is None:
-                    step = 1
-            else:
-                # behave like range(stop) | range(start, stop, step)
-                # almost.
-                #  step only => start, step = 0, inf
-                #  start only => stop = start + 1
-                #  stop only => start = stop - 1
-                if step is not None:
-                    if start is None:
-                        start = 0
-                    if stop is None:
-                        stop = inf
-                elif start is None and stop is None:
-                    start = 0
-                    stop = 1
-
-                if start is None:
-                    if stop is not None:
-                        start = stop - 1
-                    else:
-                        start = 0
-                if stop is None and start > 0:
-                    # this will only occur if start is given, but not stop
-                    stop = start + 1
-                if step is None and stop is not None:
-                    # only handle cases where the requested number of
-                    # elements is longer than 1, then step should be defined,
-                    # else we resort to returning a single entity (not postprocessed)
-                    if stop - start > 1:
-                        step = 1
 
             def check_none(r):
                 if isinstance(r, tuple):
                     return reduce(lambda x, y: x and y is None, r, True)
                 return r is None
 
-            slc = None
-            if start < 0:
-                slc = slice(start, stop, step)
-            elif stop < 0:
-                slc = slice(start, stop, step)
-            if slc:
-                # read all entries and build slice at the end
+            if start is None:
+                start = 0
+            if stop is None:
+                stop = inf
+            if step is None:
+                step = 1
+
+            if start < 0 or stop < 0 or step < 0:
+                # we need to read everything and take a slice afterwards
                 def ret_func():
                     R = []
                     for _ in range(inf):
@@ -783,11 +743,11 @@ def sile_read_multiple(start: Optional[int]=None,
                         if check_none(r):
                             break
                         R.append(r)
+                    slc = slice(start, stop, step)
                     R = R[slc]
                     if len(R) == 1:
                         return R[0]
                     return postprocess(R)
-
             else:
                 # start by reading past start, this is regardless of what we
                 # are about to do
@@ -796,27 +756,22 @@ def sile_read_multiple(start: Optional[int]=None,
                     if check_none(r):
                         return r
 
-                if step is None:
-                    # read a single element and return
-                    def ret_func():
-                        return wrap_func(*args, **kwargs)
-
-                else:
-                    # read a set of geometries and return
-                    def ret_func():
-                        R = []
-                        for _ in range(start, stop, step):
-                            r = wrap_func(*args, **kwargs)
+                # read a set of geometries and return
+                def ret_func():
+                    R = []
+                    for _ in range(start, stop, step):
+                        r = wrap_func(*args, **kwargs)
+                        if check_none(r):
+                            break
+                        R.append(r)
+                        # skip the middle steps
+                        for _ in range(step-1):
+                            r = skip_call(*args, **kwargs)
                             if check_none(r):
                                 break
-                            R.append(r)
-
-                            # skip the middle steps
-                            for _ in range(step-1):
-                                r = skip_call(*args, **kwargs)
-                                if check_none(r):
-                                    return postprocess(R)
-                        return postprocess(R)
+                    if len(R) == 1:
+                        return R[0]
+                    return postprocess(R)
 
             if hasattr(self, "fh"):
                 return ret_func()
