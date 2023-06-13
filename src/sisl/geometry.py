@@ -4350,7 +4350,7 @@ class Geometry(LatticeChild):
             elif method == 'mode':
                 from scipy.stats import mode
                 def func(lst):
-                    return mode(lst)[0]
+                    return mode(lst, keepdims=False)[0]
             else:
                 try:
                     func = getattr(np, method)
@@ -4369,8 +4369,7 @@ class Geometry(LatticeChild):
             shells[i] = func(lst)
 
         # Convert to flattened numpy array and ensure shape
-        d = np.hstack(shells)
-        d.shape = (-1,)
+        d = np.hstack(shells).ravel()
 
         return d
 

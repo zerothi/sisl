@@ -134,7 +134,7 @@ def test_sparse_orbital_append_scale(n0, n1, n2, axis):
 
 
 def test_sparse_orbital_hermitian():
-    g = Geometry([0] * 3, Atom(1, R=1), sc=Lattice(1, nsc=[3, 1, 1]))
+    g = Geometry([0] * 3, Atom(1, R=1), lattice=Lattice(1, nsc=[3, 1, 1]))
 
     for f in [True, False]:
         spo = SparseOrbital(g)
@@ -167,7 +167,7 @@ def test_sparse_orbital_hermitian():
 def test_sparse_orbital_sub_orbital():
     a0 = Atom(1, R=(1.1, 1.4, 1.6))
     a1 = Atom(2, R=(1.3, 1.1))
-    g = Geometry([[0, 0, 0], [1, 1, 1]], [a0, a1], sc=Lattice(2, nsc=[3, 1, 1]))
+    g = Geometry([[0, 0, 0], [1, 1, 1]], [a0, a1], lattice=Lattice(2, nsc=[3, 1, 1]))
     g = g.tile(3, 0)
     assert g.no == 15
 
@@ -250,7 +250,7 @@ def test_sparse_orbital_sub_orbital_nested():
     """
     a0 = Atom(1, R=(1.1, 1.4, 1.6))
     a1 = Atom(2, R=(1.3, 1.1))
-    g = Geometry([[0, 0, 0], [1, 1, 1]], [a0, a1], sc=Lattice(2, nsc=[3, 1, 1]))
+    g = Geometry([[0, 0, 0], [1, 1, 1]], [a0, a1], lattice=Lattice(2, nsc=[3, 1, 1]))
     g = g.repeat(3, 0)
     assert g.no == 15
 

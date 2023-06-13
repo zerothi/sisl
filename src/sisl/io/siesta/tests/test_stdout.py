@@ -85,7 +85,7 @@ def test_md_nose_out(sisl_files):
 
 def test_md_nose_out_data(sisl_files):
     f = sisl_files(_dir, 'md_nose.out')
-    out = outSileSiesta(f)
+    out = stdoutSileSiesta(f)
 
     f0, g0 = out.read_data(force=True, geometry=True)
     g1, f1, e = out.read_data(geometry=True, force=True, energy=True)
@@ -100,14 +100,14 @@ def test_md_nose_out_data(sisl_files):
 
 def test_md_nose_out_completed(sisl_files):
     f = sisl_files(_dir, 'md_nose.out')
-    out = outSileSiesta(f)
+    out = stdoutSileSiesta(f)
     out.completed()
 
 
 def test_md_nose_out_dataframe(sisl_files):
     pytest.importorskip("pandas", reason="pandas not available")
     f = sisl_files(_dir, 'md_nose.out')
-    out = outSileSiesta(f)
+    out = stdoutSileSiesta(f)
 
     data = out.read_scf()
     df = out.read_scf(as_dataframe=True)
@@ -123,7 +123,7 @@ def test_md_nose_out_dataframe(sisl_files):
 
 def test_md_nose_out_energy(sisl_files):
     f = sisl_files(_dir, 'md_nose.out')
-    energy = outSileSiesta(f).read_energy()
+    energy = stdoutSileSiesta(f).read_energy()
     assert isinstance(energy, sisl.utils.PropertyDict)
 
 
@@ -157,6 +157,6 @@ O                     2                    # Species label, number of l-shells
     assert len(atom_orbs["C"]) == 4
     assert len(atom_orbs["O"]) == 4
 
-    atoms = outSileSiesta(f).read_basis()
+    atoms = stdoutSileSiesta(f).read_basis()
     for atom in atoms:
         assert atom.orbitals == atom_orbs[atom.tag]

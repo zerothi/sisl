@@ -22,12 +22,15 @@ def pytest_collection_modifyitems(config, items):
         print(f'pytest-sisl: Could not locate sisl directory in: {sisl_files_tests}')
         return
 
-    skip_sisl_files = pytest.mark.skip(reason="requires env(SISL_FILES_TESTS) pointing to clone of: https://github.com/zerothi/sisl-files")
+    xfail_sisl_files = pytest.mark.xfail(
+            run=False,
+            reason="requires env(SISL_FILES_TESTS) pointing to clone of: https://github.com/zerothi/sisl-files"
+    )
     for item in items:
         # Only skip those that have the sisl_files fixture
         # GLOBAL skipping of ALL tests that don't have this fixture
         if 'sisl_files' in item.fixturenames:
-            item.add_marker(skip_sisl_files)
+            item.add_marker(xfail_sisl_files)
 
 
 @pytest.fixture(scope='function')
@@ -113,7 +116,9 @@ def sisl_files():
     sisl_files_tests = _environ.get_environ_variable("SISL_FILES_TESTS")
     if not sisl_files_tests.is_dir():
         def _path(*files):
-            pytest.skip(f"Environment SISL_FILES_TESTS not pointing to a valid directory.")
+            pytest.xfail(
+                    reason=f"Environment SISL_FILES_TESTS not pointing to a valid directory.",
+                    run=False)
         return _path
 
     def _path(*files):
@@ -122,7 +127,8 @@ def sisl_files():
             return p
         # I expect this test to fail due to the wrong environment.
         # But it isn't an actual fail since it hasn't runned...
-        pytest.xfail(f"Environment SISL_FILES_TESTS may point to a wrong path(?); file {p} not found")
+        pytest.xfail(reason=f"Environment SISL_FILES_TESTS may point to a wrong path(?); file {p} not found",
+                     run=False)
     return _path
 
 
