@@ -15,6 +15,7 @@ __all__ = ["aniSileSiesta"]
 
 @set_module("sisl.io.siesta")
 class aniSileSiesta(xyzSile, SileSiesta):
+    r"""Animated MD output of Siesta, equivalent to the `xyzSile` """
 
     def read_geometry(self, *args, stop=None, **kwargs):
         return super().read_geometry(*args, stop=stop, **kwargs)

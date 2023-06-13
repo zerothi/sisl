@@ -15,9 +15,8 @@ __all__ = ["mdSileOpenMX"]
 
 @set_module("sisl.io.openmx")
 class mdSileOpenMX(xyzSile, SileOpenMX):
-
-    def read_geometry(self, *args, **kwargs):
-        return super().read_geometry(*args, **kwargs)
+    r"""OpenMX MD output (equivalent to `xyzSile`) """
+    pass
 
 
 add_sile('md', mdSileOpenMX, gzip=True)

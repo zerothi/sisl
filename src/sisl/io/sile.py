@@ -664,7 +664,7 @@ def sile_read_multiple(start: Optional[int]=None,
                        pre_call: Optional[Callable[..., Optional[Any]]]=None,
                        post_call: Optional[Callable[..., Optional[Any]]]=None,
                        postprocess: Optional[Callable[..., Any]]=None):
-    """ Method decorator for doing multiple reads
+    r""" Method decorator for doing multiple reads
 
     Parameters
     ----------
