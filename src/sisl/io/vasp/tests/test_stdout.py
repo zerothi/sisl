@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import pytest
 import os.path as osp
-from sisl.io.vasp.out import *
+from sisl.io.vasp.stdout import *
 import numpy as np
 
 pytestmark = [pytest.mark.io, pytest.mark.vasp]
@@ -12,7 +12,7 @@ _dir = osp.join('sisl', 'io', 'vasp')
 
 def test_diamond_outcar_energies(sisl_files):
     f = sisl_files(_dir, 'diamond', 'OUTCAR')
-    f = outSileVASP(f)
+    f = stdoutSileVASP(f)
 
     E = f.read_energy()
     Eall = f.read_energy(all=True)
@@ -24,7 +24,7 @@ def test_diamond_outcar_energies(sisl_files):
 
 def test_diamond_outcar_cputime(sisl_files):
     f = sisl_files(_dir, 'diamond', 'OUTCAR')
-    f = outSileVASP(f)
+    f = stdoutSileVASP(f)
 
     assert f.cpu_time() > 0.
     assert f.completed()
@@ -32,6 +32,6 @@ def test_diamond_outcar_cputime(sisl_files):
 
 def test_diamond_outcar_completed(sisl_files):
     f = sisl_files(_dir, 'diamond', 'OUTCAR')
-    f = outSileVASP(f)
+    f = stdoutSileVASP(f)
 
     assert f.completed()

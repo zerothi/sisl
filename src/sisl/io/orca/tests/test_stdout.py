@@ -15,14 +15,14 @@ _dir = osp.join('sisl', 'io', 'orca')
 
 def test_tags(sisl_files):
     f = sisl_files(_dir, 'molecule.output')
-    out = outSileORCA(f)
+    out = stdoutSileORCA(f)
     assert out.na == 2
     assert out.no == 62
     assert out.completed()
 
 def test_read_electrons(sisl_files):
     f = sisl_files(_dir, 'molecule.output')
-    out = outSileORCA(f)
+    out = stdoutSileORCA(f)
     N = out.read_electrons(all=True)
     assert N[0, 0] == 7.999998537730
     assert N[0, 1] == 6.999998987205
@@ -32,13 +32,13 @@ def test_read_electrons(sisl_files):
 
 def test_charge_name(sisl_files):
     f = sisl_files(_dir, 'molecule.output')
-    out = outSileORCA(f)
+    out = stdoutSileORCA(f)
     for name in ['mulliken', 'MULLIKEN', 'loewdin', 'Lowdin', 'LÖWDIN']:
         assert out.read_charge(name=name) is not None
 
 def test_charge_mulliken_atom(sisl_files):
     f = sisl_files(_dir, 'molecule.output')
-    out = outSileORCA(f)
+    out = stdoutSileORCA(f)
     C = out.read_charge(name='mulliken', projection='atom', all=True)
     S = out.read_charge(name='mulliken', projection='atom', spin=True, all=True)
     assert len(C) == 2
@@ -59,7 +59,7 @@ def test_charge_mulliken_atom(sisl_files):
 
 def test_lowedin_atom(sisl_files):
     f = sisl_files(_dir, 'molecule.output')
-    out = outSileORCA(f)
+    out = stdoutSileORCA(f)
     C = out.read_charge(name='loewdin', projection='atom', all=True)
     S = out.read_charge(name='loewdin', projection='atom', spin=True, all=True)
     assert len(C) == 2
@@ -80,7 +80,7 @@ def test_lowedin_atom(sisl_files):
 
 def test_charge_mulliken_reduced(sisl_files):
     f = sisl_files(_dir, 'molecule.output')
-    out = outSileORCA(f)
+    out = stdoutSileORCA(f)
     C = out.read_charge(name='mulliken', projection='orbital', all=True)
     S = out.read_charge(name='mulliken', projection='orbital', spin=True, all=True)
     assert len(C) == 2
@@ -117,7 +117,7 @@ def test_charge_mulliken_reduced(sisl_files):
 
 def test_charge_loewdin_reduced(sisl_files):
     f = sisl_files(_dir, 'molecule.output')
-    out = outSileORCA(f)
+    out = stdoutSileORCA(f)
     C = out.read_charge(name='loewdin', projection='orbital', all=True)
     S = out.read_charge(name='loewdin', projection='orbital', spin=True, all=True)
     assert len(S) == 2
@@ -140,7 +140,7 @@ def test_charge_loewdin_reduced(sisl_files):
 
 def test_charge_mulliken_full(sisl_files):
     f = sisl_files(_dir, 'molecule.output')
-    out = outSileORCA(f)
+    out = stdoutSileORCA(f)
     C = out.read_charge(name='mulliken', projection='orbital', reduced=False, all=True)
     S = out.read_charge(name='mulliken', projection='orbital', reduced=False, spin=True, all=True)
     assert len(C) == 2
@@ -157,7 +157,7 @@ def test_charge_mulliken_full(sisl_files):
 
 def test_charge_loewdin_full(sisl_files):
     f = sisl_files(_dir, 'molecule.output')
-    out = outSileORCA(f)
+    out = stdoutSileORCA(f)
     C = out.read_charge(name='loewdin', projection='orbital', reduced=False, all=True)
     S = out.read_charge(name='loewdin', projection='orbital', reduced=False, spin=True, all=True)
     assert len(S) == 2
@@ -174,7 +174,7 @@ def test_charge_loewdin_full(sisl_files):
 
 def test_charge_atom_unpol(sisl_files):
     f = sisl_files(_dir, 'molecule2.output')
-    out = outSileORCA(f)
+    out = stdoutSileORCA(f)
     C = out.read_charge(name='mulliken', projection='atom', all=True)
     S = out.read_charge(name='mulliken', projection='atom', spin=True, all=True)
     assert len(C) == 2
@@ -191,7 +191,7 @@ def test_charge_atom_unpol(sisl_files):
 
 def test_charge_orbital_reduced_unpol(sisl_files):
     f = sisl_files(_dir, 'molecule2.output')
-    out = outSileORCA(f)
+    out = stdoutSileORCA(f)
     C = out.read_charge(name='mulliken', projection='orbital', all=True)
     S = out.read_charge(name='mulliken', projection='orbital', spin=True, all=True)
     assert len(C) == 2
@@ -217,7 +217,7 @@ def test_charge_orbital_reduced_unpol(sisl_files):
 
 def test_charge_orbital_full_unpol(sisl_files):
     f = sisl_files(_dir, 'molecule2.output')
-    out = outSileORCA(f)
+    out = stdoutSileORCA(f)
     C = out.read_charge(name='mulliken', projection='orbital', reduced=False)
     S = out.read_charge(name='mulliken', projection='orbital', reduced=False, spin=True)
     assert C is None
@@ -225,7 +225,7 @@ def test_charge_orbital_full_unpol(sisl_files):
 
 def test_read_energy(sisl_files):
     f = sisl_files(_dir, 'molecule.output')
-    out = outSileORCA(f)
+    out = stdoutSileORCA(f)
     E = out.read_energy(all=True)
     assert len(E) == 2
     assert E[0].total != 0
@@ -234,14 +234,14 @@ def test_read_energy(sisl_files):
 
 def test_read_energy_vdw(sisl_files):
     f = sisl_files(_dir, 'molecule2.output')
-    out = outSileORCA(f)
+    out = stdoutSileORCA(f)
     E = out.read_energy()
     assert E.vdw != 0
     assert pytest.approx(E.total) == -3081.2640328972802
 
 def test_read_orbital_energies(sisl_files):
     f = sisl_files(_dir, 'molecule.output')
-    out = outSileORCA(f)
+    out = stdoutSileORCA(f)
     E = out.read_orbital_energies(all=True)
     assert pytest.approx(E[0][0, 0]) == -513.8983
     assert pytest.approx(E[0][0, 1]) == -513.6538
@@ -257,7 +257,7 @@ def test_read_orbital_energies(sisl_files):
 
 def test_read_orbital_energies_unpol(sisl_files):
     f = sisl_files(_dir, 'molecule2.output')
-    out = outSileORCA(f)
+    out = stdoutSileORCA(f)
     E = out.read_orbital_energies(all=True)
     assert pytest.approx(E[0][0]) == -513.0978
     assert pytest.approx(E[0][61]) == 1171.5965
@@ -270,7 +270,7 @@ def test_read_orbital_energies_unpol(sisl_files):
 
 def test_multiple_calls(sisl_files):
     f = sisl_files(_dir, 'molecule2.output')
-    out = outSileORCA(f)
+    out = stdoutSileORCA(f)
     N = out.read_electrons(all=True)
     assert len(N) == 2
     E = out.read_orbital_energies(all=True)

@@ -4,6 +4,7 @@
 from .sile import SileVASP
 from ..sile import add_sile, sile_fh_open
 
+from sisl.messages import deprecation
 from sisl.utils import PropertyDict
 from sisl._internal import set_module
 

@@ -5,7 +5,7 @@ import sys
 import pytest
 import os.path as osp
 import sisl
-from sisl.io.siesta.out import *
+from sisl.io.siesta.stdout import *
 from sisl.io.siesta.fdf import *
 import numpy as np
 
@@ -16,7 +16,7 @@ _dir = osp.join('sisl', 'io', 'siesta')
 
 def test_md_nose_out(sisl_files):
     f = sisl_files(_dir, 'md_nose.out')
-    out = outSileSiesta(f)
+    out = stdoutSileSiesta(f)
 
     # nspin, nk, nb
     geom0 = out.read_geometry(last=False)

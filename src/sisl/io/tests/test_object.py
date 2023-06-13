@@ -64,9 +64,9 @@ def test_get_sile2():
 
 def test_get_out_context():
     with sisl_environ(SISL_IO_DEFAULT="siesta"):
-        assert issubclass(gsc("test.out"), outSileSiesta)
+        assert issubclass(gsc("test.out"), stdoutSileSiesta)
     with sisl_environ(SISL_IO_DEFAULT="orca"):
-        assert issubclass(gsc("test.out"), outSileORCA)
+        assert issubclass(gsc("test.out"), stdoutSileORCA)
 
 
 class TestObject:
@@ -143,7 +143,7 @@ class TestObject:
     @pytest.mark.parametrize("sile", _fnames("test", ["out", "out.gz"]))
     def test_siesta_out(self, sile):
         s = gs(sile)
-        for obj in [BaseSile, Sile, SileSiesta, outSileSiesta]:
+        for obj in [BaseSile, Sile, SileSiesta, stdoutSileSiesta]:
             assert isinstance(s, obj)
 
     @pytest.mark.parametrize("sile", _fnames("test", ["nc"]))

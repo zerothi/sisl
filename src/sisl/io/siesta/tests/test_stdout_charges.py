@@ -6,7 +6,7 @@ import sys
 import pytest
 import os.path as osp
 import sisl
-from sisl.io.siesta.out import *
+from sisl.io.siesta.stdout import *
 import numpy as np
 
 
