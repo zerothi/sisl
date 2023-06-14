@@ -8,6 +8,9 @@ we hit release version 1.0.0.
 ## [X.Y.Z] - YYYY-MM-DD
 
 ### Added
+- slicing io files multiple output (still WIP), see #584 for details
+  Intention is to have all methods use this method for returning
+  multiple values, it should streamline the API.
 - allowed xyz files to read Origin entries in the comment field
 - allowed sile specifiers to be more explicit:
      - "hello.xyz{contains=<name>}" equivalent to "hello.xyz{<name>}"

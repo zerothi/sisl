@@ -9,7 +9,7 @@ import numpy as np
 # Import sile objects
 from ._help import header_to_dict
 from .sile import *
-
+from ._multiple import SileBinder
 from sisl.messages import warn, deprecate_argument
 from sisl._internal import set_module
 from sisl import Geometry, Lattice, GeometryCollection
@@ -114,8 +114,9 @@ class xyzSile(Sile):
             line()
         return na
 
+    @SileBinder(skip_func=_r_geometry_skip,
+                postprocess=GeometryCollection)
     @sile_fh_open()
-    @sile_read_multiple(skip_call=_r_geometry_skip, postprocess=GeometryCollection)
     @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", from_version="0.15")
     def read_geometry(self, atoms=None, lattice=None):
         """ Returns Geometry object from the XYZ file

@@ -7,6 +7,7 @@ import numpy as np
 
 # Import sile objects
 from .sile import *
+from ._multiple import SileBinder
 
 from sisl.messages import deprecate_argument
 from sisl._internal import set_module
@@ -317,7 +318,7 @@ class xsfSile(Sile):
             return geom, _a.arrayd(data)
         return geom
 
-    @sile_read_multiple(postprocess=postprocess(GeometryCollection, Collection))
+    @SileBinder(postprocess=postprocess(GeometryCollection, Collection))
     @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", from_version="0.15")
     def read_geometry(self, lattice=None, atoms=None, ret_data=False):
         """ Geometry contained in file, and optionally the associated data
@@ -335,15 +336,6 @@ class xsfSile(Sile):
             atomic species used regardless of the contained atomic species
         ret_data : bool, optional
            in case the the file has auxiliary data, return that as well.
-        start : int, optional
-            start reading geometries from `start`
-        stop : int, optional
-            stop reading geometries at `stop`
-        step : int, optional
-            step-count between reading geometries
-        all : bool, optional
-            set `start`, `step` and `stop` (if not set) to read
-            as many geometries as possible.
         """
         return self._r_geometry_next(lattice=lattice, atoms=atoms, ret_data=ret_data)
 

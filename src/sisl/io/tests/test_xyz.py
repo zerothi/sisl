@@ -101,29 +101,24 @@ C   2.00000  0.00000000  0.00000000
 """)
     g = xyzSile(f).read_geometry()
     assert g.na == 1
-    g = xyzSile(f).read_geometry(start=1)
+    g = xyzSile(f).read_geometry[1]()
     assert g.na == 2
-    g = xyzSile(f).read_geometry(all=True)
+    g = xyzSile(f).read_geometry[:]()
     assert len(g) == 3
     assert g[0].na == 1 and g[1].na == 2 and g[-1].na == 3
-    g = xyzSile(f).read_geometry(start=1, step=1)
+    g = xyzSile(f).read_geometry[1:]()
     assert len(g) == 2
     assert g[0].na == 2 and g[-1].na == 3
-    g = xyzSile(f).read_geometry(start=1, stop=-1)
-    assert len(g) == 2
-    assert g[0].na == 2 and g[-1].na == 3
-    g = xyzSile(f).read_geometry(step=2)
+    g = xyzSile(f).read_geometry[1:-1]()
+    assert len(g) == 1
+    assert g[0].na == 2
+    g = xyzSile(f).read_geometry[::2]()
     assert len(g) == 2
     assert g[0].na == 1 and g[-1].na == 3
-    g = xyzSile(f).read_geometry(stop=2, step=1)
+    g = xyzSile(f).read_geometry[:2:1]()
     assert len(g) == 2
     assert g[0].na == 1 and g[1].na == 2
-    g = xyzSile(f).read_geometry(start=1, step=None)
-    assert g.na == 2
-    g = xyzSile(f).read_geometry(start=1, stop=3, step=1)
-    assert len(g) == 2
-    assert g[0].na == 2 and g[1].na == 3
-    g = xyzSile(f).read_geometry(start=1, stop=3, step=1, all=True)
+    g = xyzSile(f).read_geometry[1:3:1]()
     assert len(g) == 2
     assert g[0].na == 2 and g[1].na == 3
 
