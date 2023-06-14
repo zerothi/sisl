@@ -116,7 +116,7 @@ To run parallel do:
 >>> H = Hamiltonian(...)
 >>> mp = MonkhorstPack(H, [10, 10, 10])
 >>> with mp.apply.renew(pool=True) as par:
-...     par.eigh()
+...     par.array.eigh()
 
 This requires you also have the package ``pathos`` available.
 The above will run in parallel using a default number of processors
@@ -148,7 +148,7 @@ will be used for the parallel processing.
 >>> H = Hamiltonian(...)
 >>> mp = MonkhorstPack(H, [10, 10, 10])
 >>> with mp.apply.renew(pool=pool) as par:
-...     par.eigh()
+...     par.array.eigh()
 
 The ``Pool`` should implement some standard methods that are
 existing in the ``pathos`` enviroment such as ``Pool.restart`` and ``Pool.terminate``
