@@ -8,6 +8,7 @@ we hit release version 1.0.0.
 ## [X.Y.Z] - YYYY-MM-DD
 
 ### Added
+- allowed xyz files to read Origin entries in the comment field
 - allowed sile specifiers to be more explicit:
      - "hello.xyz{contains=<name>}" equivalent to "hello.xyz{<name>}"
      - "hello.xyz{startswith=<name>}" class name should start with `<name>`

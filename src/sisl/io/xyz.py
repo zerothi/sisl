@@ -74,8 +74,12 @@ class xyzSile(Sile):
         #  T = 3
         nsc = list(map(lambda x: "FT".index(x) * 2 + 1, header.pop("pbc").strip('"').split()))
         cell = _a.fromiterd(header.pop("Lattice").strip('"').split()).reshape(3, 3)
+        if "Origin" in header:
+            origin = _a.fromiterd(header.pop("Origin").strip('"').split()).reshape(3)
+        else:
+            origin = None
         if lattice is None:
-            lattice = Lattice(cell, nsc=nsc)
+            lattice = Lattice(cell, nsc=nsc, origin=origin)
         return Geometry(xyz, atoms=sp, lattice=lattice)
 
     def _r_geometry(self, na, sp, xyz, lattice):
@@ -94,9 +98,9 @@ class xyzSile(Sile):
             return None
 
         na = int(line)
-        self.readline()
-        for _ in range(na):
-            self.readline()
+        line = self.readline
+        for _ in range(na+1):
+            line()
         return na
 
     @sile_fh_open()
