@@ -2411,11 +2411,13 @@ class Geometry(LatticeChild):
         return g
     move = translate
 
-    def translate2uc(self, atoms: Optional[AtomsArgument]=None, axes=(0, 1, 2)) -> Geometry:
+    def translate2uc(self, atoms: Optional[AtomsArgument]=None, axes=None) -> Geometry:
         """Translates atoms in the geometry into the unit cell
 
         One can translate a subset of the atoms or axes by appropriate arguments.
 
+        Warning
+        -------
         When coordinates are lying on one of the edges, they may move to the other
         side of the unit-cell due to small rounding errors.
         In such situations you are encouraged to shift all coordinates by a small
@@ -2424,14 +2426,22 @@ class Geometry(LatticeChild):
 
         >>> geometry.move(1e-8).translate2uc().move(-1e-8)
 
+        Notes
+        -----
+        By default only the periodic axes will be translated to the UC. If
+        translation is required for all axes, supply them directly.
+
         Parameters
         ----------
         atoms : int or array_like, optional
              only translate the given atomic indices, if not specified, all
              atoms will be translated
-        axes : int or array_like, optional
-             only translate certain lattice directions, defaults to all
+        axes : int or array_like or None optional
+             only translate certain lattice directions, `None` species
+             only the periodic directions
         """
+        if axes is None:
+            axes = (self.lattice.nsc > 1).nonzero()[0]
         fxyz = self.fxyz
         # move to unit-cell
         fxyz[:, axes] %= 1

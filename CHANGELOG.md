@@ -39,6 +39,8 @@ we hit release version 1.0.0.
 - `BrillouinZone.merge` allows simple merging of several objects, #537
 
 ### Changed
+- default of `Geometry.translate2uc`, now only periodic axes are
+  default to be moved
 - all out files have been renamed to stdout to clarify they are
   user determined output file names, suggestion by @tfrederiksen
 - bumped Python requirement to >=3.8
