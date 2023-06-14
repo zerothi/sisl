@@ -673,7 +673,7 @@ def sile_read_multiple(start: Optional[int]=None,
     stop : int, optional
        position of last read
     step : int, optional
-       number of steps to take (if any at all).
+       number of steps to take. `step=0` implies a single entry selected by `start`, otherwise a list/collection is returned.
     skip_call : function, optional
        read method without actual data processing.
        The skip call must something different from ``None`` if it succeeds.
@@ -734,6 +734,16 @@ def sile_read_multiple(start: Optional[int]=None,
             if step is None:
                 step = 1
 
+            # return single entry?
+            if step == 0 and start >= 0:
+                # skip to start
+                for _ in range(start):
+                    r = skip_call(*args, **kwargs)
+                    if check_none(r):
+                        return r
+                return wrap_func(*args, **kwargs)
+
+            # return multiple
             if start < 0 or stop < 0 or step < 0:
                 # we need to read everything and take a slice afterwards
                 def ret_func():
@@ -743,11 +753,11 @@ def sile_read_multiple(start: Optional[int]=None,
                         if check_none(r):
                             break
                         R.append(r)
+                    if step == 0: # return single entry
+                        return R[start]
                     slc = slice(start, stop, step)
-                    R = R[slc]
-                    if len(R) == 1:
-                        return R[0]
-                    return postprocess(R)
+                    return postprocess(R[slc])
+
             else:
                 # start by reading past start, this is regardless of what we
                 # are about to do
@@ -769,8 +779,6 @@ def sile_read_multiple(start: Optional[int]=None,
                             r = skip_call(*args, **kwargs)
                             if check_none(r):
                                 break
-                    if len(R) == 1:
-                        return R[0]
                     return postprocess(R)
 
             if hasattr(self, "fh"):

@@ -17,8 +17,7 @@ __all__ = ["aniSileSiesta"]
 class aniSileSiesta(xyzSile, SileSiesta):
     r"""Animated MD output of Siesta, equivalent to the `xyzSile` """
 
-    def read_geometry(self, *args, stop=None, **kwargs):
-        return super().read_geometry(*args, stop=stop, **kwargs)
-
+    def read_geometry(self, *args, step=1, **kwargs):
+        return super().read_geometry(*args, step=step, **kwargs)
 
 add_sile('ANI', aniSileSiesta, gzip=True)

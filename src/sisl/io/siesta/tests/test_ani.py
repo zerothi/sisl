@@ -60,13 +60,13 @@ C   3.00000  0.00000000  0.00000000
     g = a.read_geometry(start=1, step=None)
     assert g[0].na == 2 and len(g) == 3
 
-    g = a.read_geometry(start=1, stop=2)
+    g = a.read_geometry(start=1, step=0)
     assert g.na == 2
 
     g = a.read_geometry(start=1, stop=3, step=1)
     assert g[1].na == 3 and len(g) == 2
 
     g = a.read_geometry(start=1, stop=3, step=2)
-    assert g.na == 2
+    assert len(g) == 1
 
     g = a.read_geometry(lattice=None, atoms=None)

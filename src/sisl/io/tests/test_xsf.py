@@ -57,28 +57,24 @@ def test_axsf_geoms(sisl_tmp):
             s.write_geometry(g)
 
     with xsfSile(f) as s:
-        rgeoms = s.read_geometry(start=0, stop=2)
-        assert len(rgeoms) == 2
+        rgeoms = s.read_geometry(step=1)
+        assert len(rgeoms) == 3
         assert all(isinstance(rg, Geometry) for rg in rgeoms)
-        print()
-        #for g, rg in zip(geoms, rgeoms):
-        #    print(g)
-        #    print(rg)
         assert all(g.equal(rg) for g, rg in zip(geoms, rgeoms))
 
     with xsfSile(f) as s:
-        rgeoms = s.read_geometry(start=1, stop=2)
+        rgeoms = s.read_geometry(start=1)
         assert isinstance(rgeoms, Geometry)
         assert geoms[1].equal(rgeoms)
 
     with xsfSile(f) as s:
-        rgeoms = s.read_geometry(stop=None)
+        rgeoms = s.read_geometry(step=1)
         assert len(rgeoms) == len(geoms)
         assert all(isinstance(rg, Geometry) for rg in rgeoms)
         assert all(g.equal(rg) for g, rg in zip(geoms, rgeoms))
 
     with xsfSile(f) as s:
-        rgeoms, rdata = s.read_geometry(stop=None, ret_data=True)
+        rgeoms, rdata = s.read_geometry(step=1, ret_data=True)
         assert len(rgeoms) == 3
         assert all(g.equal(rg) for g, rg in zip(geoms, rgeoms))
         for dat in rdata:
@@ -96,13 +92,12 @@ def test_axsf_data(sisl_tmp):
             s.write_geometry(g, data=dat)
 
     with xsfSile(f) as s:
-        rgeoms, rdata = s.read_geometry(stop=None, ret_data=True)
+        rgeoms, rdata = s.read_geometry(step=1, ret_data=True)
         assert len(rgeoms) == len(geoms)
         assert all(g.equal(rg) for g, rg in zip(geoms, rgeoms))
         assert all(np.allclose(d0, d1) for d0, d1 in zip(rdata, data))
 
     with xsfSile(f) as s:
-        rgeoms, rdata = s.read_geometry(start=0, ret_data=True)
+        rgeoms, rdata = s.read_geometry(ret_data=True)
         assert geoms[0].equal(rgeoms)
         assert np.allclose(rdata, data[0])
-

@@ -58,7 +58,7 @@ def postprocess(*funcs):
 # if there are no empty lines!
 @set_module("sisl.io")
 class xsfSile(Sile):
-    """ XSF file for XCrySDen
+    r""" XSF file for XCrySDen
 
     When creating an XSF file one must denote how many geometries to write out.
     It is also necessary to use the xsf in a context manager, otherwise it will
@@ -107,7 +107,7 @@ class xsfSile(Sile):
     @sile_fh_open(reset=reset_values(("_geometry_write", 0), animsteps=True))
     @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", from_version="0.15")
     def write_lattice(self, lattice, fmt='.8f'):
-        """ Writes the supercell to the contained file
+        r""" Writes the supercell to the contained file
 
         Parameters
         ----------
@@ -151,7 +151,7 @@ class xsfSile(Sile):
 
     @sile_fh_open(reset=reset_values(("_geometry_write", 0), animsteps=True))
     def write_geometry(self, geometry, fmt='.8f', data=None):
-        """ Writes the geometry to the contained file
+        r""" Writes the geometry to the contained file
 
         Parameters
         ----------
@@ -317,14 +317,14 @@ class xsfSile(Sile):
             return geom, _a.arrayd(data)
         return geom
 
-    @sile_read_multiple(stop=1, postprocess=postprocess(GeometryCollection, Collection))
+    @sile_read_multiple(step=0, postprocess=postprocess(GeometryCollection, Collection))
     @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", from_version="0.15")
     def read_geometry(self, lattice=None, atoms=None, ret_data=False):
-        """ Geometry contained in file, and optionally the associated data
+        r""" Geometry contained in file, and optionally the associated data
 
         If the file contains more geometries, one can read multiple geometries
         by using the arguments `start`, `stop` and `step`.
-        The default is to read the first geometry, only.
+        The default is to read the first geometry, only (`stop=0`).
 
         Parameters
         ----------
@@ -346,7 +346,7 @@ class xsfSile(Sile):
 
     @sile_fh_open()
     def write_grid(self, *args, **kwargs):
-        """ Store grid(s) data to an XSF file
+        r""" Store grid(s) data to an XSF file
 
         Examples
         --------
@@ -448,7 +448,7 @@ class xsfSile(Sile):
         return self.read_geometry().ArgumentParser(p, *args, **newkw)
 
     def ArgumentParser_out(self, p, *args, **kwargs):
-        """ Adds arguments only if this file is an output file
+        r""" Adds arguments only if this file is an output file
 
         Parameters
         ----------
