@@ -46,9 +46,12 @@ class xyzSile(Sile):
         # Write out the cell information in the comment field
         # This contains the cell vectors in a single vector (3 + 3 + 3)
         # quantities, plus the number of supercells (3 ints)
+        nsc = geometry.nsc[:]
+        pbc = ['T' if n else 'F' for n in nsc]
         if comment is None:
-            fmt_str = 'sisl-version=1 cell= ' + f'{{:{fmt}}} ' * 9 + ' nsc= {} {} {}\n'.format(*geometry.nsc[:])
-            self._write(fmt_str.format(*geometry.cell.flatten()))
+            fmt_str = 'Lattice="' + f'{{:{fmt}}} ' * 9 + '"'
+            fmt_str += ' pbc="{} {} {}" nsc="{} {} {}"\n'.format(*pbc, *nsc)
+            self._write(fmt_str.format(*geometry.cell.ravel()))
         else:
             self._write(f"{comment}\n")
 
@@ -72,7 +75,11 @@ class xyzSile(Sile):
         # Convert F T to nsc
         #  F = 1
         #  T = 3
-        nsc = list(map(lambda x: "FT".index(x) * 2 + 1, header.pop("pbc").strip('"').split()))
+        nsc = header.pop("nsc", "").strip('"')
+        if nsc:
+            nsc = list(map(int, nsc.split()))
+        else:
+            nsc = list(map(lambda x: "FT".index(x) * 2 + 1, header.pop("pbc").strip('"').split()))
         cell = _a.fromiterd(header.pop("Lattice").strip('"').split()).reshape(3, 3)
         if "Origin" in header:
             origin = _a.fromiterd(header.pop("Origin").strip('"').split()).reshape(3)

@@ -40,6 +40,9 @@ we hit release version 1.0.0.
 - `BrillouinZone.merge` allows simple merging of several objects, #537
 
 ### Changed
+- `xyzSile` out from sisl will now default to the extended xyz file-format
+  Explicitly adding the nsc= value makes it compatible with other exyz
+  file formats and parseable by sisl, this is an internal change
 - default of `Geometry.translate2uc`, now only periodic axes are
   default to be moved
 - all out files have been renamed to stdout to clarify they are
