@@ -38,6 +38,9 @@ class SileSlicer:
             self.skip_func = func
         else:
             self.skip_func = skip_func
+        if postprocess is None:
+            def postprocess(ret):
+                return ret
         self.postprocess = postprocess
         # this is already sliced, sub-slicing shouldn't work (at least for now)
         update_wrapper(self, func)
