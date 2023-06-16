@@ -152,17 +152,32 @@ class SileBound:
 
     def _update_doc(self):
         # Override name to display slice handling in help
-        self.__name__ = f"{self.__name__}[...]"
+        default_slice = self.default_slice
+        if self.default_slice is None:
+            default_slice = 0
+
+        self.__name__ = f"{self.__name__}[...|{default_slice!r}]"
         name = self.__func__.__name__
         try:
             doc = self.__doc__
         except AttributeError:
             doc = ""
 
+        if default_slice == 0:
+            default_slice = "the first"
+        elif default_slice == -1:
+            default_slice = "the last"
+        elif default_slice == slice(None):
+            default_slice = "all"
+        else:
+            default_slice = self.default_slice
+
         doc = dedent(f"""{doc}
         Notes
         -----
-        This method enables slicing for handling multiple values (see [...])
+        This method defaults to return {default_slice} item(s).
+
+        This method enables slicing for handling multiple values (see [...|default]).
 
         This is an optional handler enabling returning multiple elements if {name}
         allows this.
