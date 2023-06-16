@@ -214,6 +214,14 @@ class SileBound:
                 **self.kwargs
         )
 
+    @property
+    def next(self):
+        return self[0]
+
+    @property
+    def last(self):
+        return self[-1]
+
     def __get__(self, obj, objtype=None):
         # I have no idea why this is needed, if I don't have this, then
         # the help(read_geometry) returns without the correct interface,

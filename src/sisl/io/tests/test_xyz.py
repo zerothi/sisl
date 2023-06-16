@@ -122,5 +122,9 @@ C   2.00000  0.00000000  0.00000000
     assert len(g) == 2
     assert g[0].na == 2 and g[1].na == 3
 
+    g1 = xyzSile(f).read_geometry[-1]()
+    g2 = xyzSile(f).read_geometry.last()
+    assert g1 == g2
+
     # ensure it works with other arguments
     g = xyzSile(f).read_geometry(lattice=None, atoms=None)
