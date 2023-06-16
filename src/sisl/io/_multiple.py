@@ -90,25 +90,21 @@ class SileSlicer:
         retvals = [None] * start
         append = retvals.append
         with obj: # open sile
-            try:
-                # quick-skip using the skip-function
-                for _ in range(start):
-                    skip_func(obj, *args, **kwargs)
+            # quick-skip using the skip-function
+            for _ in range(start):
+                skip_func(obj, *args, **kwargs)
 
-                # now do actual parsing
+            # now do actual parsing
+            retval = func(obj, *args, **kwargs)
+            while not check_none(retval):
+                append(retval)
+                if len(retvals) >= stop:
+                    # quick exit
+                    break
                 retval = func(obj, *args, **kwargs)
-                while not check_none(retval):
-                    append(retval)
-                    if len(retvals) >= stop:
-                        # quick exit
-                        break
-                    retval = func(obj, *args, **kwargs)
-            except Exception as e:
-                print("something", e)
-                pass
-            finally:
-                if len(retvals) == start:
-                    raise RuntimeError(f"{obj.__class__.__name__}.{func.__name__} could not read any entries?")
+
+            if len(retvals) == start:
+                raise RuntimeError(f"{obj.__class__.__name__}.{func.__name__} could not read any entries?")
 
         # ensure the next call won't use this key
         # This will prohibit the use
@@ -184,6 +180,7 @@ class SileBound:
         try:
             self.__doc__ = doc
         except AttributeError:
+            # we cannot set the __doc__ string, let it go
             pass
 
     def __call__(self, *args, **kwargs):
