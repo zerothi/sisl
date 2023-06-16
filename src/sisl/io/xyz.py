@@ -46,14 +46,17 @@ class xyzSile(Sile):
         # Write out the cell information in the comment field
         # This contains the cell vectors in a single vector (3 + 3 + 3)
         # quantities, plus the number of supercells (3 ints)
+        fields = []
+        fields.append(('Lattice="' + f'{{:{fmt}}} ' * 9 + '"').format(*geometry.cell.ravel()))
         nsc = geometry.nsc[:]
+        fields.append('nsc="{} {} {}"'.format(*nsc))
         pbc = ['T' if n else 'F' for n in nsc]
+        fields.append('pbc="{} {} {}"'.format(*pbc))
+
         if comment is None:
-            fmt_str = 'Lattice="' + f'{{:{fmt}}} ' * 9 + '"'
-            fmt_str += ' pbc="{} {} {}" nsc="{} {} {}"\n'.format(*pbc, *nsc)
-            self._write(fmt_str.format(*geometry.cell.ravel()))
+            self._write(' '.join(fields) + "\n")
         else:
-            self._write(f"{comment}\n")
+            self._write(' '.join(fields) + f'Comment="{comment}"\n')
 
         fmt_str = '{{0:2s}}  {{1:{0}}}  {{2:{0}}}  {{3:{0}}}\n'.format(fmt)
         for ia, a, _ in geometry.iter_species():
@@ -87,6 +90,7 @@ class xyzSile(Sile):
             origin = None
         if lattice is None:
             lattice = Lattice(cell, nsc=nsc, origin=origin)
+
         return Geometry(xyz, atoms=sp, lattice=lattice)
 
     def _r_geometry(self, na, sp, xyz, lattice):
@@ -167,7 +171,7 @@ class xyzSile(Sile):
 
         if _has_keys(kv, "cell", "nsc"):
             return self._r_geometry_sisl(na, kv, sp, xyz, lattice)
-        elif _has_keys(kv, "Properties", "Lattice", "pbc"):
+        elif _has_keys(kv, "Lattice", "pbc"):
             return self._r_geometry_ase(na, kv, sp, xyz, lattice)
         return self._r_geometry(na, sp, xyz, lattice)
 
