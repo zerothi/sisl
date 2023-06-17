@@ -107,7 +107,8 @@ class SileSlicer:
                 retval = func(obj, *args, **kwargs)
 
             if len(retvals) == start:
-                raise RuntimeError(f"{obj.__class__.__name__}.{func.__name__} could not read any entries?")
+                # none has been found
+                return None
 
         # ensure the next call won't use this key
         # This will prohibit the use
