@@ -121,25 +121,12 @@ class xyzSile(Sile):
     def read_geometry(self, atoms=None, lattice=None):
         """ Returns Geometry object from the XYZ file
 
-        If the file contains more geometries, one can read multiple geometries
-        by using the arguments `start`, `stop` and `step`.
-        The default is to read the first geometry, only.
-
         Parameters
         ----------
         atoms : Atoms, optional
             the atoms to be associated with the Geometry
         lattice : Lattice, optional
             the lattice to be associated with the geometry
-        start : int, optional
-            start reading geometries from `start`
-        stop : int, optional
-            stop reading geometries at `stop`
-        step : int, optional
-            step-count between reading geometries
-        all : bool, optional
-            set `start`, `step` and `stop` (if not set) to read
-            as many geometries as possible.
         """
         line = self.readline()
         if line == '':
