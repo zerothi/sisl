@@ -2436,12 +2436,19 @@ class Geometry(LatticeChild):
         atoms : int or array_like, optional
              only translate the given atomic indices, if not specified, all
              atoms will be translated
-        axes : int or array_like or None optional
-             only translate certain lattice directions, `None` species
-             only the periodic directions
+        axes : int or array_like or True or None optional
+             only translate certain lattice directions, `None` specifies
+             only the directions with supercells, `True` specifies all
+             directions.
         """
         if axes is None:
             axes = (self.lattice.nsc > 1).nonzero()[0]
+        elif isinstance(axes, bool):
+            if axes:
+                axes = (0, 1, 2)
+            else:
+                raise ValueError("translate2uc with a bool argument can only be True to signal all axes")
+
         fxyz = self.fxyz
         # move to unit-cell
         fxyz[:, axes] %= 1
