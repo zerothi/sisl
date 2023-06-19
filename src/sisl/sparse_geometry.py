@@ -3024,13 +3024,13 @@ depending on your use case. Note indices in the following are supercell indices.
 
         # Get the quotient and remainder of dividing by 1.
         # The quotient is the supercell index, the remainder is the coordinates in the unit cell.
-        current_sc, uc_fcoords = np.divmod(fxyz, 1)
+        current_sc = fxyz // 1
         
         # Simply translate the atoms to move all atoms to the unit cell. That is, all atoms
         # should be moved to supercell (0,0,0).
-        return self.translate_atoms_sc(-current_sc, geometry_coords=uc_fcoords @ self.cell)
+        return self.translate_atoms_sc(-current_sc)
 
-    def translate_atoms_sc(self, sc_translations, geometry_coords=None):
+    def translate_atoms_sc(self, sc_translations):
         """Translates atoms across supercells.
 
         This operation results in new coordinates of the associated geometry 
@@ -3040,10 +3040,6 @@ depending on your use case. Note indices in the following are supercell indices.
         ----------
         sc_translations : array of int of shape (na, 3)
             For each atom, the displacement in number of supercells along each direction.
-        geometry_coords : array of float of shape (na, 3), optional
-            If you already computed the new coordinates of the geometry after the translation,
-            you can provide them here. Otherwise, they will be computed from the current
-            coordinates and the supercell translations.
 
         Returns
         --------
@@ -3083,12 +3079,9 @@ depending on your use case. Note indices in the following are supercell indices.
         new_geometry = self.geometry.copy()
         new_geometry.set_nsc(new_nsc)
         
-        # Update the coordinates of the geometry. If they have been precomputed, we
-        # have received them as an argument. Otherwise, compute them from the cell
+        # Update the coordinates of the geometry, according to the cell
         # displacements.
-        if geometry_coords is None:
-            geometry_coords = new_geometry.xyz + np.dot(sc_translations, new_geometry.cell)
-        new_geometry.xyz = geometry_coords
+        new_geometry.xyz = new_geometry.xyz + np.dot(sc_translations, new_geometry.cell)
         
         # Find out supercell indices in this new auxiliary supercell
         new_sc = new_geometry.isc_off[isc[:, 0], isc[:, 1], isc[:, 2]]
