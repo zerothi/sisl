@@ -1,6 +1,7 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from __future__ import annotations
 from numbers import Integral
 import warnings
 import functools as ftool
@@ -15,6 +16,10 @@ from numpy import (
     tile, repeat, concatenate
 )
 from scipy.sparse import csr_matrix
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from sisl.typing import AtomsArgument
 
 from ._internal import set_module
 from . import _array as _a
