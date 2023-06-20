@@ -44,6 +44,8 @@ we hit release version 1.0.0.
 - `BrillouinZone.merge` allows simple merging of several objects, #537
 
 ### Changed
+- `stdoutSileVASP` will not accept `all=` arguments
+- `stdoutSileVASP.read_energy` returns as default the next item (no longer the last)
 - `stdoutSileOrca` will not accept `all=` arguments, see #584
 - `xyzSile` out from sisl will now default to the extended xyz file-format
   Explicitly adding the nsc= value makes it compatible with other exyz

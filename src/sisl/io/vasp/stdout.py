@@ -87,7 +87,7 @@ class stdoutSileVASP(SileVASP):
         -------
         PropertyDict : all energies from the "Free energy of the ion-electron system" segment of VASP output
         """
-        warn(f"{self!s} no longer returns the last entry (but the next in file) as default!")
+        warn(f"{self!s}.read_energy no longer returns the last entry (but the next in file) as default!")
         name_conv = {
             "alpha": "Z",
             "Ewald": "Ewald",
