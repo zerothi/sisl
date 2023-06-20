@@ -1,13 +1,15 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+import numpy as np
+
 from .sile import SileVASP
 from ..sile import add_sile, sile_fh_open
+from .._multiple import SileBinder
 
-from sisl.messages import deprecation
+from sisl.messages import deprecation, deprecate_argument
 from sisl.utils import PropertyDict
 from sisl._internal import set_module
-
 
 __all__ = ["stdoutSileVASP", "outSileVASP"]
 
@@ -55,9 +57,14 @@ class stdoutSileVASP(SileVASP):
         """ True if the line "reached required accuracy" was found. """
         return self.step_to("reached required accuracy")[0]
 
+    @SileBinder()
     @sile_fh_open()
-    def read_energy(self, all=False):
-        """ Reads the energy specification from OUTCAR and returns energy dictionary in units of eV
+    @deprecate_argument("all", None, "use read_energy[:]() instead to get all entries", from_version="0.14")
+    @deprecation("WARNING: direct calls to stdoutSileVASP.read_energy() no longer returns the last entry! Now the next block on file is returned.", from_version="0.14")
+    def read_energy(self):
+        """ Reads an energy specification block from OUTCAR
+
+        The function steps to the next occurrence of the "Free energy of the ion-electron system" segment
 
         Notes
         -----
@@ -79,15 +86,11 @@ class stdoutSileVASP(SileVASP):
             energy without entropy= total
             energy(sigma->0)      = sigma0
 
-        Parameters
-        ----------
-        all: bool, optional
-            return a list of energy dictionaries from each step
-
         Returns
         -------
-        PropertyDict : all energies from the "Free energy of the ion-electron system" segment of VASP output
+        PropertyDict : all energies from a single "Free energy of the ion-electron system" segment
         """
+
         name_conv = {
             "alpha": "Z",
             "Ewald": "Ewald",
@@ -101,49 +104,72 @@ class stdoutSileVASP(SileVASP):
             "Solvation": "solvation",
         }
 
-        def readE(itt):
-            nonlocal name_conv
-            # read the energy tables
-            f = self.step_to("Free energy of the ion-electron system", allow_reread=False)[0]
-            if not f:
-                return None
-            next(itt) # -----
-            line = next(itt)
-            E = PropertyDict()
-            while "----" not in line:
-                key, *v = line.split()
-                if key == "PAW":
-                    E[f"{name_conv[key]}1"] = float(v[-2])
-                    E[f"{name_conv[key]}2"] = float(v[-1])
-                else:
-                    E[name_conv[key]] = float(v[-1])
-                line = next(itt)
-            line = next(itt)
-            E["free"] = float(line.split()[-2])
-            next(itt)
-            line = next(itt)
+        # read the energy tables
+        f = self.step_to("Free energy of the ion-electron system", allow_reread=False)[0]
+        if not f:
+            return None
+        self.readline() # -----
+        line = self.readline()
+        E = PropertyDict()
+        while "----" not in line:
+            key, *v = line.split()
+            if key == "PAW":
+                E[f"{name_conv[key]}1"] = float(v[-2])
+                E[f"{name_conv[key]}2"] = float(v[-1])
+            else:
+                E[name_conv[key]] = float(v[-1])
+            line = self.readline()
+        line = self.readline()
+        E.free = float(line.split()[-2])
+        self.readline()
+        line = self.readline()
+        v = line.split()
+        E.total = float(v[4])
+        E.sigma0 = float(v[-1])
+        return E
+
+    @SileBinder()
+    @sile_fh_open()
+    def read_trajectory(self):
+        """ Reads cell+position+force data from OUTCAR for an ionic trajectory step
+
+        The function steps to the block defined by the "VOLUME and BASIS-vectors are now :"
+        line to first read the cell vectors, then it steps to the "TOTAL-FORCE (eV/Angst)" segment
+        to read the atom positions and forces.
+
+        Returns
+        -------
+        PropertyDict : Trajectory step defined by cell vectors (`.cell`), atom positions (`.xyz`), and forces (`.force`)
+        """
+
+        f = self.step_to("VOLUME and BASIS-vectors are now :", allow_reread=False)[0]
+        if not f:
+            return None
+        for i in range(4):
+            self.readline() # skip 4 lines
+        C = []
+        for i in range(3):
+            line = self.readline()
             v = line.split()
-            E["total"] = float(v[4])
-            E["sigma0"] = float(v[-1])
-            return E
-
-        itt = iter(self)
-        E = []
-        e = readE(itt)
-        while e is not None:
-            E.append(e)
-            e = readE(itt)
-        try:
-            # this just puts the job_completed flag. But otherwise not used
-            self.cpu_time()
-        except Exception:
-            pass
-
-        if all:
-            return E
-        if len(E) > 0:
-            return E[-1]
-        return None
+            C.append(v[:3]) # direct lattice vectors
+        # read a position-force table
+        f = self.step_to("TOTAL-FORCE (eV/Angst)", allow_reread=False)[0]
+        if not f:
+            return None
+        self.readline() # -----
+        P, F = [], []
+        line = self.readline()
+        while "----" not in line:
+            v = line.split()
+            # positions and forces
+            P.append(v[:3])
+            F.append(v[3:6])
+            line = self.readline()
+        step = PropertyDict()
+        step.cell = np.array(C, dtype=np.float64)
+        step.xyz = np.array(P, dtype=np.float64)
+        step.force = np.array(F, dtype=np.float64)
+        return step
 
 
 outSileVASP = deprecation("outSileVASP has been deprecated in favor of stdoutSileVASP.", "0.15")(stdoutSileVASP)

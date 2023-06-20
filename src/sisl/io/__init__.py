@@ -141,7 +141,7 @@ VASP
    eigenvalSileVASP
    chgSileVASP
    locpotSileVASP
-   outSileVASP
+   stdoutSileVASP
 
 
 Wannier90
