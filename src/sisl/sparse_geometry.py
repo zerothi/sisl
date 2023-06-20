@@ -155,24 +155,51 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         """ Number of non-zero elements """
         return self._csr.nnz
 
-    def translate2uc(self):
+    def translate2uc(self, atoms: Optional[AtomsArgument] = None, axes=None):
         """Translates all primary atoms to the unit cell.
         
         With this, the coordinates of the geometry are translated to the unit cell
         and the supercell connections in the matrix are updated accordingly.
+
+        Parameters
+        ----------
+        atoms : AtomsArgument, optional
+            only translate the specified atoms. If not specified, all
+            atoms will be translated.
+        axes : int or array_like or None, optional
+            only translate certain lattice directions, `None` species
+            only the periodic directions
 
         Returns
         --------
         SparseOrbital or SparseAtom
             A new sparse matrix with the updated connections and a new associated geometry.
         """
+        # Sanitize the axes argument
+        if axes is None:
+            axes = (self.lattice.nsc > 1).nonzero()[0]
+        elif isinstance(axes, bool):
+            if axes:
+                axes = (0, 1, 2)
+            else:
+                raise ValueError("translate2uc with a bool argument can only be True to signal all axes")
+            
+        # Sanitize also the atoms argument
+        if atoms is None:
+            ats = slice(None)
+        else:
+            ats = self.geometry._sanitize_atoms(atoms).ravel()
+            
         # Get the fractional coordinates of the associated geometry
         fxyz = self.geometry.fxyz
 
         # Get the cell where each atom resides. In fractional coordinates, atoms in the unit cell
-        # are between 0 and 1. Anything else means that the atom resides in a periodic image.
-        current_sc = fxyz // 1
-        
+        # are between 0 and 1. Anything else means that the atom resides in a periodic image. For
+        # atoms and axes that the user doesn't desire the translation, we are going to set the supercell
+        # offset as if it was 0, which will result in them not getting translated.
+        current_sc = np.zeros((self.na, 3), dtype=int)
+        current_sc[ats, axes] = fxyz[ats, axes] // 1
+
         # Simply translate the atoms to move all atoms to the unit cell. That is, all atoms
         # should be moved to supercell (0,0,0).
         return self.translate_atoms_sc(-current_sc)
