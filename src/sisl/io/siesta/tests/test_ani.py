@@ -32,41 +32,50 @@ C   2.00000  0.00000000  0.00000000
 C   3.00000  0.00000000  0.00000000
 """)
     a = aniSileSiesta(f)
-    g = a.read_geometry()
+    g = a.read_geometry[:]()
     assert isinstance(g, GeometryCollection)
     assert len(g) == 4
     assert g[0].na == 1
 
-    g = a.read_geometry(start=1)
+    g = a.read_geometry[1:]()
     assert len(g) == 3
     assert g[0].na == 2
 
-    g = a.read_geometry(all=True)
+    g = a.read_geometry[:]()
     assert len(g) == 4
     assert g[0].na == 1 and g[2].na == 3
 
-    g = a.read_geometry(start=1, step=1)
+    g = a.read_geometry[1::1]()
     assert len(g) == 3
     assert g[0].na == 2 and g[1].na == 3
 
-    g = a.read_geometry(step=2)
+    g = a.read_geometry[::2]()
     assert len(g) == 2
     assert g[0].na == 1 and g[1].na == 3
 
-    g = a.read_geometry(stop=2, step=1)
+    g = a.read_geometry[:2:1]()
     assert len(g) == 2
     assert g[0].na == 1 and g[1].na == 2
 
-    g = a.read_geometry(start=1, step=None)
+    g = a.read_geometry[1:]()
     assert g[0].na == 2 and len(g) == 3
 
-    g = a.read_geometry(start=1, all=False)
+    g = a.read_geometry[1]()
     assert g.na == 2
 
-    g = a.read_geometry(start=1, stop=3, step=1)
+    g = a.read_geometry[1:3:1]()
     assert g[1].na == 3 and len(g) == 2
 
-    g = a.read_geometry(start=1, stop=3, step=2, all=True)
+    g = a.read_geometry[1:3:2]()
     assert g[0].na == 2 and len(g) == 1
+
+    g = a.read_geometry[-2:]()
+    assert g[0].na == 3 and len(g) == 2
+    assert g[1].na == 4
+
+    g = a.read_geometry[-2::-1]()
+    assert g[0].na == 3 and len(g) == 3
+    assert g[1].na == 2
+    assert g[2].na == 1
 
     g = a.read_geometry(lattice=None, atoms=None)

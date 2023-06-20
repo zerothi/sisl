@@ -8,6 +8,9 @@ we hit release version 1.0.0.
 ## [X.Y.Z] - YYYY-MM-DD
 
 ### Added
+- slicing io files multiple output (still WIP), see #584 for details
+  Intention is to have all methods use this method for returning
+  multiple values, it should streamline the API.
 - allowed xyz files to read Origin entries in the comment field
 - allowed sile specifiers to be more explicit:
      - "hello.xyz{contains=<name>}" equivalent to "hello.xyz{<name>}"
@@ -40,6 +43,7 @@ we hit release version 1.0.0.
 - `BrillouinZone.merge` allows simple merging of several objects, #537
 
 ### Changed
+- `stdoutSileOrca` will not accept `all=` arguments, see #584
 - `xyzSile` out from sisl will now default to the extended xyz file-format
   Explicitly adding the nsc= value makes it compatible with other exyz
   file formats and parseable by sisl, this is an internal change

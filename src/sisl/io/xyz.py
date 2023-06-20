@@ -9,7 +9,7 @@ import numpy as np
 # Import sile objects
 from ._help import header_to_dict
 from .sile import *
-
+from ._multiple import SileBinder
 from sisl.messages import warn, deprecate_argument
 from sisl._internal import set_module
 from sisl import Geometry, Lattice, GeometryCollection
@@ -114,15 +114,12 @@ class xyzSile(Sile):
             line()
         return na
 
+    @SileBinder(skip_func=_r_geometry_skip,
+                postprocess=GeometryCollection)
     @sile_fh_open()
-    @sile_read_multiple(skip_call=_r_geometry_skip, postprocess=GeometryCollection)
     @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", from_version="0.15")
     def read_geometry(self, atoms=None, lattice=None):
         """ Returns Geometry object from the XYZ file
-
-        If the file contains more geometries, one can read multiple geometries
-        by using the arguments `start`, `stop` and `step`.
-        The default is to read the first geometry, only.
 
         Parameters
         ----------
@@ -130,15 +127,6 @@ class xyzSile(Sile):
             the atoms to be associated with the Geometry
         lattice : Lattice, optional
             the lattice to be associated with the geometry
-        start : int, optional
-            start reading geometries from `start`
-        stop : int, optional
-            stop reading geometries at `stop`
-        step : int, optional
-            step-count between reading geometries
-        all : bool, optional
-            set `start`, `step` and `stop` (if not set) to read
-            as many geometries as possible.
         """
         line = self.readline()
         if line == '':

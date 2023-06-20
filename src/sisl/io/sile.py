@@ -40,7 +40,6 @@ __all__ += [
 # Decorators or sile-specific functions
 __all__ += [
     'sile_fh_open',
-    'sile_read_multiple',
     'sile_raise_write',
     'sile_raise_read'
 ]
@@ -432,9 +431,15 @@ def get_siles(attrs=None):
     siles = []
     for sile in __siles:
         for attr in attrs:
-            if hasattr(sile, attr):
-                siles.append(sile)
-                break
+            try:
+                if hasattr(sile, attr):
+                    siles.append(sile)
+                    break
+            except TypeError as e:
+                if str(e).startswith("[SileBinder]"):
+                    # a non-bounded deferred class created using the SileBinder
+                    # TODO work around this check
+                    siles.append(sile)
 
     return siles
 
@@ -636,11 +641,14 @@ def sile_fh_open(from_closed=False, reset=None):
             nonlocal reset
             @wraps(func)
             def pre_open(self, *args, **kwargs):
+                # only call reset if the file should be reset
+                _reset = reset
                 if hasattr(self, "fh"):
-                    self.fh.seek(0)
-                    return func(self, *args, **kwargs)
+                    def _reset(self): pass
                 with self:
-                    reset(self)
+                    # REMARK this requires the __enter__ to seek(0)
+                    # for the file, and currently it does
+                    _reset(self)
                     return func(self, *args, **kwargs)
             return pre_open
     else:
@@ -655,163 +663,6 @@ def sile_fh_open(from_closed=False, reset=None):
                     return func(self, *args, **kwargs)
             return pre_open
     return _wrapper
-
-
-def sile_read_multiple(start: Optional[int]=None,
-                       stop: Optional[int]=None,
-                       step: Optional[int]=None,
-                       all: bool=False,
-                       skip_call: Optional[Callable[..., Optional[Any]]]=None,
-                       pre_call: Optional[Callable[..., Optional[Any]]]=None,
-                       post_call: Optional[Callable[..., Optional[Any]]]=None,
-                       postprocess: Optional[Callable[..., Any]]=None):
-    """ Method decorator for doing multiple reads
-
-    Parameters
-    ----------
-    start : int, optional
-       position of first read
-    stop : int, optional
-       position of last read
-    step : int, optional
-       number of steps to take (if any at all).
-    all : bool, optional
-       read all entries, `start`, `stop` and `step` will not be altered
-       unless they are set to None.
-    skip_call : function, optional
-       read method without actual data processing.
-       The skip call must something different from ``None`` if it succeeds.
-    pre_call : function, optional
-       function to be applied before each read call.
-       Does *not* apply to the `skip_call`.
-    post_call : function, optional
-       function to be applied after each read call
-       Does *not* apply to the `skip_call`.
-    postprocess : function, optional
-       function to be applied on the returned data before it gets returned.
-
-    Returns
-    -------
-    single entry or list from multiple reads
-    """
-    def decorator(func):
-        # ensure we can access the callables
-        nonlocal skip_call, pre_call, post_call, postprocess
-
-        if pre_call is None:
-            def pre_call(): pass
-
-        if post_call is None:
-            def post_call(): pass
-
-        if postprocess is None:
-            def postprocess(x): return x
-
-        def wrap_func(*args, **kwargs):
-            pre_call()
-            r = func(*args, **kwargs)
-            post_call()
-            return r
-
-        # if skip_call is not set, we'll simply use func.
-        # Only in this case will pre and post be called
-        # as well.
-        # they should be equivalent but skip can be used to
-        # skip some processing of the read data.
-        if skip_call is None:
-            skip_call = wrap_func
-
-        @wraps(func)
-        def multiple(*args, start=start, stop=stop, step=step, all=all, **kwargs):
-            self = args[0]
-
-            if all:
-                # parse everything, but still obey inputs
-                if start is None:
-                    start = 0
-                if stop is None:
-                    stop = 100000000000
-                if step is None:
-                    step = 1
-            else:
-                # behave like range(stop) | range(start, stop, step)
-                # almost.
-                #  step only => start, step = 0, inf
-                #  start only => stop = start + 1
-                #  stop only => start = stop - 1
-                if step is not None:
-                    if start is None:
-                        start = 0
-                    if stop is None:
-                        stop = -1
-                elif start is None and stop is None:
-                    start = 0
-                    stop = 1
-
-                if start is None:
-                    if stop is not None:
-                        start = stop - 1
-                    else:
-                        start = 0
-                if stop is None:
-                    # this will only occur if start is given, but not stop
-                    stop = start + 1
-                elif stop < 0:
-                    stop = 1000000000000
-                if step is None:
-                    # only handle cases where the requested number of
-                    # elements is longer than 1, then step should be defined,
-                    # else we resort to returning a single entity (not postprocessed)
-                    if stop - start > 1:
-                        step = 1
-
-            if stop < 0:
-                # TODO this will probably fail if users do stop=-4 (to not have the last 3 items)
-                # It should be done in a different manner
-                stop = 100000000000
-
-            def check_none(r):
-                if isinstance(r, tuple):
-                    return reduce(lambda x, y: x and y is None, r, True)
-                return r is None
-
-            # start by reading past start, this is regardless of what we
-            # are about to do
-            for _ in range(start):
-                r = skip_call(*args, **kwargs)
-                if check_none(r):
-                    return r
-
-            if step is None:
-                # read a single element and return
-                def ret_func():
-                    return wrap_func(*args, **kwargs)
-
-            else:
-                # read a set of geometries and return
-                def ret_func():
-                    R = []
-                    for _ in range(start, stop, step):
-                        r = wrap_func(*args, **kwargs)
-                        if check_none(r):
-                            break
-                        R.append(r)
-
-                        # skip the middle steps
-                        for _ in range(step-1):
-                            r = skip_call(*args, **kwargs)
-                            if check_none(r):
-                                return postprocess(R)
-                    return postprocess(R)
-
-            if hasattr(self, "fh"):
-                return ret_func()
-            else:
-                with self:
-                    return ret_func()
-
-        return multiple
-    return decorator
 
 
 @set_module("sisl.io")
@@ -911,22 +762,33 @@ class Sile(BaseSile):
         else:
             self._comment = []
 
+        self._fh_opens = 0
         self._line = 0
 
         # Initialize
         self._base_setup(*args, **kwargs)
 
     def _open(self):
-        if self.file.suffix == ".gz":
-            if self._mode == 'r':
-                # assume the file is a text file and open in text-mode
-                self.fh = gzip.open(str(self.file), mode='rt')
-            else:
-                # assume this is opening in binary or write mode
-                self.fh = gzip.open(str(self.file), mode=self._mode)
+        # track how many times this has been called
+        if hasattr(self, "fh"):
+            self.fh.seek(0)
         else:
-            self.fh = self.file.open(self._mode)
+            self._fh_opens = 0
+
+            if self.file.suffix == ".gz":
+                if self._mode == 'r':
+                    # assume the file is a text file and open in text-mode
+                    self.fh = gzip.open(str(self.file), mode='rt')
+                else:
+                    # assume this is opening in binary or write mode
+                    self.fh = gzip.open(str(self.file), mode=self._mode)
+            else:
+                self.fh = self.file.open(self._mode)
+
+        # the file should restart the file-read (as per instructed)
         self._line = 0
+
+        self._fh_opens += 1
 
     def __enter__(self):
         """ Opens the output file and returns it self """
@@ -936,12 +798,16 @@ class Sile(BaseSile):
     def __exit__(self, type, value, traceback):
         # clean-up so that it does not exist
         self.close()
-        self._line = 0
         return False
 
     def close(self):
-        self.fh.close()
-        delattr(self, 'fh')
+        # decrement calls
+        self._fh_opens -= 1
+        if self._fh_opens <= 0:
+            self._line = 0
+            self.fh.close()
+            delattr(self, 'fh')
+            self._fh_opens = 0
 
     @staticmethod
     def is_keys(keys):
