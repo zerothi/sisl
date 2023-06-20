@@ -86,13 +86,16 @@ def deprecate_argument(old, new, message, from_version=None):
     """ Decorator for deprecating `old` argument, and replacing it with `new`
 
     The old keyword argument is still retained.
+
+    If `new` is none, it will be deleted.
     """
     def deco(func):
         @wraps(func)
         def wrapped(*args, **kwargs):
             if old in kwargs:
                 deprecate(f"{func.__name__} {message}", from_version=from_version)
-                kwargs[new] = kwargs.pop(old)
+                if new is not None:
+                    kwargs[new] = kwargs.pop(old)
             return func(*args, **kwargs)
         return wrapped
     return deco
