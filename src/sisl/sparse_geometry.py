@@ -155,6 +155,119 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         """ Number of non-zero elements """
         return self._csr.nnz
 
+    def translate2uc(self):
+        """Translates all primary atoms to the unit cell.
+        
+        With this, the coordinates of the geometry are translated to the unit cell
+        and the supercell connections in the matrix are updated accordingly.
+
+        Returns
+        --------
+        SparseOrbital or SparseAtom
+            A new sparse matrix with the updated connections and a new associated geometry.
+        """
+        # Get the fractional coordinates of the associated geometry
+        fxyz = self.geometry.fxyz
+
+        # Get the cell where each atom resides. In fractional coordinates, atoms in the unit cell
+        # are between 0 and 1. Anything else means that the atom resides in a periodic image.
+        current_sc = fxyz // 1
+        
+        # Simply translate the atoms to move all atoms to the unit cell. That is, all atoms
+        # should be moved to supercell (0,0,0).
+        return self.translate_atoms_sc(-current_sc)
+
+    def translate_atoms_sc(self, sc_translations):
+        """Translates atoms across supercells.
+
+        This operation results in new coordinates of the associated geometry 
+        and new indices for the matrix elements.
+
+        Parameters
+        ----------
+        sc_translations : array of int of shape (na, 3)
+            For each atom, the displacement in number of supercells along each direction.
+
+        Returns
+        --------
+        SparseOrbital or SparseAtom
+            A new sparse matrix with the updated connections and a new associated geometry.
+        """
+        # Make sure that supercell translations is an array of integers
+        sc_translations = np.asarray(sc_translations, dtype=int)
+        
+        # Get the row and column of every element in the matrix
+        rows, cols = self.nonzero()
+
+        # Find out what is the number of rows in the matrix. This is either the number of atoms
+        # (which means this is a SparseAtom matrix) or the number of orbitals (which means this
+        # is a SparseOrbital matrix).
+        n_rows = self.shape[0]
+
+        if n_rows == self.na:
+            # Indices correspond to atoms, so it's very easy to know which
+            # atom they belong to.
+            at_row = rows
+            at_col = cols
+        else:
+            # Indices correspond to orbitals. Find out to which atom each orbital belongs
+            at_row = self.o2a(rows)
+            at_col = self.o2a(cols)
+        
+        # Find out the unit cell indices for the columns, and the index of the supercell
+        # where they are currently located. This is done by dividing into the number of
+        # columns in the unit cell.
+        # We will do the conversion back to supercell indices when we know their 
+        # new location after translation, and also the size of the new auxiliary supercell.
+        sc, uc_col = np.divmod(cols, n_rows)
+
+        # We need the unit cell indices of the column atoms. If this is a SparseAtom object, then
+        # we have already computed them in the previous line. Otherwise, compute them.
+        if n_rows == self.na:
+            at_col = uc_col
+        else:
+            at_col = at_col % self.na
+        
+        # Get the supercell indices in 3D.
+        isc = self.sc_off[sc]
+        
+        # We are going to now displace the supercell index of the connections
+        # according to how the two orbitals involved have moved. We store the
+        # result in the same array just to avoid using more memory.
+        isc += sc_translations[at_row] - sc_translations[at_col]
+        
+        # It is possible that once we discover the new locations of the connections
+        # we find out that we need a bigger or smaller auxiliary supercell. Find out
+        # the size of the new auxiliary supercell.
+        new_nsc = np.max(abs(isc), axis=0) * 2 + 1
+        
+        # Create a new geometry object with the new auxiliary supercell size.
+        new_geometry = self.geometry.copy()
+        new_geometry.set_nsc(new_nsc)
+        
+        # Update the coordinates of the geometry, according to the cell
+        # displacements.
+        new_geometry.xyz = new_geometry.xyz + sc_translations @ new_geometry.cell
+        
+        # Find out supercell indices in this new auxiliary supercell
+        new_sc = new_geometry.isc_off[isc[:, 0], isc[:, 1], isc[:, 2]]
+        
+        # With this, we can compute the new columns
+        new_cols = uc_col + new_sc * n_rows
+        
+        # Build the new csr matrix, which will just be a copy of the current one
+        # but updating the column indices. We also need to make sure that the shape
+        # of the matrix is appropiate for the size of the new auxiliary cell.
+        new_csr = self._csr.copy()
+        new_csr.col = new_cols
+        new_csr._shape = (n_rows, n_rows * new_geometry.n_s, new_csr.shape[-1])
+        
+        # Create the new SparseGeometry matrix and associate to it the csr matrix that we have built.
+        new_matrix = self.__class__(new_geometry)
+        new_matrix._csr = new_csr
+        
+        return new_matrix
+
     def _translate_cells(self, old, new):
         """ Translates all columns in the `old` cell indices to the `new` cell indices
 
@@ -3006,101 +3119,6 @@ depending on your use case. Note indices in the following are supercell indices.
         out._csr = csr
         out._geometry = geom
         return out
-    
-    def translate2uc(self):
-        """Translates all primary atoms to the unit cell.
-        
-        With this, the coordinates of the geometry are translated to the unit cell
-        and the supercell connections in the matrix are updated accordingly.
-
-        Returns
-        --------
-        SparseOrbital
-            A new SparseOrbital with the updated connections and a new associated geometry.
-        """
-        # Get the fractional coordinates of the associated geometry
-        geom = self.geometry
-        fxyz = geom.fxyz
-
-        # Get the quotient and remainder of dividing by 1.
-        # The quotient is the supercell index, the remainder is the coordinates in the unit cell.
-        current_sc = fxyz // 1
-        
-        # Simply translate the atoms to move all atoms to the unit cell. That is, all atoms
-        # should be moved to supercell (0,0,0).
-        return self.translate_atoms_sc(-current_sc)
-
-    def translate_atoms_sc(self, sc_translations):
-        """Translates atoms across supercells.
-
-        This operation results in new coordinates of the associated geometry 
-        and new indices for the matrix elements.
-
-        Parameters
-        ----------
-        sc_translations : array of int of shape (na, 3)
-            For each atom, the displacement in number of supercells along each direction.
-
-        Returns
-        --------
-        SparseOrbital
-            A new SparseOrbital with the updated connections and a new associated geometry.
-        """
-        # Make sure that supercell translations is an array of integers
-        sc_translations = np.asarray(sc_translations, dtype=int)
-        
-        # Get the row and column of every element in the matrix
-        rows, cols = self.nonzero()
-        
-        # Find out to which atom each orbital belongs
-        at_row = self.o2a(rows)
-        at_col = self.o2a(cols) % self.na
-        
-        # Find out the unit cell orbital index for the columns, and the index of the supercell
-        # where they are currently located. 
-        # We will do the conversion back to supercell orbital index when we know their 
-        # new location after translation.
-        sc, uc_orb = np.divmod(cols, self.no)
-        
-        # Get the supercell indices in 3D.
-        isc = self.sc_off[sc]
-        
-        # We are going to now displace the supercell index of the connections
-        # according to how the two orbitals involved have moved. We store the
-        # result in the same array just to avoid using more memory.
-        isc += sc_translations[at_row] - sc_translations[at_col]
-        
-        # It is possible that once we discover the new locations of the connections
-        # we find out that we need a bigger or smaller auxiliary supercell. Find out
-        # the size of the new auxiliary supercell.
-        new_nsc = np.max(abs(isc), axis=0) * 2 + 1
-        
-        # Create a new geometry object with the new auxiliary supercell size.
-        new_geometry = self.geometry.copy()
-        new_geometry.set_nsc(new_nsc)
-        
-        # Update the coordinates of the geometry, according to the cell
-        # displacements.
-        new_geometry.xyz = new_geometry.xyz + np.dot(sc_translations, new_geometry.cell)
-        
-        # Find out supercell indices in this new auxiliary supercell
-        new_sc = new_geometry.isc_off[isc[:, 0], isc[:, 1], isc[:, 2]]
-        
-        # With this, we can compute the new columns
-        new_cols = uc_orb + new_sc * self.no
-        
-        # Build the new csr matrix, which will just be a copy of the current one
-        # but updating the column indices. We also need to make sure that the shape
-        # of the matrix is appropiate for the size of the new auxiliary cell.
-        new_csr = self._csr.copy()
-        new_csr.col = new_cols
-        new_csr._shape = (self.no, self.no * new_geometry.n_s, new_csr.shape[-1])
-        
-        # Create the new orbital matrix and associate to it the csr matrix that we have built.
-        new_matrix = self.__class__(new_geometry)
-        new_matrix._csr = new_csr
-        
-        return new_matrix
 
     def toSparseAtom(self, dim=None, dtype=None):
         """ Convert the sparse object (without data) to a new sparse object with equivalent but reduced sparse pattern
