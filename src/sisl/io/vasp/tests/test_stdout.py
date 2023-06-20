@@ -14,9 +14,14 @@ def test_diamond_outcar_energies(sisl_files):
     f = sisl_files(_dir, 'diamond', 'OUTCAR')
     f = stdoutSileVASP(f)
 
-    E = f.read_energy()
-    Eall = f.read_energy(all=True)
+    E0 = f.read_energy()
+    E = f.read_energy[-1]()
+    Eall = f.read_energy[:]()
 
+    assert E0.sigma0 == 0.8569373 # first block
+    assert E.sigma0 == -18.18677613 # last block
+
+    assert E0 == Eall[0]
     assert E == Eall[-1]
     assert len(Eall) > 1
     assert f.completed()

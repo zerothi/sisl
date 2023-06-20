@@ -7,7 +7,7 @@ from .sile import SileVASP
 from ..sile import add_sile, sile_fh_open
 from .._multiple import SileBinder
 
-from sisl.messages import deprecation
+from sisl.messages import deprecation, warn
 from sisl.utils import PropertyDict
 from sisl._internal import set_module
 
@@ -57,8 +57,10 @@ class stdoutSileVASP(SileVASP):
         """ True if the line "reached required accuracy" was found. """
         return self.step_to("reached required accuracy")[0]
 
+    @SileBinder()
     @sile_fh_open()
-    def read_energy(self, all=False):
+    @deprecation("all keyword is deprecated, use read_energy[:]() instead", from_version="0.14")
+    def read_energy(self):
         """ Reads the energy specification from OUTCAR and returns energy dictionary in units of eV
 
         Notes
@@ -81,15 +83,11 @@ class stdoutSileVASP(SileVASP):
             energy without entropy= total
             energy(sigma->0)      = sigma0
 
-        Parameters
-        ----------
-        all: bool, optional
-            return a list of energy dictionaries from each step
-
         Returns
         -------
         PropertyDict : all energies from the "Free energy of the ion-electron system" segment of VASP output
         """
+        warn(f"{self!s} no longer returns the last entry (but the next in file) as default!")
         name_conv = {
             "alpha": "Z",
             "Ewald": "Ewald",
@@ -103,50 +101,30 @@ class stdoutSileVASP(SileVASP):
             "Solvation": "solvation",
         }
 
-        def readE(itt):
-            nonlocal name_conv
-            # read the energy tables
-            f = self.step_to("Free energy of the ion-electron system", allow_reread=False)[0]
-            if not f:
-                return None
-            next(itt) # -----
-            line = next(itt)
-            E = PropertyDict()
-            while "----" not in line:
-                key, *v = line.split()
-                if key == "PAW":
-                    E[f"{name_conv[key]}1"] = float(v[-2])
-                    E[f"{name_conv[key]}2"] = float(v[-1])
-                else:
-                    E[name_conv[key]] = float(v[-1])
-                line = next(itt)
-            line = next(itt)
-            E["free"] = float(line.split()[-2])
-            next(itt)
-            line = next(itt)
-            v = line.split()
-            E["total"] = float(v[4])
-            E["sigma0"] = float(v[-1])
-            return E
-
-        itt = iter(self)
-        E = []
-        e = readE(itt)
-        while e is not None:
-            E.append(e)
-            e = readE(itt)
-        try:
-            # this just puts the job_completed flag. But otherwise not used
-            self.cpu_time()
-        except Exception:
-            pass
-
-        if all:
-            return E
-        if len(E) > 0:
-            return E[-1]
-        return None
-
+        # read the energy tables
+        f = self.step_to("Free energy of the ion-electron system", allow_reread=False)[0]
+        if not f:
+            return None
+        self.readline() # -----
+        line = self.readline()
+        E = PropertyDict()
+        while "----" not in line:
+            key, *v = line.split()
+            if key == "PAW":
+                E[f"{name_conv[key]}1"] = float(v[-2])
+                E[f"{name_conv[key]}2"] = float(v[-1])
+            else:
+                E[name_conv[key]] = float(v[-1])
+            line = self.readline()
+        line = self.readline()
+        E.free = float(line.split()[-2])
+        self.readline()
+        line = self.readline()
+        v = line.split()
+        E.total = float(v[4])
+        E.sigma0 = float(v[-1])
+        print(E)
+        return E
 
     @SileBinder()
     @sile_fh_open()
