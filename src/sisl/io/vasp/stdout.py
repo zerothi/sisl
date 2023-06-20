@@ -1,13 +1,15 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+import numpy as np
+
 from .sile import SileVASP
 from ..sile import add_sile, sile_fh_open
+from .._multiple import SileBinder
 
 from sisl.messages import deprecation
 from sisl.utils import PropertyDict
 from sisl._internal import set_module
-
 
 __all__ = ["stdoutSileVASP", "outSileVASP"]
 
@@ -144,6 +146,39 @@ class stdoutSileVASP(SileVASP):
         if len(E) > 0:
             return E[-1]
         return None
+
+
+    @SileBinder()
+    @sile_fh_open()
+    def read_trajectory(self):
+        f = self.step_to("BASIS-vectors are now", allow_reread=False)[0]
+        if not f:
+            return None
+        for i in range(4):
+            self.readline() # skip 4 lines
+        C = []
+        for i in range(3):
+            line = self.readline()
+            v = line.split()
+            C.append(v[:3]) # direct lattice vectors
+        # read a position-force table
+        f = self.step_to("TOTAL-FORCE (eV/Angst)", allow_reread=False)[0]
+        if not f:
+            return None
+        self.readline() # -----
+        P, F = [], []
+        line = self.readline()
+        while "----" not in line:
+            v = line.split()
+            # positions and forces
+            P.append(v[:3])
+            F.append(v[3:6])
+            line = self.readline()
+        step = PropertyDict()
+        step.cell = np.array(C, dtype=np.float64)
+        step.xyz = np.array(P, dtype=np.float64)
+        step.force = np.array(F, dtype=np.float64)
+        return step
 
 
 outSileVASP = deprecation("outSileVASP has been deprecated in favor of stdoutSileVASP.", "0.15")(stdoutSileVASP)

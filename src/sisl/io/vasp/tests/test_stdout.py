@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import pytest
 import os.path as osp
-from sisl.io.vasp.stdout import *
+from sisl.io.vasp.stdout import stdoutSileVASP
 import numpy as np
 
 pytestmark = [pytest.mark.io, pytest.mark.vasp]
@@ -35,3 +35,60 @@ def test_diamond_outcar_completed(sisl_files):
     f = stdoutSileVASP(f)
 
     assert f.completed()
+
+
+def test_diamond_outcar_trajectory(sisl_files):
+    f = sisl_files(_dir, 'diamond', 'OUTCAR')
+    f = stdoutSileVASP(f)
+
+    step = f.read_trajectory()
+
+    assert step.xyz[0, 1] == 0.0
+    assert step.xyz[1, 1] == 0.89250
+    assert step.force[0, 1] == 0.0
+    assert step.force[1, 0] == 0.0
+
+    traj = f.read_trajectory[:]()
+    assert len(traj) == 1
+
+
+def test_graphene_relax_outcar_trajectory(sisl_files):
+    f = sisl_files(_dir, 'graphene_relax', 'OUTCAR')
+    f = stdoutSileVASP(f)
+
+    step = f.read_trajectory[9]()
+    assert step.cell[0, 0] == 2.462060590
+    assert step.cell[1, 0] == -1.231030295
+    assert step.cell[2, 2] == 9.804915686
+    assert step.force[0, 2] == -0.006138
+    assert step.force[1, 2] == 0.006138
+
+    traj = f.read_trajectory[:]()
+    assert len(traj) == 10
+    assert traj[0].cell[0, 0] == 2.441046239
+    assert traj[0].xyz[0, 2] == 0.00000
+    assert traj[0].xyz[1, 2] == 0.20000
+    assert traj[0].force[0, 2] == 3.448038
+    assert traj[0].force[1, 2] == -3.448038
+    assert traj[-1].cell[2, 2] == 9.804915686
+    assert traj[-1].xyz[1, 2] == -0.00037
+    assert traj[-1].force[0, 2] == -0.006138
+    assert traj[-1].force[1, 2] == 0.006138
+
+
+def test_graphene_md_outcar_trajectory(sisl_files):
+    f = sisl_files(_dir, 'graphene_md', 'OUTCAR')
+    f = stdoutSileVASP(f)
+
+    step = f.read_trajectory[99]()
+    assert step.xyz[0, 0] == 0.09703
+    assert step.force[0, 2] == -0.278082
+
+    traj = f.read_trajectory[:]()
+    assert len(traj) == 100
+    assert traj[0].xyz[0, 0] == 0.12205
+    assert traj[0].xyz[1, 0] == 0.09520
+    assert traj[0].force[0, 1] == -0.017766
+    assert traj[0].force[1, 1] == 0.017766
+    assert traj[-1].xyz[0, 0] == 0.09703
+    assert traj[-1].force[0, 2] == -0.278082
