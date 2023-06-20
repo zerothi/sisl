@@ -131,7 +131,18 @@ class stdoutSileVASP(SileVASP):
     @SileBinder()
     @sile_fh_open()
     def read_trajectory(self):
-        f = self.step_to("BASIS-vectors are now", allow_reread=False)[0]
+        """ Reads cell+position+force data from OUTCAR for an ionic trajectory step
+
+        The function steps to the block defined by the "VOLUME and BASIS-vectors are now :"
+        line to first read the cell vectors, then it steps to the "TOTAL-FORCE (eV/Angst)" segment
+        to read the atom positions and forces.
+
+        Returns
+        -------
+        PropertyDict : Trajectory step defined by cell vectors (`.cell`), atom positions (`.xyz`), and forces (`.force`)
+        """
+
+        f = self.step_to("VOLUME and BASIS-vectors are now :", allow_reread=False)[0]
         if not f:
             return None
         for i in range(4):
