@@ -7,7 +7,7 @@ from .sile import SileVASP
 from ..sile import add_sile, sile_fh_open
 from .._multiple import SileBinder
 
-from sisl.messages import deprecation, warn
+from sisl.messages import deprecation, deprecate_argument
 from sisl.utils import PropertyDict
 from sisl._internal import set_module
 
@@ -59,9 +59,12 @@ class stdoutSileVASP(SileVASP):
 
     @SileBinder()
     @sile_fh_open()
-    @deprecation("all keyword is deprecated, use read_energy[:]() instead", from_version="0.14")
+    @deprecate_argument("all", None, "use read_energy[:]() instead to get all entries", from_version="0.14")
+    @deprecation("WARNING: direct calls to stdoutSileVASP.read_energy() no longer returns the last entry! Now the next block on file is returned.", from_version="0.14")
     def read_energy(self):
-        """ Reads the energy specification from OUTCAR and returns energy dictionary in units of eV
+        """ Reads an energy specification block from OUTCAR
+
+        The function steps to the next occurrence of the "Free energy of the ion-electron system" segment
 
         Notes
         -----
@@ -85,9 +88,9 @@ class stdoutSileVASP(SileVASP):
 
         Returns
         -------
-        PropertyDict : all energies from the "Free energy of the ion-electron system" segment of VASP output
+        PropertyDict : all energies from a single "Free energy of the ion-electron system" segment
         """
-        warn(f"{self!s}.read_energy no longer returns the last entry (but the next in file) as default!")
+
         name_conv = {
             "alpha": "Z",
             "Ewald": "Ewald",
@@ -123,7 +126,6 @@ class stdoutSileVASP(SileVASP):
         v = line.split()
         E.total = float(v[4])
         E.sigma0 = float(v[-1])
-        print(E)
         return E
 
     @SileBinder()
