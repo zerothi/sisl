@@ -288,10 +288,13 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         new_cols = uc_col + new_sc * n_rows
         
         # Build the new csr matrix, which will just be a copy of the current one
-        # but updating the column indices. We also need to make sure that the shape
-        # of the matrix is appropiate for the size of the new auxiliary cell.
+        # but updating the column indices. It is possible that there are column
+        # indices that are -1, which are the placeholders for new elements. We make sure
+        # that we update only the indices that are not -1. 
+        # We also need to make sure that the shape of the matrix is appropiate 
+        # for the size of the new auxiliary cell.
         new_csr = self._csr.copy()
-        new_csr.col = new_cols
+        new_csr.col[new_csr.col >= 0] = new_cols
         new_csr._shape = (n_rows, n_rows * new_geometry.n_s, new_csr.shape[-1])
         
         # Create the new SparseGeometry matrix and associate to it the csr matrix that we have built.

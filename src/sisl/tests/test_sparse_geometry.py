@@ -694,3 +694,73 @@ def test_sparse_orbital_sub_orbital():
     s2 = s.sub_orbital(atom, [atom.orbitals[1], atom.orbitals[0]])
     assert s2.geometry.atoms[0].orbitals[0] == atom.orbitals[0]
     assert s2.geometry.atoms[0].orbitals[1] == atom.orbitals[1]
+
+def test_translate_sparse_atoms():
+    # Build the geometry
+    H = Atom(1, (1, 2, 3))
+    graph = graphene(atoms=H)
+    assert np.allclose(graph.nsc, [3, 3, 1])
+
+    # Build a dummy matrix with onsite terms and just one coupling term
+    matrix = SparseAtom(graph)
+    matrix[0,0] = 1
+    matrix[1,1] = 2
+    matrix[0,1] = 3
+
+    # Translate the second atom
+    transl = matrix.translate_atoms_sc([[0,0,0], [1, 0, 0]])
+
+    # Check that the new auxiliary cell is correct.
+    assert np.allclose(transl.nsc, [3, 1, 1])
+    assert np.allclose(transl.shape, [2, 6, 1])
+
+    # Check coordinates
+    assert np.allclose(transl.geometry[0], matrix.geometry[0])
+    assert np.allclose(transl.geometry[1], matrix.geometry[1] + matrix.geometry.cell[0])
+
+    # Assert that the matrix elements have been translated
+    assert transl[0,0] == 1
+    assert transl[1,1] == 2
+    assert transl[0,1] == 0
+    assert transl[0,3] == 3
+
+    # Translate back to unit cell
+    uc_matrix = transl.translate2uc()
+
+    # Check the auxiliary cell, coordinates and the matrix elements
+    assert np.allclose(uc_matrix.nsc, [1, 1, 1])
+    assert np.allclose(uc_matrix.shape, [2, 2, 1])
+
+    assert np.allclose(uc_matrix.geometry.xyz, matrix.geometry.xyz)
+
+    assert uc_matrix[0,0] == 1
+    assert uc_matrix[1,1] == 2
+    assert uc_matrix[0,1] == 3
+    assert uc_matrix[0,3] == 0
+
+    # Instead, test atoms and axes arguments to avoid any translation.
+    for kwargs in [{'atoms': [0]}, {'axes': [1, 2]}]:
+        not_uc_matrix = transl.translate2uc(**kwargs)
+
+        # Check the auxiliary cell, coordinates and the matrix elements
+        assert np.allclose(not_uc_matrix.nsc, transl.nsc)
+        assert np.allclose(not_uc_matrix.shape, transl.shape)
+
+        assert np.allclose(not_uc_matrix.geometry.xyz, transl.geometry.xyz)
+
+        assert np.allclose(not_uc_matrix._csr.todense(), transl._csr.todense())
+
+    # Now, translate both atoms
+    transl_both = uc_matrix.translate_atoms_sc([[-1,0,0], [1, 0, 0]])
+
+    # Check the auxiliary cell, coordinates and the matrix elements
+    assert np.allclose(transl_both.nsc, [5, 1, 1])
+    assert np.allclose(transl_both.shape, [2, 10, 1])
+
+    assert np.allclose(transl_both.geometry[0], uc_matrix.geometry[0] - uc_matrix.geometry.cell[0])
+    assert np.allclose(transl_both.geometry[1], uc_matrix.geometry[1] + uc_matrix.geometry.cell[0])
+
+    assert transl_both[0,0] == 1
+    assert transl_both[1,1] == 2
+    assert transl_both[0,1] == 0
+    assert transl_both[0,3] == 3
