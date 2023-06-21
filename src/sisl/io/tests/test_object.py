@@ -13,7 +13,7 @@ from sisl.io import *
 from sisl.io.siesta.binaries import _gfSileSiesta
 from sisl.io.tbtrans._cdf import *
 from sisl.io.vasp import chgSileVASP
-from sisl import Lattice, Geometry, GeometryCollection, Grid, Hamiltonian
+from sisl import Lattice, Geometry, Grid, Hamiltonian
 from sisl import DensityMatrix, EnergyDensityMatrix
 
 
@@ -307,7 +307,7 @@ class TestObject:
         try:
             with sile(f, mode='r') as s:
                 g = s.read_geometry()
-                if isinstance(g, GeometryCollection):
+                if isinstance(g, list):
                     g = g[0]
             assert g.equal(G, R=False, tol=1e-3) # pdb files have 8.3 for atomic coordinates
         except UnicodeDecodeError as e:
@@ -316,7 +316,7 @@ class TestObject:
         try:
             with sile(f, mode='r') as s:
                 g = Geometry.read(s)
-                if isinstance(g, GeometryCollection):
+                if isinstance(g, list):
                     g = g[0]
             assert g.equal(G, R=False, tol=1e-3)
         except UnicodeDecodeError as e:

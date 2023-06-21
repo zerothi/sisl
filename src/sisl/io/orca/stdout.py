@@ -8,7 +8,6 @@ from .._multiple import SileBinder
 
 from sisl.messages import deprecation
 from sisl.utils import PropertyDict
-from sisl._collection import Collection
 from sisl._internal import set_module
 from sisl.unit import units
 
@@ -107,7 +106,7 @@ class stdoutSileORCA(SileORCA):
 
         return None
 
-    @SileBinder(postprocess=Collection)
+    @SileBinder()
     @sile_fh_open()
     def read_charge(self, name='mulliken', projection='orbital',
                     orbitals=None,
@@ -129,7 +128,7 @@ class stdoutSileORCA(SileORCA):
 
         Returns
         -------
-        PropertyDicts or ndarray or Collection thereof: atom/orbital-resolved charge (or spin) data
+        PropertyDicts or ndarray or list thereof: atom/orbital-resolved charge (or spin) data
         """
         if name.lower() in ('mulliken', 'm'):
             name = 'mulliken'
@@ -272,14 +271,14 @@ class stdoutSileORCA(SileORCA):
 
         return read_block(step_to)
 
-    @SileBinder(postprocess=Collection)
+    @SileBinder()
     @sile_fh_open()
     def read_energy(self):
         """ Reads the energy blocks
 
         Returns
         -------
-        PropertyDict or Collection of PropertyDict : all energy data (in eV) from the "TOTAL SCF ENERGY" and "DFT DISPERSION CORRECTION" blocks
+        PropertyDict or list of PropertyDict : all energy data (in eV) from the "TOTAL SCF ENERGY" and "DFT DISPERSION CORRECTION" blocks
         """
         f = self.step_to("TOTAL SCF ENERGY", allow_reread=False)[0]
         if not f:
@@ -313,14 +312,14 @@ class stdoutSileORCA(SileORCA):
 
         return E
 
-    @SileBinder(postprocess=Collection)
+    @SileBinder()
     @sile_fh_open()
     def read_orbital_energies(self):
         """ Reads the "ORBITAL ENERGIES" blocks
 
         Returns
         -------
-        ndarray or Collection of ndarray : orbital energies (in eV) from the "ORBITAL ENERGIES" blocks
+        ndarray or list of ndarray : orbital energies (in eV) from the "ORBITAL ENERGIES" blocks
         """
         f = self.step_to("ORBITAL ENERGIES", allow_reread=False)[0]
         if not f:

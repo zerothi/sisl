@@ -8,11 +8,7 @@ from .._multiple import SileBinder
 
 from sisl.utils import PropertyDict
 from sisl._internal import set_module
-from sisl._collection import Collection
-from sisl.geometry import (
-        Geometry,
-        GeometryCollection,
-)
+from sisl.geometry import Geometry
 from sisl.unit import units
 
 __all__ = ['txtSileORCA']
@@ -79,14 +75,14 @@ class txtSileORCA(SileORCA):
             return None
         return alpha, beta
 
-    @SileBinder(postprocess=Collection)
+    @SileBinder()
     @sile_fh_open()
     def read_energy(self):
         """ Reads the energy blocks
 
         Returns
         -------
-        PropertyDict or Collection of PropertyDict : all data (in eV) from the "DFT_Energy" and "VdW_Correction" blocks
+        PropertyDict or list of PropertyDict : all data (in eV) from the "DFT_Energy" and "VdW_Correction" blocks
         """
         # read the DFT_Energy block
         f = self.step_to("$ DFT_Energy", allow_reread=False)[0]
@@ -125,14 +121,14 @@ class txtSileORCA(SileORCA):
 
         return E
 
-    @SileBinder(postprocess=GeometryCollection)
+    @SileBinder()
     @sile_fh_open()
     def read_geometry(self):
         """ Reads the geometry from ORCA property.txt file
 
         Returns
         -------
-        geometries: GeometryCollection or Geometry or None
+        geometries: Geometry or list of Geometry
         """
         # Read the Geometry block
         f = self.step_to("!GEOMETRY!", allow_reread=False)[0]

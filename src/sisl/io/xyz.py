@@ -12,7 +12,7 @@ from .sile import *
 from ._multiple import SileBinder
 from sisl.messages import warn, deprecate_argument
 from sisl._internal import set_module
-from sisl import Geometry, Lattice, GeometryCollection
+from sisl import Geometry, Lattice
 import sisl._array as _a
 
 
@@ -114,8 +114,7 @@ class xyzSile(Sile):
             line()
         return na
 
-    @SileBinder(skip_func=_r_geometry_skip,
-                postprocess=GeometryCollection)
+    @SileBinder(skip_func=_r_geometry_skip)
     @sile_fh_open()
     @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", from_version="0.15")
     def read_geometry(self, atoms=None, lattice=None):
