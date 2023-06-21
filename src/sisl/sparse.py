@@ -105,7 +105,7 @@ class SparseCSR(NDArrayOperatorsMixin):
     # We don't really need slots, but it is useful
     # to keep a good overview of which variables are present
     __slots__ = ("_shape", "_ns", "_finalized",
-                 "_nnz", "ptr", "ncol", "col")
+                 "_nnz", "ptr", "ncol", "col", "_D")
 
     def __init__(self, arg1, dim=1, dtype=None, nnzpr=20, nnz=None,
                  **kwargs):
