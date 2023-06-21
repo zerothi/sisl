@@ -5,7 +5,7 @@ import pytest
 import os.path as osp
 import numpy as np
 from sisl.io.siesta import aniSileSiesta
-from sisl import Geometry, GeometryCollection
+from sisl import Geometry
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
 _dir = osp.join('sisl', 'io', 'siesta')
@@ -33,7 +33,6 @@ C   3.00000  0.00000000  0.00000000
 """)
     a = aniSileSiesta(f)
     g = a.read_geometry[:]()
-    assert isinstance(g, GeometryCollection)
     assert len(g) == 4
     assert g[0].na == 1
 

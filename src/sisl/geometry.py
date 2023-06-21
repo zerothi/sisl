@@ -43,10 +43,9 @@ from ._namedindex import NamedIndex
 from ._category import Category, GenericCategory
 from ._dispatcher import AbstractDispatch
 from ._dispatcher import ClassDispatcher, TypeDispatcher
-from ._collection import Collection
 
 
-__all__ = ['Geometry', "GeometryCollection", 'sgeom']
+__all__ = ['Geometry', "sgeom"]
 
 
 # It needs to be here otherwise we can't use it in these routines
@@ -4954,33 +4953,6 @@ class Geometry(LatticeChild):
 
         # We have now created all arguments
         return p, namespace
-
-
-class GeometryCollection(Collection):
-    """ Container for multiple geometries in a single object """
-
-    def __init__(self, geometries):
-        if isinstance(geometries, Geometry):
-            geometries = [geometries]
-        super().__init__(geometries)
-
-    @property
-    def geometries(self) -> List[Geometry]:
-        return self.data
-
-    def write(self, sile: Union[str, "BaseSile"], *args, **kwargs) -> None:
-        """ Writes the geometries to the sile by consecutively calling write-geometry """
-        # This only works because, they *must*
-        # have been imported previously
-        from sisl.io import get_sile, BaseSile
-        if isinstance(sile, BaseSile):
-            with sile:
-                for g in self:
-                    sile.write_geometry(g, *args, **kwargs)
-        else:
-            with get_sile(sile, mode='w') as fh:
-                for g in self:
-                    fh.write_geometry(g, *args, **kwargs)
 
 
 new_dispatch = Geometry.new

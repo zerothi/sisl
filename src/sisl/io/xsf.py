@@ -12,8 +12,7 @@ from ._multiple import SileBinder
 from sisl.messages import deprecate_argument
 from sisl._internal import set_module
 from sisl import PeriodicTable, Grid
-from sisl._collection import Collection
-from sisl import Geometry, GeometryCollection, AtomUnknown, Lattice
+from sisl import Geometry, AtomUnknown, Lattice
 from sisl.utils import str_spec
 import sisl._array as _a
 
@@ -318,7 +317,7 @@ class xsfSile(Sile):
             return geom, _a.arrayd(data)
         return geom
 
-    @SileBinder(postprocess=postprocess(GeometryCollection, Collection))
+    @SileBinder(postprocess=postprocess(list, list))
     @deprecate_argument("sc", "lattice", "use lattice= instead of sc=", from_version="0.15")
     def read_geometry(self, lattice=None, atoms=None, ret_data=False):
         """ Geometry contained in file, and optionally the associated data
