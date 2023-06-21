@@ -10,6 +10,7 @@ from io import TextIOBase
 from pathlib import Path
 from operator import contains, and_
 
+from sisl.utils import PropertyDict
 from sisl._internal import set_module
 from sisl.messages import SislWarning, SislInfo, deprecate
 from sisl._environ import get_environ_variable
@@ -479,6 +480,11 @@ class BaseSile:
     """ Base class for all sisl files """
 
     @property
+    def info(self):
+        """ PropertyDict holding info for the current `Sile` """
+        return self._info
+
+    @property
     def file(self):
         """ File of the current `Sile` """
         return self._file
@@ -545,7 +551,7 @@ class BaseSile:
 
         This method can be overwritten.
         """
-        pass
+        self._info = PropertyDict()
 
     def _base_setup(self, *args, **kwargs):
         """ Setup the `Sile` after initialization

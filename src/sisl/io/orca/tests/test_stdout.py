@@ -16,8 +16,8 @@ _dir = osp.join('sisl', 'io', 'orca')
 def test_tags(sisl_files):
     f = sisl_files(_dir, 'molecule.output')
     out = stdoutSileORCA(f)
-    assert out.na == 2
-    assert out.no == 62
+    assert out.na() == 2
+    assert out.no() == 62
     assert out.completed()
 
 def test_read_electrons(sisl_files):
@@ -286,7 +286,7 @@ def test_read_orbital_energies(sisl_files):
     assert pytest.approx(E[1][61, 1]) == 1173.6985
 
     E = out.read_orbital_energies[-1]()
-    assert E.shape == (out.no, 2)
+    assert E.shape == (out.no(), 2)
     assert pytest.approx(E[61, 0]) == 1173.4259
 
 def test_read_orbital_energies_unpol(sisl_files):
@@ -300,7 +300,7 @@ def test_read_orbital_energies_unpol(sisl_files):
     assert pytest.approx(E[1][61]) == 1171.5967
 
     E = out.read_orbital_energies[-1]()
-    assert E.shape == (out.no,)
+    assert E.shape == (out.no(),)
     assert pytest.approx(E[0]) == -513.0976
     assert pytest.approx(E[61]) == 1171.5967
 

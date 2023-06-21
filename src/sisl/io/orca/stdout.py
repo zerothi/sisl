@@ -21,73 +21,70 @@ class stdoutSileORCA(SileORCA):
     def _setup(self, *args, **kwargs):
         """ Ensure the class has essential tags """
         super()._setup(*args, **kwargs)
-        self._completed = None
-        self._na = None
-        self._no = None
-        self._vdw = None
+        self.info.completed = None
+        self.info.na = None
+        self.info.no = None
+        self.info.vdw = None
 
     def readline(self, *args, **kwargs):
         line = super().readline(*args, **kwargs)
-        if self._completed is None and "ORCA TERMINATED NORMALLY" in line:
-            self._completed = True
-        elif self._completed is None and line == '':
-            self._completed = False
-        elif self._na is None and "Number of atoms" in line:
+        if self.info.completed is None and "ORCA TERMINATED NORMALLY" in line:
+            self.info.completed = True
+        elif self.info.completed is None and line == '':
+            self.info.completed = False
+        elif self.info.na is None and "Number of atoms" in line:
             v = line.split()
-            self._na = int(v[-1])
-        elif self._no is None and "Number of basis functions" in line:
+            self.info.na = int(v[-1])
+        elif self.info.no is None and "Number of basis functions" in line:
             v = line.split()
-            self._no = int(v[-1])
-        elif self._vdw is None and "DFT DISPERSION CORRECTION" in line:
-            self._vdw = True
+            self.info.no = int(v[-1])
+        elif self.info.vdw is None and "DFT DISPERSION CORRECTION" in line:
+            self.info.vdw = True
         return line
 
     readline.__doc__ = SileORCA.readline.__doc__
 
     def completed(self):
         """ True if the full file has been read and "ORCA TERMINATED NORMALLY" was found. """
-        if self._completed is None:
+        if self.info.completed is None:
             with self:
                 completed = self.step_to("ORCA TERMINATED NORMALLY")[0]
         else:
-            completed = self._completed
+            completed = self.info.completed
         if completed:
-            self._completed = True
+            self.info.completed = True
         return completed
 
-    @property
     def na(self):
         """ Number of atoms """
-        if self._na is None:
+        if self.info.na is None:
             with self:
                 f = self.step_to("Number of atoms")
                 if f[0]:
-                    self._na = int(f[1].split()[-1])
-        return self._na
+                    self.info.na = int(f[1].split()[-1])
+        return self.info.na
 
-    @property
     def no(self):
         """ Number of orbitals (basis functions) """
-        if self._no is None:
+        if self.info.no is None:
             with self:
                 f = self.step_to("Number of basis functions")
                 if f[0]:
-                    self._no = int(f[1].split()[-1])
-        return self._no
+                    self.info.no = int(f[1].split()[-1])
+        return self.info.no
 
-    @property
-    def _vdw_(self):
+    def vdw(self):
         """ Whether VDW dispersions are included """
-        if self._vdw is None:
+        if self.info.vdw is None:
             old_line = None
             if hasattr(self, "fh"):
                 old_line = self.fh.tell()
             with self:
                 f = self.step_to("DFT DISPERSION CORRECTION")
-                self._vdw = f[0]
+                self.info.vdw = f[0]
             if old_line is not None:
                 self.fh.seek(old_line)
-        return self._vdw
+        return self.info.vdw
 
     @SileBinder(postprocess=np.array)
     @sile_fh_open()
@@ -160,8 +157,8 @@ class stdoutSileORCA(SileORCA):
                     spin_block = False
 
                 self.readline() # skip ---
-                A = np.empty(self.na, np.float64)
-                for ia in range(self.na):
+                A = np.empty(self.info.na, np.float64)
+                for ia in range(self.info.na):
                     line = self.readline()
                     v = line.split()
                     if spin_block and not spin:
@@ -217,7 +214,7 @@ class stdoutSileORCA(SileORCA):
                 if orbitals is None:
                     return D
                 else:
-                    Da = np.zeros(self.na, np.float64)
+                    Da = np.zeros(self.info.na, np.float64)
                     for (ia, orb), d in D.items():
                         if orb == orbitals:
                             Da[ia] = d
@@ -243,9 +240,9 @@ class stdoutSileORCA(SileORCA):
                 if "MULLIKEN" in step_to:
                     self.readline() # skip line "The uncorrected..."
 
-                Do = np.empty(self.no, np.float64) # orbital-resolved
-                Da = np.zeros(self.na, np.float64) # atom-resolved
-                for io in range(self.no):
+                Do = np.empty(self.info.no, np.float64) # orbital-resolved
+                Da = np.zeros(self.info.na, np.float64) # atom-resolved
+                for io in range(self.info.no):
                     v = self.readline().split() # io, ia+element, orb, chg, (spin)
 
                     # split atom number and element from v[1]
@@ -305,7 +302,7 @@ class stdoutSileORCA(SileORCA):
                 E["embedding"] = float(v[-2]) * Ha2eV
             line = self.readline()
 
-        if self._vdw_:
+        if self.info.vdw:
             self.step_to("DFT DISPERSION CORRECTION")
             v = self.step_to("Dispersion correction", allow_reread=False)[1].split()
             E["vdw"] = float(v[-1]) * Ha2eV
@@ -328,10 +325,10 @@ class stdoutSileORCA(SileORCA):
         self.readline() # skip ---
         if "SPIN UP ORBITALS" in self.readline():
             spin = True
-            E = np.empty([self.no, 2], np.float64)
+            E = np.empty([self.info.no, 2], np.float64)
         else:
             spin = False
-            E = np.empty([self.no, 1], np.float64)
+            E = np.empty([self.info.no, 1], np.float64)
 
         self.readline() # Skip "NO OCC" header line
 
