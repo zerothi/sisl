@@ -124,11 +124,11 @@ def test_vh_md_scf(name, fname, sisl_files):
     assert np.allclose(q0, q[-1])
 
     q0 = out.read_charge(name, iscf=-1, imd=Opt.ALL)
-    assert np.allclose(q0, np.stack((qq[-1] for qq in q)))
+    assert np.allclose(q0, np.stack(tuple(qq[-1] for qq in q)))
 
     # iscf is
     q0 = out.read_charge(name, iscf=1, imd=Opt.ALL)
-    assert np.allclose(q0, np.stack((qq[1] for qq in q)))
+    assert np.allclose(q0, np.stack(tuple(qq[1] for qq in q)))
 
     q0 = out.read_charge(name, iscf=None, imd=-1)
     assert np.allclose(q0, q[-1][-1])
