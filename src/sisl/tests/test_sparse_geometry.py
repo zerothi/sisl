@@ -94,7 +94,7 @@ class TestSparseAtom:
         r, c = s2.nonzero()
         assert np.allclose(r, [0, 0, 0, 3, 3, 3])
         assert np.allclose(c, [0, 2, 3, 1, 2, 3])
-        c = s2.nonzero(only_col=True)
+        c = s2.nonzero(only_cols=True)
         assert np.allclose(c, [0, 2, 3, 1, 2, 3])
         r, c = s2.nonzero(atoms=1)
         assert len(r) == 0
@@ -102,7 +102,7 @@ class TestSparseAtom:
         r, c = s2.nonzero(atoms=0)
         assert np.allclose(r, [0, 0, 0])
         assert np.allclose(c, [0, 2, 3])
-        c = s2.nonzero(atoms=0, only_col=True)
+        c = s2.nonzero(atoms=0, only_cols=True)
         assert np.allclose(c, [0, 2, 3])
 
     def test_create_construct_different_length(self, setup):

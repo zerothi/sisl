@@ -43,6 +43,7 @@ we hit release version 1.0.0.
 - `BrillouinZone.merge` allows simple merging of several objects, #537
 
 ### Changed
+- interface for Sparse*.nonzero(), arguments suffixed with 's'
 - `stdoutSileVASP` will not accept `all=` arguments
 - `stdoutSileVASP.read_energy` returns as default the next item (no longer the last)
 - `txtSileOrca` will not accept `all=` arguments, see #584

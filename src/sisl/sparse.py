@@ -1262,38 +1262,37 @@ column indices of the sparse elements
         # Get indices of sparse data (-1 if non-existing)
         return np_all(self._get(key[0], key[1]) >= 0)
 
-    def nonzero(self, row=None, only_col=False):
+    def nonzero(self, rows=None, only_cols=False):
         """ Row and column indices where non-zero elements exists
 
         Parameters
         ----------
-        row : int or array_like of int, optional
+        rows : int or array_like of int, optional
            only return the tuples for the requested rows, default is all rows
-        only_col : bool, optional
-           only return then non-zero columns
+        only_cols : bool, optional
+           only return the non-zero columns
         """
-        if row is None:
-            idx = array_arange(self.ptr[:-1], n=self.ncol)
-            if not only_col:
-                rows = _a.emptyi([self.nnz])
-                j = 0
-                for r, N in enumerate(self.ncol):
-                    rows[j:j+N] = r
-                    j += N
-        else:
-            row = asarrayi(row).ravel()
-            idx = array_arange(self.ptr[row], n=self.ncol[row])
-            if not only_col:
-                N = _a.sumi(self.ncol[row])
-                rows = _a.emptyi([N])
-                j = 0
-                for r, N in zip(row, self.ncol[row]):
-                    rows[j:j+N] = r
-                    j += N
+        ptr = self.ptr
+        ncol = self.ncol
+        col = self.col
 
-        if only_col:
-            return self.col[idx]
-        return rows, self.col[idx]
+        if rows is None:
+            # all rows will be returned
+            cols = col[array_arange(ptr[:-1], n=ncol, dtype=int32)]
+            if not only_cols:
+                idx = (ncol > 0).nonzero()[0]
+                rows = repeat(idx.astype(int32, copy=False), ncol[idx])
+        else:
+            rows = _a.asarray(rows).ravel()
+            ncol = ncol[rows]
+            cols = col[array_arange(ptr[rows], n=ncol, dtype=int32)]
+            if not only_cols:
+                idx = (ncol > 0).nonzero()[0]
+                rows = repeat(rows[idx].astype(int32, copy=False), ncol[idx])
+
+        if only_cols:
+            return cols
+        return rows, cols
 
     def eliminate_zeros(self, atol=0.):
         """ Remove all zero elememts from the sparse matrix

@@ -1048,21 +1048,21 @@ class SparseAtom(_SparseGeometry):
     def _size(self):
         return self.geometry.na
 
-    def nonzero(self, atoms=None, only_col=False):
+    def nonzero(self, atoms=None, only_cols=False):
         """ Indices row and column indices where non-zero elements exists
 
         Parameters
         ----------
         atoms : int or array_like of int, optional
            only return the tuples for the requested atoms, default is all atoms
-        only_col : bool, optional
+        only_cols : bool, optional
            only return then non-zero columns
 
         See Also
         --------
         SparseCSR.nonzero : the equivalent function call
         """
-        return self._csr.nonzero(row=atoms, only_col=only_col)
+        return self._csr.nonzero(rows=atoms, only_cols=only_cols)
 
     def iter_nnz(self, atoms=None):
         """ Iterations of the non-zero elements
@@ -1495,7 +1495,7 @@ class SparseOrbital(_SparseGeometry):
             return unique(self.geometry.o2a(self._csr.edges(self.geometry.a2o(atoms, True), exclude)))
         return self._csr.edges(orbitals, exclude)
 
-    def nonzero(self, atoms=None, only_col=False):
+    def nonzero(self, atoms=None, only_cols=False):
         """ Indices row and column indices where non-zero elements exists
 
         Parameters
@@ -1503,7 +1503,7 @@ class SparseOrbital(_SparseGeometry):
         atoms : int or array_like of int, optional
            only return the tuples for the requested atoms, default is all atoms
            But for *all* orbitals.
-        only_col : bool, optional
+        only_cols : bool, optional
            only return then non-zero columns
 
         See Also
@@ -1511,9 +1511,9 @@ class SparseOrbital(_SparseGeometry):
         SparseCSR.nonzero : the equivalent function call
         """
         if atoms is None:
-            return self._csr.nonzero(only_col=only_col)
-        row = self.geometry.a2o(atoms, all=True)
-        return self._csr.nonzero(row=row, only_col=only_col)
+            return self._csr.nonzero(only_cols=only_cols)
+        rows = self.geometry.a2o(atoms, all=True)
+        return self._csr.nonzero(rows=rows, only_cols=only_cols)
 
     def iter_nnz(self, atoms=None, orbitals=None):
         """ Iterations of the non-zero elements
