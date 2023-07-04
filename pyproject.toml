@@ -25,7 +25,6 @@ build-backend = "scikit_build_core.build"
 # Top most items are probably changed the most
 [project]
 requires-python = ">=3.8"
-version = "0.14.0"
 
 name = "sisl"
 description = "Manipulation and post-processing of DFT output and creating tight-binding models for NEGF transport"
@@ -119,7 +118,7 @@ Releases = "https://github.com/zerothi/sisl/releases"
 Documentation = "https://zerothi.github.io/sisl"
 Repository = "https://github.com/zerothi/sisl.git"
 Source = "https://github.com/zerothi/sisl"
-"Bug Tracker" = "https://github.com/zerothi/sisl/issues"
+Tracker = "https://github.com/zerothi/sisl/issues"
 Discussions = "https://github.com/zerothi/sisl/discussions"
 Changelog = "https://zerothi.github.io/sisl/changelog/index.html"
 Chat = "https://discord.gg/5XnFXFdkv2"

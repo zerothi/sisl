@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) once
 we hit release version 1.0.0.
 
-## [X.Y.Z] - YYYY-MM-DD
+## [0.14.0] - YYYY-MM-DD
 
 ### Added
 - added `read_trajectory` to read cell vectors, atomic positions, and forces from VASP OUTCAR
