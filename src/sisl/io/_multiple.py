@@ -122,13 +122,6 @@ class SileSlicer:
         # else postprocess
         return self.postprocess(retvals[key])
 
-    def __get__(self, obj, objtype=None):
-        # I have no idea why this is needed, if I don't have this, then
-        # the help(read_geometry) returns without the correct interface,
-        # while if it is present it gets the correct interface.
-        # But it will not be called? I.e. a print statement will never occur
-        pass
-
 
 class SileBound:
     """ A bound method deferring stuff to the function
@@ -223,13 +216,6 @@ class SileBound:
     def last(self):
         return self[-1]
 
-    def __get__(self, obj, objtype=None):
-        # I have no idea why this is needed, if I don't have this, then
-        # the help(read_geometry) returns without the correct interface,
-        # while if it is present it gets the correct interface.
-        # But it will not be called? I.e. a print statement will never occur
-        pass
-
 
 class SileBinder:
     """ Bind a class instance to the function name it decorates
@@ -249,15 +235,26 @@ class SileBinder:
 
     def __get__(self, obj, objtype=None):
         func = self.__func__
-        if obj is None:
-            raise TypeError(f"[{self.__class__.__name__}]{objtype.__name__}.{func.__name__} missing (at least) 1 required positional argument: 'self'")
-        bound = SileBound(
-                obj=obj,
-                func=func,
-                **self.kwargs
-        )
 
-        # bind the class object to the host
-        setattr(obj, func.__name__, bound)
+        if obj is None:
+            # ensure that we can get documentation
+            # and other things, this one won't bind
+            # the SileBound object to the function
+            # name it arrived from.
+            bound = SileBound(
+                    obj=objtype,
+                    func=func,
+                    **self.kwargs
+            )
+        else:
+            bound = SileBound(
+                    obj=obj,
+                    func=func,
+                    **self.kwargs
+            )
+            # bind the class object to the host
+            # No more instantiation
+            setattr(obj, func.__name__, bound)
+
         return bound
 
