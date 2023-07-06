@@ -113,9 +113,19 @@ using :code:`pip` or :code:`conda` methods:
 Passing options to the build-system through :code:`pip` should de done with
 the following convention
 
-.. code-block:: bash
 
-   python3 -m pip install --config-settings=cmake.define.CMAKE_BUILD_PARALLEL_LEVEL=5 ...
+.. tab:: pip>=22.1
+
+   .. code-block:: bash
+
+      python3 -m pip install --config-settings=cmake.define.CMAKE_BUILD_PARALLEL_LEVEL=5 ...
+
+.. tab:: pip<22.1
+
+   .. code-block:: bash
+
+      python3 -m pip install --global-option=cmake.define.CMAKE_BUILD_PARALLEL_LEVEL=5 ...
+
 
 In the above case the compilation of the C/Fortran sources are compiled in parallel using 5
 cores. This may greatly reduce compilation times.
@@ -124,9 +134,18 @@ cores. This may greatly reduce compilation times.
 There exists a set of compile time definitions that may be handy for developers.
 These are all CMake definitions and can be added like this:
 
-.. code-block:: bash
+.. tab:: pip>=22.1
 
-   python3 -m pip install --config-settings=cmake.define.WITH_FORTRAN=YES .
+   .. code-block:: bash
+
+      python3 -m pip install --config-settings=cmake.define.WITH_FORTRAN=YES .
+
+.. tab:: pip<22.1
+
+   .. code-block:: bash
+
+      python3 -m pip install --global-option=cmake.define.WITH_FORTRAN=YES .
+
 
 The options are:
 
