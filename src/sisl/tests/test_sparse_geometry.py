@@ -695,6 +695,7 @@ def test_sparse_orbital_sub_orbital():
     assert s2.geometry.atoms[0].orbitals[0] == atom.orbitals[0]
     assert s2.geometry.atoms[0].orbitals[1] == atom.orbitals[1]
 
+
 def test_translate_sparse_atoms():
     # Build the geometry
     H = Atom(1, (1, 2, 3))

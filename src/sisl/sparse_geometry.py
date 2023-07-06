@@ -234,15 +234,6 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         n_rows = len(self)
         is_atom = n_rows == self.na
 
-        if is_atom:
-            # atomic indices
-            at_row = rows
-            at_col = cols
-        else:
-            # orbital indices
-            at_row = self.o2a(rows)
-            at_row = rows
-            at_col = cols
         
         # Find out the unit cell indices for the columns, and the index of the supercell
         # where they are currently located. This is done by dividing into the number of
@@ -254,10 +245,13 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         # We need the unit cell indices of the column atoms. If this is a SparseAtom object, then
         # we have already computed them in the previous line. Otherwise, compute them.
         if is_atom:
+            # atomic indices
+            at_row = rows
             at_col = uc_col
         else:
-            # atoms moved to unit-cell
-            at_col = at_col % self.na
+            # orbital indices
+            at_row = self.o2a(rows)
+            at_col = self.o2a(cols) % self.na
         
         # Get the supercell indices of the original positions.
         isc = self.sc_off[sc_idx]
