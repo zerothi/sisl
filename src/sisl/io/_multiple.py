@@ -141,10 +141,12 @@ class SileBound:
         self.slicer = slicer
         self.default_slice = default_slice
         self.kwargs = kwargs
-        update_wrapper(self, func)
         self._update_doc()
 
     def _update_doc(self):
+        # first update to the wrapped function
+        update_wrapper(self, self.__func__)
+
         # Override name to display slice handling in help
         default_slice = self.default_slice
         if self.default_slice is None:
@@ -191,6 +193,7 @@ class SileBound:
         """)
         try:
             self.__doc__ = doc
+            self.__call__.__doc__ = doc
         except AttributeError:
             # we cannot set the __doc__ string, let it go
             pass
@@ -201,6 +204,7 @@ class SileBound:
         return self[self.default_slice](*args, **kwargs)
 
     def __getitem__(self, key):
+        """Extract sub items of multiple function calls as an indexed list """
         return self.slicer(
                 obj=self.__self__,
                 func=self.__func__,
@@ -210,10 +214,12 @@ class SileBound:
 
     @property
     def next(self):
+        """Return the first element of the contained function """
         return self[0]
 
     @property
     def last(self):
+        """Return the last element of the contained function """
         return self[-1]
 
 
