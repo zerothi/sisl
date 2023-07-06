@@ -29,7 +29,6 @@ Simple objects
    Atom
    Atoms
    Geometry
-   GeometryCollection
    Lattice
    Grid
 

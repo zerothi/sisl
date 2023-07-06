@@ -12,7 +12,6 @@ VASP
    doscarSileVASP
    eigenvalSileVASP
    chgSileVASP
-   outcarSileVASP
    locpotSileVASP
    stdoutSileVASP
 
