@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.SphericalOrbital &mdash; sisl 0.1-2eca529</title>
+  <title>sisl.SphericalOrbital &mdash; sisl 0.1-7e8006f</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
@@ -45,7 +45,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-2eca529
+                0.1-7e8006f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -95,7 +95,6 @@
 <li class="toctree-l4"><a class="reference internal" href="sisl.Atom.html">sisl.Atom</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.Atoms.html">sisl.Atoms</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.Geometry.html">sisl.Geometry</a></li>
-<li class="toctree-l4"><a class="reference internal" href="sisl.GeometryCollection.html">sisl.GeometryCollection</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.Lattice.html">sisl.Lattice</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.Grid.html">sisl.Grid</a></li>
 </ul>
@@ -165,7 +164,8 @@ number <span class="math notranslate nohighlight">\(n\)</span> is not necessary 
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>l</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – azimuthal quantum number</p></li>
 <li><p><strong>rf_or_func</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.11)"><em>tuple</em></a><em> of </em><em>(</em><em>r</em><em>, </em><em>f</em><em>) or </em><em>func</em>) – radial components as a tuple/list, or the function which can interpolate to any R
-See <a class="reference internal" href="#sisl.SphericalOrbital.set_radial" title="sisl.SphericalOrbital.set_radial"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_radial</span></code></a> for details.</p></li>
+See <cite>set_radial</cite> for details.</p></li>
+<li><p><strong>R</strong> – See <cite>Orbital</cite> for details.</p></li>
 <li><p><strong>q0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – initial charge</p></li>
 <li><p><strong>tag</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – user defined tag</p></li>
 </ul>
@@ -174,7 +174,7 @@ See <a class="reference internal" href="#sisl.SphericalOrbital.set_radial" title
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sisl.SphericalOrbital.f">
 <span class="sig-name descname"><span class="pre">f</span></span><a class="headerlink" href="#sisl.SphericalOrbital.f" title="Permalink to this definition"></a></dt>
-<dd><p>interpolation function that returns <em class="xref py py-obj">f(r)</em> for a given radius</p>
+<dd><p>interpolation function that returns <cite>f(r)</cite> for a given radius</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>func</p>
@@ -200,7 +200,7 @@ See <a class="reference internal" href="#sisl.SphericalOrbital.set_radial" title
 <td><p>Compare two orbitals by comparing their radius, and possibly the radial and psi functions</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SphericalOrbital.name" title="sisl.SphericalOrbital.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a>([tex])</p></td>
-<td><p>Return a named specification of the orbital (<a class="reference internal" href="#sisl.SphericalOrbital.tag" title="sisl.SphericalOrbital.tag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tag</span></code></a>)</p></td>
+<td><p>Return a named specification of the orbital (<cite>tag</cite>)</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.SphericalOrbital.psi" title="sisl.SphericalOrbital.psi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">psi</span></code></a>(r[, m])</p></td>
 <td><p>Calculate <span class="math notranslate nohighlight">\(\phi(\mathbf R)\)</span> at a given point (or more points)</p></td>
@@ -212,7 +212,7 @@ See <a class="reference internal" href="#sisl.SphericalOrbital.set_radial" title
 <td><p>Calculate the radial part of spherical orbital <span class="math notranslate nohighlight">\(R(\mathbf r)\)</span></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SphericalOrbital.scale" title="sisl.SphericalOrbital.scale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale</span></code></a>(scale)</p></td>
-<td><p>Scale the orbital by extending R by <a class="reference internal" href="#sisl.SphericalOrbital.scale" title="sisl.SphericalOrbital.scale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale</span></code></a></p></td>
+<td><p>Scale the orbital by extending R by <cite>scale</cite></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.SphericalOrbital.set_radial" title="sisl.SphericalOrbital.set_radial"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_radial</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Update the internal radial function used as a <span class="math notranslate nohighlight">\(f(|\mathbf r|)\)</span></p></td>
@@ -221,7 +221,7 @@ See <a class="reference internal" href="#sisl.SphericalOrbital.set_radial" title
 <td><p>Calculate the spherical harmonics of this orbital at a given point (in spherical coordinates)</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.SphericalOrbital.toAtomicOrbital" title="sisl.SphericalOrbital.toAtomicOrbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toAtomicOrbital</span></code></a>([m, n, zeta, P, q0])</p></td>
-<td><p>Create a list of <a class="reference internal" href="sisl.AtomicOrbital.html#sisl.AtomicOrbital" title="sisl.AtomicOrbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomicOrbital</span></code></a> objects</p></td>
+<td><p>Create a list of <cite>AtomicOrbital</cite> objects</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SphericalOrbital.toGrid" title="sisl.SphericalOrbital.toGrid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toGrid</span></code></a>([precision, c, R, dtype, atom])</p></td>
 <td><p>Create a Grid with <em>only</em> this orbital wavefunction on it</p></td>
@@ -285,14 +285,14 @@ See <a class="reference internal" href="#sisl.SphericalOrbital.set_radial" title
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.SphericalOrbital.name">
 <span class="sig-name descname"><span class="pre">name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SphericalOrbital.name" title="Permalink to this definition"></a></dt>
-<dd><p>Return a named specification of the orbital (<a class="reference internal" href="#sisl.SphericalOrbital.tag" title="sisl.SphericalOrbital.tag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tag</span></code></a>)</p>
+<dd><p>Return a named specification of the orbital (<cite>tag</cite>)</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.SphericalOrbital.psi">
 <span class="sig-name descname"><span class="pre">psi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/orbital.html#SphericalOrbital.psi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SphericalOrbital.psi" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate <span class="math notranslate nohighlight">\(\phi(\mathbf R)\)</span> at a given point (or more points)</p>
-<p>The position <em class="xref py py-obj">r</em> is a vector from the origin of this orbital.</p>
+<p>The position <cite>r</cite> is a vector from the origin of this orbital.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -301,10 +301,10 @@ See <a class="reference internal" href="#sisl.SphericalOrbital.set_radial" title
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>basis function value at point <em class="xref py py-obj">r</em></p>
+<dd class="field-even"><p>basis function value at point <cite>r</cite></p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -313,7 +313,7 @@ See <a class="reference internal" href="#sisl.SphericalOrbital.set_radial" title
 <dt class="sig sig-object py" id="sisl.SphericalOrbital.psi_spher">
 <span class="sig-name descname"><span class="pre">psi_spher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cos_phi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/orbital.html#SphericalOrbital.psi_spher"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SphericalOrbital.psi_spher" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate <span class="math notranslate nohighlight">\(\phi(|\mathbf R|, \theta, \phi)\)</span> at a given point (in spherical coordinates)</p>
-<p>This is equivalent to <a class="reference internal" href="#sisl.SphericalOrbital.psi" title="sisl.SphericalOrbital.psi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">psi</span></code></a> however, the input is given in spherical coordinates.</p>
+<p>This is equivalent to <cite>psi</cite> however, the input is given in spherical coordinates.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -321,15 +321,15 @@ See <a class="reference internal" href="#sisl.SphericalOrbital.set_radial" title
 <li><p><strong>theta</strong> (<em>array_like</em>) – azimuthal angle in the <span class="math notranslate nohighlight">\(x-y\)</span> plane (from <span class="math notranslate nohighlight">\(x\)</span>)</p></li>
 <li><p><strong>phi</strong> (<em>array_like</em>) – polar angle from <span class="math notranslate nohighlight">\(z\)</span> axis</p></li>
 <li><p><strong>m</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – magnetic quantum number, must be in range <code class="docutils literal notranslate"><span class="pre">-self.l</span> <span class="pre">&lt;=</span> <span class="pre">m</span> <span class="pre">&lt;=</span> <span class="pre">self.l</span></code></p></li>
-<li><p><strong>cos_phi</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether <em class="xref py py-obj">phi</em> is actually <span class="math notranslate nohighlight">\(cos(\phi)\)</span> which will be faster because
-<em class="xref py py-obj">cos</em> is not necessary to call.</p></li>
+<li><p><strong>cos_phi</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether <cite>phi</cite> is actually <span class="math notranslate nohighlight">\(cos(\phi)\)</span> which will be faster because
+<cite>cos</cite> is not necessary to call.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>basis function value at point <em class="xref py py-obj">r</em></p>
+<dd class="field-even"><p>basis function value at point <cite>r</cite></p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -344,7 +344,7 @@ See <a class="reference internal" href="#sisl.SphericalOrbital.set_radial" title
 <dt class="sig sig-object py" id="sisl.SphericalOrbital.radial">
 <span class="sig-name descname"><span class="pre">radial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SphericalOrbital.radial" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate the radial part of spherical orbital <span class="math notranslate nohighlight">\(R(\mathbf r)\)</span></p>
-<p>The position <em class="xref py py-obj">r</em> is a vector from the origin of this orbital.</p>
+<p>The position <cite>r</cite> is a vector from the origin of this orbital.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -354,10 +354,10 @@ See <a class="reference internal" href="#sisl.SphericalOrbital.set_radial" title
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>radial orbital value at point <em class="xref py py-obj">r</em></p>
+<dd class="field-even"><p>radial orbital value at point <cite>r</cite></p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -365,7 +365,7 @@ See <a class="reference internal" href="#sisl.SphericalOrbital.set_radial" title
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.SphericalOrbital.scale">
 <span class="sig-name descname"><span class="pre">scale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scale</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SphericalOrbital.scale" title="Permalink to this definition"></a></dt>
-<dd><p>Scale the orbital by extending R by <a class="reference internal" href="#sisl.SphericalOrbital.scale" title="sisl.SphericalOrbital.scale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale</span></code></a></p>
+<dd><p>Scale the orbital by extending R by <cite>scale</cite></p>
 </dd></dl>
 
 <dl class="py method">
@@ -376,9 +376,9 @@ See <a class="reference internal" href="#sisl.SphericalOrbital.set_radial" title
 <blockquote>
 <div><dl class="simple">
 <dt>set_radial(r, f)</dt><dd><p>which uses <code class="docutils literal notranslate"><span class="pre">scipy.interpolate.UnivariateSpline(r,</span> <span class="pre">f,</span> <span class="pre">k=3,</span> <span class="pre">s=0,</span> <span class="pre">ext=1,</span> <span class="pre">check_finite=False)</span></code>
-to define the interpolation function (see <em class="xref py py-obj">interp</em> keyword).
-Here the maximum radius of the orbital is the maximum <em class="xref py py-obj">r</em> value,
-regardless of <code class="docutils literal notranslate"><span class="pre">f(r)</span></code> is zero for smaller <em class="xref py py-obj">r</em>.</p>
+to define the interpolation function (see <cite>interp</cite> keyword).
+Here the maximum radius of the orbital is the maximum <cite>r</cite> value,
+regardless of <code class="docutils literal notranslate"><span class="pre">f(r)</span></code> is zero for smaller <cite>r</cite>.</p>
 </dd>
 <dt>set_radial(func)</dt><dd><p>which sets the interpolation function directly.
 The maximum orbital range is determined automatically to a precision
@@ -389,17 +389,20 @@ of 0.0001 AA.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>r</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>numpy.ndarray</em></a>) – the radial positions and the radial function values at <em class="xref py py-obj">r</em>.</p></li>
-<li><p><strong>f</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><em>numpy.ndarray</em></a>) – the radial positions and the radial function values at <em class="xref py py-obj">r</em>.</p></li>
+<li><p><strong>r</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><em>numpy.ndarray</em></a>) – the radial positions and the radial function values at <cite>r</cite>.</p></li>
+<li><p><strong>f</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><em>numpy.ndarray</em></a>) – the radial positions and the radial function values at <cite>r</cite>.</p></li>
 <li><p><strong>func</strong> (<em>callable</em>) – a function which enables evaluation of the radial function. The function should
 accept a single array and return a single array.</p></li>
 <li><p><strong>interp</strong> (<em>callable</em><em>, </em><em>optional</em>) – When two non-keyword arguments are passed this keyword will be used.
 It is the interpolation function which should return the equivalent of
-<em class="xref py py-obj">func</em>. By using this one can define a custom interpolation routine.
+<cite>func</cite>. By using this one can define a custom interpolation routine.
 It should accept two arguments, <code class="docutils literal notranslate"><span class="pre">interp(r,</span> <span class="pre">f)</span></code> and return a callable
 that returns interpolation values.
 See examples for different interpolation routines.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -440,15 +443,15 @@ See examples for different interpolation routines.</p></li>
 <li><p><strong>theta</strong> (<em>array_like</em>) – azimuthal angle in the <span class="math notranslate nohighlight">\(x-y\)</span> plane (from <span class="math notranslate nohighlight">\(x\)</span>)</p></li>
 <li><p><strong>phi</strong> (<em>array_like</em>) – polar angle from <span class="math notranslate nohighlight">\(z\)</span> axis</p></li>
 <li><p><strong>m</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – magnetic quantum number, must be in range <code class="docutils literal notranslate"><span class="pre">-self.l</span> <span class="pre">&lt;=</span> <span class="pre">m</span> <span class="pre">&lt;=</span> <span class="pre">self.l</span></code></p></li>
-<li><p><strong>cos_phi</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether <em class="xref py py-obj">phi</em> is actually <span class="math notranslate nohighlight">\(cos(\phi)\)</span> which will be faster because
-<em class="xref py py-obj">cos</em> is not necessary to call.</p></li>
+<li><p><strong>cos_phi</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether <cite>phi</cite> is actually <span class="math notranslate nohighlight">\(cos(\phi)\)</span> which will be faster because
+<cite>cos</cite> is not necessary to call.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>spherical harmonics at angles <span class="math notranslate nohighlight">\(\theta\)</span> and <span class="math notranslate nohighlight">\(\phi\)</span> and given quantum number <em class="xref py py-obj">m</em></p>
+<dd class="field-even"><p>spherical harmonics at angles <span class="math notranslate nohighlight">\(\theta\)</span> and <span class="math notranslate nohighlight">\(\phi\)</span> and given quantum number <cite>m</cite></p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -462,13 +465,13 @@ See examples for different interpolation routines.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.SphericalOrbital.toAtomicOrbital">
 <span class="sig-name descname"><span class="pre">toAtomicOrbital</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zeta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/orbital.html#SphericalOrbital.toAtomicOrbital"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SphericalOrbital.toAtomicOrbital" title="Permalink to this definition"></a></dt>
-<dd><p>Create a list of <a class="reference internal" href="sisl.AtomicOrbital.html#sisl.AtomicOrbital" title="sisl.AtomicOrbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomicOrbital</span></code></a> objects</p>
-<p>This defaults to create a list of <a class="reference internal" href="sisl.AtomicOrbital.html#sisl.AtomicOrbital" title="sisl.AtomicOrbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomicOrbital</span></code></a> objects for every <em class="xref py py-obj">m</em> (for m in -l:l).
-One may optionally specify the sub-set of <em class="xref py py-obj">m</em> to retrieve.</p>
+<dd><p>Create a list of <cite>AtomicOrbital</cite> objects</p>
+<p>This defaults to create a list of <cite>AtomicOrbital</cite> objects for every <cite>m</cite> (for m in -l:l).
+One may optionally specify the sub-set of <cite>m</cite> to retrieve.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>m</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> or </em><em>None</em>) – if <code class="docutils literal notranslate"><span class="pre">None</span></code> it defaults to <code class="docutils literal notranslate"><span class="pre">-l:l</span></code>, else only for the requested <em class="xref py py-obj">m</em></p></li>
+<li><p><strong>m</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> or </em><em>None</em>) – if <code class="docutils literal notranslate"><span class="pre">None</span></code> it defaults to <code class="docutils literal notranslate"><span class="pre">-l:l</span></code>, else only for the requested <cite>m</cite></p></li>
 <li><p><strong>zeta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the specified zeta-shell</p></li>
 <li><p><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – specify the <span class="math notranslate nohighlight">\(n\)</span> quantum number</p></li>
 <li><p><strong>P</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the orbitals are polarized.</p></li>
@@ -477,7 +480,7 @@ One may optionally specify the sub-set of <em class="xref py py-obj">m</em> to r
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>AtomicOrbital</strong> (for passed <em class="xref py py-obj">m</em> an atomic orbital will be returned)</p></li>
+<li><p><strong>AtomicOrbital</strong> (for passed <cite>m</cite> an atomic orbital will be returned)</p></li>
 <li><p><strong>list of AtomicOrbital</strong> (for each <span class="math notranslate nohighlight">\(m\in[-l;l]\)</span> an atomic orbital will be returned in the list)</p></li>
 </ul>
 </p>
@@ -492,10 +495,10 @@ One may optionally specify the sub-set of <em class="xref py py-obj">m</em> to r
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>precision</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – used separation in the <a class="reference internal" href="sisl.Grid.html#sisl.Grid" title="sisl.Grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Grid</span></code></a> between voxels (in Ang)</p></li>
+<li><p><strong>precision</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – used separation in the <cite>Grid</cite> between voxels (in Ang)</p></li>
 <li><p><strong>c</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#complex" title="(in Python v3.11)"><em>complex</em></a><em>, </em><em>optional</em>) – coefficient for the orbital</p></li>
 <li><p><strong>R</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – box size of the grid (default to the orbital range)</p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the used separation in the <a class="reference internal" href="sisl.Grid.html#sisl.Grid" title="sisl.Grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Grid</span></code></a> between voxels</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.25)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the used separation in the <cite>Grid</cite> between voxels</p></li>
 <li><p><strong>atom</strong> (<em>optional</em>) – atom associated with the grid; either an atom instance or
 something that <code class="docutils literal notranslate"><span class="pre">Atom(atom)</span></code> would convert to a proper atom.</p></li>
 </ul>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.xsf &mdash; sisl 0.1-2eca529</title>
+  <title>sisl.io.xsf &mdash; sisl 0.1-7e8006f</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
@@ -40,7 +40,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-2eca529
+                0.1-7e8006f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -114,12 +114,12 @@
 
 <span class="c1"># Import sile objects</span>
 <span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">._multiple</span> <span class="kn">import</span> <span class="n">SileBinder</span>
 
 <span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">deprecate_argument</span>
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">PeriodicTable</span><span class="p">,</span> <span class="n">Grid</span>
-<span class="kn">from</span> <span class="nn">sisl._collection</span> <span class="kn">import</span> <span class="n">Collection</span>
-<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">GeometryCollection</span><span class="p">,</span> <span class="n">AtomUnknown</span><span class="p">,</span> <span class="n">Lattice</span>
+<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">AtomUnknown</span><span class="p">,</span> <span class="n">Lattice</span>
 <span class="kn">from</span> <span class="nn">sisl.utils</span> <span class="kn">import</span> <span class="n">str_spec</span>
 <span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
 
@@ -155,7 +155,6 @@
     <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="n">ret</span><span class="p">):</span>
         <span class="k">nonlocal</span> <span class="n">funcs</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
-            <span class="n">rets</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">ret</span><span class="p">)</span>
             <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">func</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">ret</span><span class="p">),</span> <span class="n">funcs</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">funcs</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">ret</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">post</span>
@@ -425,10 +424,14 @@
             <span class="k">return</span> <span class="n">geom</span><span class="p">,</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">geom</span>
 
-<div class="viewcode-block" id="xsfSile.read_geometry"><a class="viewcode-back" href="../../../api/io/generated/sisl.io.xsfSile.html#sisl.io.xsfSile.read_geometry">[docs]</a>    <span class="nd">@sile_read_multiple</span><span class="p">(</span><span class="n">postprocess</span><span class="o">=</span><span class="n">postprocess</span><span class="p">(</span><span class="n">GeometryCollection</span><span class="p">,</span> <span class="n">Collection</span><span class="p">))</span>
+<div class="viewcode-block" id="xsfSile.read_geometry"><a class="viewcode-back" href="../../../api/io/generated/sisl.io.xsfSile.html#sisl.io.xsfSile.read_geometry">[docs]</a>    <span class="nd">@SileBinder</span><span class="p">(</span><span class="n">postprocess</span><span class="o">=</span><span class="n">postprocess</span><span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">list</span><span class="p">))</span>
     <span class="nd">@deprecate_argument</span><span class="p">(</span><span class="s2">&quot;sc&quot;</span><span class="p">,</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span> <span class="s2">&quot;use lattice= instead of sc=&quot;</span><span class="p">,</span> <span class="n">from_version</span><span class="o">=</span><span class="s2">&quot;0.15&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ret_data</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Geometry contained in file, and optionally the associated data</span>
+
+<span class="sd">        If the file contains more geometries, one can read multiple geometries</span>
+<span class="sd">        by using the arguments `start`, `stop` and `step`.</span>
+<span class="sd">        The default is to read the first geometry, only.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>

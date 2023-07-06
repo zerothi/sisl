@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.sile &mdash; sisl 0.1-2eca529</title>
+  <title>sisl.io.sile &mdash; sisl 0.1-7e8006f</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
@@ -40,7 +40,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-2eca529
+                0.1-7e8006f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -109,14 +109,17 @@
 <span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span><span class="p">,</span> <span class="n">reduce</span>
 <span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">splitext</span><span class="p">,</span> <span class="n">basename</span>
 <span class="kn">import</span> <span class="nn">gzip</span>
 <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">TextIOBase</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">contains</span><span class="p">,</span> <span class="n">and_</span>
 
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">SislWarning</span><span class="p">,</span> <span class="n">SislInfo</span><span class="p">,</span> <span class="n">deprecate</span>
+<span class="kn">from</span> <span class="nn">sisl._environ</span> <span class="kn">import</span> <span class="n">get_environ_variable</span>
 <span class="kn">from</span> <span class="nn">sisl.utils.misc</span> <span class="kn">import</span> <span class="n">str_spec</span>
 <span class="kn">from</span> <span class="nn">._help</span> <span class="kn">import</span> <span class="o">*</span>
 
@@ -144,7 +147,6 @@
 <span class="c1"># Decorators or sile-specific functions</span>
 <span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span>
     <span class="s1">&#39;sile_fh_open&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;sile_read_multiple&#39;</span><span class="p">,</span>
     <span class="s1">&#39;sile_raise_write&#39;</span><span class="p">,</span>
     <span class="s1">&#39;sile_raise_read&#39;</span>
 <span class="p">]</span>
@@ -164,6 +166,13 @@
 
 <span class="k">class</span> <span class="nc">_sile_rule</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Internal data-structure to check whether a file is the same as this sile &quot;&quot;&quot;</span>
+
+    <span class="n">COMPARISONS</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;contains&quot;</span><span class="p">:</span> <span class="n">contains</span><span class="p">,</span>
+        <span class="s2">&quot;in&quot;</span><span class="p">:</span> <span class="n">contains</span><span class="p">,</span>
+        <span class="s2">&quot;endswith&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="o">.</span><span class="n">endswith</span><span class="p">,</span>
+        <span class="s2">&quot;startswith&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="o">.</span><span class="n">startswith</span><span class="p">,</span>
+    <span class="p">}</span>
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;cls&#39;</span><span class="p">,</span> <span class="s1">&#39;case&#39;</span><span class="p">,</span> <span class="s1">&#39;suffix&#39;</span><span class="p">,</span> <span class="s1">&#39;gzip&#39;</span><span class="p">,</span> <span class="s1">&#39;bases&#39;</span><span class="p">,</span> <span class="s1">&#39;base_names&#39;</span><span class="p">)</span>
 
@@ -185,6 +194,10 @@
             <span class="n">s</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="n">b</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">,</span><span class="se">\n</span><span class="s1"> &#39;</span>
         <span class="k">return</span> <span class="n">s</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">}&#39;</span>
 
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">, case=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">case</span><span class="si">}</span><span class="s2">, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;suffix=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">suffix</span><span class="si">}</span><span class="s2">, gzip=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">gzip</span><span class="si">}</span><span class="s2">&gt;&quot;</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">build_bases</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Return a list of all classes that this file is inheriting from (except Sile, SileBin or SileCDF) &quot;&quot;&quot;</span>
         <span class="n">children</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cls</span><span class="o">.</span><span class="vm">__bases__</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">cls</span><span class="p">]</span>
@@ -205,32 +218,34 @@
 
         <span class="k">return</span> <span class="n">children</span>
 
-    <span class="k">def</span> <span class="nf">in_bases</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Whether any of the inherited bases starts with `base` in their class-name (non-case sensitive) &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">in_bases</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;contains&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Whether any of the inherited bases compares with `base` in their class-name (lower-case sensitive) &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">base</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
             <span class="n">base</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="n">comparison</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">COMPARISONS</span><span class="p">[</span><span class="n">method</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_names</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">b</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">base</span><span class="p">)</span> <span class="ow">or</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">b</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">comparison</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">base</span><span class="p">):</span>
                 <span class="k">return</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="kc">False</span>
 
-    <span class="k">def</span> <span class="nf">get_base</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Whether any of the inherited bases starts with `base` in their class-name (non-case sensitive) &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">get_base</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;contains&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Whether any of the inherited bases compares with `base` in their class-name (lower-case sensitive) &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">base</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">comparison</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">COMPARISONS</span><span class="p">[</span><span class="n">method</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">bn</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_names</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bases</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">bn</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">base</span><span class="p">)</span> <span class="ow">or</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">bn</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">comparison</span><span class="p">(</span><span class="n">bn</span><span class="p">,</span> <span class="n">base</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">b</span>
         <span class="k">return</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">in_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Whether any of the inherited bases starts with `base` in their class-name (non-case sensitive) &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">in_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;contains&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Whether any of the inherited bases compares with `base` in their class-name (lower-case sensitive) &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">base</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
-        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">base</span><span class="p">)</span> <span class="ow">or</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">n</span><span class="p">)</span>
+        <span class="n">comparison</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">COMPARISONS</span><span class="p">[</span><span class="n">method</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">comparison</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">base</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">is_suffix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">suffix</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">case</span><span class="p">:</span>
@@ -241,12 +256,16 @@
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">gzip</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">return</span> <span class="n">suffix</span> <span class="o">==</span> <span class="p">(</span><span class="n">my_suffix</span> <span class="o">+</span> <span class="s2">&quot;.gz&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">suffix</span> <span class="o">==</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">my_suffix</span><span class="si">}</span><span class="s2">.gz&quot;</span>
 
     <span class="k">def</span> <span class="nf">is_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">cls</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cls</span> <span class="o">==</span> <span class="bp">cls</span>
 
     <span class="k">def</span> <span class="nf">is_subclass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">cls</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="nb">issubclass</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cls</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span>
 
 
@@ -272,6 +291,9 @@
 <span class="sd">         output.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">__sile_rules</span><span class="p">,</span> <span class="n">__siles</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">BaseSile</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Class </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> must be a subclass of BaseSile!&quot;</span><span class="p">)</span>
 
     <span class="c1"># Only add pure suffixes...</span>
     <span class="k">if</span> <span class="n">suffix</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">):</span>
@@ -314,28 +336,87 @@
 
     <span class="c1"># Split filename into proper file name and</span>
     <span class="c1"># the Specification of the type</span>
-    <span class="n">tmp_file</span><span class="p">,</span> <span class="n">fcls</span> <span class="o">=</span> <span class="n">str_spec</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+    <span class="n">tmp_file</span><span class="p">,</span> <span class="n">specification</span> <span class="o">=</span> <span class="n">str_spec</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
 
-    <span class="k">if</span> <span class="bp">cls</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">fcls</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># Now check whether we have a specific checker</span>
+    <span class="k">if</span> <span class="n">specification</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># ensure to grab nothing</span>
+        <span class="n">specification</span> <span class="o">=</span> <span class="n">get_environ_variable</span><span class="p">(</span><span class="s2">&quot;SISL_IO_DEFAULT&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">specification</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+        <span class="n">specification</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="c1"># extract which comparsion method</span>
+    <span class="k">if</span> <span class="s2">&quot;=&quot;</span> <span class="ow">in</span> <span class="n">specification</span><span class="p">:</span>
+        <span class="n">method</span><span class="p">,</span> <span class="n">cls_search</span> <span class="o">=</span> <span class="n">specification</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;=&quot;</span> <span class="ow">in</span> <span class="n">cls_search</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Comparison specification currently only supports one level of comparison(single =); got </span><span class="si">{</span><span class="n">specification</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">method</span><span class="p">,</span> <span class="n">cls_search</span> <span class="o">=</span> <span class="s2">&quot;contains&quot;</span><span class="p">,</span> <span class="n">specification</span>
+
+    <span class="c1"># searchable rules</span>
+    <span class="n">eligible_rules</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="bp">cls</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">cls_search</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+
         <span class="c1"># cls has not been set, and fcls is found</span>
         <span class="c1"># Figure out if fcls is a valid sile, if not</span>
         <span class="c1"># do nothing (it may be part of the file name)</span>
         <span class="c1"># Which is REALLY obscure... but....)</span>
-        <span class="n">fclsl</span> <span class="o">=</span> <span class="n">fcls</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="n">cls_searchl</span> <span class="o">=</span> <span class="n">cls_search</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">sr</span> <span class="ow">in</span> <span class="n">__sile_rules</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">sr</span><span class="o">.</span><span class="n">in_class</span><span class="p">(</span><span class="n">fclsl</span><span class="p">):</span>
-                <span class="bp">cls</span> <span class="o">=</span> <span class="n">sr</span><span class="o">.</span><span class="n">cls</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">cls</span> <span class="o">=</span> <span class="n">sr</span><span class="o">.</span><span class="n">get_base</span><span class="p">(</span><span class="n">fclsl</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">cls</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">filename</span> <span class="o">=</span> <span class="n">tmp_file</span>
-                <span class="k">break</span>
+            <span class="k">if</span> <span class="n">sr</span><span class="o">.</span><span class="n">in_class</span><span class="p">(</span><span class="n">cls_searchl</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">):</span>
+                <span class="n">eligible_rules</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sr</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">eligible_rules</span><span class="p">:</span>
+            <span class="c1"># we have at least one eligible rule</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">tmp_file</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Specification requirement of the file did not result in any found files: </span><span class="si">{</span><span class="n">specification</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># search everything</span>
+        <span class="n">eligible_rules</span> <span class="o">=</span> <span class="n">__sile_rules</span>
+
+    <span class="k">if</span> <span class="n">eligible_rules</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">eligible_rules</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">eligible_rules</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cls</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># nothing has been found, this may meen that we need to search *everything*</span>
+        <span class="n">eligible_rules</span> <span class="o">=</span> <span class="n">__sile_rules</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># Create list of endings on this file</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">basename</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
         <span class="n">end_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">end</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="k">def</span> <span class="nf">try_methods</span><span class="p">(</span><span class="n">eligibles</span><span class="p">,</span> <span class="n">prefixes</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;read_&quot;</span><span class="p">,)):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot; return only those who can actually perform the read actions &quot;&quot;&quot;</span>
+            <span class="k">def</span> <span class="nf">has</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
+                <span class="k">nonlocal</span> <span class="n">prefixes</span>
+                <span class="n">has_keys</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="n">prefixes</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">prefix</span><span class="p">):</span>
+                            <span class="n">has_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">has_keys</span>
+
+            <span class="n">outs</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">eligibles</span><span class="p">:</span>
+                <span class="n">attrs</span> <span class="o">=</span> <span class="n">has</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">cls</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">sile</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">cls</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                    <span class="n">outs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                    <span class="k">continue</span>
+                <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="nb">getattr</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">attr</span><span class="p">)()</span>
+                        <span class="c1"># if one succeeds, we will assume it is working</span>
+                        <span class="n">outs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                        <span class="k">break</span>
+                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                        <span class="k">pass</span>
+            <span class="k">return</span> <span class="n">outs</span>
 
         <span class="c1"># Check for files without ending, or that they are directly zipped</span>
         <span class="n">lext</span> <span class="o">=</span> <span class="n">splitext</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
@@ -348,34 +429,40 @@
             <span class="n">lext</span> <span class="o">=</span> <span class="n">splitext</span><span class="p">(</span><span class="n">lext</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
         <span class="c1"># We also check the entire file name</span>
-        <span class="c1">#  (mainly for VASP)</span>
         <span class="n">end_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
         <span class="c1"># Reverse to start by the longest extension</span>
         <span class="c1"># (allows grid.nc extensions, etc.)</span>
         <span class="n">end_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">end_list</span><span class="p">))</span>
 
-        <span class="c1"># First we check for class AND file ending</span>
-        <span class="n">clss</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">for</span> <span class="n">end</span> <span class="ow">in</span> <span class="n">end_list</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">sr</span> <span class="ow">in</span> <span class="n">__sile_rules</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">get_eligibles</span><span class="p">(</span><span class="n">end</span><span class="p">,</span> <span class="n">rules</span><span class="p">):</span>
+            <span class="k">nonlocal</span> <span class="bp">cls</span>
+            <span class="n">eligibles</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">sr</span> <span class="ow">in</span> <span class="n">rules</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">sr</span><span class="o">.</span><span class="n">is_class</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
                     <span class="c1"># class-specification has precedence</span>
                     <span class="c1"># This should only occur when the</span>
                     <span class="c1"># class-specification is exact (i.e. xyzSile)</span>
-                    <span class="k">return</span> <span class="n">sr</span><span class="o">.</span><span class="n">cls</span>
+                    <span class="k">return</span> <span class="p">[</span><span class="n">sr</span><span class="p">]</span>
                 <span class="k">elif</span> <span class="n">sr</span><span class="o">.</span><span class="n">is_suffix</span><span class="p">(</span><span class="n">end</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="bp">cls</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="k">return</span> <span class="n">sr</span><span class="o">.</span><span class="n">cls</span>
-                    <span class="k">elif</span> <span class="n">sr</span><span class="o">.</span><span class="n">is_subclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-                        <span class="k">return</span> <span class="n">sr</span><span class="o">.</span><span class="n">cls</span>
-                    <span class="n">clss</span> <span class="o">=</span> <span class="n">sr</span><span class="o">.</span><span class="n">cls</span>
-            <span class="k">if</span> <span class="n">clss</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">clss</span>
+                    <span class="k">if</span> <span class="n">sr</span><span class="o">.</span><span class="n">is_subclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+                        <span class="k">return</span> <span class="p">[</span><span class="n">sr</span><span class="p">]</span>
+                    <span class="n">eligibles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sr</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">eligibles</span>
 
-        <span class="k">if</span> <span class="n">clss</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Sile for file &#39;</span><span class="si">{}</span><span class="s2">&#39; could not be found, &quot;</span>
-                                      <span class="s2">&quot;possibly the file has not been implemented.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">clss</span>
+        <span class="c1"># First we check for class AND file ending</span>
+        <span class="k">for</span> <span class="n">end</span><span class="p">,</span> <span class="n">rules</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="n">end_list</span><span class="p">,</span> <span class="p">(</span><span class="n">eligible_rules</span><span class="p">,</span> <span class="n">__sile_rules</span><span class="p">)):</span>
+             <span class="n">eligibles</span> <span class="o">=</span> <span class="n">get_eligibles</span><span class="p">(</span><span class="n">end</span><span class="p">,</span> <span class="n">rules</span><span class="p">)</span>
+             <span class="c1"># Determine whether we have found a compatible sile</span>
+             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">eligibles</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">eligibles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cls</span>
+             <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">eligibles</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">workable_eligibles</span> <span class="o">=</span> <span class="n">try_methods</span><span class="p">(</span><span class="n">eligibles</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">workable_eligibles</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">workable_eligibles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cls</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot determine the exact Sile requested, multiple hits: </span><span class="si">{</span><span class="nb">tuple</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">eligibles</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sile for file &#39;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&#39; could not be found, &quot;</span>
+                                  <span class="s2">&quot;possibly the file has not been implemented.&quot;</span><span class="p">)</span>
 
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">e</span>
@@ -401,7 +488,7 @@
 <span class="sd">       will read the file ``water.dat`` using the `xyzSile` class.</span>
 <span class="sd">    cls : class</span>
 <span class="sd">       In case there are several files with similar file-suffixes</span>
-<span class="sd">       you may query the exact base-class that should be chosen.</span>
+<span class="sd">       you may query the exact base-less that should be chosen.</span>
 <span class="sd">       If there are several files with similar file-endings this</span>
 <span class="sd">       function returns a random one.</span>
 
@@ -419,6 +506,11 @@
 <span class="sd">    &gt;&gt;&gt; cls = get_sile_class(&quot;anyfile.xyz&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; obj = cls(&quot;water.dat&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; another_xyz = cls(&quot;water2.dat&quot;)</span>
+
+<span class="sd">    To narrow the search one can clarify whether it should start or</span>
+<span class="sd">    end with a string:</span>
+
+<span class="sd">    &gt;&gt;&gt; cls = get_sile_class(&quot;water.dat{startswith=xyz}&quot;)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="bp">cls</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;cls&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
     <span class="n">sile</span> <span class="o">=</span> <span class="n">get_sile_class</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -446,9 +538,15 @@
     <span class="n">siles</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">sile</span> <span class="ow">in</span> <span class="n">__siles</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
-                <span class="n">siles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sile</span><span class="p">)</span>
-                <span class="k">break</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+                    <span class="n">siles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sile</span><span class="p">)</span>
+                    <span class="k">break</span>
+            <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;[SileBinder]&quot;</span><span class="p">):</span>
+                    <span class="c1"># a non-bounded deferred class created using the SileBinder</span>
+                    <span class="c1"># TODO work around this check</span>
+                    <span class="n">siles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sile</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">siles</span>
 
@@ -650,11 +748,14 @@
             <span class="k">nonlocal</span> <span class="n">reset</span>
             <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
             <span class="k">def</span> <span class="nf">pre_open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="c1"># only call reset if the file should be reset</span>
+                <span class="n">_reset</span> <span class="o">=</span> <span class="n">reset</span>
                 <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;fh&quot;</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-                    <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                    <span class="k">def</span> <span class="nf">_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">pass</span>
                 <span class="k">with</span> <span class="bp">self</span><span class="p">:</span>
-                    <span class="n">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+                    <span class="c1"># REMARK this requires the __enter__ to seek(0)</span>
+                    <span class="c1"># for the file, and currently it does</span>
+                    <span class="n">_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
                     <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">pre_open</span>
     <span class="k">else</span><span class="p">:</span>
@@ -669,163 +770,6 @@
                     <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">pre_open</span>
     <span class="k">return</span> <span class="n">_wrapper</span>
-
-
-<span class="k">def</span> <span class="nf">sile_read_multiple</span><span class="p">(</span><span class="n">start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                       <span class="n">stop</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                       <span class="n">step</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                       <span class="nb">all</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                       <span class="n">skip_call</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]]]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                       <span class="n">pre_call</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]]]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                       <span class="n">post_call</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]]]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                       <span class="n">postprocess</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Method decorator for doing multiple reads</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    start : int, optional</span>
-<span class="sd">       position of first read</span>
-<span class="sd">    stop : int, optional</span>
-<span class="sd">       position of last read</span>
-<span class="sd">    step : int, optional</span>
-<span class="sd">       number of steps to take (if any at all).</span>
-<span class="sd">    all : bool, optional</span>
-<span class="sd">       read all entries, `start`, `stop` and `step` will not be altered</span>
-<span class="sd">       unless they are set to None.</span>
-<span class="sd">    skip_call : function, optional</span>
-<span class="sd">       read method without actual data processing.</span>
-<span class="sd">       The skip call must something different from ``None`` if it succeeds.</span>
-<span class="sd">    pre_call : function, optional</span>
-<span class="sd">       function to be applied before each read call.</span>
-<span class="sd">       Does *not* apply to the `skip_call`.</span>
-<span class="sd">    post_call : function, optional</span>
-<span class="sd">       function to be applied after each read call</span>
-<span class="sd">       Does *not* apply to the `skip_call`.</span>
-<span class="sd">    postprocess : function, optional</span>
-<span class="sd">       function to be applied on the returned data before it gets returned.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    single entry or list from multiple reads</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-        <span class="c1"># ensure we can access the callables</span>
-        <span class="k">nonlocal</span> <span class="n">skip_call</span><span class="p">,</span> <span class="n">pre_call</span><span class="p">,</span> <span class="n">post_call</span><span class="p">,</span> <span class="n">postprocess</span>
-
-        <span class="k">if</span> <span class="n">pre_call</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">def</span> <span class="nf">pre_call</span><span class="p">():</span> <span class="k">pass</span>
-
-        <span class="k">if</span> <span class="n">post_call</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">def</span> <span class="nf">post_call</span><span class="p">():</span> <span class="k">pass</span>
-
-        <span class="k">if</span> <span class="n">postprocess</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="n">x</span><span class="p">):</span> <span class="k">return</span> <span class="n">x</span>
-
-        <span class="k">def</span> <span class="nf">wrap_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-            <span class="n">pre_call</span><span class="p">()</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="n">post_call</span><span class="p">()</span>
-            <span class="k">return</span> <span class="n">r</span>
-
-        <span class="c1"># if skip_call is not set, we&#39;ll simply use func.</span>
-        <span class="c1"># Only in this case will pre and post be called</span>
-        <span class="c1"># as well.</span>
-        <span class="c1"># they should be equivalent but skip can be used to</span>
-        <span class="c1"># skip some processing of the read data.</span>
-        <span class="k">if</span> <span class="n">skip_call</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">skip_call</span> <span class="o">=</span> <span class="n">wrap_func</span>
-
-        <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
-        <span class="k">def</span> <span class="nf">multiple</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="nb">all</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-            <span class="bp">self</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
-            <span class="k">if</span> <span class="nb">all</span><span class="p">:</span>
-                <span class="c1"># parse everything, but still obey inputs</span>
-                <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="k">if</span> <span class="n">stop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">stop</span> <span class="o">=</span> <span class="mi">100000000000</span>
-                <span class="k">if</span> <span class="n">step</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">step</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># behave like range(stop) | range(start, stop, step)</span>
-                <span class="c1"># almost.</span>
-                <span class="c1">#  step only =&gt; start, step = 0, inf</span>
-                <span class="c1">#  start only =&gt; stop = start + 1</span>
-                <span class="c1">#  stop only =&gt; start = stop - 1</span>
-                <span class="k">if</span> <span class="n">step</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
-                    <span class="k">if</span> <span class="n">stop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="n">stop</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-                <span class="k">elif</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">stop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
-                    <span class="n">stop</span> <span class="o">=</span> <span class="mi">1</span>
-
-                <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">stop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="n">start</span> <span class="o">=</span> <span class="n">stop</span> <span class="o">-</span> <span class="mi">1</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="k">if</span> <span class="n">stop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="c1"># this will only occur if start is given, but not stop</span>
-                    <span class="n">stop</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="mi">1</span>
-                <span class="k">elif</span> <span class="n">stop</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">stop</span> <span class="o">=</span> <span class="mi">1000000000000</span>
-                <span class="k">if</span> <span class="n">step</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="c1"># only handle cases where the requested number of</span>
-                    <span class="c1"># elements is longer than 1, then step should be defined,</span>
-                    <span class="c1"># else we resort to returning a single entity (not postprocessed)</span>
-                    <span class="k">if</span> <span class="n">stop</span> <span class="o">-</span> <span class="n">start</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                        <span class="n">step</span> <span class="o">=</span> <span class="mi">1</span>
-
-            <span class="k">if</span> <span class="n">stop</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="c1"># TODO this will probably fail if users do stop=-4 (to not have the last 3 items)</span>
-                <span class="c1"># It should be done in a different manner</span>
-                <span class="n">stop</span> <span class="o">=</span> <span class="mi">100000000000</span>
-
-            <span class="k">def</span> <span class="nf">check_none</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-                    <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="ow">and</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">r</span> <span class="ow">is</span> <span class="kc">None</span>
-
-            <span class="c1"># start by reading past start, this is regardless of what we</span>
-            <span class="c1"># are about to do</span>
-            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">):</span>
-                <span class="n">r</span> <span class="o">=</span> <span class="n">skip_call</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">check_none</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
-                    <span class="k">return</span> <span class="n">r</span>
-
-            <span class="k">if</span> <span class="n">step</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="c1"># read a single element and return</span>
-                <span class="k">def</span> <span class="nf">ret_func</span><span class="p">():</span>
-                    <span class="k">return</span> <span class="n">wrap_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># read a set of geometries and return</span>
-                <span class="k">def</span> <span class="nf">ret_func</span><span class="p">():</span>
-                    <span class="n">R</span> <span class="o">=</span> <span class="p">[]</span>
-                    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
-                        <span class="n">r</span> <span class="o">=</span> <span class="n">wrap_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-                        <span class="k">if</span> <span class="n">check_none</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
-                            <span class="k">break</span>
-                        <span class="n">R</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
-
-                        <span class="c1"># skip the middle steps</span>
-                        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">step</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-                            <span class="n">r</span> <span class="o">=</span> <span class="n">skip_call</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-                            <span class="k">if</span> <span class="n">check_none</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
-                                <span class="k">return</span> <span class="n">postprocess</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
-                    <span class="k">return</span> <span class="n">postprocess</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;fh&quot;</span><span class="p">):</span>
-                <span class="k">return</span> <span class="n">ret_func</span><span class="p">()</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">with</span> <span class="bp">self</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="n">ret_func</span><span class="p">()</span>
-
-        <span class="k">return</span> <span class="n">multiple</span>
-    <span class="k">return</span> <span class="n">decorator</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io&quot;</span><span class="p">)</span>
@@ -925,22 +869,33 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_comment</span> <span class="o">=</span> <span class="p">[]</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fh_opens</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_line</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="c1"># Initialize</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_base_setup</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.gz&quot;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="o">==</span> <span class="s1">&#39;r&#39;</span><span class="p">:</span>
-                <span class="c1"># assume the file is a text file and open in text-mode</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">fh</span> <span class="o">=</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">),</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;rt&#39;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># assume this is opening in binary or write mode</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">fh</span> <span class="o">=</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">),</span> <span class="n">mode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_mode</span><span class="p">)</span>
+        <span class="c1"># track how many times this has been called</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;fh&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mode</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fh_opens</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.gz&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="o">==</span> <span class="s1">&#39;r&#39;</span><span class="p">:</span>
+                    <span class="c1"># assume the file is a text file and open in text-mode</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">fh</span> <span class="o">=</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">),</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;rt&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># assume this is opening in binary or write mode</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">fh</span> <span class="o">=</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">),</span> <span class="n">mode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_mode</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mode</span><span class="p">)</span>
+
+        <span class="c1"># the file should restart the file-read (as per instructed)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_line</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fh_opens</span> <span class="o">+=</span> <span class="mi">1</span>
 
     <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Opens the output file and returns it self &quot;&quot;&quot;</span>
@@ -950,12 +905,16 @@
     <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
         <span class="c1"># clean-up so that it does not exist</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_line</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">return</span> <span class="kc">False</span>
 
 <div class="viewcode-block" id="Sile.close"><a class="viewcode-back" href="../../../api/io/generated/sisl.io.Sile.html#sisl.io.Sile.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="nb">delattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;fh&#39;</span><span class="p">)</span></div>
+        <span class="c1"># decrement calls</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fh_opens</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fh_opens</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_line</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="nb">delattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;fh&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fh_opens</span> <span class="o">=</span> <span class="mi">0</span></div>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">is_keys</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installation &mdash; sisl 0.1-2eca529</title>
+  <title>Installation &mdash; sisl 0.1-7e8006f</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
@@ -43,7 +43,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-2eca529
+                0.1-7e8006f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -121,7 +121,7 @@
 <h2>Required dependencies<a class="headerlink" href="#required-dependencies" title="Permalink to this heading"></a></h2>
 <p>Running sisl requires these versions:</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://www.python.org/">Python</a> 3.7 or above</p></li>
+<li><p><a class="reference external" href="https://www.python.org/">Python</a> 3.8 or above</p></li>
 <li><p><a class="reference external" href="https://www.numpy.org/">numpy</a> (1.13 or later)</p></li>
 <li><p><a class="reference external" href="https://scipy.org/scipylib/index.html">scipy</a> (1.5 or later)</p></li>
 <li><p><a class="reference external" href="https://github.com/Unidata/netcdf4-python">netCDF4-python</a></p></li>
@@ -203,15 +203,33 @@ problems, feel free to open up issues.</p>
 </div>
 <p>Passing options to the build-system through <code class="code docutils literal notranslate"><span class="pre">pip</span></code> should de done with
 the following convention</p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--1-input--1" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--1">pip&gt;=22.1</label><div class="tab-content docutils container">
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--config-settings<span class="o">=</span>cmake.define.CMAKE_BUILD_PARALLEL_LEVEL<span class="o">=</span><span class="m">5</span><span class="w"> </span>...
 </pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--1-input--2" name="tab-set--1" type="radio"><label class="tab-label" for="tab-set--1-input--2">pip&lt;22.1</label><div class="tab-content docutils container">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--global-option<span class="o">=</span>cmake.define.CMAKE_BUILD_PARALLEL_LEVEL<span class="o">=</span><span class="m">5</span><span class="w"> </span>...
+</pre></div>
+</div>
+</div>
 </div>
 <p>In the above case the compilation of the C/Fortran sources are compiled in parallel using 5
 cores. This may greatly reduce compilation times.</p>
 <p>There exists a set of compile time definitions that may be handy for developers.
 These are all CMake definitions and can be added like this:</p>
+<div class="tab-set docutils container">
+<input checked="True" class="tab-input" id="tab-set--2-input--1" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--1">pip&gt;=22.1</label><div class="tab-content docutils container">
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--config-settings<span class="o">=</span>cmake.define.WITH_FORTRAN<span class="o">=</span>YES<span class="w"> </span>.
 </pre></div>
+</div>
+</div>
+<input class="tab-input" id="tab-set--2-input--2" name="tab-set--2" type="radio"><label class="tab-label" for="tab-set--2-input--2">pip&lt;22.1</label><div class="tab-content docutils container">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--global-option<span class="o">=</span>cmake.define.WITH_FORTRAN<span class="o">=</span>YES<span class="w"> </span>.
+</pre></div>
+</div>
+</div>
 </div>
 <p>The options are:</p>
 <ul class="simple">

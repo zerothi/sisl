@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.brillouinzone &mdash; sisl 0.1-2eca529</title>
+  <title>sisl.physics.brillouinzone &mdash; sisl 0.1-7e8006f</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
@@ -40,7 +40,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-2eca529
+                0.1-7e8006f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -848,7 +848,9 @@
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">displacement</span><span class="p">,</span> <span class="n">Real</span><span class="p">):</span>
             <span class="n">displacement</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">fulld</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">displacement</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># transfer the displacement to the primitive cell</span>
             <span class="n">displacement</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">displacement</span><span class="p">)</span>
+        <span class="n">displacement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_primitive</span><span class="p">(</span><span class="n">displacement</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">size</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">onesd</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
@@ -955,8 +957,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_centered</span> <span class="o">=</span> <span class="n">centered</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_trs</span> <span class="o">=</span> <span class="n">i_trs</span></div>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">displacement</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Displacement for this Monkhorst-Pack grid &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_displ</span>
+
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; String representation of MonkhorstPack &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; String representation of `MonkhorstPack` &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">Lattice</span><span class="p">):</span>
             <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1158,7 +1165,6 @@
         <span class="k">if</span> <span class="n">check_vol</span><span class="p">:</span>
             <span class="c1"># We can easily figure out the BZ that each k-point is averaging</span>
             <span class="n">k_vol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_diag</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">k_vol</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
 
             <span class="c1"># Compare against the size of this one</span>
             <span class="c1"># Since we can remove more than one k-point, we require that the</span>
@@ -1183,9 +1189,19 @@
             <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># find k-points in batches of 200 MB</span>
-            <span class="n">k</span> <span class="o">=</span> <span class="n">k</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_primitive</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
             <span class="n">idx</span> <span class="o">=</span> <span class="n">batched_indices</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">dk</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
                                   <span class="n">diff_func</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">in_primitive</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trs</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># TRS along a given axis, we can search the mirrored values</span>
+                <span class="n">idx2</span> <span class="o">=</span> <span class="n">batched_indices</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k</span><span class="p">,</span> <span class="o">-</span><span class="n">k</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">dk</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+                                       <span class="n">diff_func</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">in_primitive</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">idx</span><span class="p">,</span> <span class="n">idx2</span><span class="p">))</span>
+                <span class="c1"># we may find 2 indices for gamm-point in this case... not useful</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.reduce found no k-points to replace. &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;Searched with precision: </span><span class="si">{</span><span class="n">dk</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># Idea of fast replacements is attributed @ahkole in #454, but the resulting code needed some</span>
         <span class="c1"># changes since that code was not stable againts *wrong input*, i.e. k=[0, 0, 0]</span>
@@ -1205,6 +1221,8 @@
         <span class="k">if</span> <span class="n">displacement</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">displ_nk</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Ensure we are in the central k-grid</span>
+            <span class="n">displacement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_primitive</span><span class="p">(</span><span class="n">displacement</span><span class="p">)</span>
             <span class="n">displ_nk</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">displacement</span><span class="p">)</span>
 
         <span class="c1"># Now we have the k-points we need to remove</span>
@@ -1233,7 +1251,8 @@
             <span class="c1">#print(total_weight, replace_weight)</span>
             <span class="c1">#print(mp)</span>
             <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.reduce found inconsistent replacement weights &quot;</span>
-                            <span class="sa">f</span><span class="s2">&quot;self=</span><span class="si">{</span><span class="n">total_weight</span><span class="si">}</span><span class="s2"> vs. mp=</span><span class="si">{</span><span class="n">replace_weight</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+                            <span class="sa">f</span><span class="s2">&quot;self=</span><span class="si">{</span><span class="n">total_weight</span><span class="si">}</span><span class="s2"> vs. mp=</span><span class="si">{</span><span class="n">replace_weight</span><span class="si">}</span><span class="s2">. &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;Replacement indices: </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
         <span class="c1"># delete and append new k-points and weights</span>
         <span class="k">if</span> <span class="n">displacement</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>

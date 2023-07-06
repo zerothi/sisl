@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.xyzSile &mdash; sisl 0.1-2eca529</title>
+  <title>sisl.io.xyzSile &mdash; sisl 0.1-7e8006f</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
@@ -43,7 +43,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-2eca529
+                0.1-7e8006f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -163,20 +163,20 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.xyzSile.read" title="sisl.io.xyzSile.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Generic read method which should be overloaded in child-classes</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.xyzSile.read_geometry" title="sisl.io.xyzSile.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a>([atoms, lattice])</p></td>
-<td><p>Returns Geometry object from the XYZ file</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.xyzSile.write" title="sisl.io.xyzSile.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.xyzSile.write" title="sisl.io.xyzSile.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Generic write method which should be overloaded in child-classes</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.xyzSile.write_geometry" title="sisl.io.xyzSile.write_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_geometry</span></code></a>(geometry[, fmt, comment])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.xyzSile.write_geometry" title="sisl.io.xyzSile.write_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_geometry</span></code></a>(geometry[, fmt, comment])</p></td>
 <td><p>Writes the geometry to the contained file</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.xyzSile.base_file" title="sisl.io.xyzSile.base_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base_file</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.xyzSile.base_file" title="sisl.io.xyzSile.base_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base_file</span></code></a></p></td>
 <td><p>File of the current <a class="reference internal" href="sisl.io.Sile.html#sisl.io.Sile" title="sisl.io.Sile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Sile</span></code></a></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.xyzSile.file" title="sisl.io.xyzSile.file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">file</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.xyzSile.file" title="sisl.io.xyzSile.file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">file</span></code></a></p></td>
 <td><p>File of the current <a class="reference internal" href="sisl.io.Sile.html#sisl.io.Sile" title="sisl.io.Sile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Sile</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.xyzSile.read_geometry" title="sisl.io.xyzSile.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a></p></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table>
@@ -226,19 +226,10 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="sisl.io.xyzSile.read_geometry">
-<span class="sig-name descname"><span class="pre">read_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lattice</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/xyz.html#xyzSile.read_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.xyzSile.read_geometry" title="Permalink to this definition"></a></dt>
-<dd><p>Returns Geometry object from the XYZ file</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>atoms</strong> (<a class="reference internal" href="../../generated/sisl.Atoms.html#sisl.Atoms" title="sisl.Atoms"><em>Atoms</em></a><em>, </em><em>optional</em>) – the atoms to be associated with the Geometry</p></li>
-<li><p><strong>lattice</strong> (<a class="reference internal" href="../../generated/sisl.Lattice.html#sisl.Lattice" title="sisl.Lattice"><em>Lattice</em></a><em>, </em><em>optional</em>) – the lattice to be associated with the geometry</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">read_geometry</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;sisl.io._multiple.SileBound</span> <span class="pre">object&gt;</span></em><a class="reference internal" href="../../../_modules/sisl/io/xyz.html#xyzSile.read_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.xyzSile.read_geometry" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.xyzSile.to_json">

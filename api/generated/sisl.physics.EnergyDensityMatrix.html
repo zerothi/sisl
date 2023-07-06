@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.EnergyDensityMatrix &mdash; sisl 0.1-2eca529</title>
+  <title>sisl.physics.EnergyDensityMatrix &mdash; sisl 0.1-7e8006f</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
@@ -45,7 +45,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-2eca529
+                0.1-7e8006f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -277,7 +277,7 @@ This is a keyword-only argument.</p></li>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.EnergyDensityMatrix.mulliken" title="sisl.physics.EnergyDensityMatrix.mulliken"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mulliken</span></code></a>([projection])</p></td>
 <td><p>Calculate Mulliken charges from the density matrix</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.EnergyDensityMatrix.nonzero" title="sisl.physics.EnergyDensityMatrix.nonzero"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nonzero</span></code></a>([atoms, only_col])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.EnergyDensityMatrix.nonzero" title="sisl.physics.EnergyDensityMatrix.nonzero"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nonzero</span></code></a>([atoms, only_cols])</p></td>
 <td><p>Indices row and column indices where non-zero elements exists</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.EnergyDensityMatrix.prepend" title="sisl.physics.EnergyDensityMatrix.prepend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepend</span></code></a>(other, axis[, eps, scale])</p></td>
@@ -338,7 +338,7 @@ This is a keyword-only argument.</p></li>
 <td><p>Convert the sparse object (without data) to a new sparse object with equivalent but reduced sparse pattern</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.EnergyDensityMatrix.tocsr" title="sisl.physics.EnergyDensityMatrix.tocsr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tocsr</span></code></a>([dim, isc])</p></td>
-<td><p>Return a <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.10.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a> for the specified dimension</p></td>
+<td><p>Return a <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.11.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a> for the specified dimension</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.EnergyDensityMatrix.transform" title="sisl.physics.EnergyDensityMatrix.transform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transform</span></code></a>([matrix, dtype, spin, orthogonal])</p></td>
 <td><p>Transform the matrix by either a matrix or new spin configuration</p></td>
@@ -420,7 +420,7 @@ This is a keyword-only argument.</p></li>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>k</strong> (<em>array_like</em>) – the k-point to setup the energy density matrix at</p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><em>numpy.dtype</em></a><em> , </em><em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.25)"><em>numpy.dtype</em></a><em> , </em><em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
 data-type for non-Gamma k.
 The default data-type is <cite>numpy.complex128</cite></p></li>
 <li><p><strong>gauge</strong> (<em>{'R'</em><em>, </em><em>'r'}</em>) – the chosen gauge, <cite>R</cite> for cell vector gauge, and <cite>r</cite> for orbital distance
@@ -450,7 +450,7 @@ this keyword is ignored.</p></li>
 <dd class="field-odd"><p><strong>matrix</strong> – the energy density matrix at <span class="math notranslate nohighlight">\(k\)</span>. The returned object depends on <cite>format</cite>.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a> or scipy.sparse.*_matrix</p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)">numpy.ndarray</a> or scipy.sparse.*_matrix</p>
 </dd>
 </dl>
 </dd></dl>
@@ -466,7 +466,7 @@ this keyword is ignored.</p></li>
 or an orbital vector matrix. The orbital matrix is equivalent to the atomic
 one with the same vectors repeated for the same atomic orbitals.
 The default is the same type as the parent class.</p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the data-type of the sparse matrix.</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.25)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the data-type of the sparse matrix.</p></li>
 </ul>
 </dd>
 </dl>
@@ -501,7 +501,7 @@ structure is completed.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>k</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the k-point to setup the overlap at (default Gamma point)</p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.25)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
 data-type for non-Gamma k.
 The default data-type is <cite>numpy.complex128</cite></p></li>
 <li><p><strong>gauge</strong> (<em>{&quot;R&quot;</em><em>, </em><em>&quot;r&quot;}</em>) – the chosen gauge, <cite>R</cite> for cell vector gauge, and <cite>r</cite> for orbital distance
@@ -529,7 +529,7 @@ hopping + phases are required.</p></li>
 <dd class="field-odd"><p><strong>matrix</strong> – the overlap matrix at <span class="math notranslate nohighlight">\(k\)</span>. The returned object depends on <cite>format</cite>.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a> or scipy.sparse.*_matrix</p>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)">numpy.ndarray</a> or scipy.sparse.*_matrix</p>
 </dd>
 </dl>
 </dd></dl>
@@ -717,7 +717,7 @@ up the <cite>iter_block</cite> loop.</p></li>
 <dd><p>A copy of this object</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – it is possible to convert the data to a different data-type
+<dd class="field-odd"><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.25)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – it is possible to convert the data to a different data-type
 If not specified, it will use <code class="docutils literal notranslate"><span class="pre">self.dtype</span></code></p>
 </dd>
 </dl>
@@ -786,7 +786,7 @@ And <span class="math notranslate nohighlight">\(\alpha\)</span> is one of the C
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>k</strong> (<em>array_like</em>) – the k-point to setup the energy density matrix at</p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><em>numpy.dtype</em></a><em> , </em><em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.25)"><em>numpy.dtype</em></a><em> , </em><em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
 data-type for non-Gamma k.
 The default data-type is <cite>numpy.complex128</cite></p></li>
 <li><p><strong>gauge</strong> (<em>{'R'</em><em>, </em><em>'r'}</em>) – the chosen gauge, <cite>R</cite> for cell vector gauge, and <cite>r</cite> for orbital distance
@@ -838,7 +838,7 @@ And <span class="math notranslate nohighlight">\(\alpha\)</span> is one of the C
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>k</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the k-point to setup the overlap at (default Gamma point)</p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.25)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
 data-type for non-Gamma k.
 The default data-type is <cite>numpy.complex128</cite></p></li>
 <li><p><strong>gauge</strong> (<em>{&quot;R&quot;</em><em>, </em><em>&quot;r&quot;}</em>) – the chosen gauge, <cite>R</cite> for cell vector gauge, and <cite>r</cite> for orbital distance
@@ -887,7 +887,7 @@ And <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>k</strong> (<em>array_like</em>) – the k-point to setup the energy density matrix at</p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><em>numpy.dtype</em></a><em> , </em><em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.25)"><em>numpy.dtype</em></a><em> , </em><em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
 data-type for non-Gamma k.
 The default data-type is <cite>numpy.complex128</cite></p></li>
 <li><p><strong>gauge</strong> (<em>{'R'</em><em>, </em><em>'r'}</em>) – the chosen gauge, <cite>R</cite> for cell vector gauge, and <cite>r</cite> for orbital distance
@@ -939,7 +939,7 @@ And <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>k</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the k-point to setup the overlap at (default Gamma point)</p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.25)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the data type of the returned matrix. Do NOT request non-complex
 data-type for non-Gamma k.
 The default data-type is <cite>numpy.complex128</cite></p></li>
 <li><p><strong>gauge</strong> (<em>{&quot;R&quot;</em><em>, </em><em>&quot;r&quot;}</em>) – the chosen gauge, <cite>R</cite> for cell vector gauge, and <cite>r</cite> for orbital distance
@@ -1254,7 +1254,7 @@ charge matrix (off-diagonal elements)</p>
 and for non-colinear spin is [T, Sx, Sy, Sz]</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1273,14 +1273,14 @@ and for non-colinear spin is [T, Sx, Sy, Sz]</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.EnergyDensityMatrix.nonzero">
-<span class="sig-name descname"><span class="pre">nonzero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.EnergyDensityMatrix.nonzero" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">nonzero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.EnergyDensityMatrix.nonzero" title="Permalink to this definition"></a></dt>
 <dd><p>Indices row and column indices where non-zero elements exists</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – only return the tuples for the requested atoms, default is all atoms
 But for <em>all</em> orbitals.</p></li>
-<li><p><strong>only_col</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – only return then non-zero columns</p></li>
+<li><p><strong>only_cols</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – only return then non-zero columns</p></li>
 </ul>
 </dd>
 </dl>
@@ -1522,7 +1522,7 @@ created with.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – number of dimensions per element, default to the current number of
 elements per matrix element.</p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the datatype of the sparse elements</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.25)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the datatype of the sparse elements</p></li>
 <li><p><strong>nnzpr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – number of non-zero elements per row</p></li>
 </ul>
 </dd>
@@ -1540,7 +1540,7 @@ elements per matrix element.</p></li>
 or an orbital distance matrix. The orbital matrix is equivalent to the atomic
 one with the same distance repeated for the same atomic orbitals.
 The default is the same type as the parent class.</p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the data-type of the sparse matrix.</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.25)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the data-type of the sparse matrix.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1819,7 +1819,7 @@ to the new supercell by repeating them in blocks like the coordinates.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – number of dimensions allocated in the SparseAtom object, default to the same</p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – used data-type for the sparse object. Defaults to the same.</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.25)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – used data-type for the sparse object. Defaults to the same.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1828,7 +1828,7 @@ to the new supercell by repeating them in blocks like the coordinates.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.physics.EnergyDensityMatrix.tocsr">
 <span class="sig-name descname"><span class="pre">tocsr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.EnergyDensityMatrix.tocsr" title="Permalink to this definition"></a></dt>
-<dd><p>Return a <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.10.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a> for the specified dimension</p>
+<dd><p>Return a <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.11.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a> for the specified dimension</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1875,7 +1875,7 @@ final dimension of the matrix.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>matrix</strong> (<em>array_like</em><em>, </em><em>optional</em>) – transformation matrix of shape <span class="math notranslate nohighlight">\(m \times n\)</span>. Default is no transformation.</p></li>
-<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.24)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – data type contained in the matrix. Defaults to the input type.</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.25)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – data type contained in the matrix. Defaults to the input type.</p></li>
 <li><p><strong>spin</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>sisl.Spin</em><em>, </em><em>optional</em>) – spin class of created matrix. Defaults to the input type.</p></li>
 <li><p><strong>orthogonal</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – flag to control if the new matrix includes overlaps. Defaults to the input type.</p></li>
 </ul>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.sparse_geometry &mdash; sisl 0.1-2eca529</title>
+  <title>sisl.sparse_geometry &mdash; sisl 0.1-7e8006f</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
@@ -40,7 +40,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-2eca529
+                0.1-7e8006f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -315,9 +315,8 @@
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Representation of the sparse model &quot;&quot;&quot;</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">{{</span><span class="s1">dim: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="si">}</span><span class="s1">, non-zero: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nnz</span><span class="si">}</span><span class="s1">, kind=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dkind</span><span class="si">}</span><span class="se">\n</span><span class="s1"> &#39;</span>
-        <span class="n">s</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">s</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">}&#39;</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">dim: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="si">}</span><span class="s2">, non-zero: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nnz</span><span class="si">}</span><span class="s2">, kind=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dkind</span><span class="si">}</span><span class="se">\n</span><span class="s2"> &quot;</span>
+        <span class="k">return</span> <span class="n">s</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> &#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">}&quot;</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> shape=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">, dim=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="si">}</span><span class="s2">, nnz=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nnz</span><span class="si">}</span><span class="s2">, kind=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dkind</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
@@ -763,7 +762,23 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">full</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">untile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">segment</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">sym</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Cuts the sparse model into different parts. &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Untiles a sparse model into a minimum segment, reverse of `tile`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        prefix : {a, o}</span>
+<span class="sd">           which quantity to request for the size of the matrix</span>
+<span class="sd">        reps : int</span>
+<span class="sd">           number of untiles that needs to be performed</span>
+<span class="sd">        axis : int</span>
+<span class="sd">           which axis we need to untile (length with be ``1/reps`` along this axis)</span>
+<span class="sd">        segment : int, optional</span>
+<span class="sd">           which segment to return, default to the first segment. For a fully symmetric</span>
+<span class="sd">           system there should not be a difference, requesting different segments can</span>
+<span class="sd">           be used to assert this is the case.</span>
+<span class="sd">        sym : bool, optional</span>
+<span class="sd">           whether to symmetrize before returning</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Create new geometry</span>
         <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">(</span><span class="n">record</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">w</span><span class="p">:</span>
             <span class="c1"># Cause all warnings to always be triggered.</span>
@@ -1045,23 +1060,38 @@
         <span class="n">obj</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">for</span> <span class="n">inp</span> <span class="ow">in</span> <span class="n">inputs</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">_SparseGeometry</span><span class="p">):</span>
-                <span class="c1"># simply store a reference</span>
-                <span class="c1"># if needed we will copy it later</span>
-                <span class="n">obj</span> <span class="o">=</span> <span class="n">inp</span>
+                <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># simply store a reference to the first argument that is a sparsegeometry</span>
+                    <span class="n">obj</span> <span class="o">=</span> <span class="n">inp</span>
                 <span class="n">sp_inputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inp</span><span class="o">.</span><span class="n">_csr</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">sp_inputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span>
 
-        <span class="n">out</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;out&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="c1"># determine if the user requested output into</span>
+        <span class="c1"># a specific container</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;out&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="p">(</span><span class="n">out</span><span class="p">,)</span> <span class="o">=</span> <span class="n">out</span>
+            <span class="c1"># ensure the output returns in this field</span>
             <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;out&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">_csr</span><span class="p">,)</span>
 
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">__array_ufunc__</span><span class="p">(</span><span class="n">ufunc</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="o">*</span><span class="n">sp_inputs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">out</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-            <span class="n">out</span><span class="o">.</span><span class="n">_csr</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># check that the resulting variable is indeed a sparsecsr</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">SparseCSR</span><span class="p">),</span> \
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">ufunc</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">) requires out= to match the resulting operator&quot;</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">SparseCSR</span><span class="p">):</span>
+            <span class="c1"># return a copy with the sparse result into the output sparse</span>
+            <span class="c1"># matrix. If out was not None, the result should already</span>
+            <span class="c1"># be stored in it.</span>
+            <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="n">out</span><span class="o">.</span><span class="n">_csr</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># likely reductions etc.</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">result</span>
         <span class="k">return</span> <span class="n">out</span>
 
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1125,21 +1155,21 @@
     <span class="k">def</span> <span class="nf">_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">na</span>
 
-<div class="viewcode-block" id="SparseAtom.nonzero"><a class="viewcode-back" href="../../api/generated/sisl.SparseAtom.html#sisl.SparseAtom.nonzero">[docs]</a>    <span class="k">def</span> <span class="nf">nonzero</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only_col</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="SparseAtom.nonzero"><a class="viewcode-back" href="../../api/generated/sisl.SparseAtom.html#sisl.SparseAtom.nonzero">[docs]</a>    <span class="k">def</span> <span class="nf">nonzero</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only_cols</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Indices row and column indices where non-zero elements exists</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        atoms : int or array_like of int, optional</span>
 <span class="sd">           only return the tuples for the requested atoms, default is all atoms</span>
-<span class="sd">        only_col : bool, optional</span>
+<span class="sd">        only_cols : bool, optional</span>
 <span class="sd">           only return then non-zero columns</span>
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
 <span class="sd">        SparseCSR.nonzero : the equivalent function call</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">atoms</span><span class="p">,</span> <span class="n">only_col</span><span class="o">=</span><span class="n">only_col</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="n">atoms</span><span class="p">,</span> <span class="n">only_cols</span><span class="o">=</span><span class="n">only_cols</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SparseAtom.iter_nnz"><a class="viewcode-back" href="../../api/generated/sisl.SparseAtom.html#sisl.SparseAtom.iter_nnz">[docs]</a>    <span class="k">def</span> <span class="nf">iter_nnz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Iterations of the non-zero elements</span>
@@ -1572,7 +1602,7 @@
             <span class="k">return</span> <span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="n">exclude</span><span class="p">)))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">orbitals</span><span class="p">,</span> <span class="n">exclude</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SparseOrbital.nonzero"><a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.nonzero">[docs]</a>    <span class="k">def</span> <span class="nf">nonzero</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only_col</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="SparseOrbital.nonzero"><a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.nonzero">[docs]</a>    <span class="k">def</span> <span class="nf">nonzero</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only_cols</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Indices row and column indices where non-zero elements exists</span>
 
 <span class="sd">        Parameters</span>
@@ -1580,7 +1610,7 @@
 <span class="sd">        atoms : int or array_like of int, optional</span>
 <span class="sd">           only return the tuples for the requested atoms, default is all atoms</span>
 <span class="sd">           But for *all* orbitals.</span>
-<span class="sd">        only_col : bool, optional</span>
+<span class="sd">        only_cols : bool, optional</span>
 <span class="sd">           only return then non-zero columns</span>
 
 <span class="sd">        See Also</span>
@@ -1588,9 +1618,9 @@
 <span class="sd">        SparseCSR.nonzero : the equivalent function call</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">only_col</span><span class="o">=</span><span class="n">only_col</span><span class="p">)</span>
-        <span class="n">row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">only_col</span><span class="o">=</span><span class="n">only_col</span><span class="p">)</span></div>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">only_cols</span><span class="o">=</span><span class="n">only_cols</span><span class="p">)</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="n">rows</span><span class="p">,</span> <span class="n">only_cols</span><span class="o">=</span><span class="n">only_cols</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SparseOrbital.iter_nnz"><a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.iter_nnz">[docs]</a>    <span class="k">def</span> <span class="nf">iter_nnz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Iterations of the non-zero elements</span>

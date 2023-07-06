@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.self_energy &mdash; sisl 0.1-2eca529</title>
+  <title>sisl.physics.self_energy &mdash; sisl 0.1-7e8006f</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
@@ -40,7 +40,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-2eca529
+                0.1-7e8006f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -229,7 +229,7 @@
 <span class="sd">    spgeom : SparseGeometry or int</span>
 <span class="sd">       for a `SparseGeometry` only the length will be queried.</span>
 <span class="sd">    eta : float</span>
-<span class="sd">       the imaginary part of the self-energy</span>
+<span class="sd">       the imaginary part (:math:`\eta`) of the self-energy</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="WideBandSE.__init__"><a class="viewcode-back" href="../../../api/generated/sisl.physics.WideBandSE.html#sisl.physics.WideBandSE.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spgeom</span><span class="p">,</span> <span class="n">eta</span><span class="p">):</span>
@@ -274,7 +274,7 @@
 <span class="sd">    infinite : str</span>
 <span class="sd">       axis specification for the semi-infinite direction (`+A`/`-A`/`+B`/`-B`/`+C`/`-C`)</span>
 <span class="sd">    eta : float, optional</span>
-<span class="sd">       the default imaginary part of the self-energy calculation</span>
+<span class="sd">       the default imaginary part (:math:`\eta`) of the self-energy calculation</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="SemiInfinite.__init__"><a class="viewcode-back" href="../../../api/generated/sisl.physics.SemiInfinite.html#sisl.physics.SemiInfinite.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spgeom</span><span class="p">,</span> <span class="n">infinite</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">):</span>
@@ -348,8 +348,19 @@
         <span class="c1"># Already now limit the sparse matrices</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spgeom1</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">(</span><span class="n">nsc</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spgeom1</span><span class="o">.</span><span class="n">nnz</span> <span class="o">&lt;</span> <span class="n">old_nnz</span><span class="p">:</span>
-            <span class="n">warn</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot;: SparseGeometry has connections across the first neighbouring cell. &quot;</span>
-                 <span class="s2">&quot;These values will be forced to 0 as the principal cell-interaction is a requirement&quot;</span><span class="p">)</span>
+            <span class="c1"># Now figure out how many elements, and the maximum values</span>
+            <span class="c1"># Extend the supercell and get the difference in elements</span>
+            <span class="n">diff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spgeom1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">diff</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">(</span><span class="n">spgeom</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">nsc</span><span class="p">)</span>
+            <span class="c1"># calculate difference from full matrix, and the *trimmed* one</span>
+            <span class="c1"># This has to be done before removing the unit-cell couplings [0, 0, 0]</span>
+            <span class="n">diff</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">spgeom</span> <span class="o">-</span> <span class="n">diff</span><span class="p">)</span>
+            <span class="n">diff</span><span class="o">.</span><span class="n">eliminate_zeros</span><span class="p">()</span>
+            <span class="n">rem_nnz</span> <span class="o">=</span> <span class="n">diff</span><span class="o">.</span><span class="n">nnz</span>
+            <span class="n">diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">spgeom</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> has connections across the first neighbouring cell. &quot;</span>
+                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">rem_nnz</span><span class="si">}</span><span class="s2"> non-zero values will be forced to 0 as the principal cell-interaction is a requirement. &quot;</span>
+                 <span class="sa">f</span><span class="s2">&quot;The maximum values of the removed connections are: </span><span class="si">{</span><span class="n">diff</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># I.e. we will delete all interactions that are un-important</span>
         <span class="n">n_s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spgeom1</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">n_s</span>
@@ -712,16 +723,16 @@
 <span class="sd">        The resulting Green function/self-energy ordering is always tiled along</span>
 <span class="sd">        the semi-infinite direction first, and then the other directions in order.</span>
 <span class="sd">    eta : float, optional</span>
-<span class="sd">        imaginary part in the self-energy calculations (default 1e-4 eV)</span>
+<span class="sd">        imaginary part (:math:`\eta`) in the self-energy calculations (default 1e-4 eV)</span>
 <span class="sd">    dk : float, optional</span>
 <span class="sd">        fineness of the default integration grid, specified in units of Ang, default to 1000 which</span>
-<span class="sd">        translates to 1000 k-points along reciprocal cells of length 1. Ang^-1.</span>
+<span class="sd">        translates to 1000 k-points along reciprocal cells of length :math:`1. \mathrm{Ang}^{-1}`.</span>
 <span class="sd">    bz : BrillouinZone, optional</span>
 <span class="sd">        integration k-points, if not passed the number of k-points will be determined using</span>
 <span class="sd">        `dk` and time-reversal symmetry will be determined by `trs`, the number of points refers</span>
 <span class="sd">        to the unfolded system.</span>
 <span class="sd">    trs : bool, optional</span>
-<span class="sd">        whether time-reversal symmetry is used in the BrillouinZone integration, default</span>
+<span class="sd">        whether time-reversal symmetry is used in the `BrillouinZone` integration, default</span>
 <span class="sd">        to true.</span>
 
 <span class="sd">    Examples</span>
@@ -811,16 +822,16 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        eta : float, optional</span>
-<span class="sd">            imaginary part in the self-energy calculations (default 1e-4 eV)</span>
+<span class="sd">            imaginary part (:math:`\eta`) in the self-energy calculations (default 1e-4 eV)</span>
 <span class="sd">        dk : float, optional</span>
 <span class="sd">            fineness of the default integration grid, specified in units of Ang, default to 1000 which</span>
-<span class="sd">            translates to 1000 k-points along reciprocal cells of length 1. Ang^-1.</span>
+<span class="sd">            translates to 1000 k-points along reciprocal cells of length :math:`1. \mathrm{Ang}^{-1}`.</span>
 <span class="sd">        bz : BrillouinZone, optional</span>
 <span class="sd">            integration k-points, if not passed the number of k-points will be determined using</span>
 <span class="sd">            `dk` and time-reversal symmetry will be determined by `trs`, the number of points refers</span>
 <span class="sd">            to the unfolded system.</span>
 <span class="sd">        trs : bool, optional</span>
-<span class="sd">            whether time-reversal symmetry is used in the BrillouinZone integration, default</span>
+<span class="sd">            whether time-reversal symmetry is used in the `BrillouinZone` integration, default</span>
 <span class="sd">            to true.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">options</span><span class="p">)</span></div>
@@ -932,7 +943,17 @@
         <span class="c1"># Create temporary access elements in the calculation dictionary</span>
         <span class="c1"># to be used in .green and .self_energy</span>
         <span class="n">P0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">real_space_parent</span><span class="p">()</span>
+
         <span class="n">V_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">real_space_coupling</span><span class="p">(</span><span class="kc">True</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">orbs</span> <span class="o">=</span> <span class="n">P0</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">V_atoms</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">P0</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_diagonal</span><span class="p">:</span>
+                <span class="c1"># expand in case we have a non-colinear|spin-orbit</span>
+                <span class="n">orbs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">orbs</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
+                <span class="n">orbs</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_calc</span> <span class="o">=</span> <span class="p">{</span>
             <span class="c1"># The below algorithm requires the direction to be negative</span>
             <span class="c1"># if changed, B, C should be reversed below</span>
@@ -941,7 +962,7 @@
             <span class="s2">&quot;P0&quot;</span><span class="p">:</span> <span class="n">P0</span><span class="o">.</span><span class="n">Pk</span><span class="p">,</span>
             <span class="s2">&quot;S0&quot;</span><span class="p">:</span> <span class="n">P0</span><span class="o">.</span><span class="n">Sk</span><span class="p">,</span>
             <span class="c1"># Orbitals in the coupling atoms</span>
-            <span class="s2">&quot;orbs&quot;</span><span class="p">:</span> <span class="n">P0</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">V_atoms</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="s2">&quot;orbs&quot;</span><span class="p">:</span> <span class="n">orbs</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
         <span class="p">}</span>
 
         <span class="c1"># Update the BrillouinZone integration grid in case it isn&#39;t specified</span>
@@ -1082,7 +1103,7 @@
         <span class="n">getrf</span> <span class="o">=</span> <span class="n">linalg_info</span><span class="p">(</span><span class="s2">&quot;getrf&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
         <span class="n">getri</span> <span class="o">=</span> <span class="n">linalg_info</span><span class="p">(</span><span class="s2">&quot;getri&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
         <span class="n">getri_lwork</span> <span class="o">=</span> <span class="n">linalg_info</span><span class="p">(</span><span class="s2">&quot;getri_lwork&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
-        <span class="n">lwork</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1.01</span> <span class="o">*</span> <span class="n">_compute_lwork</span><span class="p">(</span><span class="n">getri_lwork</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calc</span><span class="p">[</span><span class="s2">&quot;SE&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">spgeom0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="n">lwork</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1.01</span> <span class="o">*</span> <span class="n">_compute_lwork</span><span class="p">(</span><span class="n">getri_lwork</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_calc</span><span class="p">[</span><span class="s2">&quot;SE&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">spgeom0</span><span class="p">)))</span>
         <span class="k">def</span> <span class="nf">inv</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
             <span class="n">lu</span><span class="p">,</span> <span class="n">piv</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">getrf</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">overwrite_a</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">info</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -1229,16 +1250,16 @@
 <span class="sd">        number of times the `surface` structure is tiled along each direction</span>
 <span class="sd">        Since this is a surface there will maximally be 2 unfolds being non-unity.</span>
 <span class="sd">    eta : float, optional</span>
-<span class="sd">        imaginary part in the self-energy calculations (default 1e-4 eV)</span>
+<span class="sd">        imaginary part (:math:`\eta`) in the self-energy calculations (default 1e-4 eV)</span>
 <span class="sd">    dk : float, optional</span>
 <span class="sd">        fineness of the default integration grid, specified in units of Ang, default to 1000 which</span>
-<span class="sd">        translates to 1000 k-points along reciprocal cells of length 1. Ang^-1.</span>
+<span class="sd">        translates to 1000 k-points along reciprocal cells of length :math:`1. \mathrm{Ang}^{-1}`.</span>
 <span class="sd">    bz : BrillouinZone, optional</span>
 <span class="sd">        integration k-points, if not passed the number of k-points will be determined using</span>
 <span class="sd">        `dk` and time-reversal symmetry will be determined by `trs`, the number of points refers</span>
 <span class="sd">        to the unfolded system.</span>
 <span class="sd">    trs : bool, optional</span>
-<span class="sd">        whether time-reversal symmetry is used in the BrillouinZone integration, default</span>
+<span class="sd">        whether time-reversal symmetry is used in the `BrillouinZone` integration, default</span>
 <span class="sd">        to true.</span>
 
 <span class="sd">    Examples</span>
@@ -1329,7 +1350,15 @@
                              <span class="s2">&quot;and surface atoms does not coincide!&quot;</span><span class="p">)</span>
 
         <span class="c1"># Surface orbitals to put in the semi-infinite self-energy into.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_surface_orbs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">orbs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_diagonal</span><span class="p">:</span>
+                <span class="c1"># expand in case we have a non-colinear|spin-orbit</span>
+                <span class="n">orbs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">orbs</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
+                <span class="n">orbs</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_surface_orbs</span> <span class="o">=</span> <span class="n">orbs</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_options</span> <span class="o">=</span> <span class="p">{</span>
             <span class="c1"># For true, the semi-infinite direction will use the bulk values for the</span>
@@ -1347,6 +1376,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">set_options</span><span class="p">(</span><span class="o">**</span><span class="n">options</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span></div>
 
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Dimension of the self-energy&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unfold</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; String representation of RealSpaceSI &quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">}</span>
@@ -1360,7 +1393,9 @@
         <span class="k">return</span>  <span class="p">(</span><span class="s2">&quot;</span><span class="si">{class}</span><span class="s2">{{unfold: [</span><span class="si">{u0}</span><span class="s2">, </span><span class="si">{u1}</span><span class="s2">, </span><span class="si">{u2}</span><span class="s2">],</span><span class="se">\n</span><span class="s2"> &quot;</span>
                  <span class="s2">&quot;k-axes: </span><span class="si">{k}</span><span class="s2">, trs: </span><span class="si">{trs}</span><span class="s2">,</span><span class="se">\n</span><span class="s2"> &quot;</span>
                  <span class="s2">&quot;bz: </span><span class="si">{bz}</span><span class="s2">,</span><span class="se">\n</span><span class="s2"> &quot;</span>
-                 <span class="s2">&quot;semi-infinite:</span><span class="se">\n</span><span class="s2">  </span><span class="si">{semi}</span><span class="s2">,</span><span class="se">\n</span><span class="s2"> &quot;</span>
+                 <span class="s2">&quot;semi-infinite:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                 <span class="s2">&quot;  bulk: </span><span class="si">{self._options[&#39;semi_bulk&#39;]}</span><span class="s2">,</span><span class="se">\n</span><span class="s2">&quot;</span>
+                 <span class="s2">&quot;  </span><span class="si">{semi}</span><span class="s2">,</span><span class="se">\n</span><span class="s2"> &quot;</span>
                  <span class="s2">&quot;surface:</span><span class="se">\n</span><span class="s2">  </span><span class="si">{surface}</span><span class="se">\n</span><span class="s2">}}&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">d</span><span class="p">)</span>
 
 <div class="viewcode-block" id="RealSpaceSI.set_options"><a class="viewcode-back" href="../../../api/generated/sisl.physics.RealSpaceSI.html#sisl.physics.RealSpaceSI.set_options">[docs]</a>    <span class="k">def</span> <span class="nf">set_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
@@ -1373,16 +1408,16 @@
 <span class="sd">        semi_bulk : bool, optional</span>
 <span class="sd">            whether the semi-infinite matrix elements are used for in the surface. Default to true.</span>
 <span class="sd">        eta : float, optional</span>
-<span class="sd">            imaginary part in the self-energy calculations (default 1e-4 eV)</span>
+<span class="sd">            imaginary part (:math:`\eta`) in the self-energy calculations (default 1e-4 eV)</span>
 <span class="sd">        dk : float, optional</span>
 <span class="sd">            fineness of the default integration grid, specified in units of Ang, default to 1000 which</span>
-<span class="sd">            translates to 1000 k-points along reciprocal cells of length 1. Ang^-1.</span>
+<span class="sd">            translates to 1000 k-points along reciprocal cells of length :math:`1. \mathrm{Ang}^{-1}`.</span>
 <span class="sd">        bz : BrillouinZone, optional</span>
 <span class="sd">            integration k-points, if not passed the number of k-points will be determined using</span>
 <span class="sd">            `dk` and time-reversal symmetry will be determined by `trs`, the number of points refers</span>
 <span class="sd">            to the unfolded system.</span>
 <span class="sd">        trs : bool, optional</span>
-<span class="sd">            whether time-reversal symmetry is used in the BrillouinZone integration, default</span>
+<span class="sd">            whether time-reversal symmetry is used in the `BrillouinZone` integration, default</span>
 <span class="sd">            to true.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_options</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">options</span><span class="p">)</span></div>
@@ -1530,13 +1565,23 @@
 <span class="sd">        sampling times the unfolding (per :math:`\mathbf k` direction).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">P0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">real_space_parent</span><span class="p">()</span>
+
         <span class="n">V_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">real_space_coupling</span><span class="p">(</span><span class="kc">True</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">orbs</span> <span class="o">=</span> <span class="n">P0</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">V_atoms</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">P0</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_diagonal</span><span class="p">:</span>
+                <span class="c1"># expand in case we have a non-colinear|spin-orbit</span>
+                <span class="n">orbs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">orbs</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
+                <span class="n">orbs</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_calc</span> <span class="o">=</span> <span class="p">{</span>
             <span class="c1"># Used to calculate the real-space self-energy</span>
             <span class="s2">&quot;P0&quot;</span><span class="p">:</span> <span class="n">P0</span><span class="o">.</span><span class="n">Pk</span><span class="p">,</span>
             <span class="s2">&quot;S0&quot;</span><span class="p">:</span> <span class="n">P0</span><span class="o">.</span><span class="n">Sk</span><span class="p">,</span>
             <span class="c1"># Orbitals in the coupling atoms</span>
-            <span class="s2">&quot;orbs&quot;</span><span class="p">:</span> <span class="n">P0</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">V_atoms</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="s2">&quot;orbs&quot;</span><span class="p">:</span> <span class="n">orbs</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
         <span class="p">}</span>
 
         <span class="c1"># Update the BrillouinZone integration grid in case it isn&#39;t specified</span>
@@ -1672,7 +1717,7 @@
         <span class="n">getrf</span> <span class="o">=</span> <span class="n">linalg_info</span><span class="p">(</span><span class="s2">&quot;getrf&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
         <span class="n">getri</span> <span class="o">=</span> <span class="n">linalg_info</span><span class="p">(</span><span class="s2">&quot;getri&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
         <span class="n">getri_lwork</span> <span class="o">=</span> <span class="n">linalg_info</span><span class="p">(</span><span class="s2">&quot;getri_lwork&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
-        <span class="n">lwork</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1.01</span> <span class="o">*</span> <span class="n">_compute_lwork</span><span class="p">(</span><span class="n">getri_lwork</span><span class="p">,</span> <span class="n">M0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="n">lwork</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mf">1.01</span> <span class="o">*</span> <span class="n">_compute_lwork</span><span class="p">(</span><span class="n">getri_lwork</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">M0</span><span class="p">)))</span>
         <span class="k">def</span> <span class="nf">inv</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
             <span class="n">lu</span><span class="p">,</span> <span class="n">piv</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">getrf</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">overwrite_a</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">info</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>

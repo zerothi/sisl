@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.xyz &mdash; sisl 0.1-2eca529</title>
+  <title>sisl.io.xyz &mdash; sisl 0.1-7e8006f</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
@@ -40,7 +40,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-2eca529
+                0.1-7e8006f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -116,10 +116,10 @@
 <span class="c1"># Import sile objects</span>
 <span class="kn">from</span> <span class="nn">._help</span> <span class="kn">import</span> <span class="n">header_to_dict</span>
 <span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="o">*</span>
-
+<span class="kn">from</span> <span class="nn">._multiple</span> <span class="kn">import</span> <span class="n">SileBinder</span>
 <span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">warn</span><span class="p">,</span> <span class="n">deprecate_argument</span>
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Lattice</span><span class="p">,</span> <span class="n">GeometryCollection</span>
+<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Lattice</span>
 <span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
 
 
@@ -153,11 +153,17 @@
         <span class="c1"># Write out the cell information in the comment field</span>
         <span class="c1"># This contains the cell vectors in a single vector (3 + 3 + 3)</span>
         <span class="c1"># quantities, plus the number of supercells (3 ints)</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">fields</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;Lattice=&quot;&#39;</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">{{</span><span class="s1">:</span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="se">}}</span><span class="s1"> &#39;</span> <span class="o">*</span> <span class="mi">9</span> <span class="o">+</span> <span class="s1">&#39;&quot;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">geometry</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">ravel</span><span class="p">()))</span>
+        <span class="n">nsc</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">nsc</span><span class="p">[:]</span>
+        <span class="n">fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;nsc=&quot;</span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">nsc</span><span class="p">))</span>
+        <span class="n">pbc</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;T&#39;</span> <span class="k">if</span> <span class="n">n</span> <span class="k">else</span> <span class="s1">&#39;F&#39;</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nsc</span><span class="p">]</span>
+        <span class="n">fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;pbc=&quot;</span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">pbc</span><span class="p">))</span>
+
         <span class="k">if</span> <span class="n">comment</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">fmt_str</span> <span class="o">=</span> <span class="s1">&#39;sisl-version=1 cell= &#39;</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">{{</span><span class="s1">:</span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="se">}}</span><span class="s1"> &#39;</span> <span class="o">*</span> <span class="mi">9</span> <span class="o">+</span> <span class="s1">&#39; nsc= </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">geometry</span><span class="o">.</span><span class="n">nsc</span><span class="p">[:])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">fmt_str</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">geometry</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">flatten</span><span class="p">()))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">comment</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;Comment=&quot;</span><span class="si">{</span><span class="n">comment</span><span class="si">}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="n">fmt_str</span> <span class="o">=</span> <span class="s1">&#39;{{0:2s}}  {{1:</span><span class="si">{0}</span><span class="s1">}}  {{2:</span><span class="si">{0}</span><span class="s1">}}  {{3:</span><span class="si">{0}</span><span class="s1">}}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fmt</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">ia</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">geometry</span><span class="o">.</span><span class="n">iter_species</span><span class="p">():</span>
@@ -179,10 +185,19 @@
         <span class="c1"># Convert F T to nsc</span>
         <span class="c1">#  F = 1</span>
         <span class="c1">#  T = 3</span>
-        <span class="n">nsc</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s2">&quot;FT&quot;</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">header</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;pbc&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+        <span class="n">nsc</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;nsc&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">nsc</span><span class="p">:</span>
+            <span class="n">nsc</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">nsc</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">nsc</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s2">&quot;FT&quot;</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">header</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;pbc&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
         <span class="n">cell</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">fromiterd</span><span class="p">(</span><span class="n">header</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;Lattice&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">())</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;Origin&quot;</span> <span class="ow">in</span> <span class="n">header</span><span class="p">:</span>
+            <span class="n">origin</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">fromiterd</span><span class="p">(</span><span class="n">header</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;Origin&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">())</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">origin</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">lattice</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">lattice</span> <span class="o">=</span> <span class="n">Lattice</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="n">nsc</span><span class="p">)</span>
+            <span class="n">lattice</span> <span class="o">=</span> <span class="n">Lattice</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="n">nsc</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="n">sp</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="n">lattice</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_r_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">na</span><span class="p">,</span> <span class="n">sp</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">lattice</span><span class="p">):</span>
@@ -201,13 +216,13 @@
             <span class="k">return</span> <span class="kc">None</span>
 
         <span class="n">na</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">na</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">na</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">line</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">na</span>
 
-<div class="viewcode-block" id="xyzSile.read_geometry"><a class="viewcode-back" href="../../../api/io/generated/sisl.io.xyzSile.html#sisl.io.xyzSile.read_geometry">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
-    <span class="nd">@sile_read_multiple</span><span class="p">(</span><span class="n">skip_call</span><span class="o">=</span><span class="n">_r_geometry_skip</span><span class="p">,</span> <span class="n">postprocess</span><span class="o">=</span><span class="n">GeometryCollection</span><span class="p">)</span>
+<div class="viewcode-block" id="xyzSile.read_geometry"><a class="viewcode-back" href="../../../api/io/generated/sisl.io.xyzSile.html#sisl.io.xyzSile.read_geometry">[docs]</a>    <span class="nd">@SileBinder</span><span class="p">(</span><span class="n">skip_func</span><span class="o">=</span><span class="n">_r_geometry_skip</span><span class="p">)</span>
+    <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="nd">@deprecate_argument</span><span class="p">(</span><span class="s2">&quot;sc&quot;</span><span class="p">,</span> <span class="s2">&quot;lattice&quot;</span><span class="p">,</span> <span class="s2">&quot;use lattice= instead of sc=&quot;</span><span class="p">,</span> <span class="n">from_version</span><span class="o">=</span><span class="s2">&quot;0.15&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns Geometry object from the XYZ file</span>
@@ -250,7 +265,7 @@
 
         <span class="k">if</span> <span class="n">_has_keys</span><span class="p">(</span><span class="n">kv</span><span class="p">,</span> <span class="s2">&quot;cell&quot;</span><span class="p">,</span> <span class="s2">&quot;nsc&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_geometry_sisl</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">kv</span><span class="p">,</span> <span class="n">sp</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">lattice</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">_has_keys</span><span class="p">(</span><span class="n">kv</span><span class="p">,</span> <span class="s2">&quot;Properties&quot;</span><span class="p">,</span> <span class="s2">&quot;Lattice&quot;</span><span class="p">,</span> <span class="s2">&quot;pbc&quot;</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="n">_has_keys</span><span class="p">(</span><span class="n">kv</span><span class="p">,</span> <span class="s2">&quot;Lattice&quot;</span><span class="p">,</span> <span class="s2">&quot;pbc&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_geometry_ase</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">kv</span><span class="p">,</span> <span class="n">sp</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">lattice</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_geometry</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">sp</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">lattice</span><span class="p">)</span></div>
 

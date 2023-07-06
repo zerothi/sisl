@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.orbital &mdash; sisl 0.1-2eca529</title>
+  <title>sisl.orbital &mdash; sisl 0.1-7e8006f</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
@@ -40,7 +40,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-2eca529
+                0.1-7e8006f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -109,18 +109,27 @@
 <span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
 <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Iterable</span>
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Integral</span><span class="p">,</span> <span class="n">Real</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sqrt</span> <span class="k">as</span> <span class="n">msqrt</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">factorial</span> <span class="k">as</span> <span class="n">fact</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">import</span> <span class="nn">numpy.typing</span> <span class="k">as</span> <span class="nn">npt</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">cos</span><span class="p">,</span> <span class="n">sin</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">take</span><span class="p">,</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">square</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
 <span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">lpmv</span><span class="p">,</span> <span class="n">factorial</span><span class="p">,</span> <span class="n">eval_genlaguerre</span>
+<span class="k">if</span> <span class="n">scipy</span><span class="o">.</span><span class="n">__version__</span> <span class="o">&lt;</span> <span class="s2">&quot;0.16.0&quot;</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="kn">import</span> <span class="n">cumtrapz</span> <span class="k">as</span> <span class="n">cumulative_trapezoid</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="kn">import</span> <span class="n">cumulative_trapezoid</span>
 <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">UnivariateSpline</span>
 
+<span class="kn">from</span> <span class="nn">.messages</span> <span class="kn">import</span> <span class="n">warn</span>
 <span class="kn">from</span> <span class="nn">._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_plot</span> <span class="k">as</span> <span class="n">plt</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_array</span> <span class="k">as</span> <span class="n">_a</span>
@@ -129,9 +138,11 @@
 <span class="kn">from</span> <span class="nn">sisl.constant</span> <span class="kn">import</span> <span class="n">a0</span>
 
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Orbital&quot;</span><span class="p">,</span> <span class="s2">&quot;SphericalOrbital&quot;</span><span class="p">,</span> <span class="s2">&quot;AtomicOrbital&quot;</span><span class="p">,</span>
-           <span class="s2">&quot;HydrogenicOrbital&quot;</span><span class="p">,</span>
-           <span class="s2">&quot;GTOrbital&quot;</span><span class="p">,</span> <span class="s2">&quot;STOrbital&quot;</span><span class="p">,</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;Orbital&quot;</span><span class="p">,</span> <span class="s2">&quot;SphericalOrbital&quot;</span><span class="p">,</span> <span class="s2">&quot;AtomicOrbital&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;HydrogenicOrbital&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;GTOrbital&quot;</span><span class="p">,</span> <span class="s2">&quot;STOrbital&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;radial_minimize_range&quot;</span>
 <span class="p">]</span>
 
 
@@ -198,14 +209,26 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Orbital</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Base class for orbital information.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Base class for orbital information.</span>
 
 <span class="sd">    The orbital class is still in an experimental stage and will probably evolve over some time.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    R : float</span>
-<span class="sd">        maximum radius</span>
+<span class="sd">    R : float or dict or None</span>
+<span class="sd">        maximum radius of interaction.</span>
+<span class="sd">        In case of a dict the values will be passed to the `radial_minimize_range`</span>
+<span class="sd">        method.</span>
+<span class="sd">        Currently allowed arguments are:</span>
+<span class="sd">          - ``contains``: R will be selected such that the integrated function ``func``</span>
+<span class="sd">            will contain this percentage of the full integral (determined at ``maxR``</span>
+<span class="sd">          - ``maxR``: maximum R to search in, default to 100 Ang</span>
+<span class="sd">          - ``func``: the function that will be integrated and checked for ``contains``</span>
+<span class="sd">          See examples for details.</span>
+<span class="sd">        If None the default will be ``{&#39;contains&#39;: 0.9999}``.</span>
+<span class="sd">        If a negative number is passed, it will be converted to ``{&#39;contains&#39;:-R}``</span>
+<span class="sd">        A dictionary will only make sense if the class has the ``_radial`` function</span>
+<span class="sd">        associated.</span>
 <span class="sd">    q0 : float, optional</span>
 <span class="sd">        initial charge</span>
 <span class="sd">    tag : str, optional</span>
@@ -220,11 +243,42 @@
 <span class="sd">    &gt;&gt;&gt; orbq = Orbital(2, 1)</span>
 <span class="sd">    &gt;&gt;&gt; orbq.q0</span>
 <span class="sd">    1.</span>
+
+<span class="sd">    Optimizing the R range for the radial function integral :math:`\int dr radial(r)^2 r ^2`</span>
+<span class="sd">    &gt;&gt;&gt; R = {</span>
+<span class="sd">    ...    &quot;contains&quot;: 0.9999,</span>
+<span class="sd">    ...    &quot;func&quot;: lambda radial, r: (radial(r) * r)**2,</span>
+<span class="sd">    ...    &quot;maxR&quot;: 100</span>
+<span class="sd">    ... }</span>
+<span class="sd">    &gt;&gt;&gt; orb = Orbital(R)</span>
+
+<span class="sd">    The default dictionary if none is passed will be:</span>
+<span class="sd">    ``dict(contains=0.9999, func=lambda radial, r: abs(radial(r)), maxR=100)``</span>
+<span class="sd">    The optimization problem depends heavily on the ``func`` since the tails are</span>
+<span class="sd">    important for real-space quantities.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;_R&quot;</span><span class="p">,</span> <span class="s2">&quot;_tag&quot;</span><span class="p">,</span> <span class="s2">&quot;_q0&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Orbital.__init__"><a class="viewcode-back" href="../../api/generated/sisl.Orbital.html#sisl.Orbital.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">q0</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Initialize orbital object &quot;&quot;&quot;</span>
+        <span class="c1"># Determine if the orbital has a radial function</span>
+        <span class="c1"># In which case we can apply the radial discovery</span>
+        <span class="k">if</span> <span class="n">R</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">R</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.9999</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_radial&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="k">pass</span>
+            <span class="k">elif</span> <span class="n">R</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># change to a dict</span>
+                <span class="n">R</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;contains&quot;</span><span class="p">:</span> <span class="o">-</span><span class="n">R</span><span class="p">}</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">R</span> <span class="o">=</span> <span class="n">radial_minimize_range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_radial</span><span class="p">,</span> <span class="o">**</span><span class="n">R</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> cannot optimize R without a radial function.&quot;</span><span class="p">)</span>
+            <span class="n">R</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;contains&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.9999</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_R</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_q0</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">q0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tag</span> <span class="o">=</span> <span class="n">tag</span></div>
@@ -423,7 +477,116 @@
         <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;R&quot;</span><span class="p">],</span> <span class="n">q0</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;q0&quot;</span><span class="p">],</span> <span class="n">tag</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;tag&quot;</span><span class="p">])</span>
 
 
-<span class="k">def</span> <span class="nf">_set_radial</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<span class="n">RadialFuncT</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">],</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]</span>
+<span class="k">def</span> <span class="nf">radial_minimize_range</span><span class="p">(</span><span class="n">radial_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">RadialFuncT</span><span class="p">],</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">],</span>
+                          <span class="n">contains</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                          <span class="n">dr</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span><span class="o">=</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.0001</span><span class="p">),</span>
+                          <span class="n">maxR</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                          <span class="n">func</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">RadialFuncT</span><span class="p">,</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">],</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">]]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Minimize the maximum radius such that the integrated function `radial_func**2*r**3` contains `contains` of the integrand</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    radial_func : callable</span>
+<span class="sd">       the function that returns the radial part</span>
+<span class="sd">    contains : float</span>
+<span class="sd">       how much of a percentage the squared function should contain @ R</span>
+<span class="sd">    dr : tuple of float, optional</span>
+<span class="sd">       the precision of the integral. First number is the coarse integral.</span>
+<span class="sd">       The second number determines the fine-integral to exactly determine R between</span>
+<span class="sd">       coarser points.</span>
+<span class="sd">    maxR : float, optional</span>
+<span class="sd">       maximally searched ``R``, in case there is no cross-over of the integrand</span>
+<span class="sd">       containing `contains` in this range a ``-contains`` will be returned to</span>
+<span class="sd">       signal it could not be found</span>
+<span class="sd">    func : callable, optional</span>
+<span class="sd">        function that is evaluated when doing the `contains` check.</span>
+<span class="sd">        I.e. ``trapz(func(radial_func, r)) &gt;= contains``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Determine the maximum R</span>
+    <span class="c1"># We should never expect a radial components above</span>
+    <span class="k">assert</span> <span class="n">maxR</span> <span class="o">&gt;</span> <span class="mf">0.05</span><span class="p">,</span> <span class="s2">&quot;maxR too small (&gt; 0.05)&quot;</span>
+    <span class="k">assert</span> <span class="n">contains</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;contains too small (&gt; 0)&quot;</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">dr</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;number of sub-divisions is not 2: dr argument&quot;</span>
+
+    <span class="k">def</span> <span class="nf">func_base</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+        <span class="c1"># finding the best integral function for locating max</span>
+        <span class="c1"># R is difficult.</span>
+        <span class="c1"># For instance the exact integral of a radial function</span>
+        <span class="c1"># is: (f(r) * r)**2</span>
+        <span class="c1"># However, locating R that takes 99.99% of the integrand</span>
+        <span class="c1"># tends to yield a too low R.</span>
+        <span class="c1"># This is send by evaluating f(R) which tends to be 1% of</span>
+        <span class="c1"># the maximum f(:). Hence when expanding individual points</span>
+        <span class="c1"># in the real space grid one finds non-negligeble points</span>
+        <span class="c1"># that are left out. Hence we cannot limit these integration</span>
+        <span class="c1"># points.</span>
+        <span class="c1"># Instead we use the absolute radial function to better capture</span>
+        <span class="c1"># long tails.</span>
+        <span class="c1"># Tried functions:</span>
+        <span class="c1"># 1. f(r)  -&gt;  problematic when f turns negative</span>
+        <span class="c1"># 2. f(r) ** 2 -&gt; yields somewhat short R</span>
+        <span class="c1"># 3. f(r) * r -&gt; problematic when f turns negative</span>
+        <span class="c1"># 4. (f(r) * r)**2 -&gt; yields too short R</span>
+        <span class="c1"># 5. f(r)**2 * r**3 -&gt; much better</span>
+        <span class="c1"># 6. abs(f(r)) -&gt; yields a pretty long tail, but should be fine</span>
+        <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">func</span> <span class="o">=</span> <span class="n">func_base</span>
+
+    <span class="k">def</span> <span class="nf">loc</span><span class="p">(</span><span class="n">intf</span><span class="p">,</span> <span class="n">integrand</span><span class="p">):</span>
+        <span class="c1"># get index location of the boolean index where</span>
+        <span class="c1"># all subsequent indices are also of the same type</span>
+        <span class="c1"># first we find placements below the integrand, and</span>
+        <span class="c1"># then only select ones above the max placement</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">intf</span> <span class="o">&lt;</span> <span class="n">integrand</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">idx</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="n">idx</span> <span class="o">+</span> <span class="p">(</span><span class="n">intf</span><span class="p">[</span><span class="n">idx</span><span class="p">:]</span> <span class="o">&gt;=</span> <span class="n">integrand</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">maxR</span> <span class="o">+</span> <span class="n">dr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">dr</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">radial_func</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+    <span class="n">intf</span> <span class="o">=</span> <span class="n">cumulative_trapezoid</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="n">dr</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">initial</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">integrand</span> <span class="o">=</span> <span class="n">intf</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">contains</span>
+
+    <span class="c1"># we&#39;ll accept a containment of 99.99% of the integrand</span>
+    <span class="n">loc</span><span class="p">(</span><span class="n">intf</span><span class="p">,</span> <span class="n">integrand</span><span class="p">)</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">loc</span><span class="p">(</span><span class="n">intf</span><span class="p">,</span> <span class="n">integrand</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">idx</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">idx</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+
+        <span class="c1"># in the trapezoid integration each point is half contributed</span>
+        <span class="c1"># to the previous point and half to the following point.</span>
+        <span class="c1"># Here intf[idx-1] is the closed integral from 0:r[idx-1]</span>
+        <span class="n">idxm_integrand</span> <span class="o">=</span> <span class="n">intf</span><span class="p">[</span><span class="n">idx</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># Preset R</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+
+        <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">R</span> <span class="o">-</span> <span class="n">dr</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">min</span><span class="p">(</span><span class="n">R</span> <span class="o">+</span> <span class="n">dr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">maxR</span><span class="p">)</span> <span class="o">+</span> <span class="n">dr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">dr</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">radial_func</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+        <span class="n">intf</span> <span class="o">=</span> <span class="n">cumulative_trapezoid</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">dx</span><span class="o">=</span><span class="n">dr</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">initial</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">idxm_integrand</span>
+
+        <span class="c1"># Find minimum R and focus around this point</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">loc</span><span class="p">(</span><span class="n">intf</span><span class="p">,</span> <span class="n">integrand</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">R</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="n">idx</span><span class="o">.</span><span class="n">min</span><span class="p">()]</span>
+        <span class="k">return</span> <span class="n">R</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">func_name</span> <span class="o">=</span> <span class="n">radial_func</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="n">func_name</span> <span class="o">=</span> <span class="n">radial_func</span><span class="o">.</span><span class="vm">__name__</span>
+
+    <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">func_name</span><span class="si">}</span><span class="s2"> failed to detect a proper radius for integration purposes, retaining R=-</span><span class="si">{</span><span class="n">contains</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="o">-</span><span class="n">contains</span>
+
+
+<span class="k">def</span> <span class="nf">_set_radial</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Update the internal radial function used as a :math:`f(|\mathbf r|)`</span>
 
 <span class="sd">    This can be called in several ways:</span>
@@ -480,46 +643,15 @@
 <span class="sd">    &gt;&gt;&gt; np.allclose(f_univariate, f_spline)</span>
 <span class="sd">    True</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">R</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.</span><span class="p">)</span>
-    <span class="n">set_R</span> <span class="o">=</span> <span class="n">R</span> <span class="o">&lt;=</span> <span class="mf">0.</span>
-
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="c1"># Return immediately</span>
-        <span class="k">def</span> <span class="nf">f0</span><span class="p">(</span><span class="n">R</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot; A zero radial part (always) &quot;&quot;&quot;</span>
-            <span class="k">return</span> <span class="n">R</span> <span class="o">*</span> <span class="mf">0.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_radial</span><span class="p">(</span><span class="n">f0</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">f0</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot; Wrapper for returning 0s &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_radial</span> <span class="o">=</span> <span class="n">f0</span>
+        <span class="c1"># we cannot set R since it will always give the largest distance</span>
 
     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">callable</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_radial</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
-        <span class="c1"># Determine the maximum R</span>
-        <span class="c1"># We should never expect a radial components above</span>
-        <span class="c1"># 50 Ang (is this not fine? ;))</span>
-        <span class="c1"># Precision of 0.05 A</span>
-        <span class="k">if</span> <span class="n">set_R</span><span class="p">:</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
-            <span class="n">f</span> <span class="o">=</span> <span class="n">square</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_radial</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
-
-            <span class="c1"># Find maximum R and focus around this point</span>
-            <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">f</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">idx</span> <span class="o">=</span> <span class="n">idx</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
-                <span class="c1"># Assert that we actually hit where there are zeros</span>
-                <span class="k">if</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="c1"># Preset R</span>
-                <span class="n">R</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
-                <span class="c1"># This should give us a precision of 0.0001 A</span>
-                <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">-</span><span class="mf">0.055</span><span class="o">+</span><span class="mf">0.0001</span><span class="p">,</span> <span class="n">r</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">+</span><span class="mf">0.055</span><span class="p">,</span> <span class="mi">1100</span><span class="p">)</span>
-                <span class="n">f</span> <span class="o">=</span> <span class="n">square</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_radial</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
-                <span class="c1"># Find minimum R and focus around this point</span>
-                <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">f</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">idx</span> <span class="o">=</span> <span class="n">idx</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
-                    <span class="k">if</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
-                        <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span>
-                    <span class="n">R</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
 
     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
 
@@ -537,13 +669,12 @@
         <span class="c1"># I can see that this function is *much* faster than</span>
         <span class="c1"># interp1d, AND it yields same results with these arguments.</span>
         <span class="n">interp</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">UnivariateSpline</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">check_finite</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">interp</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;interp&quot;</span><span class="p">,</span> <span class="n">interp</span><span class="p">)</span>
+        <span class="n">interp</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;interp&quot;</span><span class="p">,</span> <span class="n">interp</span><span class="p">)(</span><span class="n">r</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
-        <span class="n">R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_radial</span><span class="p">(</span><span class="n">interp</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">f</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-    <span class="k">elif</span> <span class="n">set_R</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Arguments for set_radial are in-correct, please see the documentation of SphericalOrbital.set_radial&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">R</span>
+        <span class="c1"># this will defer the actual R designation (whether it should be set or not)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_radial</span> <span class="o">=</span> <span class="n">interp</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.set_radial could not determine the arguments, please correct.&quot;</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_radial</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
@@ -609,6 +740,8 @@
 <span class="sd">    rf_or_func : tuple of (r, f) or func</span>
 <span class="sd">       radial components as a tuple/list, or the function which can interpolate to any R</span>
 <span class="sd">       See `set_radial` for details.</span>
+<span class="sd">    R :</span>
+<span class="sd">       See `Orbital` for details.</span>
 <span class="sd">    q0 : float, optional</span>
 <span class="sd">       initial charge</span>
 <span class="sd">    tag : str, optional</span>
@@ -642,7 +775,10 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">args</span> <span class="o">=</span> <span class="n">rf_or_func</span>
 
-        <span class="n">R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_radial</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_radial</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># ensure we pass an R value (default None)</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">)</span>
 
         <span class="c1"># Initialize R and tag through the parent</span>
         <span class="c1"># Note that the maximum range of the orbital will be the</span>
@@ -741,7 +877,7 @@
 
 <div class="viewcode-block" id="SphericalOrbital.copy"><a class="viewcode-back" href="../../api/generated/sisl.SphericalOrbital.html#sisl.SphericalOrbital.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Create an exact copy of this object &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">l</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_radial</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">q0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">l</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_radial</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="p">,</span> <span class="n">q0</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">q0</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SphericalOrbital.equal"><a class="viewcode-back" href="../../api/generated/sisl.SphericalOrbital.html#sisl.SphericalOrbital.equal">[docs]</a>    <span class="k">def</span> <span class="nf">equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">psi</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">radial</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Compare two orbitals by comparing their radius, and possibly the radial and psi functions</span>
@@ -844,6 +980,8 @@
 <span class="sd">    ----------</span>
 <span class="sd">    *args : list of arguments</span>
 <span class="sd">        list of arguments can be in different input options</span>
+<span class="sd">    R :</span>
+<span class="sd">       See `Orbital` for details.</span>
 <span class="sd">    q0 : float, optional</span>
 <span class="sd">        initial charge</span>
 <span class="sd">    tag : str, optional</span>
@@ -879,7 +1017,6 @@
 
 <div class="viewcode-block" id="AtomicOrbital.__init__"><a class="viewcode-back" href="../../api/generated/sisl.AtomicOrbital.html#sisl.AtomicOrbital.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Initialize atomic orbital object &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="mf">0.</span><span class="p">),</span> <span class="n">q0</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;q0&quot;</span><span class="p">,</span> <span class="mf">0.</span><span class="p">),</span> <span class="n">tag</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tag&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
 
         <span class="c1"># Ensure args is a list (to be able to pop)</span>
         <span class="n">args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
@@ -967,18 +1104,6 @@
                     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">bool</span><span class="p">):</span>
                         <span class="n">P</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-        <span class="c1"># Now we should figure out how the spherical orbital</span>
-        <span class="c1"># has been passed.</span>
-        <span class="c1"># There are two options:</span>
-        <span class="c1">#  1. The radial function is passed as two arrays: r, f</span>
-        <span class="c1">#  2. The SphericalOrbital-class is passed which already contains</span>
-        <span class="c1">#     the relevant information.</span>
-        <span class="c1"># Figure out if it is a sphericalorbital</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">SphericalOrbital</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_orb</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_orb</span> <span class="o">=</span> <span class="n">SphericalOrbital</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">q0</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">q0</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">l</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> l is not defined&quot;</span><span class="p">)</span>
@@ -1005,23 +1130,36 @@
         <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">l</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> requires |m| &lt;= l.&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Retrieve user-passed spherical orbital</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;spherical&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+       <span class="c1"># Now we should figure out how the spherical orbital</span>
+        <span class="c1"># has been passed.</span>
+        <span class="c1"># There are two options:</span>
+        <span class="c1">#  1. The radial function is passed as two arrays: r, f</span>
+        <span class="c1">#  2. The SphericalOrbital-class is passed which already contains</span>
+        <span class="c1">#     the relevant information.</span>
+        <span class="c1"># Figure out if it is a sphericalorbital</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;spherical&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> multiple values for the spherical &quot;</span>
+                                 <span class="s2">&quot;orbital is present, 1) argument, 2) spherical=. Only supply one of them.&quot;</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># in case the class has its own radial implementation, we might as well rely on that one</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;spherical&quot;</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_radial&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+
+        <span class="c1"># Get the radius requested</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">)</span>
+        <span class="n">q0</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;q0&quot;</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">s</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># Expect the orbital to already be set</span>
-            <span class="k">pass</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_orb</span> <span class="o">=</span> <span class="n">Orbital</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">q0</span><span class="o">=</span><span class="n">q0</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">Orbital</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_orb</span> <span class="o">=</span> <span class="n">s</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_orb</span> <span class="o">=</span> <span class="n">SphericalOrbital</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">q0</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">q0</span><span class="p">)</span>
+            <span class="c1"># Determine the correct R if requested a sub-set</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_orb</span> <span class="o">=</span> <span class="n">SphericalOrbital</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">q0</span><span class="o">=</span><span class="n">q0</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="n">R</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orb</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># Default orbital to none, this will not create any radial functions</span>
-            <span class="c1"># But any use of the orbital will still work</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_orb</span> <span class="o">=</span> <span class="n">Orbital</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="p">,</span> <span class="n">q0</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">q0</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orb</span><span class="o">.</span><span class="n">R</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_orb</span><span class="o">.</span><span class="n">R</span><span class="p">,</span> <span class="n">q0</span><span class="o">=</span><span class="n">q0</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tag&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span></div>
 
     <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">hash</span><span class="p">((</span><span class="nb">super</span><span class="p">(</span><span class="n">Orbital</span><span class="p">,</span> <span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_m</span><span class="p">,</span>
@@ -1275,8 +1413,8 @@
 <span class="sd">        magnetic quantum number</span>
 <span class="sd">    Z : float</span>
 <span class="sd">        effective atomic number</span>
-<span class="sd">    R : float, optional</span>
-<span class="sd">        max range of the constructed orbital, defaults to 10 Ang</span>
+<span class="sd">    R :</span>
+<span class="sd">        See `Orbital` for details.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1288,18 +1426,25 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_Z</span> <span class="o">=</span> <span class="n">Z</span>
 
-        <span class="n">R</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="mf">10.</span><span class="p">)</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+        <span class="n">Helper</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;Helper&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Z&quot;</span><span class="p">,</span> <span class="s2">&quot;prefactor&quot;</span><span class="p">])</span>
         <span class="n">z</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">Z</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="n">a0</span><span class="p">(</span><span class="s2">&quot;Ang&quot;</span><span class="p">))</span>
         <span class="n">pref</span> <span class="o">=</span> <span class="p">(</span><span class="n">z</span> <span class="o">**</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">factorial</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n</span> <span class="o">*</span> <span class="n">factorial</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="n">l</span><span class="p">)))</span> <span class="o">**</span> <span class="mf">0.5</span>
-        <span class="n">L</span> <span class="o">=</span> <span class="n">eval_genlaguerre</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">l</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">z</span> <span class="o">*</span> <span class="n">r</span><span class="p">)</span>
-        <span class="n">Rnl</span> <span class="o">=</span> <span class="n">pref</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">z</span> <span class="o">*</span> <span class="n">r</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">z</span> <span class="o">*</span> <span class="n">r</span><span class="p">)</span> <span class="o">**</span> <span class="n">l</span> <span class="o">*</span> <span class="n">L</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_radial_helper</span> <span class="o">=</span> <span class="n">Helper</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">pref</span><span class="p">)</span>
 
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Rnl</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="HydrogenicOrbital.copy"><a class="viewcode-back" href="../../api/generated/sisl.HydrogenicOrbital.html#sisl.HydrogenicOrbital.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Create an exact copy of this object &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">l</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Z</span><span class="p">,</span> <span class="n">q0</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">q0</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">l</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Z</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="p">,</span> <span class="n">q0</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">q0</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_radial</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Radial functional for the Hydrogenic orbital &quot;&quot;&quot;</span>
+        <span class="n">H</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_radial_helper</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">l</span>
+        <span class="n">zr</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">Z</span> <span class="o">*</span> <span class="n">r</span>
+        <span class="n">L</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">prefactor</span> <span class="o">*</span> <span class="n">eval_genlaguerre</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">l</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">zr</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">zr</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">zr</span> <span class="o">**</span> <span class="n">l</span> <span class="o">*</span> <span class="n">L</span>
 
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Return the state of this object &quot;&quot;&quot;</span>
@@ -1337,7 +1482,7 @@
         <span class="n">args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
 
         <span class="c1"># Extract shell information</span>
-        <span class="n">n</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;n&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;n&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">l</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;l&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">m</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">alpha</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;alpha&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -1396,15 +1541,13 @@
         <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">l</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> requires |m| &lt;= l.&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="s2">&quot;R&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="c1"># ensure R is present</span>
-            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;R&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.</span>
-
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># update R in case the user did not specify it</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="n">R</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Create an exact copy of this object &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">l</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span> <span class="n">coeff</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">coeff</span><span class="p">,</span> <span class="n">q0</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">q0</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">l</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span> <span class="n">coeff</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">coeff</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">R</span><span class="p">,</span> <span class="n">q0</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">q0</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; A string representation of the object &quot;&quot;&quot;</span>
@@ -1557,13 +1700,15 @@
 <span class="sd">       a conversion from online tables is necessary.</span>
 <span class="sd">    coeff : float or array_like</span>
 <span class="sd">       contraction factors</span>
+<span class="sd">    R :</span>
+<span class="sd">        See `Orbital` for details.</span>
 <span class="sd">    q0 : float, optional</span>
 <span class="sd">        initial charge</span>
 <span class="sd">    tag : str, optional</span>
 <span class="sd">        user defined tag</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">()</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="n">radial</span> <span class="o">=</span> <span class="n">_radial</span>
 
@@ -1615,13 +1760,15 @@
 <span class="sd">       a conversion from online tables is necessary.</span>
 <span class="sd">    coeff : float or array_like</span>
 <span class="sd">       contraction factors</span>
+<span class="sd">    R :</span>
+<span class="sd">        See `Orbital` for details.</span>
 <span class="sd">    q0 : float, optional</span>
 <span class="sd">        initial charge</span>
 <span class="sd">    tag : str, optional</span>
 <span class="sd">        user defined tag</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">()</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 
     <span class="n">radial</span> <span class="o">=</span> <span class="n">_radial</span>
 

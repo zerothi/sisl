@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>get_sile &mdash; sisl 0.1-2eca529</title>
+  <title>get_sile &mdash; sisl 0.1-7e8006f</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
@@ -43,7 +43,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-2eca529
+                0.1-7e8006f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -159,7 +159,7 @@ This file name may contain {&lt;class-name&gt;} which sets
 For instance <code class="docutils literal notranslate"><span class="pre">get_sile(&quot;water.dat{xyzSile}&quot;)</span></code>
 will read the file <code class="docutils literal notranslate"><span class="pre">water.dat</span></code> using the <a class="reference internal" href="sisl.io.xyzSile.html#sisl.io.xyzSile" title="sisl.io.xyzSile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xyzSile</span></code></a> class.</p></li>
 <li><p><strong>cls</strong> (<em>class</em>) – In case there are several files with similar file-suffixes
-you may query the exact base-class that should be chosen.
+you may query the exact base-less that should be chosen.
 If there are several files with similar file-endings this
 function returns a random one.</p></li>
 </ul>
@@ -177,6 +177,11 @@ explicitly typing the Sile object.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="bp">cls</span> <span class="o">=</span> <span class="n">get_sile_class</span><span class="p">(</span><span class="s2">&quot;anyfile.xyz&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="s2">&quot;water.dat&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">another_xyz</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="s2">&quot;water2.dat&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To narrow the search one can clarify whether it should start or
+end with a string:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="bp">cls</span> <span class="o">=</span> <span class="n">get_sile_class</span><span class="p">(</span><span class="s2">&quot;water.dat{startswith=xyz}&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>

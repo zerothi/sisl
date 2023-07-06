@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.orca.txtSileORCA &mdash; sisl 0.1-2eca529</title>
+  <title>sisl.io.orca.txtSileORCA &mdash; sisl 0.1-7e8006f</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
@@ -28,7 +28,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="ScaleUP" href="../scaleup.html" />
-    <link rel="prev" title="sisl.io.orca.outputSileORCA" href="sisl.io.orca.outputSileORCA.html" /> 
+    <link rel="prev" title="sisl.io.orca.stdoutSileORCA" href="sisl.io.orca.stdoutSileORCA.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -43,7 +43,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-2eca529
+                0.1-7e8006f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -96,7 +96,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../gulp.html">GULP</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../openmx.html">OpenMX</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="../orca.html">ORCA</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="sisl.io.orca.outputSileORCA.html">sisl.io.orca.outputSileORCA</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.io.orca.stdoutSileORCA.html">sisl.io.orca.stdoutSileORCA</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">sisl.io.orca.txtSileORCA</a></li>
 </ul>
 </li>
@@ -159,29 +159,29 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.orca.txtSileORCA.read" title="sisl.io.orca.txtSileORCA.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Generic read method which should be overloaded in child-classes</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.orca.txtSileORCA.read_electrons" title="sisl.io.orca.txtSileORCA.read_electrons"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_electrons</span></code></a>([all])</p></td>
-<td><p>Read number of electrons (alpha, beta)</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.orca.txtSileORCA.read_energy" title="sisl.io.orca.txtSileORCA.read_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_energy</span></code></a>([all])</p></td>
-<td><p>Reads the energy blocks</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.orca.txtSileORCA.read_geometry" title="sisl.io.orca.txtSileORCA.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a>([all])</p></td>
-<td><p>Reads the geometry from ORCA property.txt file</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.orca.txtSileORCA.write" title="sisl.io.orca.txtSileORCA.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.orca.txtSileORCA.write" title="sisl.io.orca.txtSileORCA.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Generic write method which should be overloaded in child-classes</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.orca.txtSileORCA.base_file" title="sisl.io.orca.txtSileORCA.base_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base_file</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.orca.txtSileORCA.base_file" title="sisl.io.orca.txtSileORCA.base_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base_file</span></code></a></p></td>
 <td><p>File of the current <em class="xref py py-obj">Sile</em></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.orca.txtSileORCA.file" title="sisl.io.orca.txtSileORCA.file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">file</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.orca.txtSileORCA.file" title="sisl.io.orca.txtSileORCA.file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">file</span></code></a></p></td>
 <td><p>File of the current <em class="xref py py-obj">Sile</em></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.orca.txtSileORCA.na" title="sisl.io.orca.txtSileORCA.na"><code class="xref py py-obj docutils literal notranslate"><span class="pre">na</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.orca.txtSileORCA.na" title="sisl.io.orca.txtSileORCA.na"><code class="xref py py-obj docutils literal notranslate"><span class="pre">na</span></code></a></p></td>
 <td><p>Number of atoms</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.orca.txtSileORCA.no" title="sisl.io.orca.txtSileORCA.no"><code class="xref py py-obj docutils literal notranslate"><span class="pre">no</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.orca.txtSileORCA.no" title="sisl.io.orca.txtSileORCA.no"><code class="xref py py-obj docutils literal notranslate"><span class="pre">no</span></code></a></p></td>
 <td><p>Number of orbitals (basis functions)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.orca.txtSileORCA.read_electrons" title="sisl.io.orca.txtSileORCA.read_electrons"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_electrons</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.orca.txtSileORCA.read_energy" title="sisl.io.orca.txtSileORCA.read_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_energy</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.orca.txtSileORCA.read_geometry" title="sisl.io.orca.txtSileORCA.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a></p></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table>
@@ -243,57 +243,20 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 </dl>
 </dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="sisl.io.orca.txtSileORCA.read_electrons">
-<span class="sig-name descname"><span class="pre">read_electrons</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/orca/txt.html#txtSileORCA.read_electrons"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.orca.txtSileORCA.read_electrons" title="Permalink to this definition"></a></dt>
-<dd><p>Read number of electrons (alpha, beta)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>all</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – return electron numbers from all steps (instead of last)</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ndarray or list of ndarrays</strong></p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>alpha and beta electrons</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">read_electrons</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;sisl.io._multiple.SileBound</span> <span class="pre">object&gt;</span></em><a class="reference internal" href="../../../_modules/sisl/io/orca/txt.html#txtSileORCA.read_electrons"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.orca.txtSileORCA.read_electrons" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="sisl.io.orca.txtSileORCA.read_energy">
-<span class="sig-name descname"><span class="pre">read_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/orca/txt.html#txtSileORCA.read_energy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.orca.txtSileORCA.read_energy" title="Permalink to this definition"></a></dt>
-<dd><p>Reads the energy blocks</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>all</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – return a list of dictionaries from each step (instead of the last)</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>PropertyDict</strong></p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>all data (in eV) from the “DFT_Energy” and “VdW_Correction” blocks</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">read_energy</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;sisl.io._multiple.SileBound</span> <span class="pre">object&gt;</span></em><a class="reference internal" href="../../../_modules/sisl/io/orca/txt.html#txtSileORCA.read_energy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.orca.txtSileORCA.read_energy" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
-<dl class="py method">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="sisl.io.orca.txtSileORCA.read_geometry">
-<span class="sig-name descname"><span class="pre">read_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">all</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/orca/txt.html#txtSileORCA.read_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.orca.txtSileORCA.read_geometry" title="Permalink to this definition"></a></dt>
-<dd><p>Reads the geometry from ORCA property.txt file</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>all</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – return a list of all geometries instead of the last one</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>geometries</strong> – if all is False only one geometry will be returned (or None). Otherwise
-a list of geometries corresponding to each step.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a> or <a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry">Geometry</a> or None</p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-name descname"><span class="pre">read_geometry</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;sisl.io._multiple.SileBound</span> <span class="pre">object&gt;</span></em><a class="reference internal" href="../../../_modules/sisl/io/orca/txt.html#txtSileORCA.read_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.orca.txtSileORCA.read_geometry" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.orca.txtSileORCA.to_json">
@@ -320,7 +283,7 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="sisl.io.orca.outputSileORCA.html" class="btn btn-neutral float-left" title="sisl.io.orca.outputSileORCA" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sisl.io.orca.stdoutSileORCA.html" class="btn btn-neutral float-left" title="sisl.io.orca.stdoutSileORCA" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../scaleup.html" class="btn btn-neutral float-right" title="ScaleUP" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

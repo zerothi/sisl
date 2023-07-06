@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Input/Output &mdash; sisl 0.1-2eca529</title>
+  <title>Input/Output &mdash; sisl 0.1-7e8006f</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
@@ -43,7 +43,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-2eca529
+                0.1-7e8006f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -141,6 +141,31 @@
 of DFT software and other post-processing tools.</p>
 <p>In <a class="reference internal" href="../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> all files are conventionally named <em>siles</em>
 to distinguish them from files from other packages.</p>
+<p>All files are generally accessed through the <a class="reference internal" href="generated/sisl.io.get_sile.html#sisl.io.get_sile" title="sisl.io.get_sile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sile</span></code></a> method
+which exposes all siles through their extension recognition.</p>
+<p>The current procedure for determining the file type is based on these
+steps:</p>
+<ol class="arabic">
+<li><p>Extract the extension of the filename passed to <a class="reference internal" href="generated/sisl.io.get_sile.html#sisl.io.get_sile" title="sisl.io.get_sile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sile</span></code></a>, for instance
+<code class="docutils literal notranslate"><span class="pre">hello.grid.nc</span></code> will both examine extensions of <code class="docutils literal notranslate"><span class="pre">grid.nc</span></code> and <code class="docutils literal notranslate"><span class="pre">nc</span></code>.
+This is necessary for leveled extensions.</p></li>
+<li><p>Determine whether there is some specification in the file name <code class="docutils literal notranslate"><span class="pre">hello.grid.nc{&lt;specification&gt;}</span></code>
+where <code class="docutils literal notranslate"><span class="pre">&lt;specification&gt;</span></code> can be:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">contains=&lt;name&gt;</span></code> (or simply <code class="docutils literal notranslate"><span class="pre">&lt;name&gt;</span></code>) the class name must contain <code class="docutils literal notranslate"><span class="pre">&lt;name&gt;</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">endswith=&lt;name&gt;</span></code> the class name must end with <code class="docutils literal notranslate"><span class="pre">&lt;name&gt;</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">startswith=&lt;name&gt;</span></code> the class name must start with <code class="docutils literal notranslate"><span class="pre">&lt;name&gt;</span></code></p></li>
+</ul>
+<p>When a specification is used, only siles that obey that specification will be searched
+for the extension.
+This may be particularly useful when there are multiple codes using the same extension.
+For instance output files exists in several of the code bases.</p>
+</li>
+<li><p>Search all indexed (through <a class="reference internal" href="generated/sisl.io.add_sile.html#sisl.io.add_sile" title="sisl.io.add_sile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_sile</span></code></a>) siles which obey the specification (all if no specifier)
+and collect all that matches the longest extension found.</p></li>
+<li><p>If there is only 1 match, then return that class. If there are multiple <a class="reference internal" href="../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> will try all <code class="docutils literal notranslate"><span class="pre">read_*</span></code>
+methods and if all fail, then the sile will be removed from the eligible list.</p></li>
+</ol>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="basic.html">Basic IO methods/classes</a><ul>
@@ -176,7 +201,7 @@ to distinguish them from files from other packages.</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="orca.html">ORCA</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="generated/sisl.io.orca.outputSileORCA.html">sisl.io.orca.outputSileORCA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/sisl.io.orca.stdoutSileORCA.html">sisl.io.orca.stdoutSileORCA</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/sisl.io.orca.txtSileORCA.html">sisl.io.orca.txtSileORCA</a></li>
 </ul>
 </li>
@@ -189,7 +214,7 @@ to distinguish them from files from other packages.</p>
 <li class="toctree-l1"><a class="reference internal" href="siesta.html">Siesta</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="generated/sisl.io.siesta.aniSileSiesta.html">sisl.io.siesta.aniSileSiesta</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/sisl.io.siesta.fdfSileSiesta.html">sisl.io.siesta.fdfSileSiesta</a></li>
-<li class="toctree-l2"><a class="reference internal" href="generated/sisl.io.siesta.outSileSiesta.html">sisl.io.siesta.outSileSiesta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/sisl.io.siesta.stdoutSileSiesta.html">sisl.io.siesta.stdoutSileSiesta</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/sisl.io.siesta.xvSileSiesta.html">sisl.io.siesta.xvSileSiesta</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/sisl.io.siesta.bandsSileSiesta.html">sisl.io.siesta.bandsSileSiesta</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/sisl.io.siesta.eigSileSiesta.html">sisl.io.siesta.eigSileSiesta</a></li>
@@ -240,7 +265,7 @@ to distinguish them from files from other packages.</p>
 <li class="toctree-l2"><a class="reference internal" href="generated/sisl.io.vasp.eigenvalSileVASP.html">sisl.io.vasp.eigenvalSileVASP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/sisl.io.vasp.chgSileVASP.html">sisl.io.vasp.chgSileVASP</a></li>
 <li class="toctree-l2"><a class="reference internal" href="generated/sisl.io.vasp.locpotSileVASP.html">sisl.io.vasp.locpotSileVASP</a></li>
-<li class="toctree-l2"><a class="reference internal" href="generated/sisl.io.vasp.outSileVASP.html">sisl.io.vasp.outSileVASP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/sisl.io.vasp.stdoutSileVASP.html">sisl.io.vasp.stdoutSileVASP</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="wannier90.html">Wannier90</a><ul>

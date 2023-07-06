@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.geometry &mdash; sisl 0.1-2eca529</title>
+  <title>sisl.geometry &mdash; sisl 0.1-7e8006f</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
@@ -40,7 +40,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-2eca529
+                0.1-7e8006f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -150,10 +150,9 @@
 <span class="kn">from</span> <span class="nn">._category</span> <span class="kn">import</span> <span class="n">Category</span><span class="p">,</span> <span class="n">GenericCategory</span>
 <span class="kn">from</span> <span class="nn">._dispatcher</span> <span class="kn">import</span> <span class="n">AbstractDispatch</span>
 <span class="kn">from</span> <span class="nn">._dispatcher</span> <span class="kn">import</span> <span class="n">ClassDispatcher</span><span class="p">,</span> <span class="n">TypeDispatcher</span>
-<span class="kn">from</span> <span class="nn">._collection</span> <span class="kn">import</span> <span class="n">Collection</span>
 
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Geometry&#39;</span><span class="p">,</span> <span class="s2">&quot;GeometryCollection&quot;</span><span class="p">,</span> <span class="s1">&#39;sgeom&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Geometry&#39;</span><span class="p">,</span> <span class="s2">&quot;sgeom&quot;</span><span class="p">]</span>
 
 
 <span class="c1"># It needs to be here otherwise we can&#39;t use it in these routines</span>
@@ -608,7 +607,7 @@
 
                 <span class="k">if</span> <span class="n">diff_bin</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">supercell</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_bin</span>
-                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">supercell</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">n_supercells</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">supercell</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">n_supercells</span><span class="p">:</span>
                         <span class="c1"># For geometries with more than 1 atom in the primary unit cell</span>
                         <span class="c1"># we can get false positives (each layer can be split again)</span>
                         <span class="c1"># We will search again the max-value supercell</span>
@@ -617,13 +616,13 @@
                         <span class="n">supercell</span><span class="p">[</span><span class="n">i_max</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 
             <span class="c1"># Quick escape if hit the correct number of supercells</span>
-            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">supercell</span><span class="p">)</span> <span class="o">==</span> <span class="n">n_supercells</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">supercell</span><span class="p">)</span> <span class="o">==</span> <span class="n">n_supercells</span><span class="p">:</span>
                 <span class="k">break</span>
 
             <span class="n">n_bin</span> <span class="o">-=</span> <span class="mi">1</span>
 
         <span class="c1"># Check that the number of supercells match</span>
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">supercell</span><span class="p">)</span> <span class="o">!=</span> <span class="n">n_supercells</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">supercell</span><span class="p">)</span> <span class="o">!=</span> <span class="n">n_supercells</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">.as_primary could not determine the optimal supercell.&#39;</span><span class="p">)</span>
 
         <span class="c1"># Cut down the supercell (TODO this does not correct the number of supercell connections!)</span>
@@ -2518,11 +2517,13 @@
         <span class="k">return</span> <span class="n">g</span></div>
     <span class="n">move</span> <span class="o">=</span> <span class="n">translate</span>
 
-<div class="viewcode-block" id="Geometry.translate2uc"><a class="viewcode-back" href="../../api/generated/sisl.Geometry.html#sisl.Geometry.translate2uc">[docs]</a>    <span class="k">def</span> <span class="nf">translate2uc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtomsArgument</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
+<div class="viewcode-block" id="Geometry.translate2uc"><a class="viewcode-back" href="../../api/generated/sisl.Geometry.html#sisl.Geometry.translate2uc">[docs]</a>    <span class="k">def</span> <span class="nf">translate2uc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtomsArgument</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Geometry</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Translates atoms in the geometry into the unit cell</span>
 
 <span class="sd">        One can translate a subset of the atoms or axes by appropriate arguments.</span>
 
+<span class="sd">        Warning</span>
+<span class="sd">        -------</span>
 <span class="sd">        When coordinates are lying on one of the edges, they may move to the other</span>
 <span class="sd">        side of the unit-cell due to small rounding errors.</span>
 <span class="sd">        In such situations you are encouraged to shift all coordinates by a small</span>
@@ -2531,14 +2532,29 @@
 
 <span class="sd">        &gt;&gt;&gt; geometry.move(1e-8).translate2uc().move(-1e-8)</span>
 
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        By default only the periodic axes will be translated to the UC. If</span>
+<span class="sd">        translation is required for all axes, supply them directly.</span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        atoms : int or array_like, optional</span>
 <span class="sd">             only translate the given atomic indices, if not specified, all</span>
 <span class="sd">             atoms will be translated</span>
-<span class="sd">        axes : int or array_like, optional</span>
-<span class="sd">             only translate certain lattice directions, defaults to all</span>
+<span class="sd">        axes : int or array_like or True or None optional</span>
+<span class="sd">             only translate certain lattice directions, `None` specifies</span>
+<span class="sd">             only the directions with supercells, `True` specifies all</span>
+<span class="sd">             directions.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">axes</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">nsc</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">axes</span><span class="p">:</span>
+                <span class="n">axes</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;translate2uc with a bool argument can only be True to signal all axes&quot;</span><span class="p">)</span>
+
         <span class="n">fxyz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fxyz</span>
         <span class="c1"># move to unit-cell</span>
         <span class="n">fxyz</span><span class="p">[:,</span> <span class="n">axes</span><span class="p">]</span> <span class="o">%=</span> <span class="mi">1</span>
@@ -4457,7 +4473,7 @@
             <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;mode&#39;</span><span class="p">:</span>
                 <span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">mode</span>
                 <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">lst</span><span class="p">):</span>
-                    <span class="k">return</span> <span class="n">mode</span><span class="p">(</span><span class="n">lst</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">return</span> <span class="n">mode</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">np</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span>
@@ -4476,8 +4492,7 @@
             <span class="n">shells</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">lst</span><span class="p">)</span>
 
         <span class="c1"># Convert to flattened numpy array and ensure shape</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">shells</span><span class="p">)</span>
-        <span class="n">d</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,)</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">shells</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="n">d</span></div>
 
@@ -4943,6 +4958,27 @@
                        <span class="n">action</span><span class="o">=</span><span class="n">ReduceUntile</span><span class="p">,</span>
                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Untiles the geometry into `reps` parts along the unit-cell direction `dir` (opposite of --tile).&#39;</span><span class="p">)</span>
 
+        <span class="c1"># append another geometry</span>
+        <span class="k">class</span> <span class="nc">Geometryend</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
+            <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                <span class="c1"># Create an atom from the input</span>
+                <span class="n">f</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">geom</span> <span class="o">=</span> <span class="n">Geometry</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">direction</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">ns</span><span class="o">.</span><span class="n">_geometry</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_geometry</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_method_pend</span><span class="p">)(</span><span class="n">geom</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+
+        <span class="k">class</span> <span class="nc">GeometryAppend</span><span class="p">(</span><span class="n">Geometryend</span><span class="p">):</span>
+            <span class="n">_method_pend</span> <span class="o">=</span> <span class="s2">&quot;append&quot;</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="o">*</span><span class="n">opts</span><span class="p">(</span><span class="s1">&#39;--append&#39;</span><span class="p">),</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;GEOM&#39;</span><span class="p">,</span> <span class="s1">&#39;DIR&#39;</span><span class="p">),</span>
+                       <span class="n">action</span><span class="o">=</span><span class="n">GeometryAppend</span><span class="p">,</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Appends another Geometry along direction DIR.&#39;</span><span class="p">)</span>
+
+        <span class="k">class</span> <span class="nc">GeometryPrepend</span><span class="p">(</span><span class="n">Geometryend</span><span class="p">):</span>
+            <span class="n">_method_pend</span> <span class="o">=</span> <span class="s2">&quot;prepend&quot;</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="o">*</span><span class="n">opts</span><span class="p">(</span><span class="s1">&#39;--prepend&#39;</span><span class="p">),</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;GEOM&#39;</span><span class="p">,</span> <span class="s1">&#39;DIR&#39;</span><span class="p">),</span>
+                       <span class="n">action</span><span class="o">=</span><span class="n">GeometryPrepend</span><span class="p">,</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Prepends another Geometry along direction DIR.&#39;</span><span class="p">)</span>
+
         <span class="c1"># Sort</span>
         <span class="k">class</span> <span class="nc">Sort</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
             <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -5024,33 +5060,6 @@
 
         <span class="c1"># We have now created all arguments</span>
         <span class="k">return</span> <span class="n">p</span><span class="p">,</span> <span class="n">namespace</span>
-
-
-<div class="viewcode-block" id="GeometryCollection"><a class="viewcode-back" href="../../api/generated/sisl.GeometryCollection.html#sisl.GeometryCollection">[docs]</a><span class="k">class</span> <span class="nc">GeometryCollection</span><span class="p">(</span><span class="n">Collection</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Container for multiple geometries in a single object &quot;&quot;&quot;</span>
-
-<div class="viewcode-block" id="GeometryCollection.__init__"><a class="viewcode-back" href="../../api/generated/sisl.GeometryCollection.html#sisl.GeometryCollection.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometries</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geometries</span><span class="p">,</span> <span class="n">Geometry</span><span class="p">):</span>
-            <span class="n">geometries</span> <span class="o">=</span> <span class="p">[</span><span class="n">geometries</span><span class="p">]</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">geometries</span><span class="p">)</span></div>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">geometries</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Geometry</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span>
-
-<div class="viewcode-block" id="GeometryCollection.write"><a class="viewcode-back" href="../../api/generated/sisl.GeometryCollection.html#sisl.GeometryCollection.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sile</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;BaseSile&quot;</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Writes the geometries to the sile by consecutively calling write-geometry &quot;&quot;&quot;</span>
-        <span class="c1"># This only works because, they *must*</span>
-        <span class="c1"># have been imported previously</span>
-        <span class="kn">from</span> <span class="nn">sisl.io</span> <span class="kn">import</span> <span class="n">get_sile</span><span class="p">,</span> <span class="n">BaseSile</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">BaseSile</span><span class="p">):</span>
-            <span class="k">with</span> <span class="n">sile</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
-                    <span class="n">sile</span><span class="o">.</span><span class="n">write_geometry</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">with</span> <span class="n">get_sile</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
-                    <span class="n">fh</span><span class="o">.</span><span class="n">write_geometry</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
 
 
 <span class="n">new_dispatch</span> <span class="o">=</span> <span class="n">Geometry</span><span class="o">.</span><span class="n">new</span>

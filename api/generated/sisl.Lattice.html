@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.Lattice &mdash; sisl 0.1-2eca529</title>
+  <title>sisl.Lattice &mdash; sisl 0.1-7e8006f</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
@@ -30,7 +30,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="sisl.Grid" href="sisl.Grid.html" />
-    <link rel="prev" title="sisl.GeometryCollection" href="sisl.GeometryCollection.html" /> 
+    <link rel="prev" title="sisl.Geometry" href="sisl.Geometry.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -45,7 +45,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-2eca529
+                0.1-7e8006f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -95,7 +95,6 @@
 <li class="toctree-l4"><a class="reference internal" href="sisl.Atom.html">sisl.Atom</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.Atoms.html">sisl.Atoms</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.Geometry.html">sisl.Geometry</a></li>
-<li class="toctree-l4"><a class="reference internal" href="sisl.GeometryCollection.html">sisl.GeometryCollection</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">sisl.Lattice</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.Grid.html">sisl.Grid</a></li>
 </ul>
@@ -373,7 +372,7 @@ vectors and it must have length equal to <cite>axes</cite></p></li>
 <dd class="field-even"><p>cell-vectors with prescribed length, same order as <cite>axes</cite></p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -466,13 +465,13 @@ and not as returned by an inverse LAPACK algorithm.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Lattice.isc_off">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">isc_off</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Lattice.isc_off" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">isc_off</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Lattice.isc_off" title="Permalink to this definition"></a></dt>
 <dd><p>Internal indexed supercell <code class="docutils literal notranslate"><span class="pre">[ia,</span> <span class="pre">ib,</span> <span class="pre">ic]</span> <span class="pre">==</span> <span class="pre">i</span></code></p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Lattice.length">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">length</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Lattice.length" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">length</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Lattice.length" title="Permalink to this definition"></a></dt>
 <dd><p>Length of each lattice vector</p>
 </dd></dl>
 
@@ -500,7 +499,7 @@ and not as returned by an inverse LAPACK algorithm.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Lattice.origin">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">origin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Lattice.origin" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">origin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Lattice.origin" title="Permalink to this definition"></a></dt>
 <dd><p>Origin for the cell</p>
 </dd></dl>
 
@@ -679,7 +678,7 @@ along that axis is returned.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Lattice.sc_off">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sc_off</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Lattice.sc_off" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sc_off</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Lattice.sc_off" title="Permalink to this definition"></a></dt>
 <dd><p>Integer supercell offsets</p>
 </dd></dl>
 
@@ -889,7 +888,7 @@ correspond to each cell axis (off, on), and the last one contains the xyz coordi
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="sisl.GeometryCollection.html" class="btn btn-neutral float-left" title="sisl.GeometryCollection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sisl.Geometry.html" class="btn btn-neutral float-left" title="sisl.Geometry" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="sisl.Grid.html" class="btn btn-neutral float-right" title="sisl.Grid" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
