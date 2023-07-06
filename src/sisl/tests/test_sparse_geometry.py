@@ -708,7 +708,7 @@ def test_translate_sparse_atoms():
     matrix[0,1] = 3
 
     # Translate the second atom
-    transl = matrix.translate_atoms_sc([[0,0,0], [1, 0, 0]])
+    transl = matrix._translate_atoms_sc([[0,0,0], [1, 0, 0]])
 
     # Check that the new auxiliary cell is correct.
     assert np.allclose(transl.nsc, [3, 1, 1])
@@ -751,7 +751,7 @@ def test_translate_sparse_atoms():
         assert np.allclose(not_uc_matrix._csr.todense(), transl._csr.todense())
 
     # Now, translate both atoms
-    transl_both = uc_matrix.translate_atoms_sc([[-1,0,0], [1, 0, 0]])
+    transl_both = uc_matrix._translate_atoms_sc([[-1,0,0], [1, 0, 0]])
 
     # Check the auxiliary cell, coordinates and the matrix elements
     assert np.allclose(transl_both.nsc, [5, 1, 1])

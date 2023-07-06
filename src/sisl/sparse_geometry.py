@@ -202,14 +202,14 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         # are between 0 and 1. Anything else means that the atom resides in a periodic image. For
         # atoms and axes that the user doesn't desire the translation, we are going to set the supercell
         # offset as if it was 0, which will result in them not getting translated.
-        current_sc = np.zeros((self.na, 3), dtype=int)
-        current_sc[ats, axes] = fxyz[ats, axes] // 1
+        current_sc = np.zeros([self.na, 3], dtype=np.int32)
+        current_sc[ats, axes] = np.floor(fxyz[ats, axes]).astype(np.int32)
 
         # Simply translate the atoms to move all atoms to the unit cell. That is, all atoms
         # should be moved to supercell (0,0,0).
-        return self.translate_atoms_sc(-current_sc)
+        return self._translate_atoms_sc(-current_sc)
 
-    def translate_atoms_sc(self, sc_translations):
+    def _translate_atoms_sc(self, sc_translations):
         """Translates atoms across supercells.
 
         This operation results in new coordinates of the associated geometry 
@@ -231,37 +231,36 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         # Get the row and column of every element in the matrix
         rows, cols = self.nonzero()
 
-        # Find out what is the number of rows in the matrix. This is either the number of atoms
-        # (which means this is a SparseAtom matrix) or the number of orbitals (which means this
-        # is a SparseOrbital matrix).
-        n_rows = self.shape[0]
+        n_rows = len(self)
+        is_atom = n_rows == self.na
 
-        if n_rows == self.na:
-            # Indices correspond to atoms, so it's very easy to know which
-            # atom they belong to.
+        if is_atom:
+            # atomic indices
             at_row = rows
             at_col = cols
         else:
-            # Indices correspond to orbitals. Find out to which atom each orbital belongs
+            # orbital indices
             at_row = self.o2a(rows)
-            at_col = self.o2a(cols)
+            at_row = rows
+            at_col = cols
         
         # Find out the unit cell indices for the columns, and the index of the supercell
         # where they are currently located. This is done by dividing into the number of
         # columns in the unit cell.
         # We will do the conversion back to supercell indices when we know their 
         # new location after translation, and also the size of the new auxiliary supercell.
-        sc, uc_col = np.divmod(cols, n_rows)
+        sc_idx, uc_col = np.divmod(cols, n_rows)
 
         # We need the unit cell indices of the column atoms. If this is a SparseAtom object, then
         # we have already computed them in the previous line. Otherwise, compute them.
-        if n_rows == self.na:
+        if is_atom:
             at_col = uc_col
         else:
+            # atoms moved to unit-cell
             at_col = at_col % self.na
         
-        # Get the supercell indices in 3D.
-        isc = self.sc_off[sc]
+        # Get the supercell indices of the original positions.
+        isc = self.sc_off[sc_idx]
         
         # We are going to now displace the supercell index of the connections
         # according to how the two orbitals involved have moved. We store the
