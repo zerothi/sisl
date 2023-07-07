@@ -7,6 +7,7 @@ import numpy as np
 
 from .sile import SileCDFSiesta
 from ..sile import add_sile, sile_raise_write, SileError
+from .._help import grid_reduce_indices
 
 from sisl._internal import set_module
 from sisl.messages import info, deprecate_argument
