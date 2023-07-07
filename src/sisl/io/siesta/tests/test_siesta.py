@@ -16,6 +16,8 @@ from sisl.io.siesta import *
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
 _dir = osp.join('sisl', 'io', 'siesta')
 
+netCDF4 = pytest.importorskip("netCDF4")
+
 
 def test_nc1(sisl_tmp, sisl_system):
     f = sisl_tmp('gr.nc', _dir)

@@ -11,6 +11,8 @@ import numpy as np
 pytestmark = [pytest.mark.io, pytest.mark.tbtrans]
 _dir = osp.join('sisl', 'io', 'tbtrans')
 
+netCDF4 = pytest.importorskip("netCDF4")
+
 
 def test_tbt_delta1(sisl_tmp, sisl_system):
     f = sisl_tmp('gr.dH.nc', _dir)

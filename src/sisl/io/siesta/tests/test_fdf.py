@@ -308,6 +308,7 @@ def test_xv_preference(sisl_tmp):
 
 
 def test_geom_order(sisl_tmp):
+    pytest.importorskip("netCDF4")
     gfdf = geom.graphene()
     gxv = gfdf.copy()
     gxv.xyz[0, 0] += 0.5

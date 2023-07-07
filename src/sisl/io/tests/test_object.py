@@ -148,12 +148,14 @@ class TestObject:
 
     @pytest.mark.parametrize("sile", _fnames("test", ["nc"]))
     def test_siesta_nc(self, sile):
+        pytest.importorskip("netCDF4")
         s = gs(sile, _open=False)
         for obj in [BaseSile, SileCDF, SileCDFSiesta, ncSileSiesta]:
             assert isinstance(s, obj)
 
     @pytest.mark.parametrize("sile", _fnames("test", ["grid.nc"]))
     def test_siesta_grid_nc(self, sile):
+        pytest.importorskip("netCDF4")
         sile = gs(sile, _open=False)
         for obj in [BaseSile, SileCDF, SileCDFSiesta, gridncSileSiesta]:
             assert isinstance(sile, obj)
@@ -184,12 +186,14 @@ class TestObject:
 
     @pytest.mark.parametrize("sile", _fnames("test", ["TBT.nc"]))
     def test_tbtrans_nc(self, sile):
+        pytest.importorskip("netCDF4")
         s = gs(sile, _open=False)
         for obj in [BaseSile, SileCDF, SileCDFTBtrans, tbtncSileTBtrans]:
             assert isinstance(s, obj)
 
     @pytest.mark.parametrize("sile", _fnames("test", ["PHT.nc"]))
     def test_phtrans_nc(self, sile):
+        pytest.importorskip("netCDF4")
         s = gs(sile, _open=False)
         for obj in [BaseSile, SileCDF, SileCDFTBtrans, tbtncSileTBtrans, phtncSilePHtrans]:
             assert isinstance(s, obj)
@@ -243,6 +247,9 @@ class TestObject:
 
     @pytest.mark.parametrize("sile", _my_intersect(["read_lattice"], ["write_lattice"]))
     def test_read_write_lattice(self, sisl_tmp, sisl_system, sile):
+        if issubclass(sile, SileCDF):
+            pytest.importorskip("netCDF4")
+
         L = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc").lattice
         L.set_nsc([1, 1, 1])
         f = sisl_tmp("test_read_write_geom.win", _dir)
@@ -271,6 +278,9 @@ class TestObject:
 
     @pytest.mark.parametrize("sile", _my_intersect(["read_lattice"], ["write_lattice"]))
     def test_read_write_lattice(self, sisl_tmp, sisl_system, sile):
+        if issubclass(sile, SileCDF):
+            pytest.importorskip("netCDF4")
+
         L = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc").lattice
         L.set_nsc([1, 1, 1])
         f = sisl_tmp("test_read_write_geom.win", _dir)
@@ -292,6 +302,9 @@ class TestObject:
 
     @pytest.mark.parametrize("sile", _my_intersect(["read_geometry"], ["write_geometry"]))
     def test_read_write_geometry(self, sisl_tmp, sisl_system, sile):
+        if issubclass(sile, SileCDF):
+            pytest.importorskip("netCDF4")
+
         G = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc")
         G.set_nsc([1, 1, 1])
         f = sisl_tmp("test_read_write_geom.win", _dir)
@@ -324,6 +337,9 @@ class TestObject:
 
     @pytest.mark.parametrize("sile", _my_intersect(["read_hamiltonian"], ["write_hamiltonian"]))
     def test_read_write_hamiltonian(self, sisl_tmp, sisl_system, sile):
+        if issubclass(sile, SileCDF):
+            pytest.importorskip("netCDF4")
+
         if issubclass(sile, _gfSileSiesta):
             return
 
@@ -351,6 +367,9 @@ class TestObject:
 
     @pytest.mark.parametrize("sile", _my_intersect(["read_density_matrix"], ["write_density_matrix"]))
     def test_read_write_density_matrix(self, sisl_tmp, sisl_system, sile):
+        if issubclass(sile, SileCDF):
+            pytest.importorskip("netCDF4")
+
         G = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc")
         DM = DensityMatrix(G, orthogonal=True)
         DM.construct([[0.1, 1.45], [0.1, -2.7]])
@@ -375,6 +394,9 @@ class TestObject:
 
     @pytest.mark.parametrize("sile", _my_intersect(["read_energy_density_matrix"], ["write_energy_density_matrix"]))
     def test_read_write_energy_density_matrix(self, sisl_tmp, sisl_system, sile):
+        if issubclass(sile, SileCDF):
+            pytest.importorskip("netCDF4")
+
         G = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc")
         EDM = EnergyDensityMatrix(G, orthogonal=True)
         EDM.construct([[0.1, 1.45], [0.1, -2.7]])
@@ -399,6 +421,9 @@ class TestObject:
 
     @pytest.mark.parametrize("sile", _my_intersect(["read_hamiltonian"], ["write_hamiltonian"]))
     def test_read_write_hamiltonian_overlap(self, sisl_tmp, sisl_system, sile):
+        if issubclass(sile, SileCDF):
+            pytest.importorskip("netCDF4")
+
         if issubclass(sile, _gfSileSiesta):
             return
 
@@ -427,6 +452,9 @@ class TestObject:
     @pytest.mark.filterwarnings("ignore", message="*gridncSileSiesta.read_grid cannot determine")
     @pytest.mark.parametrize("sile", _my_intersect(["read_grid"], ["write_grid"]))
     def test_read_write_grid(self, sisl_tmp, sisl_system, sile):
+        if issubclass(sile, SileCDF):
+            pytest.importorskip("netCDF4")
+
         g = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :], what="xyz+abc")
         G = Grid([10, 11, 12])
         G[:, :, :] = np.random.rand(10, 11, 12)

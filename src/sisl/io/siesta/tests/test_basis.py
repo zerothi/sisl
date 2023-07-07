@@ -12,6 +12,7 @@ _dir = osp.join('sisl', 'io', 'siesta')
 
 
 def test_si_ion_nc(sisl_files):
+    pytest.importorskip("netCDF4")
     f = sisl_files(_dir, 'Si.ion.nc')
     with ionncSileSiesta(f) as sile:
         atom = sile.read_basis()
@@ -52,6 +53,7 @@ def test_si_ion_xml_stringio(sisl_files):
 
 
 def test_si_ion_compare(sisl_files):
+    pytest.importorskip("netCDF4")
     f = sisl_files(_dir, 'Si.ion.nc')
     with ionncSileSiesta(f) as sile:
         nc = sile.read_basis()

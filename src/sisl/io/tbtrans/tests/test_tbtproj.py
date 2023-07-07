@@ -12,6 +12,8 @@ import sisl
 pytestmark = [pytest.mark.io, pytest.mark.tbtrans]
 _dir = osp.join('sisl', 'io', 'tbtrans')
 
+netCDF4 = pytest.importorskip("netCDF4")
+
 
 @pytest.mark.slow
 def test_2_projection_content(sisl_files):

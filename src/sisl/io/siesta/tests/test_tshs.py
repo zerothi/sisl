@@ -28,6 +28,7 @@ def test_tshs_si_pdos_kgrid(sisl_files, sisl_tmp):
 
 
 def test_tshs_si_pdos_kgrid_tofromnc(sisl_files, sisl_tmp):
+    pytest.importorskip("netCDF4")
     si = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.TSHS'))
     HS1 = si.read_hamiltonian()
     f = sisl_tmp('tmp.TSHS', _dir)
@@ -157,6 +158,7 @@ def test_tshs_spin_orbit(sisl_tmp):
 
 @pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
 def test_tshs_spin_orbit_tshs2nc2tshs(sisl_tmp):
+    pytest.importorskip("netCDF4")
     H1 = sisl.Hamiltonian(sisl.geom.graphene(), spin=sisl.Spin('SO'))
     H1.construct(([0.1, 1.44],
                   [[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
