@@ -127,6 +127,7 @@ Chat = "https://discord.gg/5XnFXFdkv2"
 [project.optional-dependencies]
 
 analysis = [
+    "netCDF4",
     "xarray >= 0.10.0",
     "tqdm"
 ]
@@ -134,6 +135,7 @@ analysis = [
 viz = [
     "dill >= 0.3.2",
     "pathos",
+    "netCDF4",
     "pandas",
     "xarray >= 0.10.0",
     "scikit-image",
@@ -146,6 +148,7 @@ viz = [
 viz-plotly = [
     "dill >= 0.3.2",
     "pathos",
+    "netCDF4",
     "pandas",
     "xarray >= 0.10.0",
     "scikit-image",
@@ -156,6 +159,7 @@ viz-plotly = [
 viz-matplotlib = [
     "dill >= 0.3.2",
     "pathos",
+    "netCDF4",
     "pandas",
     "xarray >= 0.10.0",
     "scikit-image",
@@ -166,6 +170,7 @@ viz-matplotlib = [
 viz-blender = [
     "dill >= 0.3.2",
     "pathos",
+    "netCDF4",
     "pandas",
     "xarray >= 0.10.0",
     "scikit-image",
@@ -174,6 +179,7 @@ viz-blender = [
 viz-ase = [
     "dill >= 0.3.2",
     "pathos",
+    "netCDF4",
     "pandas",
     "xarray >= 0.10.0",
     "scikit-image",
@@ -190,6 +196,7 @@ test = [
     "tqdm",
     "dill >= 0.3.2",
     "pathos",
+    "netCDF4",
     "pandas",
     "xarray >= 0.10.0",
     "scikit-image",
