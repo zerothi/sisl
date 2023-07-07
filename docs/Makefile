@@ -1,12 +1,11 @@
 # Minimal makefile for Sphinx documentation
-#
+
+.PHONY: default
 default: html
-	make html
 
 # You can set these variables from the command line.
-SPHINXOPTS    =
-SPHINXBUILD   = sphinx-build
-SPHINXPROJ    = sisl
+SPHINXOPTS    ?=
+SPHINXBUILD   ?= sphinx-build
 SOURCEDIR     = .
 BUILDDIR      = build
 

@@ -14,7 +14,6 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-from importlib.metadata import version
 import sys
 import os
 import pathlib
@@ -32,16 +31,6 @@ if on_rtd:
     os.environ["SISL_NUM_PROCS"] = "1"
     os.environ["SISL_VIZ_NUM_PROCS"] = "1"
 
-try:
-    import sisl
-    print(f"Located sisl here: {sisl.__path__}")
-except Exception:
-    _pp = os.environ.get("PYTHONPATH", "")
-    if len(_pp) > 0:
-        os.environ["PYTHONPATH"] = f"{_root}:{_pp}"
-    else:
-        os.environ["PYTHONPATH"] = f"{_root}"
-    del _pp
 sys.path.insert(0, str(_root))
 
 # Print standard information about executable and path...
@@ -49,6 +38,7 @@ print("python exec:", sys.executable)
 print("sys.path:", sys.path)
 
 import sisl
+print(f"Located sisl here: {sisl.__path__}")
 
 # General information about the project.
 project = "sisl"
@@ -125,7 +115,7 @@ else:
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
-version = version("sisl")
+version = str(sisl.__version__)
 if "dev" in version:
     v_pre, v_suf = version.split("+")
     # remove dev (we don't need step)
@@ -269,6 +259,14 @@ bibtex_bibfiles = ["references.bib", "sisl_uses.bib"]
 bibtex_default_style = "plain"
 bibtex_tooltips = True
 
+
+# IPython executables
+ipython_execlines = [
+    "import numpy as np",
+    "import sisl as si",
+]
+
+
 # Allow a year-month-author sorting
 import calendar
 
@@ -393,20 +391,9 @@ def sisl_skip(app, what, name, obj, skip, options):
                     "kT", "current", "current_parameter", "shot_noise",
                     "noise_power"]:
             return True
-    return skip
+    return None
 
 
 def setup(app):
     # Setup autodoc skipping
     app.connect('autodoc-skip-member', sisl_skip)
-
-    import subprocess as sp
-    if os.path.isfile('../conf_prepare.sh'):
-        print("# Running ../conf_prepare.sh")
-        sp.call(['bash', '../conf_prepare.sh'])
-        print("\n# Done running ../conf_prepare.sh")
-    elif os.path.isfile('conf_prepare.sh'):
-        print("# Running conf_prepare.sh")
-        sp.call(['bash', 'conf_prepare.sh'])
-        print("\n# Done running conf_prepare.sh")
-    print("")

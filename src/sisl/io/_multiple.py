@@ -168,7 +168,9 @@ class SileBound:
         else:
             default_slice = self.default_slice
 
-        doc = dedent(f"""{doc}
+        docs = [doc]
+        docs.append(
+        dedent(f"""
         Notes
         -----
         This method defaults to return {default_slice} item(s).
@@ -191,6 +193,8 @@ class SileBound:
         While one can store the sliced function ``tmp = obj.{name}[:]`` one
         will loose the slice after each call.
         """)
+        )
+        doc = "\n".join(docs)
         try:
             self.__doc__ = doc
             self.__call__.__doc__ = doc
