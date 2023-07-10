@@ -7,7 +7,6 @@ from sisl import Atom, Lattice
 from sisl.geom import *
 from sisl._math_small import cross3, dot3
 
-import math as m
 import numpy as np
 
 
@@ -46,7 +45,7 @@ def test_basic():
 def test_flat():
     a = graphene()
     assert is_right_handed(a)
-    a = graphene(atoms='C')
+    graphene(atoms='C')
     a = graphene(orthogonal=True)
     assert is_right_handed(a)
 
@@ -67,16 +66,16 @@ def test_diamond():
 def test_bilayer():
     a = bilayer(1.42)
     assert is_right_handed(a)
-    a = bilayer(1.42, stacking='AA')
-    a = bilayer(1.42, stacking='BA')
-    a = bilayer(1.42, stacking='AB')
+    bilayer(1.42, stacking='AA')
+    bilayer(1.42, stacking='BA')
+    bilayer(1.42, stacking='AB')
     for m in range(7):
-        a = bilayer(1.42, twist=(m, m + 1))
-    a = bilayer(1.42, twist=(6, 7), layer='bottom')
-    a = bilayer(1.42, twist=(6, 7), layer='TOP')
-    a = bilayer(1.42, bottom_atoms=(Atom['B'], Atom['N']), twist=(6, 7))
-    a = bilayer(1.42, top_atoms=(Atom(5), Atom(7)), twist=(6, 7))
-    a, th = bilayer(1.42, twist=(6, 7), ret_angle=True)
+        bilayer(1.42, twist=(m, m + 1))
+    bilayer(1.42, twist=(6, 7), layer='bottom')
+    bilayer(1.42, twist=(6, 7), layer='TOP')
+    bilayer(1.42, bottom_atoms=(Atom['B'], Atom['N']), twist=(6, 7))
+    bilayer(1.42, top_atoms=(Atom(5), Atom(7)), twist=(6, 7))
+    _, _ = bilayer(1.42, twist=(6, 7), ret_angle=True)
 
     with pytest.raises(ValueError):
         bilayer(1.42, twist=(6, 7), layer='undefined')
@@ -90,11 +89,11 @@ def test_bilayer():
 
 def test_nanoribbon():
     for w in range(0, 5):
-        a = nanoribbon(w, 1.42, Atom(6), kind='armchair')
-        a = nanoribbon(w, 1.42, Atom(6), kind='zigzag')
-        a = nanoribbon(w, 1.42, (Atom(5), Atom(7)), kind='armchair')
+        nanoribbon(w, 1.42, Atom(6), kind='armchair')
+        nanoribbon(w, 1.42, Atom(6), kind='zigzag')
+        nanoribbon(w, 1.42, (Atom(5), Atom(7)), kind='armchair')
         a = nanoribbon(w, 1.42, (Atom(5), Atom(7)), kind='zigzag')
-    assert is_right_handed(a)
+        assert is_right_handed(a)
 
     with pytest.raises(ValueError):
         nanoribbon(6, 1.42, (Atom(5), Atom(7)), kind='undefined')
