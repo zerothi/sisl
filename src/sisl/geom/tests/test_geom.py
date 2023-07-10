@@ -4,6 +4,11 @@
 import numpy as np
 import pytest
 
+from functools import partial
+import itertools
+import math as m
+import numpy as np
+
 from sisl import Atom, Lattice
 from sisl._math_small import cross3, dot3
 from sisl.geom import *
