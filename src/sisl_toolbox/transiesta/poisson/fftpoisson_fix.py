@@ -47,13 +47,14 @@ Known problems:
 - It may not always converge which requires some fine-tuning of the tolerances,
   secondly it may converge too fast so the solution is not really good.
 """
+import argparse as argp
+import os
 import sys
 from pathlib import Path
-import argparse as argp
-import numpy as np
-import sisl as si
-import os
 
+import numpy as np
+
+import sisl as si
 
 __all__ = ['pyamg_solve', 'solve_poisson', 'fftpoisson_fix_cli', 'fftpoisson_fix_run']
 

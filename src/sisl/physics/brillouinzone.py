@@ -136,26 +136,24 @@ and ``imap`` and ``uimap`` methods. See the ``pathos`` documentation for detalis
 
 """
 
-from numbers import Integral, Real
 import itertools
 from functools import reduce
+from numbers import Integral, Real
 
-from numpy import pi
-from numpy import sum, dot, argsort
 import numpy as np
+from numpy import argsort, dot, pi, sum
 
-from sisl._internal import set_module
-from sisl.oplist import oplist
-from sisl.unit import units
-from sisl.quaternion import Quaternion
-from sisl.utils.mathematics import cart2spher, fnorm
-from sisl.utils import batched_indices
 import sisl._array as _a
-from sisl.messages import info, warn, SislError, progressbar
-from sisl.lattice import Lattice
-from sisl.grid import Grid
 from sisl._dispatcher import ClassDispatcher
-
+from sisl._internal import set_module
+from sisl.grid import Grid
+from sisl.lattice import Lattice
+from sisl.messages import SislError, info, progressbar, warn
+from sisl.oplist import oplist
+from sisl.quaternion import Quaternion
+from sisl.unit import units
+from sisl.utils import batched_indices
+from sisl.utils.mathematics import cart2spher, fnorm
 
 __all__ = ["BrillouinZone", "MonkhorstPack", "BandStructure", "linspace_bz"]
 

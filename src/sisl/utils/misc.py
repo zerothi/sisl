@@ -1,15 +1,14 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-import sys
-import inspect
-import functools
 import ast
-import operator as op
-from numbers import Integral
-from math import pi
+import functools
 import importlib
-
+import inspect
+import operator as op
+import sys
+from math import pi
+from numbers import Integral
 
 __all__ = ["merge_instances", "str_spec", "direction", "angle"]
 __all__ += ["iter_shape", "math_eval", "allow_kwargs"]

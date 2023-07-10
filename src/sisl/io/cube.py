@@ -3,15 +3,14 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
 
+from sisl import Atom, Geometry, Grid, Lattice, SislError
+from sisl._internal import set_module
 # Import sile objects
 from sisl.io.sile import *
-from ._help import header_to_dict
 from sisl.messages import deprecate_argument
-
-from sisl._internal import set_module
-from sisl import Geometry, Atom, Lattice, Grid, SislError
 from sisl.unit import unit_convert
 
+from ._help import header_to_dict
 
 __all__ = ["cubeSile"]
 

@@ -1,12 +1,14 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from numbers import Integral
-import numpy as np
 from math import acos, pi
+from numbers import Integral
 
+import numpy as np
+
+from sisl import Atom, Cuboid, geom
 from sisl._internal import set_module
-from sisl import geom, Atom, Cuboid
+
 from ._common import geometry_define_nsc
 
 __all__ = ['bilayer']

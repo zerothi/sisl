@@ -2,20 +2,22 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
-from numbers import Integral, Real
+
 from collections import Counter
 from collections.abc import Iterable
+from numbers import Integral, Real
 
 import numpy as np
 
 from sisl._typing_ext.numpy import NDArray
+
+from . import _array as _a
+from ._help import array_fill_repeat
+from ._indices import list_index_le
 from ._internal import set_module
 from .messages import info
-from . import _array as _a
-from ._indices import list_index_le
-from ._help import array_fill_repeat
-from .shape import Sphere
 from .orbital import Orbital
+from .shape import Sphere
 
 __all__ = ['PeriodicTable', 'Atom', 'AtomUnknown', 'AtomGhost', 'Atoms']
 

@@ -10,8 +10,7 @@ Here is a small snippet showing how to utilize this module.
 """
 
 from abc import ABCMeta, abstractmethod
-from collections import namedtuple, ChainMap
-
+from collections import ChainMap, namedtuple
 
 __all__ = ["AbstractDispatch", "ObjectDispatcher", "MethodDispatcher",
            "ErrorDispatcher", "ClassDispatcher", "TypeDispatcher"]

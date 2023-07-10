@@ -3,9 +3,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
 
-from .bands import BandsBackend
-
 from ....plots import FatbandsPlot
+from .bands import BandsBackend
 
 
 class FatbandsBackend(BandsBackend):

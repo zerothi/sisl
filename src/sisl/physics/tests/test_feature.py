@@ -1,13 +1,11 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+import numpy as np
 import pytest
 
-import numpy as np
-
-from sisl import Geometry, Atom, Lattice, Hamiltonian
+from sisl import Atom, Geometry, Hamiltonian, Lattice
 from sisl.physics import yield_manifolds
-
 
 pytestmark = [pytest.mark.physics, pytest.mark.physics_feature]
 

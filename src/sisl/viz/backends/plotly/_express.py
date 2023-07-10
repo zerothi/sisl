@@ -9,6 +9,7 @@ objects, which is not already implemented (https://github.com/zerothi/sisl/issue
 from functools import wraps
 
 import plotly.express as px
+
 from sisl._dispatcher import AbstractDispatch
 
 __all__ = ["sx"]

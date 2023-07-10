@@ -3,24 +3,26 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
 
-from ..sile import add_sile, get_sile, sile_fh_open
-from .sile import SileSiesta
-
-from sisl._internal import set_module
-from sisl._help import xml_parse
-from sisl.utils import (
-    default_ArgumentParser, default_namespace,
-    collect_action, run_actions,
-    strmap, lstranges,
-    direction
-)
-from sisl.messages import warn, SislWarning
 from sisl._array import arrayd, arrayi, asarrayi
-from sisl.atom import PeriodicTable, Atom, Atoms
+from sisl._help import xml_parse
+from sisl._internal import set_module
+from sisl.atom import Atom, Atoms, PeriodicTable
 from sisl.geometry import Geometry
+from sisl.messages import SislWarning, warn
 from sisl.orbital import AtomicOrbital
 from sisl.unit.siesta import unit_convert
+from sisl.utils import (
+    collect_action,
+    default_ArgumentParser,
+    default_namespace,
+    direction,
+    lstranges,
+    run_actions,
+    strmap,
+)
 
+from ..sile import add_sile, get_sile, sile_fh_open
+from .sile import SileSiesta
 
 __all__ = ['pdosSileSiesta']
 

@@ -4,7 +4,7 @@
 """
 This file provides tools to handle plotability of objects
 """
-from sisl._dispatcher import ClassDispatcher, AbstractDispatch, ObjectDispatcher
+from sisl._dispatcher import AbstractDispatch, ClassDispatcher, ObjectDispatcher
 
 __all__ = ["register_plotable"]
 

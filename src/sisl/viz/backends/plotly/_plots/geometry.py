@@ -4,8 +4,8 @@
 import numpy as np
 
 from ....plots import GeometryPlot
-from ..backend import PlotlyBackend
 from ...templates import GeometryBackend
+from ..backend import PlotlyBackend
 
 
 class PlotlyGeometryBackend(PlotlyBackend, GeometryBackend):

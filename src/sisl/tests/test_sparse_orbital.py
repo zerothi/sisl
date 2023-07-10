@@ -1,17 +1,16 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-import pytest
-
 import math as m
+
 import numpy as np
+import pytest
 import scipy as sc
 
-from sisl import Geometry, Atom, Lattice, Cuboid
+import sisl.messages as sm
+from sisl import Atom, Cuboid, Geometry, Lattice
 from sisl.geom import fcc, graphene
 from sisl.sparse_geometry import *
-import sisl.messages as sm
-
 
 pytestmark = [pytest.mark.sparse,
               pytest.mark.sparse_geometry,

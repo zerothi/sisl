@@ -8,6 +8,6 @@ ORCA
    stdoutSileORCA - ORCA output file
    txtSileORCA - ORCA property.txt file
 """
-from .sile import *
+from .sile import * # isort: split
 from .stdout import *
 from .txt import *

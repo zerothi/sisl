@@ -1,12 +1,13 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-import pytest
 import os.path as osp
+
+import numpy as np
+import pytest
+
 from sisl import units
 from sisl.io.wannier90 import *
-import numpy as np
-
 
 pytestmark = [pytest.mark.io, pytest.mark.wannier90, pytest.mark.w90]
 _dir = osp.join('sisl', 'io', 'wannier90')

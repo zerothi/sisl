@@ -17,9 +17,11 @@
 import cProfile
 import pstats
 import sys
-import sisl
+
 import numpy as np
 from tqdm import tqdm
+
+import sisl
 
 if len(sys.argv) > 1:
     nlvls = int(sys.argv[1])

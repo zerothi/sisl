@@ -1,13 +1,13 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-import os
-from pathlib import Path
-import sys
 import importlib
+import os
+import sys
+from pathlib import Path
 
-from sisl.messages import warn
 from sisl._environ import get_environ_variable
+from sisl.messages import warn
 
 __all__ = ["import_user_presets", "import_user_plots",
            "import_user_sessions", "import_user_plugins"]

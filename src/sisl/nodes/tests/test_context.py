@@ -6,6 +6,7 @@ import pytest
 from sisl.nodes import Node, Workflow
 from sisl.nodes.context import temporal_context
 
+
 def test_node():
 
     @Node.from_func

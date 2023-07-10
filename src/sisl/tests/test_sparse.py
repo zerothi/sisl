@@ -1,17 +1,16 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-import pytest
+import math as m
 import sys
 
-import math as m
 import numpy as np
+import pytest
 import scipy as sc
 
 from sisl._array import array_arange
 from sisl.sparse import *
 from sisl.sparse import indices
-
 
 pytestmark = [pytest.mark.sparse, pytest.mark.filterwarnings("ignore", category=sc.sparse.SparseEfficiencyWarning)]
 

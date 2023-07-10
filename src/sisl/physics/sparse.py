@@ -4,19 +4,19 @@
 import warnings
 
 import numpy as np
-from scipy.sparse import csr_matrix, SparseEfficiencyWarning
+from scipy.sparse import SparseEfficiencyWarning, csr_matrix
 
-from sisl._internal import set_module
-import sisl.linalg as lin
 import sisl._array as _a
+import sisl.linalg as lin
+from sisl._internal import set_module
 from sisl.messages import warn
 from sisl.sparse import isspmatrix
 from sisl.sparse_geometry import SparseOrbital
-from .spin import Spin
-from ._matrix_k import matrix_k, matrix_k_nc, matrix_k_so, matrix_k_nc_diag
-from ._matrix_dk import matrix_dk, matrix_dk_nc, matrix_dk_so, matrix_dk_nc_diag
-from ._matrix_ddk import matrix_ddk, matrix_ddk_nc, matrix_ddk_so, matrix_ddk_nc_diag
 
+from ._matrix_ddk import matrix_ddk, matrix_ddk_nc, matrix_ddk_nc_diag, matrix_ddk_so
+from ._matrix_dk import matrix_dk, matrix_dk_nc, matrix_dk_nc_diag, matrix_dk_so
+from ._matrix_k import matrix_k, matrix_k_nc, matrix_k_nc_diag, matrix_k_so
+from .spin import Spin
 
 __all__ = ["SparseOrbitalBZ", "SparseOrbitalBZSpin"]
 

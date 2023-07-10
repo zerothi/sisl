@@ -9,15 +9,13 @@ the periodicity of a given direction to describe the complete system.
 """
 
 import numpy as np
-from numpy import zeros, empty
-from numpy import add, multiply
-from numpy import exp
+from numpy import add, empty, exp, multiply, zeros
 
-from sisl._internal import set_module
-from sisl._help import dtype_real_to_complex
 import sisl._array as _a
-from ._bloch import bloch_unfold
+from sisl._help import dtype_real_to_complex
+from sisl._internal import set_module
 
+from ._bloch import bloch_unfold
 
 __all__ = ['Bloch']
 

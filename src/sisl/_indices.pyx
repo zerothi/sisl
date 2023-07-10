@@ -2,10 +2,12 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 cimport cython
-from libc.math cimport sqrt, fabs
+from libc.math cimport fabs, sqrt
 
 import numpy as np
+
 # This enables Cython enhanced compatibilities
+
 cimport numpy as np
 
 

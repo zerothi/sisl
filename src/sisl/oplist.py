@@ -9,13 +9,12 @@ list extensions.
 This sub-module implements a list which allows to make operations with it-self or with scalars.
 """
 
+import operator as op
 from functools import wraps
 from itertools import zip_longest
-import operator as op
 
-from ._internal import set_module
 from ._help import isiterable
-
+from ._internal import set_module
 
 __all__ = ["oplist"]
 

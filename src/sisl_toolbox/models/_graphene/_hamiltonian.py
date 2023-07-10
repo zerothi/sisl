@@ -4,9 +4,9 @@
 import numpy as np
 
 import sisl as si
-from ._base import GrapheneModel
 from sisl_toolbox.models._base import ReferenceDispatch
 
+from ._base import GrapheneModel
 
 __all__ = ["GrapheneHamiltonian"]
 

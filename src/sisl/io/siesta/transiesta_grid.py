@@ -3,14 +3,13 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
 
-from .sile import SileCDFSiesta
-from ..sile import add_sile, sile_raise_write
-
-from sisl._internal import set_module
 from sisl import Grid
-from .siesta_grid import gridncSileSiesta
+from sisl._internal import set_module
 from sisl.unit.siesta import unit_convert
 
+from ..sile import add_sile, sile_raise_write
+from .siesta_grid import gridncSileSiesta
+from .sile import SileCDFSiesta
 
 __all__ = ['tsvncSileSiesta']
 

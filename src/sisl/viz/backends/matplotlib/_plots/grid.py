@@ -4,8 +4,8 @@
 import matplotlib.pyplot as plt
 
 from ....plots.grid import GridPlot
-from ..backend import MatplotlibBackend
 from ...templates import GridBackend
+from ..backend import MatplotlibBackend
 
 
 class MatplotlibGridBackend(MatplotlibBackend, GridBackend):

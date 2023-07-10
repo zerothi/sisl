@@ -4,10 +4,9 @@
 import numpy as np
 from scipy.sparse import lil_matrix
 
+from ..sile import *
 # Import sile objects
 from .sile import SileScaleUp
-from ..sile import *
-
 
 __all__ = ['rhamSileScaleUp']
 

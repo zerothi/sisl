@@ -15,8 +15,8 @@
 #  python stats.py $0.profile
 #
 
-import sys
 import os
+import sys
 import time
 
 import numpy as np

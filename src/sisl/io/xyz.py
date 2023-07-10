@@ -6,15 +6,15 @@ Sile object for reading/writing XYZ files
 """
 import numpy as np
 
+import sisl._array as _a
+from sisl import Geometry, Lattice
+from sisl._internal import set_module
+from sisl.messages import deprecate_argument, warn
+
 # Import sile objects
 from ._help import header_to_dict
-from .sile import *
 from ._multiple import SileBinder
-from sisl.messages import warn, deprecate_argument
-from sisl._internal import set_module
-from sisl import Geometry, Lattice
-import sisl._array as _a
-
+from .sile import *
 
 __all__ = ["xyzSile"]
 

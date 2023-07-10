@@ -1,13 +1,13 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from ....plots import BandsPlot
-from ..backend import MatplotlibBackend
-from ...templates import BandsBackend
-
 import numpy as np
-from matplotlib.pyplot import Normalize
 from matplotlib.collections import LineCollection
+from matplotlib.pyplot import Normalize
+
+from ....plots import BandsPlot
+from ...templates import BandsBackend
+from ..backend import MatplotlibBackend
 
 
 class MatplotlibBandsBackend(MatplotlibBackend, BandsBackend):

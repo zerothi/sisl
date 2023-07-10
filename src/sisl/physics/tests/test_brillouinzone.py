@@ -1,17 +1,23 @@
 # Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+import math as m
+from itertools import product
+
+import numpy as np
 import pytest
 
-from itertools import product
-import math as m
-import numpy as np
-
-from sisl import SislError, geom
-from sisl import Geometry, Atom, Lattice, LatticeChild
-from sisl import BrillouinZone, BandStructure
-from sisl import MonkhorstPack
-
+from sisl import (
+    Atom,
+    BandStructure,
+    BrillouinZone,
+    Geometry,
+    Lattice,
+    LatticeChild,
+    MonkhorstPack,
+    SislError,
+    geom,
+)
 
 pytestmark = [pytest.mark.physics, pytest.mark.brillouinzone, pytest.mark.bz]
 
@@ -336,7 +342,7 @@ class TestMonkhorstPack:
     def test_as_dataarray(self):
         pytest.importorskip("xarray", reason="xarray not available")
 
-        from sisl import geom, Hamiltonian
+        from sisl import Hamiltonian, geom
         g = geom.graphene()
         H = Hamiltonian(g)
         H.construct([[0.1, 1.44], [0, -2.7]])
@@ -395,7 +401,7 @@ class TestMonkhorstPack:
                 assert ((k == 0.).sum(1).astype(np.int32) == 3).sum() == 0
 
     def test_as_simple(self):
-        from sisl import geom, Hamiltonian
+        from sisl import Hamiltonian, geom
         g = geom.graphene()
         H = Hamiltonian(g)
         H.construct([[0.1, 1.44], [0, -2.7]])
@@ -418,7 +424,7 @@ class TestMonkhorstPack:
     def test_as_dataarray_zip(self):
         pytest.importorskip("xarray", reason="xarray not available")
 
-        from sisl import geom, Hamiltonian
+        from sisl import Hamiltonian, geom
         g = geom.graphene()
         H = Hamiltonian(g)
         H.construct([[0.1, 1.44], [0, -2.7]])
@@ -450,7 +456,7 @@ class TestMonkhorstPack:
         pytest.skip("BrillouinZone.apply(pool=True|int) scales extremely bad and may cause stall")
         pytest.importorskip("pathos", reason="pathos not available")
 
-        from sisl import geom, Hamiltonian
+        from sisl import Hamiltonian, geom
         g = geom.graphene()
         H = Hamiltonian(g)
         H.construct([[0.1, 1.44], [0, -2.7]])
@@ -504,7 +510,7 @@ class TestMonkhorstPack:
                 assert np.allclose(v1, v2)
 
     def test_as_single(self):
-        from sisl import geom, Hamiltonian
+        from sisl import Hamiltonian, geom
         g = geom.graphene()
         H = Hamiltonian(g)
         H.construct([[0.1, 1.44], [0, -2.7]])
@@ -523,7 +529,7 @@ class TestMonkhorstPack:
         assert np.allclose(asarray, asyield)
 
     def test_as_wrap(self):
-        from sisl import geom, Hamiltonian
+        from sisl import Hamiltonian, geom
         g = geom.graphene()
         H = Hamiltonian(g)
         H.construct([[0.1, 1.44], [0, -2.7]])
@@ -549,7 +555,7 @@ class TestMonkhorstPack:
         assert np.allclose(aslist, mylist)
 
     def test_as_wrap_default_oplist(self):
-        from sisl import geom, Hamiltonian
+        from sisl import Hamiltonian, geom
         g = geom.graphene()
         H = Hamiltonian(g)
         H.construct([[0.1, 1.44], [0, -2.7]])
@@ -569,7 +575,7 @@ class TestMonkhorstPack:
         assert np.allclose(bz_arr.eigenstate(wrap=lambda es: es.PDOS(E)[0]), PDOS)
 
     def test_wrap_unzip(self):
-        from sisl import geom, Hamiltonian
+        from sisl import Hamiltonian, geom
         g = geom.graphene()
         H = Hamiltonian(g)
         H.construct([[0.1, 1.44], [0, -2.7]])
@@ -598,7 +604,7 @@ class TestMonkhorstPack:
 
     # Check with a wrap function and the weight argument
     def test_wrap_kwargs(arg):
-        from sisl import geom, Hamiltonian
+        from sisl import Hamiltonian, geom
         g = geom.graphene()
         H = Hamiltonian(g)
         H.construct([[0.1, 1.44], [0, -2.7]])

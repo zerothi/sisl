@@ -2,15 +2,15 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 # Import sile objects
-from .sile import SileScaleUp
-from ..sile import *
+import numpy as np
 
 # Import the geometry object
 import sisl._array as _a
-from sisl import Geometry, Atom, Lattice
+from sisl import Atom, Geometry, Lattice
 from sisl.unit import unit_convert
 
-import numpy as np
+from ..sile import *
+from .sile import SileScaleUp
 
 __all__ = ['refSileScaleUp', 'restartSileScaleUp']
 

@@ -2,21 +2,18 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
-from scipy.sparse import lil_matrix
-from scipy.sparse import triu
-from scipy.sparse import SparseEfficiencyWarning
+from scipy.sparse import SparseEfficiencyWarning, lil_matrix, triu
+
+from sisl import Atom, Geometry, Lattice
+from sisl import _array as _a
+from sisl._help import wrap_filterwarnings
+from sisl._internal import set_module
+from sisl.messages import warn
+from sisl.physics import Hamiltonian
+from sisl.sparse import ispmatrix, ispmatrixd
 
 # Import sile objects
 from .sile import *
-
-from sisl._internal import set_module
-from sisl.messages import warn
-from sisl import Geometry, Atom, Lattice
-from sisl.sparse import ispmatrix, ispmatrixd
-from sisl.physics import Hamiltonian
-from sisl._help import wrap_filterwarnings
-from sisl import _array as _a
-
 
 __all__ = ['hamiltonianSile']
 

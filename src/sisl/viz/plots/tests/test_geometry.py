@@ -8,15 +8,13 @@ Tests specific functionality of the bands plot.
 Different inputs are tested (siesta .bands and sisl Hamiltonian).
 
 """
-from sisl.viz.plots.geometry import GeometryPlot
-from sisl.messages import SislWarning
 import numpy as np
-
 import pytest
 
 import sisl
+from sisl.messages import SislWarning
+from sisl.viz.plots.geometry import GeometryPlot
 from sisl.viz.plots.tests.conftest import _TestPlot
-
 
 pytestmark = [pytest.mark.viz, pytest.mark.plotly]
 

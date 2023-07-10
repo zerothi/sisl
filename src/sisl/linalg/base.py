@@ -6,16 +6,15 @@ from functools import partial as _partial
 # Create a _copy_ of the scipy.linalg.solve routine and implement
 # our own refine keyword.
 import numpy as np
-from numpy import atleast_1d, atleast_2d
-from scipy.linalg.blas import get_blas_funcs
-from scipy.linalg.lapack import get_lapack_funcs
-from scipy.linalg import LinAlgError
-from scipy._lib._util import _asarray_validated
 import scipy.linalg as sl
 import scipy.sparse.linalg as ssl
+from numpy import atleast_1d, atleast_2d
+from scipy._lib._util import _asarray_validated
+from scipy.linalg import LinAlgError
+from scipy.linalg.blas import get_blas_funcs
+from scipy.linalg.lapack import get_lapack_funcs
 
 from sisl._internal import set_module
-
 
 __all__ = ["linalg_info"]
 

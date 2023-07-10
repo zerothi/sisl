@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
 
-from .basic import ListInput, DictInput
+from .basic import DictInput, ListInput
 
 
 class QueriesInput(ListInput):

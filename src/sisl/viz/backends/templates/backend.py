@@ -3,9 +3,9 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from abc import ABC, abstractmethod
 
-from ...plot import MultiplePlot, SubPlots, Animation
-
 import numpy as np
+
+from ...plot import Animation, MultiplePlot, SubPlots
 
 
 class Backend(ABC):

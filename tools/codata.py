@@ -4,7 +4,9 @@
 import sys
 from collections import OrderedDict
 from dataclasses import dataclass
+
 import numpy as np
+
 
 def parse_line(line):
     """ Parse a data line returning
@@ -139,6 +141,7 @@ def read_file(f):
 ut, cs = read_file(sys.argv[1])
 
 from pprint import PrettyPrinter
+
 pp = PrettyPrinter(sort_dicts=False, compact=False, width=60)
 
 print("Unit table:\n\n")

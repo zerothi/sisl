@@ -2,19 +2,27 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
-from typing import Union, Type, Any, Optional, Tuple
+
 from functools import reduce
-from operator import add
 from numbers import Real
+from operator import add
+from typing import Any, Optional, Tuple, Type, Union
+
 import numpy as np
 
-
-from sisl._typing_ext.numpy import ArrayLike, NDArray
-from sisl._internal import set_module
 import sisl._array as _a
+from sisl._internal import set_module
+from sisl._typing_ext.numpy import ArrayLike, NDArray
 from sisl.linalg import solve_destroy
-from .base import BaseHistoryWeightMixer, History, TypeWeight, TypeArgHistory, TypeMetric, T
 
+from .base import (
+    BaseHistoryWeightMixer,
+    History,
+    T,
+    TypeArgHistory,
+    TypeMetric,
+    TypeWeight,
+)
 
 __all__ = ["DIISMixer", "PulayMixer"]
 __all__ += ["AdaptiveDIISMixer", "AdaptivePulayMixer"]

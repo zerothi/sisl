@@ -3,12 +3,12 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
 
-from sisl._internal import set_module
 import sisl._array as _a
-from .distribution import get_distribution
-from .electron import EigenvalueElectron, EigenstateElectron, spin_squared
-from .sparse import SparseOrbitalBZSpin
+from sisl._internal import set_module
 
+from .distribution import get_distribution
+from .electron import EigenstateElectron, EigenvalueElectron, spin_squared
+from .sparse import SparseOrbitalBZSpin
 
 __all__ = ["Hamiltonian"]
 
@@ -397,7 +397,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         """
         # This only works because, they *must*
         # have been imported previously
-        from sisl.io import get_sile, BaseSile
+        from sisl.io import BaseSile, get_sile
         if isinstance(sile, BaseSile):
             return sile.read_hamiltonian(*args, **kwargs)
         else:
@@ -408,7 +408,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         """ Writes a Hamiltonian to the `Sile` as implemented in the :code:`Sile.write_hamiltonian` method """
         # This only works because, they *must*
         # have been imported previously
-        from sisl.io import get_sile, BaseSile
+        from sisl.io import BaseSile, get_sile
         if isinstance(sile, BaseSile):
             sile.write_hamiltonian(self, *args, **kwargs)
         else:

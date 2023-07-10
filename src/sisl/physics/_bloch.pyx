@@ -3,9 +3,10 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 # cython: boundscheck=False, wraparound=False, initializedcheck=False, cdivision=True
 cimport cython
-from libc.math cimport cos, sin, pi
+from libc.math cimport cos, pi, sin
 
 import numpy as np
+
 cimport numpy as np
 
 __all__ = ['bloch_unfold']

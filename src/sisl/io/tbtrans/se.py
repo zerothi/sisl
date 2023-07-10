@@ -8,15 +8,14 @@ except Exception:
 
 import numpy as np
 
-from ..sile import add_sile
-from sisl._internal import set_module
 from sisl._indices import indices
-from sisl.utils import default_ArgumentParser, default_namespace
-from ._cdf import _devncSileTBtrans
-
+from sisl._internal import set_module
 # Import the geometry object
 from sisl.unit.siesta import unit_convert
+from sisl.utils import default_ArgumentParser, default_namespace
 
+from ..sile import add_sile
+from ._cdf import _devncSileTBtrans
 
 __all__ = ['tbtsencSileTBtrans', 'phtsencSilePHtrans']
 

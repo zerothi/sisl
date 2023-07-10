@@ -2,9 +2,10 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import pytest
+
 approx = pytest.approx
 
-from sisl.unit.siesta import unit_group, unit_convert, unit_default, unit_table_siesta
+from sisl.unit.siesta import unit_convert, unit_default, unit_group, unit_table_siesta
 
 pytestmark = pytest.mark.unit
 

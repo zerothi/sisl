@@ -5,8 +5,9 @@ import numpy as np
 from scipy.sparse import lil_matrix
 
 from sisl._internal import set_module
+
+from .phonon import EigenmodePhonon, EigenvaluePhonon
 from .sparse import SparseOrbitalBZ
-from .phonon import EigenvaluePhonon, EigenmodePhonon
 
 __all__ = ['DynamicalMatrix']
 
@@ -326,7 +327,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
         """
         # This only works because, they *must*
         # have been imported previously
-        from sisl.io import get_sile, BaseSile
+        from sisl.io import BaseSile, get_sile
         if isinstance(sile, BaseSile):
             return sile.read_dynamical_matrix(*args, **kwargs)
         else:
@@ -337,7 +338,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
         """ Writes a dynamical matrix to the `Sile` as implemented in the :code:`Sile.write_dynamical_matrix` method """
         # This only works because, they *must*
         # have been imported previously
-        from sisl.io import get_sile, BaseSile
+        from sisl.io import BaseSile, get_sile
         if isinstance(sile, BaseSile):
             sile.write_dynamical_matrix(self, *args, **kwargs)
         else:

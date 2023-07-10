@@ -4,8 +4,8 @@
 import numpy as np
 
 from ....plots import FatbandsPlot
-from .bands import PlotlyBandsBackend
 from ...templates import FatbandsBackend
+from .bands import PlotlyBandsBackend
 
 
 class PlotlyFatbandsBackend(PlotlyBandsBackend, FatbandsBackend):

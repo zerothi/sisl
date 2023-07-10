@@ -1,21 +1,19 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from hashlib import sha256
-from abc import abstractmethod
-from pathlib import Path
-from numbers import Real
-import warnings
 import logging
+import warnings
+from abc import abstractmethod
+from hashlib import sha256
+from numbers import Real
+from pathlib import Path
 
 import numpy as np
-from scipy.optimize import minimize, dual_annealing
+from scipy.optimize import dual_annealing, minimize
 
-from sisl._dispatcher import AbstractDispatch
-from sisl._dispatcher import ClassDispatcher
+from sisl._dispatcher import AbstractDispatch, ClassDispatcher
 from sisl.io import tableSile
 from sisl.utils import PropertyDict
-
 
 __all__ = ["BaseMinimize", "LocalMinimize", "DualAnnealingMinimize",
            "MinimizeToDispatcher"]
@@ -340,6 +338,7 @@ class MinimizeToskoptDispatcher(MinimizeToDispatcher):
 
         if "models" not in kwargs:
             import sklearn
+
             # We can't use categorial (SVC) since these are regression models
             # fast, but should not be as accurate?
             #model = sklearn.svm.LinearSVR()

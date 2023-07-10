@@ -1,26 +1,26 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from numbers import Integral
 import math as m
+from numbers import Integral
 
 import numpy as np
-from numpy import repeat, logical_and
-from numpy import dot, unique, add, subtract
-from scipy.sparse import csr_matrix, triu, tril
+from numpy import add, dot, logical_and, repeat, subtract, unique
+from scipy.sparse import csr_matrix
 from scipy.sparse import hstack as ss_hstack
+from scipy.sparse import tril, triu
 
-from sisl._internal import set_module
-from sisl import Geometry, Lattice
 import sisl._array as _a
-from sisl._indices import indices_le, indices_fabs_le
+from sisl import Geometry, Lattice
+from sisl._indices import indices_fabs_le, indices_le
+from sisl._internal import set_module
 from sisl._math_small import xyz_to_spherical_cos_phi
-from sisl.messages import warn, progressbar
-from .spin import Spin
+from sisl.messages import progressbar, warn
 from sisl.sparse import SparseCSR, _ncol_to_indptr
 from sisl.sparse_geometry import SparseOrbital
-from .sparse import SparseOrbitalBZSpin
 
+from .sparse import SparseOrbitalBZSpin
+from .spin import Spin
 
 __all__ = ["DensityMatrix"]
 
@@ -1276,7 +1276,7 @@ class DensityMatrix(_densitymatrix):
         """
         # This only works because, they *must*
         # have been imported previously
-        from sisl.io import get_sile, BaseSile
+        from sisl.io import BaseSile, get_sile
         if isinstance(sile, BaseSile):
             return sile.read_density_matrix(*args, **kwargs)
         else:
@@ -1287,7 +1287,7 @@ class DensityMatrix(_densitymatrix):
         """ Writes a density matrix to the `Sile` as implemented in the :code:`Sile.write_density_matrix` method """
         # This only works because, they *must*
         # have been imported previously
-        from sisl.io import get_sile, BaseSile
+        from sisl.io import BaseSile, get_sile
         if isinstance(sile, BaseSile):
             sile.write_density_matrix(self, *args, **kwargs)
         else:

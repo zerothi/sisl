@@ -4,7 +4,9 @@
 cimport cython
 
 import numpy as np
+
 # This enables Cython enhanced compatibilities
+
 cimport numpy as np
 cimport numpy.math as npmath
 

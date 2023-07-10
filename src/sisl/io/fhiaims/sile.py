@@ -5,8 +5,8 @@
 Define a common FHI-AIMS Sile
 """
 from sisl._internal import set_module
-from ..sile import Sile, SileBin
 
+from ..sile import Sile, SileBin
 
 __all__ = ["SileFHIaims", "SileBinFHIaims"]
 

@@ -5,12 +5,13 @@
 cimport cython
 
 import numpy as np
+
 cimport numpy as np
+
 from scipy.sparse import csr_matrix
 
 from sisl._sparse cimport inline_sum
 from sisl.physics._matrix_utils cimport ncol2ptr_double
-
 
 __all__ = ['_sc_phase_so_csr_c64', '_sc_phase_so_csr_c128',
            '_sc_phase_so_array_c64', '_sc_phase_so_array_c128']

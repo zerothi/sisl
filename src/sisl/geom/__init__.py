@@ -43,10 +43,10 @@ Surfaces
 
 """
 from .basic import *
+from .bilayer import *
+from .category import *
 from .flat import *
-from .surfaces import *
 from .nanoribbon import *
 from .nanotube import *
 from .special import *
-from .bilayer import *
-from .category import *
+from .surfaces import *

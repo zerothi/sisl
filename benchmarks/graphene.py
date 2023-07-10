@@ -17,8 +17,10 @@
 import cProfile
 import pstats
 import sys
-import sisl
+
 import numpy as np
+
+import sisl
 
 pr = cProfile.Profile()
 pr.disable()

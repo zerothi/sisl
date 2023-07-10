@@ -1,13 +1,10 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from functools import (
-        update_wrapper,
-        reduce
-)
+from functools import reduce, update_wrapper
+from numbers import Integral
 from textwrap import dedent
 from typing import Any, Callable, Optional, Type
-from numbers import Integral
 
 Func = Callable[..., Optional[Any]]
 

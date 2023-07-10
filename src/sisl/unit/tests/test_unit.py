@@ -2,11 +2,12 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import pytest
+
 approx = pytest.approx
 
 import numpy as np
 
-from sisl.unit import unit_group, unit_convert, unit_default, units
+from sisl.unit import unit_convert, unit_default, unit_group, units
 
 pytestmark = pytest.mark.unit
 

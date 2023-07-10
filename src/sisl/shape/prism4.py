@@ -4,14 +4,13 @@
 import numpy as np
 
 import sisl._array as _a
-from sisl._internal import set_module
-from sisl.linalg import inv
-from sisl.utils.mathematics import fnorm, expand
-from sisl._math_small import dot3, cross3
 from sisl._indices import indices_gt_le
+from sisl._internal import set_module
+from sisl._math_small import cross3, dot3
+from sisl.linalg import inv
+from sisl.utils.mathematics import expand, fnorm
 
 from .base import PureShape, ShapeToDispatcher
-
 
 __all__ = ['Cuboid', 'Cube']
 

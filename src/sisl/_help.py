@@ -23,8 +23,8 @@ import collections.abc as collections_abc
 
 # Load the correct xml-parser
 try:
-    from defusedxml.ElementTree import parse as xml_parse
     from defusedxml import __version__ as defusedxml_version
+    from defusedxml.ElementTree import parse as xml_parse
     try:
         defusedxml_version = list(map(int, defusedxml_version.split(".")))
         if defusedxml_version[0] == 0 and defusedxml_version[1] <= 5:

@@ -2,23 +2,15 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
-from typing import (
-    Any,
-    Union,
-    Optional,
-    Callable,
-    Iterator,
-    TypeVar,
-    TYPE_CHECKING
-)
-from collections import deque
-from numbers import Integral
+
 import operator as op
 from abc import abstractmethod
+from collections import deque
+from numbers import Integral
+from typing import TYPE_CHECKING, Any, Callable, Iterator, Optional, TypeVar, Union
 
-from sisl._typing_ext.numpy import ArrayLike
 from sisl._internal import set_module
-
+from sisl._typing_ext.numpy import ArrayLike
 
 __all__ = [
     "BaseMixer",

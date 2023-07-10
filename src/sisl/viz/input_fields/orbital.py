@@ -2,12 +2,12 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from collections import defaultdict
+
 import numpy as np
 
-from .basic import OptionsInput
-
-from .queries import QueriesInput
 from .atoms import AtomSelect, SpeciesSelect
+from .basic import OptionsInput
+from .queries import QueriesInput
 from .spin import SpinSelect
 
 

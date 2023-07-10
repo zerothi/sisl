@@ -17,6 +17,7 @@ The plotly backend.
 # from ._templates import *
 # from ._user_customs import import_user_plots, import_user_presets, import_user_sessions, import_user_plugins
 import os
+
 from sisl._environ import register_environ_variable
 
 try:
@@ -28,13 +29,16 @@ register_environ_variable("SISL_VIZ_NUM_PROCS", min(1, _nprocs),
                           description="Maximum number of processors used for parallel plotting",
                           process=int)
 
-from .plot import Plot, Animation, MultiplePlot, SubPlots
-from .plots import *
-from .session import Session
-from .sessions import *
-from .plotutils import load
+# isort: split
+from .plot import Animation, MultiplePlot, Plot, SubPlots
+# isort: split
+
 from ._plotables import register_plotable
 from ._plotables_register import *
-
 from .backends import load_backends
+from .plots import *
+from .plotutils import load
+from .session import Session
+from .sessions import *
+
 load_backends()

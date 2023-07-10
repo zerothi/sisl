@@ -5,17 +5,18 @@
 Sile object for reading/writing Wannier90 in/output
 """
 from pathlib import Path
+
 import numpy as np
 from scipy.sparse import lil_matrix
 
-# Import sile objects
-from .sile import SileWannier90
-from ..sile import *
-
-from sisl.messages import deprecate_argument
 from sisl import Geometry, Lattice
+from sisl.messages import deprecate_argument
 from sisl.physics import Hamiltonian
 from sisl.unit import unit_convert
+
+from ..sile import *
+# Import sile objects
+from .sile import SileWannier90
 
 __all__ = ['winSileWannier90']
 

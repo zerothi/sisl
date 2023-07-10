@@ -1,15 +1,13 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-import pytest
+import math as m
 import sys
 
-import math as m
 import numpy as np
+import pytest
 
-from sisl._help import array_fill_repeat, get_dtype
-from sisl._help import dtype_complex_to_real
-from sisl._help import array_replace
+from sisl._help import array_fill_repeat, array_replace, dtype_complex_to_real, get_dtype
 
 pytestmark = pytest.mark.help
 

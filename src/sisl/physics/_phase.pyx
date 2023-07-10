@@ -5,13 +5,12 @@ cimport cython
 from libc.math cimport fabs
 
 import numpy as np
-cimport numpy as np
-from numpy import pi, dot, ones, exp
-from numpy import float32, float64, complex64, complex128
-from numpy import ndarray
-from numpy cimport float32_t, float64_t, complex64_t, complex128_t
-from numpy cimport ndarray
 
+cimport numpy as np
+
+from numpy import complex64, complex128, dot, exp, float32, float64, ndarray, ones, pi
+
+from numpy cimport complex64_t, complex128_t, float32_t, float64_t, ndarray
 
 __all__ = ['phase_dtype', 'phase_rsc', 'phase_rij']
 

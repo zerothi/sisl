@@ -4,8 +4,8 @@
 import plotly.graph_objects as go
 
 from ....plots.grid import GridPlot
-from ..backend import PlotlyBackend
 from ...templates import GridBackend
+from ..backend import PlotlyBackend
 
 
 class PlotlyGridBackend(PlotlyBackend, GridBackend):

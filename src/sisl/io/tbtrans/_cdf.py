@@ -1,24 +1,23 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from functools import lru_cache
 from numbers import Integral
 
 import numpy as np
-from functools import lru_cache
+
+import sisl._array as _a
+# Import the geometry object
+from sisl import Atom, Geometry, Lattice
+from sisl._indices import indices
+from sisl._internal import set_module
+from sisl.messages import info, warn
+from sisl.physics.distribution import fermi_dirac
+from sisl.unit.siesta import unit_convert
 
 # Import sile objects
 from ..sile import SileWarning
 from .sile import SileCDFTBtrans
-from sisl.messages import warn, info
-from sisl._internal import set_module
-import sisl._array as _a
-from sisl._indices import indices
-
-# Import the geometry object
-from sisl import Geometry, Atom, Lattice
-from sisl.unit.siesta import unit_convert
-from sisl.physics.distribution import fermi_dirac
-
 
 __all__ = ['_ncSileTBtrans', '_devncSileTBtrans']
 

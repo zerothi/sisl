@@ -5,7 +5,6 @@ from typing import Iterator, List
 
 import numpy as np
 
-
 __all__ = ["yield_manifolds"]
 
 

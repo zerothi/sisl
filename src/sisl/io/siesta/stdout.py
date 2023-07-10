@@ -2,20 +2,21 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import os
-import numpy as np
 from functools import lru_cache
 
-from .sile import SileSiesta
-from ..sile import add_sile, sile_fh_open, SileError
+import numpy as np
 
+import sisl._array as _a
+from sisl import Atom, Geometry, Lattice
 from sisl._common import Opt
 from sisl._internal import set_module
-import sisl._array as _a
-from sisl import Geometry, Atom, Lattice
+from sisl.messages import deprecation, warn
+from sisl.unit.siesta import unit_convert
 from sisl.utils import PropertyDict
 from sisl.utils.cmd import *
-from sisl.unit.siesta import unit_convert
-from sisl.messages import deprecation, warn
+
+from ..sile import SileError, add_sile, sile_fh_open
+from .sile import SileSiesta
 
 __all__ = ["stdoutSileSiesta", "outSileSiesta"]
 

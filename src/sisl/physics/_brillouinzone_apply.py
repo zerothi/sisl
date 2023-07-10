@@ -5,33 +5,33 @@
 
 This module should not expose any methods!
 """
-from functools import wraps, reduce
-from itertools import zip_longest
 import operator as op
+from functools import reduce, wraps
+from itertools import zip_longest
 
-from numpy import pi, cross
 import numpy as np
+from numpy import cross, pi
+
 try:
     import xarray
     _has_xarray = True
 except ImportError:
     _has_xarray = False
 
+import sisl._array as _a
 from sisl._dispatcher import AbstractDispatch
 from sisl._environ import get_environ_variable
 from sisl._internal import set_module
-from sisl.utils.misc import allow_kwargs
-from sisl.utils.mathematics import cart2spher
-from sisl.oplist import oplist
-import sisl._array as _a
-from sisl.messages import progressbar, SislError
-from sisl.lattice import Lattice
 from sisl.grid import Grid
+from sisl.lattice import Lattice
+from sisl.messages import SislError, progressbar
+from sisl.oplist import oplist
 from sisl.unit import units
+from sisl.utils.mathematics import cart2spher
+from sisl.utils.misc import allow_kwargs
 
 # Stuff used for patching
 from .brillouinzone import BrillouinZone, MonkhorstPack
-
 
 # We expose the Apply and ParentApply classes
 __all__ = ["BrillouinZoneApply", "BrillouinZoneParentApply"]

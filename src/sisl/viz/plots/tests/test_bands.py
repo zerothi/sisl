@@ -10,13 +10,13 @@ Different inputs are tested (siesta .bands and sisl Hamiltonian).
 """
 import itertools
 from functools import partial
-import pytest
+
 import numpy as np
+import pytest
 
 import sisl
 from sisl.viz import BandsPlot
 from sisl.viz.plots.tests.conftest import _TestPlot
-
 
 pytestmark = [pytest.mark.viz, pytest.mark.plotly]
 

@@ -5,11 +5,10 @@ from math import sqrt as msqrt
 
 import numpy as np
 
-from sisl._internal import set_module
 import sisl._array as _a
-from sisl.utils.mathematics import fnorm
 from sisl._dispatcher import AbstractDispatch, ClassDispatcher
-
+from sisl._internal import set_module
+from sisl.utils.mathematics import fnorm
 
 __all__ = ["Shape", "PureShape", "NullShape", "ShapeToDispatcher",
            "CompositeShape", "OrShape", "XOrShape", "AndShape", "SubShape"]

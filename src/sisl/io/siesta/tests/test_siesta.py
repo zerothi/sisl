@@ -3,15 +3,19 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import os.path as osp
 
-import pytest
 import numpy as np
+import pytest
 
 import sisl
-from sisl import Hamiltonian, DynamicalMatrix, DensityMatrix
-from sisl import EnergyDensityMatrix
-from sisl import Atom, Geometry
+from sisl import (
+    Atom,
+    DensityMatrix,
+    DynamicalMatrix,
+    EnergyDensityMatrix,
+    Geometry,
+    Hamiltonian,
+)
 from sisl.io.siesta import *
-
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
 _dir = osp.join('sisl', 'io', 'siesta')

@@ -1,15 +1,14 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-import pytest
-import os.path as osp
 import math as m
+import os.path as osp
 
 import numpy as np
+import pytest
 
-from sisl import Geometry, Atom, Lattice, Grid
+from sisl import Atom, Geometry, Grid, Lattice, get_sile
 from sisl.grid import sgrid
-from sisl import get_sile
 
 _dir = osp.join('sisl')
 

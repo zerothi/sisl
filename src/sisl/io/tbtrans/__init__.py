@@ -64,11 +64,11 @@ phonon transport.
 - `phtprojncSilePHtrans` (projected PHtrans output)
 
 """
-from .sile import *
+from .sile import * # isort: split
 from .binaries import *
 from .delta import *
+from .pht import *
+from .phtproj import *
 from .se import *
 from .tbt import *
-from .pht import *
 from .tbtproj import *
-from .phtproj import *

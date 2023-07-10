@@ -3,11 +3,11 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
 
-from sisl._internal import set_module
 import sisl._array as _a
+from sisl._internal import set_module
 from sisl.messages import SislError
-from .densitymatrix import _densitymatrix
 
+from .densitymatrix import _densitymatrix
 
 __all__ = ["EnergyDensityMatrix"]
 
@@ -313,7 +313,7 @@ class EnergyDensityMatrix(_densitymatrix):
         """
         # This only works because, they *must*
         # have been imported previously
-        from sisl.io import get_sile, BaseSile
+        from sisl.io import BaseSile, get_sile
         if isinstance(sile, BaseSile):
             return sile.read_energy_density_matrix(*args, **kwargs)
         else:
@@ -324,7 +324,7 @@ class EnergyDensityMatrix(_densitymatrix):
         """ Writes a density matrix to the `Sile` as implemented in the :code:`Sile.write_energy_density_matrix` method """
         # This only works because, they *must*
         # have been imported previously
-        from sisl.io import get_sile, BaseSile
+        from sisl.io import BaseSile, get_sile
         if isinstance(sile, BaseSile):
             sile.write_energy_density_matrix(self, *args, **kwargs)
         else:

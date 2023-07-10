@@ -5,7 +5,6 @@ import numpy as np
 
 from .base import eigh
 
-
 __all__ = ['signsqrt', 'sqrth', 'invsqrth', 'lowdin']
 
 

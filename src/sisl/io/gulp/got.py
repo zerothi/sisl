@@ -6,16 +6,14 @@ Sile object for reading/writing GULP in/output
 """
 import numpy as np
 
+from sisl import Atom, Geometry, Lattice, Orbital, constant, units
 from sisl._internal import set_module
-from sisl.messages import info, warn
-from sisl.messages import deprecate_argument, deprecation
-from .sile import SileGULP
-from .fc import fcSileGULP
-from ..sile import add_sile, sile_fh_open
-from sisl import Geometry, Atom, Orbital, Lattice
-from sisl import constant, units
+from sisl.messages import deprecate_argument, deprecation, info, warn
 from sisl.physics import DynamicalMatrix
 
+from ..sile import add_sile, sile_fh_open
+from .fc import fcSileGULP
+from .sile import SileGULP
 
 __all__ = ["gotSileGULP"]
 

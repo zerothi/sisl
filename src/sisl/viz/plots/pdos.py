@@ -5,14 +5,23 @@ import numpy as np
 
 import sisl
 from sisl.messages import warn
+
+from ..input_fields import (
+    Array1DInput,
+    BoolInput,
+    ColorInput,
+    DistributionInput,
+    ErangeInput,
+    FloatInput,
+    GeometryInput,
+    IntegerInput,
+    OptionsInput,
+    OrbitalQueries,
+    SileInput,
+    TextInput,
+)
 from ..plot import Plot, entry_point
 from ..plotutils import find_files, random_color
-from ..input_fields import (
-    TextInput, SileInput, BoolInput, ColorInput, OptionsInput,
-    IntegerInput, FloatInput, OrbitalQueries,
-    Array1DInput, GeometryInput, ErangeInput,
-    DistributionInput
-)
 
 try:
     import pathos

@@ -4,13 +4,15 @@
 from __future__ import annotations
 
 import inspect
-from typing import Any, Optional, Callable, Dict, Sequence, Tuple, List, Union
 from collections import ChainMap
+from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
 
 from numpy.lib.mixins import NDArrayOperatorsMixin
 
 from sisl.messages import SislError, info
-from .context import NodeContext, SISL_NODES_CONTEXT
+
+from .context import SISL_NODES_CONTEXT, NodeContext
+
 
 class NodeError(SislError):
     def __init__(self, node, error):

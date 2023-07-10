@@ -2,13 +2,15 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import itertools
-import matplotlib.pyplot as plt
-from matplotlib.axes import Axes
-import numpy as np
 
-from ..templates.backend import Backend, MultiplePlotBackend, SubPlotsBackend
-from ...plot import Plot, SubPlots, MultiplePlot
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.axes import Axes
+
 from sisl.messages import warn
+
+from ...plot import MultiplePlot, Plot, SubPlots
+from ..templates.backend import Backend, MultiplePlotBackend, SubPlotsBackend
 
 
 class MatplotlibBackend(Backend):

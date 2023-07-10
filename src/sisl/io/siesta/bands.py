@@ -1,14 +1,13 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from ..sile import add_sile, sile_fh_open
-from .sile import SileSiesta
-
-from sisl._internal import set_module
 import sisl._array as _a
+from sisl._internal import set_module
 from sisl.utils import strmap
 from sisl.utils.cmd import default_ArgumentParser, default_namespace
 
+from ..sile import add_sile, sile_fh_open
+from .sile import SileSiesta
 
 __all__ = ["bandsSileSiesta"]
 
@@ -137,6 +136,7 @@ class bandsSileSiesta(SileSiesta):
 
             def __call__(self, parser, ns, value, option_string=None):
                 import matplotlib.pyplot as plt
+
                 # Decide whether this is BandLines or BandPoints
                 if len(ns._bands) == 2:
                     # We do not plot "points"

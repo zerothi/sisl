@@ -1,39 +1,61 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from numbers import Integral
 from functools import reduce
+from numbers import Integral
 
 import numpy as np
 # To speed up the _extend algorithm we limit lookups
+from numpy import all as np_all
+from numpy import allclose
+from numpy import any as np_any
 from numpy import (
-    ndarray, int32,
-    empty, zeros, full, arange, repeat,
-    asarray, atleast_1d,
-    take, delete, insert, split, concatenate,
+    arange,
+    argsort,
+    asarray,
+    atleast_1d,
+    broadcast,
+    concatenate,
     copyto,
-    argsort, lexsort,
-    intersect1d, setdiff1d, unique, in1d,
-    diff, count_nonzero, allclose,
-    isnan, isscalar, broadcast,
-    any as np_any, all as np_all
+    count_nonzero,
+    delete,
+    diff,
+    empty,
+    full,
+    in1d,
+    insert,
+    int32,
+    intersect1d,
+    isnan,
+    isscalar,
+    lexsort,
+    ndarray,
+    repeat,
+    setdiff1d,
+    split,
+    take,
+    unique,
+    zeros,
 )
 from numpy.lib.mixins import NDArrayOperatorsMixin
-
 from scipy.sparse import (
-    spmatrix, csr_matrix,
-    isspmatrix, isspmatrix_coo, isspmatrix_lil,
-    isspmatrix_csr, isspmatrix_csc
+    csr_matrix,
+    isspmatrix,
+    isspmatrix_coo,
+    isspmatrix_csc,
+    isspmatrix_csr,
+    isspmatrix_lil,
+    spmatrix,
 )
 
-from ._internal import set_module
 from . import _array as _a
-from ._array import asarrayi, arrayi, fulli, array_arange
-from ._indices import indices, indices_only
-from .messages import warn, SislError
+from ._array import array_arange, arrayi, asarrayi, fulli
 from ._help import array_fill_repeat, isiterable
-from .utils.mathematics import intersect_and_diff_sets
+from ._indices import indices, indices_only
+from ._internal import set_module
 from ._sparse import sparse_dense
+from .messages import SislError, warn
+from .utils.mathematics import intersect_and_diff_sets
 
 # Although this re-implements the CSR in scipy.sparse.csr_matrix
 # we use it slightly differently and thus require this new sparse pattern.

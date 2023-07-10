@@ -15,11 +15,13 @@
 #  python stats.py $0.profile
 #
 import cProfile
-import pstats
 import io
+import pstats
 import sys
-import sisl
+
 import numpy as np
+
+import sisl
 
 pr = cProfile.Profile()
 pr.disable()

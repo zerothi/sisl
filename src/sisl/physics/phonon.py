@@ -31,18 +31,17 @@ using automatic arguments.
 """
 
 import numpy as np
-from numpy import fabs, delete
+from numpy import delete, fabs
 
-from sisl._internal import set_module
 import sisl._array as _a
-from sisl import units, constant
+from sisl import constant, units
 from sisl._help import dtype_complex_to_real
-from .state import degenerate_decouple, Coefficient, State, StateC
+from sisl._internal import set_module
 
 from .distribution import get_distribution
 from .electron import DOS as electron_DOS
 from .electron import PDOS as electron_PDOS
-
+from .state import Coefficient, State, StateC, degenerate_decouple
 
 __all__ = ['DOS', 'PDOS']
 __all__ += ['CoefficientPhonon', 'ModePhonon', 'ModeCPhonon']

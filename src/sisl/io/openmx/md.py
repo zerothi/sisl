@@ -4,11 +4,11 @@
 """
 Sile object for reading OpenMX md files
 """
-from .sile import SileOpenMX
-from ..xyz import xyzSile
-from ..sile import add_sile
 from sisl._internal import set_module
 
+from ..sile import add_sile
+from ..xyz import xyzSile
+from .sile import SileOpenMX
 
 __all__ = ["mdSileOpenMX"]
 

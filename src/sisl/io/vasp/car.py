@@ -3,15 +3,14 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
 
+import sisl._array as _a
+from sisl import Atom, Geometry, Lattice, PeriodicTable
+from sisl._internal import set_module
+from sisl.messages import warn
+
+from ..sile import add_sile, sile_fh_open, sile_raise_write
 # Import sile objects
 from .sile import SileVASP
-from ..sile import add_sile, sile_fh_open, sile_raise_write
-
-from sisl._internal import set_module
-import sisl._array as _a
-from sisl.messages import warn
-from sisl import Geometry, PeriodicTable, Atom, Lattice
-
 
 __all__ = ['carSileVASP']
 

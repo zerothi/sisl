@@ -6,15 +6,12 @@ Sile object for reading/writing FHI-aims geometry files
 """
 import numpy as np
 
-from ..sile import sile_raise_write, sile_fh_open, add_sile
-from ..sile import SileError
-
-from .sile import SileFHIaims
-
-from sisl.messages import deprecate_argument
-from sisl._internal import set_module
 from sisl import Geometry, Lattice
+from sisl._internal import set_module
+from sisl.messages import deprecate_argument
 
+from ..sile import SileError, add_sile, sile_fh_open, sile_raise_write
+from .sile import SileFHIaims
 
 __all__ = ["inSileFHIaims"]
 

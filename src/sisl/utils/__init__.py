@@ -29,8 +29,8 @@ Miscellaneous routines
    batched_indices
 
 """
+from . import mathematics as math
 from ._arrays import *
 from .cmd import *
 from .misc import *
 from .ranges import *
-from . import mathematics as math

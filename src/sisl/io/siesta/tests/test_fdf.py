@@ -1,17 +1,17 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from pathlib import Path
-import pytest
 import os.path as osp
+from pathlib import Path
+
+import numpy as np
+import pytest
+
 import sisl
-from sisl import geom
-from sisl import Geometry, Atom
-from sisl.io import fdfSileSiesta, SileError
+from sisl import Atom, Geometry, geom
+from sisl.io import SileError, fdfSileSiesta
 from sisl.messages import SislWarning
 from sisl.unit.siesta import unit_convert
-import numpy as np
-
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta, pytest.mark.fdf,
               pytest.mark.filterwarnings("ignore", message="*number of supercells")

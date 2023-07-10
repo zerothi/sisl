@@ -2,8 +2,8 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from ....plots import FatbandsPlot
-from .bands import MatplotlibBandsBackend
 from ...templates import FatbandsBackend
+from .bands import MatplotlibBandsBackend
 
 
 class MatplotlibFatbandsBackend(MatplotlibBandsBackend, FatbandsBackend):

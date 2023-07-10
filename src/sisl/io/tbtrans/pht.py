@@ -1,10 +1,10 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from ..sile import add_sile
 from sisl._internal import set_module
-from .tbt import tbtncSileTBtrans, tbtavncSileTBtrans, Ry2K, Ry2eV
 
+from ..sile import add_sile
+from .tbt import Ry2eV, Ry2K, tbtavncSileTBtrans, tbtncSileTBtrans
 
 __all__ = ['phtncSilePHtrans', 'phtavncSilePHtrans']
 

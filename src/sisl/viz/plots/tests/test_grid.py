@@ -8,16 +8,15 @@ Tests specific functionality of the grid plot.
 Different inputs are tested (siesta .RHO and sisl Hamiltonian).
 
 """
+import os.path as osp
 from typing import ChainMap
 
-import pytest
 import numpy as np
-import os.path as osp
+import pytest
 
 import sisl
-from sisl.viz import GridPlot, Animation
+from sisl.viz import Animation, GridPlot
 from sisl.viz.plots.tests.conftest import _TestPlot
-
 
 pytestmark = [pytest.mark.viz, pytest.mark.plotly]
 

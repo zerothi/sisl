@@ -1,20 +1,30 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-import pytest
-
-from functools import partial
 import warnings
+from functools import partial
+
 import numpy as np
+import pytest
 from scipy.linalg import block_diag
 from scipy.sparse import SparseEfficiencyWarning, isspmatrix
 
-from sisl import Geometry, Atom, Lattice, Hamiltonian, Spin, BandStructure, MonkhorstPack, BrillouinZone
-from sisl import get_distribution
-from sisl import oplist
-from sisl import Grid, SphericalOrbital, SislError
-from sisl.physics.electron import berry_phase, spin_squared, conductivity
-
+from sisl import (
+    Atom,
+    BandStructure,
+    BrillouinZone,
+    Geometry,
+    Grid,
+    Hamiltonian,
+    Lattice,
+    MonkhorstPack,
+    SislError,
+    SphericalOrbital,
+    Spin,
+    get_distribution,
+    oplist,
+)
+from sisl.physics.electron import berry_phase, conductivity, spin_squared
 
 pytestmark = [pytest.mark.physics, pytest.mark.hamiltonian,
               pytest.mark.filterwarnings("ignore", category=SparseEfficiencyWarning)]

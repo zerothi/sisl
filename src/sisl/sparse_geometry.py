@@ -2,35 +2,45 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
-from numbers import Integral
-import warnings
+
 import functools as ftool
+import warnings
 from collections import namedtuple
+from numbers import Integral
+from typing import TYPE_CHECKING, Optional
+
 import numpy as np
-from numpy.lib.mixins import NDArrayOperatorsMixin
 from numpy import (
-    int32, intersect1d,
-    take, delete, argsort, lexsort,
-    insert, unique, diff, allclose,
+    allclose,
+    argsort,
+    concatenate,
+    delete,
+    diff,
+    insert,
+    int32,
+    intersect1d,
+    lexsort,
+    repeat,
     searchsorted,
-    tile, repeat, concatenate
+    take,
+    tile,
+    unique,
 )
+from numpy.lib.mixins import NDArrayOperatorsMixin
 from scipy.sparse import csr_matrix
-from typing import Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from sisl.typing import AtomsArgument
 
-from ._internal import set_module
 from . import _array as _a
 from ._array import array_arange
+from ._internal import set_module
 from .atom import Atom
-from .orbital import Orbital
 from .geometry import Geometry
-from .messages import warn, SislError, SislWarning, progressbar
+from .messages import SislError, SislWarning, progressbar, warn
+from .orbital import Orbital
+from .sparse import SparseCSR, _ncol_to_indptr, isspmatrix
 from .utils.ranges import list2str
-from .sparse import SparseCSR, isspmatrix, _ncol_to_indptr
-
 
 __all__ = ['SparseAtom', 'SparseOrbital']
 

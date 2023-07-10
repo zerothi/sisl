@@ -1,35 +1,36 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from functools import partial
 from collections import namedtuple
 from collections.abc import Iterable
-from numbers import Integral, Real
+from functools import partial
+from math import factorial as fact
 from math import pi
 from math import sqrt as msqrt
-from math import factorial as fact
+from numbers import Integral, Real
 from typing import Callable, Optional, Tuple
-import numpy.typing as npt
 
 import numpy as np
-from numpy import cos, sin
-from numpy import take, sqrt, square
+import numpy.typing as npt
 import scipy
-from scipy.special import lpmv, factorial, eval_genlaguerre
+from numpy import cos, sin, sqrt, square, take
+from scipy.special import eval_genlaguerre, factorial, lpmv
+
 if scipy.__version__ < "0.16.0":
     from scipy.integrate import cumtrapz as cumulative_trapezoid
 else:
     from scipy.integrate import cumulative_trapezoid
+
 from scipy.interpolate import UnivariateSpline
 
-from .messages import warn
-from ._internal import set_module
-from . import _plot as plt
-from . import _array as _a
-from .shape import Sphere
-from .utils.mathematics import cart2spher
 from sisl.constant import a0
 
+from . import _array as _a
+from . import _plot as plt
+from ._internal import set_module
+from .messages import warn
+from .shape import Sphere
+from .utils.mathematics import cart2spher
 
 __all__ = [
     "Orbital", "SphericalOrbital", "AtomicOrbital",
@@ -346,10 +347,10 @@ class Orbital:
 
         # Since all these things depend on other elements
         # we will simply import them here.
-        from .lattice import Lattice
+        from .atom import Atom
         from .geometry import Geometry
         from .grid import Grid
-        from .atom import Atom
+        from .lattice import Lattice
         from .physics.electron import wavefunction
         lattice = Lattice(R*2, origin=[-R] * 3)
         if isinstance(atom, Atom):

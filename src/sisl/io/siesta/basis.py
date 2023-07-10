@@ -1,18 +1,17 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from ..sile import add_sile, sile_fh_open
-from .sile import SileSiesta, SileCDFSiesta
-
-from sisl._internal import set_module
+from sisl._array import aranged, arrayd
 from sisl._help import xml_parse
+from sisl._internal import set_module
 from sisl.atom import Atom
 from sisl.orbital import SphericalOrbital
-from sisl._array import arrayd, aranged
 from sisl.unit.siesta import unit_convert
-from sisl.utils.cmd import default_ArgumentParser, default_namespace
 from sisl.utils import PropertyDict, strmap
+from sisl.utils.cmd import default_ArgumentParser, default_namespace
 
+from ..sile import add_sile, sile_fh_open
+from .sile import SileCDFSiesta, SileSiesta
 
 __all__ = ['ionxmlSileSiesta', 'ionncSileSiesta']
 

@@ -7,13 +7,12 @@ Sile object for reading/writing PDB files
 
 import numpy as np
 
+from sisl import Atom, Atoms, Geometry, Lattice
+from sisl._internal import set_module
+from sisl.messages import deprecate_argument
+
 # Import sile objects
 from .sile import *
-
-from sisl.messages import deprecate_argument
-from sisl._internal import set_module
-from sisl import Geometry, Lattice, Atoms, Atom
-
 
 __all__ = ['pdbSile']
 

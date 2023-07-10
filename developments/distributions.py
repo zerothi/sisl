@@ -2,11 +2,12 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from sympy import init_printing
+
 init_printing()
 
+import matplotlib.pyplot as plt
 import numpy as np
 import sympy as sy
-import matplotlib.pyplot as plt
 
 print(f"numpy version: {np.__version__}")
 print(f"sympy version: {sy.__version__}")

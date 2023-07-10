@@ -5,15 +5,14 @@
 Sile object for reading/writing ascii files from BigDFT
 """
 
-from .sile import SileBigDFT
-from ..sile import *
-
-from sisl._internal import set_module
-from sisl import Geometry, Atom, Lattice
-from sisl.unit import unit_convert
-
 import numpy as np
 
+from sisl import Atom, Geometry, Lattice
+from sisl._internal import set_module
+from sisl.unit import unit_convert
+
+from ..sile import *
+from .sile import SileBigDFT
 
 __all__ = ["asciiSileBigDFT"]
 

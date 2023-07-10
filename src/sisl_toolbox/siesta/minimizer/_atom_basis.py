@@ -1,15 +1,14 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from functools import partial
 import logging
+from functools import partial
 
 import sisl as si
 from sisl.utils import NotNonePropertyDict
 
-from ._yaml_reader import read_yaml, parse_variable
 from ._variable import Variable
-
+from ._yaml_reader import parse_variable, read_yaml
 
 __all__ = ["AtomBasis"]
 

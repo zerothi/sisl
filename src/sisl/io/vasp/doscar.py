@@ -3,12 +3,11 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
 
-from .sile import SileVASP
-from ..sile import add_sile, sile_fh_open
-
 from sisl._array import arrayf
 from sisl._internal import set_module
 
+from ..sile import add_sile, sile_fh_open
+from .sile import SileVASP
 
 __all__ = ['doscarSileVASP']
 

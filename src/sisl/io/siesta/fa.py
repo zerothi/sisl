@@ -3,11 +3,10 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
 
-from ..sile import add_sile, sile_fh_open, sile_raise_write
-from .sile import SileSiesta
-
 from sisl._internal import set_module
 
+from ..sile import add_sile, sile_fh_open, sile_raise_write
+from .sile import SileSiesta
 
 __all__ = ['faSileSiesta']
 

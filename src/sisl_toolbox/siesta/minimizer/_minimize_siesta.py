@@ -1,20 +1,19 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+import logging
 from functools import partial
 from subprocess import CompletedProcess
-import logging
 
 import numpy as np
 
+from sisl._array import arangei, arrayi, zerosd
 from sisl.io import tableSile
 from sisl.io.siesta import fdfSileSiesta
-from sisl._array import arrayi, zerosd, arangei
 from sisl.utils import PropertyDict
 
-from ._runner import AndRunner
 from ._minimize import *
-
+from ._runner import AndRunner
 
 __all__ = ["MinimizeSiesta", "LocalMinimizeSiesta", "DualAnnealingMinimizeSiesta"]
 

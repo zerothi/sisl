@@ -3,10 +3,10 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
+import pstats
 # Script for analysing profile scripts created by the
 # cProfile module.
 import sys
-import pstats
 
 if len(sys.argv) > 1:
     fname = sys.argv[1]

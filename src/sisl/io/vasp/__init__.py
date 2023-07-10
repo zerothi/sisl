@@ -13,10 +13,10 @@ VASP
    stdoutSileVASP
 
 """
-from .sile import *
+from .sile import * # isort: split
 from .car import *
-from .eigenval import *
-from .doscar import *
 from .chg import *
+from .doscar import *
+from .eigenval import *
 from .locpot import *
 from .stdout import *

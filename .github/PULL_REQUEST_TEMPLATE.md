@@ -2,5 +2,6 @@
 
  - [ ] Closes #xxxx
  - [ ] Tests added
- - [ ] Documentation for functionality
- - [ ] User visible changes (including notable bug fixes) are documented in `CHANGELOG`
+ - [ ] Ranned `isort .` at top--level
+ - [ ] Documentation for functionality, `docs/`
+ - [ ] Changes documented, `CHANGELOG.md`

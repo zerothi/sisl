@@ -1,19 +1,28 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-import pytest
-
 import math as m
 import warnings
+
 import numpy as np
+import pytest
 from scipy.sparse import SparseEfficiencyWarning
 
-from sisl import Geometry, Atom, Lattice, Hamiltonian
-from sisl import BrillouinZone, Bloch
-from sisl import SelfEnergy, WideBandSE, SemiInfinite, RecursiveSI
-from sisl import RealSpaceSE, RealSpaceSI
 import sisl
-
+from sisl import (
+    Atom,
+    Bloch,
+    BrillouinZone,
+    Geometry,
+    Hamiltonian,
+    Lattice,
+    RealSpaceSE,
+    RealSpaceSI,
+    RecursiveSI,
+    SelfEnergy,
+    SemiInfinite,
+    WideBandSE,
+)
 
 pytestmark = [pytest.mark.physics, pytest.mark.self_energy,
               pytest.mark.filterwarnings("ignore", category=SparseEfficiencyWarning)]

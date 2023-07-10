@@ -93,8 +93,8 @@ This far from covers everything here but should give some ideas of what to do.
 There is also a class that optimizes the pseudopotential, but so far this is
 not as tested as the other one.
 """
-from ._atom_pseudo import *
 from ._atom_basis import *
+from ._atom_pseudo import *
 from ._metric import *
 from ._metric_siesta import *
 from ._minimize import *

@@ -1,12 +1,11 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from ..templates.backend import Backend, MultiplePlotBackend, AnimationBackend
-from ...plot import MultiplePlot, Animation
-
+import bpy
 import numpy as np
 
-import bpy
+from ...plot import Animation, MultiplePlot
+from ..templates.backend import AnimationBackend, Backend, MultiplePlotBackend
 
 
 def add_line_frame(ani_objects, child_objects, frame):

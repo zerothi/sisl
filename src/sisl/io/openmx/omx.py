@@ -3,16 +3,14 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
 
-from sisl.unit import units
 import sisl._array as _a
+from sisl import Atom, Geometry, Lattice, SphericalOrbital
 from sisl.messages import SislError, warn
+from sisl.unit import units
 
 from .._help import *
 from ..sile import *
 from .sile import SileOpenMX
-
-from sisl import Geometry, SphericalOrbital, Atom, Lattice
-
 
 __all__ = ['omxSileOpenMX']
 
