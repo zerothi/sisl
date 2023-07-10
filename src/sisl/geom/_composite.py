@@ -1,8 +1,7 @@
-from dataclasses import dataclass, copy, fields 
 from abc import abstractmethod
+from dataclasses import copy, dataclass, fields
 
-from sisl.messages import warn, SislError
-
+from sisl.messages import SislError, warn
 
 __all__ = ["composite_geometry"]
 

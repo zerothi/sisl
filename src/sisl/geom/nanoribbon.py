@@ -7,10 +7,10 @@ from numbers import Integral
 import numpy as np
 
 from sisl import Atom, geom
-from ._composite import _geom_section, composite_geometry
 from sisl._internal import set_module
 
 from ._common import geometry_define_nsc
+from ._composite import _geom_section, composite_geometry
 
 __all__ = [
     'nanoribbon', 'graphene_nanoribbon', 'agnr', 'zgnr',
