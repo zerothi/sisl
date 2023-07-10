@@ -42,6 +42,9 @@ def _ensure_diagonal(csr):
 
 def _csr_from_siesta(geom, csr):
     """ Internal routine to convert *any* SparseCSR matrix from sisl nsc to siesta nsc """
+    if not has_fortran_module:
+        raise SislError('sisl cannot convert the sparse matrix from a Siesta conforming sparsity pattern! Please install with fortran support!')
+
     _csr_from_sc_off(geom, _siesta.siesta_sc_off(*geom.nsc).T, csr)
 
 
@@ -54,17 +57,12 @@ def _csr_to_siesta(geom, csr, diag=True):
     diag: bool, optional
        whether the csr matrix will be ensured diagonal as well
     """
+    if not has_fortran_module:
+        raise SislError('sisl cannot convert the sparse matrix into a Siesta conforming sparsity pattern! Please install with fortran support!')
+
     if diag:
         _ensure_diagonal(csr)
     _csr_to_sc_off(geom, _siesta.siesta_sc_off(*geom.nsc).T, csr)
-
-
-if not has_fortran_module:
-    def _csr_from_siesta(geom, csr):
-        raise SislError('sisl cannot convert the sparse matrix from a Siesta conforming sparsity pattern! Please install with fortran support!')
-
-    def _csr_to_siesta(geom, csr):
-        raise SislError('sisl cannot convert the sparse matrix into a Siesta conforming sparsity pattern! Please install with fortran support!')
 
 
 def _csr_from_sc_off(geom, sc_off, csr):
