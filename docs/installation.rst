@@ -14,16 +14,16 @@ Running sisl requires these versions:
 - `Python`_ 3.8 or above
 - `numpy`_ (1.13 or later)
 - `scipy`_ (1.5 or later)
-- `netCDF4-python <netcdf4-py_>`_
 - `pyparsing`_ (1.5.7 or later)
 
 Optional dependencies:
 
 - `pytest`_ (for running the test suite)
 - `pathos`_ (for parallel BrillouinZone calculations)
-- `matplotlib`_
+- `netCDF4-python <netcdf4-py_>`_
 - `tqdm`_ (for displaying progress-bars)
 - `xarray`_ (for advanced table data structures in certain methods)
+- `matplotlib`_
 - `plotly`_ (for advanced visualization)
 
 
@@ -102,11 +102,6 @@ using :code:`pip` or :code:`conda` methods:
        git clone git+https://github.com/zerothi/sisl.git
        cd sisl
        python3 -m pip install -e .
-       bash tools/fixeditable.bash
-
-   where the last script should (in theory) correct the editable paths and
-   ensure a consistent importable editable installation. If this causes
-   problems, feel free to open up issues.
 
 
 

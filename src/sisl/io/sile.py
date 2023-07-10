@@ -950,13 +950,19 @@ class Sile(BaseSile):
 # Instead of importing netCDF4 on each invocation
 # of the __enter__ functioon (below), we make
 # a pass around it
-_netCDF4 = None
-
+netCDF4 = None
 
 def _import_netCDF4():
-    global _netCDF4
-    if _netCDF4 is None:
-        import netCDF4 as _netCDF4
+    global netCDF4
+    if netCDF4 is None:
+        try:
+            import netCDF4
+        except ImportError as e:
+            # append
+            import sys
+            exe = Path(sys.executable).name
+            msg = f"Could not import netCDF4. Please install it using '{exe} -m pip install netCDF4'"
+            raise SileError(msg) from e
 
 
 @set_module("sisl.io")
@@ -975,6 +981,8 @@ class SileCDF(BaseSile):
     """
 
     def __init__(self, filename, mode='r', lvl=0, access=1, *args, **kwargs):
+        _import_netCDF4()
+
         self._file = Path(filename)
         # Open mode
         self._mode = mode
@@ -991,9 +999,8 @@ class SileCDF(BaseSile):
 
             # The CDF file can easily open the file
         if kwargs.pop('_open', True):
-            _import_netCDF4()
-            self.__dict__['fh'] = _netCDF4.Dataset(str(self.file), self._mode,
-                                                   format='NETCDF4')
+            self.__dict__['fh'] = netCDF4.Dataset(str(self.file), self._mode,
+                                                  format='NETCDF4')
 
         # Must call setup-methods
         self._base_setup(*args, **kwargs)
@@ -1010,8 +1017,7 @@ class SileCDF(BaseSile):
         """ Opens the output file and returns it self """
         # We do the import here
         if 'fh' not in self.__dict__:
-            _import_netCDF4()
-            self.__dict__['fh'] = _netCDF4.Dataset(str(self.file), self._mode, format='NETCDF4')
+            self.__dict__['fh'] = netCDF4.Dataset(str(self.file), self._mode, format='NETCDF4')
         return self
 
     def __exit__(self, type, value, traceback):
@@ -1113,7 +1119,7 @@ class SileCDF(BaseSile):
 
         This is just a wrapper for ``isinstance(obj, netCDF4.Dimension)``.
         """
-        return isinstance(obj, _netCDF4.Dimension)
+        return isinstance(obj, netCDF4.Dimension)
 
     @classmethod
     def isVariable(cls, obj):
@@ -1121,7 +1127,7 @@ class SileCDF(BaseSile):
 
         This is just a wrapper for ``isinstance(obj, netCDF4.Variable)``.
         """
-        return isinstance(obj, _netCDF4.Variable)
+        return isinstance(obj, netCDF4.Variable)
 
     @classmethod
     def isGroup(cls, obj):
@@ -1129,7 +1135,7 @@ class SileCDF(BaseSile):
 
         This is just a wrapper for ``isinstance(obj, netCDF4.Group)``.
         """
-        return isinstance(obj, _netCDF4.Group)
+        return isinstance(obj, netCDF4.Group)
 
     @classmethod
     def isDataset(cls, obj):
@@ -1137,7 +1143,7 @@ class SileCDF(BaseSile):
 
         This is just a wrapper for ``isinstance(obj, netCDF4.Dataset)``.
         """
-        return isinstance(obj, _netCDF4.Dataset)
+        return isinstance(obj, netCDF4.Dataset)
     isRoot = isDataset
 
     def iter(self, group=True, dimension=True, variable=True, levels=-1, root=None):
