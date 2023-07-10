@@ -42,6 +42,7 @@ Surfaces
    graphene
 
 """
+from ._composite import *
 from .basic import *
 from .bilayer import *
 from .category import *

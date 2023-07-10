@@ -14,6 +14,9 @@ geometries via a `pull request <pr>`_.
 
 All methods return a `Geometry` object.
 
+Some of the geometries are created in section based geometries, such as `heteroribbon`.
+This functionality is provided through the `composite_geometry`
+
 
 Bulk
 ====
@@ -51,6 +54,8 @@ Surfaces (slabs)
    zgnr
    graphene_nanoribbon
    nanotube
+   heteroribbon
+   graphene_heteroribbon
 
 
 2D materials
@@ -62,3 +67,12 @@ Surfaces (slabs)
    honeycomb
    bilayer
    graphene
+
+
+Helpers
+=======
+
+.. autosummary::
+   :toctree: generated/
+
+   composite_geometry

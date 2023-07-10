@@ -1,10 +1,22 @@
 from dataclasses import dataclass, copy, fields 
+from abc import abstractmethod
 
-from sisl.messages import warn
+from sisl.messages import warn, SislError
+
+
+__all__ = ["composite_geometry"]
 
 
 @dataclass
 class _geom_section:
+
+    @abstractmethod
+    def build_section(self, geometry):
+        ...
+
+    @abstractmethod
+    def add_section(self, geometry, geometry_addition):
+        ...
 
     def _junction_error(self, prev, msg, what):
         """Helper function to raise an error if the junction is not valid.
@@ -14,7 +26,7 @@ class _geom_section:
         """
         msg = f"Error at junction between sections {prev} and {self}. {msg}"
         if what == "raise":
-            raise ValueError(msg)
+            raise SislError(msg)
         elif what == "warn":
             warn(msg)
 
@@ -29,8 +41,8 @@ def composite_geometry(sections, section_cls=_geom_section, **kwargs):
     sections: array-like of (_geom_section or tuple or dict)
         A list of sections to be added to the ribbon.
 
-        Each section is either a `_geom_section` or something that will
-        be parsed to a `_geom_section`.
+        Each section is either a `composite_geometry.section` or something that will
+        be parsed to a `composite_geometry.section`.
     section_cls: class, optional
         The class to use for parsing sections.
     **kwargs:
@@ -50,12 +62,12 @@ def composite_geometry(sections, section_cls=_geom_section, **kwargs):
         
         return copy.copy(s)
 
-    sections = [conv(section) for section in sections]
-    
     # Then loop through all the sections.
     geom = None
     prev = None
     for i, section in enumerate(sections):
+        section = conv(section)
+
         new_addition = section.build_section(prev)
         
         if i == 0:
@@ -66,3 +78,5 @@ def composite_geometry(sections, section_cls=_geom_section, **kwargs):
         prev = section
     
     return geom
+
+composite_geometry.section = _geom_section

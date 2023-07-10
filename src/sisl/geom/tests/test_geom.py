@@ -9,7 +9,7 @@ import itertools
 import math as m
 import numpy as np
 
-from sisl import Atom, Lattice
+from sisl import Atom, Lattice, SislError
 from sisl._math_small import cross3, dot3
 from sisl.geom import *
 
@@ -152,15 +152,15 @@ def test_graphene_heteroribbon():
 def test_graphene_heteroribbon_errors():
     # 7-open with 9 can only be perfectly aligned.
     graphene_heteroribbon([(7, 1), (9, 1)], align="center", on_lone_atom="raise")
-    with pytest.raises(ValueError):
+    with pytest.raises(SislError):
         graphene_heteroribbon([(7, 1), (9, 1, -1)], align="center", on_lone_atom="raise")
     # From the bottom
     graphene_heteroribbon([(7, 1), (9, 1, -1)], align="bottom", on_lone_atom="raise")
-    with pytest.raises(ValueError):
+    with pytest.raises(SislError):
         graphene_heteroribbon([(7, 1), (9, 1, 0)], align="bottom", on_lone_atom="raise")
     # And from the top
     graphene_heteroribbon([(7, 1), (9, 1, 1)], align="top", on_lone_atom="raise")
-    with pytest.raises(ValueError):
+    with pytest.raises(SislError):
         graphene_heteroribbon([(7, 1), (9, 1, -1)], align="top", on_lone_atom="raise")
 
 
@@ -169,16 +169,16 @@ def test_graphene_heteroribbon_errors():
     )
 
     # Odd section with open end
-    with pytest.raises(ValueError):
+    with pytest.raises(SislError):
         grap_heteroribbon([(7, 3), (5, 2)])
 
     # Shift limits are imposed correctly
     # In this case -2 < shift < 1
     grap_heteroribbon([(7, 3), (11, 2, 0)])
     grap_heteroribbon([(7, 3), (11, 2, -1)])
-    with pytest.raises(ValueError):
+    with pytest.raises(SislError):
         grap_heteroribbon([(7, 3), (11, 2, 1)])
-    with pytest.raises(ValueError):
+    with pytest.raises(SislError):
         grap_heteroribbon([(7, 3), (11, 2, -2)])
 
     # Periodic boundary conditions work properly
@@ -188,10 +188,10 @@ def test_graphene_heteroribbon_errors():
 
     # Even ribbons should only be shifted towards the center
     grap_heteroribbon([(10, 2), (8, 2, -1)])
-    with pytest.raises(ValueError):
+    with pytest.raises(SislError):
         grap_heteroribbon([(10, 2), (8, 2, 1)])
     grap_heteroribbon([(10, 1), (8, 2, 1)],) #pbc=False)
-    with pytest.raises(ValueError):
+    with pytest.raises(SislError):
         grap_heteroribbon([(10, 1), (8, 2, -1)],) #pbc=False)
 
 

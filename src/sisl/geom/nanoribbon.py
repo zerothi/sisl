@@ -7,14 +7,14 @@ from numbers import Integral
 import numpy as np
 
 from sisl import Atom, geom
-from .composite import _geom_section, composite_geometry
+from ._composite import _geom_section, composite_geometry
 from sisl._internal import set_module
 
 from ._common import geometry_define_nsc
 
 __all__ = [
     'nanoribbon', 'graphene_nanoribbon', 'agnr', 'zgnr',
-    'heteroribbon', 'graphene_heteroribbon', '_heteroribbon_section'
+    'heteroribbon', 'graphene_heteroribbon',
 ]
 
 
@@ -164,6 +164,7 @@ def zgnr(width, bond=1.42, atoms=None):
     agnr : armchair graphene nanoribbon
     """
     return graphene_nanoribbon(width, bond, atoms, kind='zigzag')
+
 
 @set_module("sisl.geom")
 @dataclass
@@ -582,14 +583,14 @@ class _heteroribbon_section(_geom_section):
 def heteroribbon(sections, section_cls=_heteroribbon_section, **kwargs):
     """Build a nanoribbon consisting of several nanoribbons of different widths.
 
-    This function basically uses `composite_geometry`, but defaulting to the usage
-    of `_heteroribbon_section` as the section class.
+    This function uses `composite_geometry`, but defaulting to the usage
+    of `heteroribbon.section` as the section class.
 
-    See `heteroribbon_section` and `composite_geometry` for arguments.
+    See `heteroribbon.section` and `composite_geometry` for arguments.
 
     Returns
     -------
-    sisl.Geometry:
+    Geometry:
         The final structure of the heteroribbon.
 
     Notes
@@ -618,6 +619,8 @@ def heteroribbon(sections, section_cls=_heteroribbon_section, **kwargs):
     """
     return composite_geometry(sections, section_cls=section_cls, **kwargs)
 
+heteroribbon.section=_heteroribbon_section
+
 
 @set_module("sisl.geom")
 def graphene_heteroribbon(sections, section_cls=_heteroribbon_section, bond=1.42, atoms=None, **kwargs):
@@ -628,8 +631,10 @@ def graphene_heteroribbon(sections, section_cls=_heteroribbon_section, bond=1.42
 
     See also
     ----------
-    `heteroribbon` : for argument details and how it behaves
+    heteroribbon : for argument details and how it behaves
     """
     if atoms is None:
         atoms = Atom(Z=6, R=bond * 1.01)
     return composite_geometry(sections, section_cls=section_cls, bond=bond, atoms=atoms, **kwargs)
+
+graphene_heteroribbon.section=_heteroribbon_section
