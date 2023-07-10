@@ -8,10 +8,10 @@ Sile object for reading the force constant matrix written by GULP
 import numpy as np
 from scipy.sparse import lil_matrix
 
-from ..sile import add_sile, sile_fh_open
 from sisl._internal import set_module
-from .sile import SileGULP
 
+from ..sile import add_sile, sile_fh_open
+from .sile import SileGULP
 
 __all__ = ['fcSileGULP']
 

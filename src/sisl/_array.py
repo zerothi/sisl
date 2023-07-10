@@ -4,11 +4,19 @@
 from functools import partial as _partial
 
 import numpy as np
-from numpy import zeros, ones, cumsum, take
-from numpy import int32, int64
-from numpy import float32, float64, complex64, complex128
-from numpy import asarray
-
+from numpy import (
+    asarray,
+    complex64,
+    complex128,
+    cumsum,
+    float32,
+    float64,
+    int32,
+    int64,
+    ones,
+    take,
+    zeros,
+)
 
 __all__ = ["broadcast_shapes"]
 

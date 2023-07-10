@@ -4,37 +4,48 @@
 """
 This file contains the Plot class, which should be inherited by all plot classes
 """
-import uuid
 import inspect
-import numpy as np
-from copy import deepcopy
-import time
-from types import MethodType, FunctionType
 import itertools
+import time
+import uuid
+from copy import deepcopy
 from functools import partial
 from pathlib import Path
+from types import FunctionType, MethodType
+
+import numpy as np
 
 import sisl
 from sisl.messages import info, warn
 
+from ._presets import get_preset
+from ._shortcuts import ShortCutable
 from .backends._plot_backends import Backends
 from .configurable import (
-    Configurable, ConfigurableMeta,
-    vizplotly_settings, _populate_with_settings
-)
-from ._presets import get_preset
-from .plotutils import (
-    init_multiple_plots, repeat_if_children, dictOfLists2listOfDicts,
-    trigger_notification, spoken_message,
-    running_in_notebook, check_widgets, call_method_if_present
+    Configurable,
+    ConfigurableMeta,
+    _populate_with_settings,
+    vizplotly_settings,
 )
 from .input_fields import (
-    TextInput, SileInput, BoolInput,
-    OptionsInput, IntegerInput,
-    ListInput, ProgramaticInput
+    BoolInput,
+    IntegerInput,
+    ListInput,
+    OptionsInput,
+    ProgramaticInput,
+    SileInput,
+    TextInput,
 )
-from ._shortcuts import ShortCutable
-
+from .plotutils import (
+    call_method_if_present,
+    check_widgets,
+    dictOfLists2listOfDicts,
+    init_multiple_plots,
+    repeat_if_children,
+    running_in_notebook,
+    spoken_message,
+    trigger_notification,
+)
 
 __all__ = ["Plot", "MultiplePlot", "Animation", "SubPlots"]
 
@@ -954,8 +965,9 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
         speak_message: str, optional
             the spoken message. Feel free to get creative here!
         """
-        from IPython.display import clear_output
         import asyncio
+
+        from IPython.display import clear_output
 
         # This is a weird limitation, because multiple listeners could definitely
         # be implemented, but I don't have time now, and I need to ensure that no listeners are left untracked
@@ -1234,8 +1246,8 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
         fig_widget: plotly.graph_objs.FigureWidget
             The figure widget that we need to extend.
         """
-        from IPython.display import display
         from ipyevents import Event
+        from IPython.display import display
         from ipywidgets import HTML, Output
 
         h = HTML("") # This is to display help such as available shortcuts

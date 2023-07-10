@@ -2,15 +2,16 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from numbers import Integral
+
 import numpy as np
 
-from .sile import SileVASP
-from ..sile import add_sile, sile_fh_open
-from .._help import grid_reduce_indices
-from .car import carSileVASP
-
-from sisl._internal import set_module
 from sisl import Grid
+from sisl._internal import set_module
+
+from .._help import grid_reduce_indices
+from ..sile import add_sile, sile_fh_open
+from .car import carSileVASP
+from .sile import SileVASP
 
 __all__ = ["chgSileVASP"]
 

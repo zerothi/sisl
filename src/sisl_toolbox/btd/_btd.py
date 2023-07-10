@@ -30,16 +30,18 @@ import scipy.sparse as ssp
 from scipy.sparse.linalg import svds
 
 import sisl as si
-from sisl.messages import warn
 from sisl import _array as _a
 from sisl.linalg import (
+    cholesky,
     eigh,
-    eigh_destroy, svd_destroy, inv_destroy,
+    eigh_destroy,
+    inv_destroy,
     signsqrt,
-    cholesky, solve
+    solve,
+    svd_destroy,
 )
+from sisl.messages import warn
 from sisl.utils.misc import PropertyDict
-
 
 arangei = _a.arangei
 indices_only = si._indices.indices_only

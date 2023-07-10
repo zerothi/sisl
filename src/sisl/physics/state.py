@@ -2,16 +2,15 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from numbers import Real
-import numpy as np
-from numpy import einsum, exp
-from numpy import ndarray, bool_
 
+import numpy as np
+from numpy import bool_, einsum, exp, ndarray
+
+import sisl._array as _a
 from sisl._help import dtype_real_to_complex
 from sisl._internal import set_module, singledispatchmethod
 from sisl.linalg import eigh_destroy
-import sisl._array as _a
 from sisl.messages import warn
-
 
 __all__ = ['degenerate_decouple', 'Coefficient', 'State', 'StateC']
 

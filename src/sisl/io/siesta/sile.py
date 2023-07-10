@@ -9,7 +9,8 @@ except ImportError:
     has_fortran_module = False
 
 from sisl._internal import set_module
-from ..sile import Sile, SileCDF, SileBin, SileError
+
+from ..sile import Sile, SileBin, SileCDF, SileError
 
 __all__ = ['SileSiesta', 'SileCDFSiesta', 'SileBinSiesta']
 

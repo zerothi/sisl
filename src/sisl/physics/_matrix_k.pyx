@@ -4,9 +4,9 @@
 cimport cython
 
 import numpy as np
+
 cimport numpy as np
 
-from ._phase import *
 from ._matrix_phase import *
 from ._matrix_phase_nc import *
 from ._matrix_phase_nc_diag import *
@@ -15,6 +15,7 @@ from ._matrix_sc_phase import *
 from ._matrix_sc_phase_nc import *
 from ._matrix_sc_phase_nc_diag import *
 from ._matrix_sc_phase_so import *
+from ._phase import *
 
 __all__ = ["matrix_k", "matrix_k_nc", "matrix_k_so", "matrix_k_nc_diag"]
 

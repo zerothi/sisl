@@ -3,15 +3,15 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import logging
 from numbers import Number
+
 import numpy as np
 
+import sisl.io.siesta as io_siesta
 from sisl.io import get_sile
 from sisl.utils import direction
-import sisl.io.siesta as io_siesta
 
-from ._path import path_rel_or_abs
 from ._metric import Metric
-
+from ._path import path_rel_or_abs
 
 __all__ = ["SiestaMetric", "EnergyMetric", "EigenvalueMetric", "ForceMetric", "StressMetric"]
 

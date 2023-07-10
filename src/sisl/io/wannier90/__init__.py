@@ -11,5 +11,5 @@ tight-binding models from Wannier90 output from *any* DFT code.
    winSileWannier90 -- input file
 
 """
-from .sile import *
+from .sile import * # isort: split
 from .seedname import *

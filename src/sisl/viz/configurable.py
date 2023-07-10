@@ -1,15 +1,16 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+import inspect
+from collections import defaultdict, deque
+from collections.abc import Iterable
 from copy import copy, deepcopy
 from functools import wraps
-import inspect
-from collections import deque, defaultdict
-from collections.abc import Iterable
 
 import numpy as np
 
 from sisl.messages import info
+
 from ._presets import get_preset
 from .plotutils import get_configurable_docstring
 

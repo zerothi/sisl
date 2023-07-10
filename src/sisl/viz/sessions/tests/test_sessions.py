@@ -8,9 +8,9 @@ ensure that at least they do not break basic session functionality.
 """
 import pytest
 
-from sisl.viz.tests.test_session import _TestSessionClass
 from sisl.viz import Session
 from sisl.viz.sessions import *
+from sisl.viz.tests.test_session import _TestSessionClass
 
 pytestmark = [pytest.mark.viz, pytest.mark.plotly]
 

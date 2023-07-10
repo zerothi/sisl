@@ -5,7 +5,9 @@ cimport cython
 from libc.math cimport atan2, sqrt
 
 import numpy as np
+
 # This enables Cython enhanced compatibilities
+
 cimport numpy as np
 
 

@@ -4,7 +4,6 @@
 import re
 from itertools import groupby
 
-
 __all__ = ["strmap", "strseq", "lstranges", "erange", "list2str", "fileindex"]
 
 

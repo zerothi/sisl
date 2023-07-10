@@ -16,5 +16,5 @@ new methods.
 """
 
 from .base import *
-from .linear import *
 from .diis import *
+from .linear import *

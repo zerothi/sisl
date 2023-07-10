@@ -1,27 +1,33 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from numbers import Integral
-import numpy as np
 from functools import lru_cache
+from numbers import Integral
 
-from .sile import SileCDFSiesta
-from ..sile import add_sile, sile_raise_write, SileError
+import numpy as np
 
-from sisl._internal import set_module
+from sisl import Atom, AtomGhost, Atoms, Geometry, Grid, Lattice, SphericalOrbital
 from sisl._array import aranged, array_arange
-from sisl.unit.siesta import unit_convert
-from sisl import Geometry, Atom, AtomGhost, Atoms, Lattice, Grid, SphericalOrbital
-from sisl.sparse import _ncol_to_indptr
-from sisl.physics import SparseOrbitalBZ
-from sisl.physics import DensityMatrix, EnergyDensityMatrix
-from sisl.physics import DynamicalMatrix
-from sisl.physics import Hamiltonian
+from sisl._internal import set_module
+from sisl.physics import (
+    DensityMatrix,
+    DynamicalMatrix,
+    EnergyDensityMatrix,
+    Hamiltonian,
+    SparseOrbitalBZ,
+)
 from sisl.physics.overlap import Overlap
+from sisl.sparse import _ncol_to_indptr
+from sisl.unit.siesta import unit_convert
+
 from .._help import grid_reduce_indices
+from ..sile import SileError, add_sile, sile_raise_write
 from ._help import *
+from .sile import SileCDFSiesta
+
 try:
     from . import _siesta
+
     # TODO make checks where appropiate
     has_fortran_module = True
 except ImportError:

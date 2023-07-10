@@ -1,15 +1,25 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from numpy import dot, sqrt, square
-from numpy import cos, sin, arctan2, arccos
-from numpy import asarray, take, delete, empty
-from numpy import concatenate, argsort
+from numpy import (
+    arccos,
+    arctan2,
+    argsort,
+    asarray,
+    concatenate,
+    cos,
+    delete,
+    dot,
+    empty,
+    sin,
+    sqrt,
+    square,
+    take,
+)
 from scipy.special import sph_harm
 
 from sisl import _array as _a
 from sisl._indices import indices_le
-
 
 __all__ = ["fnorm", "fnorm2", "expand", "orthogonalize"]
 __all__ += ["spher2cart", "cart2spher", "spherical_harm"]

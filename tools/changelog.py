@@ -36,11 +36,12 @@ From the bash command line with $GITHUB token::
     $ ./tools/changelog.py $GITHUB v1.13.0..v1.14.0 > 1.14.0-changelog.rst
 
 """
-import os
-import sys
-import re
-import time
 import datetime
+import os
+import re
+import sys
+import time
+
 from git import Repo
 from github import Github
 

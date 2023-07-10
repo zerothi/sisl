@@ -3,10 +3,11 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 """ pytest test configures """
 
-import pytest
 import os.path as osp
-import sisl
 
+import pytest
+
+import sisl
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
 _dir = osp.join('sisl', 'io', 'siesta')

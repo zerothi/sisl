@@ -36,9 +36,9 @@ class SToolBoxCLI:
         self._cmds.append(setup)
 
     def __call__(self, argv=None):
+        import argparse
         import sys
         from pathlib import Path
-        import argparse
 
         # Create command-line
         cmd = Path(sys.argv[0])
@@ -71,7 +71,9 @@ class SToolBoxCLI:
 stoolbox_cli = SToolBoxCLI()
 
 from sisl_toolbox.transiesta.poisson.fftpoisson_fix import fftpoisson_fix_cli
+
 stoolbox_cli.register(fftpoisson_fix_cli)
 
 from sisl_toolbox.siesta.atom._atom import atom_plot_cli
+
 stoolbox_cli.register(atom_plot_cli)

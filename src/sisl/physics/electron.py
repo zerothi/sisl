@@ -44,30 +44,45 @@ automatically passes the correct ``S`` because it knows the states :math:`k`-poi
 """
 
 from functools import reduce
+
 import numpy as np
-from numpy import find_common_type, int32
-from numpy import zeros, empty
-from numpy import floor, ceil
-from numpy import conj, dot, ogrid, einsum
-from numpy import cos, sin, log, exp, pi
-from numpy import add, sort
-from scipy.sparse import identity, csr_matrix, hstack, isspmatrix
+from numpy import (
+    add,
+    ceil,
+    conj,
+    cos,
+    dot,
+    einsum,
+    empty,
+    exp,
+    find_common_type,
+    floor,
+    int32,
+    log,
+    ogrid,
+    pi,
+    sin,
+    sort,
+    zeros,
+)
+from scipy.sparse import csr_matrix, hstack, identity, isspmatrix
 
-from sisl._internal import set_module
-from sisl import units, constant, Grid, Lattice, Geometry
-from sisl._indices import indices_le
-from sisl.oplist import oplist
-from sisl._math_small import xyz_to_spherical_cos_phi
 import sisl._array as _a
-from sisl.linalg import det, sqrth, svd_destroy
-from sisl.linalg import eigvals as la_eigvals
-from sisl.messages import info, warn, SislError, progressbar
+from sisl import Geometry, Grid, Lattice, constant, units
 from sisl._help import dtype_complex_to_real, dtype_real_to_complex
-from .distribution import get_distribution
-from .spin import Spin
-from .sparse import SparseOrbitalBZSpin
-from .state import degenerate_decouple, Coefficient, State, StateC, _FakeMatrix
+from sisl._indices import indices_le
+from sisl._internal import set_module
+from sisl._math_small import xyz_to_spherical_cos_phi
+from sisl.linalg import det
+from sisl.linalg import eigvals as la_eigvals
+from sisl.linalg import sqrth, svd_destroy
+from sisl.messages import SislError, info, progressbar, warn
+from sisl.oplist import oplist
 
+from .distribution import get_distribution
+from .sparse import SparseOrbitalBZSpin
+from .spin import Spin
+from .state import Coefficient, State, StateC, _FakeMatrix, degenerate_decouple
 
 __all__ = ["DOS", "PDOS", "COP"]
 __all__ += ["spin_moment", "spin_squared"]
@@ -790,6 +805,7 @@ def conductivity(bz, distribution="fermi-dirac", method="ahc",
     BrillouinZone.volume: volume calculation of the Brillouin zone
     """
     from .hamiltonian import Hamiltonian
+
     # Currently we require the conductivity calculation to *only* accept Hamiltonians
     if not isinstance(bz.parent, Hamiltonian):
         raise SislError("conductivity: requires the Brillouin zone object to contain a Hamiltonian!")
@@ -917,6 +933,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method="berry",
     >>> phase = berry_phase(bz, method="berry:svd")
     """
     from .hamiltonian import Hamiltonian
+
     # Currently we require the Berry phase calculation to *only* accept Hamiltonians
     if not isinstance(contour.parent, Hamiltonian):
         raise SislError("berry_phase: requires the Brillouin zone object to contain a Hamiltonian!")

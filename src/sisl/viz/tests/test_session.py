@@ -2,9 +2,9 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from copy import deepcopy
-import pytest
 
 import numpy as np
+import pytest
 
 from sisl.viz import Session
 from sisl.viz.plots import *

@@ -1,21 +1,21 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from typing import Optional, Callable, Any
-from itertools import product
-from functools import wraps, reduce
-from os.path import splitext, basename
 import gzip
+from functools import reduce, wraps
 from io import TextIOBase
+from itertools import product
+from operator import and_, contains
+from os.path import basename, splitext
 from pathlib import Path
-from operator import contains, and_
+from typing import Any, Callable, Optional
 
-from sisl._internal import set_module
-from sisl.messages import SislWarning, SislInfo, deprecate
 from sisl._environ import get_environ_variable
+from sisl._internal import set_module
+from sisl.messages import SislInfo, SislWarning, deprecate
 from sisl.utils.misc import str_spec
-from ._help import *
 
+from ._help import *
 
 # Public used objects
 __all__ = [

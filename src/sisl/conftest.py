@@ -3,12 +3,12 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 """ Global sisl fixtures """
 import os
-import numpy as np
-
 from pathlib import Path
-import pytest
-from sisl import Atom, Geometry, Lattice, Hamiltonian, _environ
 
+import numpy as np
+import pytest
+
+from sisl import Atom, Geometry, Hamiltonian, Lattice, _environ
 
 # Here we create the necessary methods and fixtures to enabled/disable
 # tests depending on whether a sisl-files directory is present.

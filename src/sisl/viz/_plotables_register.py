@@ -9,13 +9,12 @@ It does so by patching them accordingly
 import sisl
 import sisl.io.siesta as siesta
 import sisl.io.tbtrans as tbtrans
-from sisl.io.sile import get_siles, BaseSile
-
-from .plots import *
-from .plot import Plot
-from .plotutils import get_plot_classes
+from sisl.io.sile import BaseSile, get_siles
 
 from ._plotables import register_plotable
+from .plot import Plot
+from .plots import *
+from .plotutils import get_plot_classes
 
 __all__ = []
 

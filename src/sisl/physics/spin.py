@@ -5,7 +5,6 @@ import numpy as np
 
 from sisl._internal import set_module
 
-
 __all__ = ['Spin']
 
 

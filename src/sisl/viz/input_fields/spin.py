@@ -3,9 +3,10 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
 
-from .basic import OptionsInput
 from sisl import Spin
 from sisl._help import isiterable
+
+from .basic import OptionsInput
 
 
 class SpinSelect(OptionsInput):

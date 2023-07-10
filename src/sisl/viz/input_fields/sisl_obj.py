@@ -9,8 +9,7 @@ from sisl import BaseSile
 from sisl.physics import distribution
 
 from .._input_field import InputField
-from .basic import FloatInput, IntegerInput, OptionsInput, TextInput, DictInput, BoolInput
-
+from .basic import BoolInput, DictInput, FloatInput, IntegerInput, OptionsInput, TextInput
 from .file import FilePathInput
 from .queries import QueriesInput
 

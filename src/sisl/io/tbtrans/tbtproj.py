@@ -5,19 +5,16 @@ try:
     from StringIO import StringIO
 except Exception:
     from io import StringIO
+
 import numpy as np
 
-from sisl.utils import (
-    default_ArgumentParser, collect_action,
-    list2str,
-)
 from sisl._internal import set_module
-from ..sile import add_sile
 from sisl.physics import DensityMatrix
 from sisl.unit.siesta import unit_convert
+from sisl.utils import collect_action, default_ArgumentParser, list2str
 
+from ..sile import add_sile
 from .tbt import tbtncSileTBtrans
-
 
 __all__ = ['tbtprojncSileTBtrans']
 

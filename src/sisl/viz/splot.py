@@ -5,16 +5,16 @@
 Easy plotting from the command line.
 """
 
-import sys
 import argparse
 import ast
+import sys
 
 import sisl
 from sisl.utils import cmd
 
+from ._user_customs import PLOTS_FILE, PRESETS_FILE, PRESETS_VARIABLE
 from .plot import Plot
 from .plotutils import find_plotable_siles, get_avail_presets, get_plot_classes
-from ._user_customs import PRESETS_FILE, PRESETS_VARIABLE, PLOTS_FILE
 
 __all__ = ["splot"]
 

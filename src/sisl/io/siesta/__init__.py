@@ -45,8 +45,8 @@ The TranSiesta specific output files are:
    tsvncSileSiesta - TranSiesta potential solution input file
 
 """
+from .sile import * # isort: split
 from .ani import *
-from .sile import *
 from .bands import *
 from .basis import *
 from .binaries import *
@@ -56,10 +56,10 @@ from .fc import *
 from .fdf import *
 from .kp import *
 from .orb_indx import *
-from .stdout import *
 from .pdos import *
-from .struct import *
-from .siesta_nc import *
 from .siesta_grid import *
+from .siesta_nc import *
+from .stdout import *
+from .struct import *
 from .transiesta_grid import *
 from .xv import *

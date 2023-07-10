@@ -6,24 +6,24 @@
 This class is the basis of many different objects.
 """
 from __future__ import annotations
-from typing import Union, Tuple, TYPE_CHECKING
+
 import math
 import warnings
-
 from numbers import Integral
+from typing import TYPE_CHECKING, Tuple, Union
+
 import numpy as np
-from numpy import ndarray, dot
+from numpy import dot, ndarray
 
-from .messages import deprecate_argument, deprecation, deprecate
-from ._internal import set_module
-from . import _plot as plt
 from . import _array as _a
-from .utils.mathematics import fnorm
-from .shape.prism4 import Cuboid
-from .quaternion import Quaternion
-from ._math_small import cross3, dot3
+from . import _plot as plt
+from ._internal import set_module
 from ._lattice import cell_invert, cell_reciprocal
-
+from ._math_small import cross3, dot3
+from .messages import deprecate, deprecate_argument, deprecation
+from .quaternion import Quaternion
+from .shape.prism4 import Cuboid
+from .utils.mathematics import fnorm
 
 __all__ = ["Lattice", "SuperCell", "LatticeChild"]
 
@@ -943,7 +943,7 @@ class Lattice:
             beta = args[4]
             gamma = args[5]
 
-            from math import sqrt, cos, sin, pi
+            from math import cos, pi, sin, sqrt
             pi180 = pi / 180.
 
             cell[0, 0] = a
@@ -1052,7 +1052,7 @@ class Lattice:
         """
         # This only works because, they *must*
         # have been imported previously
-        from sisl.io import get_sile, BaseSile
+        from sisl.io import BaseSile, get_sile
         if isinstance(sile, BaseSile):
             return sile.read_lattice(*args, **kwargs)
         else:

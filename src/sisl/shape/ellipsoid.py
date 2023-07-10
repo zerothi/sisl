@@ -2,16 +2,17 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from math import pi
+
 import numpy as np
 
-from sisl._internal import set_module
-from sisl.messages import warn
 import sisl._array as _a
-from sisl.utils.mathematics import orthogonalize, fnorm, fnorm2, expand
-from sisl._math_small import product3
 from sisl._indices import indices_in_sphere
-from .base import PureShape, ShapeToDispatcher
+from sisl._internal import set_module
+from sisl._math_small import product3
+from sisl.messages import warn
+from sisl.utils.mathematics import expand, fnorm, fnorm2, orthogonalize
 
+from .base import PureShape, ShapeToDispatcher
 
 __all__ = ["Ellipsoid", "Sphere"]
 

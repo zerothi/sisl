@@ -16,8 +16,10 @@
 #
 
 import sys
-import sisl
+
 import numpy as np
+
+import sisl
 
 method = 'cube'
 if 'cube' in sys.argv:

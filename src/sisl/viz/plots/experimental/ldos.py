@@ -1,15 +1,26 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-import numpy as np
-
 import os
 import shutil
 
+import numpy as np
+
 import sisl
+
+from ...input_fields import (
+    BoolInput,
+    ColorInput,
+    FloatInput,
+    IntegerInput,
+    OptionsInput,
+    ProgramaticInput,
+    QueriesInput,
+    RangeSliderInput,
+    TextInput,
+)
 from ...plot import Plot, entry_point
 from ...plotutils import run_multiple
-from ...input_fields import TextInput, BoolInput, ColorInput, OptionsInput, IntegerInput, FloatInput, RangeSliderInput, QueriesInput, ProgramaticInput
 
 
 class LDOSmap(Plot):

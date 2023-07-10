@@ -25,10 +25,11 @@ IF YOU HAVE MORE THAN ONE PLOT CLASS IN A FILE, YOU SHOULD SPECIFY %%FakePlot_co
 Then, just run `python -m sisl.viz._doc_updater`.
 Or you can use fill_class_docs to only update a certain class.
 """
-from sisl.viz.plotutils import get_plot_classes, get_session_classes
-from sisl.viz.plot import Plot, MultiplePlot, Animation, SubPlots
-from sisl.viz.session import Session
 import inspect
+
+from sisl.viz.plot import Animation, MultiplePlot, Plot, SubPlots
+from sisl.viz.plotutils import get_plot_classes, get_session_classes
+from sisl.viz.session import Session
 
 
 def get_parameters_docstrings(cls):

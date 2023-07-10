@@ -3,13 +3,12 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
 
-from ..sile import add_sile, sile_fh_open, sile_raise_write
-from .sile import SileSiesta
-
+from sisl import Atom, AtomGhost, Atoms, AtomUnknown, Geometry, Lattice
 from sisl._internal import set_module
-from sisl import Geometry, Atom, AtomGhost, AtomUnknown, Atoms, Lattice
 from sisl.unit.siesta import unit_convert
 
+from ..sile import add_sile, sile_fh_open, sile_raise_write
+from .sile import SileSiesta
 
 __all__ = ['structSileSiesta']
 

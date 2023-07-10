@@ -1,11 +1,12 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+import itertools
 from collections import defaultdict
 from functools import partial
-import itertools
 
 import numpy as np
+
 try:
     import xarray as xr
 except ModuleNotFoundError:
@@ -14,15 +15,23 @@ except ModuleNotFoundError:
 import sisl
 from sisl.physics.brillouinzone import BrillouinZone
 from sisl.physics.spin import Spin
+
+from ..input_fields import (
+    AiidaNodeInput,
+    BandStructureInput,
+    BoolInput,
+    ColorInput,
+    ErangeInput,
+    FloatInput,
+    FunctionInput,
+    QueriesInput,
+    RangeSliderInput,
+    SileInput,
+    SpinSelect,
+    TextInput,
+)
 from ..plot import Plot, entry_point
 from ..plotutils import find_files
-from ..input_fields import (
-    TextInput, BoolInput, ColorInput,
-    FloatInput, RangeSliderInput,
-    QueriesInput, FunctionInput, SileInput,
-    SpinSelect, AiidaNodeInput, BandStructureInput,
-    ErangeInput
-)
 
 try:
     import pathos

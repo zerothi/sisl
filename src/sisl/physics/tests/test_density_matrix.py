@@ -1,14 +1,21 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+import math as m
+
+import numpy as np
 import pytest
 
-import math as m
-import numpy as np
-
-from sisl import Geometry, Atom, SphericalOrbital, AtomicOrbital, Lattice
-from sisl import Grid, Spin
-from sisl import DensityMatrix
+from sisl import (
+    Atom,
+    AtomicOrbital,
+    DensityMatrix,
+    Geometry,
+    Grid,
+    Lattice,
+    SphericalOrbital,
+    Spin,
+)
 
 
 @pytest.fixture

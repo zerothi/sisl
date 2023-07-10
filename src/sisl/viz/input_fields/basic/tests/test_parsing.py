@@ -2,12 +2,17 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from ast import parse
+
 import numpy as np
 import pytest
 
 from sisl.viz.input_fields import (
-    DictInput, TextInput, IntegerInput, FloatInput,
-    BoolInput, ListInput
+    BoolInput,
+    DictInput,
+    FloatInput,
+    IntegerInput,
+    ListInput,
+    TextInput,
 )
 
 

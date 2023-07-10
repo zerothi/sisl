@@ -2,14 +2,15 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
-from .sile import SileORCA
-from ..sile import add_sile, sile_fh_open
-from .._multiple import SileBinder
 
-from sisl.utils import PropertyDict
 from sisl._internal import set_module
 from sisl.geometry import Geometry
 from sisl.unit import units
+from sisl.utils import PropertyDict
+
+from .._multiple import SileBinder
+from ..sile import add_sile, sile_fh_open
+from .sile import SileORCA
 
 __all__ = ['txtSileORCA']
 

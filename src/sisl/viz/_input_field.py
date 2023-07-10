@@ -2,12 +2,12 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 #This file defines all the currently available input fields so that it is easier to develop plots
-from copy import deepcopy, copy
-
 import json
+from copy import copy, deepcopy
+
 import numpy as np
 
-from .plotutils import modify_nested_dict, get_nested_key
+from .plotutils import get_nested_key, modify_nested_dict
 
 __all__ = ["InputField"]
 

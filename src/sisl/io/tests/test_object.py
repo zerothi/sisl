@@ -1,21 +1,20 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-import pytest
-import sys
-import os.path as osp
-import numpy as np
 import os
+import os.path as osp
+import sys
 from pathlib import Path
 
+import numpy as np
+import pytest
+
+from sisl import DensityMatrix, EnergyDensityMatrix, Geometry, Grid, Hamiltonian, Lattice
 from sisl._environ import sisl_environ
 from sisl.io import *
 from sisl.io.siesta.binaries import _gfSileSiesta
 from sisl.io.tbtrans._cdf import *
 from sisl.io.vasp import chgSileVASP
-from sisl import Lattice, Geometry, Grid, Hamiltonian
-from sisl import DensityMatrix, EnergyDensityMatrix
-
 
 pytestmark = pytest.mark.io
 _dir = osp.join("sisl", "io")

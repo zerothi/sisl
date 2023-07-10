@@ -6,12 +6,11 @@
 from __future__ import annotations
 
 from typing import Union
+
+from sisl import Atom, Atoms, Geometry, Lattice
+
 #from typing import TYPE_CHECKING, final
 
-from sisl import (
-    Geometry, Lattice,
-    Atom, Atoms
-)
 
 
 # A Lattice or a Geometry

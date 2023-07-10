@@ -86,29 +86,35 @@ Sparse matrices
    SparseOrbitalBZSpin - sparse orbital matrix with k-dependent properties and spin configuration
 
 """
-from ._feature import *
-
-from .distribution import *
-from .brillouinzone import *
+from . import electron, phonon
 # Patch BrillouinZone objects and import apply classes
 from ._brillouinzone_apply import *
-
+from ._feature import *
 from .bloch import *
-from .spin import *
-from .sparse import *
-from .state import *
-
-from . import electron
-from .electron import CoefficientElectron, StateElectron, StateCElectron
-from .electron import EigenvalueElectron, EigenvectorElectron, EigenstateElectron
-
-from . import phonon
-from .phonon import CoefficientPhonon, ModePhonon, ModeCPhonon
-from .phonon import EigenvaluePhonon, EigenvectorPhonon, EigenmodePhonon
-
-from .energydensitymatrix import *
+from .brillouinzone import *
 from .densitymatrix import *
-from .hamiltonian import *
+from .distribution import *
 from .dynamicalmatrix import *
+from .electron import (
+    CoefficientElectron,
+    EigenstateElectron,
+    EigenvalueElectron,
+    EigenvectorElectron,
+    StateCElectron,
+    StateElectron,
+)
+from .energydensitymatrix import *
+from .hamiltonian import *
 from .overlap import *
+from .phonon import (
+    CoefficientPhonon,
+    EigenmodePhonon,
+    EigenvaluePhonon,
+    EigenvectorPhonon,
+    ModeCPhonon,
+    ModePhonon,
+)
 from .self_energy import *
+from .sparse import *
+from .spin import *
+from .state import *

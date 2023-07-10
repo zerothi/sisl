@@ -2,10 +2,12 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import yaml
+
 try:
     from yaml import CLoader as Loader
 except ImportError:
     from yaml import Loader
+
 from sisl.unit.siesta import units
 
 
@@ -59,7 +61,7 @@ def parse_variable(value, default=None, unit=None, name='', update_func=None):
     update_func : callable, optional
        the update function to be called if required
     """
-    from ._variable import Parameter, Variable, UpdateVariable
+    from ._variable import Parameter, UpdateVariable, Variable
     attrs = {}
     if unit is not None:
         attrs = {'unit': unit}

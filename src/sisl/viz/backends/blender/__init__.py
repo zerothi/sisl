@@ -14,6 +14,6 @@ Currently, the following plots have a blender drawing backend implemented:
 
 import bpy
 
-from .backend import BlenderBackend, BlenderMultiplePlotBackend
-from ._plots import *
 from ._helpers import delete_all_objects
+from ._plots import *
+from .backend import BlenderBackend, BlenderMultiplePlotBackend

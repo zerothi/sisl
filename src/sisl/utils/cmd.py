@@ -101,7 +101,7 @@ def add_sisl_version_cite_arg(parser):
     parser : `argparse.ArgumentParser`
        the parser to add the version string too
     """
-    from sisl import __version__, __bibtex__
+    from sisl import __bibtex__, __version__
 
     group = parser.add_argument_group("version information")
 

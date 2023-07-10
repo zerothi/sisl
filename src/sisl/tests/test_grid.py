@@ -1,15 +1,13 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-import pytest
-
 import math as m
+
 import numpy as np
+import pytest
 from scipy.sparse import csr_matrix
 
-from sisl import Lattice, SphericalOrbital, Atom, Geometry
-from sisl import Grid
-from sisl import Ellipsoid, Cuboid
+from sisl import Atom, Cuboid, Ellipsoid, Geometry, Grid, Lattice, SphericalOrbital
 
 
 @pytest.fixture

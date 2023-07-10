@@ -6,8 +6,8 @@ Plotly templates should be defined in this file
 """
 import itertools
 
-import plotly.io as pio
 import plotly.graph_objs as go
+import plotly.io as pio
 
 __all__ = ["get_plotly_template", "add_plotly_template",
     "set_default_plotly_template", "available_plotly_templates"]

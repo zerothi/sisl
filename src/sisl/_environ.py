@@ -6,7 +6,6 @@ from contextlib import contextmanager
 from pathlib import Path
 from textwrap import dedent
 
-
 __all__ = ["register_environ_variable", "get_environ_variable", "sisl_environ"]
 
 

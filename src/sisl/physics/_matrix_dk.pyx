@@ -5,13 +5,14 @@ cimport cython
 from libc.math cimport fabs
 
 import numpy as np
+
 cimport numpy as np
 
-from ._phase import *
 from ._matrix_phase3 import *
 from ._matrix_phase3_nc import *
-from ._matrix_phase_nc_diag import *
 from ._matrix_phase3_so import *
+from ._matrix_phase_nc_diag import *
+from ._phase import *
 
 _dot = np.dot
 

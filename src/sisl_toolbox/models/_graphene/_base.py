@@ -3,7 +3,6 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from sisl_toolbox.models._base import BaseModel
 
-
 __all__ = ["GrapheneModel"]
 
 

@@ -3,13 +3,11 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from functools import partial
 
-import pytest
 import numpy as np
+import pytest
 
 import sisl
-
 from sisl.viz.plots.tests.test_geometry import TestGeometry as _TestGeometry
-
 
 pytestmark = [pytest.mark.viz, pytest.mark.plotly]
 

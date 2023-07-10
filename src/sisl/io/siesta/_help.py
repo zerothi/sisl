@@ -3,8 +3,9 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
 
-from sisl import SislError
 import sisl._array as _a
+from sisl import SislError
+
 try:
     from . import _siesta
     has_fortran_module = True

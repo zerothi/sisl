@@ -5,7 +5,6 @@ from re import compile as re_compile
 
 import numpy as np
 
-
 __all__ = ["starts_with_list", "header_to_dict",
            "grid_reduce_indices"]
 

@@ -23,15 +23,15 @@ which will show 4 plots for different sections. A command-line tool is also
 made available through the `stoolbox`.
 """
 import sys
+from collections.abc import Iterable
 from functools import reduce
 from pathlib import Path
-from collections.abc import Iterable
 
 import numpy as np
 from scipy.interpolate import interp1d
-import sisl as si
-from sisl.utils import PropertyDict, NotNonePropertyDict
 
+import sisl as si
+from sisl.utils import NotNonePropertyDict, PropertyDict
 
 __all__ = ["AtomInput", "atom_plot_cli"]
 
@@ -301,7 +301,7 @@ class AtomInput:
     @classmethod
     def from_yaml(cls, file, nodes=()):
         """ Parse the yaml file """
-        from sisl_toolbox.siesta.minimizer._yaml_reader import read_yaml, parse_variable
+        from sisl_toolbox.siesta.minimizer._yaml_reader import parse_variable, read_yaml
         dic = read_yaml(file, nodes)
 
         element = dic["element"]

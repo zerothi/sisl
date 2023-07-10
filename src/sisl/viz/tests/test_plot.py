@@ -6,20 +6,19 @@
 This file tests general Plot behavior.
 
 """
-from copy import deepcopy
 import os
-from sisl.messages import SislInfo, SislWarning
-
-import pytest
-import numpy as np
-
 import warnings
+from copy import deepcopy
+
+import numpy as np
+import pytest
 
 import sisl
-from sisl.viz.plot import Plot, MultiplePlot, SubPlots, Animation
+from sisl.messages import SislInfo, SislWarning
+from sisl.viz._presets import PRESETS
+from sisl.viz.plot import Animation, MultiplePlot, Plot, SubPlots
 from sisl.viz.plots import *
 from sisl.viz.plotutils import load
-from sisl.viz._presets import PRESETS
 
 try:
     import dill

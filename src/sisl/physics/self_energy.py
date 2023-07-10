@@ -2,24 +2,30 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
-from numpy import conjugate, matmul
-from numpy import subtract
-from numpy import empty, zeros, eye, delete
-from numpy import zeros_like, empty_like
-from numpy import complex128
 from numpy import abs as _abs
+from numpy import (
+    complex128,
+    conjugate,
+    delete,
+    empty,
+    empty_like,
+    eye,
+    matmul,
+    subtract,
+    zeros,
+    zeros_like,
+)
 
-from sisl._internal import set_module
-from sisl.messages import warn, info
-from sisl.utils.mathematics import fnorm
-from sisl._help import array_replace
 import sisl._array as _a
-from sisl.linalg import linalg_info, solve, inv
+from sisl._help import array_replace
+from sisl._internal import set_module
+from sisl.linalg import inv, linalg_info, solve
 from sisl.linalg.base import _compute_lwork
-from sisl.sparse_geometry import _SparseGeometry
-from sisl.physics.brillouinzone import MonkhorstPack
+from sisl.messages import info, warn
 from sisl.physics.bloch import Bloch
-
+from sisl.physics.brillouinzone import MonkhorstPack
+from sisl.sparse_geometry import _SparseGeometry
+from sisl.utils.mathematics import fnorm
 
 __all__ = ["SelfEnergy"]
 __all__ += ["WideBandSE"]

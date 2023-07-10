@@ -3,17 +3,17 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import os.path as osp
 from numbers import Integral
+
 import numpy as np
 
-from .sile import SileCDFSiesta
-from ..sile import add_sile, sile_raise_write, SileError
-from .._help import grid_reduce_indices
-
+from sisl import Grid, Lattice
 from sisl._internal import set_module
-from sisl.messages import info, deprecate_argument
-from sisl import Lattice, Grid
+from sisl.messages import deprecate_argument, info
 from sisl.unit.siesta import unit_convert
 
+from .._help import grid_reduce_indices
+from ..sile import SileError, add_sile, sile_raise_write
+from .sile import SileCDFSiesta
 
 __all__ = ['gridncSileSiesta']
 

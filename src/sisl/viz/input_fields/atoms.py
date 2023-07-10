@@ -3,13 +3,17 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from sisl._help import isiterable
 
-from .category import CategoryInput
-
 from .basic import (
-    TextInput, IntegerInput, FloatInput,
-    DictInput, CreatableDictInput, OptionsInput,
-    RangeInput, RangeSliderInput
+    CreatableDictInput,
+    DictInput,
+    FloatInput,
+    IntegerInput,
+    OptionsInput,
+    RangeInput,
+    RangeSliderInput,
+    TextInput,
 )
+from .category import CategoryInput
 
 
 class AtomCategoryInput(CategoryInput):

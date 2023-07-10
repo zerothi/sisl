@@ -5,10 +5,10 @@ from functools import partial
 
 import sisl
 from sisl.utils.mathematics import fnorm
-from .geometry import GeometryPlot, BoundGeometry
+
+from ..input_fields import BoolInput, FloatInput, IntegerInput, SileInput, TextInput
 from ..plotutils import find_files
-from ..input_fields import TextInput, BoolInput,\
-     IntegerInput, FloatInput, SileInput
+from .geometry import BoundGeometry, GeometryPlot
 
 
 class BondLengthMap(GeometryPlot):

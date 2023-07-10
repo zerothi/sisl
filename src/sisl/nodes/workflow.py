@@ -3,20 +3,31 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import Dict, Any, Union, Type, List, Tuple, Callable, Optional, Iterable, Sequence
-from types import FunctionType
 import ast
-from collections import ChainMap
+import html
 import inspect
 import textwrap
-import html
+from collections import ChainMap
+from types import FunctionType
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Iterable,
+    List,
+    Optional,
+    Sequence,
+    Tuple,
+    Type,
+    Union,
+)
 
+from sisl._environ import get_environ_variable, register_environ_variable
 from sisl.messages import warn
-from sisl._environ import register_environ_variable, get_environ_variable
 
-from .node import DummyInputValue, Node
 from .context import temporal_context
-from .utils import traverse_tree_forward, traverse_tree_backward
+from .node import DummyInputValue, Node
+from .utils import traverse_tree_backward, traverse_tree_forward
 
 register_environ_variable(
     "SISL_NODES_EXPORT_VIS", default=False, 
@@ -122,7 +133,7 @@ class Network:
             receives the output of the outgoing node.
         """
         import networkx as nx
-        
+
         # Get the edges
         edges = self._get_edges(workflow, include_workflow_inputs=include_workflow_inputs, edge_labels=edge_labels)
         
@@ -183,9 +194,9 @@ class Network:
             If None, it is taken from the "SISL_NODES_EXPORT_VIS" environment variable.
         """
         try:
-            import networkx as nx
             import matplotlib as mpl
             import matplotlib.pyplot as plt
+            import networkx as nx
             from pyvis.network import Network as visNetwork
         except ModuleNotFoundError:
             raise ModuleNotFoundError("You need to install the 'networkx', 'pyvis' and 'matplotlib' packages to visualize workflows.")
@@ -369,14 +380,14 @@ class Network:
         if notebook:
             # Render the HTML in the notebook.
             
-            from IPython.display import display, HTML
+            from IPython.display import HTML, display
+
             # First option was to display as an HTML object
             # The "isolated" flag avoids the CSS to affect the rest of the notebook.
             # The wrapper div is needed because otherwise the HTML display is of height 0.
             # HOWEVER: IT DOESN'T DISPLAY when exported to HTML because the iframe that isolated=True
             # creates is removed.
             #obj = HTML(f'<div style="height:{net.height}">{html}</div>', metadata={"isolated": True}, )
-
             # Instead, we create an iframe ourselves, using the srcdoc attribute. The only thing that we need to worry
             # is that there are no double quotes in the html, otherwise the srcdoc attribute will be broken.
             # So we replace " by &#34;, the html entity for ".

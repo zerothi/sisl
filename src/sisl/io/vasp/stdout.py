@@ -3,13 +3,13 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
 
-from .sile import SileVASP
-from ..sile import add_sile, sile_fh_open
-from .._multiple import SileBinder
-
-from sisl.messages import deprecation, deprecate_argument
-from sisl.utils import PropertyDict
 from sisl._internal import set_module
+from sisl.messages import deprecate_argument, deprecation
+from sisl.utils import PropertyDict
+
+from .._multiple import SileBinder
+from ..sile import add_sile, sile_fh_open
+from .sile import SileVASP
 
 __all__ = ["stdoutSileVASP", "outSileVASP"]
 

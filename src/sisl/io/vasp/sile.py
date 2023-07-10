@@ -4,10 +4,10 @@
 """
 Define a common VASP Sile
 """
-from ..sile import Sile, SileBin
-from sisl._internal import set_module
 import sisl._array as _a
+from sisl._internal import set_module
 
+from ..sile import Sile, SileBin
 
 __all__ = ["SileVASP", "SileBinVASP"]
 

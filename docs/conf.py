@@ -14,9 +14,9 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys
 import os
 import pathlib
+import sys
 from datetime import date
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -38,6 +38,7 @@ print("python exec:", sys.executable)
 print("sys.path:", sys.path)
 
 import sisl
+
 print(f"Located sisl here: {sisl.__path__}")
 
 # General information about the project.
@@ -305,6 +306,7 @@ class RevYearPlain(PlainStyle):
     default_sorting_style = "sort_rev_year"
 
 import pybtex
+
 pybtex.plugin.register_plugin('pybtex.style.sorting', 'sort_rev_year', YearMonthAuthorSortStyle)
 pybtex.plugin.register_plugin('pybtex.style.formatting', 'rev_year', RevYearPlain)
 

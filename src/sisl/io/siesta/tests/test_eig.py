@@ -1,12 +1,14 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-import pytest
 import os.path as osp
-import sisl
-from sisl.io.siesta.fdf import *
-from sisl.io.siesta.eig import *
+
 import numpy as np
+import pytest
+
+import sisl
+from sisl.io.siesta.eig import *
+from sisl.io.siesta.fdf import *
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
 _dir = osp.join("sisl", "io", "siesta")

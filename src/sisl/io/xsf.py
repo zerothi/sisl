@@ -3,19 +3,18 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import os.path as osp
 from numbers import Integral
+
 import numpy as np
 
+import sisl._array as _a
+from sisl import AtomUnknown, Geometry, Grid, Lattice, PeriodicTable
+from sisl._internal import set_module
+from sisl.messages import deprecate_argument
+from sisl.utils import str_spec
+
+from ._multiple import SileBinder
 # Import sile objects
 from .sile import *
-from ._multiple import SileBinder
-
-from sisl.messages import deprecate_argument
-from sisl._internal import set_module
-from sisl import PeriodicTable, Grid
-from sisl import Geometry, AtomUnknown, Lattice
-from sisl.utils import str_spec
-import sisl._array as _a
-
 
 __all__ = ["xsfSile"]
 

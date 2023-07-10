@@ -5,6 +5,7 @@
 Define a common ScaleUP Sile
 """
 from sisl._internal import set_module
+
 from ..sile import Sile, SileBin
 
 __all__ = ["SileScaleUp", "SileBinScaleUp"]

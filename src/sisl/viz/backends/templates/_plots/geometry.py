@@ -2,12 +2,13 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from collections.abc import Iterable
-from sisl.messages import warn
+
 import numpy as np
 
-from ..backend import Backend
+from sisl.messages import warn
 
 from ....plots import GeometryPlot
+from ..backend import Backend
 
 
 class GeometryBackend(Backend):

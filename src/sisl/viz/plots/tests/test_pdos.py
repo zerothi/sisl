@@ -9,11 +9,11 @@ Different inputs are tested (siesta .PDOS and sisl Hamiltonian).
 
 """
 from functools import partial
+
 import pytest
 
 import sisl
 from sisl.viz.plots.tests.conftest import _TestPlot
-
 
 pytestmark = [pytest.mark.viz, pytest.mark.plotly]
 

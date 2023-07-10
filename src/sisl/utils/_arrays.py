@@ -4,7 +4,6 @@
 """Special handlers for arrays """
 import numpy as np
 
-
 __all__ = ["batched_indices"]
 
 

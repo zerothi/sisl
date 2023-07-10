@@ -1,13 +1,12 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-import pytest
-
 import math as m
 from functools import partial
 
-from sisl.utils.ranges import *
+import pytest
 
+from sisl.utils.ranges import *
 
 pytestmark = pytest.mark.utils
 

@@ -23,9 +23,8 @@ complex.
 import warnings
 from functools import wraps
 
-from ._internal import set_module
 from ._environ import get_environ_variable
-
+from ._internal import set_module
 
 __all__ = ['SislDeprecation', 'SislInfo', 'SislWarning', 'SislException', 'SislError']
 __all__ += ['warn', 'info', 'deprecate', "deprecation", "deprecate_argument"]
@@ -202,8 +201,8 @@ except ImportError:
     info('Please install tqdm (pip install tqdm) for better looking progress bars', register=True)
 
     # Necessary methods used
-    from time import time as _time
     from sys import stdout as _stdout
+    from time import time as _time
 
     class _tqdm:
         """ Fake tqdm progress-bar. I should update this to also work in regular instances """

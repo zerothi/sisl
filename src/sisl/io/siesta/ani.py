@@ -4,11 +4,11 @@
 """
 Sile object for reading ANI files
 """
-from .sile import SileSiesta
-from ..xyz import xyzSile
-from ..sile import add_sile
 from sisl._internal import set_module
 
+from ..sile import add_sile
+from ..xyz import xyzSile
+from .sile import SileSiesta
 
 __all__ = ["aniSileSiesta"]
 

@@ -3,9 +3,10 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
 
-from sisl._internal import set_module
 from sisl import Geometry, Lattice
-from ._common import geometry_define_nsc, geometry2uc
+from sisl._internal import set_module
+
+from ._common import geometry2uc, geometry_define_nsc
 
 __all__ = ['sc', 'bcc', 'fcc', 'hcp', 'rocksalt']
 

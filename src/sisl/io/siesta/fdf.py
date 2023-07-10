@@ -1,46 +1,57 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+import gzip
+import itertools as itools
 import warnings
 from datetime import datetime
+from os.path import isfile
+
 import numpy as np
 import scipy as sp
-from os.path import isfile
-import itertools as itools
-import gzip
 
-from ..sile import add_sile, get_sile_class, sile_fh_open, sile_raise_write, SileError
-from .sile import SileSiesta
-from .._help import *
-
-from sisl._internal import set_module
-from sisl import constant
-from sisl.unit.siesta import units
 import sisl._array as _a
+from sisl import (
+    Atom,
+    AtomGhost,
+    Atoms,
+    DynamicalMatrix,
+    Geometry,
+    Lattice,
+    Orbital,
+    SphericalOrbital,
+    constant,
+)
 from sisl._indices import indices_only
-from sisl.utils.ranges import list2str
+from sisl._internal import set_module
 from sisl.messages import SislError, info, warn
-from sisl.utils.mathematics import fnorm
 from sisl.physics import BandStructure
+from sisl.unit.siesta import unit_convert, unit_default, unit_group, units
+from sisl.utils.cmd import default_ArgumentParser, default_namespace
+from sisl.utils.mathematics import fnorm
+from sisl.utils.misc import merge_instances
+from sisl.utils.ranges import list2str
 
+from .._help import *
+from ..sile import SileError, add_sile, get_sile_class, sile_fh_open, sile_raise_write
 from .bands import bandsSileSiesta
-from .basis import ionxmlSileSiesta, ionncSileSiesta
-from .binaries import tshsSileSiesta, tsdeSileSiesta
-from .binaries import dmSileSiesta, hsxSileSiesta, onlysSileSiesta
+from .basis import ionncSileSiesta, ionxmlSileSiesta
+from .binaries import (
+    dmSileSiesta,
+    hsxSileSiesta,
+    onlysSileSiesta,
+    tsdeSileSiesta,
+    tshsSileSiesta,
+)
 from .eig import eigSileSiesta
-from .fc import fcSileSiesta
 from .fa import faSileSiesta
+from .fc import fcSileSiesta
 from .orb_indx import orbindxSileSiesta
 from .siesta_grid import gridncSileSiesta
 from .siesta_nc import ncSileSiesta
+from .sile import SileSiesta
 from .struct import structSileSiesta
 from .xv import xvSileSiesta
-from sisl import Orbital, SphericalOrbital, Atom, AtomGhost, Atoms
-from sisl import Geometry, Lattice, DynamicalMatrix
-
-from sisl.utils.cmd import default_ArgumentParser, default_namespace
-from sisl.utils.misc import merge_instances
-from sisl.unit.siesta import unit_convert, unit_default, unit_group
 
 __all__ = ["fdfSileSiesta"]
 
@@ -2145,7 +2156,6 @@ class fdfSileSiesta(SileSiesta):
         import sisl.io.tbtrans as tbt
 
         # The fdf parser is more complicated
-
         # It is based on different settings based on the
 
         sp = p.add_subparsers(help="Determine which part of the fdf-file that should be processed.")

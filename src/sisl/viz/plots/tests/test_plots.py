@@ -10,10 +10,9 @@ ensure that at least they do not break basic plot functionality.
 """
 import pytest
 
-from sisl.viz.tests.test_plot import _TestPlotClass
 from sisl.viz.plots import *
 from sisl.viz.plotutils import get_plot_classes
-
+from sisl.viz.tests.test_plot import _TestPlotClass
 
 pytestmark = [pytest.mark.viz, pytest.mark.plotly]
 

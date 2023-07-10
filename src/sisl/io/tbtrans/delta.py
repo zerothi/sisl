@@ -2,23 +2,25 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from pathlib import Path
+
 import numpy as np
 
+import sisl._array as _a
+# Import the geometry object
+from sisl import Atom, Geometry, Lattice, SparseOrbitalBZSpin
 # Import sile objects
 from sisl._internal import set_module
-import sisl._array as _a
-from ..sile import add_sile, sile_raise_write, SileError
+from sisl.messages import deprecate_argument, warn
+from sisl.sparse import _ncol_to_indptr
+from sisl.unit.siesta import unit_convert
+
+from ..siesta._help import _csr_from_sc_off, _csr_to_siesta, _mat_spin_convert
+from ..sile import SileError, add_sile, sile_raise_write
 from .sile import SileCDFTBtrans
 
-# Import the geometry object
-from sisl import Geometry, Atom, Lattice
-from sisl import SparseOrbitalBZSpin
-from sisl.sparse import _ncol_to_indptr
-from sisl.messages import warn, deprecate_argument
-from sisl.unit.siesta import unit_convert
-from ..siesta._help import _csr_to_siesta, _csr_from_sc_off, _mat_spin_convert
 try:
     from ..siesta._siesta import siesta_sc_off
+
     # TODO add checks
     has_fortran_module = True
 except ImportError:

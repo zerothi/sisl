@@ -1,18 +1,18 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from functools import reduce, wraps
 import operator as op
-from numbers import Integral
 import re
+from functools import reduce, wraps
+from numbers import Integral
 
 import numpy as np
 
-from sisl._internal import set_module
 from sisl._help import isiterable
-from sisl.utils import strmap, lstranges
-from .base import AtomCategory, NullCategory, _sanitize_loop
+from sisl._internal import set_module
+from sisl.utils import lstranges, strmap
 
+from .base import AtomCategory, NullCategory, _sanitize_loop
 
 __all__ = ["AtomZ", "AtomIndex", "AtomSeq", "AtomTag", "AtomOdd", "AtomEven"]
 

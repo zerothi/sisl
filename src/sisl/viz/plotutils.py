@@ -1,12 +1,12 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+import itertools
 import os
 import sys
 from pathlib import Path
 
 import numpy as np
-import itertools
 
 try:
     from pathos.pools import ProcessPool as Pool
@@ -21,9 +21,9 @@ except Exception:
 
 from copy import deepcopy
 
-from sisl.messages import info
-from sisl.io.sile import get_siles, get_sile_rules
 from sisl._environ import get_environ_variable
+from sisl.io.sile import get_sile_rules, get_siles
+from sisl.messages import info
 
 __all__ = ["running_in_notebook", "check_widgets",
            "get_plot_classes", "get_plotable_siles", "get_plotable_variables",
@@ -109,7 +109,7 @@ def get_plot_classes():
     list
         all the plot classes that the module is aware of.
     """
-    from . import Plot, MultiplePlot, Animation, SubPlots
+    from . import Animation, MultiplePlot, Plot, SubPlots
 
     def get_all_subclasses(cls):
 
@@ -966,8 +966,8 @@ def values_to_colors(values, scale):
     list
         the corresponding colors in "rgb(r,g,b)" format.
     """
-    import plotly
     import matplotlib
+    import plotly
 
     v_min = np.min(values)
     values = (values - v_min) / (np.max(values) - v_min)

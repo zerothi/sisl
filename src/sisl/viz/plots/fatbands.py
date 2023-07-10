@@ -5,10 +5,18 @@ import numpy as np
 
 import sisl
 from sisl.physics.spin import Spin
+
+from ..input_fields import (
+    BoolInput,
+    ColorInput,
+    FloatInput,
+    OrbitalQueries,
+    SileInput,
+    TextInput,
+)
 from ..plot import entry_point
-from .bands import BandsPlot
 from ..plotutils import random_color
-from ..input_fields import OrbitalQueries, TextInput, BoolInput, ColorInput, FloatInput, SileInput
+from .bands import BandsPlot
 
 
 class FatbandsPlot(BandsPlot):

@@ -169,6 +169,8 @@ its generic use in all routines etc.
 """
 from .sile import *
 
+# isort: split
+
 # Import the different Sile objects
 # enabling the actual print-out
 from .bigdft import *
@@ -181,8 +183,8 @@ from .orca import *
 from .pdb import *
 from .scaleup import *
 from .siesta import *
-from .tbtrans import *
 from .table import *
+from .tbtrans import *
 from .vasp import *
 from .wannier90 import *
 from .xsf import *

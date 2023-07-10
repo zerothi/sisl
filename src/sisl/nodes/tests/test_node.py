@@ -2,8 +2,10 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import pytest
+
 from sisl.nodes import Node, temporal_context
 from sisl.nodes.node import GetItemNode
+
 
 @pytest.fixture(scope='module', params=["explicit_class", "from_func"])
 def sum_node(request):

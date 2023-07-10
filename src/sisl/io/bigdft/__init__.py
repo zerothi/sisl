@@ -8,5 +8,5 @@ BigDFT
    asciiSileBigDFT - the input for BigDFT
 
 """
-from .sile import *
+from .sile import * # isort: split
 from .ascii import *

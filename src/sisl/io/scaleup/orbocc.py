@@ -2,11 +2,11 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 # Import sile objects
-from .sile import SileScaleUp
-from ..sile import *
-
 # Import the geometry object
 from sisl import Atom, Atoms
+
+from ..sile import *
+from .sile import SileScaleUp
 
 __all__ = ['orboccSileScaleUp']
 

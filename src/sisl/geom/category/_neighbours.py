@@ -4,8 +4,8 @@
 from numpy import ndarray
 
 from sisl._internal import set_module
-from .base import AtomCategory, NullCategory, _sanitize_loop
 
+from .base import AtomCategory, NullCategory, _sanitize_loop
 
 __all__ = ["AtomNeighbours"]
 

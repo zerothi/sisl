@@ -4,8 +4,8 @@
 import numpy as np
 
 from sisl._internal import set_module
-from .sparse import SparseOrbitalBZ
 
+from .sparse import SparseOrbitalBZ
 
 __all__ = ["Overlap"]
 
@@ -94,7 +94,7 @@ class Overlap(SparseOrbitalBZ):
             if it is a string it will create a new sile using `get_sile`.
         * : args passed directly to ``read_overlap(,**)``
         """
-        from sisl.io import get_sile, BaseSile
+        from sisl.io import BaseSile, get_sile
         if isinstance(sile, BaseSile):
             return sile.read_overlap(*args, **kwargs)
         else:
@@ -103,7 +103,7 @@ class Overlap(SparseOrbitalBZ):
 
     def write(self, sile, *args, **kwargs) -> None:
         """ Writes the Overlap to the `Sile` as implemented in the :code:`Sile.write_overlap` method """
-        from sisl.io import get_sile, BaseSile
+        from sisl.io import BaseSile, get_sile
         if isinstance(sile, BaseSile):
             sile.write_overlap(self, *args, **kwargs)
         else:

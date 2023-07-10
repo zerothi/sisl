@@ -3,8 +3,9 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
 
-from sisl._internal import set_module
 from sisl import Atom, Geometry, Lattice
+from sisl._internal import set_module
+
 from ._common import geometry_define_nsc
 
 __all__ = ['honeycomb', 'graphene']

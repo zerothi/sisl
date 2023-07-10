@@ -1,29 +1,32 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from numbers import Integral, Real
 from math import pi
+from numbers import Integral, Real
 
 import numpy as np
-from numpy import int32
-from numpy import floor, dot, add, cos, sin
-from numpy import ogrid, take, asarray
-from scipy.sparse import diags as sp_diags
-from scipy.sparse import SparseEfficiencyWarning
+from numpy import add, asarray, cos, dot, floor, int32, ogrid, sin, take
 from scipy.ndimage import zoom as ndimage_zoom
+from scipy.sparse import SparseEfficiencyWarning
+from scipy.sparse import diags as sp_diags
 
-from ._internal import set_module
-from .messages import deprecate_argument
 from . import _array as _a
 from ._help import dtype_complex_to_real, wrap_filterwarnings
-from .shape import Shape
-from .utils import default_ArgumentParser, default_namespace
-from .utils import cmd, strseq, direction, str_spec
-from .utils import import_attr
-from .utils.mathematics import fnorm
-
-from .lattice import LatticeChild
+from ._internal import set_module
 from .geometry import Geometry
+from .lattice import LatticeChild
+from .messages import deprecate_argument
+from .shape import Shape
+from .utils import (
+    cmd,
+    default_ArgumentParser,
+    default_namespace,
+    direction,
+    import_attr,
+    str_spec,
+    strseq,
+)
+from .utils.mathematics import fnorm
 
 __all__ = ['Grid', 'sgrid']
 
@@ -906,7 +909,7 @@ class Grid(LatticeChild):
         """
         # This only works because, they *must*
         # have been imported previously
-        from sisl.io import get_sile, BaseSile
+        from sisl.io import BaseSile, get_sile
         if isinstance(sile, BaseSile):
             return sile.read_grid(*args, **kwargs)
         else:
@@ -932,7 +935,7 @@ class Grid(LatticeChild):
 
         # This only works because, they *must*
         # have been imported previously
-        from sisl.io import get_sile, BaseSile
+        from sisl.io import BaseSile, get_sile
         if isinstance(sile, BaseSile):
             sile.write_grid(self, *args, **kwargs)
         else:
@@ -1659,11 +1662,11 @@ def sgrid(grid=None, argv=None, ret_grid=False):
     ret_grid : bool, optional
        whether the function should return the grid
     """
-    import sys
     import argparse
+    import sys
     from pathlib import Path
 
-    from sisl.io import get_sile, BaseSile
+    from sisl.io import BaseSile, get_sile
 
     # The file *MUST* be the first argument
     # (except --help|-h)

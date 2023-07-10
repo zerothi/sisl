@@ -43,7 +43,6 @@ To use the unit conversion from `Siesta`_, simply import `units` as:
 in which case ``units`` will refer to default unit conversions and ``siesta_units``
 will use the unit definitions in `Siesta`_.
 """
-from .base import unit_group, unit_convert, unit_default, units
-
 # Enable the siesta unit-conversion
 from . import siesta
+from .base import unit_convert, unit_default, unit_group, units

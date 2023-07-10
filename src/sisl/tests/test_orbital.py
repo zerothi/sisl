@@ -1,16 +1,22 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-import pytest
-
 import math as m
+
 import numpy as np
+import pytest
 from scipy import interpolate as interp
 
+from sisl.orbital import (
+    AtomicOrbital,
+    GTOrbital,
+    HydrogenicOrbital,
+    Orbital,
+    SphericalOrbital,
+    STOrbital,
+    _rspher_harm_fact,
+)
 from sisl.utils.mathematics import cart2spher, spher2cart
-from sisl.orbital import Orbital, SphericalOrbital, AtomicOrbital, HydrogenicOrbital
-from sisl.orbital import GTOrbital, STOrbital
-from sisl.orbital import _rspher_harm_fact
 
 pytestmark = [pytest.mark.orbital]
 

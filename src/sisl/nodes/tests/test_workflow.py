@@ -3,10 +3,11 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from typing import Type
 
+import pytest
+
 from sisl.nodes import Node, Workflow
 from sisl.nodes.utils import traverse_tree_forward
 
-import pytest
 
 @pytest.fixture(scope='module', params=["from_func", "explicit_class", "input_operations"])
 def triple_sum(request) -> Type[Workflow]:

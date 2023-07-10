@@ -1,22 +1,22 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from functools import wraps
 import operator
+from functools import wraps
 from numbers import Integral
 
 import numpy as np
 
+import sisl._array as _a
 from sisl._category import CategoryMeta
 from sisl._internal import set_module
-from sisl.messages import deprecate_argument
-from sisl.utils.misc import direction
-from sisl.shape import *
-from sisl.lattice import Lattice, LatticeChild
 from sisl._lattice import cell_invert
-import sisl._array as _a
-from .base import AtomCategory, NullCategory
+from sisl.lattice import Lattice, LatticeChild
+from sisl.messages import deprecate_argument
+from sisl.shape import *
+from sisl.utils.misc import direction
 
+from .base import AtomCategory, NullCategory
 
 __all__ = ["AtomFracSite", "AtomXYZ"]
 

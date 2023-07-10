@@ -10,11 +10,12 @@ which means these unit conversions should be used for Siesta "stuff".
 """
 
 from sisl._internal import set_module
+
 from .base import UnitParser
-from .base import unit_table
-from .base import unit_group as u_group
 from .base import unit_convert as u_convert
 from .base import unit_default as u_default
+from .base import unit_group as u_group
+from .base import unit_table
 
 __all__  = ["unit_group", "unit_convert", "unit_default", "units"]
 

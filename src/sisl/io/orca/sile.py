@@ -2,6 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from sisl._internal import set_module
+
 from ..sile import Sile, SileBin
 
 __all__ = ['SileORCA', 'SileBinORCA']

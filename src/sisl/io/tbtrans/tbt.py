@@ -2,41 +2,44 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from numbers import Integral
+
 try:
     from StringIO import StringIO
 except Exception:
     from io import StringIO
+
 import itertools
 from functools import reduce
 
 import numpy as np
+
 ndarray = np.ndarray
 
 # The sparse matrix for the orbital/bond currents
-from scipy.sparse import csr_matrix
-from scipy.sparse import isspmatrix_csr
-from scipy.sparse import SparseEfficiencyWarning
+from scipy.sparse import SparseEfficiencyWarning, csr_matrix, isspmatrix_csr
 
+import sisl._array as _a
+from sisl import Atoms, Geometry, constant
+from sisl._help import wrap_filterwarnings
+from sisl._internal import set_module
+from sisl.messages import SislError, deprecate, deprecate_argument, info, warn
+from sisl.physics.densitymatrix import DensityMatrix
+from sisl.physics.distribution import fermi_dirac
+from sisl.sparse import _ncol_to_indptr
+from sisl.unit.siesta import unit_convert
 # Import sile objects
 from sisl.utils import (
-    default_ArgumentParser, default_namespace,
-    collect_action, run_actions,
-    lstranges, strmap, list2str,
+    collect_action,
+    default_ArgumentParser,
+    default_namespace,
+    list2str,
+    lstranges,
+    run_actions,
+    strmap,
 )
-from ..sile import add_sile, sile_raise_write, get_sile
+
+from ..sile import add_sile, get_sile, sile_raise_write
 from ._cdf import _devncSileTBtrans
-from sisl._internal import set_module
-import sisl._array as _a
-
-from sisl import Geometry, Atoms
-from sisl import constant
-from sisl.sparse import _ncol_to_indptr
-from sisl.messages import warn, info, SislError, deprecate, deprecate_argument
-from sisl._help import wrap_filterwarnings
-from sisl.unit.siesta import unit_convert
-from sisl.physics.distribution import fermi_dirac
-from sisl.physics.densitymatrix import DensityMatrix
-
 
 __all__ = ['tbtncSileTBtrans', 'tbtavncSileTBtrans']
 

@@ -300,8 +300,8 @@ repair-wheel-command = "delvewheel repair --no-mangle-all --ignore-in-wheel -w {
 
 [tool.isort]
 # how should sorting be done
-sections = ['FUTURE', 'STDLIB', 'THIRDPARTY', 'FIRSTPARTY', 'LOCALFOLDER']
-src_paths = ["src"]
+profile = "hug"
+sections = ['FUTURE', 'STDLIB', 'THIRDPARTY', 'FIRSTPARTY', 'APPLICATION', 'LOCALFOLDER']
 known_first_party = ["sisl_toolbox", "sisl"]
 line_length=90
 overwrite_in_place = true

@@ -56,7 +56,6 @@ import time
 from ._internal import set_module
 from .messages import warn
 
-
 __all__ = ['Selector', 'TimeSelector']
 
 

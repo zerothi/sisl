@@ -1,16 +1,16 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from abc import abstractmethod, ABC
-import subprocess
-from pathlib import Path
-import shutil
-import os
 import logging
+import os
+import shutil
+import subprocess
+from abc import ABC, abstractmethod
+from pathlib import Path
 
 from sisl.io.siesta import fdfSileSiesta
-from ._path import path_abs, path_rel_or_abs
 
+from ._path import path_abs, path_rel_or_abs
 
 __all__ = ["AbstractRunner", "AndRunner", "PathRunner",
            "CleanRunner", "CopyRunner", "CommandRunner",

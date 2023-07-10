@@ -2,12 +2,13 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import re
+
 import numpy as np
 
-from sisl._internal import set_module
 import sisl._array as _a
-from .sile import Sile, add_sile, sile_fh_open, sile_raise_write
+from sisl._internal import set_module
 
+from .sile import Sile, add_sile, sile_fh_open, sile_raise_write
 
 __all__ = ['tableSile', 'TableSile']
 

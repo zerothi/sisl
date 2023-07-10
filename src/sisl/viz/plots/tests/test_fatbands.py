@@ -6,13 +6,13 @@
 Tests specific functionality of a fatbands plot
 
 """
-import pytest
-import numpy as np
 from functools import partial
+
+import numpy as np
+import pytest
 
 import sisl
 from sisl.viz.plots.tests.test_bands import TestBandsPlot as _TestBandsPlot
-
 
 pytestmark = [pytest.mark.viz, pytest.mark.plotly]
 

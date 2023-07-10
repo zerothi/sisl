@@ -1,17 +1,24 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-import pytest
-import os.path as osp
 import itertools
 import math as m
+import os.path as osp
 
 import numpy as np
+import pytest
 
 import sisl.geom as sisl_geom
-from sisl import SislWarning, SislError, SislDeprecation
-from sisl import Cube, Sphere
-from sisl import Geometry, Atom, Lattice
+from sisl import (
+    Atom,
+    Cube,
+    Geometry,
+    Lattice,
+    SislDeprecation,
+    SislError,
+    SislWarning,
+    Sphere,
+)
 
 _dir = osp.join('sisl')
 

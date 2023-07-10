@@ -1,20 +1,30 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-import uuid
 import os
+import uuid
+from copy import copy, deepcopy
 from pathlib import Path
 
-from copy import deepcopy, copy
-
-from sisl.messages import warn
 from sisl._environ import get_environ_variable
-from .plot import Plot
-from .configurable import Configurable, vizplotly_settings
-from .plotutils import find_files, find_plotable_siles, call_method_if_present, get_plot_classes
-from ._shortcuts import ShortCutable
+from sisl.messages import warn
 
-from .input_fields import TextInput, FilePathInput, BoolInput, RangeSliderInput, Array1DInput
+from ._shortcuts import ShortCutable
+from .configurable import Configurable, vizplotly_settings
+from .input_fields import (
+    Array1DInput,
+    BoolInput,
+    FilePathInput,
+    RangeSliderInput,
+    TextInput,
+)
+from .plot import Plot
+from .plotutils import (
+    call_method_if_present,
+    find_files,
+    find_plotable_siles,
+    get_plot_classes,
+)
 
 __all__ = ["Session"]
 

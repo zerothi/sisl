@@ -1,26 +1,37 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from functools import wraps
 import itertools
 import re
-
-from sisl.messages import warn
+from functools import wraps
 
 import numpy as np
 
-from sisl import Geometry, PeriodicTable, Atom, AtomGhost
-from sisl.utils import direction
-from sisl.utils.mathematics import fnorm
-from ..plot import Plot, entry_point
-from ..input_fields import (
-    ProgramaticInput, ColorInput, DictInput,
-    BoolInput, OptionsInput, AtomSelect, GeomAxisSelect, QueriesInput,
-    FilePathInput, PlotableInput, IntegerInput, FloatInput, TextInput, Array1DInput,
-)
-from ..plotutils import values_to_colors
+from sisl import Atom, AtomGhost, Geometry, PeriodicTable
 from sisl._dispatcher import AbstractDispatch
 from sisl._lattice import cell_invert
+from sisl.messages import warn
+from sisl.utils import direction
+from sisl.utils.mathematics import fnorm
+
+from ..input_fields import (
+    Array1DInput,
+    AtomSelect,
+    BoolInput,
+    ColorInput,
+    DictInput,
+    FilePathInput,
+    FloatInput,
+    GeomAxisSelect,
+    IntegerInput,
+    OptionsInput,
+    PlotableInput,
+    ProgramaticInput,
+    QueriesInput,
+    TextInput,
+)
+from ..plot import Plot, entry_point
+from ..plotutils import values_to_colors
 
 
 class BoundGeometry(AbstractDispatch):

@@ -3,47 +3,71 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 # To check for integers
 from __future__ import annotations
-from typing import List, Union, Iterator, Optional, TYPE_CHECKING
-from numbers import Integral, Real
-from math import acos
-from itertools import product
+
+import warnings
 from collections import OrderedDict
 from functools import reduce
+from itertools import product
+from math import acos
+from numbers import Integral, Real
 from pathlib import Path
-import warnings
+from typing import TYPE_CHECKING, Iterator, List, Optional, Union
 
 import numpy as np
-from numpy import ndarray, int32, bool_
-from numpy import dot, square, sqrt, diff
-from numpy import floor, ceil, tile, unique
-from numpy import argsort, split, isin, concatenate
-
+from numpy import (
+    argsort,
+    bool_,
+    ceil,
+    concatenate,
+    diff,
+    dot,
+    floor,
+    int32,
+    isin,
+    ndarray,
+    split,
+    sqrt,
+    square,
+    tile,
+    unique,
+)
 
 from sisl._typing_ext.numpy import ArrayLike, NDArray
+
 if TYPE_CHECKING:
     from sisl.typing import AtomsArgument, OrbitalsArgument
-from .lattice import Lattice, LatticeChild
-from .orbital import Orbital
-from ._internal import set_module, singledispatchmethod
-from . import _plot as plt
-from . import _array as _a
-from ._math_small import is_ascending, cross3
-from ._indices import indices_in_sphere_with_dist, indices_le, indices_gt_le
-from ._indices import list_index_le
-from .messages import info, warn, SislError, deprecate_argument
-from ._help import isndarray
-from .utils import default_ArgumentParser, default_namespace, cmd, str_spec
-from .utils import angle, direction
-from .utils import lstranges, strmap
-from .utils.mathematics import fnorm
-from .quaternion import Quaternion
-from .atom import Atom, Atoms
-from .shape import Shape, Sphere, Cube
-from ._namedindex import NamedIndex
-from ._category import Category, GenericCategory
-from ._dispatcher import AbstractDispatch
-from ._dispatcher import ClassDispatcher, TypeDispatcher
 
+from . import _array as _a
+from . import _plot as plt
+from ._category import Category, GenericCategory
+from ._dispatcher import AbstractDispatch, ClassDispatcher, TypeDispatcher
+from ._help import isndarray
+from ._indices import (
+    indices_gt_le,
+    indices_in_sphere_with_dist,
+    indices_le,
+    list_index_le,
+)
+from ._internal import set_module, singledispatchmethod
+from ._math_small import cross3, is_ascending
+from ._namedindex import NamedIndex
+from .atom import Atom, Atoms
+from .lattice import Lattice, LatticeChild
+from .messages import SislError, deprecate_argument, info, warn
+from .orbital import Orbital
+from .quaternion import Quaternion
+from .shape import Cube, Shape, Sphere
+from .utils import (
+    angle,
+    cmd,
+    default_ArgumentParser,
+    default_namespace,
+    direction,
+    lstranges,
+    str_spec,
+    strmap,
+)
+from .utils.mathematics import fnorm
 
 __all__ = ['Geometry', "sgeom"]
 
@@ -661,7 +685,7 @@ class Geometry(LatticeChild):
         """
         # This only works because, they *must*
         # have been imported previously
-        from sisl.io import get_sile, BaseSile
+        from sisl.io import BaseSile, get_sile
         if isinstance(sile, BaseSile):
             return sile.read_geometry(*args, **kwargs)
         else:
@@ -686,7 +710,7 @@ class Geometry(LatticeChild):
         """
         # This only works because, they *must*
         # have been imported previously
-        from sisl.io import get_sile, BaseSile
+        from sisl.io import BaseSile, get_sile
         if isinstance(sile, BaseSile):
             sile.write_geometry(self, *args, **kwargs)
         else:
@@ -5066,7 +5090,8 @@ to_dispatch.register("ase", GeometryToAseDispatcher)
 
 class GeometryTopymatgenDispatcher(GeometryToDispatcher):
     def dispatch(self, **kwargs):
-        from pymatgen.core import Lattice, Structure, Molecule
+        from pymatgen.core import Lattice, Molecule, Structure
+
         from sisl.atom import PeriodicTable
 
         # ensure we have an object
@@ -5151,11 +5176,11 @@ def sgeom(geometry=None, argv=None, ret_geometry=False):
     ret_geometry : bool, optional
        whether the function should return the geometry
     """
-    import sys
     import argparse
+    import sys
     from pathlib import Path
 
-    from sisl.io import get_sile, BaseSile
+    from sisl.io import BaseSile, get_sile
 
     # The geometry-file *MUST* be the first argument
     # (except --help|-h)

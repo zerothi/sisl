@@ -1,17 +1,16 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+import math as m
+
+import numpy as np
 import pytest
 from pytest import approx
-
-import math as m
-import numpy as np
 
 import sisl
 import sisl.linalg as lin
 from sisl import Lattice, LatticeChild, SuperCell
 from sisl.geom import graphene
-
 
 pytestmark = [pytest.mark.supercell, pytest.mark.sc, pytest.mark.lattice]
 

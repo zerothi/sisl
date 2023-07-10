@@ -1,13 +1,12 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+import math as m
+
+import numpy as np
 import pytest
 
-import math as m
-import numpy as np
-
-from sisl.mixing import DIISMixer, AdaptiveDIISMixer
-
+from sisl.mixing import AdaptiveDIISMixer, DIISMixer
 
 pytestmark = pytest.mark.mixing
 

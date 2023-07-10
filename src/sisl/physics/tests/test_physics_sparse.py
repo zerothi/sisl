@@ -1,13 +1,13 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-import pytest
+import math as m
 import sys
 
-import math as m
 import numpy as np
+import pytest
 
-from sisl import geom, Atom, Geometry, Spin, SislWarning
+from sisl import Atom, Geometry, SislWarning, Spin, geom
 from sisl.physics.sparse import SparseOrbitalBZ, SparseOrbitalBZSpin
 
 pytestmark = [pytest.mark.physics, pytest.mark.sparse]

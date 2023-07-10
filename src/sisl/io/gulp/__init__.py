@@ -9,6 +9,6 @@ GULP
    fcSileGULP - force constant output from GULP
 
 """
-from .sile import *
-from .got import *
+from .sile import * # isort: split
 from .fc import *
+from .got import *

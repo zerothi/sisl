@@ -1,16 +1,21 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from collections import defaultdict
 import itertools
+from collections import defaultdict
 from functools import partial
-import numpy as np
 
+import numpy as np
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-from ..templates.backend import Backend, MultiplePlotBackend, SubPlotsBackend, AnimationBackend
-from ...plot import Plot, SubPlots, MultiplePlot, Animation
+from ...plot import Animation, MultiplePlot, Plot, SubPlots
+from ..templates.backend import (
+    AnimationBackend,
+    Backend,
+    MultiplePlotBackend,
+    SubPlotsBackend,
+)
 
 
 class PlotlyBackend(Backend):
@@ -290,6 +295,7 @@ class PlotlyBackend(Backend):
             'selector', which will choose if the trace is updated or not. 
         """
         from ...plotutils import swap_trace_axes
+
         # Swap the traces
         self.for_each_trace(partial(swap_trace_axes, ax1=ax1, ax2=ax2), **kwargs)
 

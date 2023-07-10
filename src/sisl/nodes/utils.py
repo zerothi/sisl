@@ -1,9 +1,10 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from typing import Sequence, Callable, Any
+from typing import Any, Callable, Sequence
 
 from .node import Node
+
 
 def traverse_tree_forward(roots: Sequence[Node],  func: Callable[[Node], Any]) -> None:
     """Traverse a tree of nodes in a forward fashion.

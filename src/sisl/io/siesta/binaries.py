@@ -1,9 +1,10 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from numbers import Integral
-from itertools import product
 from collections import deque, namedtuple
+from itertools import product
+from numbers import Integral
+
 import numpy as np
 
 try:
@@ -12,24 +13,21 @@ try:
 except ImportError:
     has_fortran_module = False
 
-from ..sile import add_sile, SileError, SileWarning
-from .sile import SileBinSiesta
-from sisl._internal import set_module
-from sisl.messages import info, warn, SislError
-
 import sisl._array as _a
-from sisl import Geometry, Atom, Atoms, Lattice, Grid, SparseCSR
-from sisl import AtomicOrbital
+from sisl import Atom, AtomicOrbital, Atoms, Geometry, Grid, Lattice, SparseCSR
+from sisl._internal import set_module
+from sisl.messages import SislError, info, warn
+from sisl.physics import BrillouinZone, DensityMatrix, EnergyDensityMatrix, Hamiltonian
+from sisl.physics.electron import EigenstateElectron
+from sisl.physics.overlap import Overlap
+from sisl.physics.sparse import SparseOrbitalBZ
 from sisl.sparse import _ncol_to_indptr
 from sisl.unit.siesta import unit_convert
-from sisl.physics.sparse import SparseOrbitalBZ
-from sisl.physics import Hamiltonian, DensityMatrix, EnergyDensityMatrix
-from sisl.physics import BrillouinZone
-from sisl.physics.overlap import Overlap
-from sisl.physics.electron import EigenstateElectron
-from .._help import grid_reduce_indices
-from ._help import *
 
+from .._help import grid_reduce_indices
+from ..sile import SileError, SileWarning, add_sile
+from ._help import *
+from .sile import SileBinSiesta
 
 __all__ = ["tshsSileSiesta", "onlysSileSiesta", "tsdeSileSiesta"]
 __all__ += ["hsxSileSiesta", "dmSileSiesta"]

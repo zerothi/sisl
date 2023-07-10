@@ -8,11 +8,11 @@ This module implements the base-class which allows named indices
 >>> nidx = NamedIndex('hello', [1, 2])
 """
 import numpy as np
-from numpy import ndarray, bool_
+from numpy import bool_, ndarray
 
-from ._internal import set_module
-from ._indices import indices_only
 from ._array import arrayi
+from ._indices import indices_only
+from ._internal import set_module
 from .messages import SislError
 from .utils.ranges import list2str
 

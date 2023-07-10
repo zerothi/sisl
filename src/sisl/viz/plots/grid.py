@@ -2,21 +2,36 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from collections import defaultdict
-from sisl.viz.plots.geometry import GeometryPlot
+
 import numpy as np
 from scipy.ndimage import affine_transform
 
 import sisl
-from sisl.messages import warn
-from sisl._lattice import cell_invert
 from sisl import _array as _a
-from ..plot import Plot, entry_point
+from sisl._lattice import cell_invert
+from sisl.messages import warn
+from sisl.viz.plots.geometry import GeometryPlot
+
 from ..input_fields import (
-    TextInput, SileInput, Array1DInput, BoolInput,
-    ColorInput, OptionsInput, CreatableOptionsInput, IntegerInput, FloatInput, RangeInput, RangeSliderInput,
-    QueriesInput, ProgramaticInput, PlotableInput, SislObjectInput, PlotableInput, SpinSelect,
-    GeomAxisSelect
+    Array1DInput,
+    BoolInput,
+    ColorInput,
+    CreatableOptionsInput,
+    FloatInput,
+    GeomAxisSelect,
+    IntegerInput,
+    OptionsInput,
+    PlotableInput,
+    ProgramaticInput,
+    QueriesInput,
+    RangeInput,
+    RangeSliderInput,
+    SileInput,
+    SislObjectInput,
+    SpinSelect,
+    TextInput,
 )
+from ..plot import Plot, entry_point
 
 
 class GridPlot(Plot):

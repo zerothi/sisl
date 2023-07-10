@@ -3,13 +3,12 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
 
-from ..sile import add_sile, sile_fh_open
-from .sile import SileSiesta
-
 from sisl._internal import set_module
 from sisl.messages import warn
 from sisl.unit.siesta import unit_convert
 
+from ..sile import add_sile, sile_fh_open
+from .sile import SileSiesta
 
 __all__ = ['fcSileSiesta']
 

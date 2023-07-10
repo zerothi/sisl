@@ -5,7 +5,9 @@ cimport cython
 from libc.math cimport fabs
 
 import numpy as np
+
 # This enables Cython enhanced compatibilities
+
 cimport numpy as np
 
 from sisl._indices cimport in_1d
