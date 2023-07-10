@@ -30,6 +30,7 @@ class NodeCalcError(NodeError):
     def __str__(self):
         return (f"Couldn't generate an output for {self._node} with the current inputs.")
 
+
 class NodeInputError(NodeError):
     
     def __init__(self, node, error, inputs):
@@ -39,6 +40,7 @@ class NodeInputError(NodeError):
     def __str__(self):
         # Should make this more specific
         return (f"Some input is not right in {self._node} and could not be parsed")
+
 
 class Node(NDArrayOperatorsMixin):
     """Generic class for nodes.
@@ -179,7 +181,7 @@ class Node(NDArrayOperatorsMixin):
         return super().__init_subclass__()
         
     @classmethod
-    def from_func(cls, func: Union[Callable, None] = None, context: Union[dict, None] = None):
+    def from_func(cls, func: Optional[Callable] = None, context: Optional[dict] = None):
         """Builds a node from a function.
 
         Parameters
@@ -496,6 +498,7 @@ class Node(NDArrayOperatorsMixin):
         if not self.context['lazy']:
             self.get()
 
+
 class DummyInputValue(Node):
     """A dummy node that can be used as a placeholder for input values."""
 
@@ -511,17 +514,20 @@ class DummyInputValue(Node):
     def function(input_key: str, value: Any = Node._blank):
         return value
 
+
 class FuncNode(Node):
 
     @staticmethod
     def function(func: Callable, **kwargs):
         return func(**kwargs)
 
+
 class GetItemNode(Node):
 
     @staticmethod
     def function(data: Any, key: Any):
         return data[key]
+
 
 class UfuncNode(Node):
     """Node that wraps a numpy ufunc."""

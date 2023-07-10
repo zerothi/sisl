@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
-from typing import Dict, Any, Union, Type, List, Tuple, Callable, Iterable, Sequence
+from typing import Dict, Any, Union, Type, List, Tuple, Callable, Optional, Iterable, Sequence
 from types import FunctionType
 import ast
 from collections import ChainMap
@@ -140,7 +140,7 @@ class Network:
         notebook: bool = False, hierarchial: bool = True, inputs_props: Dict[str, Any] = {}, node_props: Dict[str, Any] = {},
         leafs_props: Dict[str, Any] = {}, output_props: Dict[str, Any] = {},
         auto_text_color: bool = True,
-        to_export: Union[bool, None] = None,
+        to_export: Optional[bool] = None,
     ):        
         """Convert a Workflow class to a pyvis network for visualization.
 
@@ -346,7 +346,7 @@ class Network:
         return net
 
     @staticmethod
-    def _show_pyvis(net: "pyvis.Network", notebook: bool, to_export: Union[bool, None]):
+    def _show_pyvis(net: "pyvis.Network", notebook: bool, to_export: Optional[bool]):
         """Shows a pyvis network.
 
         This is implemented here because pyvis implementation of `show` is very dangerous,
@@ -404,7 +404,7 @@ class Network:
         edge_labels: bool = True, node_help: bool = True,
         notebook: bool = False, hierarchial: bool = True, node_props: Dict[str, Any] = {},
         inputs_props: Dict[str, Any] = {}, leafs_props: Dict[str, Any] = {}, output_props: Dict[str, Any] = {},
-        to_export: Union[bool, None] = None,
+        to_export: Optional[bool] = None,
     ):
         """Visualize the workflow's network in a plot.
 
@@ -729,7 +729,7 @@ class Workflow(Node):
 class NodeConverter(ast.NodeTransformer):
     """AST transformer that converts a function into a workflow."""
     
-    def __init__(self, *args, assign_fn: Union[str, None] = None, node_cls_name: str = "Node", **kwargs):
+    def __init__(self, *args, assign_fn: Optional[str] = None, node_cls_name: str = "Node", **kwargs):
         super().__init__(*args, **kwargs)
         
         self.assign_fn = assign_fn
@@ -772,7 +772,7 @@ class NodeConverter(ast.NodeTransformer):
 def nodify_func(
     func: FunctionType, 
     transformer_cls: Type[NodeConverter] = NodeConverter, 
-    assign_fn: Union[Callable, None] = None, 
+    assign_fn: Optional[Callable] = None, 
     node_cls: Type[Node] = Node
 ) -> FunctionType:
     """Converts all calculations of a function into nodes.
@@ -788,7 +788,7 @@ def nodify_func(
         The function to convert.
     transformer_cls : Type[NodeConverter], optional
         The NodeTransformer class to that is used to transform the AST.
-    assign_fn : Union[Callable, None], optional
+    assign_fn : Callable, optional
         A function that will be placed as middleware for variable assignments.
         It will be called with the following arguments:
             - value: The value assigned to the variable.
