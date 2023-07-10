@@ -3,11 +3,11 @@ from dataclasses import copy, dataclass, fields
 
 from sisl.messages import SislError, warn
 
-__all__ = ["composite_geometry"]
+__all__ = ["composite_geometry", "CompositeGeometrySection"]
 
 
 @dataclass
-class _geom_section:
+class CompositeGeometrySection:
 
     @abstractmethod
     def build_section(self, geometry):
@@ -30,7 +30,7 @@ class _geom_section:
             warn(msg)
 
 
-def composite_geometry(sections, section_cls=_geom_section, **kwargs):
+def composite_geometry(sections, section_cls, **kwargs):
     """Creates a composite geometry from a list of sections.
 
     The sections are added one after another in the provided order.
@@ -78,4 +78,5 @@ def composite_geometry(sections, section_cls=_geom_section, **kwargs):
     
     return geom
 
-composite_geometry.section = _geom_section
+
+composite_geometry.section = CompositeGeometrySection

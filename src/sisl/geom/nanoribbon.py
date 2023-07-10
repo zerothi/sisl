@@ -10,7 +10,7 @@ from sisl import Atom, geom
 from sisl._internal import set_module
 
 from ._common import geometry_define_nsc
-from ._composite import _geom_section, composite_geometry
+from ._composite import CompositeGeometrySection, composite_geometry
 
 __all__ = [
     'nanoribbon', 'graphene_nanoribbon', 'agnr', 'zgnr',
@@ -168,7 +168,7 @@ def zgnr(width, bond=1.42, atoms=None):
 
 @set_module("sisl.geom")
 @dataclass
-class _heteroribbon_section(_geom_section):
+class _heteroribbon_section(CompositeGeometrySection):
     """
     Parameters
     ----------
@@ -619,7 +619,7 @@ def heteroribbon(sections, section_cls=_heteroribbon_section, **kwargs):
     """
     return composite_geometry(sections, section_cls=section_cls, **kwargs)
 
-heteroribbon.section=_heteroribbon_section
+heteroribbon.section = _heteroribbon_section
 
 
 @set_module("sisl.geom")
@@ -629,12 +629,12 @@ def graphene_heteroribbon(sections, section_cls=_heteroribbon_section, bond=1.42
     Please see `heteroribbon` for arguments, the only difference is that the `bond` and `atoms`
     arguments default to ``bond=1.42`` and ``Atoms(Z=6, R=bond*1.01)``, respectively.
 
-    See also
-    ----------
+    See Also
+    --------
     heteroribbon : for argument details and how it behaves
     """
     if atoms is None:
         atoms = Atom(Z=6, R=bond * 1.01)
     return composite_geometry(sections, section_cls=section_cls, bond=bond, atoms=atoms, **kwargs)
 
-graphene_heteroribbon.section=_heteroribbon_section
+graphene_heteroribbon.section = _heteroribbon_section
