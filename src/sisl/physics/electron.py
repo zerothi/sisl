@@ -65,7 +65,7 @@ from numpy import (
     sort,
     zeros,
 )
-from scipy.sparse import csr_matrix, hstack, identity, isspmatrix
+from scipy.sparse import csr_matrix, hstack, identity, issparse
 
 import sisl._array as _a
 from sisl import Geometry, Grid, Lattice, constant, units
@@ -374,7 +374,7 @@ def COP(E, eig, state, M, distribution="gaussian", tol=1e-10):
 
         cop = oplist(tosize(d, idx) for d in cop)
 
-    elif isspmatrix(M):
+    elif issparse(M):
 
         # create the new list
         cop0 = M.multiply(0.).real

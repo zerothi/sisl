@@ -1357,10 +1357,10 @@ def test_sparse_column_out_of_bounds(j):
     with pytest.raises(IndexError):
         S[0, j] = 1
 
-
 def test_fromsp_csr():
     csr1 = sc.sparse.random(10, 100, 0.01, random_state=24812)
     csr2 = sc.sparse.random(10, 100, 0.02, random_state=24813)
+
     csr = SparseCSR.fromsp(csr1, csr2)
     csr_1 = csr.tocsr(0)
     csr_2 = csr.tocsr(1)

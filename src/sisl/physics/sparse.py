@@ -10,7 +10,7 @@ import sisl._array as _a
 import sisl.linalg as lin
 from sisl._internal import set_module
 from sisl.messages import warn
-from sisl.sparse import isspmatrix
+from sisl.sparse import issparse
 from sisl.sparse_geometry import SparseOrbital
 
 from ._matrix_ddk import matrix_ddk, matrix_ddk_nc, matrix_ddk_nc_diag, matrix_ddk_so
@@ -148,7 +148,7 @@ class SparseOrbitalBZ(SparseOrbital):
              a new sparse matrix that holds the passed geometry and the elements of `P` and optionally being non-orthogonal if `S` is not none
         """
         # Ensure list of csr format (to get dimensions)
-        if isspmatrix(P):
+        if issparse(P):
             P = [P]
         if isinstance(P, tuple):
             P = list(P)

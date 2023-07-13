@@ -918,7 +918,7 @@ class DeviceGreen:
         BI = BM.block_indexer
         c = self.btd_cum0
         nb = len(BI)
-        if ssp.isspmatrix(M):
+        if ssp.issparse(M):
             for jb in range(nb):
                 for ib in range(max(0, jb-1), min(jb+2, nb)):
                     BI[ib, jb] = M[c[ib]:c[ib+1], c[jb]:c[jb+1]].toarray()

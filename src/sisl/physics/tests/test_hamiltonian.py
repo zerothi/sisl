@@ -7,7 +7,7 @@ from functools import partial
 import numpy as np
 import pytest
 from scipy.linalg import block_diag
-from scipy.sparse import SparseEfficiencyWarning, isspmatrix
+from scipy.sparse import SparseEfficiencyWarning, issparse
 
 from sisl import (
     Atom,
@@ -1240,7 +1240,7 @@ class TestHamiltonian:
         for k in ([0] *3, [0.2] * 3):
             es = HS.eigenstate(k)
             COOP_sp = es.COOP(E, 'lorentzian')
-            assert isspmatrix(COOP_sp[0])
+            assert issparse(COOP_sp[0])
 
             es = HS.eigenstate(k, format='array')
             COOP_np = es.COOP(E, 'lorentzian')

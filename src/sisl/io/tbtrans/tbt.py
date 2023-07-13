@@ -16,7 +16,7 @@ import numpy as np
 ndarray = np.ndarray
 
 # The sparse matrix for the orbital/bond currents
-from scipy.sparse import SparseEfficiencyWarning, csr_matrix, isspmatrix_csr
+from scipy.sparse import SparseEfficiencyWarning, csr_matrix, issparse
 
 import sisl._array as _a
 from sisl import Atoms, Geometry, constant
@@ -1158,7 +1158,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             map_col = o2a
 
         # Lets do array notation for speeding up the computations
-        if not isspmatrix_csr(Dij):
+        if not (issparse(Dij) and Dij.format == 'csr'):
             Dij = Dij.tocsr()
 
         # Check for the simple case of 1-orbital systems
