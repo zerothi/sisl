@@ -1113,8 +1113,15 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
         geometry = grid.geometry
     if geometry is None:
         raise SislError("wavefunction: did not find a usable Geometry through keywords or the Grid!")
-    # Ensure coordinates are in the primary unit-cell, regardless of origin etc.
-    geometry = geometry.translate2uc(axes=(0, 1, 2))
+
+    # We cannot move stuff since outside stuff may rely on exact coordinates.
+    # If people have out-liers, they should do it them-selves.
+    # We'll do this and warn if they are dissimilar.
+    dxyz = geometry.lattice.cell2length(1e-6).sum(0)
+    dxyz = geometry.move(dxyz).translate2uc(axes=(0, 1, 2)).move(-dxyz).xyz - geometry.xyz
+    if not np.allclose(dxyz, 0):
+        info(f"wavefunction: coordinates may be outside your primary unit-cell. "
+             "Translating all into the primary unit cell could disable this information")
 
     # In case the user has passed several vectors we sum them to plot the summed state
     if v.ndim == 2:
@@ -1158,7 +1165,6 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
     # Extract sub variables used throughout the loop
     shape = _a.asarrayi(grid.shape)
     dcell = grid.dcell
-    dlen = (dcell ** 2).sum(1) ** 0.5
     ic_shape = grid.lattice.icell * shape.reshape(3, 1)
 
     # Convert the geometry (hosting the wavefunction coefficients) coordinates into
@@ -1189,7 +1195,6 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
 
     # Figure out the max-min indices with a spacing of 1 radian
     # calculate based on the minimum length of the grid-spacing
-    dlen_min = dlen.min()
     rad1 = pi / 180
     theta, phi = ogrid[-pi:pi:rad1, 0:pi:rad1]
     cphi, sphi = cos(phi), sin(phi)
@@ -1207,12 +1212,12 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
     # Reshape
     rxyz.shape = (-1, 3)
     idx = dot(rxyz, ic_shape.T)
-    idxm = idx.min(0).reshape(1, 3)
-    idxM = idx.max(0).reshape(1, 3)
+    idxm = idx.min(0)
+    idxM = idx.max(0)
     del ctheta_sphi, stheta_sphi, cphi, idx, rxyz, nrxyz
 
     # Fast loop (only per specie)
-    origin = grid.lattice.origin.reshape(1, 3)
+    origin = grid.lattice.origin
     idx_mm = _a.emptyd([geometry.na, 2, 3])
     all_negative_R = True
     for atom, ia in geometry.atoms.iter(True):
@@ -1258,7 +1263,8 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
 
     # Instead of looping all atoms in the supercell we find the exact atoms
     # and their supercell indices.
-    add_R = _a.fulld(3, geometry.maxR())
+    # plus some tolerance
+    add_R = _a.fulld(3, geometry.maxR()) + 1.e-6
     # Calculate the required additional vectors required to increase the fictitious
     # supercell by add_R in each direction.
     # For extremely skewed lattices this will be way too much, hence we make
@@ -1274,7 +1280,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
     # We need to revert the grid supercell origin as that is not subtracted in the `within_inf` returned
     # coordinates (and the below loop expects positions with respect to the origin of the plotting
     # grid).
-    XYZ -= grid.lattice.origin.reshape(1, 3)
+    XYZ -= grid.lattice.origin
 
     phk = k * 2 * np.pi
     phase = 1
