@@ -82,6 +82,7 @@ we hit release version 1.0.0.
 
 
 ### Fixed
+- tiling Grid now only possible for commensurate grids (grid.lattice % grid.geometry.lattice)
 - rare cases for non-Gamma calculations with actual Gamma matrices resulted
   in crashes #572
 - `MonkhorstPack.replace` now checks for symmetry k-points if the BZ is using

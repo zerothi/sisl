@@ -1114,8 +1114,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
     if geometry is None:
         raise SislError("wavefunction: did not find a usable Geometry through keywords or the Grid!")
     # Ensure coordinates are in the primary unit-cell, regardless of origin etc.
-    geometry = geometry.copy()
-    geometry.xyz = (geometry.fxyz % 1) @ geometry.lattice.cell
+    geometry = geometry.translate2uc(axes=(0, 1, 2))
 
     # In case the user has passed several vectors we sum them to plot the summed state
     if v.ndim == 2:
@@ -1159,6 +1158,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
     # Extract sub variables used throughout the loop
     shape = _a.asarrayi(grid.shape)
     dcell = grid.dcell
+    dlen = (dcell ** 2).sum(1) ** 0.5
     ic_shape = grid.lattice.icell * shape.reshape(3, 1)
 
     # Convert the geometry (hosting the wavefunction coefficients) coordinates into
@@ -1188,6 +1188,8 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
         return n, idx, rx, ry, rz
 
     # Figure out the max-min indices with a spacing of 1 radian
+    # calculate based on the minimum length of the grid-spacing
+    dlen_min = dlen.min()
     rad1 = pi / 180
     theta, phi = ogrid[-pi:pi:rad1, 0:pi:rad1]
     cphi, sphi = cos(phi), sin(phi)
@@ -1244,8 +1246,10 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
     # We can *perhaps* easily attach a geometry with the given
     # atoms in the unit-cell
     lattice = grid.lattice.copy()
+
     # Find the periodic directions
-    pbc = [bc == grid.PERIODIC or geometry.nsc[i] > 1 for i, bc in enumerate(grid.bc[:, 0])]
+    pbc = [bc == grid.PERIODIC or geometry.nsc[i] > 1
+           for i, bc in enumerate(grid.bc[:, 0])]
     if grid.geometry is None:
         # Create the actual geometry that encompass the grid
         ia, xyz, _ = geometry.within_inf(lattice, periodic=pbc)
@@ -1260,7 +1264,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
     # For extremely skewed lattices this will be way too much, hence we make
     # them square.
 
-    o = lattice.toCuboid(True)
+    o = lattice.toCuboid(orthogonal=True)
     lattice = Lattice(o._v + np.diag(2 * add_R), origin=o.origin - add_R)
 
     # Retrieve all atoms within the grid supercell

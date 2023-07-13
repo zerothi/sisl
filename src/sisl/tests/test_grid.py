@@ -7,7 +7,19 @@ import numpy as np
 import pytest
 from scipy.sparse import csr_matrix
 
-from sisl import Atom, Cuboid, Ellipsoid, Geometry, Grid, Lattice, SphericalOrbital
+from sisl import (
+    Atom,
+    Cuboid,
+    Ellipsoid,
+    Geometry,
+    Grid,
+    Lattice,
+    SislError,
+    SphericalOrbital,
+    geom,
+)
+
+pytestmark = [pytest.mark.grid]
 
 
 @pytest.fixture
@@ -485,3 +497,24 @@ def test_grid_tile_geom():
     assert grid.shape[2] == grid4.shape[2] // 2
     assert grid.volume * 4 == pytest.approx(grid4.volume)
     assert grid.geometry.na * 4 == grid4.geometry.na
+
+
+def test_grid_tile_commensurate():
+    gr = geom.graphene()
+    gr_lat = gr.lattice.tile(2, 0).tile(2, 1)
+    grid = Grid([4, 5, 6], geometry=gr, lattice=gr_lat)
+    str(grid)
+    grid2 = grid.tile(2, 2)
+    assert grid.shape[:2] == grid2.shape[:2]
+    assert grid.shape[2] == grid2.shape[2] // 2
+    assert grid.volume * 2 == pytest.approx(grid2.volume)
+    assert grid.geometry.na * 2 == grid2.geometry.na
+
+
+def test_grid_tile_in_commensurate():
+    gr = geom.graphene()
+    lat = Lattice(4.)
+    grid = Grid([4, 5, 6], geometry=gr, lattice=lat)
+    str(grid)
+    with pytest.raises(SislError):
+        grid.tile(2, 2)

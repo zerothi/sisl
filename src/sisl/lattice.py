@@ -111,12 +111,13 @@ class Lattice:
             for i in range(3):
                 cmin[i] = min(cmin[i], new[i])
                 cmax[i] = max(cmax[i], new[i])
-        cmin = self.cell.min(0)
-        cmax = self.cell.max(0)
-        find_min_max(cmin, cmax, self.cell[[0, 1], :].sum(0))
-        find_min_max(cmin, cmax, self.cell[[0, 2], :].sum(0))
-        find_min_max(cmin, cmax, self.cell[[1, 2], :].sum(0))
-        find_min_max(cmin, cmax, self.cell.sum(0))
+        cell = self.cell
+        cmin = cell.min(0)
+        cmax = cell.max(0)
+        find_min_max(cmin, cmax, cell[[0, 1], :].sum(0))
+        find_min_max(cmin, cmax, cell[[0, 2], :].sum(0))
+        find_min_max(cmin, cmax, cell[[1, 2], :].sum(0))
+        find_min_max(cmin, cmax, cell.sum(0))
         return Cuboid(cmax - cmin, self.center() + self.origin)
 
     def parameters(self, rad=False) -> Tuple[float, float, float, float, float, float]:
@@ -1060,7 +1061,7 @@ class Lattice:
                 return fh.read_lattice(*args, **kwargs)
 
     def equal(self, other, tol=1e-4):
-        """ Check whether two supercell are equivalent
+        """ Check whether two lattices are equivalent
 
         Parameters
         ----------
@@ -1208,20 +1209,6 @@ class LatticeChild:
         else:
             # The supercell is given as a cell
             self.lattice = Lattice(lattice)
-
-        # Loop over attributes in this class
-        # if it inherits LatticeChild, we call
-        # set_sc on that too.
-        # Sadly, getattr fails for @property methods
-        # which forces us to use try ... except
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            for a in dir(self):
-                try:
-                    if isinstance(getattr(self, a), LatticeChild):
-                        getattr(self, a).set_lattice(self.lattice)
-                except Exception:
-                    pass
 
     set_sc = deprecation("set_sc is deprecated; please use set_lattice instead", "0.14")(set_lattice)
     set_supercell = deprecation("set_sc is deprecated; please use set_lattice instead", "0.15")(set_lattice)

@@ -31,6 +31,7 @@ register_environ_variable("SISL_VIZ_NUM_PROCS", min(1, _nprocs),
 
 # isort: split
 from .plot import Animation, MultiplePlot, Plot, SubPlots
+
 # isort: split
 
 from ._plotables import register_plotable

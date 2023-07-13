@@ -15,7 +15,7 @@ from ._help import dtype_complex_to_real, wrap_filterwarnings
 from ._internal import set_module
 from .geometry import Geometry
 from .lattice import LatticeChild
-from .messages import deprecate_argument
+from .messages import SislError, deprecate_argument
 from .shape import Shape
 from .utils import (
     cmd,
@@ -65,6 +65,14 @@ class Grid(LatticeChild):
     >>> grid = Grid(0.1, lattice=10, dtype=np.complex128)
     >>> grid == grid1
     False
+
+    It is possible to provide a geometry *and* a different lattice to make a smaller (or bigger) lattice
+    based on a geometry. This might be useful when creating wavefunctions or expanding densities to grids.
+    Here we create a square grid based on a hexagonal graphene lattice. Expanding wavefunctions from
+    this ``geometry`` will automatically convert to the ``lattice`` size.
+    >>> lattice = Lattice(10) # square lattice 10x10x10 Ang
+    >>> geometry = geom.graphene()
+    >>> grid = Grid(0.1, lattice=lattice, geometry=geometry)
     """
 
     #: Constant for defining a periodic boundary condition
@@ -83,10 +91,12 @@ class Grid(LatticeChild):
         if bc is None:
             bc = [[self.PERIODIC] * 2] * 3
 
-        self.set_lattice(lattice)
+        self.set_lattice(None)
 
         # Create the atomic structure in the grid, if possible
         self.set_geometry(geometry)
+        if lattice is not None:
+            self.set_lattice(lattice)
 
         if isinstance(shape, Real):
             d = (self.cell ** 2).sum(1) ** 0.5
@@ -98,12 +108,6 @@ class Grid(LatticeChild):
         # Create the grid boundary conditions
         self.set_bc(bc)
 
-        # If the user sets the super-cell, that has precedence.
-        if lattice is not None:
-            if not self.geometry is None:
-                self.geometry.set_lattice(lattice)
-            self.set_lattice(lattice)
-
     def __getitem__(self, key):
         """ Grid value at `key` """
         return self.grid[key]
@@ -111,6 +115,21 @@ class Grid(LatticeChild):
     def __setitem__(self, key, val):
         """ Updates the grid contained """
         self.grid[key] = val
+
+    def _is_commensurate(self):
+        """Determine whether the contained geometry and lattice are commensurate """
+        if self.geometry is None:
+            return True
+        # ideally this should be checked that they are integer equivalent
+        l_len = self.lattice.length
+        g_len = self.geometry.lattice.length
+        reps = np.ones(3)
+        for i, (l, g) in enumerate(zip(l_len, g_len)):
+            if l >= g:
+                reps[i] = l / g
+            else:
+                return False
+        return np.all(abs(reps - np.round(reps)) < 1e-5)
 
     def set_geometry(self, geometry):
         """ Sets the `Geometry` for the grid.
@@ -629,19 +648,26 @@ class Grid(LatticeChild):
         axis : int
            direction of tiling, 0, 1, 2 according to the cell-direction
 
+        Raises
+        ------
+        SislError : when the lattice is not commensurate with the geometry
+
         See Also
         --------
         Geometry.tile : equivalent method for Geometry class
         """
+        if not self._is_commensurate():
+           raise SislError(f"{self.__class__.__name__} cannot tile the grid since the contained"
+                           " Geometry and Lattice are not commensurate.")
         grid = self.copy()
         grid.grid = None
         reps_all = [1, 1, 1]
         reps_all[axis] = reps
         grid.grid = np.tile(self.grid, reps_all)
-        if self.geometry is None:
-            grid.set_lattice(self.lattice.tile(reps, axis))
-        else:
+        lattice = self.lattice.tile(reps, axis)
+        if self.geometry is not None:
             grid.set_geometry(self.geometry.tile(reps, axis))
+        grid.set_lattice(lattice)
         return grid
 
     def index2xyz(self, index):
@@ -953,11 +979,14 @@ class Grid(LatticeChild):
         s += ' bc: [{}, {},\n      {}, {},\n      {}, {}],\n '.format(bc[self.bc[0, 0]], bc[self.bc[0, 1]],
                                                                       bc[self.bc[1, 0]], bc[self.bc[1, 1]],
                                                                       bc[self.bc[2, 0]], bc[self.bc[2, 1]])
-        if not self.geometry is None:
-            s += '{}\n}}'.format(str(self.geometry).replace('\n', '\n '))
+        if self._is_commensurate() and self.geometry is not None:
+            l = np.round(self.lattice.length / self.geometry.lattice.length).astype(np.int32)
+            s += f"commensurate: [{l[0]} {l[1]} {l[2]}]"
         else:
-            s += '{}\n}}'.format(str(self.lattice).replace('\n', '\n '))
-        return s
+            s += '{}'.format(str(self.lattice).replace('\n', '\n '))
+        if not self.geometry is None:
+            s += ',\n {}'.format(str(self.geometry).replace('\n', '\n '))
+        return f"{s}\n}}"
 
     def _check_compatibility(self, other, msg):
         """ Internal check for asserting two grids are commensurable """
