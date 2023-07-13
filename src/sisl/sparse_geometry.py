@@ -39,7 +39,7 @@ from .atom import Atom
 from .geometry import Geometry
 from .messages import SislError, SislWarning, progressbar, warn
 from .orbital import Orbital
-from .sparse import SparseCSR, _ncol_to_indptr, isspmatrix
+from .sparse import SparseCSR, _ncol_to_indptr, issparse
 from .utils.ranges import list2str
 
 __all__ = ['SparseAtom', 'SparseOrbital']
@@ -1078,7 +1078,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
              a new sparse matrix that holds the passed geometry and the elements of `P`
         """
         # Ensure list of * format (to get dimensions)
-        if isspmatrix(P):
+        if issparse(P):
             P = [P]
         if isinstance(P, tuple):
             P = list(P)

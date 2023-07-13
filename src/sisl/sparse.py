@@ -45,6 +45,7 @@ from scipy.sparse import (
     isspmatrix_csc,
     isspmatrix_csr,
     isspmatrix_lil,
+    issparse,
     spmatrix,
 )
 
@@ -139,7 +140,7 @@ class SparseCSR(NDArrayOperatorsMixin):
         # for the insert row is increased at least by this number
         self._ns = 10
 
-        if isspmatrix(arg1):
+        if issparse(arg1):
             # This is a sparse matrix
             # The data-type is infered from the
             # input sparse matrix.
@@ -1387,8 +1388,8 @@ column indices of the sparse elements
         # The default sizes are not passed
         # Hence we *must* copy the arrays
         # directly
-        copyto(new.ptr, self.ptr, casting='no')
-        copyto(new.ncol, self.ncol, casting='no')
+        copyto(new.ptr, self.ptr, casting='same_kind')
+        copyto(new.ncol, self.ncol, casting='same_kind')
         new.col = self.col.copy()
         new._nnz = self.nnz
 
@@ -2050,7 +2051,7 @@ def ispmatrix(matrix, map_row=None, map_col=None):
     #it = np.nditer([geom.o2a(tmp.row), geom.o2a(tmp.col % geom.no), tmp.data],
     #               flags=['buffered'], op_flags=['readonly'])
 
-    if isspmatrix_csr(matrix):
+    if issparse(matrix) and matrix.format == "csr":
         for r in range(matrix.shape[0]):
             rr = map_row(r)
             if rows[rr]: continue
@@ -2062,7 +2063,7 @@ def ispmatrix(matrix, map_row=None, map_col=None):
                 cols[c] = True
                 yield rr, c
 
-    elif isspmatrix_lil(matrix):
+    elif issparse(matrix) and matrix.format == "lil":
         for r in range(matrix.shape[0]):
             rr = map_row(r)
             if rows[rr]: continue
@@ -2075,10 +2076,10 @@ def ispmatrix(matrix, map_row=None, map_col=None):
                 cols[c] = True
                 yield rr, c
 
-    elif isspmatrix_coo(matrix):
+    elif issparse(matrix) and matrix.format == "coo":
         raise ValueError("mapping and unique returns are not implemented for COO matrix")
 
-    elif isspmatrix_csc(matrix):
+    elif issparse(matrix) and matrix.format == "csc":
         raise ValueError("mapping and unique returns are not implemented for CSC matrix")
 
     elif isinstance(matrix, SparseCSR):
@@ -2113,20 +2114,20 @@ def _ispmatrix_all(matrix):
     int, int
        the row, column indices of the non-zero elements
     """
-    if isspmatrix_csr(matrix):
+    if issparse(matrix) and matrix.format == "csr":
         for r in range(matrix.shape[0]):
             for ind in range(matrix.indptr[r], matrix.indptr[r+1]):
                 yield r, matrix.indices[ind]
 
-    elif isspmatrix_lil(matrix):
+    elif issparse(matrix) and matrix.format == "lil":
         for r in range(matrix.shape[0]):
             for c in matrix.rows[r]:
                 yield r, c
 
-    elif isspmatrix_coo(matrix):
+    elif issparse(matrix) and matrix.format == "coo":
         yield from zip(matrix.row, matrix.col)
 
-    elif isspmatrix_csc(matrix):
+    elif issparse(matrix) and matrix.format == "csc":
         for c in range(matrix.shape[1]):
             for ind in range(matrix.indptr[c], matrix.indptr[c+1]):
                 yield matrix.indices[ind], c
@@ -2171,22 +2172,22 @@ def ispmatrixd(matrix, map_row=None, map_col=None):
     #it = np.nditer([geom.o2a(tmp.row), geom.o2a(tmp.col % geom.no), tmp.data],
     #               flags=['buffered'], op_flags=['readonly'])
 
-    if isspmatrix_csr(matrix):
+    if issparse(matrix) and matrix.format == "csr":
         for r in range(matrix.shape[0]):
             rr = map_row(r)
             for ind in range(matrix.indptr[r], matrix.indptr[r+1]):
                 yield rr, map_col(matrix.indices[ind]), matrix.data[ind]
 
-    elif isspmatrix_lil(matrix):
+    elif issparse(matrix) and matrix.format == "lil":
         for r in range(matrix.shape[0]):
             rr = map_row(r)
             for c, m in zip(map_col(matrix.rows[r]), matrix.data[r]):
                 yield rr, c, m
 
-    elif isspmatrix_coo(matrix):
+    elif issparse(matrix) and matrix.format == "coo":
         yield from zip(map_row(matrix.row), map_col(matrix.col), matrix.data)
 
-    elif isspmatrix_csc(matrix):
+    elif issparse(matrix) and matrix.format == "csc":
         for c in range(matrix.shape[1]):
             cc = map_col(c)
             for ind in range(matrix.indptr[c], matrix.indptr[c+1]):
