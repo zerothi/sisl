@@ -88,13 +88,26 @@ class TestLattice:
             i = sc._fill(np.ones([2], dt))
             assert i.dtype == dt
 
-    def test_add_vacuum1(self, setup):
+    def test_add_vacuum_direct(self, setup):
         sc = setup.lattice.copy()
         for i in range(3):
             s = sc.add_vacuum(10, i)
             ax = setup.lattice.cell[i, :]
             ax += ax / np.sum(ax ** 2) ** .5 * 10
             assert np.allclose(ax, s.cell[i, :])
+
+    def test_add_vacuum_orthogonal(self, setup):
+        sc = setup.lattice.copy()
+        s = sc.add_vacuum(10, 2, orthogonal_to_plane=True)
+        assert np.allclose(s.cell[2], [0, 0, sc.cell[2, 2] + 10])
+
+        # now check for the skewed ones
+        s = sc.add_vacuum(sc.length[0], 0, orthogonal_to_plane=True)
+        assert (s.length[0] / sc.length[0] - 1) * m.cos(m.radians(30)) == pytest.approx(1.)
+
+        # now check for the skewed ones
+        s = sc.add_vacuum(sc.length[1], 1, orthogonal_to_plane=True)
+        assert (s.length[1] / sc.length[1] - 1) * m.cos(m.radians(30)) == pytest.approx(1.)
 
     def test_add1(self, setup):
         sc = setup.lattice.copy()

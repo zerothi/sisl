@@ -691,7 +691,7 @@ class Lattice:
 
     __radd__ = __add__
 
-    def add_vacuum(self, vacuum, axis):
+    def add_vacuum(self, vacuum, axis, orthogonal_to_plane=False):
         """ Add vacuum along the `axis` lattice vector
 
         Parameters
@@ -700,11 +700,32 @@ class Lattice:
            amount of vacuum added, in Ang
         axis : int
            the lattice vector to add vacuum along
+        orthogonal_to_plane : bool, optional
+           whether the lattice vector should be elongated so that it is `vacuum` longer
+           when projected onto the normal vector of the other two axis.
         """
         cell = np.copy(self.cell)
         d = cell[axis, :].copy()
+        d /= fnorm(d)
+        if orthogonal_to_plane:
+            # first calculate the normal vector of the other plane
+            n = cross3(cell[axis-1], cell[axis-2])
+            n /= fnorm(n)
+            # now project onto cell
+            projection = n @ d
+            print()
+            print(projection)
+            if projection < 0:
+                # we have a negative one
+                projection *= -1
+
+            # calculate how long it should be so that the normal vector
+            # is `vacuum` longer
+            scale = vacuum / projection
+        else:
+            scale = vacuum
         # normalize to get direction vector
-        cell[axis, :] += d * (vacuum / fnorm(d))
+        cell[axis, :] += d * scale
         return self.copy(cell)
 
     def sc_index(self, sc_off):
@@ -1078,11 +1099,12 @@ class Lattice:
     def __str__(self):
         """ Returns a string representation of the object """
         # Create format for lattice vectors
-        s = ',\n '.join(['ABC'[i] + '=[{:.3f}, {:.3f}, {:.3f}]'.format(*self.cell[i]) for i in (0, 1, 2)])
-        return self.__class__.__name__ + ('{{nsc: [{:} {:} {:}],\n ' + s + ',\n}}').format(*self.nsc)
+        s = ',\n '.join(['ABC'[i] + '=[{:.4f}, {:.4f}, {:.4f}]'.format(*self.cell[i]) for i in (0, 1, 2)])
+        origin = "{:.4f}, {:.4f}, {:.4f}".format(*self.origin)
+        return f"{self.__class__.__name__}{{nsc: {self.nsc},\n origin={origin},\n {s}\n}}"
 
     def __repr__(self):
-        a, b, c, alpha, beta, gamma = map(lambda r: round(r, 3), self.parameters())
+        a, b, c, alpha, beta, gamma = map(lambda r: round(r, 4), self.parameters())
         return f"<{self.__module__}.{self.__class__.__name__} a={a}, b={b}, c={c}, α={alpha}, β={beta}, γ={gamma}, nsc={self.nsc}>"
 
     def __eq__(self, other):
