@@ -40,11 +40,6 @@ from numpy import (
 from numpy.lib.mixins import NDArrayOperatorsMixin
 from scipy.sparse import (
     csr_matrix,
-    isspmatrix,
-    isspmatrix_coo,
-    isspmatrix_csc,
-    isspmatrix_csr,
-    isspmatrix_lil,
     issparse,
     spmatrix,
 )
