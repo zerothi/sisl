@@ -713,15 +713,10 @@ class Lattice:
             n /= fnorm(n)
             # now project onto cell
             projection = n @ d
-            print()
-            print(projection)
-            if projection < 0:
-                # we have a negative one
-                projection *= -1
 
             # calculate how long it should be so that the normal vector
             # is `vacuum` longer
-            scale = vacuum / projection
+            scale = vacuum / abs(projection)
         else:
             scale = vacuum
         # normalize to get direction vector
