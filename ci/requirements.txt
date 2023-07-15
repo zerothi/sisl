@@ -1,3 +1,5 @@
+# netCDF4 is now not a dependency
+netCDF4
 pytest
 pytest-cov
 pytest-env

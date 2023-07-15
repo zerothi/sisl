@@ -1,6 +1,3 @@
-numpy>=1.13
-scipy>=1.5.0
-pyparsing>=1.5.7
 netCDF4
 matplotlib
 ipykernel
