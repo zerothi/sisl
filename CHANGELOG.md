@@ -43,6 +43,8 @@ we hit release version 1.0.0.
 - `BrillouinZone.merge` allows simple merging of several objects, #537
 
 ### Changed
+- internal change to comply with scipy changes, use issparse instead
+  of spmatrix, see #598
 - netCDF4 is now an optional dependency, #595
 - interface for Sparse*.nonzero(), arguments suffixed with 's'
 - `stdoutSileVASP` will not accept `all=` arguments

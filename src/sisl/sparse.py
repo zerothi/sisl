@@ -38,11 +38,7 @@ from numpy import (
     zeros,
 )
 from numpy.lib.mixins import NDArrayOperatorsMixin
-from scipy.sparse import (
-    csr_matrix,
-    issparse,
-    spmatrix,
-)
+from scipy.sparse import csr_matrix, issparse
 
 from . import _array as _a
 from ._array import array_arange, arrayi, asarrayi, fulli
@@ -1779,8 +1775,8 @@ def _get_reduced_shape(shape):
 
 
 def _ufunc(ufunc, a, b, **kwargs):
-    if isinstance(a, (SparseCSR, spmatrix, tuple)):
-        if isinstance(b, (SparseCSR, spmatrix, tuple)):
+    if issparse(a) or isinstance(a, (SparseCSR, tuple)):
+        if issparse(b) or isinstance(b, (SparseCSR, tuple)):
             return _ufunc_sp_sp(ufunc, a, b, **kwargs)
         return _ufunc_sp_ndarray(ufunc, a, b, **kwargs)
     elif isinstance(b, SparseCSR):
@@ -1907,7 +1903,7 @@ def _ufunc_call(ufunc, *in_args, **kwargs):
             args.append(arg)
         elif isscalar(arg) or isinstance(arg, (tuple, list, ndarray)):
             args.append(asarray(arg))
-        elif isinstance(arg, spmatrix):
+        elif issparse(arg):
             args.append(arg)
         else:
             return
@@ -1921,7 +1917,7 @@ def _ufunc_call(ufunc, *in_args, **kwargs):
     # however this function fails in case the shapes
     # are not b-castable.
     def spshape(arg):
-        if isinstance(arg, spmatrix):
+        if issparse(arg):
             # spmatrices can only ever have 2 dimensions
             # but SparseCSR always have 3, so we pad with ones.
             return arg.shape + (1,)
