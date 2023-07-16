@@ -76,3 +76,5 @@ Helpers
    :toctree: generated/
 
    composite_geometry
+   CompositeGeometrySection
+
