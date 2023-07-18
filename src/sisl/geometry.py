@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import warnings
 from collections import OrderedDict
-from functools import reduce
+from functools import reduce, singledispatchmethod
 from itertools import product
 from math import acos
 from numbers import Integral, Real
@@ -48,7 +48,7 @@ from ._indices import (
     indices_le,
     list_index_le,
 )
-from ._internal import set_module, singledispatchmethod
+from ._internal import set_module
 from ._math_small import cross3, is_ascending
 from ._namedindex import NamedIndex
 from .atom import Atom, Atoms

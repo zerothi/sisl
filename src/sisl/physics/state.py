@@ -2,13 +2,14 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from numbers import Real
+from functools import singledispatchmethod
 
 import numpy as np
 from numpy import bool_, einsum, exp, ndarray
 
 import sisl._array as _a
 from sisl._help import dtype_real_to_complex
-from sisl._internal import set_module, singledispatchmethod
+from sisl._internal import set_module
 from sisl.linalg import eigh_destroy
 from sisl.messages import warn
 
