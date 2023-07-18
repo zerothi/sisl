@@ -574,6 +574,8 @@ class stdoutSileSiesta(SileSiesta):
              ion-ion interaction energy
         ``ion.kinetic``
              kinetic ion energy
+        ``basis.enthalpy``
+             enthalpy of basis sets, Free + p_basis*V_orbitals
 
 
         Any unrecognized key gets added *as is*.
@@ -592,7 +594,7 @@ class stdoutSileSiesta(SileSiesta):
         """
         found = self.step_to("siesta: Final energy", allow_reread=False)[0]
         out = PropertyDict()
-        out.ion = PropertyDict()
+
         if not found:
             return out
         itt = iter(self)
@@ -617,10 +619,11 @@ class stdoutSileSiesta(SileSiesta):
             "Total": "total",
             "Fermi": "fermi",
             "Enegf": "negf",
+            "(Free)E+ p_basis*V_orbitals": "basis.enthalpy",
+            "(Free)E + p_basis*V_orbitals": "basis.enthalpy", # we may correct the missing space
         }
-        while len(line.strip()) > 0:
-            key, val = line.split("=")
-            key = key.split(":")[1].strip()
+
+        def assign(out, key, val):
             key = name_conv.get(key, key)
             try:
                 val = float(val)
@@ -628,12 +631,26 @@ class stdoutSileSiesta(SileSiesta):
                 warn(f"Could not convert energy '{key}' ({val}) to a float, assigning nan.")
                 val = np.nan
 
-            if key.startswith("ion."):
-                # sub-nest
-                out.ion[key[4:]] = val
+            if "." in key:
+                loc, key = key.split(".")
+                if not hasattr(out, loc):
+                    out[loc] = PropertyDict()
+                loc = out[loc]
             else:
-                out[key] = val
+                loc = out
+            loc[key] = val
+
+        while len(line.strip()) > 0:
+            key, val = line.split("=")
+            key = key.split(":")[1].strip()
+            assign(out, key, val)
             line = next(itt)
+
+        # now skip to the pressure
+        found, line = self.step_to("(Free)E+ p_basis*V_orbitals", allow_reread=False)
+        if found:
+            key, val = line.split("=")
+            assign(out, key.strip(), val)
 
         return out
 

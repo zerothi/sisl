@@ -126,6 +126,9 @@ def test_md_nose_out_energy(sisl_files):
     f = sisl_files(_dir, 'md_nose.out')
     energy = stdoutSileSiesta(f).read_energy()
     assert isinstance(energy, sisl.utils.PropertyDict)
+    assert hasattr(energy, "basis")
+    basis = energy.basis
+    assert hasattr(basis, "enthalpy")
 
 
 def test_md_nose_pao_basis(sisl_files):

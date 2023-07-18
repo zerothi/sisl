@@ -8,6 +8,7 @@ we hit release version 1.0.0.
 ## [0.14.0] - YYYY-MM-DD
 
 ### Added
+- added basis-enthalpy to the stdoutSiestaSile.read_energy routine
 - added `read_trajectory` to read cell vectors, atomic positions, and forces from VASP OUTCAR
 - slicing io files multiple output (still WIP), see #584 for details
   Intention is to have all methods use this method for returning
