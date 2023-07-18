@@ -4,8 +4,7 @@
 from abc import ABCMeta, abstractmethod
 from collections import ChainMap, defaultdict
 from collections.abc import Iterable
-from functools import singledispatchmethod
-from functools import lru_cache, wraps
+from functools import lru_cache, singledispatchmethod, wraps
 
 from ._internal import set_module
 
