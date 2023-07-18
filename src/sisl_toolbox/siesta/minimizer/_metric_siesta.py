@@ -125,10 +125,13 @@ class EnergyMetric(SiestaMetric):
         super().__init__(failure)
         self.out = path_rel_or_abs(out)
         if isinstance(energy, str):
-            energy_str = energy
+            energy_str = energy.split(".")
             def energy(energy_dict):
-                f""" {energy_str} metric """
-                return energy_dict[energy_str]
+                f""" {'.'.join(energy_str)} metric """
+                for sub in energy_str[:-1]:
+                    energy_dict = energy_dict[sub]
+                return energy_dict[energy_str[-1]]
+
         if not callable(energy):
             raise ValueError(f"{self.__class__.__name__} requires energy to be callable or str")
         self.energy = energy
