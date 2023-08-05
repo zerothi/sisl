@@ -3665,6 +3665,7 @@ class Geometry(LatticeChild):
 
         # number of special returns
         n_ret = i
+        listify = n_ret == 0 or (n_ret == 1 and ret_isc)
 
         def isc_tile(isc, n):
             return tile(isc.reshape(1, -1), (n, 1))
@@ -3676,7 +3677,8 @@ class Geometry(LatticeChild):
             sret = self.within_sc(shapes, self.lattice.sc_off[s, :],
                                   atoms=atoms, atoms_xyz=atoms_xyz,
                                   ret_xyz=ret_xyz, ret_rij=ret_rij)
-            if n_ret == 0:
+
+            if listify:
                 # This is to "fake" the return
                 # of a list (we will do indexing!)
                 sret = [sret]
@@ -3770,7 +3772,7 @@ class Geometry(LatticeChild):
         R = _a.asarrayd(R).ravel()
         nR = R.size
 
-        # Convert inedx coordinate to point
+        # Convert index coordinate to point
         if isinstance(xyz_ia, Integral):
             xyz_ia = self.xyz[xyz_ia, :]
         elif not isndarray(xyz_ia):
@@ -3793,6 +3795,7 @@ class Geometry(LatticeChild):
 
         # number of special returns
         n_ret = i
+        listify = n_ret == 0 or (n_ret == 1 and ret_isc)
 
         def isc_tile(isc, n):
             return tile(isc.reshape(1, -1), (n, 1))
@@ -3805,7 +3808,7 @@ class Geometry(LatticeChild):
                                  atoms=atoms, atoms_xyz=atoms_xyz,
                                  ret_xyz=ret_xyz, ret_rij=ret_rij)
 
-            if n_ret == 0:
+            if listify:
                 # This is to "fake" the return
                 # of a list (we will do indexing!)
                 sret = [sret]

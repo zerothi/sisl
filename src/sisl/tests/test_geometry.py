@@ -821,6 +821,30 @@ class TestGeometry:
         for el in i:
             assert len(el) == 0
 
+    def test_close_arguments_2R(self, setup):
+        g = setup.mol.copy()
+        for args in ("isc", "xyz", "rij"):
+            kwargs = {f"ret_{args}": True}
+            ia, other = g.close(0, R=(0.1, 1.1), **kwargs)
+            assert len(ia) == 2
+            assert len(other) == 2
+        ia, a, b, c = g.close(0, R=(0.1, 1.1), ret_isc=True, ret_rij=True, ret_xyz=True)
+        assert len(ia) == 2
+        assert len(a) == 2
+        assert len(b) == 2
+        assert len(c) == 2
+
+    def test_close_arguments_1R(self, setup):
+        g = setup.mol.copy()
+        for args in ("isc", "xyz", "rij"):
+            kwargs = {f"ret_{args}": True}
+            ia, other = g.close(0, R=1.1, **kwargs)
+            assert len(ia) == len(other)
+        ia, a, b, c = g.close(0, R=1.1, ret_isc=True, ret_rij=True, ret_xyz=True)
+        assert len(ia) == len(a)
+        assert len(a) == len(b)
+        assert len(b) == len(c)
+
     @pytest.mark.slow
     def test_close4(self, setup):
         # 2 * 200 ** 2
