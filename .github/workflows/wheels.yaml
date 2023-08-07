@@ -12,7 +12,10 @@ on:
         description: 'Which branch to build wheels for'
         required: false
         default: 'main'
-
+      pypi:
+        description: Whether to upload to PyPi
+        required: false
+        default: false
 
 jobs:
 
@@ -147,7 +150,9 @@ jobs:
   upload_pypi:
     needs: [build_wheels_linux, build_wheels_macos, build_sdist]
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+    if: |
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags')) ||
+      github.event.inputs.pypi == 'true'
     steps:
       - uses: actions/download-artifact@v3
         with:
