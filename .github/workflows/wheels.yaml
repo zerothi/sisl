@@ -6,7 +6,7 @@ on:
   push:
     tags:
      - 'v*'
-    branches: ["workflows-wheels.yaml"]
+    branches: ["workflow-wheels.yaml"]
 
   workflow_dispatch:
     inputs:
