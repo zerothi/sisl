@@ -58,17 +58,17 @@ jobs:
         cibw_arch: ${{ fromJSON(needs.choose_architectures.outputs.cibw_arches) }}
 
     steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: dist
-          path: dist
-
       # Setup the fortran compiler. This is aware of the operating system.
       - uses: awvwgk/setup-fortran@main
         id: setup-fortran
         with:
           compiler: gcc
           version: 11
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: dist
+          path: dist
 
       - name: Extract sdist
         run: |
@@ -105,17 +105,17 @@ jobs:
         cibw_arch: ["x86_64", "arm64"]
 
     steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: dist
-          path: dist
-
       # Setup the fortran compiler. This is aware of the operating system.
       - uses: awvwgk/setup-fortran@main
         id: setup-fortran
         with:
           compiler: gcc
           version: 11
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: dist
+          path: dist
 
       - name: Extract sdist
         run: |
