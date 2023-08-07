@@ -82,7 +82,7 @@ jobs:
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.14.1
         env:
-          CIBW_BUILD: cp${{ matrix.cibw_python }}
+          CIBW_BUILD: ${{ matrix.cibw_python }}
           CIBW_ARCHS_LINUX: ${{ matrix.cibw_arch }}
           CIBW_PRERELEASE_PYTHONS: True
           # we do not test against the files folder,
@@ -98,7 +98,7 @@ jobs:
 
   build_wheels_macos:
     needs: [build_sdist]
-    name: Wheel for MacOS-{{ matrix.cibw_python }}-${{ matrix.cibw_arch }}
+    name: Wheel for MacOS-${{ matrix.cibw_python }}-${{ matrix.cibw_arch }}
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -134,7 +134,7 @@ jobs:
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.14.1
         env:
-          CIBW_BUILD: cp${{ matrix.cibw_python }}
+          CIBW_BUILD: ${{ matrix.cibw_python }}
           CIBW_ARCHS_LINUX: ${{ matrix.cibw_arch }}
           CIBW_PRERELEASE_PYTHONS: True
           # we do not test against the files folder,
