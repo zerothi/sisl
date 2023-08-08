@@ -268,7 +268,7 @@ disable = [
 legacy_tox_ini = """
 [tox]
 minversion = 3.3.0
-envlist = py37,py38,py39,py310
+envlist = py38,py39,py310,py311
 isolated_build = True
 
 [testenv]
@@ -303,7 +303,7 @@ repair-wheel-command = "delvewheel repair --no-mangle-all --ignore-in-wheel -w {
 profile = "hug"
 sections = ['FUTURE', 'STDLIB', 'THIRDPARTY', 'FIRSTPARTY', 'LOCALFOLDER']
 known_first_party = ["sisl_toolbox", "sisl"]
-line_length=90
+line_length = 90
 overwrite_in_place = true
 extend_skip = ["src/sisl/__init__.py"]
 
