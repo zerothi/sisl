@@ -384,7 +384,7 @@ class PureShape(Shape):
     def volume(self, *args, **kwargs):
         raise NotImplementedError(f"{self.__class__.__name__}.volume has not been implemented")
 
-    def expand(self, c):
+    def expand(self, _):
         """ Expand the shape by a constant value """
         raise NotImplementedError(f"{self.__class__.__name__}.expand has not been implemented")
 

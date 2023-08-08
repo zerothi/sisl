@@ -152,6 +152,11 @@ class Ellipsoid(PureShape):
         """ Return the radius of the Ellipsoid """
         return fnorm(self._v)
 
+    @property
+    def radial_vector(self):
+        """ The radial vectors """
+        return self._v
+
 
 to_dispatch = Ellipsoid.to
 

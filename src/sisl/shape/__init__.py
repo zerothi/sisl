@@ -33,9 +33,11 @@ Currently these mathematical/boolean operators are implemented:
    Cube - 3d box
    Ellipsoid
    Sphere
+   EllipticalCylinder
    NullShape
 
 """
+from ._cylinder import *
 from .base import *
 from .ellipsoid import *
 from .prism4 import *

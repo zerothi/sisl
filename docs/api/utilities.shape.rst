@@ -27,4 +27,5 @@ implements the necessary routines to ensure correct operation.
    Cube - 3d box
    Ellipsoid
    Sphere
+   EllipticalCylinder
    NullShape

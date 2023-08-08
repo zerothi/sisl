@@ -208,6 +208,7 @@ def indices_in_sphere(np.ndarray[np.float64_t, ndim=2, mode='c'] dxyz, const dou
 @cython.initializedcheck(False)
 cdef Py_ssize_t _indices_in_sphere(const double[:, ::1] dxyz, const double R, int[::1] idx) nogil:
     cdef Py_ssize_t N = dxyz.shape[0]
+    cdef Py_ssize_t xyz = dxyz.shape[1]
     cdef double R2 = R * R
     cdef Py_ssize_t i, n
 
@@ -216,7 +217,7 @@ cdef Py_ssize_t _indices_in_sphere(const double[:, ::1] dxyz, const double R, in
 
     for i in range(N):
         if all_fabs_le(dxyz, i, R):
-            if dxyz[i, 0] * dxyz[i, 0] + dxyz[i, 1] * dxyz[i, 1] + dxyz[i, 2] * dxyz[i, 2] <= R2:
+            if fabs2(dxyz, i) <= R2:
                 idx[n] = i
                 n += 1
     return n
@@ -270,7 +271,7 @@ cdef Py_ssize_t _indices_in_sphere_with_dist(const double[:, ::1] dxyz, const do
 
     for i in range(N):
         if all_fabs_le(dxyz, i, R):
-            d = dxyz[i, 0] * dxyz[i, 0] + dxyz[i, 1] * dxyz[i, 1] + dxyz[i, 2] * dxyz[i, 2]
+            d = fabs2(dxyz, i)
             if d <= R2:
                 dist[n] = sqrt(d)
                 idx[n] = i
@@ -397,6 +398,18 @@ def indices_fabs_le(np.ndarray a, const double V):
     if n == 0:
         return np.empty([0], dtype=np.int32)
     return idx[:n].copy()
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.initializedcheck(False)
+cdef inline double fabs2(const double[:, ::1] a, const Py_ssize_t i) nogil:
+    cdef Py_ssize_t j
+    cdef double abs2
+    abs2 = 0.
+    for j in range(a.shape[1]):
+        abs2 += a[i, j]*a[i, j]
+    return abs2
 
 
 @cython.boundscheck(False)
