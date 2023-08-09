@@ -13,6 +13,10 @@ on:
         required: false
         default: 'main'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
 
   # Build all the wheels with pypa/cibuildwheels
@@ -27,76 +31,35 @@ jobs:
     strategy:
       # If one of the jobs fails, continue with the others.
       fail-fast: false
+      os: [ubuntu-latest, macos-latest]
+      python: [38, 39, 310, 311]
       matrix:
         include:
-          ## Window 64 bit
-          #- os: windows-latest
-          #  python: 38
-          #  bitness: 64
-          #  platform_id: win_amd64
-          #- os: windows-latest
-          #  python: 39
-          #  bitness: 64
-          #  platform_id: win_amd64
-          #- os: windows-latest
-          #  python: 310
-          #  bitness: 64
-          #  platform_id: win_amd64
-
           # Linux 64 bit manylinux2014
           - os: ubuntu-latest
-            python: 38
-            bitness: 64
-            platform_id: manylinux_x86_64
-            manylinux_image: manylinux2014
-          - os: ubuntu-latest
-            python: 39
-            bitness: 64
-            platform_id: manylinux_x86_64
-            manylinux_image: manylinux2014
-          - os: ubuntu-latest
-            python: 310
-            bitness: 64
-            platform_id: manylinux_x86_64
-            manylinux_image: manylinux2014
-          - os: ubuntu-latest
-            python: 311
-            bitness: 64
             platform_id: manylinux_x86_64
             manylinux_image: manylinux2014
 
           # Linux 64 bit manylinux2010
           # NumPy on Python 3.10 only supports 64bit and is only available with manylinux2014
           # hence 310 and 311 are not added here
+          # TODO remove in 2024
           - os: ubuntu-latest
             python: 38
-            bitness: 64
             platform_id: manylinux_x86_64
             manylinux_image: manylinux2010
           - os: ubuntu-latest
             python: 39
-            bitness: 64
             platform_id: manylinux_x86_64
             manylinux_image: manylinux2010
-
 
           # MacOS x86_64
           - os: macos-latest
-            bitness: 64
-            python: 38
             platform_id: macosx_x86_64
+
+          # MacOS ARM
           - os: macos-latest
-            bitness: 64
-            python: 39
-            platform_id: macosx_x86_64
-          - os: macos-latest
-            bitness: 64
-            python: 310
-            platform_id: macosx_x86_64
-          - os: macos-latest
-            bitness: 64
-            python: 311
-            platform_id: macosx_x86_64
+            platform_id: macosx_arm64
 
     steps:
       - uses: actions/checkout@v3
@@ -168,10 +131,7 @@ jobs:
       # If one of the jobs fails, continue with the others.
       fail-fast: false
       matrix:
-        include:
-          #- os: windows-latest
-          - os: ubuntu-latest
-          - os: macos-latest
+        os: [ubuntu-latest, macos-latest]
 
     steps:
       - uses: actions/download-artifact@v3
