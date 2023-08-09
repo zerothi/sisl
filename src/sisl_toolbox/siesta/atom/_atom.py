@@ -22,8 +22,12 @@ One can also plot output from `atom` using:
 which will show 4 plots for different sections. A command-line tool is also
 made available through the `stoolbox`.
 """
+from typing import Optional, List
+from typing_extensions import Annotated
+
 import sys
 from collections.abc import Iterable
+from enum import Enum
 from functools import reduce
 from pathlib import Path
 
@@ -33,7 +37,9 @@ from scipy.interpolate import interp1d
 import sisl as si
 from sisl.utils import NotNonePropertyDict, PropertyDict
 
-__all__ = ["AtomInput", "atom_plot_cli"]
+from sisl_toolbox.cli._cli_arguments import CLIArgument, CLIOption
+
+__all__ = ["AtomInput", "atom_plot"]
 
 
 _script = Path(sys.argv[0]).name
@@ -737,63 +743,59 @@ class AtomInput:
         return fig, axs
 
 
-def atom_plot_cli(subp=None):
-    """ Run plotting command for the output of atom """
+class AtomPlotOption(Enum):
+    """Plotting options for atom"""
+    wavefunction = 'wavefunction'
+    charge = 'charge'
+    log = 'log'
+    potential = 'potential'
 
-    is_sub = not subp is None
+def atom_plot(
+    plot: Annotated[Optional[List[AtomPlotOption]], CLIArgument()] = None, 
+    input: str = "INP", 
+    #plot: Optional[List[str]] = None, 
+    l: str = 'spdf', 
+    save: Annotated[Optional[str], CLIOption("-S", "--save")] = None, 
+    show: bool = False
+):
+    """Plotting facility for atom output (run in the atom output directory)
 
-    title = "Plotting facility for atom output (run in the atom output directory)"
-    if is_sub:
-        global _script
-        _script = f"{_script} atom-plot"
-        p = subp.add_parser("atom-plot", description=title, help=title)
-    else:
-        import argparse
-        p = argparse.ArgumentParser(title)
-
-    p.add_argument("--plot", '-P', action='append', type=str,
-                   choices=('wavefunction', 'charge', 'log', 'potential'),
-                   help="""Determine what to plot""")
-
-    p.add_argument("-l", default='spdf', type=str,
-                   help="""Which l shells to plot""")
-
-    p.add_argument("--save", "-S", default=None,
-                   help="""Save output plots to file.""")
-
-    p.add_argument("--show", default=False, action='store_true',
-                   help="""Force showing the plot (only if --save is specified)""")
-
-    p.add_argument("input", type=str, default="INP",
-                   help="""Input file name (default INP)""")
-
-    if is_sub:
-        p.set_defaults(runner=atom_plot)
-    else:
-        atom_plot(p.parse_args())
-
-
-def atom_plot(args):
+    Parameters
+    ----------
+    plot : list[str], optional
+        Determine what to plot. If None is given, it plots everything.
+    input : str
+        Input file name.
+    l : str, optional
+        Which l shells to plot.
+    save : str, optional
+        Save output plots to file.
+    show : bool, optional
+        Force showing the plot.
+    """
     import matplotlib.pyplot as plt
 
-    input = Path(args.input)
-    atom = AtomInput.from_input(input)
+    input_path = Path(input)
+    atom = AtomInput.from_input(input_path)
 
     # If the specified input is a file, use the parent
     # Otherwise use the input *as is*.
-    if input.is_file():
-        path = input.parent
+    if input_path.is_file():
+        path = input_path.parent
     else:
-        path = input
+        path = input_path
 
     # if users have not specified what to plot, we plot everything
-    if args.plot is None:
-        args.plot = ('wavefunction', 'charge', 'log', 'potential')
-    fig = atom.plot(path, plot=args.plot, l=args.l, show=False)[0]
+    if plot is None:
+        plots = [p.value for p in AtomPlotOption]
+    else:
+        plots = [p.value if isinstance(p, AtomPlotOption) else p for p in plot ]
 
-    if args.save is None:
+    fig = atom.plot(path, plot=plots, l=l, show=False)[0]
+
+    if save is None:
         plt.show()
     else:
-        fig.savefig(args.save)
-        if args.show:
+        fig.savefig(save)
+        if show:
             plt.show()
