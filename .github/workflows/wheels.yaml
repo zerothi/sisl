@@ -21,7 +21,7 @@ jobs:
 
   # Build all the wheels with pypa/cibuildwheels
   build_wheels:
-    name: Build wheel for cp${{ matrix.python }}-${{ matrix.platform_id }}-${{ matrix.manylinux_image }}
+    name: Linux wheel: cp${{ matrix.python }}-${{ matrix.platform_id }}-${{ matrix.manylinux_image }}
     runs-on: ${{ matrix.os }}
     # cibuildwheels already manages multiple python versions automatically
     # by just detecting the os. However, it does everything in the same job
@@ -32,35 +32,14 @@ jobs:
       # If one of the jobs fails, continue with the others.
       fail-fast: false
       matrix:
+        os: [ubuntu-latest]
+        platform_id: [manylinux_x86_64]
+        manylinux_image: [manylinux2010, manylinux2014]
         python: [38, 39, 310, 311]
-        include:
-          # Linux 64 bit manylinux2014
-          - os: ubuntu-latest
-            platform_id: manylinux_x86_64
-            manylinux_image: manylinux2014
-
-          # Linux 64 bit manylinux2010
-          # NumPy on Python 3.10 only supports 64bit and is only available with manylinux2014
-          # hence 310 and 311 are not added here
-          # TODO remove in 2024
-          - os: ubuntu-latest
-            platform_id: manylinux_x86_64
-            manylinux_image: manylinux2010
-
-          # MacOS x86_64
-          - os: macos-latest
-            platform_id: macosx_x86_64
-
-          # MacOS ARM
-          #- os: macos-latest
-          #  platform_id: macosx_arm64
-
         exclude:
-          - os: ubuntu-latest
-            python: 310
+          - python: 310
             manylinux_image: manylinux2010
-          - os: ubuntu-latest
-            python: 311
+          - python: 311
             manylinux_image: manylinux2010
 
     steps:
