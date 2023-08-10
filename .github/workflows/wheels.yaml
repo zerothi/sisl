@@ -76,11 +76,6 @@ jobs:
         os: [macos-latest]
         platform_id: [macosx_x86_64]
         python: [38, 39, 310, 311]
-        include:
-          - platform_id: macosx_arm64
-            env:
-              PYTHON_CROSSENV: 1
-              MACOSX_DEPLOYMENT_TARGET: 12.0
 
     steps:
       - uses: actions/checkout@v3
