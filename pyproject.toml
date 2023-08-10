@@ -305,3 +305,7 @@ test-command = "bash {project}/tools/build_tools/test_wheel.sh {project}"
 before-build = "pip install delvewheel"
 repair-wheel-command = "delvewheel repair --no-mangle-all --ignore-in-wheel -w {dest_dir} {wheel}"
 
+[tool.cibuildwheel.macos]
+
+environment = {CFLAGS="-fno-strict-aliasing", CC="clang", CXX = "clang++", RUNNER_OS="macOS"}
+
