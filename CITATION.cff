@@ -7,7 +7,7 @@ authors:
     orcid: "https://orcid.org/0000-0003-3038-1855"
     alias: zerothi
 title: sisl
-version: 0.14.0rc2
+version: 0.14.0rc3
 identifiers:
   - description: "Collection DOI for all sisl versions (preferred to use)"
     type: doi
@@ -15,7 +15,7 @@ identifiers:
 url: https://github.com/zerothi/sisl
 repository-code: https://github.com/zerothi/sisl
 license: MPL-2.0
-commit: "v0.14.0rc2"
+commit: "v0.14.0rc3"
 date-released: "2023-08-10"
 keywords:
   - physics
