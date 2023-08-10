@@ -31,9 +31,9 @@ jobs:
     strategy:
       # If one of the jobs fails, continue with the others.
       fail-fast: false
-      os: [ubuntu-latest, macos-latest]
-      python: [38, 39, 310, 311]
       matrix:
+        os: [ubuntu-latest, macos-latest]
+        python: [38, 39, 310, 311]
         include:
           # Linux 64 bit manylinux2014
           - os: ubuntu-latest
