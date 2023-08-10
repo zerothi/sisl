@@ -32,7 +32,6 @@ jobs:
       # If one of the jobs fails, continue with the others.
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
         python: [38, 39, 310, 311]
         include:
           # Linux 64 bit manylinux2014
@@ -45,11 +44,6 @@ jobs:
           # hence 310 and 311 are not added here
           # TODO remove in 2024
           - os: ubuntu-latest
-            python: 38
-            platform_id: manylinux_x86_64
-            manylinux_image: manylinux2010
-          - os: ubuntu-latest
-            python: 39
             platform_id: manylinux_x86_64
             manylinux_image: manylinux2010
 
@@ -58,8 +52,16 @@ jobs:
             platform_id: macosx_x86_64
 
           # MacOS ARM
-          - os: macos-latest
-            platform_id: macosx_arm64
+          #- os: macos-latest
+          #  platform_id: macosx_arm64
+
+        exclude:
+          - os: ubuntu-latest
+            python: 310
+            manylinux_image: manylinux2010
+          - os: ubuntu-latest
+            python: 311
+            manylinux_image: manylinux2010
 
     steps:
       - uses: actions/checkout@v3
