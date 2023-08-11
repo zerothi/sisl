@@ -36,6 +36,14 @@ def test_create_ellipticalcylinder():
     str(el)
 
 
+def test_ellipticalcylinder_within():
+    el = EllipticalCylinder(1., 1.)
+    # center of cylinder
+    assert el.within_index([0, 0, 0])[0] == 0
+    # should not be in a circle
+    assert el.within_index([0.2, 0.2, 0.9])[0] == 0
+
+
 def test_tosphere():
     el = EllipticalCylinder([1., 1.], 1.)
     el.to.Sphere()

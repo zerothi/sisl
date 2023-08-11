@@ -6,7 +6,7 @@ from math import pi
 import numpy as np
 
 import sisl._array as _a
-from sisl._indices import indices_in_sphere
+from sisl._indices import indices_in_cylinder
 from sisl._internal import set_module
 from sisl.messages import warn
 from sisl.utils.mathematics import expand, fnorm, fnorm2, orthogonalize
@@ -152,7 +152,7 @@ class EllipticalCylinder(PureShape):
         # Get indices where we should do the more
         # expensive exact check of being inside shape
         # I.e. this reduces the search space to the box
-        return indices_in_sphere(tmp, 1. + tol)
+        return indices_in_cylinder(tmp, 1. + tol, 1. + tol)
 
     @property
     def height(self):
@@ -177,6 +177,7 @@ class EllipticalCylinder(PureShape):
     def toSphere(self):
         """ Convert to a sphere """
         from .ellipsoid import Sphere
+
         # figure out the distance from the center to the edge (along longest radius)
         h = self.height / 2
         r = self.radius.max()

@@ -173,6 +173,66 @@ cdef void _indices_sorted_arrays(const Py_ssize_t n_element, const int[::1] elem
     for j in range(j, n_test_element):
         idx[j] = -1
 
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def indices_in_cylinder(np.ndarray[np.float64_t, ndim=2, mode='c'] dxyz, const double R, const double h):
+    """ Indices for all coordinates that are within a cylinde radius `R` and height `h`
+
+    Parameters
+    ----------
+    dxyz : ndarray(np.float64)
+       coordinates centered around the cylinder
+    R : float
+       radius of cylinder to check
+    h : float
+       height of cylinder to check
+
+    Returns
+    -------
+    index : np.ndarray(np.int32)
+       indices of all dxyz coordinates that are within the cylinder
+    """
+    cdef double[:, ::1] dXYZ = dxyz
+    cdef Py_ssize_t n = dXYZ.shape[0]
+    cdef np.ndarray[np.int32_t, ndim=1] idx = np.empty([n], dtype=np.int32)
+    cdef int[::1] IDX = idx
+
+    n = _indices_in_cylinder(dXYZ, R, h, IDX)
+
+    if n == 0:
+        return np.empty([0], dtype=np.int32)
+    return idx[:n].copy()
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.initializedcheck(False)
+cdef Py_ssize_t _indices_in_cylinder(const double[:, ::1] dxyz, const double R, const double h, int[::1] idx) nogil:
+    cdef Py_ssize_t N = dxyz.shape[0]
+    cdef Py_ssize_t xyz = dxyz.shape[1]
+    cdef double R2 = R * R
+    cdef double L2
+    cdef Py_ssize_t i, j, n
+    cdef int skip
+
+    # Reset number of elements
+    n = 0
+
+    for i in range(N):
+        skip = 0
+        for j in range(xyz-1):
+            skip |= dxyz[i, j] > R
+        if skip or dxyz[i, -1] > h: continue
+
+        L2 = 0.
+        for j in range(xyz-1):
+            L2 += dxyz[i, j] * dxyz[i, j]
+        if L2 > R2: continue
+        idx[n] = i
+        n += 1
+
+    return n
+
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
