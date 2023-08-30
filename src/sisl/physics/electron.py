@@ -1576,7 +1576,7 @@ class StateCElectron(_electron_State, StateC):
         return _berry_curvature(v, self.c)
 
     def effective_mass(self, *args, **kwargs):
-        r""" Calculate effective mass tensor for the states
+        r""" Calculate effective mass tensor for the states, units are (ps/Ang)^2
 
         This routine calls ``derivative(2, *args, **kwargs)`` and
         returns the effective mass for all states.
