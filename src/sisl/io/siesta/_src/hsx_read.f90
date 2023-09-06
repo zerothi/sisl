@@ -607,11 +607,7 @@ subroutine read_hsx_sx0(fname, nspin, no_u, no_s, maxnh, &
   ! Read logical
   read(iu, iostat=ierr) Gamma
   call iostat_update(ierr)
-  if ( Gamma ) then
-    if ( no_u /= no_s ) then
-      stop 'Error in reading data, not allocated, Gamma'
-    end if
-  else if ( no_u == no_s ) then
+  if ( Gamma .and. no_u /= no_s ) then
     stop 'Error in reading data, not allocated, Gamma'
   end if
 
