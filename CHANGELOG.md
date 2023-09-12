@@ -87,6 +87,7 @@ we hit release version 1.0.0.
 
 
 ### Fixed
+- fixed Mulliken calculations for polarized calculations due to missing copy, #611
 - fixed single argument `ret_isc=True` of `close`, #604 and #605
 - tiling Grid now only possible for commensurate grids (grid.lattice % grid.geometry.lattice)
 - rare cases for non-Gamma calculations with actual Gamma matrices resulted

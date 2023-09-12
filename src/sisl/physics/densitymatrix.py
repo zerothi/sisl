@@ -326,7 +326,8 @@ class _densitymatrix(SparseOrbitalBZSpin):
                 M[3] = 0.5 * (M[3] - M[7]) # sign change again below
                 M = M[:4]
             elif M.shape[0] == 2:
-                tmp = M[1]
+                # necessary to not overwrite data
+                tmp = M[1].copy()
                 M[1] = M[0] - M[1]
                 M[0] += tmp
             elif M.shape[0] == 1:
