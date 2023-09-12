@@ -34,7 +34,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         platform_id: [manylinux_x86_64]
-        manylinux_image: [manylinux2010, manylinux2014]
+        manylinux_image: [manylinux_2_17, manylinux_2_24, manylinux_2_28]
         python: [38, 39, 310, 311]
         exclude:
           - python: 310
