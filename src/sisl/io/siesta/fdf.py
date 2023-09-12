@@ -101,6 +101,7 @@ def _parse_output_order(order, output, order_True, order_False):
         order.extend(order_True)
     else:
         order.extend(order_False)
+
     order = [el for el in order if el not in rem]
 
     return order

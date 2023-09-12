@@ -330,7 +330,7 @@ def test_geom_order(sisl_tmp):
     assert np.allclose(g.xyz, gnc.xyz)
     g = fdf.read_geometry(order=['fdf', 'nc'])
     assert np.allclose(g.xyz, gfdf.xyz)
-    g = fdf.read_geometry(order="^fdf")
+    g = fdf.read_geometry(True, order="^fdf")
     assert np.allclose(g.xyz, gxv.xyz)
 
 
