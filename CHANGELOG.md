@@ -45,6 +45,7 @@ we hit release version 1.0.0.
 - `BrillouinZone.merge` allows simple merging of several objects, #537
 
 ### Changed
+- allowing ^ negation in order arguments for siles
 - internal change to comply with scipy changes, use issparse instead
   of spmatrix, see #598
 - netCDF4 is now an optional dependency, #595

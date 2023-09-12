@@ -319,7 +319,7 @@ def test_geom_order(sisl_tmp):
 
     # Create fdf-file
     fdf = fdfSileSiesta(sisl_tmp('siesta.fdf', _dir))
-    assert fdf.read_geometry(True, order=['nc']) is None
+    assert fdf.read_geometry(order=['nc']) is None
     gxv.write(sisl_tmp('siesta.XV', _dir))
     gnc.write(sisl_tmp('siesta.nc', _dir))
 
@@ -330,7 +330,7 @@ def test_geom_order(sisl_tmp):
     assert np.allclose(g.xyz, gnc.xyz)
     g = fdf.read_geometry(order=['fdf', 'nc'])
     assert np.allclose(g.xyz, gfdf.xyz)
-    g = fdf.read_geometry(order=['xv', 'nc'])
+    g = fdf.read_geometry(order="^fdf")
     assert np.allclose(g.xyz, gxv.xyz)
 
 
