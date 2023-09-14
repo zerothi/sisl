@@ -1201,21 +1201,21 @@ class BandStructure(BrillouinZone):
         #points, divisions, names=None):
         super().__init__(parent)
 
-        points = kwargs.get("points")
+        points = kwargs.pop("points", None)
         if points is None:
             if len(args) > 0:
                 points, *args = args
             else:
                 raise ValueError(f"{self.__class__.__name__} 'points' argument missing")
 
-        divisions = kwargs.get("divisions")
+        divisions = kwargs.pop("divisions", None)
         if divisions is None:
             if len(args) > 0:
                 divisions, *args = args
             else:
                 raise ValueError(f"{self.__class__.__name__} 'divisions' argument missing")
 
-        names = kwargs.get("names")
+        names = kwargs.pop("names", None)
         if names is None:
             if len(args) > 0:
                 names, *args = args
@@ -1224,7 +1224,11 @@ class BandStructure(BrillouinZone):
             raise ValueError(f"{self.__class__.__name__} unknown arguments after parsing 'points', 'divisions' and 'names': {args}")
 
         # Store empty split size
-        self._jump_dk = np.asarray(kwargs.get("jump_dk", 0.05))
+        self._jump_dk = np.asarray(kwargs.pop("jump_dk", 0.05))
+
+        if len(kwargs) > 0:
+            raise ValueError(f"{self.__class__.__name__} unknown keyword arguments after parsing [points, divisions, names, jump_dk]: {list(kwargs.keys())}")
+
 
         # Copy over points
         # Check if any of the points is None or has length 0
