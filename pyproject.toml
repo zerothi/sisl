@@ -293,13 +293,13 @@ extend_skip = ["src/sisl/__init__.py"]
 
 # Options for cibuildwheel
 [tool.cibuildwheel]
-build-verbosity = "3"
+build-verbosity = 3
 test-extras = "test"
 
 # Instead of running pytest directly, we use a bash script that will set up
 # the appropiate value for the SISL_FILES_TEST variable, a path pointing to
 # the sisl-files directory, which contains files for testing.
-test-command = "bash {project}/tools/build_tools/test_wheel.sh {project}"
+test-command = "bash {project}/tools/build_tools/test_wheel.sh sisl"
 
 [tool.cibuildwheel.linux]
 archs = ["x86_64", "aarch64"]
