@@ -73,13 +73,12 @@ jobs:
       # If one of the jobs fails, continue with the others.
       fail-fast: false
       matrix:
-        os: [macos-latest]
-        platform_id: [macosx_x86_64, macosx_universal2, macosx_arm64]
         python: [38, 39, 310, 311]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           submodules: false
 
       # Setup the fortran compiler. This is aware of the operating system.
@@ -91,9 +90,7 @@ jobs:
 
       # We use the cibuildwheel action to take care of everything
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2.15.0
-        env:
-          CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
+        uses: pypa/cibuildwheel@v2.15
           CIBW_TEST_SKIP: "*-macosx_arm64 *-macosx_universal2:arm64"
           # The rest of options are specified at pyproject.toml
 
@@ -108,8 +105,9 @@ jobs:
     name: Build source distribution
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           submodules: false
 
       - name: Build sdist

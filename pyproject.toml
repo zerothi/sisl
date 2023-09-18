@@ -301,11 +301,17 @@ test-extras = "test"
 # the sisl-files directory, which contains files for testing.
 test-command = "bash {project}/tools/build_tools/test_wheel.sh {project}"
 
+[tool.cibuildwheel.linux]
+archs = ["x86"]
+
 [tool.cibuildwheel.windows]
+archs = ["amd64", "x86"]
 before-build = "pip install delvewheel"
 repair-wheel-command = "delvewheel repair --no-mangle-all --ignore-in-wheel -w {dest_dir} {wheel}"
 
 [tool.cibuildwheel.macos]
+archs = ["x86_64", "universal2", "arm64"]
+test-skip = "*-macosx_arm64 *-macosx_universal2:arm64"
 
 environment = {CFLAGS="-fno-strict-aliasing", CC="clang", CXX = "clang++", RUNNER_OS="macOS"}
 
