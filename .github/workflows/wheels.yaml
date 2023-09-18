@@ -74,7 +74,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos-latest]
-        platform_id: [macosx_x86_64]
+        platform_id: [macosx_x86_64, macosx_universal2, macosx_arm64]
         python: [38, 39, 310, 311]
 
     steps:
