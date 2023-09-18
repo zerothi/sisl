@@ -67,8 +67,8 @@ jobs:
           path: ./wheelhouse/*.whl
 
   build_wheels_macos:
-    name: MacOS wheel cp${{ matrix.python }}-${{ matrix.platform_id }}
-    runs-on: ${{ matrix.os }}
+    name: MacOS wheel
+    runs-on: macos-latest
     strategy:
       # If one of the jobs fails, continue with the others.
       fail-fast: false

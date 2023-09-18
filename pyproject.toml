@@ -302,7 +302,7 @@ test-extras = "test"
 test-command = "bash {project}/tools/build_tools/test_wheel.sh {project}"
 
 [tool.cibuildwheel.linux]
-archs = ["x86"]
+archs = ["x86_64", "aarch64"]
 
 [tool.cibuildwheel.windows]
 archs = ["amd64", "x86"]
