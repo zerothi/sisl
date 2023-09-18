@@ -75,7 +75,7 @@ jobs:
   
   # Upload to testpypi
   upload_testpypi:
-    needs: [build_sdist, build_wheels_linux, build_wheels_macos]
+    needs: [build_sdist, build_wheels]
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
     name: Publish package to TestPyPI
     runs-on: ubuntu-latest
