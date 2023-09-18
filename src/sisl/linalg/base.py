@@ -243,6 +243,11 @@ __all__ += _append("solve", ["", "_destroy"])
 inv_destroy = _partial(inv, overwrite_a=True)
 __all__ += _append("inv", ["", "_destroy"])
 
+# Pseudo-inversion of matrix
+pinv = _partial(sl.pinv, check_finite=False)
+pinvh = _partial(sl.pinvh, check_finite=False)
+__all__ += _append("pinv", ["", "h"])
+
 # Solve eigenvalue problem
 eig = _partial(sl.eig, check_finite=False, overwrite_a=False, overwrite_b=False)
 eig_left = _partial(sl.eig, check_finite=False, overwrite_a=False, overwrite_b=False, left=True)
