@@ -19,49 +19,19 @@ concurrency:
 
 jobs:
 
-  # Build all the wheels with pypa/cibuildwheels
-  build_wheels_linux:
-    name: Linux wheel
-    runs-on: ubuntu-latest
     # cibuildwheels already manages multiple python versions automatically
     # by just detecting the os. However, it does everything in the same job
     # and therefore in a serial manner. We build a matrix of operating systems
     # and python versions so that builds are ran in parallel.
     # The job matrix is basically copied from https://github.com/scikit-learn/scikit-learn/blob/main/.github/workflows/wheels.yml
-    strategy:
-      # If one of the jobs fails, continue with the others.
-      fail-fast: false
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          submodules: false
-
-      # Setup the fortran compiler. This is aware of the operating system.
-      - uses: awvwgk/setup-fortran@main
-        id: setup-fortran
-        with:
-          compiler: gcc
-          version: 11
-
-      # We use the cibuildwheel action to take care of everything
-      - name: Build wheels
-        uses: pypa/cibuildwheel@v2.15.0
-      
-      # Upload the wheel to the action's articfact.
-      - uses: actions/upload-artifact@v3
-        with:
-          path: ./wheelhouse/*.whl
-
-  build_wheels_macos:
-    name: MacOS wheel
+  build_wheels:
+    name: Wheel building
     runs-on: ${{ matrix.os }}
     strategy:
       # If one of the jobs fails, continue with the others.
       fail-fast: false
       matrix:
-        os: [macos-latest, windows-latest]
+        os: [macos-latest, windows-latest, ubuntu-latest]
 
     steps:
       - uses: actions/checkout@v4
