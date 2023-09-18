@@ -44,7 +44,6 @@ automatically passes the correct ``S`` because it knows the states :math:`k`-poi
 """
 
 from functools import reduce
-from itertools import product
 
 import numpy as np
 from numpy import (
@@ -76,8 +75,6 @@ from sisl._internal import set_module
 from sisl._math_small import xyz_to_spherical_cos_phi
 from sisl.linalg import det
 from sisl.linalg import eigvals as la_eigvals
-from sisl.linalg import eigh_destroy as la_eigh_destroy
-from sisl.linalg import eigvalsh_destroy as la_eigvalsh_destroy
 from sisl.linalg import sqrth, svd_destroy
 from sisl.messages import SislError, info, progressbar, warn
 from sisl.oplist import oplist
@@ -1578,7 +1575,7 @@ class StateCElectron(_electron_State, StateC):
         v = self.derivative(1, *args, **kwargs, matrix=True)
         return _berry_curvature(v, self.c)
 
-    def effective_mass(self, *args, inverse=False, eig=True, **kwargs):
+    def effective_mass(self, *args, **kwargs):
         r""" Calculate effective mass tensor for the states, units are (ps/Ang)^2
 
         This routine calls ``derivative(2, *args, **kwargs)`` and
@@ -1602,47 +1599,12 @@ class StateCElectron(_electron_State, StateC):
         to the `eigenstate` argument to ensure their complex values. This is necessary for the
         degeneracy decoupling.
 
-        Parameters
-        ----------
-        inverse : bool, optional
-            whether the inverse of the effective mass tensor should be returned
-        eig : bool, optional
-            if True, the 3 eigenvalues (diagonal) are returned instead of the Voigt
-            matrix. If `inverse` is True, then the eigenvalues will be inverted as well.
-
         See Also
         --------
         derivative: for details of the implementation
         """
-        ieff = self.derivative(2, *args, **kwargs)[1].real# * _velocity_const ** 2
-        shape = ieff.shape[1:]
-        
-        mat = np.empty([3, 3], ieff.dtype)
-        idiag = [0, 1, 2]
-        if eig:
-            eff = np.empty([3, *shape], dtype=ieff.dtype)
-            for idx in product(*map(range, shape)):
-                mat[idiag, idiag] = ieff[idiag, *idx]
-                mat[[0, 1], [1, 0]] = ieff[5, *idx]
-                mat[[0, 2], [2, 0]] = ieff[4, *idx]
-                mat[[1, 2], [2, 1]] = ieff[3, *idx]
-                eff[:, *idx] = la_eigvalsh_destroy(mat, driver='ev')
-            if inverse:
-                eff /= 1
-            ieff = eff
-
-        elif inverse:
-            eff = np.empty([6, *shape], dtype=ieff.dtype)
-            for idx in product(*map(range, shape)):
-                mat[idiag, idiag] = ieff[idiag, *idx]
-                mat[[0, 1], [1, 0]] = ieff[5, *idx]
-                mat[[0, 2], [2, 0]] = ieff[4, *idx]
-                mat[[1, 2], [2, 1]] = ieff[3, *idx]
-                imat = la_inv_destroy(mat)
-                eff[:, *idx] = imat[[0, 1, 2, 1, 2, 0],
-                                    [0, 1, 2, 2, 0, 1]]
-            ieff = eff
-
+        ieff = self.derivative(2, *args, **kwargs)[1].real
+        np.divide(_velocity_const ** 2, ieff, where=(ieff != 0), out=ieff)
         return ieff
 
 
