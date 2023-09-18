@@ -305,7 +305,7 @@ test-command = "bash {project}/tools/build_tools/test_wheel.sh sisl"
 archs = ["x86_64", "aarch64"]
 
 [tool.cibuildwheel.windows]
-archs = ["amd64", "x86"]
+archs = ["AMD64", "x86"]
 before-build = "pip install delvewheel"
 repair-wheel-command = "delvewheel repair --no-mangle-all --ignore-in-wheel -w {dest_dir} {wheel}"
 
