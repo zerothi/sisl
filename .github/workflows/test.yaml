@@ -36,7 +36,7 @@ jobs:
     if: ${{ github.event_name == 'schedule' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: '${{ github.event.inputs.branch }}'
       - run: test -n $(git rev-list --after="1 week" --max-count=1 ${{ github.sha }})
@@ -52,7 +52,7 @@ jobs:
 
     steps:
     - name: Checkout sisl
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         ref: '${{ github.event.inputs.branch }}'
         # The files submodule is required for tests purposes
