@@ -91,8 +91,6 @@ jobs:
       # We use the cibuildwheel action to take care of everything
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.15
-          CIBW_TEST_SKIP: "*-macosx_arm64 *-macosx_universal2:arm64"
-          # The rest of options are specified at pyproject.toml
 
       # Upload the wheel to the action's articfact.
       - uses: actions/upload-artifact@v3
