@@ -21,7 +21,7 @@ jobs:
 
   # Build all the wheels with pypa/cibuildwheels
   build_wheels_linux:
-    name: Linux wheel ${{ matrix.python }}-${{ matrix.platform_id }}-${{ matrix.manylinux_image }}
+    name: Linux wheel
     runs-on: ubuntu-latest
     # cibuildwheels already manages multiple python versions automatically
     # by just detecting the os. However, it does everything in the same job
@@ -31,8 +31,6 @@ jobs:
     strategy:
       # If one of the jobs fails, continue with the others.
       fail-fast: false
-      matrix:
-        python: [38, 39, 310, 311]
 
     steps:
       - uses: actions/checkout@v4
@@ -58,12 +56,12 @@ jobs:
 
   build_wheels_macos:
     name: MacOS wheel
-    runs-on: macos-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       # If one of the jobs fails, continue with the others.
       fail-fast: false
       matrix:
-        python: [38, 39, 310, 311]
+        os: [macos-latest, windows-latest]
 
     steps:
       - uses: actions/checkout@v4

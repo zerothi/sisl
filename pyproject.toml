@@ -304,19 +304,12 @@ test-command = "bash {project}/tools/build_tools/test_wheel.sh {project}"
 [tool.cibuildwheel.linux]
 archs = ["x86_64", "aarch64"]
 
-skip = [
-  "cp310-manylinux2010*",
-  "cp311-manylinux2010*",
-]
-
-
 [tool.cibuildwheel.windows]
 archs = ["amd64", "x86"]
 before-build = "pip install delvewheel"
 repair-wheel-command = "delvewheel repair --no-mangle-all --ignore-in-wheel -w {dest_dir} {wheel}"
 
-# Currently not done... :(
-test-command = ""
+test-command = "pytest --pyargs sisl -m 'not slow'"
 
 [tool.cibuildwheel.macos]
 archs = ["x86_64", "universal2", "arm64"]
