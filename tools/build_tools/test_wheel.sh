@@ -10,4 +10,4 @@ if [ -d ${PROJECT}/files/tests ]; then
 else
     echo "will not run with sisl-files tests"
 fi
-pytest --pyargs sisl
+pytest --pyargs sisl -m "not slow"
