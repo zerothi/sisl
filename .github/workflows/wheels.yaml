@@ -21,8 +21,8 @@ jobs:
 
   # Build all the wheels with pypa/cibuildwheels
   build_wheels_linux:
-    name: Linux wheel cp${{ matrix.python }}-${{ matrix.platform_id }}-${{ matrix.manylinux_image }}
-    runs-on: ${{ matrix.os }}
+    name: Linux wheel ${{ matrix.python }}-${{ matrix.platform_id }}-${{ matrix.manylinux_image }}
+    runs-on: ubuntu-latest
     # cibuildwheels already manages multiple python versions automatically
     # by just detecting the os. However, it does everything in the same job
     # and therefore in a serial manner. We build a matrix of operating systems
@@ -32,10 +32,9 @@ jobs:
       # If one of the jobs fails, continue with the others.
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
-        platform_id: [manylinux_x86_64]
-        manylinux_image: [manylinux_2_17, manylinux_2_24, manylinux_2_28]
         python: [38, 39, 310, 311]
+          #platform_id: [manylinux_x86_64, musllinux_x86_64]
+        ma#nylinux_image: [manylinux_2_17, manylinux_2_24, manylinux_2_28]
         exclude:
           - python: 310
             manylinux_image: manylinux2010
@@ -43,8 +42,9 @@ jobs:
             manylinux_image: manylinux2010
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           submodules: false
 
       # Setup the fortran compiler. This is aware of the operating system.
@@ -57,9 +57,6 @@ jobs:
       # We use the cibuildwheel action to take care of everything
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.15.0
-        env:
-          CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
-          # The rest of options are specified at pyproject.toml
       
       # Upload the wheel to the action's articfact.
       - uses: actions/upload-artifact@v3
