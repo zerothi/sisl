@@ -35,7 +35,7 @@ set_source_files_properties("${name}"
   )
 
 # Additional sources which we do not need interfaces
-# too in the Python front
+# to in the Python front
 set(siesta_sources
   sparse_io
   )

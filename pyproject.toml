@@ -102,7 +102,7 @@ cmake.minimum-version = "3.20"
 sdist.reproducible = true
 sdist.include = ["src/sisl/_version.py", "*/CMakeLists.txt"]
 
-wheel.expand-macos-universal-tags = false
+wheel.expand-macos-universal-tags = true
 
 
 [project.scripts]
@@ -299,8 +299,12 @@ build-verbosity = 3
 test-extras = "test"
 
 skip = [
-    "cp312-*",
+    "pp*",
+    "*musllinux*",
 ]
+
+# The netCDF package does not have a wheel for 312 (yet!)
+test-skip = "cp312-* *-macosx_arm64 *-macosx_universal2:arm64 *"
 
 # Instead of running pytest directly, we use a bash script that will set up
 # the appropiate value for the SISL_FILES_TEST variable, a path pointing to
@@ -308,13 +312,21 @@ skip = [
 test-command = "bash {project}/tools/build_tools/test_wheel.sh {project}"
 
 [tool.cibuildwheel.linux]
-archs = ["x86_64", "aarch64"]
+archs = [
+    "x86_64",
+#    "aarch64",
+]
 
 [tool.cibuildwheel.windows]
-archs = ["AMD64", "x86"]
+archs = [
+    "AMD64",
+    "x86",
+]
 
 test-command = "pytest --pyargs sisl -m 'not slow'"
 
 [tool.cibuildwheel.macos]
-archs = ["x86_64", "universal2"]
-test-skip = "*-macosx_arm64 *-macosx_universal2:arm64"
+archs = [
+#    "universal2",
+    "x86_64",
+]

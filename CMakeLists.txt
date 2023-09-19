@@ -10,7 +10,7 @@ endif()
 project(sisl
   DESCRIPTION "Cythonized or fortran codes"
   HOMEPAGE_URL "https://github.com/zerothi/sisl"
-  LANGUAGES C CXX
+  LANGUAGES C
   # cmake requires a version of X.Y.Z or some other form, it does not accept setuptools_scm dirty tags
   #  VERSION "${SKBUILD_PROJECT_VERSION}"
   )
@@ -39,18 +39,29 @@ add_compile_definitions(CYTHON_NO_PYINIT_EXPORT=1)
 set(CMAKE_SHARED_MODULE_PREFIX "")
 
 
-# Define all options for the user
+# Determine whether we are in CIBUILDWHEEL
+# and whether we are building for the universal target
+set(_def_fortran TRUE)
+if( APPLE AND
+    "$ENV{CIBUILDWHEEL}" STREQUAL "1" AND
+    "$ENV{CIBW_ARCHS}" MATCHES "(universal2|arm64)")
+  # Disable fortran here, it shouldn't be needed
+  set(_def_fortran FALSE)
+endif()
 
-set(F2PY_REPORT_ON_ARRAY_COPY 10
-  CACHE STRING
-  "The minimum size of arrays before warning about copies")
-option(WITH_F2PY_REPORT_COPY
-  "Add instructions to track f2py-copies on routine calls use -DF2PY_REPORT_ON_ARRAY_COPY=<int> as well" FALSE)#
-option(WITH_F2PY_REPORT_EXIT
-  "Report timings on routine exits" FALSE)
 option(WITH_FORTRAN
-  "Whether to compile and ship fortran sources (default True)" TRUE)
+  "Whether to compile and ship fortran sources (default True)" ${_def_fortran})
 
+# Define all options for the user
+if( WITH_FORTRAN )
+  set(F2PY_REPORT_ON_ARRAY_COPY 10
+    CACHE STRING
+    "The minimum (element) size of arrays before warning about copies")
+  option(WITH_F2PY_REPORT_COPY
+    "Add instructions to track f2py-copies on routine calls use -DF2PY_REPORT_ON_ARRAY_COPY=<int> as well" FALSE)#
+  option(WITH_F2PY_REPORT_EXIT
+    "Report timings on routine exits" FALSE)
+endif()
 
 #option(WITH_COVERAGE
 #  "Add instructions for coverage in Cython files" FALSE)
@@ -62,10 +73,61 @@ option(WITH_GDB
   "Add GDB-enabled Cython sources" FALSE)
 
 
+message(STATUS "Compilation flags")
+list(APPEND CMAKE_MESSAGE_INDENT "  ")
+
+set(CC $ENV{CC})
+set(CFLAGS $ENV{CFLAGS})
+cmake_print_variables(CC)
+cmake_print_variables(CFLAGS)
+cmake_print_variables(CMAKE_C_COMPILER)
+cmake_print_variables(CMAKE_C_FLAGS)
+set(CXX $ENV{CXX})
+set(CXXFLAGS $ENV{CXXFLAGS})
+cmake_print_variables(CXX)
+cmake_print_variables(CXXFLAGS)
+cmake_print_variables(CMAKE_CXX_COMPILER)
+cmake_print_variables(CMAKE_CXX_FLAGS)
+if(WITH_FORTRAN)
+  set(FC $ENV{FC})
+  set(FFLAGS $ENV{FFLAGS})
+  cmake_print_variables(FC)
+  cmake_print_variables(FFLAGS)
+  cmake_print_variables(CMAKE_Fortran_COMPILER)
+  cmake_print_variables(CMAKE_Fortran_FLAGS)
+endif()
+set(ARCHFLAGS $ENV{ARCHFLAGS})
+cmake_print_variables(ARCHFLAGS)
+if( APPLE )
+  cmake_print_variables(CMAKE_OSX_ARCHITECTURES)
+  cmake_print_variables(CMAKE_APPLE_ARCH_SYSROOTS)
+  cmake_print_variables(CMAKE_OSX_SYSROOT_PATH)
+elseif( WIN32 )
+  # When building using a Python not compiled with the same compiler,
+  # we then need to add this definition to pybass a Cython problem
+  # See https://github.com/cython/cython/issues/3405
+  add_compile_definitions(MS_WIN64)
+endif()
+
+list(POP_BACK CMAKE_MESSAGE_INDENT)
+
+
+# Parse Cython global options
+if(WITH_ANNOTATE)
+  list(APPEND CYTHON_FLAGS --annotate)
+endif()
+if(WITH_LINE_DIRECTIVES)
+  list(APPEND CYTHON_FLAGS --line-directives)
+endif()
+if(WITH_GDB)
+  list(APPEND CYTHON_FLAGS --gdb)
+endif()
+
+
 # Decide for fortran stuff
 if(WITH_FORTRAN)
 
-  # add the language
+  # Enable Fortran language
   enable_language(Fortran)
 
   # Retrieve header information
@@ -111,21 +173,10 @@ if(WITH_FORTRAN)
 endif(WITH_FORTRAN)
 
 
-# Parse Cython global options
-if(WITH_ANNOTATE)
-  list(APPEND CYTHON_FLAGS --annotate)
-endif()
-if(WITH_LINE_DIRECTIVES)
-  list(APPEND CYTHON_FLAGS --line-directives)
-endif()
-if(WITH_GDB)
-  list(APPEND CYTHON_FLAGS --gdb)
-endif()
-
 message(STATUS "sisl options")
 list(APPEND CMAKE_MESSAGE_INDENT "  ")
 
-cmake_print_variables(WITH_COVERAGE)
+#cmake_print_variables(WITH_COVERAGE)
 cmake_print_variables(WITH_ANNOTATE)
 cmake_print_variables(WITH_LINE_DIRECTIVES)
 cmake_print_variables(WITH_GDB)
@@ -149,18 +200,6 @@ cmake_print_variables(Python_INCLUDE_DIRS)
 cmake_print_variables(Python_NumPy_INCLUDE_DIRS)
 if(WITH_FORTRAN)
   cmake_print_variables(Python_NumPy_F2Py_INCLUDE_DIR)
-endif()
-
-list(POP_BACK CMAKE_MESSAGE_INDENT)
-
-
-message(STATUS "Compilation flags")
-list(APPEND CMAKE_MESSAGE_INDENT "  ")
-
-cmake_print_variables(CMAKE_C_FLAGS)
-cmake_print_variables(CMAKE_CXX_FLAGS)
-if(WITH_FORTRAN)
-  cmake_print_variables(CMAKE_Fortran_FLAGS)
 endif()
 
 list(POP_BACK CMAKE_MESSAGE_INDENT)
