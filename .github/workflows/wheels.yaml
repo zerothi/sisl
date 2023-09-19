@@ -47,7 +47,7 @@ jobs:
           version: 11
 
       - name: Compiler checker
-        if: runner.os != "Windows"
+        if: runner.os != 'Windows'
         run: |
           env | grep CIBW
           echo "CC = $CC"
