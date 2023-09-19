@@ -303,7 +303,10 @@ test-command = "bash {project}/tools/build_tools/test_wheel.sh {project}"
 
 [tool.cibuildwheel.linux]
 archs = ["x86_64", "aarch64"]
-skip = "cp312-manylinux_2_14*"
+skip = [
+    "cp312-manylinux_2_14*",
+    "cp312-manylinux2014*",
+]
 
 [tool.cibuildwheel.windows]
 archs = ["AMD64", "x86"]
