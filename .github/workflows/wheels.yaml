@@ -49,7 +49,6 @@ jobs:
       - name: Compiler checker
         if: runner.os != 'Windows'
         run: |
-          env | grep CIBW
           echo "CC = $CC"
           echo "FC = $FC"
           echo "CFLAGS = $CFLAGS"
