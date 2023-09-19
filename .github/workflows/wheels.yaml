@@ -53,12 +53,19 @@ jobs:
           echo "FC = $FC"
           echo "CFLAGS = $CFLAGS"
           echo "FFLAGS = $FFLAGS"
+          echo "ARCHFLAGS = $ARCHFLAGS"
 
       - name: Fixing fortran for cross-compilation
         uses: myci-actions/export-env-var@1
         with:
           name: FFLAGS
           value: $FFLAGS $ARCHFLAGS
+      
+      - name: Fixing cmake arguments
+        uses: myci-actions/export-env-var@1
+        with:
+          name: SKBUILD_CMAKE_ARGS
+          value: -DCMAKE_Fortran_COMPILER=$FC;-DCMAKE_C_COMPILER=$CC
 
       # We use the cibuildwheel action to take care of everything
       - name: Build wheels
