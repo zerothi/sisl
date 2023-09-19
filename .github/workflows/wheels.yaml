@@ -31,7 +31,7 @@ jobs:
       # If one of the jobs fails, continue with the others.
       fail-fast: false
       matrix:
-        os: [macos-latest, windows-latest, ubuntu-latest]
+        os: [macos-latest, ubuntu-latest]
 
     steps:
       - uses: actions/checkout@v4
