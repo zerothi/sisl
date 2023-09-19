@@ -102,6 +102,8 @@ cmake.minimum-version = "3.20"
 sdist.reproducible = true
 sdist.include = ["src/sisl/_version.py", "*/CMakeLists.txt"]
 
+wheel.expand-macos-universal-tags = false
+
 
 [project.scripts]
 sgeom = "sisl.geometry:sgeom"
@@ -296,6 +298,10 @@ extend_skip = ["src/sisl/__init__.py"]
 build-verbosity = 3
 test-extras = "test"
 
+skip = [
+    "cp312-*",
+]
+
 # Instead of running pytest directly, we use a bash script that will set up
 # the appropiate value for the SISL_FILES_TEST variable, a path pointing to
 # the sisl-files directory, which contains files for testing.
@@ -303,21 +309,12 @@ test-command = "bash {project}/tools/build_tools/test_wheel.sh {project}"
 
 [tool.cibuildwheel.linux]
 archs = ["x86_64", "aarch64"]
-skip = [
-    "cp312-manylinux_2_14*",
-    "cp312-manylinux2014*",
-]
 
 [tool.cibuildwheel.windows]
 archs = ["AMD64", "x86"]
-before-build = "pip install delvewheel"
-repair-wheel-command = "delvewheel repair --no-mangle-all --ignore-in-wheel -w {dest_dir} {wheel}"
 
 test-command = "pytest --pyargs sisl -m 'not slow'"
 
 [tool.cibuildwheel.macos]
 archs = ["x86_64", "universal2"]
 test-skip = "*-macosx_arm64 *-macosx_universal2:arm64"
-
-environment = {CFLAGS="-fno-strict-aliasing", CC="clang", CXX = "clang++", RUNNER_OS="macOS"}
-
