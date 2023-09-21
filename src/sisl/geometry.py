@@ -4758,8 +4758,17 @@ class Geometry(LatticeChild):
                 # Get atomic indices
                 rng = lstranges(strmap(int, value))
                 ns._geometry = ns._geometry.sub(rng)
-        p.add_argument(*opts('--sub', '-s'), metavar='RNG',
+        p.add_argument('--sub', metavar='RNG',
                        action=ReduceSub,
+                       help='Retains specified atoms, can be complex ranges.')
+
+        class ReduceRemove(argparse.Action):
+            def __call__(self, parser, ns, value, option_string=None):
+                # Get atomic indices
+                rng = lstranges(strmap(int, value))
+                ns._geometry = ns._geometry.remove(rng)
+        p.add_argument('--remove', metavar='RNG',
+                       action=ReduceRemove,
                        help='Removes specified atoms, can be complex ranges.')
 
         # Swaps atoms

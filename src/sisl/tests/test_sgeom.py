@@ -112,10 +112,17 @@ class TestGeometry:
                     t = setup.sg_g(argv=argv)
                     assert np.allclose(cell, t.lattice.cell)
 
-    def test_sub1(self, setup):
+    def test_sub(self, setup):
         for a, l in [('0', 1), ('0,1', 2), ('0-1', 2)]:
             g = setup.sg_g(argv=['--sub', a])
             assert len(g) == l
+
+    def test_remove(self, setup):
+        geom = setup.g.tile(2, 0).tile(2, 1)
+        N = len(geom)
+        for a, l in [('0', 1), ('0,1', 2), ('0-1', 2)]:
+            g = setup.sg_g(geometry=geom.copy(), argv=['--remove', a])
+            assert len(g) == N - l
 
     def test_rotation1(self, setup):
         print(setup.g.cell)
