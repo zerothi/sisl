@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Siesta — graphene &mdash; sisl 0.1-98af2b8</title>
+  <title>Siesta — graphene &mdash; sisl 0.1-dea8f6b</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/tabs.css" type="text/css" />
@@ -17,12 +17,12 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
-        <script src="../_static/tabs.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=0b138a9b"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/tabs.js?v=3ee01567"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
@@ -46,7 +46,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-98af2b8
+                0.1-dea8f6b
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -145,11 +145,11 @@ Download IPython notebook <a href="https://raw.githubusercontent.com/zerothi/sis
 </div>
 </div>
 <section id="Siesta-----graphene">
-<h1>Siesta — graphene<a class="headerlink" href="#Siesta-----graphene" title="Permalink to this heading"></a></h1>
+<h1>Siesta — graphene<a class="headerlink" href="#Siesta-----graphene" title="Link to this heading"></a></h1>
 <p>This tutorial will describe a complete walk-through of a large fraction of the <code class="docutils literal notranslate"><span class="pre">sisl</span></code> functionalities that may be related to the <a class="reference external" href="https://gitlab.com/siesta-project/siesta">Siesta code</a>.</p>
 <p>Contrary to the <span class="math notranslate nohighlight">\(\mathrm H_2\mathrm O\)</span> system this tutorial will emphasize the usefulness of performing bandstructures etc. directly in Python using sisl.</p>
 <section id="Creating-the-geometry">
-<h2>Creating the geometry<a class="headerlink" href="#Creating-the-geometry" title="Permalink to this heading"></a></h2>
+<h2>Creating the geometry<a class="headerlink" href="#Creating-the-geometry" title="Link to this heading"></a></h2>
 <p>Our system of interest will be the smallest graphene cell. Instead of defining the atomic positions, the carbon atoms and supercell for graphene, we use a default implementation of graphene in <code class="docutils literal notranslate"><span class="pre">sisl</span></code>. There are a small selection of the typical geometries, including graphene.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
@@ -172,7 +172,7 @@ Download IPython notebook <a href="https://raw.githubusercontent.com/zerothi/sis
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"version_major": 2, "version_minor": 0, "model_id": "15de0f29be9047caab1df65eaf87d2d8"}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"version_major": 2, "version_minor": 0, "model_id": "dc6324dd12474f0ebbff7162e9ca0f2b"}</script></div>
 </div>
 <p>Now we need to create the input fdf file for Siesta:</p>
 <div class="nbinput nblast docutils container">
@@ -199,7 +199,7 @@ Download IPython notebook <a href="https://raw.githubusercontent.com/zerothi/sis
 </div>
 </section>
 <section id="Creating-the-electronic-structure">
-<h2>Creating the electronic structure<a class="headerlink" href="#Creating-the-electronic-structure" title="Permalink to this heading"></a></h2>
+<h2>Creating the electronic structure<a class="headerlink" href="#Creating-the-electronic-structure" title="Link to this heading"></a></h2>
 <p>Before proceeding, run Siesta to calculate the ground state electronic structure.</p>
 <p>After having completed the Siesta run we may read the Hamiltonian to manipulate and extract different information. After reading the Hamiltonian it is obvious that a great deal of new data has been associated with the Hamiltonian.</p>
 <div class="nbinput docutils container">
@@ -235,9 +235,10 @@ Hamiltonian{non-zero: 5994, orthogonal: False,
   },
   maxR: 2.54650,
   Lattice{nsc: [5 5 1],
-   A=[2.160, 1.247, 0.000],
-   B=[2.160, -1.247, 0.000],
-   C=[0.000, 0.000, 14.400],
+   origin=0.0000, 0.0000, 0.0000,
+   A=[2.1600, 1.2471, 0.0000],
+   B=[2.1600, -1.2471, 0.0000],
+   C=[0.0000, 0.0000, 14.4000]
   }
  }
 }
@@ -245,7 +246,7 @@ Hamiltonian{non-zero: 5994, orthogonal: False,
 </div>
 </section>
 <section id="Calculating-DOS-and-PDOS">
-<h2>Calculating DOS and PDOS<a class="headerlink" href="#Calculating-DOS-and-PDOS" title="Permalink to this heading"></a></h2>
+<h2>Calculating DOS and PDOS<a class="headerlink" href="#Calculating-DOS-and-PDOS" title="Link to this heading"></a></h2>
 <p>When we are dealing with periodic structures (such as graphene) it is imperative to calculate the density of states in a simple and efficient manner. Below we will calculate the DOS for a variety of Monkhorst-Pack grids to check the convergence of the DOS (it shouldn’t take more than a minute):</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
@@ -348,7 +349,7 @@ Orbital index of p_z: [2]
     <span class="k">return</span> <span class="n">eigenstate</span><span class="o">.</span><span class="n">eig</span>
 <span class="c1"># Define the band-structure</span>
 <span class="n">bz</span> <span class="o">=</span> <span class="n">BandStructure</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> <span class="p">[</span><span class="mf">2.</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mf">1.</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">],</span> <span class="mi">400</span><span class="p">,</span>
-                   <span class="n">name</span><span class="o">=</span><span class="p">[</span><span class="sa">r</span><span class="s1">&#39;$\Gamma$&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$K$&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$M$&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$\Gamma$&#39;</span><span class="p">])</span>
+                   <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="sa">r</span><span class="s1">&#39;$\Gamma$&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$K$&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$M$&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$\Gamma$&#39;</span><span class="p">])</span>
 
 <span class="c1"># Calculate all eigenvalues</span>
 <span class="n">eig</span> <span class="o">=</span> <span class="n">bz</span><span class="o">.</span><span class="n">apply</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">(</span><span class="n">wrap</span><span class="o">=</span><span class="n">wrap_fatbands</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
@@ -409,7 +410,7 @@ Orbital index of p_z: [2]
 </ul>
 </section>
 <section id="Hamiltonian-eigenstates">
-<h2>Hamiltonian eigenstates<a class="headerlink" href="#Hamiltonian-eigenstates" title="Permalink to this heading"></a></h2>
+<h2>Hamiltonian eigenstates<a class="headerlink" href="#Hamiltonian-eigenstates" title="Link to this heading"></a></h2>
 <p>At this point we have plotted the <span class="math notranslate nohighlight">\(k\)</span>-averaged DOS, PDOS. We have also plotted the fat-bands (and thus the band-structure).</p>
 <p>In addition to these things we can plot the real-space eigenstates. We first plot the <span class="math notranslate nohighlight">\(\Gamma\)</span>-point for the first 2x2 unit-cell. This <span class="math notranslate nohighlight">\(k\)</span>-point has complete unit-cell periodicity and thus the plotted wavefunction should be fully periodic along all directions.</p>
 <div class="nbinput docutils container">
@@ -491,7 +492,7 @@ wavefunction: k != Gamma is currently untested!
 </div>
 </div>
 <script type="application/vnd.jupyter.widget-state+json">
-{"state": {"15de0f29be9047caab1df65eaf87d2d8": {"model_name": "FigureModel", "model_module": "jupyterlab-plotly", "model_module_version": "^5.15.0", "state": {"_config": {"plotlyServerURL": "https://plot.ly"}, "_data": [{"line": {"color": "#cccccc", "width": 3}, "mode": "lines", "name": "bonds", "opacity": 1, "x": [0.0, 1.44, null, 0.0, -0.7200000000000002, null, 0.0, -0.7200000000000002, null, 1.44, 2.16, null, 1.44, 2.16, null], "y": [0.0, 0.0, null, 0.0, -1.2470765814495914, null, 0.0, 1.2470765814495914, null, 0.0, -1.2470765814495914, null, 0.0, 1.2470765814495914, null], "type": "scatter", "uid": "c05b4d69-48e4-4fff-a4fd-c6feeaf2e777"}, {"marker": {"color": ["grey", "grey"], "opacity": {"dtype": "float64", "shape": [2]}, "size": {"dtype": "float64", "shape": [2]}}, "mode": "markers", "name": "Atoms", "opacity": 1, "text": ["[0. 0. 0.]<br>0 (C)", "[1.44 0.   0.  ]<br>1 (C)"], "x": {"dtype": "float64", "shape": [2]}, "y": {"dtype": "float64", "shape": [2]}, "type": "scatter", "uid": "dd5014bc-e1a2-45d4-b411-11d4298fab35"}, {"line": {"color": "green"}, "mode": "lines", "name": "Unit cell", "opacity": 1, "x": {"dtype": "float64", "shape": [19]}, "y": {"dtype": "float64", "shape": [19]}, "type": "scatter", "uid": "a0d2b644-0376-496f-858d-600182eafeab"}], "_dom_classes": [], "_js2py_layoutDelta": {}, "_js2py_pointsCallback": {}, "_js2py_relayout": {}, "_js2py_restyle": {}, "_js2py_traceDeltas": {}, "_js2py_update": {}, "_last_layout_edit_id": 0, "_last_trace_edit_id": 0, "_layout": {"template": {"layout": {"hovermode": "closest", "paper_bgcolor": "white", "plot_bgcolor": "white", "scene": {"xaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "yaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "zaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}}, "xaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "yaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}}}, "xaxis": {"showgrid": false, "title": {"text": "X axis [Ang]"}, "zeroline": false}, "yaxis": {"scaleanchor": "x", "scaleratio": 1, "showgrid": false, "title": {"text": "Y axis [Ang]"}, "zeroline": false}}, "_model_module": "jupyterlab-plotly", "_model_module_version": "^5.15.0", "_model_name": "FigureModel", "_py2js_addTraces": {}, "_py2js_animate": {}, "_py2js_deleteTraces": {}, "_py2js_moveTraces": {}, "_py2js_relayout": {}, "_py2js_removeLayoutProps": {}, "_py2js_removeTraceProps": {}, "_py2js_restyle": {}, "_py2js_update": {}, "_view_count": 0, "_view_module": "jupyterlab-plotly", "_view_module_version": "^5.15.0", "_view_name": "FigureView", "tabbable": null, "tooltip": null}, "buffers": [{"data": "AAAAAAAA8D8AAAAAAADwPw==", "encoding": "base64", "path": ["_data", 1, "marker", "opacity", "buffer"]}, {"data": "cT0K16NwJUBxPQrXo3AlQA==", "encoding": "base64", "path": ["_data", 1, "marker", "size", "buffer"]}, {"data": "AAAAAAAAAAAK16NwPQr3Pw==", "encoding": "base64", "path": ["_data", 1, "x", "buffer"]}, {"data": "AAAAAAAAAAAAAAAAAAAAAA==", "encoding": "base64", "path": ["_data", 1, "y", "buffer"]}, {"data": "AAAAAAAAAABI4XoUrkcBQEjhehSuRxFASOF6FK5HEUBI4XoUrkcBQEjhehSuRwFAAAAAAAAA+H9I4XoUrkcBQAAAAAAAAAAAAAAAAAAAAABI4XoUrkcBQEjhehSuRwFAAAAAAAAAAAAAAAAAAAD4f0jhehSuRxFASOF6FK5HAUAAAAAAAAD4f0jhehSuRxFASOF6FK5HAUA=", "encoding": "base64", "path": ["_data", 2, "x", "buffer"]}, {"data": "AAAAAAAAAACE786SBvTzPwAAAAAAAAAAAAAAAAAAAACE786SBvTzP4TvzpIG9PM/AAAAAAAA+H+E786SBvTzPwAAAAAAAAAAAAAAAAAAAACE786SBvTzv4TvzpIG9PO/AAAAAAAAAAAAAAAAAAD4fwAAAAAAAAAAhO/Okgb0878AAAAAAAD4fwAAAAAAAAAAhO/Okgb0878=", "encoding": "base64", "path": ["_data", 2, "y", "buffer"]}]}}, "version_major": 2, "version_minor": 0}
+{"state": {"dc6324dd12474f0ebbff7162e9ca0f2b": {"model_name": "FigureModel", "model_module": "jupyterlab-plotly", "model_module_version": "^5.17.0", "state": {"_config": {"plotlyServerURL": "https://plot.ly"}, "_data": [{"line": {"color": "#cccccc", "width": 3}, "mode": "lines", "name": "bonds", "opacity": 1, "x": [0.0, 1.44, null, 0.0, -0.7200000000000002, null, 0.0, -0.7200000000000002, null, 1.44, 2.16, null, 1.44, 2.16, null], "y": [0.0, 0.0, null, 0.0, -1.2470765814495914, null, 0.0, 1.2470765814495914, null, 0.0, -1.2470765814495914, null, 0.0, 1.2470765814495914, null], "type": "scatter", "uid": "99360131-2deb-484c-bc79-c612643d55e2"}, {"marker": {"color": ["grey", "grey"], "opacity": {"dtype": "float64", "shape": [2]}, "size": {"dtype": "float64", "shape": [2]}}, "mode": "markers", "name": "Atoms", "opacity": 1, "text": ["[0. 0. 0.]<br>0 (C)", "[1.44 0.   0.  ]<br>1 (C)"], "x": {"dtype": "float64", "shape": [2]}, "y": {"dtype": "float64", "shape": [2]}, "type": "scatter", "uid": "b077cc87-edca-42be-9d7b-b4e45d865708"}, {"line": {"color": "green"}, "mode": "lines", "name": "Unit cell", "opacity": 1, "x": {"dtype": "float64", "shape": [19]}, "y": {"dtype": "float64", "shape": [19]}, "type": "scatter", "uid": "13410257-4e3b-4890-b933-8dfcd96618b9"}], "_dom_classes": [], "_js2py_layoutDelta": {}, "_js2py_pointsCallback": {}, "_js2py_relayout": {}, "_js2py_restyle": {}, "_js2py_traceDeltas": {}, "_js2py_update": {}, "_last_layout_edit_id": 0, "_last_trace_edit_id": 0, "_layout": {"template": {"layout": {"hovermode": "closest", "paper_bgcolor": "white", "plot_bgcolor": "white", "scene": {"xaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "yaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "zaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}}, "xaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}, "yaxis": {"color": "black", "gridcolor": "#ccc", "gridwidth": 1, "linewidth": 1, "mirror": true, "showgrid": false, "showline": true, "ticklen": 5, "ticks": "outside", "ticksuffix": " ", "visible": true, "zeroline": false, "zerolinecolor": "#ccc", "zerolinewidth": 1}}}, "xaxis": {"showgrid": false, "title": {"text": "X axis [Ang]"}, "zeroline": false}, "yaxis": {"scaleanchor": "x", "scaleratio": 1, "showgrid": false, "title": {"text": "Y axis [Ang]"}, "zeroline": false}}, "_model_module": "jupyterlab-plotly", "_model_module_version": "^5.17.0", "_model_name": "FigureModel", "_py2js_addTraces": {}, "_py2js_animate": {}, "_py2js_deleteTraces": {}, "_py2js_moveTraces": {}, "_py2js_relayout": {}, "_py2js_removeLayoutProps": {}, "_py2js_removeTraceProps": {}, "_py2js_restyle": {}, "_py2js_update": {}, "_view_count": 0, "_view_module": "jupyterlab-plotly", "_view_module_version": "^5.17.0", "_view_name": "FigureView", "tabbable": null, "tooltip": null}, "buffers": [{"data": "AAAAAAAA8D8AAAAAAADwPw==", "encoding": "base64", "path": ["_data", 1, "marker", "opacity", "buffer"]}, {"data": "cT0K16NwJUBxPQrXo3AlQA==", "encoding": "base64", "path": ["_data", 1, "marker", "size", "buffer"]}, {"data": "AAAAAAAAAAAK16NwPQr3Pw==", "encoding": "base64", "path": ["_data", 1, "x", "buffer"]}, {"data": "AAAAAAAAAAAAAAAAAAAAAA==", "encoding": "base64", "path": ["_data", 1, "y", "buffer"]}, {"data": "AAAAAAAAAABI4XoUrkcBQEjhehSuRxFASOF6FK5HEUBI4XoUrkcBQEjhehSuRwFAAAAAAAAA+H9I4XoUrkcBQAAAAAAAAAAAAAAAAAAAAABI4XoUrkcBQEjhehSuRwFAAAAAAAAAAAAAAAAAAAD4f0jhehSuRxFASOF6FK5HAUAAAAAAAAD4f0jhehSuRxFASOF6FK5HAUA=", "encoding": "base64", "path": ["_data", 2, "x", "buffer"]}, {"data": "AAAAAAAAAACE786SBvTzPwAAAAAAAAAAAAAAAAAAAACE786SBvTzP4TvzpIG9PM/AAAAAAAA+H+E786SBvTzPwAAAAAAAAAAAAAAAAAAAACE786SBvTzv4TvzpIG9PO/AAAAAAAAAAAAAAAAAAD4fwAAAAAAAAAAhO/Okgb0878AAAAAAAD4fwAAAAAAAAAAhO/Okgb0878=", "encoding": "base64", "path": ["_data", 2, "y", "buffer"]}]}}, "version_major": 2, "version_minor": 0}
 </script></section>
 </section>
 

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>heteroribbon &mdash; sisl 0.1-dea8f6b</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sg_gallery.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/custom_styles.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=0b138a9b"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../_static/tabs.js?v=3ee01567"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="graphene_heteroribbon" href="sisl.geom.graphene_heteroribbon.html" />
+    <link rel="prev" title="nanotube" href="sisl.geom.nanotube.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            sisl
+          </a>
+              <div class="version">
+                0.1-dea8f6b
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cite.html">Citing sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../publications.html">Publications using sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/scripts.html">Command line scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../nodes/nodes_intro.html">Nodes and workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../basic.html">Basic classes</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../default_geom.html">Common geometries</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../default_geom.html#bulk">Bulk</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../default_geom.html#surfaces-slabs">Surfaces (slabs)</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../default_geom.html#d-materials">1D materials</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="sisl.geom.nanoribbon.html">nanoribbon</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.geom.agnr.html">agnr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.geom.zgnr.html">zgnr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.geom.graphene_nanoribbon.html">graphene_nanoribbon</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.geom.nanotube.html">nanotube</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">heteroribbon</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.geom.graphene_heteroribbon.html">graphene_heteroribbon</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../default_geom.html#id1">2D materials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../default_geom.html#helpers">Helpers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../physics.html">Physical objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mixing.html">Mixing self-consistent quantities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../viz/index.html">Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../unit_constant.html">Units and constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">API documentation</a></li>
+          <li class="breadcrumb-item"><a href="../default_geom.html">Common geometries</a></li>
+      <li class="breadcrumb-item active">heteroribbon</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/generated/sisl.geom.heteroribbon.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="heteroribbon">
+<h1>heteroribbon<a class="headerlink" href="#heteroribbon" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="sisl.geom.heteroribbon">
+<span class="sig-prename descclassname"><span class="pre">sisl.geom.</span></span><span class="sig-name descname"><span class="pre">heteroribbon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sections</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">section_cls=&lt;class</span> <span class="pre">'sisl.geom._heteroribbon_section'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.geom.heteroribbon" title="Link to this definition"></a></dt>
+<dd><p>Build a nanoribbon consisting of several nanoribbons of different widths.</p>
+<p>This function uses <a class="reference internal" href="sisl.geom.composite_geometry.html#sisl.geom.composite_geometry" title="sisl.geom.composite_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">composite_geometry</span></code></a>, but defaulting to the usage
+of <code class="xref py py-obj docutils literal notranslate"><span class="pre">heteroribbon.section</span></code> as the section class.</p>
+<p>See <code class="xref py py-obj docutils literal notranslate"><span class="pre">heteroribbon.section</span></code> and <a class="reference internal" href="sisl.geom.composite_geometry.html#sisl.geom.composite_geometry" title="sisl.geom.composite_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">composite_geometry</span></code></a> for arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The final structure of the heteroribbon.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry">Geometry</a></p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>It only works for armchair ribbons for now.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># A simple 7-11-AGNR with the sections aligned on the center</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">heteroribbon</span><span class="p">([(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">2</span><span class="p">)],</span> <span class="n">bond</span><span class="o">=</span><span class="mf">1.42</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># The same AGNR but shifted up</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">heteroribbon</span><span class="p">([(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)],</span> <span class="n">bond</span><span class="o">=</span><span class="mf">1.42</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># And down</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">heteroribbon</span><span class="p">([(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)],</span> <span class="n">bond</span><span class="o">=</span><span class="mf">1.42</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># The same AGNR but with a bigger 11 section and a 9-atom bridge</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">heteroribbon</span><span class="p">([(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="mi">1</span><span class="p">)],</span> <span class="n">bond</span><span class="o">=</span><span class="mf">1.42</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># One that you have probably never seen before</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">heteroribbon</span><span class="p">([(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="n">j</span><span class="p">),</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="n">j</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)],</span> <span class="n">bond</span><span class="o">=</span><span class="mf">1.42</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="sisl.geom.composite_geometry.html#sisl.geom.composite_geometry" title="sisl.geom.composite_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">composite_geometry</span></code></a></dt><dd><p>Underlying method used to build the heteroribbon.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">_heteroribbon_section</span></code></dt><dd><p>The class that describes each section.</p>
+</dd>
+<dt><a class="reference internal" href="sisl.geom.nanoribbon.html#sisl.geom.nanoribbon" title="sisl.geom.nanoribbon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nanoribbon</span></code></a></dt><dd><p>method used to create the segments</p>
+</dd>
+<dt><a class="reference internal" href="sisl.geom.graphene_heteroribbon.html#sisl.geom.graphene_heteroribbon" title="sisl.geom.graphene_heteroribbon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">graphene_heteroribbon</span></code></a></dt><dd><p>same as this function, but with defaults for graphene GNR’s</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sisl.geom.nanotube.html" class="btn btn-neutral float-left" title="nanotube" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sisl.geom.graphene_heteroribbon.html" class="btn btn-neutral float-right" title="graphene_heteroribbon" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

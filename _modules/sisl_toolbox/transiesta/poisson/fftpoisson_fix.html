@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl_toolbox.transiesta.poisson.fftpoisson_fix &mdash; sisl 0.1-98af2b8</title>
+  <title>sisl_toolbox.transiesta.poisson.fftpoisson_fix &mdash; sisl 0.1-dea8f6b</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
@@ -15,12 +15,12 @@
     <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../../_static/jquery.js"></script>
-        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-        <script src="../../../../_static/doctools.js"></script>
-        <script src="../../../../_static/sphinx_highlight.js"></script>
-        <script src="../../../../_static/tabs.js"></script>
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=0b138a9b"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/tabs.js?v=3ee01567"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
@@ -40,7 +40,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-98af2b8
+                0.1-dea8f6b
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -154,13 +154,14 @@
 <span class="sd">- It may not always converge which requires some fine-tuning of the tolerances,</span>
 <span class="sd">  secondly it may converge too fast so the solution is not really good.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">argparse</span> <span class="k">as</span> <span class="nn">argp</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">import</span> <span class="nn">argparse</span> <span class="k">as</span> <span class="nn">argp</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">sisl</span> <span class="k">as</span> <span class="nn">si</span>
-<span class="kn">import</span> <span class="nn">os</span>
 
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">sisl</span> <span class="k">as</span> <span class="nn">si</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;pyamg_solve&#39;</span><span class="p">,</span> <span class="s1">&#39;solve_poisson&#39;</span><span class="p">,</span> <span class="s1">&#39;fftpoisson_fix_cli&#39;</span><span class="p">,</span> <span class="s1">&#39;fftpoisson_fix_run&#39;</span><span class="p">]</span>
 
@@ -190,7 +191,9 @@
     <span class="k">return</span> <span class="n">x</span>
 
 
-<div class="viewcode-block" id="solve_poisson"><a class="viewcode-back" href="../../../../toolbox/transiesta/generated/sisl_toolbox.transiesta.poisson.solve_poisson.html#sisl_toolbox.transiesta.poisson.solve_poisson">[docs]</a><span class="k">def</span> <span class="nf">solve_poisson</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="s2">&quot;empirical&quot;</span><span class="p">,</span>
+<div class="viewcode-block" id="solve_poisson">
+<a class="viewcode-back" href="../../../../toolbox/transiesta/generated/sisl_toolbox.transiesta.poisson.solve_poisson.html#sisl_toolbox.transiesta.poisson.solve_poisson">[docs]</a>
+<span class="k">def</span> <span class="nf">solve_poisson</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="s2">&quot;empirical&quot;</span><span class="p">,</span>
                   <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span>
                   <span class="n">accel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">boundary_fft</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                   <span class="n">device_val</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">plot_boundary</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -383,6 +386,7 @@
         <span class="k">del</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span>
 
     <span class="k">return</span> <span class="n">grid</span></div>
+
 
 
 <span class="k">def</span> <span class="nf">fftpoisson_fix_cli</span><span class="p">(</span><span class="n">subp</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

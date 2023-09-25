@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Physical objects &mdash; sisl 0.1-98af2b8</title>
+  <title>Physical objects &mdash; sisl 0.1-dea8f6b</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/tabs.css" type="text/css" />
@@ -16,19 +16,19 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
-        <script src="../_static/tabs.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=0b138a9b"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/tabs.js?v=3ee01567"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Brillouin zone" href="physics.brillouinzone.html" />
-    <link rel="prev" title="graphene" href="generated/sisl.geom.graphene.html" /> 
+    <link rel="prev" title="sisl.geom.CompositeGeometrySection" href="generated/sisl.geom.CompositeGeometrySection.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -43,7 +43,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-98af2b8
+                0.1-dea8f6b
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -131,7 +131,7 @@
            <div itemprop="articleBody">
              
   <section id="module-sisl.physics">
-<span id="physical-objects"></span><span id="physics"></span><h1>Physical objects<a class="headerlink" href="#module-sisl.physics" title="Permalink to this heading"></a></h1>
+<span id="physical-objects"></span><span id="physics"></span><h1>Physical objects<a class="headerlink" href="#module-sisl.physics" title="Link to this heading"></a></h1>
 <p>Implementations of various DFT and tight-binding related quantities
 are defined. The implementations range from simple Brillouin zone
 perspectives to self-energy calculations from Hamiltonians.</p>
@@ -185,14 +185,14 @@ sparse. There are exceptions, but it is generally advisable to have this in mind
 </ul>
 </div>
 <section id="low-level-objects">
-<h2>Low level objects<a class="headerlink" href="#low-level-objects" title="Permalink to this heading"></a></h2>
+<h2>Low level objects<a class="headerlink" href="#low-level-objects" title="Link to this heading"></a></h2>
 <p>The low level objects are the driving objects for some of the physical
 objects found here. They are rarely (if ever) required to be used, but they
 may be important for developers wishing to extend the functionality of <a class="reference internal" href="index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a>
 using generic class-structures. For instance the <a class="reference internal" href="generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian" title="sisl.physics.Hamiltonian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Hamiltonian</span></code></a> inherits the
 <a class="reference internal" href="generated/sisl.physics.SparseOrbitalBZSpin.html#sisl.physics.SparseOrbitalBZSpin" title="sisl.physics.SparseOrbitalBZSpin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SparseOrbitalBZSpin</span></code></a> class and <code class="xref py py-obj docutils literal notranslate"><span class="pre">EigenvalueElectron</span></code> inherits from <a class="reference internal" href="generated/sisl.physics.Coefficient.html#sisl.physics.Coefficient" title="sisl.physics.Coefficient"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Coefficient</span></code></a>.</p>
 <section id="states">
-<h3>States<a class="headerlink" href="#states" title="Permalink to this heading"></a></h3>
+<h3>States<a class="headerlink" href="#states" title="Link to this heading"></a></h3>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.physics.degenerate_decouple.html#sisl.physics.degenerate_decouple" title="sisl.physics.degenerate_decouple"><code class="xref py py-obj docutils literal notranslate"><span class="pre">degenerate_decouple</span></code></a>(state, M)</p></td>
@@ -211,7 +211,7 @@ using generic class-structures. For instance the <a class="reference internal" h
 </table>
 </section>
 <section id="sparse-matrices">
-<h3>Sparse matrices<a class="headerlink" href="#sparse-matrices" title="Permalink to this heading"></a></h3>
+<h3>Sparse matrices<a class="headerlink" href="#sparse-matrices" title="Link to this heading"></a></h3>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.physics.SparseOrbitalBZ.html#sisl.physics.SparseOrbitalBZ" title="sisl.physics.SparseOrbitalBZ"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SparseOrbitalBZ</span></code></a>(geometry[, dim, dtype, nnzpr])</p></td>
@@ -230,7 +230,7 @@ using generic class-structures. For instance the <a class="reference internal" h
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="generated/sisl.geom.graphene.html" class="btn btn-neutral float-left" title="graphene" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="generated/sisl.geom.CompositeGeometrySection.html" class="btn btn-neutral float-left" title="sisl.geom.CompositeGeometrySection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="physics.brillouinzone.html" class="btn btn-neutral float-right" title="Brillouin zone" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

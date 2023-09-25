@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.sparse_geometry &mdash; sisl 0.1-98af2b8</title>
+  <title>sisl.sparse_geometry &mdash; sisl 0.1-dea8f6b</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
@@ -15,12 +15,12 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
-        <script src="../../_static/tabs.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=0b138a9b"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../_static/tabs.js?v=3ee01567"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -40,7 +40,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-98af2b8
+                0.1-dea8f6b
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -108,31 +108,46 @@
 <span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
 <span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
-<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Integral</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
 <span class="kn">import</span> <span class="nn">functools</span> <span class="k">as</span> <span class="nn">ftool</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Integral</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Optional</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">numpy.lib.mixins</span> <span class="kn">import</span> <span class="n">NDArrayOperatorsMixin</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">int32</span><span class="p">,</span> <span class="n">intersect1d</span><span class="p">,</span>
-    <span class="n">take</span><span class="p">,</span> <span class="n">delete</span><span class="p">,</span> <span class="n">argsort</span><span class="p">,</span> <span class="n">lexsort</span><span class="p">,</span>
-    <span class="n">insert</span><span class="p">,</span> <span class="n">unique</span><span class="p">,</span> <span class="n">diff</span><span class="p">,</span> <span class="n">allclose</span><span class="p">,</span>
+    <span class="n">allclose</span><span class="p">,</span>
+    <span class="n">argsort</span><span class="p">,</span>
+    <span class="n">concatenate</span><span class="p">,</span>
+    <span class="n">delete</span><span class="p">,</span>
+    <span class="n">diff</span><span class="p">,</span>
+    <span class="n">insert</span><span class="p">,</span>
+    <span class="n">int32</span><span class="p">,</span>
+    <span class="n">intersect1d</span><span class="p">,</span>
+    <span class="n">lexsort</span><span class="p">,</span>
+    <span class="n">repeat</span><span class="p">,</span>
     <span class="n">searchsorted</span><span class="p">,</span>
-    <span class="n">tile</span><span class="p">,</span> <span class="n">repeat</span><span class="p">,</span> <span class="n">concatenate</span>
+    <span class="n">take</span><span class="p">,</span>
+    <span class="n">tile</span><span class="p">,</span>
+    <span class="n">unique</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">numpy.lib.mixins</span> <span class="kn">import</span> <span class="n">NDArrayOperatorsMixin</span>
 <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">csr_matrix</span>
 
-<span class="kn">from</span> <span class="nn">._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">sisl.typing</span> <span class="kn">import</span> <span class="n">AtomsArgument</span>
+
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_array</span> <span class="k">as</span> <span class="n">_a</span>
 <span class="kn">from</span> <span class="nn">._array</span> <span class="kn">import</span> <span class="n">array_arange</span>
+<span class="kn">from</span> <span class="nn">._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span> <span class="nn">.atom</span> <span class="kn">import</span> <span class="n">Atom</span>
-<span class="kn">from</span> <span class="nn">.orbital</span> <span class="kn">import</span> <span class="n">Orbital</span>
 <span class="kn">from</span> <span class="nn">.geometry</span> <span class="kn">import</span> <span class="n">Geometry</span>
-<span class="kn">from</span> <span class="nn">.messages</span> <span class="kn">import</span> <span class="n">warn</span><span class="p">,</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">SislWarning</span><span class="p">,</span> <span class="n">progressbar</span>
+<span class="kn">from</span> <span class="nn">.messages</span> <span class="kn">import</span> <span class="n">SislError</span><span class="p">,</span> <span class="n">SislWarning</span><span class="p">,</span> <span class="n">progressbar</span><span class="p">,</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">.orbital</span> <span class="kn">import</span> <span class="n">Orbital</span>
+<span class="kn">from</span> <span class="nn">.sparse</span> <span class="kn">import</span> <span class="n">SparseCSR</span><span class="p">,</span> <span class="n">_ncol_to_indptr</span><span class="p">,</span> <span class="n">issparse</span>
 <span class="kn">from</span> <span class="nn">.utils.ranges</span> <span class="kn">import</span> <span class="n">list2str</span>
-<span class="kn">from</span> <span class="nn">.sparse</span> <span class="kn">import</span> <span class="n">SparseCSR</span><span class="p">,</span> <span class="n">isspmatrix</span><span class="p">,</span> <span class="n">_ncol_to_indptr</span>
-
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;SparseAtom&#39;</span><span class="p">,</span> <span class="s1">&#39;SparseOrbital&#39;</span><span class="p">]</span>
 
@@ -261,6 +276,142 @@
     <span class="k">def</span> <span class="nf">nnz</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Number of non-zero elements &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">nnz</span>
+
+    <span class="k">def</span> <span class="nf">translate2uc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AtomsArgument</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Translates all primary atoms to the unit cell.</span>
+<span class="sd">        </span>
+<span class="sd">        With this, the coordinates of the geometry are translated to the unit cell</span>
+<span class="sd">        and the supercell connections in the matrix are updated accordingly.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        atoms : AtomsArgument, optional</span>
+<span class="sd">            only translate the specified atoms. If not specified, all</span>
+<span class="sd">            atoms will be translated.</span>
+<span class="sd">        axes : int or array_like or None, optional</span>
+<span class="sd">            only translate certain lattice directions, `None` species</span>
+<span class="sd">            only the periodic directions</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        --------</span>
+<span class="sd">        SparseOrbital or SparseAtom</span>
+<span class="sd">            A new sparse matrix with the updated connections and a new associated geometry.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Sanitize the axes argument</span>
+        <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">axes</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">nsc</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">axes</span><span class="p">:</span>
+                <span class="n">axes</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;translate2uc with a bool argument can only be True to signal all axes&quot;</span><span class="p">)</span>
+            
+        <span class="c1"># Sanitize also the atoms argument</span>
+        <span class="k">if</span> <span class="n">atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ats</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">_sanitize_atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+            
+        <span class="c1"># Get the fractional coordinates of the associated geometry</span>
+        <span class="n">fxyz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">fxyz</span>
+
+        <span class="c1"># Get the cell where each atom resides. In fractional coordinates, atoms in the unit cell</span>
+        <span class="c1"># are between 0 and 1. Anything else means that the atom resides in a periodic image. For</span>
+        <span class="c1"># atoms and axes that the user doesn&#39;t desire the translation, we are going to set the supercell</span>
+        <span class="c1"># offset as if it was 0, which will result in them not getting translated.</span>
+        <span class="n">current_sc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">na</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="n">current_sc</span><span class="p">[</span><span class="n">ats</span><span class="p">,</span> <span class="n">axes</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">fxyz</span><span class="p">[</span><span class="n">ats</span><span class="p">,</span> <span class="n">axes</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+
+        <span class="c1"># Simply translate the atoms to move all atoms to the unit cell. That is, all atoms</span>
+        <span class="c1"># should be moved to supercell (0,0,0).</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_translate_atoms_sc</span><span class="p">(</span><span class="o">-</span><span class="n">current_sc</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_translate_atoms_sc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sc_translations</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Translates atoms across supercells.</span>
+
+<span class="sd">        This operation results in new coordinates of the associated geometry </span>
+<span class="sd">        and new indices for the matrix elements.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        sc_translations : array of int of shape (na, 3)</span>
+<span class="sd">            For each atom, the displacement in number of supercells along each direction.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        --------</span>
+<span class="sd">        SparseOrbital or SparseAtom</span>
+<span class="sd">            A new sparse matrix with the updated connections and a new associated geometry.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Make sure that supercell translations is an array of integers</span>
+        <span class="n">sc_translations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">sc_translations</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        
+        <span class="c1"># Get the row and column of every element in the matrix</span>
+        <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()</span>
+
+        <span class="n">n_rows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">is_atom</span> <span class="o">=</span> <span class="n">n_rows</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">na</span>
+
+        
+        <span class="c1"># Find out the unit cell indices for the columns, and the index of the supercell</span>
+        <span class="c1"># where they are currently located. This is done by dividing into the number of</span>
+        <span class="c1"># columns in the unit cell.</span>
+        <span class="c1"># We will do the conversion back to supercell indices when we know their </span>
+        <span class="c1"># new location after translation, and also the size of the new auxiliary supercell.</span>
+        <span class="n">sc_idx</span><span class="p">,</span> <span class="n">uc_col</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divmod</span><span class="p">(</span><span class="n">cols</span><span class="p">,</span> <span class="n">n_rows</span><span class="p">)</span>
+
+        <span class="c1"># We need the unit cell indices of the column atoms. If this is a SparseAtom object, then</span>
+        <span class="c1"># we have already computed them in the previous line. Otherwise, compute them.</span>
+        <span class="k">if</span> <span class="n">is_atom</span><span class="p">:</span>
+            <span class="c1"># atomic indices</span>
+            <span class="n">at_row</span> <span class="o">=</span> <span class="n">rows</span>
+            <span class="n">at_col</span> <span class="o">=</span> <span class="n">uc_col</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># orbital indices</span>
+            <span class="n">at_row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+            <span class="n">at_col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="n">cols</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">na</span>
+        
+        <span class="c1"># Get the supercell indices of the original positions.</span>
+        <span class="n">isc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc_off</span><span class="p">[</span><span class="n">sc_idx</span><span class="p">]</span>
+        
+        <span class="c1"># We are going to now displace the supercell index of the connections</span>
+        <span class="c1"># according to how the two orbitals involved have moved. We store the</span>
+        <span class="c1"># result in the same array just to avoid using more memory.</span>
+        <span class="n">isc</span> <span class="o">+=</span> <span class="n">sc_translations</span><span class="p">[</span><span class="n">at_row</span><span class="p">]</span> <span class="o">-</span> <span class="n">sc_translations</span><span class="p">[</span><span class="n">at_col</span><span class="p">]</span>
+        
+        <span class="c1"># It is possible that once we discover the new locations of the connections</span>
+        <span class="c1"># we find out that we need a bigger or smaller auxiliary supercell. Find out</span>
+        <span class="c1"># the size of the new auxiliary supercell.</span>
+        <span class="n">new_nsc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">isc</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span>
+        
+        <span class="c1"># Create a new geometry object with the new auxiliary supercell size.</span>
+        <span class="n">new_geometry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">new_geometry</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">(</span><span class="n">new_nsc</span><span class="p">)</span>
+        
+        <span class="c1"># Update the coordinates of the geometry, according to the cell</span>
+        <span class="c1"># displacements.</span>
+        <span class="n">new_geometry</span><span class="o">.</span><span class="n">xyz</span> <span class="o">=</span> <span class="n">new_geometry</span><span class="o">.</span><span class="n">xyz</span> <span class="o">+</span> <span class="n">sc_translations</span> <span class="o">@</span> <span class="n">new_geometry</span><span class="o">.</span><span class="n">cell</span>
+        
+        <span class="c1"># Find out supercell indices in this new auxiliary supercell</span>
+        <span class="n">new_sc</span> <span class="o">=</span> <span class="n">new_geometry</span><span class="o">.</span><span class="n">isc_off</span><span class="p">[</span><span class="n">isc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">isc</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">isc</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]]</span>
+        
+        <span class="c1"># With this, we can compute the new columns</span>
+        <span class="n">new_cols</span> <span class="o">=</span> <span class="n">uc_col</span> <span class="o">+</span> <span class="n">new_sc</span> <span class="o">*</span> <span class="n">n_rows</span>
+        
+        <span class="c1"># Build the new csr matrix, which will just be a copy of the current one</span>
+        <span class="c1"># but updating the column indices. It is possible that there are column</span>
+        <span class="c1"># indices that are -1, which are the placeholders for new elements. We make sure</span>
+        <span class="c1"># that we update only the indices that are not -1. </span>
+        <span class="c1"># We also need to make sure that the shape of the matrix is appropiate </span>
+        <span class="c1"># for the size of the new auxiliary cell.</span>
+        <span class="n">new_csr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">new_csr</span><span class="o">.</span><span class="n">col</span><span class="p">[</span><span class="n">new_csr</span><span class="o">.</span><span class="n">col</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_cols</span>
+        <span class="n">new_csr</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_rows</span><span class="p">,</span> <span class="n">n_rows</span> <span class="o">*</span> <span class="n">new_geometry</span><span class="o">.</span><span class="n">n_s</span><span class="p">,</span> <span class="n">new_csr</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        
+        <span class="c1"># Create the new SparseGeometry matrix and associate to it the csr matrix that we have built.</span>
+        <span class="n">new_matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">new_geometry</span><span class="p">)</span>
+        <span class="n">new_matrix</span><span class="o">.</span><span class="n">_csr</span> <span class="o">=</span> <span class="n">new_csr</span>
+        
+        <span class="k">return</span> <span class="n">new_matrix</span>
 
     <span class="k">def</span> <span class="nf">_translate_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Translates all columns in the `old` cell indices to the `new` cell indices</span>
@@ -1034,7 +1185,7 @@
 <span class="sd">             a new sparse matrix that holds the passed geometry and the elements of `P`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Ensure list of * format (to get dimensions)</span>
-        <span class="k">if</span> <span class="n">isspmatrix</span><span class="p">(</span><span class="n">P</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">issparse</span><span class="p">(</span><span class="n">P</span><span class="p">):</span>
             <span class="n">P</span> <span class="o">=</span> <span class="p">[</span><span class="n">P</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
             <span class="n">P</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
@@ -1155,7 +1306,9 @@
     <span class="k">def</span> <span class="nf">_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">na</span>
 
-<div class="viewcode-block" id="SparseAtom.nonzero"><a class="viewcode-back" href="../../api/generated/sisl.SparseAtom.html#sisl.SparseAtom.nonzero">[docs]</a>    <span class="k">def</span> <span class="nf">nonzero</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only_cols</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="SparseAtom.nonzero">
+<a class="viewcode-back" href="../../api/generated/sisl.SparseAtom.html#sisl.SparseAtom.nonzero">[docs]</a>
+    <span class="k">def</span> <span class="nf">nonzero</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only_cols</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Indices row and column indices where non-zero elements exists</span>
 
 <span class="sd">        Parameters</span>
@@ -1171,7 +1324,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="n">atoms</span><span class="p">,</span> <span class="n">only_cols</span><span class="o">=</span><span class="n">only_cols</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SparseAtom.iter_nnz"><a class="viewcode-back" href="../../api/generated/sisl.SparseAtom.html#sisl.SparseAtom.iter_nnz">[docs]</a>    <span class="k">def</span> <span class="nf">iter_nnz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SparseAtom.iter_nnz">
+<a class="viewcode-back" href="../../api/generated/sisl.SparseAtom.html#sisl.SparseAtom.iter_nnz">[docs]</a>
+    <span class="k">def</span> <span class="nf">iter_nnz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Iterations of the non-zero elements</span>
 
 <span class="sd">        An iterator on the sparse matrix with, row and column</span>
@@ -1192,7 +1348,10 @@
             <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">_sanitize_atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
             <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">iter_nnz</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SparseAtom.set_nsc"><a class="viewcode-back" href="../../api/generated/sisl.SparseAtom.html#sisl.SparseAtom.set_nsc">[docs]</a>    <span class="k">def</span> <span class="nf">set_nsc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SparseAtom.set_nsc">
+<a class="viewcode-back" href="../../api/generated/sisl.SparseAtom.html#sisl.SparseAtom.set_nsc">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_nsc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Reset the number of allowed supercells in the sparse atom</span>
 
 <span class="sd">        If one reduces the number of supercells *any* sparse element</span>
@@ -1206,7 +1365,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">na</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SparseAtom.untile"><a class="viewcode-back" href="../../api/generated/sisl.SparseAtom.html#sisl.SparseAtom.untile">[docs]</a>    <span class="k">def</span> <span class="nf">untile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">segment</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">sym</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SparseAtom.untile">
+<a class="viewcode-back" href="../../api/generated/sisl.SparseAtom.html#sisl.SparseAtom.untile">[docs]</a>
+    <span class="k">def</span> <span class="nf">untile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">segment</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">sym</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Untiles the sparse model into different parts (retaining couplings)</span>
 
 <span class="sd">        Recreates a new sparse object with only the cutted</span>
@@ -1264,7 +1426,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">untile</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">segment</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">sym</span><span class="o">=</span><span class="n">sym</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SparseAtom.sub"><a class="viewcode-back" href="../../api/generated/sisl.SparseAtom.html#sisl.SparseAtom.sub">[docs]</a>    <span class="k">def</span> <span class="nf">sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SparseAtom.sub">
+<a class="viewcode-back" href="../../api/generated/sisl.SparseAtom.html#sisl.SparseAtom.sub">[docs]</a>
+    <span class="k">def</span> <span class="nf">sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Create a subset of this sparse matrix by only retaining the elements corresponding to the `atoms`</span>
 
 <span class="sd">        Indices passed *MUST* be unique.</span>
@@ -1297,7 +1462,10 @@
 
         <span class="k">return</span> <span class="n">S</span></div>
 
-<div class="viewcode-block" id="SparseAtom.tile"><a class="viewcode-back" href="../../api/generated/sisl.SparseAtom.html#sisl.SparseAtom.tile">[docs]</a>    <span class="k">def</span> <span class="nf">tile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SparseAtom.tile">
+<a class="viewcode-back" href="../../api/generated/sisl.SparseAtom.html#sisl.SparseAtom.tile">[docs]</a>
+    <span class="k">def</span> <span class="nf">tile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Create a tiled sparse atom object, equivalent to `Geometry.tile`</span>
 
 <span class="sd">        The already existing sparse elements are extrapolated</span>
@@ -1383,7 +1551,10 @@
 
         <span class="k">return</span> <span class="n">S</span></div>
 
-<div class="viewcode-block" id="SparseAtom.repeat"><a class="viewcode-back" href="../../api/generated/sisl.SparseAtom.html#sisl.SparseAtom.repeat">[docs]</a>    <span class="k">def</span> <span class="nf">repeat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SparseAtom.repeat">
+<a class="viewcode-back" href="../../api/generated/sisl.SparseAtom.html#sisl.SparseAtom.repeat">[docs]</a>
+    <span class="k">def</span> <span class="nf">repeat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Create a repeated sparse atom object, equivalent to `Geometry.repeat`</span>
 
 <span class="sd">        The already existing sparse elements are extrapolated</span>
@@ -1474,7 +1645,10 @@
 
         <span class="k">return</span> <span class="n">S</span></div>
 
-<div class="viewcode-block" id="SparseAtom.rij"><a class="viewcode-back" href="../../api/generated/sisl.SparseAtom.html#sisl.SparseAtom.rij">[docs]</a>    <span class="k">def</span> <span class="nf">rij</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SparseAtom.rij">
+<a class="viewcode-back" href="../../api/generated/sisl.SparseAtom.html#sisl.SparseAtom.rij">[docs]</a>
+    <span class="k">def</span> <span class="nf">rij</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Create a sparse matrix with the distance between atoms</span>
 
 <span class="sd">        Parameters</span>
@@ -1493,7 +1667,10 @@
         <span class="n">R</span><span class="o">.</span><span class="n">_csr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">_csr</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
         <span class="k">return</span> <span class="n">R</span></div>
 
-<div class="viewcode-block" id="SparseAtom.Rij"><a class="viewcode-back" href="../../api/generated/sisl.SparseAtom.html#sisl.SparseAtom.Rij">[docs]</a>    <span class="k">def</span> <span class="nf">Rij</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SparseAtom.Rij">
+<a class="viewcode-back" href="../../api/generated/sisl.SparseAtom.html#sisl.SparseAtom.Rij">[docs]</a>
+    <span class="k">def</span> <span class="nf">Rij</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Create a sparse matrix with vectors between atoms</span>
 
 <span class="sd">        Parameters</span>
@@ -1531,6 +1708,7 @@
             <span class="n">R</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[</span><span class="n">sl</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">Rij</span><span class="p">(</span><span class="n">ia</span><span class="p">,</span> <span class="n">col</span><span class="p">[</span><span class="n">sl</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="n">R</span></div>
+
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl&quot;</span><span class="p">)</span>
@@ -1576,7 +1754,9 @@
     <span class="k">def</span> <span class="nf">_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">no</span>
 
-<div class="viewcode-block" id="SparseOrbital.edges"><a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.edges">[docs]</a>    <span class="k">def</span> <span class="nf">edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="SparseOrbital.edges">
+<a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.edges">[docs]</a>
+    <span class="k">def</span> <span class="nf">edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Retrieve edges (connections) for all `atoms`</span>
 
 <span class="sd">        The returned edges are unique and sorted (see `numpy.unique`) and are returned</span>
@@ -1602,7 +1782,10 @@
             <span class="k">return</span> <span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">o2a</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="n">exclude</span><span class="p">)))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">orbitals</span><span class="p">,</span> <span class="n">exclude</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SparseOrbital.nonzero"><a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.nonzero">[docs]</a>    <span class="k">def</span> <span class="nf">nonzero</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only_cols</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SparseOrbital.nonzero">
+<a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.nonzero">[docs]</a>
+    <span class="k">def</span> <span class="nf">nonzero</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only_cols</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Indices row and column indices where non-zero elements exists</span>
 
 <span class="sd">        Parameters</span>
@@ -1622,7 +1805,10 @@
         <span class="n">rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">a2o</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="n">rows</span><span class="p">,</span> <span class="n">only_cols</span><span class="o">=</span><span class="n">only_cols</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SparseOrbital.iter_nnz"><a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.iter_nnz">[docs]</a>    <span class="k">def</span> <span class="nf">iter_nnz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SparseOrbital.iter_nnz">
+<a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.iter_nnz">[docs]</a>
+    <span class="k">def</span> <span class="nf">iter_nnz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Iterations of the non-zero elements</span>
 
 <span class="sd">        An iterator on the sparse matrix with, row and column</span>
@@ -1650,7 +1836,10 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">iter_nnz</span><span class="p">(</span><span class="n">orbitals</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SparseOrbital.set_nsc"><a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.set_nsc">[docs]</a>    <span class="k">def</span> <span class="nf">set_nsc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SparseOrbital.set_nsc">
+<a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.set_nsc">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_nsc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Reset the number of allowed supercells in the sparse orbital</span>
 
 <span class="sd">        If one reduces the number of supercells *any* sparse element</span>
@@ -1664,7 +1853,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">no</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SparseOrbital.remove"><a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.remove">[docs]</a>    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SparseOrbital.remove">
+<a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.remove">[docs]</a>
+    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Remove a subset of this sparse matrix by only retaining the atoms corresponding to `atoms`</span>
 
 <span class="sd">        Parameters</span>
@@ -1681,7 +1873,10 @@
         <span class="c1"># This will digress to call .sub</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SparseOrbital.remove_orbital"><a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.remove_orbital">[docs]</a>    <span class="k">def</span> <span class="nf">remove_orbital</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SparseOrbital.remove_orbital">
+<a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.remove_orbital">[docs]</a>
+    <span class="k">def</span> <span class="nf">remove_orbital</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Remove a subset of orbitals on `atoms` according to `orbitals`</span>
 
 <span class="sd">        For more detailed examples, please see the equivalent (but opposite) method</span>
@@ -1728,7 +1923,10 @@
         <span class="c1"># now call sub_orbital</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_orbital</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SparseOrbital.sub"><a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.sub">[docs]</a>    <span class="k">def</span> <span class="nf">sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SparseOrbital.sub">
+<a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.sub">[docs]</a>
+    <span class="k">def</span> <span class="nf">sub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Create a subset of this sparse matrix by only retaining the atoms corresponding to `atoms`</span>
 
 <span class="sd">        Negative indices are wrapped and thus works, supercell atoms are also wrapped to the unit-cell.</span>
@@ -1768,7 +1966,10 @@
 
         <span class="k">return</span> <span class="n">S</span></div>
 
-<div class="viewcode-block" id="SparseOrbital.sub_orbital"><a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.sub_orbital">[docs]</a>    <span class="k">def</span> <span class="nf">sub_orbital</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SparseOrbital.sub_orbital">
+<a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.sub_orbital">[docs]</a>
+    <span class="k">def</span> <span class="nf">sub_orbital</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">orbitals</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Retain only a subset of the orbitals on `atoms` according to `orbitals`</span>
 
 <span class="sd">        This allows one to retain only a given subset of the sparse matrix elements.</span>
@@ -1876,7 +2077,10 @@
 
         <span class="k">return</span> <span class="n">SG</span></div>
 
-<div class="viewcode-block" id="SparseOrbital.tile"><a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.tile">[docs]</a>    <span class="k">def</span> <span class="nf">tile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SparseOrbital.tile">
+<a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.tile">[docs]</a>
+    <span class="k">def</span> <span class="nf">tile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Create a tiled sparse orbital object, equivalent to `Geometry.tile`</span>
 
 <span class="sd">        The already existing sparse elements are extrapolated</span>
@@ -1956,7 +2160,10 @@
 
         <span class="k">return</span> <span class="n">S</span></div>
 
-<div class="viewcode-block" id="SparseOrbital.untile"><a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.untile">[docs]</a>    <span class="k">def</span> <span class="nf">untile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">segment</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">sym</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SparseOrbital.untile">
+<a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.untile">[docs]</a>
+    <span class="k">def</span> <span class="nf">untile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">segment</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">sym</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Untiles the sparse model into different parts (retaining couplings)</span>
 
 <span class="sd">        Recreates a new sparse object with only the cutted</span>
@@ -2014,7 +2221,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">untile</span><span class="p">(</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">segment</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">sym</span><span class="o">=</span><span class="n">sym</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SparseOrbital.repeat"><a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.repeat">[docs]</a>    <span class="k">def</span> <span class="nf">repeat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SparseOrbital.repeat">
+<a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.repeat">[docs]</a>
+    <span class="k">def</span> <span class="nf">repeat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Create a repeated sparse orbital object, equivalent to `Geometry.repeat`</span>
 
 <span class="sd">        The already existing sparse elements are extrapolated</span>
@@ -2128,7 +2338,10 @@
 
         <span class="k">return</span> <span class="n">S</span></div>
 
-<div class="viewcode-block" id="SparseOrbital.rij"><a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.rij">[docs]</a>    <span class="k">def</span> <span class="nf">rij</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="s1">&#39;orbital&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SparseOrbital.rij">
+<a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.rij">[docs]</a>
+    <span class="k">def</span> <span class="nf">rij</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="s1">&#39;orbital&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Create a sparse matrix with the distance between atoms/orbitals</span>
 
 <span class="sd">        Parameters</span>
@@ -2152,7 +2365,10 @@
         <span class="n">R</span><span class="o">.</span><span class="n">_csr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">_csr</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
         <span class="k">return</span> <span class="n">R</span></div>
 
-<div class="viewcode-block" id="SparseOrbital.Rij"><a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.Rij">[docs]</a>    <span class="k">def</span> <span class="nf">Rij</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="s1">&#39;orbital&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SparseOrbital.Rij">
+<a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.Rij">[docs]</a>
+    <span class="k">def</span> <span class="nf">Rij</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="s1">&#39;orbital&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Create a sparse matrix with the vectors between atoms/orbitals</span>
 
 <span class="sd">        Parameters</span>
@@ -2213,7 +2429,10 @@
 
         <span class="k">return</span> <span class="n">R</span></div>
 
-<div class="viewcode-block" id="SparseOrbital.add"><a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
+
+<div class="viewcode-block" id="SparseOrbital.add">
+<a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.add">[docs]</a>
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Add two sparse matrices by adding the parameters to one set. The final matrix will have no couplings between `self` and `other`</span>
 
 <span class="sd">        The final sparse matrix will not have any couplings between `self` and `other`. Not even if they</span>
@@ -2337,7 +2556,10 @@
 
         <span class="k">return</span> <span class="n">full</span></div>
 
-<div class="viewcode-block" id="SparseOrbital.prepend"><a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.prepend">[docs]</a>    <span class="k">def</span> <span class="nf">prepend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SparseOrbital.prepend">
+<a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.prepend">[docs]</a>
+    <span class="k">def</span> <span class="nf">prepend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; See `append` for details</span>
 
 <span class="sd">        This is currently equivalent to:</span>
@@ -2346,7 +2568,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SparseOrbital.append"><a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SparseOrbital.append">
+<a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.append">[docs]</a>
+    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Append `other` along `axis` to construct a new connected sparse matrix</span>
 
 <span class="sd">        This method tries to append two sparse geometry objects together by</span>
@@ -2620,7 +2845,10 @@
         <span class="n">full</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">translate_columns</span><span class="p">(</span><span class="n">col_from</span><span class="p">,</span> <span class="n">col_to</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">full</span></div>
 
-<div class="viewcode-block" id="SparseOrbital.replace"><a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.replace">[docs]</a>    <span class="k">def</span> <span class="nf">replace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">other_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">1.</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SparseOrbital.replace">
+<a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.replace">[docs]</a>
+    <span class="k">def</span> <span class="nf">replace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">other_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">1.</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot; Replace `atoms` in `self` with `other_atoms` in `other` and retain couplings between them</span>
 
 <span class="sd">        This method replaces a subset of atoms in `self` with</span>
@@ -3114,7 +3342,10 @@
         <span class="n">out</span><span class="o">.</span><span class="n">_geometry</span> <span class="o">=</span> <span class="n">geom</span>
         <span class="k">return</span> <span class="n">out</span></div>
 
-<div class="viewcode-block" id="SparseOrbital.toSparseAtom"><a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.toSparseAtom">[docs]</a>    <span class="k">def</span> <span class="nf">toSparseAtom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SparseOrbital.toSparseAtom">
+<a class="viewcode-back" href="../../api/generated/sisl.SparseOrbital.html#sisl.SparseOrbital.toSparseAtom">[docs]</a>
+    <span class="k">def</span> <span class="nf">toSparseAtom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Convert the sparse object (without data) to a new sparse object with equivalent but reduced sparse pattern</span>
 
 <span class="sd">        This converts the orbital sparse pattern to an atomic sparse pattern.</span>
@@ -3170,6 +3401,7 @@
         <span class="n">spAtom</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_nnz</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
         <span class="n">spAtom</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_finalized</span> <span class="o">=</span> <span class="kc">True</span> <span class="c1"># unique returns sorted elements</span>
         <span class="k">return</span> <span class="n">spAtom</span></div>
+
 </pre></div>
 
            </div>

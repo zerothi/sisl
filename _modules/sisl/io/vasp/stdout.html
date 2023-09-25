@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.vasp.stdout &mdash; sisl 0.1-98af2b8</title>
+  <title>sisl.io.vasp.stdout &mdash; sisl 0.1-dea8f6b</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
@@ -15,12 +15,12 @@
     <script src="../../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../../_static/jquery.js"></script>
-        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-        <script src="../../../../_static/doctools.js"></script>
-        <script src="../../../../_static/sphinx_highlight.js"></script>
-        <script src="../../../../_static/tabs.js"></script>
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=0b138a9b"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/tabs.js?v=3ee01567"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
@@ -40,7 +40,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-98af2b8
+                0.1-dea8f6b
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -110,13 +110,13 @@
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileVASP</span>
-<span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_fh_open</span>
-<span class="kn">from</span> <span class="nn">.._multiple</span> <span class="kn">import</span> <span class="n">SileBinder</span>
-
-<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">deprecation</span><span class="p">,</span> <span class="n">deprecate_argument</span>
-<span class="kn">from</span> <span class="nn">sisl.utils</span> <span class="kn">import</span> <span class="n">PropertyDict</span>
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">deprecate_argument</span><span class="p">,</span> <span class="n">deprecation</span>
+<span class="kn">from</span> <span class="nn">sisl.utils</span> <span class="kn">import</span> <span class="n">PropertyDict</span>
+
+<span class="kn">from</span> <span class="nn">.._multiple</span> <span class="kn">import</span> <span class="n">SileBinder</span>
+<span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_fh_open</span>
+<span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileVASP</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;stdoutSileVASP&quot;</span><span class="p">,</span> <span class="s2">&quot;outSileVASP&quot;</span><span class="p">]</span>
 
@@ -136,14 +136,19 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_completed</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="n">line</span>
 
-<div class="viewcode-block" id="stdoutSileVASP.completed"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.vasp.stdoutSileVASP.html#sisl.io.vasp.stdoutSileVASP.completed">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
+<div class="viewcode-block" id="stdoutSileVASP.completed">
+<a class="viewcode-back" href="../../../../api/io/generated/sisl.io.vasp.stdoutSileVASP.html#sisl.io.vasp.stdoutSileVASP.completed">[docs]</a>
+    <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">completed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; True if the line &quot;General timing and accounting&quot; was found. &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_completed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_completed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;General timing and accounting&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_completed</span></div>
 
-<div class="viewcode-block" id="stdoutSileVASP.cpu_time"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.vasp.stdoutSileVASP.html#sisl.io.vasp.stdoutSileVASP.cpu_time">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
+
+<div class="viewcode-block" id="stdoutSileVASP.cpu_time">
+<a class="viewcode-back" href="../../../../api/io/generated/sisl.io.vasp.stdoutSileVASP.html#sisl.io.vasp.stdoutSileVASP.cpu_time">[docs]</a>
+    <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">cpu_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag</span><span class="o">=</span><span class="s2">&quot;General timing and accounting&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns the consumed cpu time (in seconds) from a given section &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">flag</span> <span class="o">==</span> <span class="s2">&quot;General timing and accounting&quot;</span><span class="p">:</span>
@@ -159,12 +164,18 @@
             <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="n">iplace</span><span class="p">])</span>
         <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.cpu_time could not find flag &#39;</span><span class="si">{</span><span class="n">flag</span><span class="si">}</span><span class="s2">&#39; in file&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="stdoutSileVASP.accuracy_reached"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.vasp.stdoutSileVASP.html#sisl.io.vasp.stdoutSileVASP.accuracy_reached">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
+
+<div class="viewcode-block" id="stdoutSileVASP.accuracy_reached">
+<a class="viewcode-back" href="../../../../api/io/generated/sisl.io.vasp.stdoutSileVASP.html#sisl.io.vasp.stdoutSileVASP.accuracy_reached">[docs]</a>
+    <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">accuracy_reached</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; True if the line &quot;reached required accuracy&quot; was found. &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;reached required accuracy&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="stdoutSileVASP.read_energy"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.vasp.stdoutSileVASP.html#sisl.io.vasp.stdoutSileVASP.read_energy">[docs]</a>    <span class="nd">@SileBinder</span><span class="p">()</span>
+
+<div class="viewcode-block" id="stdoutSileVASP.read_energy">
+<a class="viewcode-back" href="../../../../api/io/generated/sisl.io.vasp.stdoutSileVASP.html#sisl.io.vasp.stdoutSileVASP.read_energy">[docs]</a>
+    <span class="nd">@SileBinder</span><span class="p">()</span>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="nd">@deprecate_argument</span><span class="p">(</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;use read_energy[:]() instead to get all entries&quot;</span><span class="p">,</span> <span class="n">from_version</span><span class="o">=</span><span class="s2">&quot;0.14&quot;</span><span class="p">)</span>
     <span class="nd">@deprecation</span><span class="p">(</span><span class="s2">&quot;WARNING: direct calls to stdoutSileVASP.read_energy() no longer returns the last entry! Now the next block on file is returned.&quot;</span><span class="p">,</span> <span class="n">from_version</span><span class="o">=</span><span class="s2">&quot;0.14&quot;</span><span class="p">)</span>
@@ -235,7 +246,10 @@
         <span class="n">E</span><span class="o">.</span><span class="n">sigma0</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">E</span></div>
 
-<div class="viewcode-block" id="stdoutSileVASP.read_trajectory"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.vasp.stdoutSileVASP.html#sisl.io.vasp.stdoutSileVASP.read_trajectory">[docs]</a>    <span class="nd">@SileBinder</span><span class="p">()</span>
+
+<div class="viewcode-block" id="stdoutSileVASP.read_trajectory">
+<a class="viewcode-back" href="../../../../api/io/generated/sisl.io.vasp.stdoutSileVASP.html#sisl.io.vasp.stdoutSileVASP.read_trajectory">[docs]</a>
+    <span class="nd">@SileBinder</span><span class="p">()</span>
     <span class="nd">@sile_fh_open</span><span class="p">()</span>
     <span class="k">def</span> <span class="nf">read_trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Reads cell+position+force data from OUTCAR for an ionic trajectory step</span>
@@ -277,6 +291,7 @@
         <span class="n">step</span><span class="o">.</span><span class="n">xyz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
         <span class="n">step</span><span class="o">.</span><span class="n">force</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">step</span></div>
+
 
 
 <span class="n">outSileVASP</span> <span class="o">=</span> <span class="n">deprecation</span><span class="p">(</span><span class="s2">&quot;outSileVASP has been deprecated in favor of stdoutSileVASP.&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">)(</span><span class="n">stdoutSileVASP</span><span class="p">)</span>

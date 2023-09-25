@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Common geometries &mdash; sisl 0.1-98af2b8</title>
+  <title>Common geometries &mdash; sisl 0.1-dea8f6b</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/tabs.css" type="text/css" />
@@ -16,12 +16,12 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
-        <script src="../_static/tabs.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=0b138a9b"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/tabs.js?v=3ee01567"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script src="../_static/js/theme.js"></script>
@@ -43,7 +43,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-98af2b8
+                0.1-dea8f6b
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -104,12 +104,19 @@
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.zgnr.html">zgnr</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.graphene_nanoribbon.html">graphene_nanoribbon</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.nanotube.html">nanotube</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.heteroribbon.html">heteroribbon</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.graphene_heteroribbon.html">graphene_heteroribbon</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#id1">2D materials</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.honeycomb.html">honeycomb</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.bilayer.html">bilayer</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.graphene.html">graphene</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#helpers">Helpers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.composite_geometry.html">composite_geometry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.CompositeGeometrySection.html">sisl.geom.CompositeGeometrySection</a></li>
 </ul>
 </li>
 </ul>
@@ -150,13 +157,15 @@
            <div itemprop="articleBody">
              
   <section id="module-sisl.geom">
-<span id="common-geometries"></span><span id="geom"></span><h1>Common geometries<a class="headerlink" href="#module-sisl.geom" title="Permalink to this heading"></a></h1>
+<span id="common-geometries"></span><span id="geom"></span><h1>Common geometries<a class="headerlink" href="#module-sisl.geom" title="Link to this heading"></a></h1>
 <p>A selection of default geometries that <a class="reference internal" href="index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> can construct on the fly.</p>
 <p>While this is far from complete we encourage users to contribute additional
 geometries via a <a class="reference external" href="pr">pull request</a>.</p>
 <p>All methods return a <em class="xref py py-obj">Geometry</em> object.</p>
+<p>Some of the geometries are created in section based geometries, such as <a class="reference internal" href="generated/sisl.geom.heteroribbon.html#sisl.geom.heteroribbon" title="sisl.geom.heteroribbon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">heteroribbon</span></code></a>.
+This functionality is provided through the <a class="reference internal" href="generated/sisl.geom.composite_geometry.html#sisl.geom.composite_geometry" title="sisl.geom.composite_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">composite_geometry</span></code></a></p>
 <section id="bulk">
-<h2>Bulk<a class="headerlink" href="#bulk" title="Permalink to this heading"></a></h2>
+<h2>Bulk<a class="headerlink" href="#bulk" title="Link to this heading"></a></h2>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.sc.html#sisl.geom.sc" title="sisl.geom.sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sc</span></code></a>(alat, atom)</p></td>
@@ -181,7 +190,7 @@ geometries via a <a class="reference external" href="pr">pull request</a>.</p>
 </table>
 </section>
 <section id="surfaces-slabs">
-<h2>Surfaces (slabs)<a class="headerlink" href="#surfaces-slabs" title="Permalink to this heading"></a></h2>
+<h2>Surfaces (slabs)<a class="headerlink" href="#surfaces-slabs" title="Link to this heading"></a></h2>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.bcc_slab.html#sisl.geom.bcc_slab" title="sisl.geom.bcc_slab"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bcc_slab</span></code></a>(alat, atoms, miller[, layers, ...])</p></td>
@@ -197,7 +206,7 @@ geometries via a <a class="reference external" href="pr">pull request</a>.</p>
 </table>
 </section>
 <section id="d-materials">
-<h2>1D materials<a class="headerlink" href="#d-materials" title="Permalink to this heading"></a></h2>
+<h2>1D materials<a class="headerlink" href="#d-materials" title="Link to this heading"></a></h2>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.nanoribbon.html#sisl.geom.nanoribbon" title="sisl.geom.nanoribbon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nanoribbon</span></code></a>(width, bond, atoms[, kind])</p></td>
@@ -215,11 +224,17 @@ geometries via a <a class="reference external" href="pr">pull request</a>.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.nanotube.html#sisl.geom.nanotube" title="sisl.geom.nanotube"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nanotube</span></code></a>(bond[, atoms, chirality])</p></td>
 <td><p>Nanotube with user-defined chirality.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.geom.heteroribbon.html#sisl.geom.heteroribbon" title="sisl.geom.heteroribbon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">heteroribbon</span></code></a>(sections[, section_cls])</p></td>
+<td><p>Build a nanoribbon consisting of several nanoribbons of different widths.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.graphene_heteroribbon.html#sisl.geom.graphene_heteroribbon" title="sisl.geom.graphene_heteroribbon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">graphene_heteroribbon</span></code></a>(sections[, ...])</p></td>
+<td><p>Build a graphene nanoribbon consisting of several nanoribbons of different widths</p></td>
+</tr>
 </tbody>
 </table>
 </section>
 <section id="id1">
-<h2>2D materials<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
+<h2>2D materials<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.honeycomb.html#sisl.geom.honeycomb" title="sisl.geom.honeycomb"><code class="xref py py-obj docutils literal notranslate"><span class="pre">honeycomb</span></code></a>(bond, atoms[, orthogonal])</p></td>
@@ -230,6 +245,19 @@ geometries via a <a class="reference external" href="pr">pull request</a>.</p>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.graphene.html#sisl.geom.graphene" title="sisl.geom.graphene"><code class="xref py py-obj docutils literal notranslate"><span class="pre">graphene</span></code></a>([bond, atoms, orthogonal])</p></td>
 <td><p>Graphene lattice with 2 or 4 atoms per unit-cell, latter orthogonal cell</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="helpers">
+<h2>Helpers<a class="headerlink" href="#helpers" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.composite_geometry.html#sisl.geom.composite_geometry" title="sisl.geom.composite_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">composite_geometry</span></code></a>(sections, section_cls, ...)</p></td>
+<td><p>Creates a composite geometry from a list of sections.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.geom.CompositeGeometrySection.html#sisl.geom.CompositeGeometrySection" title="sisl.geom.CompositeGeometrySection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CompositeGeometrySection</span></code></a>()</p></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table>

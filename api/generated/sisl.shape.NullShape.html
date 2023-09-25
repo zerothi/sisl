@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.shape.NullShape &mdash; sisl 0.1-98af2b8</title>
+  <title>sisl.shape.NullShape &mdash; sisl 0.1-dea8f6b</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
@@ -16,19 +16,19 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
-        <script src="../../_static/tabs.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=0b138a9b"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../_static/tabs.js?v=3ee01567"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Range routines" href="../utilities.misc.html" />
-    <link rel="prev" title="sisl.shape.Sphere" href="sisl.shape.Sphere.html" /> 
+    <link rel="prev" title="sisl.shape.EllipticalCylinder" href="sisl.shape.EllipticalCylinder.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -43,7 +43,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-98af2b8
+                0.1-dea8f6b
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -94,6 +94,7 @@
 <li class="toctree-l4"><a class="reference internal" href="sisl.shape.Cube.html">sisl.shape.Cube</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.shape.Ellipsoid.html">sisl.shape.Ellipsoid</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.shape.Sphere.html">sisl.shape.Sphere</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.shape.EllipticalCylinder.html">sisl.shape.EllipticalCylinder</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">sisl.shape.NullShape</a></li>
 </ul>
 </li>
@@ -134,10 +135,10 @@
            <div itemprop="articleBody">
              
   <section id="sisl-shape-nullshape">
-<h1>sisl.shape.NullShape<a class="headerlink" href="#sisl-shape-nullshape" title="Permalink to this heading"></a></h1>
+<h1>sisl.shape.NullShape<a class="headerlink" href="#sisl-shape-nullshape" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="sisl.shape.NullShape">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.shape.</span></span><span class="sig-name descname"><span class="pre">NullShape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.shape.NullShape" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.shape.</span></span><span class="sig-name descname"><span class="pre">NullShape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.shape.NullShape" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PureShape</span></code></p>
 <p>A unique shape which has no well-defined spatial volume or center</p>
 <p>This special shape is used when composite shapes turns out to have
@@ -150,7 +151,7 @@ has any meaning.</p>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.shape.NullShape.expand" title="sisl.shape.NullShape.expand"><code class="xref py py-obj docutils literal notranslate"><span class="pre">expand</span></code></a>(c)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.shape.NullShape.expand" title="sisl.shape.NullShape.expand"><code class="xref py py-obj docutils literal notranslate"><span class="pre">expand</span></code></a>(_)</p></td>
 <td><p>Expand the shape by a constant value</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.shape.NullShape.scale" title="sisl.shape.NullShape.scale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale</span></code></a>(scale)</p></td>
@@ -184,31 +185,31 @@ has any meaning.</p>
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.shape.NullShape.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/shape/base.html#NullShape.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.shape.NullShape.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/shape/base.html#NullShape.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.shape.NullShape.__init__" title="Link to this definition"></a></dt>
 <dd><p>Initialize a null-shape</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.shape.NullShape.center">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">center</span></span><a class="headerlink" href="#sisl.shape.NullShape.center" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">center</span></span><a class="headerlink" href="#sisl.shape.NullShape.center" title="Link to this definition"></a></dt>
 <dd><p>The geometric center of the shape</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.shape.NullShape.expand">
-<span class="sig-name descname"><span class="pre">expand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.shape.NullShape.expand" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">expand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.shape.NullShape.expand" title="Link to this definition"></a></dt>
 <dd><p>Expand the shape by a constant value</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.shape.NullShape.scale">
-<span class="sig-name descname"><span class="pre">scale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scale</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.shape.NullShape.scale" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">scale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scale</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.shape.NullShape.scale" title="Link to this definition"></a></dt>
 <dd><p>Return a new Shape with a scaled size</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="sisl.shape.NullShape.to">
-<span class="sig-name descname"><span class="pre">to</span></span><a class="headerlink" href="#sisl.shape.NullShape.to" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">to</span></span><a class="headerlink" href="#sisl.shape.NullShape.to" title="Link to this definition"></a></dt>
 <dd><p>A dispatcher for classes, using <em class="xref py py-obj">__get__</em> it converts into <em class="xref py py-obj">ObjectDispatcher</em> upon invocation from an object, or a <em class="xref py py-obj">TypeDispatcher</em> when invoked from a class</p>
 <p>This is a class-placeholder allowing a dispatcher to be a class attribute and converted into an
 <em class="xref py py-obj">ObjectDispatcher</em> when invoked from an object.</p>
@@ -239,31 +240,31 @@ This controls the dispatcher used if called from a class.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.shape.NullShape.toCuboid">
-<span class="sig-name descname"><span class="pre">toCuboid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/shape/base.html#NullShape.toCuboid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.shape.NullShape.toCuboid" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">toCuboid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/shape/base.html#NullShape.toCuboid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.shape.NullShape.toCuboid" title="Link to this definition"></a></dt>
 <dd><p>Return a cuboid with side-lengths 1e-64</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.shape.NullShape.toEllipsoid">
-<span class="sig-name descname"><span class="pre">toEllipsoid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/shape/base.html#NullShape.toEllipsoid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.shape.NullShape.toEllipsoid" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">toEllipsoid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/shape/base.html#NullShape.toEllipsoid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.shape.NullShape.toEllipsoid" title="Link to this definition"></a></dt>
 <dd><p>Return an ellipsoid with radius of size 1e-64</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.shape.NullShape.toSphere">
-<span class="sig-name descname"><span class="pre">toSphere</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/shape/base.html#NullShape.toSphere"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.shape.NullShape.toSphere" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">toSphere</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/shape/base.html#NullShape.toSphere"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.shape.NullShape.toSphere" title="Link to this definition"></a></dt>
 <dd><p>Return a sphere with radius of size 1e-64</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.shape.NullShape.volume">
-<span class="sig-name descname"><span class="pre">volume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/shape/base.html#NullShape.volume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.shape.NullShape.volume" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">volume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/shape/base.html#NullShape.volume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.shape.NullShape.volume" title="Link to this definition"></a></dt>
 <dd><p>The volume of a null shape is exactly 0.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.shape.NullShape.within">
-<span class="sig-name descname"><span class="pre">within</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.shape.NullShape.within" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">within</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.shape.NullShape.within" title="Link to this definition"></a></dt>
 <dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if <em class="xref py py-obj">other</em> is fully within <em class="xref py py-obj">self</em></p>
 <p>If <em class="xref py py-obj">other</em> is an array, an array will be returned for each of these.</p>
 <dl class="field-list simple">
@@ -279,7 +280,7 @@ This controls the dispatcher used if called from a class.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.shape.NullShape.within_index">
-<span class="sig-name descname"><span class="pre">within_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/shape/base.html#NullShape.within_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.shape.NullShape.within_index" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">within_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/shape/base.html#NullShape.within_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.shape.NullShape.within_index" title="Link to this definition"></a></dt>
 <dd><p>Always returns a zero length array</p>
 </dd></dl>
 
@@ -291,7 +292,7 @@ This controls the dispatcher used if called from a class.</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="sisl.shape.Sphere.html" class="btn btn-neutral float-left" title="sisl.shape.Sphere" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sisl.shape.EllipticalCylinder.html" class="btn btn-neutral float-left" title="sisl.shape.EllipticalCylinder" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../utilities.misc.html" class="btn btn-neutral float-right" title="Range routines" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

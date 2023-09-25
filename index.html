@@ -6,7 +6,7 @@
 <meta content="LCAO, Siesta, TranSiesta, OpenMX, TBtrans, VASP, GULP, BigDFT, DFT, tight-binding, electron, electrons, phonon, phonons" name="keywords" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl: Toolbox for electronic structure calculations &mdash; sisl 0.1-98af2b8</title>
+  <title>sisl: Toolbox for electronic structure calculations &mdash; sisl 0.1-dea8f6b</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
@@ -18,12 +18,12 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-        <script src="_static/tabs.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=0b138a9b"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/tabs.js?v=3ee01567"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script src="_static/js/theme.js"></script>
@@ -44,7 +44,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-98af2b8
+                0.1-dea8f6b
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -111,7 +111,7 @@
   <p><a class="reference external" href="https://pypi.org/project/sisl"><img alt="pypi" src="https://badge.fury.io/py/sisl.svg" /></a> <a class="reference external" href="https://anaconda.org/conda-forge/sisl"><img alt="conda" src="https://anaconda.org/conda-forge/sisl/badges/version.svg" /></a> <a class="reference external" href="https://www.mozilla.org/en-US/MPL/2.0/"><img alt="license" src="https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg" /></a> <a class="reference external" href="https://doi.org/10.5281/zenodo.597181"><img alt="zenodo" src="https://zenodo.org/badge/doi/10.5281/zenodo.597181.svg" /></a></p>
 <p><a class="reference external" href="https://discord.gg/5XnFXFdkv2"><img alt="discord" src="https://img.shields.io/discord/742636379871379577.svg?label=&amp;logo=discord&amp;logoColor=ffffff&amp;color=green&amp;labelColor=red" /></a> <a class="reference external" href="https://github.com/zerothi/sisl/actions/workflows/test.yaml"><img alt="buildstatus" src="https://github.com/zerothi/sisl/actions/workflows/test.yaml/badge.svg?branch=main" /></a> <a class="reference external" href="https://codecov.io/gh/zerothi/sisl"><img alt="codecov" src="https://codecov.io/gh/zerothi/sisl/branch/main/graph/badge.svg" /></a> <a class="reference external" href="https://pypi.org/project/sisl/"><img alt="python-versions" src="https://img.shields.io/pypi/pyversions/sisl.svg" /></a></p>
 <section id="sisl-tight-binding-and-dft-interface-library">
-<h1>sisl: tight-binding and DFT interface library<a class="headerlink" href="#sisl-tight-binding-and-dft-interface-library" title="Permalink to this heading"></a></h1>
+<h1>sisl: tight-binding and DFT interface library<a class="headerlink" href="#sisl-tight-binding-and-dft-interface-library" title="Link to this heading"></a></h1>
 <p>The Python library <a class="reference external" href="https://github.com/zerothi/sisl">sisl</a> was born out of a need to handle (create and read), manipulate and analyse output from DFT programs.
 It was initially developed by Nick Papior (co-developer of <a class="reference external" href="https://siesta-project.org">Siesta</a>) as a side-project to <a class="reference external" href="https://siesta-project.org">TranSiesta</a>
 and <a class="reference external" href="https://siesta-project.org">TBtrans</a> to efficiently analyse TBtrans output for N-electrode calculations.
@@ -127,7 +127,7 @@ in a consistent manner so the post-processing is the same, regardless of the cod
 <p>sisl is also part of the training material for a series of workshops hosted <a class="reference external" href="https://github.com/zerothi/ts-tbt-sisl-tutorial">here</a>.</p>
 <p>In some regards it has overlap with <a class="reference external" href="https://wiki.fysik.dtu.dk/ase">ASE</a> and sisl also interfaces with ASE.</p>
 <section id="first-time-use">
-<h2>First time use<a class="headerlink" href="#first-time-use" title="Permalink to this heading"></a></h2>
+<h2>First time use<a class="headerlink" href="#first-time-use" title="Link to this heading"></a></h2>
 <p>Here we show 2 examples of using sisl together with <a class="reference external" href="https://siesta-project.org">Siesta</a>.</p>
 <p>To read in a Hamiltonian from a Siesta calculation and calculate the DOS for a given Monkhorst-Pack grid
 one would do:</p>
@@ -150,7 +150,7 @@ charge grids and writes them to a CUBE file:</p>
 <p>which may be analysed using VMD, XCrySDen or other tools.</p>
 </section>
 <section id="every-use-of-sisl">
-<h2>Every use of sisl<a class="headerlink" href="#every-use-of-sisl" title="Permalink to this heading"></a></h2>
+<h2>Every use of sisl<a class="headerlink" href="#every-use-of-sisl" title="Link to this heading"></a></h2>
 <p>There are different places for getting information on using sisl. Here is a short list
 of places to search/ask for answers:</p>
 <ul class="simple">
@@ -230,6 +230,7 @@ of places to search/ask for answers:</p>
 <li class="toctree-l3"><a class="reference internal" href="api/default_geom.html#surfaces-slabs">Surfaces (slabs)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/default_geom.html#d-materials">1D materials</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/default_geom.html#id1">2D materials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/default_geom.html#helpers">Helpers</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="api/physics.html">Physical objects</a><ul>

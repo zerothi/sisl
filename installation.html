@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installation &mdash; sisl 0.1-98af2b8</title>
+  <title>Installation &mdash; sisl 0.1-dea8f6b</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
@@ -16,12 +16,12 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-        <script src="_static/tabs.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=0b138a9b"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/tabs.js?v=3ee01567"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script src="_static/js/theme.js"></script>
@@ -43,7 +43,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-98af2b8
+                0.1-dea8f6b
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -115,25 +115,25 @@
            <div itemprop="articleBody">
              
   <section id="installation">
-<span id="id1"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h1>
+<span id="id1"></span><h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
 <p>sisl is easy to install using any of your preferred methods.</p>
 <section id="required-dependencies">
-<h2>Required dependencies<a class="headerlink" href="#required-dependencies" title="Permalink to this heading"></a></h2>
+<h2>Required dependencies<a class="headerlink" href="#required-dependencies" title="Link to this heading"></a></h2>
 <p>Running sisl requires these versions:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.python.org/">Python</a> 3.8 or above</p></li>
 <li><p><a class="reference external" href="https://www.numpy.org/">numpy</a> (1.13 or later)</p></li>
 <li><p><a class="reference external" href="https://scipy.org/scipylib/index.html">scipy</a> (1.5 or later)</p></li>
-<li><p><a class="reference external" href="https://github.com/Unidata/netcdf4-python">netCDF4-python</a></p></li>
 <li><p><a class="reference external" href="https://github.com/pyparsing/pyparsing">pyparsing</a> (1.5.7 or later)</p></li>
 </ul>
 <p>Optional dependencies:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://docs.pytest.org/en/stable/">pytest</a> (for running the test suite)</p></li>
 <li><p><a class="reference external" href="https://github.com/uqfoundation/pathos">pathos</a> (for parallel BrillouinZone calculations)</p></li>
-<li><p><a class="reference external" href="https://matplotlib.org/">matplotlib</a></p></li>
+<li><p><a class="reference external" href="https://github.com/Unidata/netcdf4-python">netCDF4-python</a></p></li>
 <li><p><a class="reference external" href="https://github.com/tqdm/tqdm">tqdm</a> (for displaying progress-bars)</p></li>
 <li><p><a class="reference external" href="https://xarray.pydata.org/en/stable/index.html">xarray</a> (for advanced table data structures in certain methods)</p></li>
+<li><p><a class="reference external" href="https://matplotlib.org/">matplotlib</a></p></li>
 <li><p><a class="reference external" href="https://plotly.com/python/">plotly</a> (for advanced visualization)</p></li>
 </ul>
 <p>sisl implements certain methods in Cython which speeds up the execution.
@@ -193,12 +193,8 @@ is considered experimental. One <em>may</em> get it to work by doing:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git+https://github.com/zerothi/sisl.git
 <span class="nb">cd</span><span class="w"> </span>sisl
 python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
-bash<span class="w"> </span>tools/fixeditable.bash
 </pre></div>
 </div>
-<p>where the last script should (in theory) correct the editable paths and
-ensure a consistent importable editable installation. If this causes
-problems, feel free to open up issues.</p>
 </div>
 </div>
 <p>Passing options to the build-system through <code class="code docutils literal notranslate"><span class="pre">pip</span></code> should de done with
@@ -260,7 +256,7 @@ create annotation output (html format) that can be viewed</p></li>
 of sisl (no fortran binary file support).</p>
 </div>
 <section id="windows">
-<h3>Windows<a class="headerlink" href="#windows" title="Permalink to this heading"></a></h3>
+<h3>Windows<a class="headerlink" href="#windows" title="Link to this heading"></a></h3>
 <p>To install <a class="reference internal" href="api/index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> on Windows one will require a specification of
 the compilers used. Typically one may do</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>.<span class="w"> </span>--prefix<span class="o">=</span>&lt;prefix&gt;
@@ -274,7 +270,7 @@ or the <a class="reference external" href="https://github.com/zerothi/sisl/issue
 </section>
 </section>
 <section id="testing-your-installation">
-<span id="installation-testing"></span><h2>Testing your installation<a class="headerlink" href="#testing-your-installation" title="Permalink to this heading"></a></h2>
+<span id="installation-testing"></span><h2>Testing your installation<a class="headerlink" href="#testing-your-installation" title="Link to this heading"></a></h2>
 <p>After installation (by either of the above listed methods) you are encouraged
 to perform the shipped tests to ensure everything got installed correctly.</p>
 <p>Note that <a class="reference external" href="https://docs.pytest.org/en/stable/">pytest</a> needs to be installed to run the tests.
