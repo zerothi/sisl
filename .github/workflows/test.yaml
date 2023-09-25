@@ -33,7 +33,7 @@ jobs:
 
   # Define a few jobs that can be runned
   check_schedule:
-    if: ${{ github.event_name == 'schedule' }}
+    if: ${{ github.event_name == 'schedule' }} && ${{ github.actor != 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
