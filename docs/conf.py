@@ -31,7 +31,7 @@ if on_rtd:
     os.environ["SISL_NUM_PROCS"] = "1"
     os.environ["SISL_VIZ_NUM_PROCS"] = "1"
 
-sys.path.insert(0, str(_root))
+#sys.path.insert(0, str(_root))
 
 # Print standard information about executable and path...
 print("python exec:", sys.executable)
