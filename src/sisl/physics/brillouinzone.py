@@ -148,7 +148,7 @@ from sisl._dispatcher import ClassDispatcher
 from sisl._internal import set_module
 from sisl.grid import Grid
 from sisl.lattice import Lattice
-from sisl.messages import SislError, info, progressbar, warn
+from sisl.messages import SislError, deprecate_argument, info, progressbar, warn
 from sisl.oplist import oplist
 from sisl.quaternion import Quaternion
 from sisl.unit import units
@@ -1197,6 +1197,8 @@ class BandStructure(BrillouinZone):
     >>> bs = BandStructure(lattice, [[0, 0, 0], [0, 0.5, 0], None, [0.5, 0, 0], [0.5, 0.5, 0]], 200)
     """
 
+    @deprecate_argument("name", "names", "argument 'name' has been deprecated in favor of 'names', please update your code.",
+                        "0.15.0")
     def __init__(self, parent, *args, **kwargs):
         #points, divisions, names=None):
         super().__init__(parent)
