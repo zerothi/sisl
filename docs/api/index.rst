@@ -25,7 +25,6 @@ All methods and submodules are listed  :ref:`here <genindex>` and
    default_geom
    physics
    mixing
-   viz/index
    unit_constant
    utilities
 
@@ -33,4 +32,11 @@ All methods and submodules are listed  :ref:`here <genindex>` and
    :maxdepth: 1
 
    io/index
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Advanced usage
+
+   nodes
+   viz/index
 
