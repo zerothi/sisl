@@ -125,13 +125,11 @@ class TestGeometry:
             assert len(g) == N - l
 
     def test_rotation1(self, setup):
-        print(setup.g.cell)
         rot = setup.sg_g(argv='--rotate 180 z'.split())
         rot.lattice.cell[2, 2] *= -1
         assert np.allclose(-rot.lattice.cell, setup.g.lattice.cell)
         assert np.allclose(-rot.xyz, setup.g.xyz)
 
-        print(setup.g.cell)
         rot = setup.sg_g(argv='--rotate-z 180'.split())
         rot.lattice.cell[2, 2] *= -1
         assert np.allclose(-rot.lattice.cell, setup.g.lattice.cell)

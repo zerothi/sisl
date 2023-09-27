@@ -61,10 +61,6 @@ def test_axsf_geoms(sisl_tmp):
         rgeoms = s.read_geometry[0:2]()
         assert len(rgeoms) == 2
         assert all(isinstance(rg, Geometry) for rg in rgeoms)
-        print()
-        #for g, rg in zip(geoms, rgeoms):
-        #    print(g)
-        #    print(rg)
         assert all(g.equal(rg) for g, rg in zip(geoms, rgeoms))
 
     with xsfSile(f) as s:
