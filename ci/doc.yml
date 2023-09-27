@@ -7,13 +7,13 @@ dependencies:
   - fortran-compiler
   - python
   - wheel
+  - scikit-build-core
   - setuptools_scm>=6.2
   - pathspec
   - pyproject-metadata
-  - scikit-build-core
   - pyparsing>=1.5.7
   - numpy>=1.13
-  - cython>=0.28
+  - cython>=0.29.28
   - tqdm
   - scipy>=1.5.0
   - netcdf4
@@ -22,13 +22,14 @@ dependencies:
   - pathos
   - dill>=0.3.2
   - scikit-image
-  - plotly>=5.12.0
+  - plotly
+  # doc specific
   - sphinx
   - sphinx_rtd_theme
   - sphinx-gallery
-  - sphinxcontrib-bibtex
   - sphinx-autodoc-typehints
   - sphinx-inline-tabs
+  - sphinxcontrib-bibtex
   - numpydoc
   - nbsphinx
   - jupyter_client
