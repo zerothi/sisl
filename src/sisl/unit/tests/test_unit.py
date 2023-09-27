@@ -67,3 +67,7 @@ def test_unit_convert_f1():
 def test_unit_convert_f2():
     with pytest.raises(ValueError):
         unit_convert('eV', 'kg')
+
+
+def test_unit_convert_single():
+    assert units("Ang") == 1e-10

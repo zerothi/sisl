@@ -8,6 +8,8 @@ we hit release version 1.0.0.
 ## [0.14.0] - YYYY-MM-DD
 
 ### Added
+- added SISL_UNIT_SIESTA to select between legacy or codata2018 units (since Siesta 5)
+  New default is codata2018, may create inconsistencies until Siesta 5 is widely adopted.
 - added --remove to sgeom for removing single atoms
 - added a EllipticalCylinder as a new shape
 - added basis-enthalpy to the stdoutSiestaSile.read_energy routine

@@ -38,6 +38,7 @@ unit_table = {
           'atu': 2.4188843265857e-17},
  'energy': {'DEFAULT': 'eV',
             'J': 1.0,
+            'kJ': 1.e3,
             'erg': 1e-07,
             'K': 1.380649e-23,
             'eV': 1.602176634e-19,
@@ -55,7 +56,7 @@ unit_table = {
 
 
 @set_module("sisl.unit")
-def unit_group(unit, tbl=None):
+def unit_group(unit, tbl=unit_table):
     """ The group of units that `unit` belong to
 
     Parameters
@@ -72,10 +73,6 @@ def unit_group(unit, tbl=None):
     >>> unit_group("eV")
     "energy"
     """
-    if tbl is None:
-        global unit_table
-        tbl = unit_table
-
     for k in tbl:
         if unit in tbl[k]:
             return k
@@ -83,7 +80,7 @@ def unit_group(unit, tbl=None):
 
 
 @set_module("sisl.unit")
-def unit_default(group, tbl=None):
+def unit_default(group, tbl=unit_table):
     """ The default unit of the unit group `group`.
 
     Parameters
@@ -98,10 +95,6 @@ def unit_default(group, tbl=None):
     >>> unit_default("energy")
     "eV"
     """
-    if tbl is None:
-        global unit_table
-        tbl = unit_table
-
     for k in tbl:
         if group == k:
             return tbl[k]["DEFAULT"]
@@ -110,7 +103,7 @@ def unit_default(group, tbl=None):
 
 
 @set_module("sisl.unit")
-def unit_convert(fr, to, opts=None, tbl=None):
+def unit_convert(fr, to, opts=None, tbl=unit_table):
     """ Factor that takes `fr` to the units of `to`
 
     Parameters
@@ -131,9 +124,6 @@ def unit_convert(fr, to, opts=None, tbl=None):
     >>> unit_convert("eV","J")
     1.60217733e-19
     """
-    if tbl is None:
-        global unit_table
-        tbl = unit_table
     if opts is None:
         opts = dict()
 
@@ -186,19 +176,17 @@ class UnitParser:
     unit_table : dict
        a table with the units parsable by the class
     """
-    __slots__ = ["_table", "_p_left", "_left", "_p_right", "_right"]
+    __slots__ = ("_table", "_p_left", "_left", "_p_right", "_right")
 
     def __init__(self, table):
         self._table = table
 
-        def convert(fr, to):
+        def value(unit):
             tbl = self._table
             for k in tbl:
-                if fr in tbl[k]:
-                    if to in tbl[k]:
-                        return tbl[k][fr] / tbl[k][to]
-                    break
-            raise ValueError(f"The unit conversion is not from the same group: {fr} to {to}!")
+                if unit in tbl[k]:
+                    return tbl[k][unit]
+            raise ValueError(f"The unit conversion did not contain unit {unit}!")
 
         def group(unit):
             tbl = self._table
@@ -215,26 +203,26 @@ class UnitParser:
             return k["DEFAULT"]
 
         self._left = []
-        self._p_left = self.create_parser(convert, default, group, self._left)
+        self._p_left = self.create_parser(value, default, group, self._left)
         self._right = []
-        self._p_right = self.create_parser(convert, default, group, self._right)
+        self._p_right = self.create_parser(value, default, group, self._right)
 
     @staticmethod
-    def create_parser(convert, default, group, group_table=None):
+    def create_parser(value, default, group, group_table=None):
         """ Routine to internally create a parser with specified unit_convert, unit_default and unit_group routines """
 
         # Any length of characters will be used as a word.
         if group_table is None:
-            def _convert(t):
-                return convert(t[0], default(group(t[0])))
+            def _value(t):
+                return value(t[0])
 
             def _float(t):
                 return float(t[0])
 
         else:
-            def _convert(t):
+            def _value(t):
                 group_table.append(group(t[0]))
-                return convert(t[0], default(group_table[-1]))
+                return value(t[0])
 
             def _float(t):
                 f = float(t[0])
@@ -242,12 +230,14 @@ class UnitParser:
                 return f
 
         # The unit extractor
-        unit = pp.Word(pp.alphas).setParseAction(_convert)
+        unit = pp.Word(pp.alphas).setParseAction(_value)
 
         integer = pp.Word(pp.nums)
         plusorminus = pp.oneOf("+ -")
         point = pp.Literal(".")
         e = pp.CaselessLiteral("E")
+        sign_integer = pp.Combine(pp.Optional(plusorminus) + integer)
+        exponent = pp.Combine(e + sign_integer)
         sign_integer = pp.Combine(pp.Optional(plusorminus) + integer)
         exponent = pp.Combine(e + sign_integer)
         number = pp.Or([pp.Combine(point + integer + pp.Optional(exponent)),  # .[0-9][E+-[0-9]]
@@ -343,14 +333,13 @@ class UnitParser:
         conv_A = self._p_left.parseString(A)[0]
         conv_B = self._p_right.parseString(B)[0]
         if not self.same_group(self._left, self._right):
-            # Ensure lists are cleaned (in case the user catches stuff
             left = list(self._left)
             right = list(self._right)
-            self._left = []
-            self._right = []
+            self._left.clear()
+            self._right.clear()
             raise ValueError(f"The unit conversion is not from the same group: {left} to {right}!")
-        self._left = []
-        self._right = []
+        self._left.clear()
+        self._right.clear()
         return conv_A / conv_B
 
     def convert(self, *units):
@@ -387,11 +376,11 @@ class UnitParser:
 
         elif len(units) == 1:
             # to default
-            conv = self._p_left(units[0])
-            self._left = []
+            conv = self._p_left.parseString(units[0])[0]
+            self._left.clear()
             return conv
 
-        return tuple(self._convert(units[i], units[i + 1]) for i in range(len(units) - 1))
+        return tuple(self._convert(A, B) for A, B in zip(units[:-1], units[1:]))
 
     def __call__(self, *units):
         return self.convert(*units)

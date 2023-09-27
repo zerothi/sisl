@@ -103,6 +103,7 @@ of places to search/ask for answers:
    
    installation
    tutorials.rst
+   environment
    scripts/scripts
    nodes/nodes_intro
 

@@ -5,33 +5,30 @@ import pytest
 
 approx = pytest.approx
 
-from sisl.unit.siesta import unit_convert, unit_default, unit_group, unit_table_siesta
+from sisl.unit.siesta import unit_convert, unit_default, unit_group
 
-pytestmark = pytest.mark.unit
-
-
-@pytest.mark.parametrize('tbl', [None, unit_table_siesta])
-def test_group(tbl):
-    assert unit_group('kg', tbl) == 'mass'
-    assert unit_group('eV', tbl) == 'energy'
-    assert unit_group('N', tbl) == 'force'
+pytestmark = [pytest.mark.unit, pytest.mark.siesta]
 
 
-@pytest.mark.parametrize('tbl', [None, unit_table_siesta])
-def test_unit_convert(tbl):
-    assert approx(unit_convert('kg', 'g', tbl=tbl)) == 1.e3
-    assert approx(unit_convert('eV', 'J', tbl=tbl)) == 1.60219e-19
-    assert approx(unit_convert('J', 'eV', tbl=tbl)) == 1/1.60219e-19
-    assert approx(unit_convert('J', 'eV', {'^': 2}, tbl)) == (1/1.60219e-19) ** 2
-    assert approx(unit_convert('J', 'eV', {'/': 2}, tbl)) == (1/1.60219e-19) / 2
-    assert approx(unit_convert('J', 'eV', {'*': 2}, tbl)) == (1/1.60219e-19) * 2
+def test_group():
+    assert unit_group('kg') == 'mass'
+    assert unit_group('eV') == 'energy'
+    assert unit_group('N') == 'force'
 
 
-@pytest.mark.parametrize('tbl', [None, unit_table_siesta])
-def test_default(tbl):
-    assert unit_default('mass', tbl) == 'amu'
-    assert unit_default('energy', tbl) == 'eV'
-    assert unit_default('force', tbl) == 'eV/Ang'
+def test_unit_convert():
+    assert approx(unit_convert('kg', 'g')) == 1.e3
+    assert approx(unit_convert('eV', 'J')) == 1.602176634e-19
+    assert approx(unit_convert('J', 'eV')) == 1/1.602176634e-19
+    assert approx(unit_convert('J', 'eV', {'^': 2})) == (1/1.602176634e-19) ** 2
+    assert approx(unit_convert('J', 'eV', {'/': 2})) == (1/1.602176634e-19) / 2
+    assert approx(unit_convert('J', 'eV', {'*': 2})) == (1/1.602176634e-19) * 2
+
+
+def test_default():
+    assert unit_default('mass') == 'amu'
+    assert unit_default('energy') == 'eV'
+    assert unit_default('force') == 'eV/Ang'
 
 
 def test_group_f1():

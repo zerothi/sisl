@@ -10,8 +10,15 @@ import sisl
 from sisl.io.siesta.eig import *
 from sisl.io.siesta.fdf import *
 
+
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
 _dir = osp.join("sisl", "io", "siesta")
+
+
+def _convert45(unit):
+    """ Convert from legacy units to CODATA2018 """
+    from sisl.unit.siesta import units, units_legacy
+    return units(unit) / units_legacy(unit)
 
 
 def test_si_pdos_kgrid_eig(sisl_files):
@@ -20,7 +27,6 @@ def test_si_pdos_kgrid_eig(sisl_files):
 
     # nspin, nk, nb
     assert np.all(eig.shape == (1, 32, 26))
-
 
 def test_si_pdos_kgrid_eig_ArgumentParser(sisl_files, sisl_tmp):
     pytest.importorskip("matplotlib", reason="matplotlib not available")
@@ -83,4 +89,4 @@ def test_soc_pt2_xx_eig_fermi_level(sisl_files):
     # vs. siesta we have to make this.
     # once https://gitlab.com/siesta-project/siesta/-/merge_requests/30
     # is merged
-    assert ef == pytest.approx(ef2, abs=1e-5)
+    assert ef * _convert45("eV") == pytest.approx(ef2, abs=1e-5)

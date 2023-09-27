@@ -2,9 +2,11 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import os
+from collections.abc import Callable
 from contextlib import contextmanager
 from pathlib import Path
 from textwrap import dedent
+from typing import Any
 
 __all__ = ["register_environ_variable", "get_environ_variable", "sisl_environ"]
 
@@ -33,9 +35,9 @@ def sisl_environ(**environ):
         SISL_ENVIRON[key]["value"] = old[key]
 
 
-def register_environ_variable(name, default,
-                              description=None,
-                              process=None):
+def register_environ_variable(name: str , default: Any,
+                              description: str=None,
+                              process: Callable[[Any], Any]=None):
     """Register a new global sisl environment variable.
 
     Parameters
@@ -75,7 +77,7 @@ def register_environ_variable(name, default,
     }
 
 
-def get_environ_variable(name):
+def get_environ_variable(name: str):
     """ Gets the value of a registered environment variable.
 
     Parameters
