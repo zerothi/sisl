@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Contributing &mdash; sisl 0.1-1ead994</title>
+  <title>Environment variables &mdash; sisl 0.1-1ead994</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
@@ -27,8 +27,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Other resources" href="other.html" />
-    <link rel="prev" title="0.8.0" href="changelog/v0.8.0.html" /> 
+    <link rel="next" title="Command line scripts" href="scripts/scripts.html" />
+    <link rel="prev" title="Electronic structure setup – part 2" href="tutorials/tutorial_06.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -53,23 +53,26 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul class="current">
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog/index.html">Release notes</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#contribute-external-code">Contribute external code</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="contribute.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="other.html">Other resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cite.html">Citing sisl</a></li>
 <li class="toctree-l1"><a class="reference internal" href="publications.html">Publications using sisl</a></li>
 <li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="environment.html">Environment variables</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Environment variables</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#code-specific-environment-variables">Code specific environment variables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#siesta">Siesta</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="scripts/scripts.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="nodes/nodes_intro.html">Nodes and workflows</a></li>
 </ul>
@@ -101,9 +104,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Contributing</li>
+      <li class="breadcrumb-item active">Environment variables</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/contribute.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/environment.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -111,32 +114,56 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="contributing">
-<span id="id1"></span><h1>Contributing<a class="headerlink" href="#contributing" title="Link to this heading"></a></h1>
-<p>The sisl code is open-source, and thus we encourage external users to contribute
-back to the code base.</p>
-<p>Any size of contribution is extremely welcome!</p>
-<ul class="simple">
-<li><p>If you’ve ideas of missing features</p></li>
-<li><p>If you’ve ideas for improving documentation</p></li>
-<li><p>If you’ve found a bug</p></li>
-<li><p>If you’ve found a documentation error</p></li>
-<li><p>If you’ve created a tutorial</p></li>
-</ul>
-<p>Then please share them <a class="reference external" href="https://github.com/zerothi/sisl/issues">here</a>.
-It is recommended to test the development, please follow <a class="reference external" href="installation-testing">these instructions</a>.</p>
-<p>Contributing additional test files should be contributed <a class="reference external" href="sisl-files">here</a>.</p>
-<section id="contribute-external-code">
-<h2>Contribute external code<a class="headerlink" href="#contribute-external-code" title="Link to this heading"></a></h2>
-<p>External toolbox codes may be contributed <a class="reference external" href="https://github.com/zerothi/sisl/issues">here</a>, then press
-“Issue” and select <em>Contribute toolbox</em>.</p>
-<p>There are two cases of external contributions:</p>
-<ol class="arabic simple">
-<li><p>If the code is directly integratable into sisl it will be merged into the sisl source.</p></li>
-<li><p>If the code is showing how to use sisl to calculate some physical quantity but is not a general
-implementation, it will be placed in toolbox directory.</p></li>
-</ol>
-<p>Either way, any contribution is very welcome.</p>
+  <section id="environment-variables">
+<span id="environment"></span><h1>Environment variables<a class="headerlink" href="#environment-variables" title="Link to this heading"></a></h1>
+<p>sisl understands some environment variables that may be used to tweak, or change
+the default behaviour of sisl.</p>
+<p>Here we list the different options:</p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">SISL_NUM_PROCS</span> <span class="pre">=</span> <span class="pre">1</span></code></dt><dd><p>Default the number of processors used in parallel calculations.
+Currently only certain Brillouin zone operations has this enabled.</p>
+<p>Please test this for your machine before relying on it giving a lot
+of performance. Especially in conjunction with the <code class="docutils literal notranslate"><span class="pre">OMP_NUM_THREADS</span></code>
+flag for OpenMP in linear algebra libraries.
+Benchmark and see if it actually improves (certain combinations will
+severly hurt performance).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">SISL_VIZ_AUTOLOAD</span> <span class="pre">==</span> <span class="pre">false</span></code></dt><dd><p>whether or not to autoload the visualization module.
+The visualization module imports many dependent modules.
+If you run small scripts that does not use the <code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.viz</span></code> module, then
+it is recommended to keep this to be false.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">SISL_SHOW_PROGRESS</span> <span class="pre">=</span> <span class="pre">false</span></code></dt><dd><p>Certain sisl routines has a builtin progress bar. This variable can default
+whether or not those will be shown. It can be nice for <em>slow</em> brillouinzone calculations
+to see if progress is actually being made.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">SISL_IO_DEFAULT</span> <span class="pre">=</span> <span class="pre">''</span></code></dt><dd><p>The default IO methods <code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.get_sile</span></code> will select files with this file-endings.
+For instance there are many <code class="docutils literal notranslate"><span class="pre">stdout</span></code> file types (for each DFT code).
+Setting this to <code class="docutils literal notranslate"><span class="pre">Siesta</span></code> would force all files to first search for Siesta file
+endings (see <a class="reference internal" href="api/io/index.html#module-sisl.io" title="sisl.io"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.io</span></code></a> for class names).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">SISL_TMP</span> <span class="pre">=</span> <span class="pre">'.sisl_tmp'</span></code></dt><dd><p>certain internal methods of sisl will use a temporary folder for storing data.
+The default is a new folder in the currently executed directory.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">SISL_FILES_TESTS</span></code></dt><dd><p>Full path to a folder containing tests files. Primarily used for developers.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">SISL_CONFIGDIR</span> <span class="pre">=</span> <span class="pre">$HOME/.config/sisl</span></code></dt><dd><p>where certain configuration files should be stored.</p>
+<p>Currently not in use.</p>
+</dd>
+</dl>
+<section id="code-specific-environment-variables">
+<h2>Code specific environment variables<a class="headerlink" href="#code-specific-environment-variables" title="Link to this heading"></a></h2>
+<section id="siesta">
+<h3>Siesta<a class="headerlink" href="#siesta" title="Link to this heading"></a></h3>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">SISL_UNIT_SIESTA</span> <span class="pre">=</span> <span class="pre">codata2018</span> <span class="pre">|</span> <span class="pre">legacy</span></code></dt><dd><p>determine the default units for Siesta files.</p>
+<p>Since Siesta 5.0, the default units are updated to follow
+the CODATA 2018 values. This means that quite a bit of
+results changed. This will force the internal variables
+to be consistent with this.</p>
+</dd>
+</dl>
+</section>
 </section>
 </section>
 
@@ -144,8 +171,8 @@ implementation, it will be placed in toolbox directory.</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="changelog/v0.8.0.html" class="btn btn-neutral float-left" title="0.8.0" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="other.html" class="btn btn-neutral float-right" title="Other resources" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tutorials/tutorial_06.html" class="btn btn-neutral float-left" title="Electronic structure setup – part 2" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="scripts/scripts.html" class="btn btn-neutral float-right" title="Command line scripts" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

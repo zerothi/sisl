@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shapes &mdash; sisl 0.1-1ead994</title>
+  <title>Nodes &mdash; sisl 0.1-1ead994</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/tabs.css" type="text/css" />
@@ -27,8 +27,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="sisl.shape.Shape" href="generated/sisl.shape.Shape.html" />
-    <link rel="prev" title="Utilities" href="utilities.html" /> 
+    <link rel="next" title="Visualization" href="viz/index.html" />
+    <link rel="prev" title="sisl.io.wannier90.winSileWannier90" href="io/generated/sisl.io.wannier90.winSileWannier90.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -87,23 +87,9 @@
 <li class="toctree-l2"><a class="reference internal" href="physics.html">Physical objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mixing.html">Mixing self-consistent quantities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unit_constant.html">Units and constants</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="utilities.html">Utilities</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Shapes</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="generated/sisl.shape.Shape.html">sisl.shape.Shape</a></li>
-<li class="toctree-l4"><a class="reference internal" href="generated/sisl.shape.Cuboid.html">sisl.shape.Cuboid</a></li>
-<li class="toctree-l4"><a class="reference internal" href="generated/sisl.shape.Cube.html">sisl.shape.Cube</a></li>
-<li class="toctree-l4"><a class="reference internal" href="generated/sisl.shape.Ellipsoid.html">sisl.shape.Ellipsoid</a></li>
-<li class="toctree-l4"><a class="reference internal" href="generated/sisl.shape.Sphere.html">sisl.shape.Sphere</a></li>
-<li class="toctree-l4"><a class="reference internal" href="generated/sisl.shape.EllipticalCylinder.html">sisl.shape.EllipticalCylinder</a></li>
-<li class="toctree-l4"><a class="reference internal" href="generated/sisl.shape.NullShape.html">sisl.shape.NullShape</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="utilities.misc.html">Range routines</a></li>
-<li class="toctree-l3"><a class="reference internal" href="utilities.misc.html#miscellaneous-routines">Miscellaneous routines</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="io/index.html">Input/Output</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nodes.html">Nodes</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Nodes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="viz/index.html">Visualization</a></li>
 </ul>
 </li>
@@ -124,10 +110,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="index.html">API documentation</a></li>
-          <li class="breadcrumb-item"><a href="utilities.html">Utilities</a></li>
-      <li class="breadcrumb-item active">Shapes</li>
+      <li class="breadcrumb-item active">Nodes</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/api/utilities.shape.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/api/nodes.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -135,41 +120,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="shapes">
-<span id="id1"></span><h1>Shapes<a class="headerlink" href="#shapes" title="Link to this heading"></a></h1>
-<p id="module-sisl.shape">Shapes are geometric objects that enables one to locate positions in- or
-out-side a given shape.</p>
-<p>Shapes are constructed from basic geometric shapes, such as cubes, ellipsoids
-and spheres, and they enable any _set_ operation on them,
-intersection (<code class="docutils literal notranslate"><span class="pre">A</span> <span class="pre">&amp;</span> <span class="pre">B</span></code>), union (<code class="docutils literal notranslate"><span class="pre">A</span> <span class="pre">|</span> <span class="pre">B</span></code>), disjunction (<code class="docutils literal notranslate"><span class="pre">A</span> <span class="pre">^</span> <span class="pre">B</span></code>)
-or complementary (<code class="docutils literal notranslate"><span class="pre">A</span> <span class="pre">-</span> <span class="pre">B</span></code>).</p>
-<p>All shapes in sisl allows one to perform arithmetic on them.
-I.e. one may <em>add</em> two shapes to accomblish what would be equivalent
-to an <code class="docutils literal notranslate"><span class="pre">&amp;</span></code> operation. The resulting shape will be a <code class="xref py py-obj docutils literal notranslate"><span class="pre">CompositeShape</span></code> which
-implements the necessary routines to ensure correct operation.</p>
+  <section id="nodes">
+<span id="id1"></span><h1>Nodes<a class="headerlink" href="#nodes" title="Link to this heading"></a></h1>
+<p id="module-sisl.nodes">Nodes and workflows is a way to streamline the data-processing
+of complicated calculations by restricting to the minimal work.</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.shape.Shape.html#sisl.shape.Shape" title="sisl.shape.Shape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Shape</span></code></a>([center])</p></td>
-<td><p>Baseclass for all shapes.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.shape.Cuboid.html#sisl.shape.Cuboid" title="sisl.shape.Cuboid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Cuboid</span></code></a>(v[, center, origin])</p></td>
-<td><p>A cuboid/rectangular prism (P4)</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.shape.Cube.html#sisl.shape.Cube" title="sisl.shape.Cube"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Cube</span></code></a>(side[, center, origin])</p></td>
-<td><p>3D Cube with equal sides</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.shape.Ellipsoid.html#sisl.shape.Ellipsoid" title="sisl.shape.Ellipsoid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Ellipsoid</span></code></a>(v[, center])</p></td>
-<td><p>3D Ellipsoid shape</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.shape.Sphere.html#sisl.shape.Sphere" title="sisl.shape.Sphere"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Sphere</span></code></a>(radius[, center])</p></td>
-<td><p>3D Sphere</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.shape.EllipticalCylinder.html#sisl.shape.EllipticalCylinder" title="sisl.shape.EllipticalCylinder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EllipticalCylinder</span></code></a>(v, h[, axes, center])</p></td>
-<td><p>3D elliptical cylinder</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.shape.NullShape.html#sisl.shape.NullShape" title="sisl.shape.NullShape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NullShape</span></code></a>(*args, **kwargs)</p></td>
-<td><p>A unique shape which has no well-defined spatial volume or center</p></td>
-</tr>
 </tbody>
 </table>
 </section>
@@ -178,8 +134,8 @@ implements the necessary routines to ensure correct operation.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="utilities.html" class="btn btn-neutral float-left" title="Utilities" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="generated/sisl.shape.Shape.html" class="btn btn-neutral float-right" title="sisl.shape.Shape" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="io/generated/sisl.io.wannier90.winSileWannier90.html" class="btn btn-neutral float-left" title="sisl.io.wannier90.winSileWannier90" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="viz/index.html" class="btn btn-neutral float-right" title="Visualization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

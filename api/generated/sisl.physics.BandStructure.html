@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.BandStructure &mdash; sisl 0.1-dea8f6b</title>
+  <title>sisl.physics.BandStructure &mdash; sisl 0.1-1ead994</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
@@ -18,7 +18,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=0b138a9b"></script>
+        <script src="../../_static/documentation_options.js?v=4a978b58"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/tabs.js?v=3ee01567"></script>
@@ -45,7 +45,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-dea8f6b
+                0.1-1ead994
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -68,6 +68,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../environment.html">Environment variables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../scripts/scripts.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../nodes/nodes_intro.html">Nodes and workflows</a></li>
 </ul>
@@ -99,10 +100,11 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../mixing.html">Mixing self-consistent quantities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../viz/index.html">Visualization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../unit_constant.html">Units and constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../nodes.html">Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../viz/index.html">Visualization</a></li>
 </ul>
 </li>
 </ul>
@@ -271,7 +273,7 @@ and passing <a class="reference internal" href="#sisl.physics.BandStructure.k" t
 <li><p><em class="xref py py-obj">apply.none</em>, specialized method that is mainly useful when wrapping methods</p></li>
 <li><p><em class="xref py py-obj">apply.list</em> same as <em class="xref py py-obj">apply.array</em> but using Python list as return value</p></li>
 <li><p><em class="xref py py-obj">apply.oplist</em> using <a class="reference internal" href="sisl.oplist.oplist.html#sisl.oplist.oplist" title="sisl.oplist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.oplist</span></code></a> allows greater flexibility for mathematical operations element wise</p></li>
-<li><p><em class="xref py py-obj">apply.datarray</em> if <a class="reference external" href="https://docs.xarray.dev/en/stable/index.html#module-xarray" title="(in xarray v2023.8.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray</span></code></a> is available one can retrieve an <a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2023.8.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a> instance</p></li>
+<li><p><em class="xref py py-obj">apply.datarray</em> if <a class="reference external" href="https://docs.xarray.dev/en/stable/index.html#module-xarray" title="(in xarray v2023.9.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray</span></code></a> is available one can retrieve an <a class="reference external" href="https://docs.xarray.dev/en/stable/generated/xarray.DataArray.html#xarray.DataArray" title="(in xarray v2023.9.1.dev0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">xarray.DataArray</span></code></a> instance</p></li>
 </ul>
 <p>Please see <a class="reference internal" href="../physics.brillouinzone.html#physics-brillouinzone"><span class="std std-ref">Brillouin zone</span></a> for further examples.</p>
 </dd></dl>
@@ -543,12 +545,6 @@ lists accordingly.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">bz</span><span class="p">)</span> <span class="o">==</span> <span class="mi">50</span>
 </pre></div>
 </div>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="sisl.physics.BandStructure.plot">
-<span class="sig-name descname"><span class="pre">plot</span></span><a class="headerlink" href="#sisl.physics.BandStructure.plot" title="Link to this definition"></a></dt>
-<dd><p>Handles all plotting possibilities for a class</p>
 </dd></dl>
 
 <dl class="py property">
