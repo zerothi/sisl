@@ -12,6 +12,11 @@ on:
         description: 'Which branch to build wheels for'
         required: false
         default: 'main'
+      release:
+        description: 'Whether to release, or not?'
+        type: boolean
+        required: false
+        default: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -107,7 +112,7 @@ jobs:
         with:
           user: __token__
           password: ${{ secrets.TESTPYPI_TOKEN }}
-          repository_url: https://test.pypi.org/legacy/
+          repository-url: https://test.pypi.org/legacy/
 
   # Check that the testpypi installation works
   test_testpypi:
