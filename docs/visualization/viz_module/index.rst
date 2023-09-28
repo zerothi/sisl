@@ -35,6 +35,7 @@ The following notebooks will help you develop a deeper understanding of what eac
     :name: viz-plotly-showcase-gallery
 
     showcase/GeometryPlot.ipynb
+    showcase/SitesPlot.ipynb
     showcase/GridPlot.ipynb
     showcase/BandsPlot.ipynb
     showcase/FatbandsPlot.ipynb
@@ -51,6 +52,7 @@ we dedicate this section to it with the hope of making the usage of it less conf
     :name: viz-plotly-blender
 
     blender/Getting started.rst
+    blender/First animation.rst
 
 Combining plots
 ^^^^^^^^^^^^^^^
@@ -61,7 +63,7 @@ to the right place!
 .. nbgallery::
     :name: viz-plotly-combining-plots-gallery
 
-    combining-plots/Intro to multiple plots.ipynb
+    combining-plots/Intro to combining plots.ipynb
 Do it yourself
 ^^^^^^^^^^^^^^
 

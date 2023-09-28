@@ -1,6 +1,3 @@
-# This Source Code Form is subject to the terms of the Mozilla Public
-# License, v. 2.0. If a copy of the MPL was not distributed with this
-# file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import contextlib
 from collections import ChainMap
 from typing import Any, Union
@@ -11,9 +8,8 @@ SISL_NODES_CONTEXT = dict(
     lazy=True,
     # On initialization, should the node compute? If None, defaults to `lazy`.
     lazy_init=None,
-    # Debugging options
-    debug=False,
-    debug_show_inputs=False
+    # The level of logs stored in the node.
+    log_level="INFO"
 )
 
 # Temporal contexts stack. It should not be used directly by users, the aim of this

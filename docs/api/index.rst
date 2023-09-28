@@ -25,6 +25,7 @@ All methods and submodules are listed  :ref:`here <genindex>` and
    default_geom
    physics
    mixing
+   viz/index
    unit_constant
    utilities
 
@@ -38,5 +39,4 @@ All methods and submodules are listed  :ref:`here <genindex>` and
    :caption: Advanced usage
 
    nodes
-   viz/index
 

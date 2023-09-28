@@ -23,22 +23,21 @@ shipped with. Being `blender` the name of the executable, you can run::
        
     blender -b --python-expr "import sys; print(f'PYTHON VERSION: {sys.version}')"
 
-In blender 2.93 it gives an output that looks like this::
+In blender 3.6 it gives an output that looks like this::
 
-    Blender 2.93.4 (hash b7205031cec4 built 2021-08-31 23:36:18)
-    Read prefs: /home/.config/blender/2.93/config/userpref.blend
-    PYTHON VERSION: 3.9.2 (default, Feb 25 2021, 12:19:39) 
-    [GCC 9.3.1 20200408 (Red Hat 9.3.1-2)]
+    Blender 3.6.3 (hash d3e6b08276ba built 2023-09-21 06:13:29)
+    PYTHON VERSION: 3.10.12 (main, Aug 14 2023, 22:14:01) [GCC 11.2.1 20220127 (Red Hat 11.2.1-9)]
+
 
     Blender quit
 
-Therefore, we know that **blender 2.93.4 uses python 3.9.2.**
+Therefore, we know that **blender 3.6.3 uses python 3.10.12.**
 
 3. **Create an environment with that python version** and install sisl (*skip if you have it already*).
 In this case, we will use conda as the environment manager, since it lets us very easily select the python version.
-You probably don't need the exact micro version. In our case asking for ``3.9`` is enough::
+You probably don't need the exact micro version. In our case asking for ``3.10`` is enough::
     
-    conda create -n blender-python python=3.9
+    conda create -n blender-python python=3.10
 
 Then install all the packages you want to use in blender::
 
@@ -91,7 +90,7 @@ We want to plot graphene, so the simplest way is
 
     import sisl
     import sisl.viz
-    geom_plot = sisl.geom.graphene().plot(backend="blender")
+    geom_plot = sisl.geom.graphene().plot(backend="blender", bonds_scale=0.01)
     geom_plot.show()
 
 If we write these lines on the console, we should get the graphene structure in the viewport.
