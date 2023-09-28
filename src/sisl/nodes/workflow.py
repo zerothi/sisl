@@ -1,32 +1,20 @@
-# This Source Code Form is subject to the terms of the Mozilla Public
-# License, v. 2.0. If a copy of the MPL was not distributed with this
-# file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
 import ast
 import html
 import inspect
 import textwrap
+from _ast import Dict
 from collections import ChainMap
 from types import FunctionType
-from typing import (
-    Any,
-    Callable,
-    Dict,
-    Iterable,
-    List,
-    Optional,
-    Sequence,
-    Tuple,
-    Type,
-    Union,
-)
+from typing import Any, Callable, Dict, Iterable, List, Sequence, Tuple, Type, Union
 
 from sisl._environ import get_environ_variable, register_environ_variable
 from sisl.messages import warn
 
 from .context import temporal_context
 from .node import DummyInputValue, Node
+from .syntax_nodes import DictSyntaxNode, ListSyntaxNode, TupleSyntaxNode
 from .utils import traverse_tree_backward, traverse_tree_forward
 
 register_environ_variable(
@@ -151,7 +139,7 @@ class Network:
         notebook: bool = False, hierarchial: bool = True, inputs_props: Dict[str, Any] = {}, node_props: Dict[str, Any] = {},
         leafs_props: Dict[str, Any] = {}, output_props: Dict[str, Any] = {},
         auto_text_color: bool = True,
-        to_export: Optional[bool] = None,
+        to_export: Union[bool, None] = None,
     ):        
         """Convert a Workflow class to a pyvis network for visualization.
 
@@ -357,7 +345,7 @@ class Network:
         return net
 
     @staticmethod
-    def _show_pyvis(net: "pyvis.Network", notebook: bool, to_export: Optional[bool]):
+    def _show_pyvis(net: "pyvis.Network", notebook: bool, to_export: Union[bool, None]):
         """Shows a pyvis network.
 
         This is implemented here because pyvis implementation of `show` is very dangerous,
@@ -415,7 +403,7 @@ class Network:
         edge_labels: bool = True, node_help: bool = True,
         notebook: bool = False, hierarchial: bool = True, node_props: Dict[str, Any] = {},
         inputs_props: Dict[str, Any] = {}, leafs_props: Dict[str, Any] = {}, output_props: Dict[str, Any] = {},
-        to_export: Optional[bool] = None,
+        to_export: Union[bool, None] = None,
     ):
         """Visualize the workflow's network in a plot.
 
@@ -500,6 +488,69 @@ class WorkflowNodes:
                     break
 
         return cls(inputs=inputs, workers=workers, output=output, named_vars=_named_vars)
+    
+    @classmethod
+    def from_node_tree(cls, output_node):
+
+        # Gather all worker nodes inside the workflow.
+        workers = cls.gather_from_inputs_and_output([], output=output_node)
+        
+        # Dictionary that will store the workflow input nodes.
+        wf_inputs = {}
+        # The workers found by traversing are node instances that might be in use
+        # by the user, so we should create copies of them and store them in this new_workers
+        # dictionary. Additionally, we need a mapping from old nodes to new nodes in order
+        # to update the links between nodes.
+        new_workers = {}
+        old_to_new = {}
+        # Loop through the workers.
+        for k, node in workers.items():
+            # Find out the inputs that we should connect to the workflow inputs. We connect all inputs
+            # that are not nodes, and that are not the args or kwargs inputs.
+            node_inputs = {
+                param_k: WorkflowInput(input_key=f"{node.__class__.__name__}_{param_k}", value=node.inputs[param_k]) 
+                for param_k, v in node.inputs.items() if not (
+                    isinstance(v, Node) or param_k == node._args_inputs_key or param_k == node._kwargs_inputs_key
+                )
+            }
+
+            # Create a new node using the newly determined inputs. However, we keep the links to the old nodes
+            # These inputs will be updated later.
+            with temporal_context(lazy=True):
+                new_workers[k] = node.__class__().update_inputs(**{**node.inputs, **node_inputs})
+
+            # Register this new node in the mapping from old to new nodes.
+            old_to_new[id(node)] = new_workers[k]
+            
+            # Update the workflow inputs dictionary with the inputs that we have determined
+            # to be connected to this node. We use the node class name as a prefix to avoid
+            # name clashes. THIS IS NOT PERFECT, IF THERE ARE TWO NODES OF THE SAME CLASS
+            # THERE CAN BE A CLASH.
+            wf_inputs.update({
+                f"{node.__class__.__name__}_{param_k}": v for param_k, v in node_inputs.items()
+            })  
+        
+        # Now that we have all the node copies, update the links to old nodes with
+        # links to new nodes.
+        for k, node in new_workers.items():
+            
+            new_node_inputs = {}
+            for param_k, v in node.inputs.items():
+                if param_k == node._args_inputs_key:
+                    new_node_inputs[param_k] = [old_to_new[id(n)] if isinstance(n, Node) else n for n in v]
+                elif param_k == node._args_inputs_key:
+                    new_node_inputs[param_k] = {k: old_to_new[id(n)] if isinstance(n, Node) else n for k, n in v.items()}
+                elif isinstance(v, Node) and not isinstance(v, WorkflowInput):
+                    new_node_inputs[param_k] = old_to_new[id(v)]
+            
+            with temporal_context(lazy=True):
+                node.update_inputs(**new_node_inputs)
+
+        # Create the workflow output.
+        new_output = WorkflowOutput(value=old_to_new[id(output_node)])
+        
+        # Initialize and return the WorkflowNodes object.
+        return cls(inputs=wf_inputs, workers=new_workers, output=new_output, named_vars={})
 
     def __dir__(self) -> Iterable[str]:
         return dir(self.named_vars) + dir(self._all_nodes)
@@ -642,7 +693,51 @@ class Workflow(Node):
 
     network = NetworkDescriptor()
 
+    @classmethod
+    def from_node_tree(cls, output_node: Node, workflow_name: Union[str, None] = None):
+        """Creates a workflow class from a node.
+        
+        It does so by recursively traversing the tree in the inputs direction until
+        it finds the leaves.
+        All the nodes found are included in the workflow. For each node, inputs 
+        that are not nodes are connected to the inputs of the workflow.
+
+        Parameters
+        ----------
+        output_node: Node
+            The final node, that should be connected to the output of the workflow.
+        workflow_name: str, optional
+            The name of the new workflow class. If None, the name of the output node
+            will be used.
+
+        Returns
+        -------
+        Workflow
+            The newly created workflow class.
+        """
+        # Create the node manager for the workflow.
+        dryrun_nodes = WorkflowNodes.from_node_tree(output_node)
+        
+        # Create the signature of the workflow from the inputs that were determined
+        # by the node manager.
+        signature = inspect.Signature(parameters=[
+            inspect.Parameter(inp.input_key, inspect.Parameter.KEYWORD_ONLY, default=inp.value) for inp in dryrun_nodes.inputs.values()  
+        ])
+
+        def function(*args, **kwargs):
+            raise NotImplementedError("Workflow class created from node tree. Calling it as a function is not supported.")
+
+        function.__signature__ = signature
+
+        # Create the class and return it.
+        return type(
+            workflow_name or output_node.__class__.__name__, 
+            (cls,), 
+            {"dryrun_nodes": dryrun_nodes, "__signature__": signature, "function": staticmethod(function)}
+        )
+
     def setup(self, *args, **kwargs):
+        self.nodes = self.dryrun_nodes
         super().setup(*args, **kwargs)
 
         self.nodes = self.dryrun_nodes.copy(inputs=self._inputs)
@@ -650,6 +745,9 @@ class Workflow(Node):
     def __init_subclass__(cls):
         # If this is just a subclass of Workflow that is not meant to be ran, continue 
         if not hasattr(cls, "function"):
+            return super().__init_subclass__()
+        # Also, if the node manager has already been created, continue.
+        if "dryrun_nodes" in cls.__dict__:
             return super().__init_subclass__()
 
         # Otherwise, do all the setting up of the class
@@ -659,6 +757,11 @@ class Workflow(Node):
         named_vars = {}
 
         def assign_workflow_var(value: Any, var_name: str):
+            original_name = var_name
+            repeats = 0
+            while var_name in named_vars:
+                repeats += 1
+                var_name = f"{original_name}_{repeats}"
             if var_name in named_vars:
                 raise ValueError(f"Variable {var_name} has already been assigned a value, in workflows you can't overwrite variables.")
             named_vars[var_name] = value
@@ -713,7 +816,7 @@ class Workflow(Node):
         if len(args) == 1:
             return args[0]
 
-        raise ValueError(f"Could not find node {node} in the workflow. Workflow nodes {node}")
+        raise ValueError(f"Could not find node {node} in the workflow. Workflow nodes {cls.dryrun_nodes.items()}")
 
     def get(self):
         """Returns the up to date output of the workflow.
@@ -736,11 +839,19 @@ class Workflow(Node):
         self._inputs.update(inputs)
                 
         return self
+    
+    def _get_output(self):
+        return self.nodes.output._output
+    
+    def _set_output(self, value):
+        self.nodes.output._output = value
+    
+    _output = property(_get_output, _set_output)
 
 class NodeConverter(ast.NodeTransformer):
     """AST transformer that converts a function into a workflow."""
     
-    def __init__(self, *args, assign_fn: Optional[str] = None, node_cls_name: str = "Node", **kwargs):
+    def __init__(self, *args, assign_fn: Union[str, None] = None, node_cls_name: str = "Node", **kwargs):
         super().__init__(*args, **kwargs)
         
         self.assign_fn = assign_fn
@@ -758,13 +869,14 @@ class NodeConverter(ast.NodeTransformer):
         
         ast.fix_missing_locations(node2)
             
-        
         return node2
     
     def visit_Assign(self, node):
         """Converts some_module.some_attr(some_args) into Node.from_func(some_module.some_attr)(some_args)"""
         
         if self.assign_fn is None:
+            return self.generic_visit(node)
+        if len(node.targets) > 1 or not isinstance(node.targets[0], ast.Name):
             return self.generic_visit(node)
         
         node.value = ast.Call(
@@ -780,10 +892,62 @@ class NodeConverter(ast.NodeTransformer):
         
         return node
     
+    def visit_List(self, node):
+        """Converts the list syntax into a call to the ListSyntaxNode."""
+        if all(isinstance(elt, ast.Constant) for elt in node.elts):
+            return self.generic_visit(node)
+
+        new_node = ast.Call(
+            func=ast.Name(id="ListSyntaxNode", ctx=ast.Load()),
+            args=[self.visit(elt) for elt in node.elts],
+            keywords=[]
+        )
+
+        ast.fix_missing_locations(new_node)
+
+        return new_node
+    
+    def visit_Tuple(self, node):
+        """Converts the tuple syntax into a call to the TupleSyntaxNode."""
+        if all(isinstance(elt, ast.Constant) for elt in node.elts):
+            return self.generic_visit(node)
+
+        new_node = ast.Call(
+            func=ast.Name(id="TupleSyntaxNode", ctx=ast.Load()),
+            args=[self.visit(elt) for elt in node.elts],
+            keywords=[]
+        )
+
+        ast.fix_missing_locations(new_node)
+
+        return new_node
+    
+    def visit_Dict(self, node: ast.Dict) -> Any:
+        """Converts the dict syntax into a call to the DictSyntaxNode."""
+        if all(isinstance(elt, ast.Constant) for elt in node.values):
+            return self.generic_visit(node)
+        if not all(isinstance(elt, ast.Constant) for elt in node.keys):
+            return self.generic_visit(node)
+        
+        new_node = ast.Call(
+            func=ast.Name(id="DictSyntaxNode", ctx=ast.Load()),
+            args=[],
+            keywords=[
+                ast.keyword(arg=key.value, value=self.visit(value))
+                for key, value in zip(node.keys, node.values)
+            ],
+        )
+
+        ast.fix_missing_locations(new_node)
+
+        return new_node
+    
+
+    
 def nodify_func(
     func: FunctionType, 
     transformer_cls: Type[NodeConverter] = NodeConverter, 
-    assign_fn: Optional[Callable] = None, 
+    assign_fn: Union[Callable, None] = None, 
     node_cls: Type[Node] = Node
 ) -> FunctionType:
     """Converts all calculations of a function into nodes.
@@ -799,7 +963,7 @@ def nodify_func(
         The function to convert.
     transformer_cls : Type[NodeConverter], optional
         The NodeTransformer class to that is used to transform the AST.
-    assign_fn : Callable, optional
+    assign_fn : Union[Callable, None], optional
         A function that will be placed as middleware for variable assignments.
         It will be called with the following arguments:
             - value: The value assigned to the variable.
@@ -850,7 +1014,11 @@ def nodify_func(
     code_obj = compile(new_tree, "compiled_workflows", "exec")
     
     # Add the needed variables into the namespace.
-    namespace = {node_cls_name: node_cls, **func_namespace}
+    namespace = {
+        node_cls_name: node_cls, 
+        "ListSyntaxNode": ListSyntaxNode, "TupleSyntaxNode": TupleSyntaxNode, "DictSyntaxNode": DictSyntaxNode, 
+        **func_namespace, 
+    }
     if assign_fn_key is not None:
         namespace[assign_fn_key] = assign_fn
 

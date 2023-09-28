@@ -1,11 +1,10 @@
-# This Source Code Form is subject to the terms of the Mozilla Public
-# License, v. 2.0. If a copy of the MPL was not distributed with this
-# file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from __future__ import annotations
 
 import inspect
+import logging
 from collections import ChainMap
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
+from io import StringIO
+from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Type, Union
 
 from numpy.lib.mixins import NDArrayOperatorsMixin
 
@@ -32,7 +31,6 @@ class NodeCalcError(NodeError):
     def __str__(self):
         return (f"Couldn't generate an output for {self._node} with the current inputs.")
 
-
 class NodeInputError(NodeError):
     
     def __init__(self, node, error, inputs):
@@ -42,7 +40,6 @@ class NodeInputError(NodeError):
     def __str__(self):
         # Should make this more specific
         return (f"Some input is not right in {self._node} and could not be parsed")
-
 
 class Node(NDArrayOperatorsMixin):
     """Generic class for nodes.
@@ -79,7 +76,7 @@ class Node(NDArrayOperatorsMixin):
     _prev_evaluated_inputs: Dict[str, Any]
 
     # Current output value of the node
-    _output: Any
+    _output: Any = _blank
     
     # Nodes that are connected to this node's inputs
     _input_nodes: Dict[str, Node]
@@ -90,6 +87,13 @@ class Node(NDArrayOperatorsMixin):
     _nupdates: int
     # Whether the node's output is currently outdated.
     _outdated: bool
+    # Whether the node has errored during the last execution
+    # with the current inputs.
+    _errored: bool
+
+    # Logs of the node's execution.
+    _logger: logging.Logger
+    logs: str
 
     # Contains the raw function of the node.
     function: Callable
@@ -104,11 +108,15 @@ class Node(NDArrayOperatorsMixin):
 
         if not lazy_init:
             self.get()
+
+    def __call__(self, *args, **kwargs):
+        self.update_inputs(*args, **kwargs)
+        return self.get()
     
     def setup(self, *args, **kwargs):
         """Sets up the node based on its initial inputs."""
         # Parse inputs into arguments.
-        bound_params = self.__class__.__signature__.bind_partial(*args, **kwargs)
+        bound_params = inspect.signature(self.function).bind_partial(*args, **kwargs)
         bound_params.apply_defaults()
 
         self._inputs = bound_params.arguments
@@ -124,6 +132,13 @@ class Node(NDArrayOperatorsMixin):
         self._nupdates = 0
 
         self._outdated = True
+        self._errored = False
+
+        self._logger = logging.getLogger(
+            str(id(self))
+        )
+        self._log_formatter = logging.Formatter(fmt='%(asctime)s | %(levelname)-8s :: %(message)s')
+        self.logs = ""
 
         self.context = self.__class__.context.new_child({})
     
@@ -161,7 +176,7 @@ class Node(NDArrayOperatorsMixin):
             init_sig = sig
             if "self" not in init_sig.parameters:
                 init_sig = sig.replace(parameters=[
-                    inspect.Parameter("self", kind=inspect.Parameter.POSITIONAL_OR_KEYWORD),
+                    inspect.Parameter("self", kind=inspect.Parameter.POSITIONAL_ONLY),
                     *sig.parameters.values()
                 ])
             
@@ -177,13 +192,12 @@ class Node(NDArrayOperatorsMixin):
                 if parameter.kind == parameter.VAR_KEYWORD:
                     cls._kwargs_inputs_key = key
 
-            cls.__init__.__signature__ = init_sig
             cls.__signature__ = no_self_sig
 
         return super().__init_subclass__()
         
     @classmethod
-    def from_func(cls, func: Optional[Callable] = None, context: Optional[dict] = None):
+    def from_func(cls, func: Union[Callable, None] = None, context: Union[dict, None] = None):
         """Builds a node from a function.
 
         Parameters
@@ -203,6 +217,11 @@ class Node(NDArrayOperatorsMixin):
 
         if isinstance(func, type) and issubclass(func, Node):
             return func
+
+        if isinstance(func, Node):
+            node = func
+
+            return CallableNode(func=node)
 
         if func in cls._known_function_nodes:
             return cls._known_function_nodes[func]       
@@ -314,34 +333,56 @@ class Node(NDArrayOperatorsMixin):
             kwargs.update(kwargs_inputs)
 
         return args, kwargs
+    
+    @staticmethod
+    def evaluate_input_node(node: Node):
+        return node.get()
 
     def get(self):
         # Map all inputs to their values. That is, if they are nodes, call the get
         # method on them so that we get the updated output. This recursively evaluates nodes.
+        self._logger.setLevel(getattr(logging, self.context['log_level'].upper()))
+
+        logs = logging.StreamHandler(StringIO())
+        self._logger.addHandler(logs)
+
+        logs.setFormatter(self._log_formatter)
+
+        self._logger.debug("Getting output from node...")
+        self._logger.debug(f"Raw inputs: {self._inputs}")
+
         evaluated_inputs = self.map_inputs(
             inputs=self._inputs, 
-            func=lambda node: node.get(),
+            func=self.evaluate_input_node,
             only_nodes=True,
         )
+
+        self._logger.debug(f"Evaluated inputs: {evaluated_inputs}")
 
         if self._outdated or self.is_output_outdated(evaluated_inputs):
             try:
                 args, kwargs = self._sanitize_inputs(evaluated_inputs)
                 self._output = self.function(*args, **kwargs)
-                if self.context['debug']:
-                    if self.context['debug_show_inputs']:
-                        info(f"{self}: evaluated with inputs {evaluated_inputs}: {self._output}.") 
-                    else:
-                        info(f"{self}: evaluated because inputs changed.")
+
+                self._logger.info(f"Evaluated because inputs changed.")
             except Exception as e:
+                self._logger.exception(e)
+                self.logs += logs.stream.getvalue()
+                logs.close()
+                self._errored = True
                 raise NodeCalcError(self, e, evaluated_inputs)
             
             self._nupdates += 1
             self._prev_evaluated_inputs = evaluated_inputs
             self._outdated = False
+            self._errored = False
         else:
-            if self.context['debug']:
-                info(f"{self}: no need to evaluate")    
+            self._logger.info(f"No need to evaluate")
+
+        self._logger.debug(f"Output: {self._output}.")
+
+        self.logs += logs.stream.getvalue()
+        logs.close()   
 
         return self._output
 
@@ -359,7 +400,7 @@ class Node(NDArrayOperatorsMixin):
 
     @property
     def default_inputs(self):
-        params = self.__class__.__signature__.bind_partial()
+        params = inspect.signature(self.function).bind_partial()
         params.apply_defaults()
         return params.arguments
 
@@ -371,18 +412,94 @@ class Node(NDArrayOperatorsMixin):
         input_val = self.inputs[key]
         
         return input_val
+    
+    def recursive_update_inputs(self, cls: Optional[Union[Type, Tuple[Type, ...]]] = None, **inputs):
+        """Updates the inputs of the node recursively.
 
-    def update_inputs(self, *args, **inputs):
-        # If no new inputs were provided, there's nothing to do
-        if not inputs and len(args) == 0:
-            return
+        This method updates the inputs of the node and all its children.
 
-        bound = self.__class__.__signature__.bind_partial(*args, **inputs)
-        inputs = bound.arguments
+        Parameters
+        ----------
+        cls : Optional[Union[Type, Tuple[Type, ...]]], optional
+            Only update nodes of this class. If None, update all nodes.
+        inputs : Dict[str, Any]
+            The inputs to update.
+        """
+        from .utils import traverse_tree_backward
         
-        # If kwargs inputs are provided, add them to the previous input kwargs.
-        if self._kwargs_inputs_key is not None:
-            new_kwargs = bound.kwargs
+        def _update(node):
+
+            if cls is None or isinstance(self, cls):
+                node.update_inputs(**inputs)
+
+                update_inputs = {}
+                # Update the inputs of the node
+                for k in self.inputs:
+                    if k in inputs:
+                        update_inputs[k] = inputs[k]
+
+                self.update_inputs(**update_inputs)
+
+        traverse_tree_backward([self], _update)
+
+    def update_inputs(self, **inputs):
+        """Updates the inputs of the node.
+
+        Note that you can not pass positional arguments to this method.
+        The positional arguments must be passed also as kwargs.
+
+        This is because there would not be a well defined way to update the
+        variadic positional arguments.
+
+        E.g. if the function signature is (a: int, *args), there is no way
+        to pass *args without passing a value for a.
+
+        This means that one must also pass the *args also as a key:
+        ``update_inputs(args=(2, 3))``. Beware that functions not necessarily
+        name their variadic arguments ``args``. If the function signature is
+        ``(a: int, *arguments)`` then the key that you need to use is `arguments`.
+
+        Similarly, the **kwargs can be passed either as a dictionary in the key ``kwargs`` 
+        (or whatever the name of the variadic keyword arguments is). This indicates that
+        the whole kwargs is to be replaced by the new value. Alternatively, you can pass
+        the kwargs as separate key-value arguments, which means that you want to update the
+        kwargs dictionary, but keep the old values. In this second option, you can indicate
+        that a key should be removed by passing ``Node.DELETE_KWARG`` as the value.
+        
+        Parameters
+        ----------
+        **inputs :
+            The inputs to update.
+        """
+        # If no new inputs were provided, there's nothing to do
+        if not inputs:
+            return
+        
+        # Pop the args key (if any) so that we can parse the inputs without errors.
+        args = None
+        if self._args_inputs_key:
+            args = inputs.pop(self._args_inputs_key, None)
+        # Pop also the kwargs key (if any)
+        explicit_kwargs = None
+        if self._kwargs_inputs_key:
+            explicit_kwargs = inputs.pop(self._kwargs_inputs_key, None)
+
+        # Parse the inputs. We do this to separate the kwargs from the rest of the inputs.
+        bound = inspect.signature(self.function).bind_partial(**inputs)
+        inputs = bound.arguments
+
+        # Now that we have parsed the inputs, put back the args key (if any).
+        if args is not None:
+            inputs[self._args_inputs_key] = args
+        
+        if explicit_kwargs is not None:
+            # If a kwargs dictionary has been passed, this means that the user wants to replace
+            # the whole kwargs dictionary. So, we just update the inputs with the new kwargs.
+            inputs[self._kwargs_inputs_key] = explicit_kwargs
+        elif self._kwargs_inputs_key is not None:
+            # Otherwise, update the old kwargs with the new separate arguments that have been passed.
+            # Here we give the option to delete individual kwargs by passing the DELETE_KWARG indicator.
+            new_kwargs = inputs.get(self._kwargs_inputs_key, {})
             if len(new_kwargs) > 0:
                 kwargs = self._inputs.get(self._kwargs_inputs_key, {}).copy()
                 kwargs.update(new_kwargs)
@@ -411,7 +528,12 @@ class Node(NDArrayOperatorsMixin):
         return UfuncNode(ufunc=ufunc, method=method, input_kwargs=kwargs, **inputs)
 
     def __getitem__(self, key):
-        return GetItemNode(data=self, key=key)
+        return GetItemNode(obj=self, key=key)
+    
+    def __getattr__(self, key):
+        if key.startswith('_'):
+            raise super().__getattr__(key)
+        return GetAttrNode(obj=self, key=key)
 
     def _update_connections(self, inputs):
 
@@ -489,6 +611,7 @@ class Node(NDArrayOperatorsMixin):
     def _receive_outdated(self):
         # Mark the node as outdated
         self._outdated = True
+        self._errored = False
         # If automatic recalculation is turned on, recalculate output
         self._maybe_autoupdate()
         # Inform to the nodes that use our input that they are outdated
@@ -499,7 +622,6 @@ class Node(NDArrayOperatorsMixin):
         """Makes this node recalculate its output if automatic recalculation is turned on"""
         if not self.context['lazy']:
             self.get()
-
 
 class DummyInputValue(Node):
     """A dummy node that can be used as a placeholder for input values."""
@@ -516,23 +638,36 @@ class DummyInputValue(Node):
     def function(input_key: str, value: Any = Node._blank):
         return value
 
-
 class FuncNode(Node):
 
     @staticmethod
-    def function(func: Callable, **kwargs):
-        return func(**kwargs)
-
+    def function(*args, func: Callable, **kwargs):
+        return func(*args, **kwargs)
+    
+class CallableNode(FuncNode):
+    
+    def __call__(self, *args, **kwargs):
+        self.update_inputs(*args, **kwargs)
+        return self
 
 class GetItemNode(Node):
 
     @staticmethod
-    def function(data: Any, key: Any):
-        return data[key]
+    def function(obj: Any, key: Any):
+        return obj[key]
+    
+class GetAttrNode(Node):
 
+    @staticmethod
+    def function(obj: Any, key: str):
+        return getattr(obj, key)
 
 class UfuncNode(Node):
     """Node that wraps a numpy ufunc."""
+
+    def __call__(self, *args, **kwargs):
+        self.recursive_update_inputs(*args, **kwargs)
+        return self.get()
 
     @staticmethod
     def function(ufunc, method: str, input_kwargs: Dict[str, Any], **kwargs):
@@ -545,4 +680,11 @@ class UfuncNode(Node):
                 break
             inputs.append(kwargs.pop(key))
             i += 1
-        return getattr(ufunc, method)(*inputs, **input_kwargs)
+        return getattr(ufunc, method)(*inputs, **input_kwargs)    
+    
+class ConstantNode(Node):
+    """Node that just returns its input value."""
+
+    @staticmethod
+    def function(value: Any):
+        return value

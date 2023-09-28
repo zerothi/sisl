@@ -5,17 +5,8 @@
 Visualization utilities
 =======================
 
-Various visualization modules are described here.
-
-
-Plotly
-======
-
-The plotly backend.
 """
-# from ._presets import *
-# from ._templates import *
-# from ._user_customs import import_user_plots, import_user_presets, import_user_sessions, import_user_plugins
+
 import os
 
 from sisl._environ import register_environ_variable
@@ -29,17 +20,10 @@ register_environ_variable("SISL_VIZ_NUM_PROCS", min(1, _nprocs),
                           description="Maximum number of processors used for parallel plotting",
                           process=int)
 
-# isort: split
-from .plot import Animation, MultiplePlot, Plot, SubPlots
-
-# isort: split
-
+from . import _xarray_accessor
 from ._plotables import register_plotable
 from ._plotables_register import *
-from .backends import load_backends
+from .figure import Figure, get_figure
+from .plot import Plot
 from .plots import *
-from .plotutils import load
-from .session import Session
-from .sessions import *
-
-load_backends()
+from .plotters import plot_actions

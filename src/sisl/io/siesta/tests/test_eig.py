@@ -10,7 +10,6 @@ import sisl
 from sisl.io.siesta.eig import *
 from sisl.io.siesta.fdf import *
 
-
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
 _dir = osp.join("sisl", "io", "siesta")
 

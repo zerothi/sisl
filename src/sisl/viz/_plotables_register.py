@@ -8,15 +8,31 @@ It does so by patching them accordingly
 """
 import sisl
 import sisl.io.siesta as siesta
-import sisl.io.tbtrans as tbtrans
+# import sisl.io.tbtrans as tbtrans
 from sisl.io.sile import BaseSile, get_siles
 
-from ._plotables import register_plotable
-from .plot import Plot
+from ._plotables import register_data_source, register_plotable, register_sile_method
+from .data import *
 from .plots import *
-from .plotutils import get_plot_classes
+
+# from .old_plot import Plot
+# from .plotutils import get_plot_classes
+
 
 __all__ = []
+
+
+# -----------------------------------------------------
+#               Register data sources
+# -----------------------------------------------------
+
+# This will automatically register as plotable everything that 
+# the data source can digest
+
+register_data_source(PDOSData, PdosPlot, "pdos_data", default=[siesta.pdosSileSiesta])
+register_data_source(BandsData, BandsPlot, "bands_data", default=[siesta.bandsSileSiesta])
+register_data_source(BandsData, FatbandsPlot, "bands_data", data_source_init_kwargs={"extra_vars": ("norm2", )})
+register_data_source(EigenstateData, WavefunctionPlot,  "eigenstate", default=[sisl.EigenstateElectron])
 
 # -----------------------------------------------------
 #               Register plotable siles
@@ -24,50 +40,23 @@ __all__ = []
 
 register = register_plotable
 
-for GridSile in get_siles(attrs=["read_grid"]):
-    register(GridSile, GridPlot, 'grid_file', default=True)
-
 for GeomSile in get_siles(attrs=["read_geometry"]):
-    register(GeomSile, GeometryPlot, 'geom_file', default=True)
-    register(GeomSile, BondLengthMap, 'geom_file')
+    register_sile_method(GeomSile, "read_geometry", GeometryPlot, 'geometry')
 
-for HSile in get_siles(attrs=["read_hamiltonian"]):
-    register(HSile, WavefunctionPlot, 'H', default=HSile != siesta.fdfSileSiesta)
-    register(HSile, PdosPlot, "H")
-    register(HSile, BandsPlot, "H")
-    register(HSile, FatbandsPlot, "H")
+for GridSile in get_siles(attrs=["read_grid"]):
+    register_sile_method(GridSile, "read_grid", GridPlot, 'grid', default=True)
 
-for cls in get_plot_classes():
-    register(siesta.fdfSileSiesta, cls, "root_fdf", overwrite=True)
+# # -----------------------------------------------------
+# #           Register plotable sisl objects
+# # -----------------------------------------------------
 
-# register(siesta.outSileSiesta, ForcesPlot, 'out_file', default=True)
-
-register(siesta.bandsSileSiesta, BandsPlot, 'bands_file', default=True)
-register(siesta.bandsSileSiesta, FatbandsPlot, 'bands_file')
-
-register(siesta.pdosSileSiesta, PdosPlot, 'pdos_file', default=True)
-register(tbtrans.tbtncSileTBtrans, PdosPlot, 'tbt_out', default=True)
-
-# -----------------------------------------------------
-#           Register plotable sisl objects
-# -----------------------------------------------------
-
-# Geometry
+# # Geometry
 register(sisl.Geometry, GeometryPlot, 'geometry', default=True)
-register(sisl.Geometry, BondLengthMap, 'geometry')
 
-# Grid
+# # Grid
 register(sisl.Grid, GridPlot, 'grid', default=True)
 
-# Hamiltonian
-register(sisl.Hamiltonian, WavefunctionPlot, 'H', default=True)
-register(sisl.Hamiltonian, PdosPlot, "H")
-register(sisl.Hamiltonian, BandsPlot, "H")
-register(sisl.Hamiltonian, FatbandsPlot, "H")
+# Brilloiun zone
+register(sisl.BrillouinZone, SitesPlot, 'sites_obj')
 
-# Band structure
-register(sisl.BandStructure, BandsPlot, "band_structure", default=True)
-register(sisl.BandStructure, FatbandsPlot, "band_structure")
-
-# Eigenstate
-register(sisl.EigenstateElectron, WavefunctionPlot, 'eigenstate', default=True)
+sisl.BandStructure.plot.set_default("bands")
