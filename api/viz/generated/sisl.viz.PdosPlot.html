@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.viz.PdosPlot &mdash; sisl 0.1-b45ef98</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/sg_gallery.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/custom_styles.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=0f94db4c"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/tabs.js?v=3ee01567"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="get_figure" href="sisl.viz.get_figure.html" />
+    <link rel="prev" title="sisl.viz.WavefunctionPlot" href="sisl.viz.WavefunctionPlot.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            sisl
+          </a>
+              <div class="version">
+                0.1-b45ef98
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cite.html">Citing sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../publications.html">Publications using sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/scripts.html">Command line scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../nodes/nodes_intro.html">Nodes and workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../basic.html">Basic classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../default_geom.html">Common geometries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../physics.html">Physical objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mixing.html">Mixing self-consistent quantities</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Visualization</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html#plot-classes">Plot classes</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="sisl.viz.Plot.html">sisl.viz.Plot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.viz.BandsPlot.html">sisl.viz.BandsPlot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.viz.FatbandsPlot.html">sisl.viz.FatbandsPlot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.viz.GeometryPlot.html">sisl.viz.GeometryPlot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.viz.SitesPlot.html">sisl.viz.SitesPlot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.viz.GridPlot.html">sisl.viz.GridPlot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.viz.WavefunctionPlot.html">sisl.viz.WavefunctionPlot</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">sisl.viz.PdosPlot</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../index.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../unit_constant.html">Units and constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utilities.html">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../io/index.html">Input/Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../nodes.html">Nodes</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">API documentation</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Visualization</a></li>
+      <li class="breadcrumb-item active">sisl.viz.PdosPlot</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/api/viz/generated/sisl.viz.PdosPlot.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sisl-viz-pdosplot">
+<h1>sisl.viz.PdosPlot<a class="headerlink" href="#sisl-viz-pdosplot" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.viz.</span></span><span class="sig-name descname"><span class="pre">PdosPlot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pdos_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PDOSData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groups</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">OrbitalStyleQuery</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[{'name':</span> <span class="pre">'DOS'}]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Erange</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(-2,</span> <span class="pre">2)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E_axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'x'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'y'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'x'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'line'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'scatter'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'area_line'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'line'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_scale</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'plotly'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/plots/pdos.html#PdosPlot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.PdosPlot" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">OrbitalGroupsPlot</span></code></p>
+<p>Plot the projected density of states.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pdos_data</strong> – The object containing the raw PDOS data (individual PDOS for each orbital/spin).</p></li>
+<li><p><strong>groups</strong> – List of orbital specifications to filter and accumulate the PDOS.
+The contribution of each group will be displayed in a different line.
+See showcase notebook for examples.</p></li>
+<li><p><strong>Erange</strong> – The energy range to plot.</p></li>
+<li><p><strong>E_axis</strong> – Axis to project the energies.</p></li>
+<li><p><strong>line_mode</strong> – Mode used to draw the PDOS lines.</p></li>
+<li><p><strong>line_scale</strong> – Scaling factor for the width of all lines.</p></li>
+<li><p><strong>backend</strong> – The backend to generate the figure.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.PdosPlot.add_group" title="sisl.viz.PdosPlot.add_group"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_group</span></code></a>([group, clean])</p></td>
+<td><p>Adds a new orbitals group.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.PdosPlot.evaluate_input_node" title="sisl.viz.PdosPlot.evaluate_input_node"><code class="xref py py-obj docutils literal notranslate"><span class="pre">evaluate_input_node</span></code></a>(node)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.PdosPlot.final_node_key" title="sisl.viz.PdosPlot.final_node_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">final_node_key</span></code></a>(*args)</p></td>
+<td><p>Returns the key of the final (output) node of the workflow.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.PdosPlot.find_node_key" title="sisl.viz.PdosPlot.find_node_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_node_key</span></code></a>(node, *args)</p></td>
+<td><p>Returns the identifier key of a node in this workflow</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.PdosPlot.from_func" title="sisl.viz.PdosPlot.from_func"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_func</span></code></a>([func, context])</p></td>
+<td><p>Builds a node from a function.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.PdosPlot.from_node_tree" title="sisl.viz.PdosPlot.from_node_tree"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_node_tree</span></code></a>(output_node[, workflow_name])</p></td>
+<td><p>Creates a workflow class from a node.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.PdosPlot.function" title="sisl.viz.PdosPlot.function"><code class="xref py py-obj docutils literal notranslate"><span class="pre">function</span></code></a>([groups, Erange, E_axis, ...])</p></td>
+<td><p>Plot the projected density of states.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.PdosPlot.get" title="sisl.viz.PdosPlot.get"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get</span></code></a>()</p></td>
+<td><p>Returns the up to date output of the workflow.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.PdosPlot.get_input" title="sisl.viz.PdosPlot.get_input"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_input</span></code></a>(key)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.PdosPlot.get_tree" title="sisl.viz.PdosPlot.get_tree"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_tree</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.PdosPlot.groups" title="sisl.viz.PdosPlot.groups"><code class="xref py py-obj docutils literal notranslate"><span class="pre">groups</span></code></a>(*i_or_names)</p></td>
+<td><p>Gets the groups that match your query</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.PdosPlot.is_output_outdated" title="sisl.viz.PdosPlot.is_output_outdated"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_output_outdated</span></code></a>(evaluated_inputs)</p></td>
+<td><p>Checks if the node needs to be ran</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.PdosPlot.map_inputs" title="sisl.viz.PdosPlot.map_inputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">map_inputs</span></code></a>(inputs, func[, only_nodes, exclude])</p></td>
+<td><p>Maps all inputs of the node applying a given function.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.PdosPlot.merge" title="sisl.viz.PdosPlot.merge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge</span></code></a>(*others, **kwargs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.PdosPlot.plot_class_key" title="sisl.viz.PdosPlot.plot_class_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_class_key</span></code></a>()</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">rtype<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.PdosPlot.recursive_update_inputs" title="sisl.viz.PdosPlot.recursive_update_inputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">recursive_update_inputs</span></code></a>([cls])</p></td>
+<td><p>Updates the inputs of the node recursively.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.PdosPlot.remove_groups" title="sisl.viz.PdosPlot.remove_groups"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_groups</span></code></a>(*i_or_names[, all])</p></td>
+<td><p>Removes orbital groups.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.PdosPlot.setup" title="sisl.viz.PdosPlot.setup"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Sets up the node based on its initial inputs.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.PdosPlot.split_DOS" title="sisl.viz.PdosPlot.split_DOS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_DOS</span></code></a>([on, only, exclude, clean])</p></td>
+<td><p>Splits the density of states to the different contributions.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.PdosPlot.split_groups" title="sisl.viz.PdosPlot.split_groups"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_groups</span></code></a>(*i_or_names[, on, only, ...])</p></td>
+<td><p>Splits the orbital groups into multiple groups.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.PdosPlot.split_orbs" title="sisl.viz.PdosPlot.split_orbs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_orbs</span></code></a>([on, only, exclude, clean])</p></td>
+<td><p>Splits the orbitals into different groups.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.PdosPlot.update_groups" title="sisl.viz.PdosPlot.update_groups"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_groups</span></code></a>(*i_or_names, **kwargs)</p></td>
+<td><p>Updates existing groups.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.PdosPlot.update_inputs" title="sisl.viz.PdosPlot.update_inputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_inputs</span></code></a>(**inputs)</p></td>
+<td><p>Updates the inputs of the workflow.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.PdosPlot.update_settings" title="sisl.viz.PdosPlot.update_settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_settings</span></code></a>(*args, **kwargs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.PdosPlot.DELETE_KWARG" title="sisl.viz.PdosPlot.DELETE_KWARG"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DELETE_KWARG</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.PdosPlot.context" title="sisl.viz.PdosPlot.context"><code class="xref py py-obj docutils literal notranslate"><span class="pre">context</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.PdosPlot.default_inputs" title="sisl.viz.PdosPlot.default_inputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">default_inputs</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.PdosPlot.dryrun_nodes" title="sisl.viz.PdosPlot.dryrun_nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dryrun_nodes</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.PdosPlot.inputs" title="sisl.viz.PdosPlot.inputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inputs</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.PdosPlot.network" title="sisl.viz.PdosPlot.network"><code class="xref py py-obj docutils literal notranslate"><span class="pre">network</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.PdosPlot.nodes" title="sisl.viz.PdosPlot.nodes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nodes</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.PdosPlot.logs" title="sisl.viz.PdosPlot.logs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logs</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.DELETE_KWARG">
+<span class="sig-name descname"><span class="pre">DELETE_KWARG</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;object</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#sisl.viz.PdosPlot.DELETE_KWARG" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.__call__">
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.PdosPlot.__call__" title="Link to this definition"></a></dt>
+<dd><p>Call self as a function.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.PdosPlot.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.add_group">
+<span class="sig-name descname"><span class="pre">add_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.PdosPlot.add_group" title="Link to this definition"></a></dt>
+<dd><p>Adds a new orbitals group.</p>
+<p>The new group can be passed as a dict or as keyword arguments.
+The keyword arguments will overwrite what has been passed as a dict if there is conflict.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>group</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – the new group as a dictionary</p></li>
+<li><p><strong>clean</strong> (<em>boolean</em><em>, </em><em>optional</em>) – whether the plot should be cleaned before drawing the group.
+If <cite>False</cite>, the group will be drawn on top of what is already there.</p></li>
+<li><p><strong>**kwargs</strong> – parameters of the group can be passed as keyword arguments too.
+They will overwrite the values in req</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.context">
+<span class="sig-name descname"><span class="pre">context</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">NodeContext</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">NodeContext({},</span> <span class="pre">{},</span> <span class="pre">{},</span> <span class="pre">{},</span> <span class="pre">{},</span> <span class="pre">{'lazy':</span> <span class="pre">True,</span> <span class="pre">'lazy_init':</span> <span class="pre">None,</span> <span class="pre">'log_level':</span> <span class="pre">'INFO'})</span></em><a class="headerlink" href="#sisl.viz.PdosPlot.context" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.default_inputs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default_inputs</span></span><a class="headerlink" href="#sisl.viz.PdosPlot.default_inputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.dryrun_nodes">
+<span class="sig-name descname"><span class="pre">dryrun_nodes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">WorkflowNodes</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;sisl.nodes.workflow.WorkflowNodes</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#sisl.viz.PdosPlot.dryrun_nodes" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.evaluate_input_node">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">evaluate_input_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.PdosPlot.evaluate_input_node" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.final_node_key">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">final_node_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.PdosPlot.final_node_key" title="Link to this definition"></a></dt>
+<dd><p>Returns the key of the final (output) node of the workflow.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.find_node_key">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">find_node_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.PdosPlot.find_node_key" title="Link to this definition"></a></dt>
+<dd><p>Returns the identifier key of a node in this workflow</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.from_func">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.PdosPlot.from_func" title="Link to this definition"></a></dt>
+<dd><p>Builds a node from a function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> (<em>function</em><em>, </em><em>optional</em>) – <p>The function to be converted to a node.</p>
+<p>If not provided, the return of this method is just a lambda function that expects
+the function. This is useful if you want to use this method as a decorator while
+also providing extra arguments (like the context argument).</p>
+</p></li>
+<li><p><strong>context</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – The context to be used as the default for the node class that
+will be created.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.from_node_tree">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_node_tree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workflow_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.PdosPlot.from_node_tree" title="Link to this definition"></a></dt>
+<dd><p>Creates a workflow class from a node.</p>
+<p>It does so by recursively traversing the tree in the inputs direction until
+it finds the leaves.
+All the nodes found are included in the workflow. For each node, inputs
+that are not nodes are connected to the inputs of the workflow.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output_node</strong> (<em>Node</em>) – The final node, that should be connected to the output of the workflow.</p></li>
+<li><p><strong>workflow_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – The name of the new workflow class. If None, the name of the output node
+will be used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The newly created workflow class.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Workflow</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.function">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">groups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[{'name':</span> <span class="pre">'DOS'}]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Erange</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(-2,</span> <span class="pre">2)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'x'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'line'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'plotly'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.PdosPlot.function" title="Link to this definition"></a></dt>
+<dd><p>Plot the projected density of states.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pdos_data</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">PDOSData</span></code>) – The object containing the raw PDOS data (individual PDOS for each orbital/spin).</p></li>
+<li><p><strong>groups</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">OrbitalStyleQuery</span></code>]) – List of orbital specifications to filter and accumulate the PDOS.
+The contribution of each group will be displayed in a different line.
+See showcase notebook for examples.</p></li>
+<li><p><strong>Erange</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]) – The energy range to plot.</p></li>
+<li><p><strong>E_axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a>[<code class="docutils literal notranslate"><span class="pre">'x'</span></code>, <code class="docutils literal notranslate"><span class="pre">'y'</span></code>]) – Axis to project the energies.</p></li>
+<li><p><strong>line_mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a>[<code class="docutils literal notranslate"><span class="pre">'line'</span></code>, <code class="docutils literal notranslate"><span class="pre">'scatter'</span></code>, <code class="docutils literal notranslate"><span class="pre">'area_line'</span></code>]) – Mode used to draw the PDOS lines.</p></li>
+<li><p><strong>line_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – Scaling factor for the width of all lines.</p></li>
+<li><p><strong>backend</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – The backend to generate the figure.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="sisl.viz.Figure.html#sisl.viz.Figure" title="sisl.viz.figure.figure.Figure"><code class="xref py py-class docutils literal notranslate"><span class="pre">Figure</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.PdosPlot.get" title="Link to this definition"></a></dt>
+<dd><p>Returns the up to date output of the workflow.</p>
+<p>It will recompute it if necessary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.get_input">
+<span class="sig-name descname"><span class="pre">get_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.PdosPlot.get_input" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.get_tree">
+<span class="sig-name descname"><span class="pre">get_tree</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.PdosPlot.get_tree" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.groups">
+<span class="sig-name descname"><span class="pre">groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">i_or_names</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.PdosPlot.groups" title="Link to this definition"></a></dt>
+<dd><p>Gets the groups that match your query</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*i_or_names</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – <p>a string (to match the name) or an integer (to match the index),
+You can pass as many as you want.</p>
+<p>Note that if you have a list of them you can go like <cite>remove_group(*mylist)</cite>
+to spread it and use all items in your list as args.</p>
+<p>If no query is provided, all the groups will be matched</p>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.inputs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">inputs</span></span><a class="headerlink" href="#sisl.viz.PdosPlot.inputs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.is_output_outdated">
+<span class="sig-name descname"><span class="pre">is_output_outdated</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evaluated_inputs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.PdosPlot.is_output_outdated" title="Link to this definition"></a></dt>
+<dd><p>Checks if the node needs to be ran</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.logs">
+<span class="sig-name descname"><span class="pre">logs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#sisl.viz.PdosPlot.logs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.map_inputs">
+<span class="sig-name descname"><span class="pre">map_inputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_nodes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.PdosPlot.map_inputs" title="Link to this definition"></a></dt>
+<dd><p>Maps all inputs of the node applying a given function.</p>
+<p>It considers the args and kwargs keys.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<em>Dict</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>Any</em><em>]</em>) – The inputs of the node.</p></li>
+<li><p><strong>func</strong> (<em>Callable</em>) – The function to apply to each value.</p></li>
+<li><p><strong>only_nodes</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to apply the function only to nodes, by default False.</p></li>
+<li><p><strong>exclude</strong> (<em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>]</em><em>, </em><em>optional</em>) – The keys to exclude from the mapping. This means that these keys are returned
+as they are.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.merge">
+<span class="sig-name descname"><span class="pre">merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">others</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.PdosPlot.merge" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.network">
+<span class="sig-name descname"><span class="pre">network</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;sisl.nodes.workflow.Network</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#sisl.viz.PdosPlot.network" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.nodes">
+<span class="sig-name descname"><span class="pre">nodes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">WorkflowNodes</span></em><a class="headerlink" href="#sisl.viz.PdosPlot.nodes" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.plot_class_key">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">plot_class_key</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.PdosPlot.plot_class_key" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.recursive_update_inputs">
+<span class="sig-name descname"><span class="pre">recursive_update_inputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.PdosPlot.recursive_update_inputs" title="Link to this definition"></a></dt>
+<dd><p>Updates the inputs of the node recursively.</p>
+<p>This method updates the inputs of the node and all its children.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cls</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>Type</em><em>, </em><em>Tuple</em><em>[</em><em>Type</em><em>, </em><em>...</em><em>]</em><em>]</em><em>]</em><em>, </em><em>optional</em>) – Only update nodes of this class. If None, update all nodes.</p></li>
+<li><p><strong>inputs</strong> (<em>Dict</em><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>Any</em><em>]</em>) – The inputs to update.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.remove_groups">
+<span class="sig-name descname"><span class="pre">remove_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">i_or_names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.PdosPlot.remove_groups" title="Link to this definition"></a></dt>
+<dd><p>Removes orbital groups.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*i_or_names</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – <p>a string (to match the name) or an integer (to match the index),
+You can pass as many as you want.</p>
+<p>Note that if you have a list of them you can go like <cite>remove_groups(*mylist)</cite>
+to spread it and use all items in your list as args</p>
+<p>If no query is provided, all the groups will be matched</p>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.setup">
+<span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.PdosPlot.setup" title="Link to this definition"></a></dt>
+<dd><p>Sets up the node based on its initial inputs.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.split_DOS">
+<span class="sig-name descname"><span class="pre">split_DOS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'species'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/plots/pdos.html#PdosPlot.split_DOS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.PdosPlot.split_DOS" title="Link to this definition"></a></dt>
+<dd><p>Splits the density of states to the different contributions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>on</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>{&quot;species&quot;</em><em>, </em><em>&quot;atoms&quot;</em><em>, </em><em>&quot;Z&quot;</em><em>, </em><em>&quot;orbitals&quot;</em><em>, </em><em>&quot;n&quot;</em><em>, </em><em>&quot;l&quot;</em><em>, </em><em>&quot;m&quot;</em><em>, </em><em>&quot;zeta&quot;</em><em>, </em><em>&quot;spin&quot;}</em><em>, or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the parameter to split along.
+Note that you can combine parameters with a “+” to split along multiple parameters
+at the same time. You can get the same effect also by passing a list.</p></li>
+<li><p><strong>only</strong> (<em>array-like</em><em>, </em><em>optional</em>) – if desired, the only values that should be plotted out of
+all of the values that come from the splitting.</p></li>
+<li><p><strong>exclude</strong> (<em>array-like</em><em>, </em><em>optional</em>) – values that should not be plotted</p></li>
+<li><p><strong>clean</strong> (<em>boolean</em><em>, </em><em>optional</em>) – whether the plot should be cleaned before drawing.
+If False, all the requests that come from the method will
+be drawn on top of what is already there.</p></li>
+<li><p><strong>**kwargs</strong> – <p>keyword arguments that go directly to each request.</p>
+<p>This is useful to add extra filters. For example:
+<cite>plot.split_DOS(on=”orbitals”, species=[“C”])</cite>
+will split the PDOS on the different orbitals but will take
+only those that belong to carbon atoms.</p>
+</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plot</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">pdos</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Split the DOS in n and l but show only the DOS from Au</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Also use &quot;Au $ns&quot; as a template for the name, where $n will</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># be replaced by the value of n.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plot</span><span class="o">.</span><span class="n">split_DOS</span><span class="p">(</span><span class="n">on</span><span class="o">=</span><span class="s2">&quot;n+l&quot;</span><span class="p">,</span> <span class="n">species</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Au&quot;</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Au $ns&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.split_groups">
+<span class="sig-name descname"><span class="pre">split_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">i_or_names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'species'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_constraints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.PdosPlot.split_groups" title="Link to this definition"></a></dt>
+<dd><p>Splits the orbital groups into multiple groups.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*i_or_names</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – <p>a string (to match the name) or an integer (to match the index),
+You can pass as many as you want.</p>
+<p>Note that if you have a list of them you can go like <cite>split_groups(*mylist)</cite>
+to spread it and use all items in your list as args</p>
+<p>If no query is provided, all the groups will be matched</p>
+</p></li>
+<li><p><strong>on</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>{&quot;species&quot;</em><em>, </em><em>&quot;atoms&quot;</em><em>, </em><em>&quot;Z&quot;</em><em>, </em><em>&quot;orbitals&quot;</em><em>, </em><em>&quot;n&quot;</em><em>, </em><em>&quot;l&quot;</em><em>, </em><em>&quot;m&quot;</em><em>, </em><em>&quot;zeta&quot;</em><em>, </em><em>&quot;spin&quot;}</em><em>, or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – <p>the parameter to split along.</p>
+<p>Note that you can combine parameters with a “+” to split along multiple parameters
+at the same time. You can get the same effect also by passing a list. See examples.</p>
+</p></li>
+<li><p><strong>only</strong> (<em>array-like</em><em>, </em><em>optional</em>) – if desired, the only values that should be plotted out of
+all of the values that come from the splitting.</p></li>
+<li><p><strong>exclude</strong> (<em>array-like</em><em>, </em><em>optional</em>) – values of the splitting that should not be plotted</p></li>
+<li><p><strong>remove</strong> – whether the splitted groups should be removed.</p></li>
+<li><p><strong>clean</strong> (<em>boolean</em><em>, </em><em>optional</em>) – whether the plot should be cleaned before drawing.
+If False, all the groups that come from the method will
+be drawn on top of what is already there.</p></li>
+<li><p><strong>ignore_constraints</strong> (<em>boolean</em><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – <p>determines whether constraints (imposed by the group to be splitted)
+on the parameters that we want to split along should be taken into consideration.</p>
+<p>If <cite>False</cite>: all constraints considered.
+If <cite>True</cite>: no constraints considered.
+If array-like: parameters contained in the list ignore their constraints.</p>
+</p></li>
+<li><p><strong>**kwargs</strong> – <p>keyword arguments that go directly to each group.</p>
+<p>This is useful to add extra filters. For example:
+If you had a group called “C”:
+<cite>plot.split_group(“C”, on=”orbitals”, spin=[0])</cite>
+will split the PDOS on the different orbitals but will take
+only the contributions from spin up.</p>
+</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Split groups 0 and 1 along n and l</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plot</span><span class="o">.</span><span class="n">split_groups</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;n+l&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># The same, but this time even if groups 0 or 1 had defined values for &quot;l&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># just ignore them and use all possible values for l.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plot</span><span class="o">.</span><span class="n">split_groups</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;n+l&quot;</span><span class="p">,</span> <span class="n">ignore_constraints</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;l&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.split_orbs">
+<span class="sig-name descname"><span class="pre">split_orbs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'species'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.PdosPlot.split_orbs" title="Link to this definition"></a></dt>
+<dd><p>Splits the orbitals into different groups.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>on</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>{&quot;species&quot;</em><em>, </em><em>&quot;atoms&quot;</em><em>, </em><em>&quot;Z&quot;</em><em>, </em><em>&quot;orbitals&quot;</em><em>, </em><em>&quot;n&quot;</em><em>, </em><em>&quot;l&quot;</em><em>, </em><em>&quot;m&quot;</em><em>, </em><em>&quot;zeta&quot;</em><em>, </em><em>&quot;spin&quot;}</em><em>, or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the parameter to split along.
+Note that you can combine parameters with a “+” to split along multiple parameters
+at the same time. You can get the same effect also by passing a list.</p></li>
+<li><p><strong>only</strong> (<em>array-like</em><em>, </em><em>optional</em>) – if desired, the only values that should be plotted out of
+all of the values that come from the splitting.</p></li>
+<li><p><strong>exclude</strong> (<em>array-like</em><em>, </em><em>optional</em>) – values that should not be plotted</p></li>
+<li><p><strong>clean</strong> (<em>boolean</em><em>, </em><em>optional</em>) – whether the plot should be cleaned before drawing.
+If False, all the requests that come from the method will
+be drawn on top of what is already there.</p></li>
+<li><p><strong>**kwargs</strong> – <p>keyword arguments that go directly to each request.</p>
+<p>This is useful to add extra filters. For example:
+<cite>plot.split_orbs(on=”orbitals”, species=[“C”])</cite>
+will split on the different orbitals but will take
+only those that belong to carbon atoms.</p>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.update_groups">
+<span class="sig-name descname"><span class="pre">update_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">i_or_names</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.PdosPlot.update_groups" title="Link to this definition"></a></dt>
+<dd><p>Updates existing groups.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>i_or_names</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – <p>a string (to match the name) or an integer (to match the index)
+this will be used to find the group that you need to update.</p>
+<p>Note that if you have a list of them you can go like <cite>update_groups(*mylist)</cite>
+to spread it and use all items in your list as args</p>
+<p>If no query is provided, all the groups will be matched</p>
+</p></li>
+<li><p><strong>**kwargs</strong> – keyword arguments containing the values that you want to update</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.update_inputs">
+<span class="sig-name descname"><span class="pre">update_inputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.PdosPlot.update_inputs" title="Link to this definition"></a></dt>
+<dd><p>Updates the inputs of the workflow.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.PdosPlot.update_settings">
+<span class="sig-name descname"><span class="pre">update_settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.viz.PdosPlot.update_settings" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sisl.viz.WavefunctionPlot.html" class="btn btn-neutral float-left" title="sisl.viz.WavefunctionPlot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sisl.viz.get_figure.html" class="btn btn-neutral float-right" title="get_figure" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

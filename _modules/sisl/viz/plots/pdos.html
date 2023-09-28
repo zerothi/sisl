@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.viz.plots.pdos &mdash; sisl 0.1-b45ef98</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/sg_gallery.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/custom_styles.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=0f94db4c"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/tabs.js?v=3ee01567"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            sisl
+          </a>
+              <div class="version">
+                0.1-b45ef98
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cite.html">Citing sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../publications.html">Publications using sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../references.html">References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../scripts/scripts.html">Command line scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../nodes/nodes_intro.html">Nodes and workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/index.html">API documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">sisl.viz.plots.pdos</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sisl.viz.plots.pdos</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">sisl.viz.types</span> <span class="kn">import</span> <span class="n">OrbitalStyleQuery</span>
+
+<span class="kn">from</span> <span class="nn">..data</span> <span class="kn">import</span> <span class="n">PDOSData</span>
+<span class="kn">from</span> <span class="nn">..figure</span> <span class="kn">import</span> <span class="n">Figure</span><span class="p">,</span> <span class="n">get_figure</span>
+<span class="kn">from</span> <span class="nn">..plot</span> <span class="kn">import</span> <span class="n">Plot</span>
+<span class="kn">from</span> <span class="nn">..plotters.xarray</span> <span class="kn">import</span> <span class="n">draw_xarray_xy</span>
+<span class="kn">from</span> <span class="nn">..processors.data</span> <span class="kn">import</span> <span class="n">accept_data</span>
+<span class="kn">from</span> <span class="nn">..processors.logic</span> <span class="kn">import</span> <span class="n">matches</span><span class="p">,</span> <span class="n">swap</span>
+<span class="kn">from</span> <span class="nn">..processors.orbital</span> <span class="kn">import</span> <span class="n">get_orbital_queries_manager</span><span class="p">,</span> <span class="n">reduce_orbital_data</span>
+<span class="kn">from</span> <span class="nn">..processors.xarray</span> <span class="kn">import</span> <span class="n">filter_energy_range</span><span class="p">,</span> <span class="n">scale_variable</span>
+<span class="kn">from</span> <span class="nn">.orbital_groups_plot</span> <span class="kn">import</span> <span class="n">OrbitalGroupsPlot</span>
+
+
+<span class="k">def</span> <span class="nf">pdos_plot</span><span class="p">(</span>
+    <span class="n">pdos_data</span><span class="p">:</span> <span class="n">PDOSData</span><span class="p">,</span>
+    <span class="n">groups</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">OrbitalStyleQuery</span><span class="p">]</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;DOS&quot;</span><span class="p">}],</span> 
+    <span class="n">Erange</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="n">E_axis</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> 
+    <span class="n">line_mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;line&quot;</span><span class="p">,</span> <span class="s2">&quot;scatter&quot;</span><span class="p">,</span> <span class="s2">&quot;area_line&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;line&quot;</span><span class="p">,</span>
+    <span class="n">line_scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">,</span> 
+    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;plotly&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Figure</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Plot the projected density of states.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pdos_data:</span>
+<span class="sd">        The object containing the raw PDOS data (individual PDOS for each orbital/spin).</span>
+<span class="sd">    groups:</span>
+<span class="sd">        List of orbital specifications to filter and accumulate the PDOS.</span>
+<span class="sd">        The contribution of each group will be displayed in a different line.</span>
+<span class="sd">        See showcase notebook for examples.</span>
+<span class="sd">    Erange:</span>
+<span class="sd">        The energy range to plot.</span>
+<span class="sd">    E_axis:</span>
+<span class="sd">        Axis to project the energies.</span>
+<span class="sd">    line_mode:</span>
+<span class="sd">        Mode used to draw the PDOS lines.</span>
+<span class="sd">    line_scale:</span>
+<span class="sd">        Scaling factor for the width of all lines.</span>
+<span class="sd">    backend:</span>
+<span class="sd">        The backend to generate the figure.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pdos_data</span> <span class="o">=</span> <span class="n">accept_data</span><span class="p">(</span><span class="n">pdos_data</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">PDOSData</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">E_PDOS</span> <span class="o">=</span> <span class="n">filter_energy_range</span><span class="p">(</span><span class="n">pdos_data</span><span class="p">,</span> <span class="n">Erange</span><span class="o">=</span><span class="n">Erange</span><span class="p">,</span> <span class="n">E0</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">orbital_manager</span> <span class="o">=</span> <span class="n">get_orbital_queries_manager</span><span class="p">(</span><span class="n">pdos_data</span><span class="p">)</span>
+    <span class="n">groups_data</span> <span class="o">=</span> <span class="n">reduce_orbital_data</span><span class="p">(</span>
+        <span class="n">E_PDOS</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="n">groups</span><span class="p">,</span> <span class="n">orb_dim</span><span class="o">=</span><span class="s2">&quot;orb&quot;</span><span class="p">,</span> <span class="n">spin_dim</span><span class="o">=</span><span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="n">sanitize_group</span><span class="o">=</span><span class="n">orbital_manager</span><span class="p">,</span>
+        <span class="n">group_vars</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="s1">&#39;size&#39;</span><span class="p">,</span> <span class="s1">&#39;dash&#39;</span><span class="p">),</span> <span class="n">groups_dim</span><span class="o">=</span><span class="s2">&quot;group&quot;</span><span class="p">,</span> <span class="n">drop_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">spin_reduce</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Determine what goes on each axis</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">matches</span><span class="p">(</span><span class="n">E_axis</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">ret_true</span><span class="o">=</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="n">ret_false</span><span class="o">=</span><span class="s2">&quot;PDOS&quot;</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">matches</span><span class="p">(</span><span class="n">E_axis</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">ret_true</span><span class="o">=</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="n">ret_false</span><span class="o">=</span><span class="s2">&quot;PDOS&quot;</span><span class="p">)</span>
+
+    <span class="n">dependent_axis</span> <span class="o">=</span> <span class="n">swap</span><span class="p">(</span><span class="n">E_axis</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">))</span>
+
+    <span class="c1"># A PlotterNode gets the processed data and creates abstract actions (backend agnostic)</span>
+    <span class="c1"># that should be performed on the figure. The output of this node</span>
+    <span class="c1"># must be fed to a figure (backend specific).</span>
+    <span class="n">final_groups_data</span> <span class="o">=</span> <span class="n">scale_variable</span><span class="p">(</span><span class="n">groups_data</span><span class="p">,</span> <span class="n">var</span><span class="o">=</span><span class="s2">&quot;size&quot;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">line_scale</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">plot_actions</span> <span class="o">=</span> <span class="n">draw_xarray_xy</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">final_groups_data</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;size&quot;</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="n">line_mode</span><span class="p">,</span> <span class="n">dependent_axis</span><span class="o">=</span><span class="n">dependent_axis</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">get_figure</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span> <span class="n">plot_actions</span><span class="o">=</span><span class="n">plot_actions</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PdosPlot">
+<a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.PdosPlot.html#sisl.viz.PdosPlot">[docs]</a>
+<span class="k">class</span> <span class="nc">PdosPlot</span><span class="p">(</span><span class="n">OrbitalGroupsPlot</span><span class="p">):</span>
+
+    <span class="n">function</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">pdos_plot</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PdosPlot.split_DOS">
+<a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.PdosPlot.html#sisl.viz.PdosPlot.split_DOS">[docs]</a>
+    <span class="k">def</span> <span class="nf">split_DOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clean</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Splits the density of states to the different contributions.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        --------</span>
+<span class="sd">        on: str, {&quot;species&quot;, &quot;atoms&quot;, &quot;Z&quot;, &quot;orbitals&quot;, &quot;n&quot;, &quot;l&quot;, &quot;m&quot;, &quot;zeta&quot;, &quot;spin&quot;}, or list of str</span>
+<span class="sd">            the parameter to split along.</span>
+<span class="sd">            Note that you can combine parameters with a &quot;+&quot; to split along multiple parameters</span>
+<span class="sd">            at the same time. You can get the same effect also by passing a list.</span>
+<span class="sd">        only: array-like, optional</span>
+<span class="sd">            if desired, the only values that should be plotted out of</span>
+<span class="sd">            all of the values that come from the splitting.</span>
+<span class="sd">        exclude: array-like, optional</span>
+<span class="sd">            values that should not be plotted</span>
+<span class="sd">        clean: boolean, optional</span>
+<span class="sd">            whether the plot should be cleaned before drawing.</span>
+<span class="sd">            If False, all the requests that come from the method will</span>
+<span class="sd">            be drawn on top of what is already there.</span>
+<span class="sd">        **kwargs:</span>
+<span class="sd">            keyword arguments that go directly to each request.</span>
+
+<span class="sd">            This is useful to add extra filters. For example:</span>
+<span class="sd">            `plot.split_DOS(on=&quot;orbitals&quot;, species=[&quot;C&quot;])`</span>
+<span class="sd">            will split the PDOS on the different orbitals but will take</span>
+<span class="sd">            only those that belong to carbon atoms.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        -----------</span>
+
+<span class="sd">        &gt;&gt;&gt; plot = H.plot.pdos()</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; # Split the DOS in n and l but show only the DOS from Au</span>
+<span class="sd">        &gt;&gt;&gt; # Also use &quot;Au $ns&quot; as a template for the name, where $n will</span>
+<span class="sd">        &gt;&gt;&gt; # be replaced by the value of n.</span>
+<span class="sd">        &gt;&gt;&gt; plot.split_DOS(on=&quot;n+l&quot;, species=[&quot;Au&quot;], name=&quot;Au $ns&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_groups</span><span class="p">(</span><span class="n">on</span><span class="o">=</span><span class="n">on</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="n">only</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="n">exclude</span><span class="p">,</span> <span class="n">clean</span><span class="o">=</span><span class="n">clean</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</div>
+
+    
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

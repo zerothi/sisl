@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.viz.plots.bands &mdash; sisl 0.1-b45ef98</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/sg_gallery.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/custom_styles.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=0f94db4c"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/tabs.js?v=3ee01567"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            sisl
+          </a>
+              <div class="version">
+                0.1-b45ef98
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cite.html">Citing sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../publications.html">Publications using sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../references.html">References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../scripts/scripts.html">Command line scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../nodes/nodes_intro.html">Nodes and workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/index.html">API documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">sisl.viz.plots.bands</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sisl.viz.plots.bands</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">sisl.viz.types</span> <span class="kn">import</span> <span class="n">OrbitalQueries</span><span class="p">,</span> <span class="n">StyleSpec</span>
+
+<span class="kn">from</span> <span class="nn">..data.bands</span> <span class="kn">import</span> <span class="n">BandsData</span>
+<span class="kn">from</span> <span class="nn">..figure</span> <span class="kn">import</span> <span class="n">Figure</span><span class="p">,</span> <span class="n">get_figure</span>
+<span class="kn">from</span> <span class="nn">..plot</span> <span class="kn">import</span> <span class="n">Plot</span>
+<span class="kn">from</span> <span class="nn">..plotters.plot_actions</span> <span class="kn">import</span> <span class="n">combined</span>
+<span class="kn">from</span> <span class="nn">..plotters.xarray</span> <span class="kn">import</span> <span class="n">draw_xarray_xy</span>
+<span class="kn">from</span> <span class="nn">..plotutils</span> <span class="kn">import</span> <span class="n">random_color</span>
+<span class="kn">from</span> <span class="nn">..processors.bands</span> <span class="kn">import</span> <span class="n">calculate_gap</span><span class="p">,</span> <span class="n">draw_gaps</span><span class="p">,</span> <span class="n">filter_bands</span><span class="p">,</span> <span class="n">style_bands</span>
+<span class="kn">from</span> <span class="nn">..processors.data</span> <span class="kn">import</span> <span class="n">accept_data</span>
+<span class="kn">from</span> <span class="nn">..processors.logic</span> <span class="kn">import</span> <span class="n">matches</span>
+<span class="kn">from</span> <span class="nn">..processors.orbital</span> <span class="kn">import</span> <span class="n">get_orbital_queries_manager</span><span class="p">,</span> <span class="n">reduce_orbital_data</span>
+<span class="kn">from</span> <span class="nn">..processors.xarray</span> <span class="kn">import</span> <span class="n">scale_variable</span>
+<span class="kn">from</span> <span class="nn">.orbital_groups_plot</span> <span class="kn">import</span> <span class="n">OrbitalGroupsPlot</span>
+
+
+<span class="k">def</span> <span class="nf">bands_plot</span><span class="p">(</span><span class="n">bands_data</span><span class="p">:</span> <span class="n">BandsData</span><span class="p">,</span>
+    <span class="n">Erange</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">E0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">E_axis</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> 
+    <span class="n">bands_range</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spin</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+    <span class="n">bands_style</span><span class="p">:</span> <span class="n">StyleSpec</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;opacity&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> 
+    <span class="n">spindown_style</span><span class="p">:</span> <span class="n">StyleSpec</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> 
+    <span class="n">colorscale</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">gap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">gap_tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span> <span class="n">gap_color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">gap_marker</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">},</span> <span class="n">direct_gaps_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> 
+    <span class="n">custom_gaps</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
+    <span class="n">line_mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;line&quot;</span><span class="p">,</span> <span class="s2">&quot;scatter&quot;</span><span class="p">,</span> <span class="s2">&quot;area_line&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;line&quot;</span><span class="p">,</span> 
+    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;plotly&quot;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Figure</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Plots band structure energies, with plentiful of customization options.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    bands_data: </span>
+<span class="sd">        The object containing the data to plot.</span>
+<span class="sd">    Erange:</span>
+<span class="sd">        The energy range to plot.</span>
+<span class="sd">        If None, the range is determined by ``bands_range``.</span>
+<span class="sd">    E0:</span>
+<span class="sd">        The energy reference.</span>
+<span class="sd">    E_axis:</span>
+<span class="sd">        Axis to plot the energies.</span>
+<span class="sd">    bands_range:</span>
+<span class="sd">        The bands to plot. Only used if ``Erange`` is None.</span>
+<span class="sd">        If None, the 15 bands above and below the Fermi level are plotted.</span>
+<span class="sd">    spin:</span>
+<span class="sd">        Which spin channel to display. Only meaningful for spin-polarized calculations.</span>
+<span class="sd">        If None and the calculation is spin polarized, both are plotted.</span>
+<span class="sd">    bands_style:</span>
+<span class="sd">        Styling attributes for bands.</span>
+<span class="sd">    spindown_style:</span>
+<span class="sd">        Styling attributes for the spin down bands (if present). Any missing attribute</span>
+<span class="sd">        will be taken from ``bands_style``.</span>
+<span class="sd">    colorscale:</span>
+<span class="sd">        Colorscale to use for the bands in case the color attribute is an array of values.</span>
+<span class="sd">        If None, the default colorscale is used for each backend.</span>
+<span class="sd">    gap:</span>
+<span class="sd">        Whether to display the gap.</span>
+<span class="sd">    gap_tol:</span>
+<span class="sd">        Tolerance in k for determining whether two gaps are the same.</span>
+<span class="sd">    gap_color:</span>
+<span class="sd">        Color of the gap.</span>
+<span class="sd">    gap_marker:</span>
+<span class="sd">        Marker styles for the gap (as plotly marker&#39;s styles).</span>
+<span class="sd">    direct_gaps_only:</span>
+<span class="sd">        Whether to only display direct gaps.</span>
+<span class="sd">    custom_gaps:</span>
+<span class="sd">        List of custom gaps to display. See the showcase notebooks for examples.</span>
+<span class="sd">    line_mode:</span>
+<span class="sd">        The method used to draw the band lines.</span>
+<span class="sd">    backend:</span>
+<span class="sd">        The backend to use to generate the figure.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">bands_data</span> <span class="o">=</span> <span class="n">accept_data</span><span class="p">(</span><span class="n">bands_data</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">BandsData</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Filter the bands</span>
+    <span class="n">filtered_bands</span> <span class="o">=</span> <span class="n">filter_bands</span><span class="p">(</span><span class="n">bands_data</span><span class="p">,</span> <span class="n">Erange</span><span class="o">=</span><span class="n">Erange</span><span class="p">,</span> <span class="n">E0</span><span class="o">=</span><span class="n">E0</span><span class="p">,</span> <span class="n">bands_range</span><span class="o">=</span><span class="n">bands_range</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="n">spin</span><span class="p">)</span>
+
+    <span class="c1"># Add the styles</span>
+    <span class="n">styled_bands</span> <span class="o">=</span> <span class="n">style_bands</span><span class="p">(</span><span class="n">filtered_bands</span><span class="p">,</span> <span class="n">bands_style</span><span class="o">=</span><span class="n">bands_style</span><span class="p">,</span> <span class="n">spindown_style</span><span class="o">=</span><span class="n">spindown_style</span><span class="p">)</span>
+
+    <span class="c1"># Determine what goes on each axis</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">matches</span><span class="p">(</span><span class="n">E_axis</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">ret_true</span><span class="o">=</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="n">ret_false</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">matches</span><span class="p">(</span><span class="n">E_axis</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">ret_true</span><span class="o">=</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="n">ret_false</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># Get the actions to plot lines</span>
+    <span class="n">bands_plottings</span> <span class="o">=</span> <span class="n">draw_xarray_xy</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">styled_bands</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">set_axrange</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="n">line_mode</span><span class="p">,</span> <span class="n">colorscale</span><span class="o">=</span><span class="n">colorscale</span><span class="p">,</span> <span class="n">dependent_axis</span><span class="o">=</span><span class="n">E_axis</span><span class="p">)</span>
+
+    <span class="c1"># Gap calculation</span>
+    <span class="n">gap_info</span> <span class="o">=</span> <span class="n">calculate_gap</span><span class="p">(</span><span class="n">filtered_bands</span><span class="p">)</span>
+    <span class="c1"># Plot it if the user has asked for it.</span>
+    <span class="n">gaps_plottings</span> <span class="o">=</span> <span class="n">draw_gaps</span><span class="p">(</span><span class="n">bands_data</span><span class="p">,</span> <span class="n">gap</span><span class="p">,</span> <span class="n">gap_info</span><span class="p">,</span> <span class="n">gap_tol</span><span class="p">,</span> <span class="n">gap_color</span><span class="p">,</span> <span class="n">gap_marker</span><span class="p">,</span> <span class="n">direct_gaps_only</span><span class="p">,</span> <span class="n">custom_gaps</span><span class="p">,</span> <span class="n">E_axis</span><span class="o">=</span><span class="n">E_axis</span><span class="p">)</span>
+
+    <span class="n">all_plottings</span> <span class="o">=</span> <span class="n">combined</span><span class="p">(</span><span class="n">bands_plottings</span><span class="p">,</span> <span class="n">gaps_plottings</span><span class="p">,</span> <span class="n">composite_method</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">get_figure</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span> <span class="n">plot_actions</span><span class="o">=</span><span class="n">all_plottings</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_default_random_color</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">random_color</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">_group_traces</span><span class="p">(</span><span class="n">actions</span><span class="p">):</span>
+
+    <span class="n">seen_groups</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">new_actions</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="n">actions</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">action</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;draw_&quot;</span><span class="p">):</span>
+            <span class="n">group</span> <span class="o">=</span> <span class="n">action</span><span class="p">[</span><span class="s2">&quot;kwargs&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="n">action</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">action</span><span class="p">[</span><span class="s1">&#39;kwargs&#39;</span><span class="p">][</span><span class="s1">&#39;legendgroup&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">group</span>
+
+            <span class="k">if</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">seen_groups</span><span class="p">:</span>
+                <span class="n">action</span><span class="p">[</span><span class="s2">&quot;kwargs&quot;</span><span class="p">][</span><span class="s2">&quot;showlegend&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">seen_groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+            
+        <span class="n">new_actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">new_actions</span>
+
+
+<span class="c1"># I keep the fatbands plot here so that one can see how similar they are.</span>
+<span class="c1"># I am yet to find a nice solution for extending workflows.</span>
+<span class="k">def</span> <span class="nf">fatbands_plot</span><span class="p">(</span><span class="n">bands_data</span><span class="p">:</span> <span class="n">BandsData</span><span class="p">,</span> 
+    <span class="n">Erange</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">E0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">E_axis</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> 
+    <span class="n">bands_range</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spin</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+    <span class="n">bands_style</span><span class="p">:</span> <span class="n">StyleSpec</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;opacity&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> 
+    <span class="n">spindown_style</span><span class="p">:</span> <span class="n">StyleSpec</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> 
+    <span class="n">gap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">gap_tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span> <span class="n">gap_color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">gap_marker</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">},</span> <span class="n">direct_gaps_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> 
+    <span class="n">custom_gaps</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
+    <span class="n">bands_mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;line&quot;</span><span class="p">,</span> <span class="s2">&quot;scatter&quot;</span><span class="p">,</span> <span class="s2">&quot;area_line&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;line&quot;</span><span class="p">,</span> 
+    <span class="c1"># Fatbands inputs</span>
+    <span class="n">groups</span><span class="p">:</span> <span class="n">OrbitalQueries</span> <span class="o">=</span> <span class="p">[],</span>
+    <span class="n">fatbands_var</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;norm2&quot;</span><span class="p">,</span> 
+    <span class="n">fatbands_mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;line&quot;</span><span class="p">,</span> <span class="s2">&quot;scatter&quot;</span><span class="p">,</span> <span class="s2">&quot;area_line&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;area_line&quot;</span><span class="p">,</span>
+    <span class="n">fatbands_scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">,</span> 
+    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;plotly&quot;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Figure</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Plots band structure energies showing the contribution of orbitals to each state.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    bands_data: </span>
+<span class="sd">        The object containing the data to plot.</span>
+<span class="sd">    Erange:</span>
+<span class="sd">        The energy range to plot.</span>
+<span class="sd">        If None, the range is determined by ``bands_range``.</span>
+<span class="sd">    E0:</span>
+<span class="sd">        The energy reference.</span>
+<span class="sd">    E_axis:</span>
+<span class="sd">        Axis to plot the energies.</span>
+<span class="sd">    bands_range:</span>
+<span class="sd">        The bands to plot. Only used if ``Erange`` is None.</span>
+<span class="sd">        If None, the 15 bands above and below the Fermi level are plotted.</span>
+<span class="sd">    spin:</span>
+<span class="sd">        Which spin channel to display. Only meaningful for spin-polarized calculations.</span>
+<span class="sd">        If None and the calculation is spin polarized, both are plotted.</span>
+<span class="sd">    bands_style:</span>
+<span class="sd">        Styling attributes for bands.</span>
+<span class="sd">    spindown_style:</span>
+<span class="sd">        Styling attributes for the spin down bands (if present). Any missing attribute</span>
+<span class="sd">        will be taken from ``bands_style``.</span>
+<span class="sd">    gap:</span>
+<span class="sd">        Whether to display the gap.</span>
+<span class="sd">    gap_tol:</span>
+<span class="sd">        Tolerance in k for determining whether two gaps are the same.</span>
+<span class="sd">    gap_color:</span>
+<span class="sd">        Color of the gap.</span>
+<span class="sd">    gap_marker:</span>
+<span class="sd">        Marker styles for the gap (as plotly marker&#39;s styles).</span>
+<span class="sd">    direct_gaps_only:</span>
+<span class="sd">        Whether to only display direct gaps.</span>
+<span class="sd">    custom_gaps:</span>
+<span class="sd">        List of custom gaps to display. See the showcase notebooks for examples.</span>
+<span class="sd">    bands_mode:</span>
+<span class="sd">        The method used to draw the band lines.</span>
+<span class="sd">    groups:</span>
+<span class="sd">        Orbital groups to plots. See showcase notebook for examples.</span>
+<span class="sd">    fatbands_var:</span>
+<span class="sd">        The variable to use from bands_data to determine the width of the fatbands.</span>
+<span class="sd">        This variable must have as coordinates (k, band, orb, [spin]).</span>
+<span class="sd">    fatbands_mode:</span>
+<span class="sd">        The method used to draw the fatbands.</span>
+<span class="sd">    fatbands_scale:</span>
+<span class="sd">        Factor that scales the size of all fatbands.</span>
+<span class="sd">    backend:</span>
+<span class="sd">        The backend to use to generate the figure.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">bands_data</span> <span class="o">=</span> <span class="n">accept_data</span><span class="p">(</span><span class="n">bands_data</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">BandsData</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Filter the bands</span>
+    <span class="n">filtered_bands</span> <span class="o">=</span> <span class="n">filter_bands</span><span class="p">(</span><span class="n">bands_data</span><span class="p">,</span> <span class="n">Erange</span><span class="o">=</span><span class="n">Erange</span><span class="p">,</span> <span class="n">E0</span><span class="o">=</span><span class="n">E0</span><span class="p">,</span> <span class="n">bands_range</span><span class="o">=</span><span class="n">bands_range</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="n">spin</span><span class="p">)</span>
+
+    <span class="c1"># Add the styles</span>
+    <span class="n">styled_bands</span> <span class="o">=</span> <span class="n">style_bands</span><span class="p">(</span><span class="n">filtered_bands</span><span class="p">,</span> <span class="n">bands_style</span><span class="o">=</span><span class="n">bands_style</span><span class="p">,</span> <span class="n">spindown_style</span><span class="o">=</span><span class="n">spindown_style</span><span class="p">)</span>
+
+    <span class="c1"># Process fatbands</span>
+    <span class="n">orbital_manager</span> <span class="o">=</span> <span class="n">get_orbital_queries_manager</span><span class="p">(</span>
+        <span class="n">bands_data</span><span class="p">,</span>
+        <span class="n">key_gens</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">_default_random_color</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+    <span class="n">fatbands_data</span> <span class="o">=</span> <span class="n">reduce_orbital_data</span><span class="p">(</span>
+        <span class="n">filtered_bands</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="n">groups</span><span class="p">,</span> <span class="n">orb_dim</span><span class="o">=</span><span class="s2">&quot;orb&quot;</span><span class="p">,</span> <span class="n">spin_dim</span><span class="o">=</span><span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="n">sanitize_group</span><span class="o">=</span><span class="n">orbital_manager</span><span class="p">,</span>
+        <span class="n">group_vars</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="s1">&#39;dash&#39;</span><span class="p">),</span> <span class="n">groups_dim</span><span class="o">=</span><span class="s2">&quot;group&quot;</span><span class="p">,</span> <span class="n">drop_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">spin_reduce</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">scaled_fatbands_data</span> <span class="o">=</span> <span class="n">scale_variable</span><span class="p">(</span><span class="n">fatbands_data</span><span class="p">,</span> <span class="n">var</span><span class="o">=</span><span class="n">fatbands_var</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">fatbands_scale</span><span class="p">,</span> <span class="n">default_value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">allow_not_present</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Determine what goes on each axis</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">matches</span><span class="p">(</span><span class="n">E_axis</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">ret_true</span><span class="o">=</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="n">ret_false</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">matches</span><span class="p">(</span><span class="n">E_axis</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">ret_true</span><span class="o">=</span><span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="n">ret_false</span><span class="o">=</span><span class="s2">&quot;k&quot;</span><span class="p">)</span>
+
+    <span class="n">sanitized_fatbands_mode</span> <span class="o">=</span> <span class="n">matches</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span> <span class="p">[],</span> <span class="n">ret_true</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">,</span> <span class="n">ret_false</span><span class="o">=</span><span class="n">fatbands_mode</span><span class="p">)</span>
+    
+    <span class="c1"># Get the actions to plot lines</span>
+    <span class="n">fatbands_plottings</span> <span class="o">=</span> <span class="n">draw_xarray_xy</span><span class="p">(</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">scaled_fatbands_data</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;color&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">fatbands_var</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="n">sanitized_fatbands_mode</span><span class="p">,</span> <span class="n">dependent_axis</span><span class="o">=</span><span class="n">E_axis</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;group&quot;</span>
+    <span class="p">)</span>
+    <span class="n">grouped_fatbands_plottings</span> <span class="o">=</span> <span class="n">_group_traces</span><span class="p">(</span><span class="n">fatbands_plottings</span><span class="p">)</span>
+    <span class="n">bands_plottings</span> <span class="o">=</span> <span class="n">draw_xarray_xy</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">styled_bands</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">set_axrange</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">what</span><span class="o">=</span><span class="n">bands_mode</span><span class="p">,</span> <span class="n">dependent_axis</span><span class="o">=</span><span class="n">E_axis</span><span class="p">)</span>
+
+    <span class="c1"># Gap calculation</span>
+    <span class="n">gap_info</span> <span class="o">=</span> <span class="n">calculate_gap</span><span class="p">(</span><span class="n">filtered_bands</span><span class="p">)</span>
+    <span class="c1"># Plot it if the user has asked for it.</span>
+    <span class="n">gaps_plottings</span> <span class="o">=</span> <span class="n">draw_gaps</span><span class="p">(</span><span class="n">bands_data</span><span class="p">,</span> <span class="n">gap</span><span class="p">,</span> <span class="n">gap_info</span><span class="p">,</span> <span class="n">gap_tol</span><span class="p">,</span> <span class="n">gap_color</span><span class="p">,</span> <span class="n">gap_marker</span><span class="p">,</span> <span class="n">direct_gaps_only</span><span class="p">,</span> <span class="n">custom_gaps</span><span class="p">,</span> <span class="n">E_axis</span><span class="o">=</span><span class="n">E_axis</span><span class="p">)</span>
+
+    <span class="n">all_plottings</span> <span class="o">=</span> <span class="n">combined</span><span class="p">(</span><span class="n">grouped_fatbands_plottings</span><span class="p">,</span> <span class="n">bands_plottings</span><span class="p">,</span> <span class="n">gaps_plottings</span><span class="p">,</span> <span class="n">composite_method</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">get_figure</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span> <span class="n">plot_actions</span><span class="o">=</span><span class="n">all_plottings</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BandsPlot">
+<a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.BandsPlot.html#sisl.viz.BandsPlot">[docs]</a>
+<span class="k">class</span> <span class="nc">BandsPlot</span><span class="p">(</span><span class="n">Plot</span><span class="p">):</span>
+
+    <span class="n">function</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">bands_plot</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FatbandsPlot">
+<a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.FatbandsPlot.html#sisl.viz.FatbandsPlot">[docs]</a>
+<span class="k">class</span> <span class="nc">FatbandsPlot</span><span class="p">(</span><span class="n">OrbitalGroupsPlot</span><span class="p">):</span>
+
+    <span class="n">function</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">fatbands_plot</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

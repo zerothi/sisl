@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.viz.plots.grid &mdash; sisl 0.1-b45ef98</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/sg_gallery.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/custom_styles.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=0f94db4c"></script>
+        <script src="../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/tabs.js?v=3ee01567"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            sisl
+          </a>
+              <div class="version">
+                0.1-b45ef98
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cite.html">Citing sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../publications.html">Publications using sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../references.html">References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../scripts/scripts.html">Command line scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../nodes/nodes_intro.html">Nodes and workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/index.html">API documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">sisl.viz.plots.grid</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sisl.viz.plots.grid</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">ChainMap</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">from</span> <span class="nn">sisl.geometry</span> <span class="kn">import</span> <span class="n">Geometry</span>
+<span class="kn">from</span> <span class="nn">sisl.grid</span> <span class="kn">import</span> <span class="n">Grid</span>
+
+<span class="kn">from</span> <span class="nn">..data</span> <span class="kn">import</span> <span class="n">EigenstateData</span>
+<span class="kn">from</span> <span class="nn">..figure</span> <span class="kn">import</span> <span class="n">Figure</span><span class="p">,</span> <span class="n">get_figure</span>
+<span class="kn">from</span> <span class="nn">..plot</span> <span class="kn">import</span> <span class="n">Plot</span>
+<span class="kn">from</span> <span class="nn">..plotters.cell</span> <span class="kn">import</span> <span class="n">cell_plot_actions</span>
+<span class="kn">from</span> <span class="nn">..plotters.grid</span> <span class="kn">import</span> <span class="n">draw_grid</span>
+<span class="kn">from</span> <span class="nn">..plotters.plot_actions</span> <span class="kn">import</span> <span class="n">combined</span>
+<span class="kn">from</span> <span class="nn">..processors.axes</span> <span class="kn">import</span> <span class="n">sanitize_axes</span>
+<span class="kn">from</span> <span class="nn">..processors.eigenstate</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">eigenstate_geometry</span><span class="p">,</span>
+    <span class="n">get_eigenstate</span><span class="p">,</span>
+    <span class="n">get_grid_nsc</span><span class="p">,</span>
+    <span class="n">project_wavefunction</span><span class="p">,</span>
+    <span class="n">tile_if_k</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">..processors.grid</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">apply_transforms</span><span class="p">,</span>
+    <span class="n">get_grid_axes</span><span class="p">,</span>
+    <span class="n">get_grid_representation</span><span class="p">,</span>
+    <span class="n">grid_geometry</span><span class="p">,</span>
+    <span class="n">grid_to_dataarray</span><span class="p">,</span>
+    <span class="n">interpolate_grid</span><span class="p">,</span>
+    <span class="n">orthogonalize_grid_if_needed</span><span class="p">,</span>
+    <span class="n">reduce_grid</span><span class="p">,</span>
+    <span class="n">sub_grid</span><span class="p">,</span>
+    <span class="n">tile_grid</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">..types</span> <span class="kn">import</span> <span class="n">Axes</span>
+<span class="kn">from</span> <span class="nn">.geometry</span> <span class="kn">import</span> <span class="n">geometry_plot</span>
+
+
+<span class="k">def</span> <span class="nf">_get_structure_plottings</span><span class="p">(</span><span class="n">plot_geom</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">nsc</span><span class="p">,</span> <span class="n">geom_kwargs</span><span class="o">=</span><span class="p">{},):</span>
+    <span class="k">if</span> <span class="n">plot_geom</span><span class="p">:</span>
+        <span class="n">geom_kwargs</span> <span class="o">=</span> <span class="n">ChainMap</span><span class="p">(</span><span class="n">geom_kwargs</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;axes&quot;</span><span class="p">:</span> <span class="n">axes</span><span class="p">,</span> <span class="s2">&quot;geometry&quot;</span><span class="p">:</span> <span class="n">geometry</span><span class="p">,</span> <span class="s2">&quot;nsc&quot;</span><span class="p">:</span> <span class="n">nsc</span><span class="p">,</span> <span class="s2">&quot;show_cell&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+        <span class="n">plot_actions</span> <span class="o">=</span> <span class="n">geometry_plot</span><span class="p">(</span><span class="o">**</span><span class="n">geom_kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">plot_actions</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">plot_actions</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">return</span> <span class="n">plot_actions</span>
+
+<span class="k">def</span> <span class="nf">grid_plot</span><span class="p">(</span>
+    <span class="n">grid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Grid</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+    <span class="n">axes</span><span class="p">:</span> <span class="n">Axes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">],</span> 
+    <span class="n">represent</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;real&quot;</span><span class="p">,</span> <span class="s2">&quot;imag&quot;</span><span class="p">,</span> <span class="s2">&quot;mod&quot;</span><span class="p">,</span> <span class="s2">&quot;phase&quot;</span><span class="p">,</span> <span class="s2">&quot;deg_phase&quot;</span><span class="p">,</span> <span class="s2">&quot;rad_phase&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;real&quot;</span><span class="p">,</span> 
+    <span class="n">transforms</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(),</span>
+    <span class="n">reduce_method</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;average&quot;</span><span class="p">,</span> <span class="s2">&quot;sum&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;average&quot;</span><span class="p">,</span> 
+    <span class="n">boundary_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;grid-wrap&quot;</span><span class="p">,</span>
+    <span class="n">nsc</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> 
+    <span class="n">interp</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> 
+    <span class="n">isos</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>  
+    <span class="n">smooth</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">colorscale</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+    <span class="n">crange</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+    <span class="n">cmid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">show_cell</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;box&quot;</span><span class="p">,</span> <span class="s2">&quot;axes&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;box&quot;</span><span class="p">,</span> 
+    <span class="n">cell_style</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{},</span>
+    <span class="n">x_range</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">y_range</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+    <span class="n">z_range</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">plot_geom</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> 
+    <span class="n">geom_kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{},</span> 
+    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;plotly&quot;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Figure</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Plots a grid, with plentiful of customization options.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    grid:</span>
+<span class="sd">        The grid to plot.</span>
+<span class="sd">    axes:</span>
+<span class="sd">        The axes to project the grid to.</span>
+<span class="sd">    represent:</span>
+<span class="sd">        The representation of the grid to plot.</span>
+<span class="sd">    transforms:</span>
+<span class="sd">        List of transforms to apply to the grid before plotting.</span>
+<span class="sd">    reduce_method:</span>
+<span class="sd">        The method used to reduce the grid axes that are not displayed.</span>
+<span class="sd">    boundary_mode:</span>
+<span class="sd">        The method used to deal with the boundary conditions.</span>
+<span class="sd">        Only used if the grid is to be orthogonalized.</span>
+<span class="sd">        See scipy docs for more info on the possible values.</span>
+<span class="sd">    nsc:</span>
+<span class="sd">        The number of unit cells to display in each direction.</span>
+<span class="sd">    interp:</span>
+<span class="sd">        The interpolation factor to use for each axis to make the grid smoother.</span>
+<span class="sd">    isos:</span>
+<span class="sd">        List of isosurfaces or isocontours to plot. See the showcase notebooks for examples.</span>
+<span class="sd">    smooth:</span>
+<span class="sd">        Whether to ask the plotting backend to make an attempt at smoothing the grid display.</span>
+<span class="sd">    colorscale:</span>
+<span class="sd">        Colorscale to use for the grid display in the 2D representation.</span>
+<span class="sd">        If None, the default colorscale is used for each backend.</span>
+<span class="sd">    crange:</span>
+<span class="sd">        Min and max values for the colorscale.</span>
+<span class="sd">    cmid:</span>
+<span class="sd">        The value at which the colorscale is centered.</span>
+<span class="sd">    show_cell:</span>
+<span class="sd">        Method used to display the unit cell. If False, the cell is not displayed.</span>
+<span class="sd">    cell_style:</span>
+<span class="sd">        Style specification for the cell. See the showcase notebooks for examples.</span>
+<span class="sd">    x_range:</span>
+<span class="sd">        The range of the x axis to take into account. </span>
+<span class="sd">        Even if the X axis is not displayed! This is important because the reducing</span>
+<span class="sd">        operation will only be applied on this range.</span>
+<span class="sd">    y_range:</span>
+<span class="sd">        The range of the y axis to take into account.</span>
+<span class="sd">        Even if the Y axis is not displayed! This is important because the reducing</span>
+<span class="sd">        operation will only be applied on this range.</span>
+<span class="sd">    z_range:</span>
+<span class="sd">        The range of the z axis to take into account.</span>
+<span class="sd">        Even if the Z axis is not displayed! This is important because the reducing</span>
+<span class="sd">        operation will only be applied on this range.</span>
+<span class="sd">    plot_geom:</span>
+<span class="sd">        Whether to plot the associated geometry (if any).</span>
+<span class="sd">    geom_kwargs:</span>
+<span class="sd">        Keyword arguments to pass to the geometry plot of the associated geometry.</span>
+<span class="sd">    backend:</span>
+<span class="sd">        The backend to use to generate the figure.</span>
+<span class="sd">    </span>
+<span class="sd">    See also</span>
+<span class="sd">    ----------</span>
+<span class="sd">    scipy.ndimage.affine_transform : method used to orthogonalize the grid if needed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+
+    <span class="n">axes</span> <span class="o">=</span> <span class="n">sanitize_axes</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
+
+    <span class="n">geometry</span> <span class="o">=</span> <span class="n">grid_geometry</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="n">grid_repr</span> <span class="o">=</span> <span class="n">get_grid_representation</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">represent</span><span class="o">=</span><span class="n">represent</span><span class="p">)</span>
+
+    <span class="n">tiled_grid</span> <span class="o">=</span> <span class="n">tile_grid</span><span class="p">(</span><span class="n">grid_repr</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="n">nsc</span><span class="p">)</span>
+
+    <span class="n">ort_grid</span> <span class="o">=</span> <span class="n">orthogonalize_grid_if_needed</span><span class="p">(</span><span class="n">tiled_grid</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">boundary_mode</span><span class="p">)</span>
+        
+    <span class="n">grid_axes</span> <span class="o">=</span> <span class="n">get_grid_axes</span><span class="p">(</span><span class="n">ort_grid</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+
+    <span class="n">transformed_grid</span> <span class="o">=</span> <span class="n">apply_transforms</span><span class="p">(</span><span class="n">ort_grid</span><span class="p">,</span> <span class="n">transforms</span><span class="p">)</span>
+
+    <span class="n">subbed_grid</span> <span class="o">=</span> <span class="n">sub_grid</span><span class="p">(</span><span class="n">transformed_grid</span><span class="p">,</span> <span class="n">x_range</span><span class="o">=</span><span class="n">x_range</span><span class="p">,</span> <span class="n">y_range</span><span class="o">=</span><span class="n">y_range</span><span class="p">,</span> <span class="n">z_range</span><span class="o">=</span><span class="n">z_range</span><span class="p">)</span>
+
+    <span class="n">reduced_grid</span> <span class="o">=</span> <span class="n">reduce_grid</span><span class="p">(</span><span class="n">subbed_grid</span><span class="p">,</span> <span class="n">reduce_method</span><span class="o">=</span><span class="n">reduce_method</span><span class="p">,</span> <span class="n">keep_axes</span><span class="o">=</span><span class="n">grid_axes</span><span class="p">)</span>
+
+    <span class="n">interp_grid</span> <span class="o">=</span> <span class="n">interpolate_grid</span><span class="p">(</span><span class="n">reduced_grid</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="n">interp</span><span class="p">)</span>
+
+    <span class="c1"># Finally, here comes the plotting!</span>
+    <span class="n">grid_ds</span> <span class="o">=</span> <span class="n">grid_to_dataarray</span><span class="p">(</span><span class="n">interp_grid</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">grid_axes</span><span class="o">=</span><span class="n">grid_axes</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="n">nsc</span><span class="p">)</span>
+    <span class="n">grid_plottings</span> <span class="o">=</span> <span class="n">draw_grid</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">grid_ds</span><span class="p">,</span> <span class="n">isos</span><span class="o">=</span><span class="n">isos</span><span class="p">,</span> <span class="n">colorscale</span><span class="o">=</span><span class="n">colorscale</span><span class="p">,</span> <span class="n">crange</span><span class="o">=</span><span class="n">crange</span><span class="p">,</span> <span class="n">cmid</span><span class="o">=</span><span class="n">cmid</span><span class="p">,</span> <span class="n">smooth</span><span class="o">=</span><span class="n">smooth</span><span class="p">)</span>
+
+    <span class="c1"># Process the cell as well</span>
+    <span class="n">cell_plottings</span> <span class="o">=</span> <span class="n">cell_plot_actions</span><span class="p">(</span>
+        <span class="n">cell</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span> <span class="n">show_cell</span><span class="o">=</span><span class="n">show_cell</span><span class="p">,</span> <span class="n">cell_style</span><span class="o">=</span><span class="n">cell_style</span><span class="p">,</span>
+        <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># And maybe plot the strucuture</span>
+    <span class="n">geom_plottings</span> <span class="o">=</span> <span class="n">_get_structure_plottings</span><span class="p">(</span><span class="n">plot_geom</span><span class="o">=</span><span class="n">plot_geom</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">,</span> <span class="n">geom_kwargs</span><span class="o">=</span><span class="n">geom_kwargs</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="n">nsc</span><span class="p">)</span>
+
+    <span class="n">all_plottings</span> <span class="o">=</span> <span class="n">combined</span><span class="p">(</span><span class="n">grid_plottings</span><span class="p">,</span> <span class="n">cell_plottings</span><span class="p">,</span> <span class="n">geom_plottings</span><span class="p">,</span> <span class="n">composite_method</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">get_figure</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span> <span class="n">plot_actions</span><span class="o">=</span><span class="n">all_plottings</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">wavefunction_plot</span><span class="p">(</span>
+    <span class="n">eigenstate</span><span class="p">:</span> <span class="n">EigenstateData</span><span class="p">,</span> 
+    <span class="n">i</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> 
+    <span class="n">geometry</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Geometry</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+    <span class="n">grid_prec</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>                  
+    <span class="c1"># All grid inputs.          </span>
+    <span class="n">grid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Grid</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+    <span class="n">axes</span><span class="p">:</span> <span class="n">Axes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">],</span> 
+    <span class="n">represent</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;real&quot;</span><span class="p">,</span> <span class="s2">&quot;imag&quot;</span><span class="p">,</span> <span class="s2">&quot;mod&quot;</span><span class="p">,</span> <span class="s2">&quot;phase&quot;</span><span class="p">,</span> <span class="s2">&quot;deg_phase&quot;</span><span class="p">,</span> <span class="s2">&quot;rad_phase&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;real&quot;</span><span class="p">,</span> 
+    <span class="n">transforms</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(),</span>
+    <span class="n">reduce_method</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;average&quot;</span><span class="p">,</span> <span class="s2">&quot;sum&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;average&quot;</span><span class="p">,</span> 
+    <span class="n">boundary_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;grid-wrap&quot;</span><span class="p">,</span>
+    <span class="n">nsc</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> 
+    <span class="n">interp</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> 
+    <span class="n">isos</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>  
+    <span class="n">smooth</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">colorscale</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+    <span class="n">crange</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+    <span class="n">cmid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">show_cell</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;box&quot;</span><span class="p">,</span> <span class="s2">&quot;axes&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;box&quot;</span><span class="p">,</span> 
+    <span class="n">cell_style</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{},</span>
+    <span class="n">x_range</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">y_range</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> 
+    <span class="n">z_range</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">plot_geom</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> 
+    <span class="n">geom_kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{},</span> 
+    <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;plotly&quot;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Figure</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Plots a wavefunction in real space.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    eigenstate:</span>
+<span class="sd">        The eigenstate object containing information about eigenstates.</span>
+<span class="sd">    i:</span>
+<span class="sd">        The index of the eigenstate to plot.</span>
+<span class="sd">    geometry:</span>
+<span class="sd">        Geometry to use to project the eigenstate to real space. </span>
+<span class="sd">        If None, the geometry associated with the eigenstate is used.</span>
+<span class="sd">    grid_prec:</span>
+<span class="sd">        The precision of the grid where the wavefunction is projected.</span>
+<span class="sd">    grid:</span>
+<span class="sd">        The grid to plot.</span>
+<span class="sd">    axes:</span>
+<span class="sd">        The axes to project the grid to.</span>
+<span class="sd">    represent:</span>
+<span class="sd">        The representation of the grid to plot.</span>
+<span class="sd">    transforms:</span>
+<span class="sd">        List of transforms to apply to the grid before plotting.</span>
+<span class="sd">    reduce_method:</span>
+<span class="sd">        The method used to reduce the grid axes that are not displayed.</span>
+<span class="sd">    boundary_mode:</span>
+<span class="sd">        The method used to deal with the boundary conditions.</span>
+<span class="sd">        Only used if the grid is to be orthogonalized.</span>
+<span class="sd">        See scipy docs for more info on the possible values.</span>
+<span class="sd">    nsc:</span>
+<span class="sd">        The number of unit cells to display in each direction.</span>
+<span class="sd">    interp:</span>
+<span class="sd">        The interpolation factor to use for each axis to make the grid smoother.</span>
+<span class="sd">    isos:</span>
+<span class="sd">        List of isosurfaces or isocontours to plot. See the showcase notebooks for examples.</span>
+<span class="sd">    smooth:</span>
+<span class="sd">        Whether to ask the plotting backend to make an attempt at smoothing the grid display.</span>
+<span class="sd">    colorscale:</span>
+<span class="sd">        Colorscale to use for the grid display in the 2D representation.</span>
+<span class="sd">        If None, the default colorscale is used for each backend.</span>
+<span class="sd">    crange:</span>
+<span class="sd">        Min and max values for the colorscale.</span>
+<span class="sd">    cmid:</span>
+<span class="sd">        The value at which the colorscale is centered.</span>
+<span class="sd">    show_cell:</span>
+<span class="sd">        Method used to display the unit cell. If False, the cell is not displayed.</span>
+<span class="sd">    cell_style:</span>
+<span class="sd">        Style specification for the cell. See the showcase notebooks for examples.</span>
+<span class="sd">    x_range:</span>
+<span class="sd">        The range of the x axis to take into account. </span>
+<span class="sd">        Even if the X axis is not displayed! This is important because the reducing</span>
+<span class="sd">        operation will only be applied on this range.</span>
+<span class="sd">    y_range:</span>
+<span class="sd">        The range of the y axis to take into account.</span>
+<span class="sd">        Even if the Y axis is not displayed! This is important because the reducing</span>
+<span class="sd">        operation will only be applied on this range.</span>
+<span class="sd">    z_range:</span>
+<span class="sd">        The range of the z axis to take into account.</span>
+<span class="sd">        Even if the Z axis is not displayed! This is important because the reducing</span>
+<span class="sd">        operation will only be applied on this range.</span>
+<span class="sd">    plot_geom:</span>
+<span class="sd">        Whether to plot the associated geometry (if any).</span>
+<span class="sd">    geom_kwargs:</span>
+<span class="sd">        Keyword arguments to pass to the geometry plot of the associated geometry.</span>
+<span class="sd">    backend:</span>
+<span class="sd">        The backend to use to generate the figure.</span>
+<span class="sd">    </span>
+<span class="sd">    See also</span>
+<span class="sd">    ----------</span>
+<span class="sd">    scipy.ndimage.affine_transform : method used to orthogonalize the grid if needed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># Create a grid with the wavefunction in it.</span>
+    <span class="n">i_eigenstate</span> <span class="o">=</span> <span class="n">get_eigenstate</span><span class="p">(</span><span class="n">eigenstate</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+    <span class="n">geometry</span> <span class="o">=</span> <span class="n">eigenstate_geometry</span><span class="p">(</span><span class="n">eigenstate</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">)</span>
+
+    <span class="n">tiled_geometry</span> <span class="o">=</span> <span class="n">tile_if_k</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="n">nsc</span><span class="p">,</span> <span class="n">eigenstate</span><span class="o">=</span><span class="n">i_eigenstate</span><span class="p">)</span>
+    <span class="n">grid_nsc</span> <span class="o">=</span> <span class="n">get_grid_nsc</span><span class="p">(</span><span class="n">nsc</span><span class="o">=</span><span class="n">nsc</span><span class="p">,</span> <span class="n">eigenstate</span><span class="o">=</span><span class="n">i_eigenstate</span><span class="p">)</span>
+    <span class="n">grid</span> <span class="o">=</span> <span class="n">project_wavefunction</span><span class="p">(</span><span class="n">eigenstate</span><span class="o">=</span><span class="n">i_eigenstate</span><span class="p">,</span> <span class="n">grid_prec</span><span class="o">=</span><span class="n">grid_prec</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">tiled_geometry</span><span class="p">)</span>
+
+    <span class="c1"># Grid processing</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="n">sanitize_axes</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
+
+    <span class="n">grid_repr</span> <span class="o">=</span> <span class="n">get_grid_representation</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">represent</span><span class="o">=</span><span class="n">represent</span><span class="p">)</span>
+
+    <span class="n">tiled_grid</span> <span class="o">=</span> <span class="n">tile_grid</span><span class="p">(</span><span class="n">grid_repr</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="n">grid_nsc</span><span class="p">)</span>
+
+    <span class="n">ort_grid</span> <span class="o">=</span> <span class="n">orthogonalize_grid_if_needed</span><span class="p">(</span><span class="n">tiled_grid</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">boundary_mode</span><span class="p">)</span>
+        
+    <span class="n">grid_axes</span> <span class="o">=</span> <span class="n">get_grid_axes</span><span class="p">(</span><span class="n">ort_grid</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span>
+
+    <span class="n">transformed_grid</span> <span class="o">=</span> <span class="n">apply_transforms</span><span class="p">(</span><span class="n">ort_grid</span><span class="p">,</span> <span class="n">transforms</span><span class="p">)</span>
+
+    <span class="n">subbed_grid</span> <span class="o">=</span> <span class="n">sub_grid</span><span class="p">(</span><span class="n">transformed_grid</span><span class="p">,</span> <span class="n">x_range</span><span class="o">=</span><span class="n">x_range</span><span class="p">,</span> <span class="n">y_range</span><span class="o">=</span><span class="n">y_range</span><span class="p">,</span> <span class="n">z_range</span><span class="o">=</span><span class="n">z_range</span><span class="p">)</span>
+
+    <span class="n">reduced_grid</span> <span class="o">=</span> <span class="n">reduce_grid</span><span class="p">(</span><span class="n">subbed_grid</span><span class="p">,</span> <span class="n">reduce_method</span><span class="o">=</span><span class="n">reduce_method</span><span class="p">,</span> <span class="n">keep_axes</span><span class="o">=</span><span class="n">grid_axes</span><span class="p">)</span>
+
+    <span class="n">interp_grid</span> <span class="o">=</span> <span class="n">interpolate_grid</span><span class="p">(</span><span class="n">reduced_grid</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="n">interp</span><span class="p">)</span>
+
+    <span class="c1"># Finally, here comes the plotting!</span>
+    <span class="n">grid_ds</span> <span class="o">=</span> <span class="n">grid_to_dataarray</span><span class="p">(</span><span class="n">interp_grid</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">grid_axes</span><span class="o">=</span><span class="n">grid_axes</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="n">grid_nsc</span><span class="p">)</span>
+    <span class="n">grid_plottings</span> <span class="o">=</span> <span class="n">draw_grid</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">grid_ds</span><span class="p">,</span> <span class="n">isos</span><span class="o">=</span><span class="n">isos</span><span class="p">,</span> <span class="n">colorscale</span><span class="o">=</span><span class="n">colorscale</span><span class="p">,</span> <span class="n">crange</span><span class="o">=</span><span class="n">crange</span><span class="p">,</span> <span class="n">cmid</span><span class="o">=</span><span class="n">cmid</span><span class="p">,</span> <span class="n">smooth</span><span class="o">=</span><span class="n">smooth</span><span class="p">)</span>
+
+    <span class="c1"># Process the cell as well</span>
+    <span class="n">cell_plottings</span> <span class="o">=</span> <span class="n">cell_plot_actions</span><span class="p">(</span>
+        <span class="n">cell</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span> <span class="n">show_cell</span><span class="o">=</span><span class="n">show_cell</span><span class="p">,</span> <span class="n">cell_style</span><span class="o">=</span><span class="n">cell_style</span><span class="p">,</span>
+        <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># And maybe plot the strucuture</span>
+    <span class="n">geom_plottings</span> <span class="o">=</span> <span class="n">_get_structure_plottings</span><span class="p">(</span><span class="n">plot_geom</span><span class="o">=</span><span class="n">plot_geom</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">tiled_geometry</span><span class="p">,</span> <span class="n">geom_kwargs</span><span class="o">=</span><span class="n">geom_kwargs</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="n">grid_nsc</span><span class="p">)</span>
+
+    <span class="n">all_plottings</span> <span class="o">=</span> <span class="n">combined</span><span class="p">(</span><span class="n">grid_plottings</span><span class="p">,</span> <span class="n">cell_plottings</span><span class="p">,</span> <span class="n">geom_plottings</span><span class="p">,</span> <span class="n">composite_method</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">get_figure</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span> <span class="n">plot_actions</span><span class="o">=</span><span class="n">all_plottings</span><span class="p">)</span>
+
+<div class="viewcode-block" id="GridPlot">
+<a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.GridPlot.html#sisl.viz.GridPlot">[docs]</a>
+<span class="k">class</span> <span class="nc">GridPlot</span><span class="p">(</span><span class="n">Plot</span><span class="p">):</span>
+
+    <span class="n">function</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">grid_plot</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WavefunctionPlot">
+<a class="viewcode-back" href="../../../../api/viz/generated/sisl.viz.WavefunctionPlot.html#sisl.viz.WavefunctionPlot">[docs]</a>
+<span class="k">class</span> <span class="nc">WavefunctionPlot</span><span class="p">(</span><span class="n">GridPlot</span><span class="p">):</span>
+
+    <span class="n">function</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">wavefunction_plot</span><span class="p">)</span></div>
+
+
+<span class="c1"># The following commented code is from the old viz module, where the GridPlot had a scan method.</span>
+<span class="c1"># It looks very nice, but probably should be reimplemented as a standalone function that plots a grid slice,</span>
+<span class="c1"># and then merge those grid slices to create a scan.</span>
+
+<span class="c1"># def scan(self, along, start=None, stop=None, step=None, num=None, breakpoints=None, mode=&quot;moving_slice&quot;, animation_kwargs=None, **kwargs):</span>
+<span class="c1">#         &quot;&quot;&quot;</span>
+<span class="c1">#         Returns an animation containing multiple frames scaning along an axis.</span>
+
+<span class="c1">#         Parameters</span>
+<span class="c1">#         -----------</span>
+<span class="c1">#         along: {&quot;x&quot;, &quot;y&quot;, &quot;z&quot;}</span>
+<span class="c1">#             the axis along which the scan is performed. If not provided, it will scan along the axes that are not displayed.</span>
+<span class="c1">#         start: float, optional</span>
+<span class="c1">#             the starting value for the scan (in Angstrom).</span>
+<span class="c1">#             Make sure this value is inside the range of the unit cell, otherwise it will fail.</span>
+<span class="c1">#         stop: float, optional</span>
+<span class="c1">#             the last value of the scan (in Angstrom).</span>
+<span class="c1">#             Make sure this value is inside the range of the unit cell, otherwise it will fail.</span>
+<span class="c1">#         step: float, optional</span>
+<span class="c1">#             the distance between steps in Angstrom.</span>
+
+<span class="c1">#             If not provided and `num` is also not provided, it will default to 1 Ang.</span>
+<span class="c1">#         num: int , optional</span>
+<span class="c1">#             the number of steps that you want the scan to consist of.</span>
+
+<span class="c1">#             If `step` is passed, this argument is ignored.</span>
+
+<span class="c1">#             Note that the grid is only stored once, so having a big number of steps is not that big of a deal.</span>
+<span class="c1">#         breakpoints: array-like, optional</span>
+<span class="c1">#             the discrete points of the scan. To be used if you don&#39;t want regular steps.</span>
+<span class="c1">#             If the last step is exactly the length of the cell, it will be moved one dcell back to avoid errors.</span>
+
+<span class="c1">#             Note that if this parameter is passed, both `step` and `num` are ignored.</span>
+<span class="c1">#         mode: {&quot;moving_slice&quot;, &quot;as_is&quot;}, optional</span>
+<span class="c1">#             the type of scan you want to see.</span>
+<span class="c1">#             &quot;moving_slice&quot; renders a volumetric scan where a slice moves through the grid.</span>
+<span class="c1">#             &quot;as_is&quot; renders each part of the scan as an animation frame.</span>
+<span class="c1">#             (therefore, &quot;as_is&quot; SUPPORTS SCANNING 1D, 2D AND 3D REPRESENTATIONS OF THE GRID, e.g. display the volume data for different ranges of z)</span>
+<span class="c1">#         animation_kwargs: dict, optional</span>
+<span class="c1">#             dictionary whose keys and values are directly passed to the animated method as kwargs and therefore</span>
+<span class="c1">#             end up being passed to animation initialization.</span>
+<span class="c1">#         **kwargs:</span>
+<span class="c1">#             the rest of settings that you want to apply to overwrite the existing ones.</span>
+
+<span class="c1">#             This settings apply to each plot and go directly to their initialization.</span>
+
+<span class="c1">#         Returns</span>
+<span class="c1">#         -------</span>
+<span class="c1">#         sisl.viz.plotly.Animation</span>
+<span class="c1">#             An animation representation of the scan</span>
+<span class="c1">#         &quot;&quot;&quot;</span>
+<span class="c1">#         # Do some checks on the args provided</span>
+<span class="c1">#         if sum(1 for arg in (step, num, breakpoints) if arg is not None) &gt; 1:</span>
+<span class="c1">#             raise ValueError(f&quot;Only one of (&#39;step&#39;, &#39;num&#39;, &#39;breakpoints&#39;) should be passed.&quot;)</span>
+
+<span class="c1">#         axes = self.inputs[&#39;axes&#39;]</span>
+<span class="c1">#         if mode == &quot;as_is&quot; and set(axes) - set([&quot;x&quot;, &quot;y&quot;, &quot;z&quot;]):</span>
+<span class="c1">#             raise ValueError(&quot;To perform a scan, the axes need to be cartesian. Please set the axes to a combination of &#39;x&#39;, &#39;y&#39; and &#39;z&#39;.&quot;)</span>
+
+<span class="c1">#         if self.grid.lattice.is_cartesian():</span>
+<span class="c1">#             grid = self.grid</span>
+<span class="c1">#         else:</span>
+<span class="c1">#             transform_bc = kwargs.pop(&quot;transform_bc&quot;, self.get_setting(&quot;transform_bc&quot;))</span>
+<span class="c1">#             grid, transform_offset = self._transform_grid_cell(</span>
+<span class="c1">#                 self.grid, mode=transform_bc, output_shape=self.grid.shape, cval=np.nan</span>
+<span class="c1">#             )</span>
+
+<span class="c1">#             kwargs[&quot;offset&quot;] = transform_offset + kwargs.get(&quot;offset&quot;, self.get_setting(&quot;offset&quot;))</span>
+
+<span class="c1">#         # We get the key that needs to be animated (we will divide the full range in frames)</span>
+<span class="c1">#         range_key = f&quot;{along}_range&quot;</span>
+<span class="c1">#         along_i = {&quot;x&quot;: 0, &quot;y&quot;: 1, &quot;z&quot;: 2}[along]</span>
+
+<span class="c1">#         # Get the full range</span>
+<span class="c1">#         if start is not None and stop is not None:</span>
+<span class="c1">#             along_range = [start, stop]</span>
+<span class="c1">#         else:</span>
+<span class="c1">#             along_range = self.get_setting(range_key)</span>
+<span class="c1">#             if along_range is None:</span>
+<span class="c1">#                 range_param = self.get_param(range_key)</span>
+<span class="c1">#                 along_range = [range_param[f&quot;inputField.params.{lim}&quot;] for lim in [&quot;min&quot;, &quot;max&quot;]]</span>
+<span class="c1">#             if start is not None:</span>
+<span class="c1">#                 along_range[0] = start</span>
+<span class="c1">#             if stop is not None:</span>
+<span class="c1">#                 along_range[1] = stop</span>
+
+<span class="c1">#         if breakpoints is None:</span>
+<span class="c1">#             if step is None and num is None:</span>
+<span class="c1">#                 step = 1.0</span>
+<span class="c1">#             if step is None:</span>
+<span class="c1">#                 step = (along_range[1] - along_range[0]) / num</span>
+<span class="c1">#             else:</span>
+<span class="c1">#                 num = (along_range[1] - along_range[0]) // step</span>
+
+<span class="c1">#             # np.linspace will use the last point as a step (and we don&#39;t want it)</span>
+<span class="c1">#             # therefore we will add an extra step</span>
+<span class="c1">#             breakpoints = np.linspace(*along_range, int(num) + 1)</span>
+
+<span class="c1">#         if breakpoints[-1] == grid.cell[along_i, along_i]:</span>
+<span class="c1">#             breakpoints[-1] = grid.cell[along_i, along_i] - grid.dcell[along_i, along_i]</span>
+
+<span class="c1">#         if mode == &quot;moving_slice&quot;:</span>
+<span class="c1">#             return self._moving_slice_scan(grid, along_i, breakpoints)</span>
+<span class="c1">#         elif mode == &quot;as_is&quot;:</span>
+<span class="c1">#             return self._asis_scan(grid, range_key, breakpoints, animation_kwargs=animation_kwargs, **kwargs)</span>
+
+<span class="c1">#     def _asis_scan(self, grid, range_key, breakpoints, animation_kwargs=None, **kwargs):</span>
+<span class="c1">#         &quot;&quot;&quot;</span>
+<span class="c1">#         Returns an animation containing multiple frames scaning along an axis.</span>
+
+<span class="c1">#         Parameters</span>
+<span class="c1">#         -----------</span>
+<span class="c1">#         range_key: {&#39;x_range&#39;, &#39;y_range&#39;, &#39;z_range&#39;}</span>
+<span class="c1">#             the key of the setting that is to be animated through the scan.</span>
+<span class="c1">#         breakpoints: array-like</span>
+<span class="c1">#             the discrete points of the scan</span>
+<span class="c1">#         animation_kwargs: dict, optional</span>
+<span class="c1">#             dictionary whose keys and values are directly passed to the animated method as kwargs and therefore</span>
+<span class="c1">#             end up being passed to animation initialization.</span>
+<span class="c1">#         **kwargs:</span>
+<span class="c1">#             the rest of settings that you want to apply to overwrite the existing ones.</span>
+
+<span class="c1">#             This settings apply to each plot and go directly to their initialization.</span>
+
+<span class="c1">#         Returns</span>
+<span class="c1">#         ----------</span>
+<span class="c1">#         scan: sisl Animation</span>
+<span class="c1">#             An animation representation of the scan</span>
+<span class="c1">#         &quot;&quot;&quot;</span>
+<span class="c1">#         # Generate the plot using self as a template so that plots don&#39;t need</span>
+<span class="c1">#         # to read data, just process it and show it differently.</span>
+<span class="c1">#         # (If each plot read the grid, the memory requirements would be HUGE)</span>
+<span class="c1">#         scan = self.animated(</span>
+<span class="c1">#             {</span>
+<span class="c1">#                 range_key: [[bp, breakpoints[i+1]] for i, bp in enumerate(breakpoints[:-1])]</span>
+<span class="c1">#             },</span>
+<span class="c1">#             fixed={**{key: val for key, val in self.settings.items() if key != range_key}, **kwargs, &quot;grid&quot;: grid},</span>
+<span class="c1">#             frame_names=[f&#39;{bp:2f}&#39; for bp in breakpoints],</span>
+<span class="c1">#             **(animation_kwargs or {})</span>
+<span class="c1">#         )</span>
+
+<span class="c1">#         # Set all frames to the same colorscale, if it&#39;s a 2d representation</span>
+<span class="c1">#         if len(self.get_setting(&quot;axes&quot;)) == 2:</span>
+<span class="c1">#             cmin = 10**6; cmax = -10**6</span>
+<span class="c1">#             for scan_im in scan:</span>
+<span class="c1">#                 c = getattr(scan_im.data[0], &quot;value&quot;, scan_im.data[0].z)</span>
+<span class="c1">#                 cmin = min(cmin, np.min(c))</span>
+<span class="c1">#                 cmax = max(cmax, np.max(c))</span>
+<span class="c1">#             for scan_im in scan:</span>
+<span class="c1">#                 scan_im.update_settings(crange=[cmin, cmax])</span>
+
+<span class="c1">#         scan.get_figure()</span>
+
+<span class="c1">#         scan.layout = self.layout</span>
+
+<span class="c1">#         return scan</span>
+
+<span class="c1">#     def _moving_slice_scan(self, grid, along_i, breakpoints):</span>
+<span class="c1">#         import plotly.graph_objs as go</span>
+<span class="c1">#         ax = along_i</span>
+<span class="c1">#         displayed_axes = [i for i in range(3) if i != ax]</span>
+<span class="c1">#         shape = np.array(grid.shape)[displayed_axes]</span>
+<span class="c1">#         cmin = np.min(grid.grid)</span>
+<span class="c1">#         cmax = np.max(grid.grid)</span>
+<span class="c1">#         x_ax, y_ax = displayed_axes</span>
+<span class="c1">#         x = np.linspace(0, grid.cell[x_ax, x_ax], grid.shape[x_ax])</span>
+<span class="c1">#         y = np.linspace(0, grid.cell[y_ax, y_ax], grid.shape[y_ax])</span>
+
+<span class="c1">#         fig = go.Figure(frames=[go.Frame(data=go.Surface(</span>
+<span class="c1">#             x=x, y=y,</span>
+<span class="c1">#             z=(bp * np.ones(shape)).T,</span>
+<span class="c1">#             surfacecolor=np.squeeze(grid.cross_section(grid.index(bp, ax), ax).grid).T,</span>
+<span class="c1">#             cmin=cmin, cmax=cmax,</span>
+<span class="c1">#             ),</span>
+<span class="c1">#             name=f&#39;{bp:.2f}&#39;</span>
+<span class="c1">#             )</span>
+<span class="c1">#             for bp in breakpoints])</span>
+
+<span class="c1">#         # Add data to be displayed before animation starts</span>
+<span class="c1">#         fig.add_traces(fig.frames[0].data)</span>
+
+<span class="c1">#         def frame_args(duration):</span>
+<span class="c1">#             return {</span>
+<span class="c1">#                     &quot;frame&quot;: {&quot;duration&quot;: duration},</span>
+<span class="c1">#                     &quot;mode&quot;: &quot;immediate&quot;,</span>
+<span class="c1">#                     &quot;fromcurrent&quot;: True,</span>
+<span class="c1">#                     &quot;transition&quot;: {&quot;duration&quot;: duration, &quot;easing&quot;: &quot;linear&quot;},</span>
+<span class="c1">#                 }</span>
+
+<span class="c1">#         sliders = [</span>
+<span class="c1">#                     {</span>
+<span class="c1">#                         &quot;pad&quot;: {&quot;b&quot;: 10, &quot;t&quot;: 60},</span>
+<span class="c1">#                         &quot;len&quot;: 0.9,</span>
+<span class="c1">#                         &quot;x&quot;: 0.1,</span>
+<span class="c1">#                         &quot;y&quot;: 0,</span>
+<span class="c1">#                         &quot;steps&quot;: [</span>
+<span class="c1">#                             {</span>
+<span class="c1">#                                 &quot;args&quot;: [[f.name], frame_args(0)],</span>
+<span class="c1">#                                 &quot;label&quot;: str(k),</span>
+<span class="c1">#                                 &quot;method&quot;: &quot;animate&quot;,</span>
+<span class="c1">#                             }</span>
+<span class="c1">#                             for k, f in enumerate(fig.frames)</span>
+<span class="c1">#                         ],</span>
+<span class="c1">#                     }</span>
+<span class="c1">#                 ]</span>
+
+<span class="c1">#         def ax_title(ax): return f&#39;{[&quot;X&quot;, &quot;Y&quot;, &quot;Z&quot;][ax]} axis [Ang]&#39;</span>
+
+<span class="c1">#         # Layout</span>
+<span class="c1">#         fig.update_layout(</span>
+<span class="c1">#                 title=f&#39;Grid scan along {[&quot;X&quot;, &quot;Y&quot;, &quot;Z&quot;][ax]} axis&#39;,</span>
+<span class="c1">#                 width=600,</span>
+<span class="c1">#                 height=600,</span>
+<span class="c1">#                 scene=dict(</span>
+<span class="c1">#                             xaxis=dict(title=ax_title(x_ax)),</span>
+<span class="c1">#                             yaxis=dict(title=ax_title(y_ax)),</span>
+<span class="c1">#                             zaxis=dict(autorange=True, title=ax_title(ax)),</span>
+<span class="c1">#                             aspectmode=&quot;data&quot;,</span>
+<span class="c1">#                             ),</span>
+<span class="c1">#                 updatemenus = [</span>
+<span class="c1">#                     {</span>
+<span class="c1">#                         &quot;buttons&quot;: [</span>
+<span class="c1">#                             {</span>
+<span class="c1">#                                 &quot;args&quot;: [None, frame_args(50)],</span>
+<span class="c1">#                                 &quot;label&quot;: &quot;&amp;#9654;&quot;, # play symbol</span>
+<span class="c1">#                                 &quot;method&quot;: &quot;animate&quot;,</span>
+<span class="c1">#                             },</span>
+<span class="c1">#                             {</span>
+<span class="c1">#                                 &quot;args&quot;: [[None], frame_args(0)],</span>
+<span class="c1">#                                 &quot;label&quot;: &quot;&amp;#9724;&quot;, # pause symbol</span>
+<span class="c1">#                                 &quot;method&quot;: &quot;animate&quot;,</span>
+<span class="c1">#                             },</span>
+<span class="c1">#                         ],</span>
+<span class="c1">#                         &quot;direction&quot;: &quot;left&quot;,</span>
+<span class="c1">#                         &quot;pad&quot;: {&quot;r&quot;: 10, &quot;t&quot;: 70},</span>
+<span class="c1">#                         &quot;type&quot;: &quot;buttons&quot;,</span>
+<span class="c1">#                         &quot;x&quot;: 0.1,</span>
+<span class="c1">#                         &quot;y&quot;: 0,</span>
+<span class="c1">#                     }</span>
+<span class="c1">#                 ],</span>
+<span class="c1">#                 sliders=sliders</span>
+<span class="c1">#         )</span>
+
+<span class="c1">#         # We need to add an invisible trace so that the z axis stays with the correct range</span>
+<span class="c1">#         fig.add_trace({&quot;type&quot;: &quot;scatter3d&quot;, &quot;mode&quot;: &quot;markers&quot;, &quot;marker_size&quot;: 0.001, &quot;x&quot;: [0, 0], &quot;y&quot;: [0, 0], &quot;z&quot;: [0, grid.cell[ax, ax]]})</span>
+
+<span class="c1">#         return fig</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

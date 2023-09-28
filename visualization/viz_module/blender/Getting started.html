@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Getting started &mdash; sisl 0.1-1ead994</title>
+  <title>Getting started &mdash; sisl 0.1-b45ef98</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
@@ -18,16 +18,15 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=4a978b58"></script>
+        <script src="../../../_static/documentation_options.js?v=0f94db4c"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/tabs.js?v=3ee01567"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Intro to multiple plots" href="../combining-plots/Intro%20to%20multiple%20plots.html" />
+    <link rel="next" title="First animation" href="First%20animation.html" />
     <link rel="prev" title="WavefunctionPlot" href="../showcase/WavefunctionPlot.html" /> 
 </head>
 
@@ -43,7 +42,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-1ead994
+                0.1-b45ef98
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -86,6 +85,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#first-steps">First steps</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="First%20animation.html">First animation</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../index.html#combining-plots">Combining plots</a></li>
@@ -143,20 +143,19 @@ shipped with. Being <em class="xref py py-obj">blender</em> the name of the exec
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">blender</span> <span class="o">-</span><span class="n">b</span> <span class="o">--</span><span class="n">python</span><span class="o">-</span><span class="n">expr</span> <span class="s2">&quot;import sys; print(f&#39;PYTHON VERSION: </span><span class="si">{sys.version}</span><span class="s2">&#39;)&quot;</span>
 </pre></div>
 </div>
-<p>In blender 2.93 it gives an output that looks like this:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Blender</span> <span class="mf">2.93.4</span> <span class="p">(</span><span class="nb">hash</span> <span class="n">b7205031cec4</span> <span class="n">built</span> <span class="mi">2021</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">31</span> <span class="mi">23</span><span class="p">:</span><span class="mi">36</span><span class="p">:</span><span class="mi">18</span><span class="p">)</span>
-<span class="n">Read</span> <span class="n">prefs</span><span class="p">:</span> <span class="o">/</span><span class="n">home</span><span class="o">/.</span><span class="n">config</span><span class="o">/</span><span class="n">blender</span><span class="o">/</span><span class="mf">2.93</span><span class="o">/</span><span class="n">config</span><span class="o">/</span><span class="n">userpref</span><span class="o">.</span><span class="n">blend</span>
-<span class="n">PYTHON</span> <span class="n">VERSION</span><span class="p">:</span> <span class="mf">3.9.2</span> <span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="n">Feb</span> <span class="mi">25</span> <span class="mi">2021</span><span class="p">,</span> <span class="mi">12</span><span class="p">:</span><span class="mi">19</span><span class="p">:</span><span class="mi">39</span><span class="p">)</span>
-<span class="p">[</span><span class="n">GCC</span> <span class="mf">9.3.1</span> <span class="mi">20200408</span> <span class="p">(</span><span class="n">Red</span> <span class="n">Hat</span> <span class="mf">9.3.1</span><span class="o">-</span><span class="mi">2</span><span class="p">)]</span>
+<p>In blender 3.6 it gives an output that looks like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Blender</span> <span class="mf">3.6.3</span> <span class="p">(</span><span class="nb">hash</span> <span class="n">d3e6b08276ba</span> <span class="n">built</span> <span class="mi">2023</span><span class="o">-</span><span class="mi">09</span><span class="o">-</span><span class="mi">21</span> <span class="mi">06</span><span class="p">:</span><span class="mi">13</span><span class="p">:</span><span class="mi">29</span><span class="p">)</span>
+<span class="n">PYTHON</span> <span class="n">VERSION</span><span class="p">:</span> <span class="mf">3.10.12</span> <span class="p">(</span><span class="n">main</span><span class="p">,</span> <span class="n">Aug</span> <span class="mi">14</span> <span class="mi">2023</span><span class="p">,</span> <span class="mi">22</span><span class="p">:</span><span class="mi">14</span><span class="p">:</span><span class="mi">01</span><span class="p">)</span> <span class="p">[</span><span class="n">GCC</span> <span class="mf">11.2.1</span> <span class="mi">20220127</span> <span class="p">(</span><span class="n">Red</span> <span class="n">Hat</span> <span class="mf">11.2.1</span><span class="o">-</span><span class="mi">9</span><span class="p">)]</span>
+
 
 <span class="n">Blender</span> <span class="n">quit</span>
 </pre></div>
 </div>
-<p>Therefore, we know that <strong>blender 2.93.4 uses python 3.9.2.</strong></p>
+<p>Therefore, we know that <strong>blender 3.6.3 uses python 3.10.12.</strong></p>
 <p>3. <strong>Create an environment with that python version</strong> and install sisl (<em>skip if you have it already</em>).
 In this case, we will use conda as the environment manager, since it lets us very easily select the python version.
-You probably don’t need the exact micro version. In our case asking for <code class="docutils literal notranslate"><span class="pre">3.9</span></code> is enough:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">-</span><span class="n">n</span> <span class="n">blender</span><span class="o">-</span><span class="n">python</span> <span class="n">python</span><span class="o">=</span><span class="mf">3.9</span>
+You probably don’t need the exact micro version. In our case asking for <code class="docutils literal notranslate"><span class="pre">3.10</span></code> is enough:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">-</span><span class="n">n</span> <span class="n">blender</span><span class="o">-</span><span class="n">python</span> <span class="n">python</span><span class="o">=</span><span class="mf">3.10</span>
 </pre></div>
 </div>
 <p>Then install all the packages you want to use in blender:</p>
@@ -202,7 +201,7 @@ plot using the console!</p>
 <p>We want to plot graphene, so the simplest way is</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sisl</span>
 <span class="kn">import</span> <span class="nn">sisl.viz</span>
-<span class="n">geom_plot</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">geom</span><span class="o">.</span><span class="n">graphene</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s2">&quot;blender&quot;</span><span class="p">)</span>
+<span class="n">geom_plot</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">geom</span><span class="o">.</span><span class="n">graphene</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s2">&quot;blender&quot;</span><span class="p">,</span> <span class="n">bonds_scale</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
 <span class="n">geom_plot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -228,7 +227,7 @@ Try to plot a grid and let’s see how it looks!</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../showcase/WavefunctionPlot.html" class="btn btn-neutral float-left" title="WavefunctionPlot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../combining-plots/Intro%20to%20multiple%20plots.html" class="btn btn-neutral float-right" title="Intro to multiple plots" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="First%20animation.html" class="btn btn-neutral float-right" title="First animation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

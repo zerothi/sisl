@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Visualization &mdash; sisl 0.1-1ead994</title>
+  <title>Visualization &mdash; sisl 0.1-b45ef98</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
@@ -18,16 +18,16 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=4a978b58"></script>
+        <script src="../../_static/documentation_options.js?v=0f94db4c"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/tabs.js?v=3ee01567"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="prev" title="Nodes" href="../nodes.html" /> 
+    <link rel="next" title="sisl.viz.Plot" href="generated/sisl.viz.Plot.html" />
+    <link rel="prev" title="sisl.mixing.AdaptivePulayMixer" href="../generated/sisl.mixing.AdaptivePulayMixer.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -42,7 +42,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-1ead994
+                0.1-b45ef98
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -85,11 +85,30 @@
 <li class="toctree-l2"><a class="reference internal" href="../default_geom.html">Common geometries</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../physics.html">Physical objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mixing.html">Mixing self-consistent quantities</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Visualization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#plot-classes">Plot classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.viz.Plot.html">sisl.viz.Plot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.viz.BandsPlot.html">sisl.viz.BandsPlot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.viz.FatbandsPlot.html">sisl.viz.FatbandsPlot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.viz.GeometryPlot.html">sisl.viz.GeometryPlot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.viz.SitesPlot.html">sisl.viz.SitesPlot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.viz.GridPlot.html">sisl.viz.GridPlot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.viz.WavefunctionPlot.html">sisl.viz.WavefunctionPlot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.viz.PdosPlot.html">sisl.viz.PdosPlot</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#utilities">Utilities</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.viz.get_figure.html">get_figure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.viz.merge_plots.html">merge_plots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.viz.Figure.html">sisl.viz.Figure</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../unit_constant.html">Units and constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../nodes.html">Nodes</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Visualization</a></li>
 </ul>
 </li>
 </ul>
@@ -119,20 +138,68 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="visualization">
-<span id="viz"></span><h1>Visualization<a class="headerlink" href="#visualization" title="Link to this heading"></a></h1>
-<p>Visualizations of <a class="reference internal" href="../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> objects and data.</p>
+  <section id="module-sisl.viz">
+<span id="visualization"></span><span id="viz"></span><h1>Visualization<a class="headerlink" href="#module-sisl.viz" title="Link to this heading"></a></h1>
+<p>The visualization module contains tools to plot common visualizations, as well
+as to create custom visualizations that support multiple plotting backends
+automatically.</p>
+<section id="plot-classes">
+<h2>Plot classes<a class="headerlink" href="#plot-classes" title="Link to this heading"></a></h2>
+<p>Plot classes are workflow classes that implement some specific plotting.</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.viz.Plot.html#sisl.viz.Plot" title="sisl.viz.Plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Plot</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Base class for all plots</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.viz.BandsPlot.html#sisl.viz.BandsPlot" title="sisl.viz.BandsPlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BandsPlot</span></code></a>(bands_data[, Erange, E0, E_axis, ...])</p></td>
+<td><p>Plots band structure energies, with plentiful of customization options.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.viz.FatbandsPlot.html#sisl.viz.FatbandsPlot" title="sisl.viz.FatbandsPlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FatbandsPlot</span></code></a>(bands_data[, Erange, E0, ...])</p></td>
+<td><p>Plots band structure energies showing the contribution of orbitals to each state.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.viz.GeometryPlot.html#sisl.viz.GeometryPlot" title="sisl.viz.GeometryPlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeometryPlot</span></code></a>(geometry[, axes, atoms, ...])</p></td>
+<td><p>Plots a geometry structure, with plentiful of customization options.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.viz.SitesPlot.html#sisl.viz.SitesPlot" title="sisl.viz.SitesPlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SitesPlot</span></code></a>(sites_obj[, axes, sites, ...])</p></td>
+<td><p>Plots sites from an object that can be parsed into a geometry.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.viz.GridPlot.html#sisl.viz.GridPlot" title="sisl.viz.GridPlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GridPlot</span></code></a>([grid, axes, represent, ...])</p></td>
+<td><p>Plots a grid, with plentiful of customization options.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.viz.WavefunctionPlot.html#sisl.viz.WavefunctionPlot" title="sisl.viz.WavefunctionPlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WavefunctionPlot</span></code></a>(eigenstate[, i, geometry, ...])</p></td>
+<td><p>Plots a wavefunction in real space.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.viz.PdosPlot.html#sisl.viz.PdosPlot" title="sisl.viz.PdosPlot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PdosPlot</span></code></a>(pdos_data[, groups, Erange, ...])</p></td>
+<td><p>Plot the projected density of states.</p></td>
+</tr>
 </tbody>
 </table>
+</section>
+<section id="utilities">
+<h2>Utilities<a class="headerlink" href="#utilities" title="Link to this heading"></a></h2>
+<p>Utilities to build custom plots</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.viz.get_figure.html#sisl.viz.get_figure" title="sisl.viz.get_figure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_figure</span></code></a>(backend, plot_actions, *args, ...)</p></td>
+<td><p>Get a figure object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.viz.merge_plots.html#sisl.viz.merge_plots" title="sisl.viz.merge_plots"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_plots</span></code></a>(*figures[, composite_method, ...])</p></td>
+<td><p>Combines multiple plots into a single figure.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.viz.Figure.html#sisl.viz.Figure" title="sisl.viz.Figure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Figure</span></code></a>(plot_actions, *args, **kwargs)</p></td>
+<td><p>Base figure class that all backends should inherit from.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../nodes.html" class="btn btn-neutral float-left" title="Nodes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../generated/sisl.mixing.AdaptivePulayMixer.html" class="btn btn-neutral float-left" title="sisl.mixing.AdaptivePulayMixer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="generated/sisl.viz.Plot.html" class="btn btn-neutral float-right" title="sisl.viz.Plot" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

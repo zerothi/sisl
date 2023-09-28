@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>0.14.0 &mdash; sisl 0.1-b45ef98</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom_styles.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=0f94db4c"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/tabs.js?v=3ee01567"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="0.13.0" href="v0.13.0.html" />
+    <link rel="prev" title="Release notes" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            sisl
+          </a>
+              <div class="version">
+                0.1-b45ef98
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Release notes</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">0.14.0</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#contributors">Contributors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pull-requests-merged">Pull requests merged</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id2">[0.14.0] - 2023-09-28</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="v0.13.0.html">0.13.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.12.2.html">0.12.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.12.1.html">0.12.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.12.0.html">0.12.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.11.0.html">0.11.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.10.0.html">0.10.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.9.8.html">0.9.8</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.9.7.html">0.9.7</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.9.6.html">0.9.6</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.9.5.html">0.9.5</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.9.4.html">0.9.4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.9.3.html">0.9.3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.9.2.html">0.9.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.9.1.html">0.9.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.9.0.html">0.9.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.8.5.html">0.8.5</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.8.4.html">0.8.4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.8.3.html">0.8.3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.8.2.html">0.8.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.8.1.html">0.8.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.8.0.html">0.8.0</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cite.html">Citing sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../publications.html">Publications using sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/scripts.html">Command line scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../nodes/nodes_intro.html">Nodes and workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Release notes</a></li>
+      <li class="breadcrumb-item active">0.14.0</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/changelog/v0.14.0.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1>0.14.0<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<p>Released 28 of September 2023.</p>
+<section id="contributors">
+<h2>Contributors<a class="headerlink" href="#contributors" title="Link to this heading"></a></h2>
+<p>A total of 4 people contributed to this release.  People with a “+” by their
+names contributed a patch for the first time.</p>
+<ul class="simple">
+<li><p>Nick Papior</p></li>
+<li><p>Nils Wittemeier</p></li>
+<li><p>Pol Febrer</p></li>
+<li><p>Thomas Frederiksen</p></li>
+</ul>
+</section>
+<section id="pull-requests-merged">
+<h2>Pull requests merged<a class="headerlink" href="#pull-requests-merged" title="Link to this heading"></a></h2>
+<p>A total of 30 pull requests were merged for this release.</p>
+<ul class="simple">
+<li><p>#421: Function to build heteroribbons</p></li>
+<li><p>#476: Refactoring the viz module to a more modular design.</p></li>
+<li><p>#528: bug: outSile.read_scf was not able to read unconverged SCF loops</p></li>
+<li><p>#531: enh: Added Nodes and Workflows.</p></li>
+<li><p>#533: bug: functions could not overwrite node arguments</p></li>
+<li><p>#534: Add env variable to docs build</p></li>
+<li><p>#540: bug: fixed swapaxes handling</p></li>
+<li><p>#542: mnt: changed only= keyword arguments to what=</p></li>
+<li><p>#544: aniSileSiesta</p></li>
+<li><p>#546: mnt: added geometry collection with some more features</p></li>
+<li><p>#547: mnt: nodes context settings are no longer a regular input</p></li>
+<li><p>#549: Bugfix for rotate(…, atoms=list) + additional tests</p></li>
+<li><p>#550: changed SuperCell to Lattice, long overdue</p></li>
+<li><p>#562: Wrap fortran files import in try/except block.</p></li>
+<li><p>#563: Scikit build core</p></li>
+<li><p>#566: Make documentation tabs more visual</p></li>
+<li><p>#573: VASP forces from OUTCAR</p></li>
+<li><p>#575: cleaned the procedure for locating maxR</p></li>
+<li><p>#581: undo change of filenames</p></li>
+<li><p>#585: <em class="xref py py-obj">translate2uc</em> for sparse matrices with associated geometries.</p></li>
+<li><p>#586: Slicing IO <a href="#id4"><span class="problematic" id="id5">read_</span></a> routines</p></li>
+<li><p>#589: removed Collection + GeometryCollection</p></li>
+<li><p>#594: Fix missing import in siesta_grid.</p></li>
+<li><p>#596: netCDF4 is now an optional dependency</p></li>
+<li><p>#598: maint: Adapt to breaking changes in scipy.sparse.isspmatrix</p></li>
+</ul>
+<section id="id2">
+<h3>[0.14.0] - 2023-09-28<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<section id="added">
+<h4>Added<a class="headerlink" href="#added" title="Link to this heading"></a></h4>
+<ul>
+<li><p>added SISL_UNIT_SIESTA to select between legacy or codata2018 units (since Siesta 5)
+New default is codata2018, may create inconsistencies until Siesta 5 is widely adopted.</p></li>
+<li><p>added –remove to sgeom for removing single atoms</p></li>
+<li><p>added a EllipticalCylinder as a new shape</p></li>
+<li><p>added basis-enthalpy to the stdoutSiestaSile.read_energy routine</p></li>
+<li><p>added <em class="xref py py-obj">read_trajectory</em> to read cell vectors, atomic positions, and forces from VASP OUTCAR</p></li>
+<li><p>slicing io files multiple output (still WIP), see #584 for details
+Intention is to have all methods use this method for returning
+multiple values, it should streamline the API.</p></li>
+<li><p>allowed xyz files to read Origin entries in the comment field</p></li>
+<li><dl>
+<dt>allowed sile specifiers to be more explicit:</dt><dd><ul>
+<li><p>“hello.xyz{contains=&lt;name&gt;}” equivalent to “hello.xyz{&lt;name&gt;}”</p></li>
+<li><p>“hello.xyz{startswith=&lt;name&gt;}” class name should start with <em class="xref py py-obj">&lt;name&gt;</em></p></li>
+<li><dl>
+<dt>“hello.xyz{endswith=&lt;name&gt;}” class name should end with <em class="xref py py-obj">&lt;name&gt;</em></dt><dd><p>This is useful for defining a currently working code:</p>
+<blockquote>
+<div><p>SISL_IO_DEFAULT=siesta</p>
+</div></blockquote>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>added environment variable <code class="docutils literal notranslate"><span class="pre">SISL_IO_DEFAULT</span></code> which appends a sile specifier
+if not explicitly added. I.e. <code class="docutils literal notranslate"><span class="pre">get_sile(&quot;hello.xyz&quot;)</span></code> is equivalent to
+<code class="docutils literal notranslate"><span class="pre">get_sile(&quot;hello.xyz{os.environ[&quot;SISL_IO_DEFAULT&quot;]}&quot;</span></code>.
+Fixes #576</p></li>
+<li><p>added a context manager for manipulating the global env-vars in temporary
+locations. <code class="docutils literal notranslate"><span class="pre">with</span> <span class="pre">sisl_environ(SISL_IO_DEFAULT=...)</span></code></p></li>
+<li><p>enabled <em class="xref py py-obj">Geometry.append|prepend</em> in <em class="xref py py-obj">sgeom</em> command (reads other files)</p></li>
+<li><p>added <em class="xref py py-obj">fdfSileSiesta.write_brillouinzone</em> to easily write BandLines to the fdf output,
+see #141</p></li>
+<li><p>added <em class="xref py py-obj">aniSileSiesta</em> for MD output of Siesta, #544</p></li>
+<li><p><em class="xref py py-obj">mdSileOpenMX</em> for MD output of OpenMX</p></li>
+<li><p><em class="xref py py-obj">Atoms.formula</em> to get a chemical formula, currently only Hill notation</p></li>
+<li><p>unified the index argument for reading Grids, <em class="xref py py-obj">read_grid</em>, this influences
+Siesta and VASP grid reads.</p></li>
+<li><p><a class="reference internal" href="../api/mixing.html#module-sisl.mixing" title="sisl.mixing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.mixing</span></code></a>:
+* <em class="xref py py-obj">AndersonMixer</em> enables the popular and very simple linear-like mixer
+* <em class="xref py py-obj">StepMixer</em> allows switching between different mixers, for instance this</p>
+<blockquote>
+<div><p>enabled restart capabilities among other things.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>Enabled composite mixers (simple math with mixers)</p></li>
+</ul>
+</li>
+<li><p><em class="xref py py-obj">BrillouinZone.merge</em> allows simple merging of several objects, #537</p></li>
+</ul>
+</section>
+<section id="changed">
+<h4>Changed<a class="headerlink" href="#changed" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>updated the viz module, #476</p></li>
+<li><p>allowing ^ negation in order arguments for siles</p></li>
+<li><p>internal change to comply with scipy changes, use issparse instead
+of spmatrix, see #598</p></li>
+<li><p>netCDF4 is now an optional dependency, #595</p></li>
+<li><p>interface for Sparse*.nonzero(), arguments suffixed with ‘s’</p></li>
+<li><p><em class="xref py py-obj">stdoutSileVASP</em> will not accept <em class="xref py py-obj">all=</em> arguments</p></li>
+<li><p><em class="xref py py-obj">stdoutSileVASP.read_energy</em> returns as default the next item (no longer the last)</p></li>
+<li><p><em class="xref py py-obj">txtSileOrca</em> will not accept <em class="xref py py-obj">all=</em> arguments, see #584</p></li>
+<li><p><em class="xref py py-obj">stdoutSileOrca</em> will not accept <em class="xref py py-obj">all=</em> arguments, see #584</p></li>
+<li><p><em class="xref py py-obj">xyzSile</em> out from sisl will now default to the extended xyz file-format
+Explicitly adding the nsc= value makes it compatible with other exyz
+file formats and parseable by sisl, this is an internal change</p></li>
+<li><p>default of <em class="xref py py-obj">Geometry.translate2uc</em>, now only periodic axes are
+default to be moved</p></li>
+<li><p>all out files have been renamed to stdout to clarify they are
+user determined output file names, suggestion by &#64;tfrederiksen</p></li>
+<li><p>bumped Python requirement to &gt;=3.8</p></li>
+<li><p>orbitals <em class="xref py py-obj">R</em> arguments will now by default determine the minimal radii
+that contains 99.99% of the function integrand. The argument now
+accepts values -1:0 which is a fraction of the integrand that the function
+should contain, a positive value will explicitly set the range #574</p></li>
+<li><p>Added printout of the removed couplings in the <em class="xref py py-obj">RecursiveSI</em></p></li>
+<li><p><em class="xref py py-obj">SuperCell</em> class is officially deprecated in favor of <em class="xref py py-obj">Lattice</em>, see #95 for details
+The old class will still be accessible and usable for some time (at least a year)</p></li>
+<li><p>Enabled EigenState.wavefunction(grid) to accept grid as the initialization of
+the grid argument, so one does not need to produce the <em class="xref py py-obj">Grid</em> on before-hand</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Geometry.rotate(only=)</span></code> to <code class="docutils literal notranslate"><span class="pre">(what=)</span></code>, this is to unify the interfaces across, #541
+Also changed the default value to be “xyz” if atoms is Not none</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tbtncSileTBtrans(only=)</span></code> arguments are changed to (what=) #541</p></li>
+<li><p><em class="xref py py-obj">SelfEnergy.scattering_matrix</em> is changed to <em class="xref py py-obj">SelfEnergy.broadening_matrix</em>
+ince the scattering matrix is an S-matrix usage.
+Also changed <em class="xref py py-obj">se2scat</em> to <em class="xref py py-obj">se2broadening</em> #529</p></li>
+<li><p>allow <em class="xref py py-obj">BrillouinZone</em> initialization with scalar weights for all k-points #537</p></li>
+<li><p><em class="xref py py-obj">Geometry.swapaxes</em> and <em class="xref py py-obj">SuperCell.swapaxes</em>, these are now more versatile by
+allowing multiple swaps in a single run, #539</p></li>
+<li><p>deprecated <em class="xref py py-obj">set_sc</em></p></li>
+<li><p>internal build-system is changed to <em class="xref py py-obj">scikit-build-core</em>, the <a class="reference external" href="https://docs.python.org/3/library/distutils.html#module-distutils" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">distutils</span></code></a> will be
+deprecated in Python&gt;=3.12 so it was a needed change.
+This resulted in a directory restructuring.</p></li>
+</ul>
+</section>
+<section id="fixed">
+<h4>Fixed<a class="headerlink" href="#fixed" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>fixed Mulliken calculations for polarized calculations due to missing copy, #611</p></li>
+<li><p>fixed single argument <em class="xref py py-obj">ret_isc=True</em> of <em class="xref py py-obj">close</em>, #604 and #605</p></li>
+<li><p>tiling Grid now only possible for commensurate grids (grid.lattice % grid.geometry.lattice)</p></li>
+<li><p>rare cases for non-Gamma calculations with actual Gamma matrices resulted
+in crashes #572</p></li>
+<li><p><em class="xref py py-obj">MonkhorstPack.replace</em> now checks for symmetry k-points if the BZ is using
+trs. Additionally the displacements are moved to the primitive point before
+comparing, this partly fixed #568</p></li>
+<li><p>spin-orbit Hamiltonians in <em class="xref py py-obj">RealSpaceSE</em> and <em class="xref py py-obj">RealSpaceSI</em>, fixes #567</p></li>
+<li><p>ufunc reductions on <em class="xref py py-obj">SparseGeometry</em> where <em class="xref py py-obj">axis</em> arguments reduces
+dimensionality</p></li>
+<li><p>interaction with pymatgen</p></li>
+<li><p><em class="xref py py-obj">fdfSileSiesta.includes</em> would fail when empty lines were present, #555
+fixed and added test</p></li>
+<li><p>Documentation now uses global references</p></li>
+<li><p><em class="xref py py-obj">Geometry.swapaxes</em> would not swap latticevector cartesian coordinates, #539</p></li>
+</ul>
+</section>
+<section id="toolbox-btd">
+<h4>toolbox.btd<a class="headerlink" href="#toolbox-btd" title="Link to this heading"></a></h4>
+</section>
+<section id="id3">
+<h4># Added<a class="headerlink" href="#id3" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>calculation of scattering matrices</p></li>
+</ul>
+</section>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Release notes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="v0.13.0.html" class="btn btn-neutral float-right" title="0.13.0" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

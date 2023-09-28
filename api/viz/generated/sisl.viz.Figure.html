@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.viz.Figure &mdash; sisl 0.1-b45ef98</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/sg_gallery.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/custom_styles.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=0f94db4c"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/tabs.js?v=3ee01567"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Units and constants" href="../../unit_constant.html" />
+    <link rel="prev" title="merge_plots" href="sisl.viz.merge_plots.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            sisl
+          </a>
+              <div class="version">
+                0.1-b45ef98
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cite.html">Citing sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../publications.html">Publications using sisl</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../environment.html">Environment variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/scripts.html">Command line scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../nodes/nodes_intro.html">Nodes and workflows</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../basic.html">Basic classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../default_geom.html">Common geometries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../physics.html">Physical objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mixing.html">Mixing self-consistent quantities</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Visualization</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../index.html#plot-classes">Plot classes</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html#utilities">Utilities</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="sisl.viz.get_figure.html">get_figure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.viz.merge_plots.html">merge_plots</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">sisl.viz.Figure</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../unit_constant.html">Units and constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utilities.html">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../io/index.html">Input/Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../nodes.html">Nodes</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">API documentation</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Visualization</a></li>
+      <li class="breadcrumb-item active">sisl.viz.Figure</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/api/viz/generated/sisl.viz.Figure.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sisl-viz-figure">
+<h1>sisl.viz.Figure<a class="headerlink" href="#sisl-viz-figure" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="sisl.viz.Figure">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.viz.</span></span><span class="sig-name descname"><span class="pre">Figure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plot_actions</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Base figure class that all backends should inherit from.</p>
+<p>It contains all the plotting actions that should be supported by a figure.</p>
+<p>A subclass for a specific backend should implement as many methods as possible
+from the ones where Figure returns NotImplementedError.
+Other methods are optional because Figure contains a default implementation
+using other methods, which should work for most backends.</p>
+<p>To create a new backend, one might take the PlotlyFigure as a template.</p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.Figure.clear" title="sisl.viz.Figure.clear"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear</span></code></a>()</p></td>
+<td><p>Clears the figure so that we can draw again.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.Figure.draw_area_line" title="sisl.viz.Figure.draw_area_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_area_line</span></code></a>(x, y[, name, line, text, ...])</p></td>
+<td><p>Same as draw line, but to draw a line with an area.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.Figure.draw_arrows" title="sisl.viz.Figure.draw_arrows"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_arrows</span></code></a>(x, y, dxy[, arrowhead_scale, ...])</p></td>
+<td><p>Draws multiple arrows using the generic draw_line method.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.Figure.draw_arrows_3D" title="sisl.viz.Figure.draw_arrows_3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_arrows_3D</span></code></a>(x, y, z, dxyz[, ...])</p></td>
+<td><p>Draws multiple 3D arrows using the generic draw_line_3D method.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.Figure.draw_balls_3D" title="sisl.viz.Figure.draw_balls_3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_balls_3D</span></code></a>(x, y, z[, name, markers, row, col])</p></td>
+<td><p>Draws points as 3D spheres.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.Figure.draw_heatmap" title="sisl.viz.Figure.draw_heatmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_heatmap</span></code></a>(values[, x, y, name, zsmooth, ...])</p></td>
+<td><p>Draws a heatmap following the specifications.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.Figure.draw_line" title="sisl.viz.Figure.draw_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_line</span></code></a>(x, y[, name, line, marker, text, ...])</p></td>
+<td><p>Draws a line satisfying the specifications</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.Figure.draw_line_3D" title="sisl.viz.Figure.draw_line_3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_line_3D</span></code></a>(x, y, z[, name, line, marker, ...])</p></td>
+<td><p>Draws a 3D line satisfying the specifications.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.Figure.draw_mesh_3D" title="sisl.viz.Figure.draw_mesh_3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_mesh_3D</span></code></a>(vertices, faces[, color, ...])</p></td>
+<td><p>Draws a 3D mesh following the specifications.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.Figure.draw_multicolor_area_line" title="sisl.viz.Figure.draw_multicolor_area_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_multicolor_area_line</span></code></a>(x, y[, name, ...])</p></td>
+<td><p>Draw a line with an area with multiple colours.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.Figure.draw_multicolor_balls_3D" title="sisl.viz.Figure.draw_multicolor_balls_3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_multicolor_balls_3D</span></code></a>(x, y, z[, name, ...])</p></td>
+<td><p>Draws points as 3D spheres with different colours.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.Figure.draw_multicolor_line" title="sisl.viz.Figure.draw_multicolor_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_multicolor_line</span></code></a>(*args[, line, row, col])</p></td>
+<td><p>By default, multicoloured lines are drawn simply by drawing scatter points.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.Figure.draw_multicolor_line_3D" title="sisl.viz.Figure.draw_multicolor_line_3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_multicolor_line_3D</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Draws a multicoloured 3D line.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.Figure.draw_multicolor_scatter" title="sisl.viz.Figure.draw_multicolor_scatter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_multicolor_scatter</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Draws a multicoloured scatter.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.Figure.draw_multicolor_scatter_3D" title="sisl.viz.Figure.draw_multicolor_scatter_3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_multicolor_scatter_3D</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Draws a multicoloured 3D scatter.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.Figure.draw_multisize_area_line" title="sisl.viz.Figure.draw_multisize_area_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_multisize_area_line</span></code></a>(x, y[, name, line, ...])</p></td>
+<td><p>Draw a line with an area with multiple colours.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.Figure.draw_multisize_balls_3D" title="sisl.viz.Figure.draw_multisize_balls_3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_multisize_balls_3D</span></code></a>(x, y, z[, name, ...])</p></td>
+<td><p>Draws points as 3D spheres with different sizes.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.Figure.draw_multisize_line" title="sisl.viz.Figure.draw_multisize_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_multisize_line</span></code></a>(*args[, line, row, col])</p></td>
+<td><p>By default, multisized lines are drawn simple by drawing scatter points.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.Figure.draw_multisize_line_3D" title="sisl.viz.Figure.draw_multisize_line_3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_multisize_line_3D</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Draws a multisized 3D line.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.Figure.draw_multisize_scatter" title="sisl.viz.Figure.draw_multisize_scatter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_multisize_scatter</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Draws a multisized scatter.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.Figure.draw_multisize_scatter_3D" title="sisl.viz.Figure.draw_multisize_scatter_3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_multisize_scatter_3D</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Draws a multisized 3D scatter.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.Figure.draw_scatter" title="sisl.viz.Figure.draw_scatter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_scatter</span></code></a>(x, y[, name, marker, text, ...])</p></td>
+<td><p>Draws a scatter satisfying the specifications</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.Figure.draw_scatter_3D" title="sisl.viz.Figure.draw_scatter_3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">draw_scatter_3D</span></code></a>(x, y, z[, name, marker, ...])</p></td>
+<td><p>Draws a 3D scatter satisfying the specifications</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.Figure.init_3D" title="sisl.viz.Figure.init_3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_3D</span></code></a>()</p></td>
+<td><p>Called if functions that draw in 3D are going to be called.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.Figure.init_coloraxis" title="sisl.viz.Figure.init_coloraxis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_coloraxis</span></code></a>(name[, cmin, cmax, cmid, ...])</p></td>
+<td><p>Initializes a color axis to be used by the drawing functions</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.Figure.init_figure" title="sisl.viz.Figure.init_figure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_figure</span></code></a>([composite_method, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.Figure.set_axes_equal" title="sisl.viz.Figure.set_axes_equal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_axes_equal</span></code></a>()</p></td>
+<td><p>Sets the axes equal.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.Figure.set_axis" title="sisl.viz.Figure.set_axis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_axis</span></code></a>(**kwargs)</p></td>
+<td><p>Sets the axis parameters.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.viz.Figure.show" title="sisl.viz.Figure.show"><code class="xref py py-obj docutils literal notranslate"><span class="pre">show</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.viz.Figure.to" title="sisl.viz.Figure.to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code></a>(key)</p></td>
+<td><p>Converts the figure to another backend.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.Figure.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plot_actions</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.Figure.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.clear" title="Link to this definition"></a></dt>
+<dd><p>Clears the figure so that we can draw again.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.Figure.draw_area_line">
+<span class="sig-name descname"><span class="pre">draw_area_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependent_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.draw_area_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.draw_area_line" title="Link to this definition"></a></dt>
+<dd><p>Same as draw line, but to draw a line with an area. This is for example used to draw fatbands.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array-like</em>) – the coordinates of the points along the X axis.</p></li>
+<li><p><strong>y</strong> (<em>array-like</em>) – the coordinates of the points along the Y axis.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – the name of the scatter</p></li>
+<li><p><strong>line</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – specifications for the line style, following plotly standards. The backend
+should at least be able to implement <em class="xref py py-obj">line[“color”]</em> and <em class="xref py py-obj">line[“width”]</em>, but
+it is very advisable that it supports also <em class="xref py py-obj">line[“opacity”]</em>.</p></li>
+<li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – contains the text asigned to each marker. On plotly this is seen on hover,
+other options could be annotating. However, it is not necessary that this
+argument is supported.</p></li>
+<li><p><strong>dependent_axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – The axis that contains the dependent variable. This is important because
+the area is drawn in parallel to that axis.</p></li>
+<li><p><strong>row</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – If the figure contains subplots, the row where to draw.</p></li>
+<li><p><strong>col</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – If the figure contains subplots, the column where to draw.</p></li>
+<li><p><strong>**kwargs</strong> – should allow other keyword arguments to be passed directly to the creation of
+the scatter. This will of course be framework specific</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.Figure.draw_arrows">
+<span class="sig-name descname"><span class="pre">draw_arrows</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dxy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrowhead_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrowhead_angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.draw_arrows"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.draw_arrows" title="Link to this definition"></a></dt>
+<dd><p>Draws multiple arrows using the generic draw_line method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xy</strong> (<em>np.ndarray</em><em> of </em><em>shape</em><em> (</em><em>n_arrows</em><em>, </em><em>2</em><em>)</em>) – the positions where the atoms start.</p></li>
+<li><p><strong>dxy</strong> (<em>np.ndarray</em><em> of </em><em>shape</em><em> (</em><em>n_arrows</em><em>, </em><em>2</em><em>)</em>) – the arrow vector.</p></li>
+<li><p><strong>arrow_head_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – how big is the arrow head in comparison to the arrow vector.</p></li>
+<li><p><strong>arrowhead_angle</strong> (<em>angle</em>) – the angle that the arrow head forms with the direction of the arrow (in degrees).</p></li>
+<li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – multiplying factor to display the arrows. It does not affect the underlying data,
+therefore if the data is somehow displayed it should be without the scale factor.</p></li>
+<li><p><strong>annotate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – whether to annotate the arrows with the vector they represent.</p></li>
+<li><p><strong>row</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – If the figure contains subplots, the row where to draw.</p></li>
+<li><p><strong>col</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – If the figure contains subplots, the column where to draw.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.Figure.draw_arrows_3D">
+<span class="sig-name descname"><span class="pre">draw_arrows_3D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dxyz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrowhead_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrowhead_angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.draw_arrows_3D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.draw_arrows_3D" title="Link to this definition"></a></dt>
+<dd><p>Draws multiple 3D arrows using the generic draw_line_3D method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>np.ndarray</em><em> of </em><em>shape</em><em> (</em><em>n_arrows</em><em>, </em><em>)</em>) – the X coordinates of the arrow’s origin.</p></li>
+<li><p><strong>y</strong> (<em>np.ndarray</em><em> of </em><em>shape</em><em> (</em><em>n_arrows</em><em>, </em><em>)</em>) – the Y coordinates of the arrow’s origin.</p></li>
+<li><p><strong>z</strong> (<em>np.ndarray</em><em> of </em><em>shape</em><em> (</em><em>n_arrows</em><em>, </em><em>)</em>) – the Z coordinates of the arrow’s origin.</p></li>
+<li><p><strong>dxyz</strong> (<em>np.ndarray</em><em> of </em><em>shape</em><em> (</em><em>n_arrows</em><em>, </em><em>2</em><em>)</em>) – the arrow vector.</p></li>
+<li><p><strong>arrow_head_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – how big is the arrow head in comparison to the arrow vector.</p></li>
+<li><p><strong>arrowhead_angle</strong> (<em>angle</em>) – the angle that the arrow head forms with the direction of the arrow (in degrees).</p></li>
+<li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – multiplying factor to display the arrows. It does not affect the underlying data,
+therefore if the data is somehow displayed it should be without the scale factor.</p></li>
+<li><p><strong>row</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – If the figure contains subplots, the row where to draw.</p></li>
+<li><p><strong>col</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – If the figure contains subplots, the column where to draw.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.Figure.draw_balls_3D">
+<span class="sig-name descname"><span class="pre">draw_balls_3D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.draw_balls_3D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.draw_balls_3D" title="Link to this definition"></a></dt>
+<dd><p>Draws points as 3D spheres.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.Figure.draw_heatmap">
+<span class="sig-name descname"><span class="pre">draw_heatmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zsmooth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coloraxis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.draw_heatmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.draw_heatmap" title="Link to this definition"></a></dt>
+<dd><p>Draws a heatmap following the specifications.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.Figure.draw_line">
+<span class="sig-name descname"><span class="pre">draw_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.draw_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.draw_line" title="Link to this definition"></a></dt>
+<dd><p>Draws a line satisfying the specifications</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array-like</em>) – the coordinates of the points along the X axis.</p></li>
+<li><p><strong>y</strong> (<em>array-like</em>) – the coordinates of the points along the Y axis.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – the name of the line</p></li>
+<li><p><strong>line</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – specifications for the line style, following plotly standards. The backend
+should at least be able to implement <em class="xref py py-obj">line[“color”]</em> and <em class="xref py py-obj">line[“width”]</em></p></li>
+<li><p><strong>marker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – specifications for the markers style, following plotly standards. The backend
+should at least be able to implement <em class="xref py py-obj">marker[“color”]</em> and <em class="xref py py-obj">marker[“size”]</em></p></li>
+<li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – contains the text asigned to each marker. On plotly this is seen on hover,
+other options could be annotating. However, it is not necessary that this
+argument is supported.</p></li>
+<li><p><strong>row</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – If the figure contains subplots, the row where to draw.</p></li>
+<li><p><strong>col</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – If the figure contains subplots, the column where to draw.</p></li>
+<li><p><strong>**kwargs</strong> – should allow other keyword arguments to be passed directly to the creation of
+the line. This will of course be framework specific</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.Figure.draw_line_3D">
+<span class="sig-name descname"><span class="pre">draw_line_3D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.draw_line_3D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.draw_line_3D" title="Link to this definition"></a></dt>
+<dd><p>Draws a 3D line satisfying the specifications.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array-like</em>) – the coordinates of the points along the X axis.</p></li>
+<li><p><strong>y</strong> (<em>array-like</em>) – the coordinates of the points along the Y axis.</p></li>
+<li><p><strong>z</strong> (<em>array-like</em>) – the coordinates of the points along the Z axis.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – the name of the line</p></li>
+<li><p><strong>line</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – specifications for the line style, following plotly standards. The backend
+should at least be able to implement <em class="xref py py-obj">line[“color”]</em> and <em class="xref py py-obj">line[“width”]</em></p></li>
+<li><p><strong>marker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – specifications for the markers style, following plotly standards. The backend
+should at least be able to implement <em class="xref py py-obj">marker[“color”]</em> and <em class="xref py py-obj">marker[“size”]</em></p></li>
+<li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – contains the text asigned to each marker. On plotly this is seen on hover,
+other options could be annotating. However, it is not necessary that this
+argument is supported.</p></li>
+<li><p><strong>row</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – If the figure contains subplots, the row where to draw.</p></li>
+<li><p><strong>col</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – If the figure contains subplots, the column where to draw.</p></li>
+<li><p><strong>**kwargs</strong> – should allow other keyword arguments to be passed directly to the creation of
+the line. This will of course be framework specific</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.Figure.draw_mesh_3D">
+<span class="sig-name descname"><span class="pre">draw_mesh_3D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vertices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">faces</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opacity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.draw_mesh_3D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.draw_mesh_3D" title="Link to this definition"></a></dt>
+<dd><p>Draws a 3D mesh following the specifications.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.Figure.draw_multicolor_area_line">
+<span class="sig-name descname"><span class="pre">draw_multicolor_area_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependent_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.draw_multicolor_area_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.draw_multicolor_area_line" title="Link to this definition"></a></dt>
+<dd><p>Draw a line with an area with multiple colours.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array-like</em>) – the coordinates of the points along the X axis.</p></li>
+<li><p><strong>y</strong> (<em>array-like</em>) – the coordinates of the points along the Y axis.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – the name of the scatter</p></li>
+<li><p><strong>line</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – specifications for the line style, following plotly standards. The backend
+should at least be able to implement <em class="xref py py-obj">line[“color”]</em> and <em class="xref py py-obj">line[“width”]</em>, but
+it is very advisable that it supports also <em class="xref py py-obj">line[“opacity”]</em>.</p></li>
+<li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – contains the text asigned to each marker. On plotly this is seen on hover,
+other options could be annotating. However, it is not necessary that this
+argument is supported.</p></li>
+<li><p><strong>dependent_axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – The axis that contains the dependent variable. This is important because
+the area is drawn in parallel to that axis.</p></li>
+<li><p><strong>row</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – If the figure contains subplots, the row where to draw.</p></li>
+<li><p><strong>col</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – If the figure contains subplots, the column where to draw.</p></li>
+<li><p><strong>**kwargs</strong> – should allow other keyword arguments to be passed directly to the creation of
+the scatter. This will of course be framework specific</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.Figure.draw_multicolor_balls_3D">
+<span class="sig-name descname"><span class="pre">draw_multicolor_balls_3D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.draw_multicolor_balls_3D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.draw_multicolor_balls_3D" title="Link to this definition"></a></dt>
+<dd><p>Draws points as 3D spheres with different colours.</p>
+<p>If marker_color is an array of numbers, a coloraxis is created and values are converted to rgb.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.Figure.draw_multicolor_line">
+<span class="sig-name descname"><span class="pre">draw_multicolor_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.draw_multicolor_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.draw_multicolor_line" title="Link to this definition"></a></dt>
+<dd><p>By default, multicoloured lines are drawn simply by drawing scatter points.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.Figure.draw_multicolor_line_3D">
+<span class="sig-name descname"><span class="pre">draw_multicolor_line_3D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.draw_multicolor_line_3D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.draw_multicolor_line_3D" title="Link to this definition"></a></dt>
+<dd><p>Draws a multicoloured 3D line.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.Figure.draw_multicolor_scatter">
+<span class="sig-name descname"><span class="pre">draw_multicolor_scatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.draw_multicolor_scatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.draw_multicolor_scatter" title="Link to this definition"></a></dt>
+<dd><p>Draws a multicoloured scatter.</p>
+<p>Usually the normal scatter can already support this.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.Figure.draw_multicolor_scatter_3D">
+<span class="sig-name descname"><span class="pre">draw_multicolor_scatter_3D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.draw_multicolor_scatter_3D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.draw_multicolor_scatter_3D" title="Link to this definition"></a></dt>
+<dd><p>Draws a multicoloured 3D scatter.</p>
+<p>Usually the normal 3D scatter can already support this.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.Figure.draw_multisize_area_line">
+<span class="sig-name descname"><span class="pre">draw_multisize_area_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dependent_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.draw_multisize_area_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.draw_multisize_area_line" title="Link to this definition"></a></dt>
+<dd><p>Draw a line with an area with multiple colours.</p>
+<p>This is already usually supported by the normal draw_area_line.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array-like</em>) – the coordinates of the points along the X axis.</p></li>
+<li><p><strong>y</strong> (<em>array-like</em>) – the coordinates of the points along the Y axis.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – the name of the scatter</p></li>
+<li><p><strong>line</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – specifications for the line style, following plotly standards. The backend
+should at least be able to implement <em class="xref py py-obj">line[“color”]</em> and <em class="xref py py-obj">line[“width”]</em>, but
+it is very advisable that it supports also <em class="xref py py-obj">line[“opacity”]</em>.</p></li>
+<li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – contains the text asigned to each marker. On plotly this is seen on hover,
+other options could be annotating. However, it is not necessary that this
+argument is supported.</p></li>
+<li><p><strong>dependent_axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – The axis that contains the dependent variable. This is important because
+the area is drawn in parallel to that axis.</p></li>
+<li><p><strong>row</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – If the figure contains subplots, the row where to draw.</p></li>
+<li><p><strong>col</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – If the figure contains subplots, the column where to draw.</p></li>
+<li><p><strong>**kwargs</strong> – should allow other keyword arguments to be passed directly to the creation of
+the scatter. This will of course be framework specific</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.Figure.draw_multisize_balls_3D">
+<span class="sig-name descname"><span class="pre">draw_multisize_balls_3D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.draw_multisize_balls_3D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.draw_multisize_balls_3D" title="Link to this definition"></a></dt>
+<dd><p>Draws points as 3D spheres with different sizes.</p>
+<p>Usually supported by the normal draw_balls_3D</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.Figure.draw_multisize_line">
+<span class="sig-name descname"><span class="pre">draw_multisize_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.draw_multisize_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.draw_multisize_line" title="Link to this definition"></a></dt>
+<dd><p>By default, multisized lines are drawn simple by drawing scatter points.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.Figure.draw_multisize_line_3D">
+<span class="sig-name descname"><span class="pre">draw_multisize_line_3D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.draw_multisize_line_3D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.draw_multisize_line_3D" title="Link to this definition"></a></dt>
+<dd><p>Draws a multisized 3D line.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.Figure.draw_multisize_scatter">
+<span class="sig-name descname"><span class="pre">draw_multisize_scatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.draw_multisize_scatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.draw_multisize_scatter" title="Link to this definition"></a></dt>
+<dd><p>Draws a multisized scatter.</p>
+<p>Usually the normal scatter can already support this.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.Figure.draw_multisize_scatter_3D">
+<span class="sig-name descname"><span class="pre">draw_multisize_scatter_3D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.draw_multisize_scatter_3D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.draw_multisize_scatter_3D" title="Link to this definition"></a></dt>
+<dd><p>Draws a multisized 3D scatter.</p>
+<p>Usually the normal 3D scatter can already support this.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.Figure.draw_scatter">
+<span class="sig-name descname"><span class="pre">draw_scatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.draw_scatter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.draw_scatter" title="Link to this definition"></a></dt>
+<dd><p>Draws a scatter satisfying the specifications</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array-like</em>) – the coordinates of the points along the X axis.</p></li>
+<li><p><strong>y</strong> (<em>array-like</em>) – the coordinates of the points along the Y axis.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – the name of the scatter</p></li>
+<li><p><strong>marker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – specifications for the markers style, following plotly standards. The backend
+should at least be able to implement <em class="xref py py-obj">marker[“color”]</em> and <em class="xref py py-obj">marker[“size”]</em>, but
+it is very advisable that it supports also <em class="xref py py-obj">marker[“opacity”]</em> and <em class="xref py py-obj">marker[“colorscale”]</em></p></li>
+<li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – contains the text asigned to each marker. On plotly this is seen on hover,
+other options could be annotating. However, it is not necessary that this
+argument is supported.</p></li>
+<li><p><strong>row</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – If the figure contains subplots, the row where to draw.</p></li>
+<li><p><strong>col</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – If the figure contains subplots, the column where to draw.</p></li>
+<li><p><strong>**kwargs</strong> – should allow other keyword arguments to be passed directly to the creation of
+the scatter. This will of course be framework specific</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.Figure.draw_scatter_3D">
+<span class="sig-name descname"><span class="pre">draw_scatter_3D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.draw_scatter_3D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.draw_scatter_3D" title="Link to this definition"></a></dt>
+<dd><p>Draws a 3D scatter satisfying the specifications</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array-like</em>) – the coordinates of the points along the X axis.</p></li>
+<li><p><strong>y</strong> (<em>array-like</em>) – the coordinates of the points along the Y axis.</p></li>
+<li><p><strong>z</strong> (<em>array-like</em>) – the coordinates of the points along the Z axis.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – the name of the scatter</p></li>
+<li><p><strong>marker</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – specifications for the markers style, following plotly standards. The backend
+should at least be able to implement <em class="xref py py-obj">marker[“color”]</em> and <em class="xref py py-obj">marker[“size”]</em></p></li>
+<li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – contains the text asigned to each marker. On plotly this is seen on hover,
+other options could be annotating. However, it is not necessary that this
+argument is supported.</p></li>
+<li><p><strong>row</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – If the figure contains subplots, the row where to draw.</p></li>
+<li><p><strong>col</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – If the figure contains subplots, the column where to draw.</p></li>
+<li><p><strong>**kwargs</strong> – should allow other keyword arguments to be passed directly to the creation of
+the scatter. This will of course be framework specific</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.Figure.init_3D">
+<span class="sig-name descname"><span class="pre">init_3D</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.init_3D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.init_3D" title="Link to this definition"></a></dt>
+<dd><p>Called if functions that draw in 3D are going to be called.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.Figure.init_coloraxis">
+<span class="sig-name descname"><span class="pre">init_coloraxis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colorscale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.init_coloraxis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.init_coloraxis" title="Link to this definition"></a></dt>
+<dd><p>Initializes a color axis to be used by the drawing functions</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.Figure.init_figure">
+<span class="sig-name descname"><span class="pre">init_figure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">composite_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_actions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.init_figure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.init_figure" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.Figure.set_axes_equal">
+<span class="sig-name descname"><span class="pre">set_axes_equal</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.set_axes_equal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.set_axes_equal" title="Link to this definition"></a></dt>
+<dd><p>Sets the axes equal.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.Figure.set_axis">
+<span class="sig-name descname"><span class="pre">set_axis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.set_axis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.set_axis" title="Link to this definition"></a></dt>
+<dd><p>Sets the axis parameters.</p>
+<p>The specification for the axes is exactly the plotly one. This is to have a good
+reference for consistency. Other frameworks should translate the calls to their
+functionality.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.Figure.show">
+<span class="sig-name descname"><span class="pre">show</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.show"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.show" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.viz.Figure.to">
+<span class="sig-name descname"><span class="pre">to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/viz/figure/figure.html#Figure.to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.viz.Figure.to" title="Link to this definition"></a></dt>
+<dd><p>Converts the figure to another backend.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the backend to convert to.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sisl.viz.merge_plots.html" class="btn btn-neutral float-left" title="merge_plots" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../unit_constant.html" class="btn btn-neutral float-right" title="Units and constants" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2023, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

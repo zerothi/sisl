@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The sisl.viz module &mdash; sisl 0.1-1ead994</title>
+  <title>The sisl.viz module &mdash; sisl 0.1-b45ef98</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
@@ -19,12 +19,11 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=4a978b58"></script>
+        <script src="../../_static/documentation_options.js?v=0f94db4c"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/tabs.js?v=3ee01567"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -44,7 +43,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-1ead994
+                0.1-b45ef98
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -85,6 +84,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#showcase-of-plot-classes">Showcase of plot classes</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="showcase/GeometryPlot.html">GeometryPlot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="showcase/SitesPlot.html">SitesPlot</a></li>
 <li class="toctree-l3"><a class="reference internal" href="showcase/GridPlot.html">GridPlot</a></li>
 <li class="toctree-l3"><a class="reference internal" href="showcase/BandsPlot.html">BandsPlot</a></li>
 <li class="toctree-l3"><a class="reference internal" href="showcase/FatbandsPlot.html">FatbandsPlot</a></li>
@@ -94,10 +94,11 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#using-it-with-blender">Using it with blender</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="blender/Getting%20started.html">Getting started</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blender/First%20animation.html">First animation</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#combining-plots">Combining plots</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="combining-plots/Intro%20to%20multiple%20plots.html">Intro to multiple plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="combining-plots/Intro%20to%20combining%20plots.html">Intro to combining plots</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#do-it-yourself">Do it yourself</a><ul>
@@ -155,7 +156,7 @@ An example of this is <a class="reference external" href="https://pypi.org/proje
 <div class="toctree-wrapper compound" id="viz-tutorials-gallery">
 <div class="nbsphinx-gallery">
 <a class="reference internal" href="basic-tutorials/Demo.html">
-  <div><img alt="" src="../../_images/visualization_viz_module_basic-tutorials_Demo_47_0.png"></div>
+  <div><img alt="" src="../../_images/visualization_viz_module_basic-tutorials_Demo_31_0.png"></div>
   <div>First steps</div>
 </a>
 </div>
@@ -167,19 +168,23 @@ An example of this is <a class="reference external" href="https://pypi.org/proje
 <div class="toctree-wrapper compound" id="viz-plotly-showcase-gallery">
 <div class="nbsphinx-gallery">
 <a class="reference internal" href="showcase/GeometryPlot.html">
-  <div><img alt="" src="../../_images/visualization_viz_module_showcase_GeometryPlot_86_0.png"></div>
+  <div><img alt="" src="../../_images/visualization_viz_module_showcase_GeometryPlot_93_0.png"></div>
   <div>GeometryPlot</div>
 </a>
+<a class="reference internal" href="showcase/SitesPlot.html">
+  <div><img alt="" src="../../_images/visualization_viz_module_showcase_SitesPlot_10_0.png"></div>
+  <div>SitesPlot</div>
+</a>
 <a class="reference internal" href="showcase/GridPlot.html">
-  <div><img alt="" src="../../_images/visualization_viz_module_showcase_GridPlot_64_0.png"></div>
+  <div><img alt="" src="../../_images/visualization_viz_module_showcase_GridPlot_50_0.png"></div>
   <div>GridPlot</div>
 </a>
 <a class="reference internal" href="showcase/BandsPlot.html">
-  <div><img alt="" src="../../_images/visualization_viz_module_showcase_BandsPlot_58_0.png"></div>
+  <div><img alt="" src="../../_images/visualization_viz_module_showcase_BandsPlot_57_0.png"></div>
   <div>BandsPlot</div>
 </a>
 <a class="reference internal" href="showcase/FatbandsPlot.html">
-  <div><img alt="" src="../../_images/visualization_viz_module_showcase_FatbandsPlot_23_0.png"></div>
+  <div><img alt="" src="../../_images/visualization_viz_module_showcase_FatbandsPlot_19_0.png"></div>
   <div>FatbandsPlot</div>
 </a>
 <a class="reference internal" href="showcase/PdosPlot.html">
@@ -203,6 +208,10 @@ we dedicate this section to it with the hope of making the usage of it less conf
   <div><img alt="" src="../../_static/nbsphinx-no-thumbnail.svg"></div>
   <div>Getting started</div>
 </a>
+<a class="reference internal" href="blender/First%20animation.html">
+  <div><img alt="" src="../../_static/nbsphinx-no-thumbnail.svg"></div>
+  <div>First animation</div>
+</a>
 </div>
 </div>
 </section>
@@ -212,9 +221,9 @@ we dedicate this section to it with the hope of making the usage of it less conf
 to the right place!</p>
 <div class="toctree-wrapper compound" id="viz-plotly-combining-plots-gallery">
 <div class="nbsphinx-gallery">
-<a class="reference internal" href="combining-plots/Intro%20to%20multiple%20plots.html">
-  <div><img alt="" src="../../_images/visualization_viz_module_combining-plots_Intro_to_multiple_plots_20_0.png"></div>
-  <div>Intro to multiple plots</div>
+<a class="reference internal" href="combining-plots/Intro%20to%20combining%20plots.html">
+  <div><img alt="" src="../../_images/visualization_viz_module_combining-plots_Intro_to_combining_plots_29_0.png"></div>
+  <div>Intro to combining plots</div>
 </a>
 </div>
 </div>
@@ -222,7 +231,7 @@ to the right place!</p>
 <section id="do-it-yourself">
 <h2>Do it yourself<a class="headerlink" href="#do-it-yourself" title="Link to this heading"></a></h2>
 <p>Whether you feel like you would like to customize the framework a bit to fit your needs, you are a <a class="reference internal" href="../../api/index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a>
-developer or you are building a framework (e.g. GUI) around <code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.viz</span></code>, this is your section!</p>
+developer or you are building a framework (e.g. GUI) around <a class="reference internal" href="../../api/viz/index.html#module-sisl.viz" title="sisl.viz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.viz</span></code></a>, this is your section!</p>
 <div class="toctree-wrapper compound" id="viz-plotly-diy-gallery">
 <div class="nbsphinx-gallery">
 <a class="reference internal" href="diy/Adding%20new%20backends.html">
