@@ -65,6 +65,7 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: Implementation :: CPython",
     "Topic :: Software Development",
@@ -113,11 +114,9 @@ stoolbox = "sisl_toolbox.cli:stoolbox_cli"
 
 
 [project.urls]
-Url = "https://zerothi.github.io/sisl"
 Homepage = "https://zerothi.github.io/sisl"
 Releases = "https://github.com/zerothi/sisl/releases"
 Documentation = "https://zerothi.github.io/sisl"
-Repository = "https://github.com/zerothi/sisl.git"
 Source = "https://github.com/zerothi/sisl"
 Tracker = "https://github.com/zerothi/sisl/issues"
 Discussions = "https://github.com/zerothi/sisl/discussions"
