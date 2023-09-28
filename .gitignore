@@ -12,7 +12,7 @@ build
 __config__.py
 
 docs/build
-docs/*/generated/
+docs/**/generated/
 docs/sisl
 
 */sisl.egg-info
