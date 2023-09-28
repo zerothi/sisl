@@ -1,6 +1,6 @@
-version: 0.14.0rc4
-commit: "v0.14.0rc4"
-date-released: "2023-08-11"
+version: 0.14.0
+commit: "v0.14.0"
+date-released: "2023-09-28"
 cff-version: 1.2.0
 message: "If you use the sisl software, please cite it using this metadata."
 type: software

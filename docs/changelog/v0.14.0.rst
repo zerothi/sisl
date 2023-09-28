@@ -1,0 +1,162 @@
+******
+0.14.0
+******
+
+Released 28 of September 2023.
+
+
+Contributors
+============
+
+A total of 4 people contributed to this release.  People with a "+" by their
+names contributed a patch for the first time.
+
+* Nick Papior
+* Nils Wittemeier
+* Pol Febrer
+* Thomas Frederiksen
+
+Pull requests merged
+====================
+
+A total of 30 pull requests were merged for this release.
+
+* #421: Function to build heteroribbons
+* #476: Refactoring the viz module to a more modular design.
+* #528: bug: outSile.read_scf was not able to read unconverged SCF loops
+* #531: enh: Added Nodes and Workflows.
+* #533: bug: functions could not overwrite node arguments
+* #534: Add env variable to docs build
+* #540: bug: fixed swapaxes handling
+* #542: mnt: changed only= keyword arguments to what=
+* #544: aniSileSiesta
+* #546: mnt: added geometry collection with some more features
+* #547: mnt: nodes context settings are no longer a regular input
+* #549: Bugfix for rotate(..., atoms=list) + additional tests
+* #550: changed SuperCell to Lattice, long overdue
+* #562: Wrap fortran files import in try/except block.
+* #563: Scikit build core
+* #566: Make documentation tabs more visual
+* #573: VASP forces from OUTCAR
+* #575: cleaned the procedure for locating maxR
+* #581: undo change of filenames
+* #585: `translate2uc` for sparse matrices with associated geometries.
+* #586: Slicing IO read_ routines
+* #589: removed Collection + GeometryCollection
+* #594: Fix missing import in siesta_grid.
+* #596: netCDF4 is now an optional dependency
+* #598: maint: Adapt to breaking changes in scipy.sparse.isspmatrix
+
+[0.14.0] - 2023-09-28
+----------------------
+
+Added
+^^^^^^
+* added SISL_UNIT_SIESTA to select between legacy or codata2018 units (since Siesta 5)
+  New default is codata2018, may create inconsistencies until Siesta 5 is widely adopted.
+* added --remove to sgeom for removing single atoms
+* added a EllipticalCylinder as a new shape
+* added basis-enthalpy to the stdoutSiestaSile.read_energy routine
+* added `read_trajectory` to read cell vectors, atomic positions, and forces from VASP OUTCAR
+* slicing io files multiple output (still WIP), see #584 for details
+  Intention is to have all methods use this method for returning
+  multiple values, it should streamline the API.
+* allowed xyz files to read Origin entries in the comment field
+* allowed sile specifiers to be more explicit:
+     * "hello.xyz{contains=<name>}" equivalent to "hello.xyz{<name>}"
+     * "hello.xyz{startswith=<name>}" class name should start with `<name>`
+     * "hello.xyz{endswith=<name>}" class name should end with `<name>`
+        This is useful for defining a currently working code:
+
+            SISL_IO_DEFAULT=siesta
+
+* added environment variable ``SISL_IO_DEFAULT`` which appends a sile specifier
+  if not explicitly added. I.e. ``get_sile("hello.xyz")`` is equivalent to
+  ``get_sile("hello.xyz{os.environ["SISL_IO_DEFAULT"]}"``.
+  Fixes #576
+* added a context manager for manipulating the global env-vars in temporary
+  locations. ``with sisl_environ(SISL_IO_DEFAULT=...)``
+* enabled `Geometry.append|prepend` in `sgeom` command (reads other files)
+* added `fdfSileSiesta.write_brillouinzone` to easily write BandLines to the fdf output,
+  see #141
+* added `aniSileSiesta` for MD output of Siesta, #544
+* `mdSileOpenMX` for MD output of OpenMX
+* `Atoms.formula` to get a chemical formula, currently only Hill notation
+* unified the index argument for reading Grids, `read_grid`, this influences
+  Siesta and VASP grid reads.
+* `sisl.mixing`:
+  * `AndersonMixer` enables the popular and very simple linear-like mixer
+  * `StepMixer` allows switching between different mixers, for instance this
+    enabled restart capabilities among other things.
+  * Enabled composite mixers (simple math with mixers)
+* `BrillouinZone.merge` allows simple merging of several objects, #537
+
+Changed
+^^^^^^^^
+* updated the viz module, #476
+* allowing ^ negation in order arguments for siles
+* internal change to comply with scipy changes, use issparse instead
+  of spmatrix, see #598
+* netCDF4 is now an optional dependency, #595
+* interface for Sparse*.nonzero(), arguments suffixed with 's'
+* `stdoutSileVASP` will not accept `all=` arguments
+* `stdoutSileVASP.read_energy` returns as default the next item (no longer the last)
+* `txtSileOrca` will not accept `all=` arguments, see #584
+* `stdoutSileOrca` will not accept `all=` arguments, see #584
+* `xyzSile` out from sisl will now default to the extended xyz file-format
+  Explicitly adding the nsc= value makes it compatible with other exyz
+  file formats and parseable by sisl, this is an internal change
+* default of `Geometry.translate2uc`, now only periodic axes are
+  default to be moved
+* all out files have been renamed to stdout to clarify they are
+  user determined output file names, suggestion by @tfrederiksen
+* bumped Python requirement to >=3.8
+* orbitals `R` arguments will now by default determine the minimal radii
+  that contains 99.99% of the function integrand. The argument now
+  accepts values -1:0 which is a fraction of the integrand that the function
+  should contain, a positive value will explicitly set the range #574
+* Added printout of the removed couplings in the `RecursiveSI`
+* `SuperCell` class is officially deprecated in favor of `Lattice`, see #95 for details
+  The old class will still be accessible and usable for some time (at least a year)
+* Enabled EigenState.wavefunction(grid) to accept grid as the initialization of
+  the grid argument, so one does not need to produce the `Grid` on before-hand
+* ``Geometry.rotate(only=)`` to ``(what=)``, this is to unify the interfaces across, #541
+  Also changed the default value to be "xyz" if atoms is Not none
+* ``tbtncSileTBtrans(only=)`` arguments are changed to (what=) #541
+* `SelfEnergy.scattering_matrix` is changed to `SelfEnergy.broadening_matrix`
+  ince the scattering matrix is an S-matrix usage.
+  Also changed `se2scat` to `se2broadening` #529
+* allow `BrillouinZone` initialization with scalar weights for all k-points #537
+* `Geometry.swapaxes` and `SuperCell.swapaxes`, these are now more versatile by
+  allowing multiple swaps in a single run, #539
+* deprecated `set_sc`
+* internal build-system is changed to `scikit-build-core`, the `distutils` will be
+  deprecated in Python>=3.12 so it was a needed change.
+  This resulted in a directory restructuring.
+
+
+Fixed
+^^^^^^
+* fixed Mulliken calculations for polarized calculations due to missing copy, #611
+* fixed single argument `ret_isc=True` of `close`, #604 and #605
+* tiling Grid now only possible for commensurate grids (grid.lattice % grid.geometry.lattice)
+* rare cases for non-Gamma calculations with actual Gamma matrices resulted
+  in crashes #572
+* `MonkhorstPack.replace` now checks for symmetry k-points if the BZ is using
+  trs. Additionally the displacements are moved to the primitive point before
+  comparing, this partly fixed #568
+* spin-orbit Hamiltonians in `RealSpaceSE` and `RealSpaceSI`, fixes #567
+* ufunc reductions on `SparseGeometry` where `axis` arguments reduces
+  dimensionality
+* interaction with pymatgen
+* `fdfSileSiesta.includes` would fail when empty lines were present, #555
+  fixed and added test
+* Documentation now uses global references
+* `Geometry.swapaxes` would not swap latticevector cartesian coordinates, #539
+
+
+toolbox.btd
+^^^^^^^^^^^^
+# Added
+^^^^^^^^
+* calculation of scattering matrices

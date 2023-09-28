@@ -73,7 +73,7 @@ def get_authors(revision_range):
     pre = set(re.findall(pat, this_repo.git.shortlog("-s", lst_release), re.M))
 
     # Homu is the author of auto merges, clean him out.
-    for discard_author in ("Homu", "lgtm-com[bot]"):
+    for discard_author in ("Homu", "lgtm-com[bot]", "dependabot[bot]"):
         cur.discard(discard_author)
         pre.discard(discard_author)
 
@@ -113,7 +113,12 @@ def get_pull_requests(repo, revision_range):
         # there is a problem in the repo about referencing the first
         # pr (which is actually an issue). So we jush let it go.
         del prnums[0]
-    prs = [repo.get_pull(n) for n in prnums]
+    prs = []
+    for n in prnums:
+        try:
+            prs.append(repo.get_pull(n))
+        except BaseException:
+            pass
     return prs
 
 def read_changelog(prior_rel, current_rel, format="md"):

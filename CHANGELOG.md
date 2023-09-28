@@ -5,7 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) once
 we hit release version 1.0.0.
 
-## [0.14.0] - YYYY-MM-DD
+## [0.14.1] - YYYY-MM-DD
+
+
+## [0.14.0] - 2023-09-28
 
 ### Added
 - added SISL_UNIT_SIESTA to select between legacy or codata2018 units (since Siesta 5)
@@ -48,6 +51,7 @@ we hit release version 1.0.0.
 - `BrillouinZone.merge` allows simple merging of several objects, #537
 
 ### Changed
+- updated the viz module, #476
 - allowing ^ negation in order arguments for siles
 - internal change to comply with scipy changes, use issparse instead
   of spmatrix, see #598
