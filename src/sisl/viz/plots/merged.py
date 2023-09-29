@@ -6,7 +6,7 @@ from ..plotters.plot_actions import combined
 
 
 def merge_plots(*figures: Figure, 
-    composite_method: Optional[Literal["multiple", "subplots", "multiple_x", "multiple_y", "animation"]] = None, 
+    composite_method: Optional[Literal["multiple", "subplots", "multiple_x", "multiple_y", "animation"]] = "multiple", 
     backend: Literal["plotly", "matplotlib", "py3dmol", "blender"] = "plotly",
     **kwargs
 ) -> Figure:

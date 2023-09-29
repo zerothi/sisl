@@ -120,8 +120,9 @@ class PlotlyFigure(Figure):
                 action_name = action['method']
                 if action_name.startswith("draw_"):
                     action = {**action, "kwargs": {**action.get("kwargs", {}), **row_col_kwargs}}
+                    action['kwargs']['meta'] = {**action['kwargs'].get('meta', {}), "i_plot": i}
                 elif action_name.startswith("set_ax"):
-                     action = {**action, "kwargs": {**action.get("kwargs", {}), "_active_axes": active_axes}}
+                    action = {**action, "kwargs": {**action.get("kwargs", {}), "_active_axes": active_axes}}
                 
                 sanitized_section_actions.append(action)
 
@@ -157,8 +158,24 @@ class PlotlyFigure(Figure):
                 action_name = action['method']
                 if action_name.startswith("draw_"):
                     action = {**action, "kwargs": {**action.get("kwargs", {}), **active_axes_kwargs}}
+                    action['kwargs']['meta'] = {**action['kwargs'].get('meta', {}), "i_plot": i}
                 elif action_name.startswith("set_ax"):
                     action = {**action, "kwargs": {**action.get("kwargs", {}), "_active_axes": active_axes}}
+                
+                sanitized_section_actions.append(action)
+
+            yield sanitized_section_actions
+    
+    def _iter_same_axes(self, plot_actions):
+
+        for i, section_actions in enumerate(plot_actions):
+            
+            sanitized_section_actions = []
+            for action in section_actions:
+                action_name = action['method']
+                if action_name.startswith("draw_"):
+                    action = {**action, "kwargs": action.get("kwargs", {})}
+                    action['kwargs']['meta'] = {**action['kwargs'].get('meta', {}), "i_plot": i}
                 
                 sanitized_section_actions.append(action)
 
@@ -190,7 +207,14 @@ class PlotlyFigure(Figure):
         frames = []
         for i, section_actions in enumerate(plot_actions):
 
-            yield section_actions
+            sanitized_section_actions = []
+            for action in section_actions:
+                action_name = action['method']
+                if action_name.startswith("draw_"):
+                    action = {**action, "kwargs": action.get("kwargs", {})}
+                    action['kwargs']['meta'] = {**action['kwargs'].get('meta', {}), "i_plot": i}
+
+            yield sanitized_section_actions
 
             # Create a frame and append it
             frames.append(go.Frame(name=frame_names[i],data=self.figure.data, layout=self.figure.layout))
