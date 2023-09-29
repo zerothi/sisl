@@ -106,9 +106,13 @@ def group_reduce(data: Union[DataArray, Dataset, XarrayData], groups: Sequence[G
         empty = False
         for dim in reduce_dim:
             selected = getattr(group_vals, dim, [])
-            empty = len(selected) == 0
-            if empty:
-                break
+            try:
+                empty = len(selected) == 0
+                if empty:
+                    break
+            except TypeError:
+                # selected is a scalar
+                ...
 
         if empty:
             # Handle the case where the selection found no matches.
@@ -128,6 +132,8 @@ def group_reduce(data: Union[DataArray, Dataset, XarrayData], groups: Sequence[G
             if not isinstance(reduce_funcs, tuple):
                 reduce_funcs = tuple([reduce_funcs] * len(reduce_dim))
             for dim, func in zip(reduce_dim, reduce_funcs):
+                if func is None or (reduce_dim not in group_vals.dims and reduce_dim in group_vals.coords):
+                    continue
                 group_vals = group_vals.reduce(func, dim=dim)
 
         
