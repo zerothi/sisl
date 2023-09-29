@@ -562,10 +562,11 @@ def reduce_orbital_data(orbital_data: Union[DataArray, Dataset], groups: Sequenc
 
     data_spin = orbital_data.attrs.get("spin", Spin(""))
 
-    if geometry is None:
-        def _sanitize_group(group):
-            group = group.copy()
-            group = sanitize_group(group)
+    def _sanitize_group(group):
+        group = group.copy()
+        group = sanitize_group(group)
+
+        if geometry is None:
             orbitals = group.get('orbitals')
             try:
                 group['orbitals'] = np.array(orbitals, dtype=int)
@@ -573,39 +574,23 @@ def reduce_orbital_data(orbital_data: Union[DataArray, Dataset], groups: Sequenc
             except:
                 raise SislError("A geometry was neither provided nor found in the xarray object. Therefore we can't"
                     f" convert the provided atom selection ({orbitals}) to an array of integers.")
-            
-            req_spin = group.get("spin")
-            if req_spin is None and data_spin.is_polarized and spin_dim in orbital_data.coords:
-                if spin_reduce is None:
-                    group['spin'] = original_spin_coord
-                else:
-                    group['spin'] = [0, 1]
-
-            group['selector'] = group['orbitals']
-            if spin_reduce is not None and spin_dim in orbital_data.dims:
-                group['selector'] = (group['selector'], group.get('spin'))
-                group['reduce_func'] = (group.get('reduce_func', reduce_func), spin_reduce)
-
-            return group
-    else:
-        def _sanitize_group(group):
-            group = group.copy()
-            group = sanitize_group(group)
+        else:
             group["orbitals"] = geometry._sanitize_orbs(group["orbitals"])
-            group['selector'] = group['orbitals']
 
-            req_spin = group.get("spin")
-            if req_spin is None and data_spin.is_polarized and spin_dim in orbital_data.coords:
-                if spin_reduce is None:
-                    group['spin'] = original_spin_coord
-                else:
-                    group['spin'] = [0, 1]
+        group['selector'] = group['orbitals']
 
-            if (spin_reduce is not None or group.get("spin") is not None) and spin_dim in orbital_data.dims:
-                group['selector'] = (group['selector'], group.get('spin'))
-                group['reduce_func'] = (group.get('reduce_func', reduce_func), spin_reduce)
+        req_spin = group.get("spin")
+        if req_spin is None and data_spin.is_polarized and spin_dim in orbital_data.coords:
+            if spin_reduce is None:
+                group['spin'] = original_spin_coord
+            else:
+                group['spin'] = [0, 1]
 
-            return group
+        if (spin_reduce is not None or group.get("spin") is not None) and spin_dim in orbital_data.dims:
+            group['selector'] = (group['selector'], group.get('spin'))
+            group['reduce_func'] = (group.get('reduce_func', reduce_func), spin_reduce)
+
+        return group
     
     original_spin_coord = None
     if data_spin.is_polarized and spin_dim in orbital_data.coords:
