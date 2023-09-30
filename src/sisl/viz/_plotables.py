@@ -187,7 +187,15 @@ def register_data_source(
     data_source_init_kwargs: dict = {},
     **kwargs
 ):
+    
+    # First register the data source itself
+    register_plotable(
+        data_source_cls, plot_cls=plot_cls, setting_key=setting_key,
+        name=name, plot_handler_attr=plot_handler_attr, 
+        **kwargs
+    )
 
+    # And then all its entry points
     plot_cls_params = {
         name: param.replace(kind=inspect.Parameter.KEYWORD_ONLY) 
         for name, param in inspect.signature(plot_cls).parameters.items() if name != setting_key
