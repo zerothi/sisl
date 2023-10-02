@@ -1,5 +1,6 @@
 # netCDF4 is now not a dependency
 netCDF4
+xarray>=0.10.0
 pytest
 pytest-cov
 pytest-env

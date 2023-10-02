@@ -4,7 +4,6 @@ ipykernel
 nbsphinx
 dill>=0.3.2
 pathos
-xarray>=0.10.0
 scikit-image
 plotly>=5.12.0
 sphinx-rtd-theme

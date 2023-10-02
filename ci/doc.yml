@@ -14,11 +14,11 @@ dependencies:
   - pyparsing>=1.5.7
   - numpy>=1.13
   - cython>=0.29.28
-  - tqdm
   - scipy>=1.5.0
   - netcdf4
-  - matplotlib-base
   - xarray>=0.10.0
+  - tqdm
+  - matplotlib-base
   - pathos
   - dill>=0.3.2
   - scikit-image

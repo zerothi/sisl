@@ -15,6 +15,7 @@ Running sisl requires these versions:
 - `numpy`_ (1.13 or later)
 - `scipy`_ (1.5 or later)
 - `pyparsing`_ (1.5.7 or later)
+- `xarray`_ (0.10.0 or later)
 
 Optional dependencies:
 
@@ -22,7 +23,6 @@ Optional dependencies:
 - `pathos`_ (for parallel BrillouinZone calculations)
 - `netCDF4-python <netcdf4-py_>`_
 - `tqdm`_ (for displaying progress-bars)
-- `xarray`_ (for advanced table data structures in certain methods)
 - `matplotlib`_
 - `plotly`_ (for advanced visualization)
 

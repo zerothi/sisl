@@ -1,8 +1,6 @@
 tqdm
 dill>=0.3.2
 pathos
-pandas
-xarray>=0.10.0
 scikit-image
 matplotlib
 plotly

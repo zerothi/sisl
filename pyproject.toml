@@ -44,7 +44,8 @@ dependencies = [
     "numpy>=1.21.5 ; sys_platform == 'win32' and python_version >= '3.10'",
     "numpy>=1.13 ; sys_platform != 'win32'",
     "scipy>=1.5.0",
-    "pyparsing>=1.5.7"
+    "pyparsing>=1.5.7",
+    "xarray>=0.10.0",
 ]
 
 authors = [
@@ -128,7 +129,6 @@ Chat = "https://discord.gg/5XnFXFdkv2"
 
 analysis = [
     "netCDF4",
-    "xarray >= 0.10.0",
     "tqdm"
 ]
 
@@ -136,8 +136,6 @@ viz = [
     "dill >= 0.3.2",
     "pathos",
     "netCDF4",
-    "pandas",
-    "xarray >= 0.10.0",
     "scikit-image",
 
     "plotly",
@@ -149,8 +147,6 @@ viz-plotly = [
     "dill >= 0.3.2",
     "pathos",
     "netCDF4",
-    "pandas",
-    "xarray >= 0.10.0",
     "scikit-image",
 
     "plotly",
@@ -160,8 +156,6 @@ viz-matplotlib = [
     "dill >= 0.3.2",
     "pathos",
     "netCDF4",
-    "pandas",
-    "xarray >= 0.10.0",
     "scikit-image",
 
     "matplotlib",
@@ -171,8 +165,6 @@ viz-blender = [
     "dill >= 0.3.2",
     "pathos",
     "netCDF4",
-    "pandas",
-    "xarray >= 0.10.0",
     "scikit-image",
 ]
 
@@ -180,8 +172,6 @@ viz-ase = [
     "dill >= 0.3.2",
     "pathos",
     "netCDF4",
-    "pandas",
-    "xarray >= 0.10.0",
     "scikit-image",
 
     "ase",
@@ -197,8 +187,6 @@ test = [
     "dill >= 0.3.2",
     "pathos",
     "netCDF4",
-    "pandas",
-    "xarray >= 0.10.0",
     "scikit-image",
     "matplotlib",
     "plotly",
