@@ -1,5 +1,6 @@
 __pycache__
 ci
+.coverage
 .git
 .github
 .eggs
