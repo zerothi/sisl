@@ -1,8 +1,8 @@
 import pytest
 
 from sisl import Spin
-from sisl.viz.data import BandsData
-from sisl.viz.plots import bands_plot
+from sisl.viz.data import PDOSData
+from sisl.viz.plots import pdos_plot
 
 @pytest.fixture(scope="module", params=["plotly", "matplotlib"])
 def backend(request):
@@ -13,12 +13,8 @@ def spin(request):
     return Spin(request.param)
 
 @pytest.fixture(scope="module")
-def gap():
-    return 2.5
+def pdos_data(spin):
+    return PDOSData.toy_example(spin=spin)
 
-@pytest.fixture(scope="module")
-def bands_data(spin, gap):
-    return BandsData.toy_example(spin=spin, gap=gap)
-
-def test_bands_plot(bands_data, backend):
-    bands_plot(bands_data, backend=backend)
+def test_pdos_plot(pdos_data, backend):
+    pdos_plot(pdos_data, backend=backend)

@@ -359,6 +359,7 @@ class PlotlyFigure(Figure):
             'name': name,
             'line': {k: v for k, v in line.items() if k != "opacity"},
             'opacity': opacity,
+            "meta": kwargs.pop("meta", {}),
             **kwargs,
         }, row=row, col=col)
 
@@ -407,7 +408,8 @@ class PlotlyFigure(Figure):
             "name": name,
             "legendgroup": name,
             "showlegend": kwargs.pop("showlegend", None),
-            "fill": "toself"
+            "fill": "toself",
+            "meta": kwargs.pop("meta", {})
         }, row=row, col=col)
 
     def draw_scatter(self, x, y, name=None, marker={}, **kwargs):
@@ -450,13 +452,15 @@ class PlotlyFigure(Figure):
 
         iterator = enumerate(zip(np.array(x), np.array(y), np.array(z), style["size"], style["color"], style["opacity"]))
 
+        meta = kwargs.pop("meta", {})
         showlegend = True
         for i, (sp_x, sp_y, sp_z, sp_size, sp_color, sp_opacity) in iterator:
             self.draw_ball_3D(
                 xyz=[sp_x, sp_y, sp_z], 
                 size=sp_size, color=sp_color, opacity=sp_opacity,
                 name=f"{name}_{i}",
-                legendgroup=name, showlegend=showlegend
+                legendgroup=name, showlegend=showlegend,
+                meta=meta
             )
             showlegend = False
 
@@ -470,8 +474,8 @@ class PlotlyFigure(Figure):
             'color': color,
             'showscale': False,
             'name': name,
-            'meta': ['({:.2f}, {:.2f}, {:.2f})'.format(*xyz)],
-            'hovertemplate': '%{meta[0]}',
+            'meta': {"position": '({:.2f}, {:.2f}, {:.2f})'.format(*xyz), "meta": kwargs.pop("meta", {})},
+            'hovertemplate': '%{meta.position}',
             **kwargs
         }, row=None, col=None)
     
@@ -506,6 +510,8 @@ class PlotlyFigure(Figure):
             rows_cols['rows'] = [row, row]
         if col is not None:
             rows_cols['cols'] = [col, col]
+
+        meta = kwargs.pop("meta", {})
         
 
         self.figure.add_traces([{
@@ -519,6 +525,7 @@ class PlotlyFigure(Figure):
             "legendgroup": name,
             "name": f"{name} lines",
             "showlegend": False,
+            "meta": meta
         },
         {
             "type": "cone",
@@ -536,9 +543,10 @@ class PlotlyFigure(Figure):
             "legendgroup": name,
             "name": name,
             "showlegend": True,
+            "meta": meta
         }], **rows_cols)
 
-    def draw_heatmap(self, values, x=None, y=None, name=None, zsmooth=False, coloraxis=None, row=None, col=None):
+    def draw_heatmap(self, values, x=None, y=None, name=None, zsmooth=False, coloraxis=None, row=None, col=None, **kwargs):
 
         self.add_trace({
             'type': 'heatmap', 'z': values,
@@ -546,7 +554,7 @@ class PlotlyFigure(Figure):
             'name': name,
             'zsmooth': zsmooth,
             'coloraxis': self._get_coloraxis_name(coloraxis),
-            # **kwargs
+            'meta': kwargs.pop("meta", {}),
         }, row=row, col=col)
 
     def draw_mesh_3D(self, vertices, faces, color=None, opacity=None, name=None, row=None, col=None, **kwargs):
@@ -562,6 +570,7 @@ class PlotlyFigure(Figure):
             opacity=opacity,
             name=name,
             showlegend=True,
+            meta=kwargs.pop("meta", {}),
             **kwargs
         ), row=row, col=col)
 
