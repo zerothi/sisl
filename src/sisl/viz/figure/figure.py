@@ -670,7 +670,7 @@ class Figure:
 
         return self.draw_line_3D(arrows[:, 0], arrows[:, 1], arrows[:, 2], row=row, col=col, **kwargs)
 
-    def draw_heatmap(self, values, x=None, y=None, name=None, zsmooth=False, coloraxis=None, row=None, col=None):
+    def draw_heatmap(self, values, x=None, y=None, name=None, zsmooth=False, coloraxis=None, row=None, col=None, **kwargs):
         """Draws a heatmap following the specifications."""
         raise NotImplementedError(f"{self.__class__.__name__} doesn't implement a draw_heatmap method.")
 

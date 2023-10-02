@@ -283,7 +283,7 @@ class MatplotlibFigure(Figure):
         else:
             raise ValueError(f"dependent_axis must be one of 'x', 'y', or None, but was {dependent_axis}")
 
-    def draw_scatter(self, x, y, name=None, marker={}, text=None, zorder=2, row=None, col=None, _axes=None, **kwargs):
+    def draw_scatter(self, x, y, name=None, marker={}, text=None, zorder=2, row=None, col=None, _axes=None, meta={}, **kwargs):
         axes = _axes or self._get_subplot_axes(row=row, col=col)
         try:
             return axes.scatter(x, y, c=marker.get("color"), s=marker.get("size", 1), cmap=marker.get("colorscale"), alpha=marker.get("opacity"), label=name, zorder=zorder, **kwargs)
@@ -302,7 +302,7 @@ class MatplotlibFigure(Figure):
             marker["colorscale"] = coloraxis.get("colorscale")
         return super().draw_multicolor_scatter(*args, marker=marker, **kwargs)
     
-    def draw_heatmap(self, values, x=None, y=None, name=None, zsmooth=False, coloraxis=None, row=None, col=None, _axes=None):
+    def draw_heatmap(self, values, x=None, y=None, name=None, zsmooth=False, coloraxis=None, row=None, col=None, _axes=None, **kwargs):
 
         extent = None
         if x is not None and y is not None:
