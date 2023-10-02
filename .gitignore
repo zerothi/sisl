@@ -22,3 +22,9 @@ src/sisl/_version.py
 
 .ipynb_checkpoints/
 .vscode/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+Thumbs.db
+ehtumbs.db
