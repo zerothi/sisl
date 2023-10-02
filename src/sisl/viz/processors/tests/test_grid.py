@@ -31,12 +31,16 @@ real_part = np.arange(10*10*10).reshape(10,10,10)
 imag_part = np.arange(10*10*10).reshape(10,10,10) + 1
 
 @pytest.fixture(scope="module")
-def grid(skewed) -> Grid:
+def origin():
+    return [1, 2, 3]
+
+@pytest.fixture(scope="module")
+def grid(origin, skewed) -> Grid:
 
     if skewed:
-        lattice = Lattice([[3, 0, 0], [1, -1, 0], [0, 0, 3]])
+        lattice = Lattice([[3, 0, 0], [1, -1, 0], [0, 0, 3]], origin=origin)
     else:
-        lattice = Lattice([[3, 0, 0], [0, 2, 0], [0, 0, 6]])
+        lattice = Lattice([[3, 0, 0], [0, 2, 0], [0, 0, 6]], origin=origin)
     
     geometry = Geometry([[0, 0, 0]], lattice=lattice)
     grid = Grid([10, 10, 10], geometry=geometry, dtype=np.complex128)
@@ -61,6 +65,7 @@ def test_tile_grid(grid):
     assert isinstance(tiled, Grid)
     assert tiled.shape == grid.shape
     assert np.allclose(tiled.grid, grid.grid)
+    assert np.allclose(tiled.origin, grid.origin)
 
     # Now tile it
     tiled = tile_grid(grid, (1, 2, 1))
@@ -68,6 +73,7 @@ def test_tile_grid(grid):
     assert tiled.shape == (grid.shape[0], grid.shape[1] * 2, grid.shape[2])
     assert np.allclose(tiled.grid[:, :grid.shape[1]], grid.grid)
     assert np.allclose(tiled.grid[:, grid.shape[1]:], grid.grid)
+    assert np.allclose(tiled.origin, grid.origin)
 
 def test_transform_grid_cell(grid, skewed):
 
@@ -79,11 +85,11 @@ def test_transform_grid_cell(grid, skewed):
 
     if not skewed:
         assert np.allclose(new_grid.lattice.cell, grid.lattice.cell)
-        assert np.allclose(new_grid.grid, grid.grid)
-    else:
-        assert not np.allclose(new_grid.grid, grid.grid)
 
+    assert np.allclose(new_grid.grid, grid.grid) == (not skewed)
     assert not np.allclose(new_grid.grid, 0)
+
+    assert np.allclose(new_grid.origin, grid.origin) == (not skewed)
 
     # Convert to a skewed cell
     directions = np.array([[1, 2, 3], [-1, 2, -4], [2, -1, 1]])
@@ -111,6 +117,7 @@ def test_orthogonalize_grid(grid, interp, skewed):
             assert not np.allclose(ort_grid.grid, grid.grid)
 
     assert not np.allclose(ort_grid.grid, 0)
+    assert np.allclose(ort_grid.origin, grid.origin) == (not skewed and interp == 1)
 
 def test_should_transform_grid_cell_plotting(grid, skewed):
 
@@ -135,6 +142,7 @@ def test_orthogonalize_grid_if_needed(grid, skewed, interp):
             assert not np.allclose(ort_grid.grid, grid.grid)
 
     assert not np.allclose(ort_grid.grid, 0)
+    assert np.allclose(ort_grid.origin, grid.origin) == (not skewed)
 
     # Do not orthogonalize the skewed cell, since it is not z skewed.
     ort_grid = orthogonalize_grid_if_needed(grid, axes=["z"], interp=(interp, interp, interp))
@@ -152,14 +160,17 @@ def test_apply_transforms(grid):
     # Apply a function
     transf = apply_transforms(grid, transforms=[np.sqrt])
     assert np.allclose(transf.grid, np.sqrt(grid.grid))
+    assert np.allclose(transf.origin, grid.origin)
 
     # Apply a numpy function specifying a string
     transf = apply_transforms(grid, transforms=["sqrt"])
     assert np.allclose(transf.grid, np.sqrt(grid.grid))
+    assert np.allclose(transf.origin, grid.origin)
 
     # Apply two consecutive functions
     transf = apply_transforms(grid, transforms=[np.angle, "sqrt"])
     assert np.allclose(transf.grid, np.sqrt(np.angle(grid.grid)))
+    assert np.allclose(transf.origin, grid.origin)
 
 @pytest.mark.parametrize("reduce_method", ["sum", "mean"])
 def test_reduce_grid(grid, reduce_method):
@@ -173,12 +184,15 @@ def test_reduce_grid(grid, reduce_method):
 
     assert reduced.shape == (10, 10, 1)
     assert np.allclose(reduced.grid[:, :, 0], reduce_func(grid.grid, axis=2))
+    assert np.allclose(reduced.origin, grid.origin)
 
 @pytest.mark.parametrize("direction", ["x", "y", "z"])
 def test_sub_grid(grid, skewed, direction):
 
     coord_ax = "xyz".index(direction)
     kwargs = {f"{direction}_range": (0.5, 1.5)}
+    
+    expected_origin = grid.origin.copy()
 
     if skewed and direction != "z":
         with pytest.raises(ValueError):
@@ -190,6 +204,10 @@ def test_sub_grid(grid, skewed, direction):
         # taking into account that the bounds of the range might not be exactly
         # on the grid points.
         assert 1 + sub.dcell[:, coord_ax].sum()*2 >= sub.lattice.cell[:, coord_ax].sum() >= 1 - sub.dcell[:, coord_ax].sum()*2
+
+        expected_origin[coord_ax] += 0.5
+    
+        assert np.allclose(sub.origin, expected_origin)
 
 def test_interpolate_grid(grid):
 
@@ -222,7 +240,7 @@ def test_get_grid_axes(grid, skewed):
         assert get_grid_axes(grid, ['x', 'y']) == [0, 1]
         assert get_grid_axes(grid, ['y', 'x']) == [1, 0]
 
-def test_get_ax_vals(grid, skewed):
+def test_get_ax_vals(grid, skewed, origin):
 
     r = get_ax_vals(grid, "x", nsc=(1, 1, 1))
 
@@ -230,8 +248,8 @@ def test_get_ax_vals(grid, skewed):
     assert r.shape == (grid.shape[0], )
 
     if not skewed:
-        assert r[0] == 0
-        assert abs(r[-1] - (grid.lattice.cell[0, 0] - grid.dcell[0, 0])) < 1e-3
+        assert r[0] == origin[0]
+        assert abs(r[-1] - (origin[0] + grid.lattice.cell[0, 0] - grid.dcell[0, 0])) < 1e-3
 
     r = get_ax_vals(grid, "a", nsc=(2, 1, 1))
 
@@ -241,18 +259,11 @@ def test_get_ax_vals(grid, skewed):
     assert r[0] == 0
     assert abs(r[-1] - 2) < 1e-3
 
-def test_get_offset(grid):
+def test_get_offset(grid, origin):
 
-    assert get_offset(grid, "x") == 0
+    assert get_offset(grid, "x") == origin[0]
     assert get_offset(grid, "b") == 0
     assert get_offset(grid, 2) == 0
-
-    off_grid = grid.copy()
-    off_grid.lattice.origin = [1, 2, 3]
-
-    assert get_offset(off_grid, "x") == 1
-    assert get_offset(off_grid, "b") == 0
-    assert get_offset(off_grid, 2) == 0
 
 def test_grid_to_dataarray(grid, skewed):
     # Test 1D

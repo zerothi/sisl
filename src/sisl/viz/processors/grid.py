@@ -131,10 +131,10 @@ def transform_grid_cell(grid: Grid, cell: npt.NDArray[np.float_] = np.eye(3), ou
     new_grid = grid.__class__((1, 1, 1), lattice=cell*lengths.reshape(3, 1))
     new_grid.grid = transformed_image
     new_grid.geometry = grid.geometry
-    #new_grid.origin = grid.origin + new_grid.dcell.dot(forward_t.dot(offset))
+    new_grid.lattice.origin = grid.origin + new_grid.dcell.dot(forward_t.dot(offset))
 
     # Find the offset between the origin before and after the transformation
-    return new_grid #,new_grid.dcell.dot(forward_t.dot(offset))
+    return new_grid
 
 def orthogonalize_grid(grid:Grid, interp: Tuple[int, int, int] = (1, 1, 1), mode: str = "constant", **kwargs) -> Grid:
     """Transform grid cell to be orthogonal.
@@ -237,10 +237,14 @@ def reduce_grid(grid: Grid, reduce_method: Literal["average", "sum"], keep_axes:
     keep_axes: list of int
         Lattice vectors to maintain (not reduce).
     """
+    old_origin = grid.origin
+
     # Reduce the dimensions that are not going to be displayed
     for ax in [0, 1, 2]:
         if ax not in keep_axes:
             grid = getattr(grid, reduce_method)(ax)
+
+    grid.origin[:] = old_origin
     
     return grid
 
@@ -276,6 +280,8 @@ def sub_grid(
     """
 
     cell = grid.lattice.cell
+
+    origin = grid.origin.copy()
     
     # Get only the part of the grid that we need
     ax_ranges = [x_range, y_range, z_range]
@@ -296,11 +302,16 @@ def sub_grid(
             # the range to get what the user wants.
             lims[:, ax] = ax_range #+ self.offsets["cell_transform"][ax] - self.offsets["origin"][ax]
 
+            origin[ax] += ax_range[0]
+
             # Get the indices of those points
             indices = np.array([grid.index(lim) for lim in lims], dtype=int)
 
             # And finally get the subpart of the grid
             grid = grid.sub(np.arange(indices[0, lattice_ax], indices[1, lattice_ax] + 1), lattice_ax)
+
+    
+    grid.origin[:] = origin
     
     return grid
 
@@ -433,13 +444,11 @@ def get_ax_vals(grid: Grid, ax: Literal[0,1,2,"a","b","c","x","y","z"], nsc: Tup
         ax = {"a": 0, "b": 1, "c": 2}.get(ax, ax)
         ax_vals = np.linspace(0, nsc[ax], grid.shape[ax])
     else:
-        offset = grid.origin
+        ax_index = {"x": 0, "y": 1, "z": 2}[ax]
 
-        ax = {"x": 0, "y": 1, "z": 2}[ax]
+        ax_vals = np.arange(0, grid.cell[ax_index, ax_index], grid.dcell[ax_index, ax_index]) + get_offset(grid, ax)
 
-        ax_vals = np.arange(0, grid.cell[ax, ax], grid.dcell[ax, ax]) + get_offset(grid, ax)
-
-        if len(ax_vals) == grid.shape[ax] + 1:
+        if len(ax_vals) == grid.shape[ax_index] + 1:
             ax_vals = ax_vals[:-1]
 
     return ax_vals
