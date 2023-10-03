@@ -7,6 +7,10 @@ we hit release version 1.0.0.
 
 ## [0.14.3] - YYYY-MM-DD
 
+### Fixed
+- problems in the sisl.viz module got fixed
+
+
 ## [0.14.2] - 2023-10-02
 
 ### Changed
@@ -51,7 +55,7 @@ we hit release version 1.0.0.
 - `sisl.mixing`:
   - `AndersonMixer` enables the popular and very simple linear-like mixer
   - `StepMixer` allows switching between different mixers, for instance this
-		enabled restart capabilities among other things.
+     enabled restart capabilities among other things.
   - Enabled composite mixers (simple math with mixers)
 - `BrillouinZone.merge` allows simple merging of several objects, #537
 

@@ -41,7 +41,7 @@ A total of 30 pull requests were merged for this release.
 * #575: cleaned the procedure for locating maxR
 * #581: undo change of filenames
 * #585: `translate2uc` for sparse matrices with associated geometries.
-* #586: Slicing IO read_ routines
+* #586: Slicing IO `read_*` routines
 * #589: removed Collection + GeometryCollection
 * #594: Fix missing import in siesta_grid.
 * #596: netCDF4 is now an optional dependency
@@ -87,7 +87,7 @@ Added
 * `sisl.mixing`:
   * `AndersonMixer` enables the popular and very simple linear-like mixer
   * `StepMixer` allows switching between different mixers, for instance this
-    enabled restart capabilities among other things.
+     enabled restart capabilities among other things.
   * Enabled composite mixers (simple math with mixers)
 * `BrillouinZone.merge` allows simple merging of several objects, #537
 
