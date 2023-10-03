@@ -14,20 +14,25 @@ Following, you have a step by step guide to get blender ready for plotting with 
 1. **Install blender**. You can install by downloading it directly from their official webpage, or in any other way. 
 Check `their installation documentation <https://docs.blender.org/manual/en/latest/getting_started/installing/index.html>`_
 
-In ubuntu we can install it with::
+In ubuntu we can install it with:
+
+.. code-block:: bash
 
     snap install blender    
 
 2. **Find out blender's python version**. You should check what is the version that blender is
-shipped with. Being `blender` the name of the executable, you can run::
-       
+shipped with. Being `blender` the name of the executable, you can run:
+
+.. code-block:: bash
+
     blender -b --python-expr "import sys; print(f'PYTHON VERSION: {sys.version}')"
 
-In blender 3.6 it gives an output that looks like this::
+In blender 3.6 it gives an output that looks like this:
+
+.. code-block:: bash
 
     Blender 3.6.3 (hash d3e6b08276ba built 2023-09-21 06:13:29)
     PYTHON VERSION: 3.10.12 (main, Aug 14 2023, 22:14:01) [GCC 11.2.1 20220127 (Red Hat 11.2.1-9)]
-
 
     Blender quit
 
@@ -35,34 +40,43 @@ Therefore, we know that **blender 3.6.3 uses python 3.10.12.**
 
 3. **Create an environment with that python version** and install sisl (*skip if you have it already*).
 In this case, we will use conda as the environment manager, since it lets us very easily select the python version.
-You probably don't need the exact micro version. In our case asking for ``3.10`` is enough::
-    
+You probably don't need the exact micro version. In our case asking for ``3.10`` is enough:
+
+.. code-block:: bash
+
     conda create -n blender-python python=3.10
 
-Then install all the packages you want to use in blender::
+Then install all the packages you want to use in blender:
+
+.. code-block:: bash
 
     conda activate blender-python
     python -m pip install sisl[viz]
 
 4. **Find the path to the python libraries of your environment**. There are many ways to get this. 
-In conda, this path is in the ``CONDA_PREFIX`` environment variable. So you can just::
+In conda, this path is in the ``CONDA_PREFIX`` environment variable. So you can just:
 
-    echo $CONDA_PREFIX
+.. code-block:: bash
 
-which will give you something like this::
-
+    $> echo $CONDA_PREFIX
     /home/miniconda3/envs/blender-python
 
 5. **Tell blender to use the libraries in your environment**. This is done with the ``BLENDER_SYSTEM_PYTHON`` variable,
-so you need to define it somehow for the blender process. You can specify it every time you use blender::
-    
+so you need to define it somehow for the blender process. You can specify it every time you use blender:
+
+.. code-block:: bash
+
     BLENDER_SYSTEM_PYTHON=/home/miniconda3/envs/blender-python blender
 
-or set it in your initialization files (recommended). E.g. in linux you just include this line in ``~/.bashrc``::
+or set it in your initialization files (recommended). E.g. in linux you just include this line in ``~/.bashrc``:
+
+.. code-block:: bash
 
     export BLENDER_SYSTEM_PYTHON=/home/miniconda3/envs/blender-python
 
-If everything went right, you should now be able to::
+If everything went right, you should now be able to:
+
+.. code-block:: bash
 
     blender -b --python-expr "import sisl"
 
