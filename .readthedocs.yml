@@ -5,7 +5,7 @@ submodules:
     - files
 
 build:
-  image: latest
+  os: "ubuntu-22.04"
 
 sphinx:
   configuration: docs/conf.py
