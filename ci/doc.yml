@@ -6,7 +6,6 @@ channels:
 dependencies:
   - fortran-compiler
   - python
-  - wheel
   - scikit-build-core
   - setuptools_scm>=6.2
   - pathspec
@@ -34,9 +33,9 @@ dependencies:
   - nbsphinx
   - jupyter_client
   - ipywidgets
-  - jupyterlab-widgets
+  - jupyterlab_widgets
   - ipykernel
-  - kaleido
+  - python-kaleido
   # Visualizing nodes
   - networkx
   - pyvis
