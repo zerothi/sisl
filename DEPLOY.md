@@ -20,13 +20,24 @@ The release cycle should be performed like this:
 
 2. Insert correct dates in `CITATION.cff` (for Zenodo)
 
-3. Commit changes.
+3. Go to `tools` and run changelog.py v0.14.0..v0.14.1
+   and generate both the RST and MD documentation.
+   The rst should go directly into the `docs/changelog/`
+   folder and do
 
-4. Tag the commit with:
+   git add docs/changelog/VVV.rst
+   <add it to the docs/changelog/index.rst>
+
+4. Commit changes.
+
+5. Tag the commit with:
 
 		git tag -a "vVERSION" -m "Releasing vVERSION"
 
-5. Create tarballs and wheels and upload them
+6. Create tarballs and wheels and upload them
+
+   These steps should be done via the github actions step, so generally
+   not required.
 
 		python3 -m pip install --upgrade build
 		python3 -m build
@@ -39,8 +50,6 @@ The release cycle should be performed like this:
 
         # once checked, upload to pypi
 		python3 -m twine upload dist/sisl-0.12.0.tar.gz
-
-6. Make release notes by using `tools/changelog.py` to create the output
 
 7. Create conda uploads.
 
