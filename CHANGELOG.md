@@ -7,14 +7,19 @@ we hit release version 1.0.0.
 
 ## [0.14.3] - YYYY-MM-DD
 
+
+
+## [0.14.2] - 2023-10-04
+
 ### Fixed
 - problems in the sisl.viz module got fixed
 
-
-## [0.14.2] - 2023-10-02
-
 ### Changed
 - xarray is now a full dependency (this also implies pandas)
+
+
+## [0.14.1] - 2023-09-28
+
 
 
 ## [0.14.0] - 2023-09-28
