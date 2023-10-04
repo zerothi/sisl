@@ -1,0 +1,34 @@
+
+Released 4 of October 2023.
+
+
+Contributors
+============
+
+A total of 2 people contributed to this release.  People with a "+" by their
+names contributed a patch for the first time.
+
+* Nick Papior
+* Pol Febrer
+
+Pull requests merged
+====================
+
+A total of 5 pull requests were merged for this release.
+
+* #619: Some fixes in `sisl.viz`
+* #620: bug: register data classes as plotables
+* #621: Cleaning tutorial notebooks.
+* #623: bug: introduction of meta attribute broke heatmaps
+* #624: bug: origin not properly preserved during grid plotting
+
+[0.14.2] - 2023-10-04
+----------------------
+
+Fixed
+^^^^^^
+* problems in the sisl.viz module got fixed
+
+Changed
+^^^^^^^^
+* xarray is now a full dependency (this also implies pandas)
