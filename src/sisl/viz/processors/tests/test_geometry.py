@@ -19,6 +19,8 @@ from sisl.viz.processors.geometry import (
     tile_geometry,
 )
 
+pytestmark = [pytest.mark.viz, pytest.mark.processors]
+
 
 @pytest.fixture(scope="module")
 def geometry():
@@ -297,10 +299,4 @@ def test_bonds_to_lines(geometry):
     assert isinstance(bond_lines, xr.Dataset)
     assert "point_index" in bond_lines.dims
     assert len(bond_lines.point_index) == len(xyz_bonds.bond_index) * 11
-
-
-
-
-    
-
 

@@ -3,6 +3,8 @@ import pytest
 import sisl
 from sisl.viz.data import PDOSData
 
+pytestmark = [pytest.mark.viz, pytest.mark.data]
+
 
 @pytest.mark.parametrize("spin", ["unpolarized", "polarized", "noncolinear", "spinorbit"])
 def test_pdos_from_sisl_H(spin):

@@ -11,6 +11,8 @@ from sisl.viz.processors.eigenstate import (
     tile_if_k,
 )
 
+pytestmark = [pytest.mark.viz, pytest.mark.processors]
+
 
 @pytest.fixture(scope="module", params=["Gamma", "X"])
 def k(request):

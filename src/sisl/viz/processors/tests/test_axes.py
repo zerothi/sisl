@@ -8,6 +8,8 @@ from sisl.viz.processors.axes import (
     sanitize_axes,
 )
 
+pytestmark = [pytest.mark.viz, pytest.mark.processors]
+
 
 def test_sanitize_axes():
 

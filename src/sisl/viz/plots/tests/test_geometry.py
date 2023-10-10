@@ -5,9 +5,12 @@ import numpy as np
 import sisl
 from sisl.viz.plots import geometry_plot
 
+pytestmark = [pytest.mark.viz, pytest.mark.plots]
+
 
 @pytest.fixture(scope="module", params=["plotly", "matplotlib"])
 def backend(request):
+    pytest.importorskip(request.param)
     return request.param
 
 @pytest.fixture(scope="module", params=["x", "xy", "xyz"])

@@ -15,6 +15,8 @@ from sisl.viz.processors.bands import (
     style_bands,
 )
 
+pytestmark = [pytest.mark.viz, pytest.mark.processors]
+
 
 @pytest.fixture(scope="module", params=["unpolarized", "polarized", "noncolinear", "spinorbit"])
 def spin(request):
@@ -242,9 +244,4 @@ def test_style_bands(bands_data):
     else:
         bands_color = styled_bands.color
     assert np.all((styled_bands.band < 5) == (bands_color == "red"))
-
-
-
-
-
 

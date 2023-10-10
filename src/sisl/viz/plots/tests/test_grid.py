@@ -6,8 +6,12 @@ import sisl
 from sisl import Grid
 from sisl.viz.plots import grid_plot
 
+pytestmark = [pytest.mark.viz, pytest.mark.plots]
+
+
 @pytest.fixture(scope="module", params=["plotly", "matplotlib"])
 def backend(request):
+    pytest.importorskip(request.param)
     return request.param
 
 @pytest.fixture(scope="module", params=["x", "xy", "xyz"])

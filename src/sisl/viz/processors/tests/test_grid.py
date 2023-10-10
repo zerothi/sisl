@@ -23,6 +23,9 @@ from sisl.viz.processors.grid import (
 )
 
 
+pytestmark = [pytest.mark.viz, pytest.mark.processors]
+
+
 @pytest.fixture(scope="module", params=["orthogonal", "skewed"])
 def skewed(request) -> bool:
     return request.param == "skewed"
@@ -326,6 +329,7 @@ def test_grid_to_dataarray(grid, skewed):
     assert np.allclose(arr.values, av_grid.grid)
 
 def test_get_isos(grid, skewed):
+    pytest.importorskip("skimage")
 
     if skewed:
         return
@@ -390,9 +394,4 @@ def test_get_isos(grid, skewed):
     assert isinstance(surfs[0]["faces"], np.ndarray)
     assert surfs[0]["faces"].dtype == np.int32
     assert surfs[0]["faces"].shape[1] == 3
-
-
-
-
-
 

@@ -4,8 +4,12 @@ from sisl import Spin
 from sisl.viz.data import PDOSData
 from sisl.viz.plots import pdos_plot
 
+pytestmark = [pytest.mark.viz, pytest.mark.plots]
+
+
 @pytest.fixture(scope="module", params=["plotly", "matplotlib"])
 def backend(request):
+    pytest.importorskip(request.param)
     return request.param
 
 @pytest.fixture(scope="module", params=["unpolarized", "polarized", "noncolinear", "spinorbit"])

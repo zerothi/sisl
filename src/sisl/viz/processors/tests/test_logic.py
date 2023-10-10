@@ -2,6 +2,8 @@ import pytest
 
 from sisl.viz.processors.logic import matches, swap, switch
 
+pytestmark = [pytest.mark.viz, pytest.mark.processors]
+
 
 def test_swap():
 
@@ -30,4 +32,3 @@ def test_switch():
     assert switch(True, "a", "b") == "a"
     assert switch(False, "a", "b") == "b"
 
-    

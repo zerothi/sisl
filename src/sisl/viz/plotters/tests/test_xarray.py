@@ -1,6 +1,9 @@
+import pytest
 import xarray as xr
 
 from sisl.viz.plotters.xarray import draw_xarray_xy
+
+pytestmark = [pytest.mark.viz, pytest.mark.plotters]
 
 
 def test_empty_dataset():

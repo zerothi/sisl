@@ -4,6 +4,8 @@ import xarray as xr
 
 from sisl.viz.processors.xarray import group_reduce
 
+pytestmark = [pytest.mark.viz, pytest.mark.processors]
+
 
 @pytest.fixture(scope="module")
 def dataarray():

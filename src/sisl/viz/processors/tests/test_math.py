@@ -1,6 +1,10 @@
+import pytest
 import numpy as np
 
 from sisl.viz.processors.math import normalize
+
+pytestmark = [pytest.mark.viz, pytest.mark.processors]
+
 
 def test_normalize():
 

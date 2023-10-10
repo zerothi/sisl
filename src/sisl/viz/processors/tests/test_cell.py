@@ -11,6 +11,8 @@ from sisl.viz.processors.cell import (
     is_cartesian_unordered,
 )
 
+pytestmark = [pytest.mark.viz, pytest.mark.processors]
+
 
 @pytest.fixture(scope="module", params=["numpy", "lattice"])
 def Cell(request):
@@ -98,4 +100,4 @@ def test_cell_to_lines(mode):
             assert lines.xyz.shape == (19, 3)
         elif mode == "axes":
             # 9 points are required to draw the axes
-            assert lines.xyz.shape == (9, 3) 
+            assert lines.xyz.shape == (9, 3)

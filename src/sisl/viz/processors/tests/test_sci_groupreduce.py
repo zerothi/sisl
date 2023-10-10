@@ -6,6 +6,8 @@ import sisl
 from sisl.viz.processors.atom import reduce_atom_data
 from sisl.viz.processors.orbital import reduce_orbital_data
 
+pytestmark = [pytest.mark.viz, pytest.mark.processors]
+
 
 @pytest.fixture(scope="module")
 def atom_x():
@@ -87,11 +89,4 @@ def test_reduce_atom_dataset_cat(atom_xyz):
     assert float(grouped.sel(group="second").x) == atom_xyz.x.max()
     assert float(grouped.sel(group="first").y) <= 3
     assert float(grouped.sel(group="second").y) == atom_xyz.y.max()
-    
 
-
-
-
-
-    
-    

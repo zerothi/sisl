@@ -12,6 +12,8 @@ from sisl.viz.processors.orbital import (
     reduce_orbital_data,
 )
 
+pytestmark = [pytest.mark.viz, pytest.mark.processors]
+
 
 @pytest.fixture(scope="module")
 def geometry():

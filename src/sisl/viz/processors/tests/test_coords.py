@@ -15,6 +15,8 @@ from sisl.viz.processors.coords import (
     sphere,
 )
 
+pytestmark = [pytest.mark.viz, pytest.mark.processors]
+
 
 @pytest.fixture(scope="module", params=["numpy", "lattice"])
 def Cell(request):
@@ -204,16 +206,3 @@ def test_project_to_axes(coords_dataset):
     assert "z" in projected.data_vars
     assert np.allclose(projected.z, coords_dataset.xyz.sel(axis=2))
 
-
-
-
-
-
-
-
-
-
-
-    
-
-    

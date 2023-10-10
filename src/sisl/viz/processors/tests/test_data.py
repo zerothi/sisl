@@ -3,6 +3,8 @@ import pytest
 from sisl.viz.data import Data
 from sisl.viz.processors.data import accept_data, extract_data
 
+pytestmark = [pytest.mark.viz, pytest.mark.processors]
+
 
 class FakeData(Data):
     def __init__(self, valid: bool = True):
@@ -51,4 +53,4 @@ def test_extract_data(valid):
 
     # Don't perform a sanity check on data
     assert extract_data(data, FakeData, check=False) is data._data
-    
+

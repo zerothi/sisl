@@ -1,4 +1,8 @@
+import pytest
+
 from sisl.viz.processors.spin import get_spin_options
+
+pytestmark = [pytest.mark.viz, pytest.mark.processors]
 
 
 def test_get_spin_options():
@@ -24,3 +28,4 @@ def test_get_spin_options():
 
     options = get_spin_options("noncolinear", only_if_polarized=True)
     assert len(options) == 0
+
