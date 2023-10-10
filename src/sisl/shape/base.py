@@ -205,6 +205,13 @@ class CompositeShape(Shape):
         self.A = A.copy()
         self.B = B.copy()
 
+    def __init_subclass__(cls, /,
+                          composite_name: str,
+                          **kwargs):
+        super().__init_subclass__(**kwargs)
+        cls.__slots__ = ()
+        cls.__str__ = _composite_name(composite_name)
+
     @property
     def center(self):
         """ Average center of composite shapes """
@@ -264,10 +271,8 @@ def _composite_name(sep):
 
 
 @set_module("sisl.shape")
-class OrShape(CompositeShape):
+class OrShape(CompositeShape, composite_name="|"):
     """ Boolean ``A | B`` shape """
-    __slots__ = ()
-    __str__ = _composite_name("|")
 
     def within_index(self, *args, **kwargs):
         A = self.A.within_index(*args, **kwargs)
@@ -276,10 +281,8 @@ class OrShape(CompositeShape):
 
 
 @set_module("sisl.shape")
-class XOrShape(CompositeShape):
+class XOrShape(CompositeShape, composite_name="^"):
     """ Boolean ``A ^ B`` shape """
-    __slots__ = ()
-    __str__ = _composite_name("^")
 
     def within_index(self, *args, **kwargs):
         A = self.A.within_index(*args, **kwargs)
@@ -288,10 +291,8 @@ class XOrShape(CompositeShape):
 
 
 @set_module("sisl.shape")
-class SubShape(CompositeShape):
+class SubShape(CompositeShape, composite_name="-"):
     """ Boolean ``A - B`` shape """
-    __slots__ = ()
-    __str__ = _composite_name("-")
 
     def within_index(self, *args, **kwargs):
         A = self.A.within_index(*args, **kwargs)
@@ -300,10 +301,8 @@ class SubShape(CompositeShape):
 
 
 @set_module("sisl.shape")
-class AndShape(CompositeShape):
+class AndShape(CompositeShape, composite_name="&"):
     """ Boolean ``A & B`` shape """
-    __slots__ = ()
-    __str__ = _composite_name("&")
 
     def toSphere(self):
         """ Create a sphere which is surely encompassing the *full* shape """
