@@ -45,7 +45,7 @@ class Lattice:
        the lattice parameters of the unit cell (the actual cell
        is returned from `tocell`.
     nsc : array_like of int
-       number of supercells along each latticevector
+       number of supercells along each lattice vector
     origin : (3,) of float, optional
        the origin of the supercell.
     """
