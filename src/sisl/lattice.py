@@ -12,12 +12,15 @@ import math
 import warnings
 from numbers import Integral
 from typing import TYPE_CHECKING, Tuple, Union
+from pathlib import Path
 
 import numpy as np
 from numpy import dot, ndarray
 
 from . import _array as _a
 from . import _plot as plt
+from ._dispatcher import AbstractDispatch, ClassDispatcher, TypeDispatcher
+from ._dispatch_class import _ToNew
 from ._internal import set_module
 from ._lattice import cell_invert, cell_reciprocal
 from ._math_small import cross3, dot3
@@ -34,7 +37,12 @@ _log = logging.getLogger(__name__)
 
 
 @set_module("sisl")
-class Lattice:
+class Lattice(_ToNew,
+              new=ClassDispatcher("new",
+                                  instance_dispatcher=TypeDispatcher),
+              to=ClassDispatcher("to",
+                                  type_dispatcher=None)
+              ):
     r""" A cell class to retain lattice vectors and a supercell structure
 
     The supercell structure is comprising the *primary* unit-cell and neighbouring
@@ -102,6 +110,7 @@ class Lattice:
         """ Set origin for the cell """
         self._origin[:] = origin
 
+    @deprecation("toCuboid is deprecated, please use lattice.to['cuboid'](...) instead.")
     def toCuboid(self, orthogonal=False):
         """ A cuboid with vectors as this unit-cell and center with respect to its origin
 
@@ -110,20 +119,7 @@ class Lattice:
         orthogonal : bool, optional
            if true the cuboid has orthogonal sides such that the entire cell is contained
         """
-        if not orthogonal:
-            return Cuboid(self.cell.copy(), self.center() + self.origin)
-        def find_min_max(cmin, cmax, new):
-            for i in range(3):
-                cmin[i] = min(cmin[i], new[i])
-                cmax[i] = max(cmax[i], new[i])
-        cell = self.cell
-        cmin = cell.min(0)
-        cmax = cell.max(0)
-        find_min_max(cmin, cmax, cell[[0, 1], :].sum(0))
-        find_min_max(cmin, cmax, cell[[0, 2], :].sum(0))
-        find_min_max(cmin, cmax, cell[[1, 2], :].sum(0))
-        find_min_max(cmin, cmax, cell.sum(0))
-        return Cuboid(cmax - cmin, self.center() + self.origin)
+        return self.to[Cuboid](orthogonal=orthogonal)
 
     def parameters(self, rad=False) -> Tuple[float, float, float, float, float, float]:
         r""" Cell parameters of this cell in 3 lengths and 3 angles
@@ -1185,8 +1181,106 @@ class Lattice:
 
         return axes
 
+new_dispatch = Lattice.new
+to_dispatch = Lattice.to
 
-# same reference
+# Define base-class for this
+class LatticeNewDispatcher(AbstractDispatch):
+    """ Base dispatcher from class passing arguments to Geometry class
+
+    This forwards all `__call__` calls to `dispatch`
+    """
+
+    def __call__(self, *args, **kwargs):
+        return self.dispatch(*args, **kwargs)
+
+class LatticeNewLatticeDispatcher(LatticeNewDispatcher):
+    def dispatch(self, lattice):
+        return lattice
+new_dispatch.register(Lattice, LatticeNewLatticeDispatcher)
+
+class LatticeNewAseDispatcher(LatticeNewDispatcher):
+    def dispatch(self, aseg, **kwargs):
+        cell = aseg.get_cell()
+        nsc = [3 if pbc else 1 for pbc in aseg.pbc]
+        return Lattice(cell, nsc=nsc)
+new_dispatch.register("ase", LatticeNewAseDispatcher)
+
+# currently we can't ensure the ase Atoms type
+# to get it by type(). That requires ase to be importable.
+try:
+    from ase import Cell as ase_Cell
+    new_dispatch.register(ase_Cell, LatticeNewAseDispatcher)
+    # ensure we don't pollute name-space
+    del ase_Cell
+except Exception:
+    pass
+
+class LatticeNewFileDispatcher(LatticeNewDispatcher):
+    def dispatch(self, *args, **kwargs):
+        """ Defer the `Lattice.read` method by passing down arguments """
+        return self._obj.read(*args, **kwargs)
+new_dispatch.register(str, LatticeNewFileDispatcher)
+new_dispatch.register(Path, LatticeNewFileDispatcher)
+# see sisl/__init__.py for new_dispatch.register(BaseSile, ...)
+
+
+class LatticeToDispatcher(AbstractDispatch):
+    """ Base dispatcher from class passing from Lattice class """
+    @staticmethod
+    def _ensure_object(obj):
+        if isinstance(obj, type):
+            raise TypeError(f"Dispatcher on {obj} must not be called on the class.")
+
+class LatticeToAseDispatcher(LatticeToDispatcher):
+    def dispatch(self, **kwargs):
+        from ase import Cell as ase_Cell
+        lattice = self._obj
+        self._ensure_object(lattice)
+        return ase_Cell(lattice.cell.copy())
+
+to_dispatch.register("ase", LatticeToAseDispatcher)
+
+class LatticeToSileDispatcher(LatticeToDispatcher):
+    def dispatch(self, *args, **kwargs):
+        lattice = self._obj
+        self._ensure_object(lattice)
+        return lattice.write(*args, **kwargs)
+to_dispatch.register("str", LatticeToSileDispatcher)
+to_dispatch.register("path", LatticeToSileDispatcher)
+# to do geom.to[Path](path)
+to_dispatch.register(str, LatticeToSileDispatcher)
+to_dispatch.register(Path, LatticeToSileDispatcher)
+
+class LatticeToCuboidDispatcher(LatticeToDispatcher):
+    def dispatch(self, *args, orthogonal=False, **kwargs):
+        lattice = self._obj
+        self._ensure_object(lattice)
+        cell = lattice.cell.copy()
+        offset = lattice.center() + self.origin
+        if not orthogonal:
+            return Cuboid(cell, offset)
+
+        def find_min_max(cmin, cmax, new):
+            for i in range(3):
+                cmin[i] = min(cmin[i], new[i])
+                cmax[i] = max(cmax[i], new[i])
+        cmin = cell.min(0)
+        cmax = cell.max(0)
+        find_min_max(cmin, cmax, cell[[0, 1], :].sum(0))
+        find_min_max(cmin, cmax, cell[[0, 2], :].sum(0))
+        find_min_max(cmin, cmax, cell[[1, 2], :].sum(0))
+        find_min_max(cmin, cmax, cell.sum(0))
+        return Cuboid(cmax - cmin, offset)
+
+to_dispatch.register("cuboid", LatticeToCuboidDispatcher)
+to_dispatch.register(Cuboid, LatticeToCuboidDispatcher)
+
+
+# Remove references
+del new_dispatch, to_dispatch
+
+
 class SuperCell(Lattice):
     """ Deprecated class, please use `Lattice` instead """
     def __init__(self, *args, **kwargs):

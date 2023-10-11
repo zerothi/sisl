@@ -449,9 +449,15 @@ def test_plane2():
 
 def test_tocuboid_simple():
     lattice = Lattice([1, 1, 1, 90, 90, 90])
-    c1 = lattice.toCuboid()
+    with pytest.warns(sisl.SislDeprecation):
+        c1 = lattice.toCuboid()
     assert np.allclose(lattice.cell, c1._v)
-    c2 = lattice.toCuboid(True)
+    c1 = lattice.to["cuboid"]()
+    assert np.allclose(lattice.cell, c1._v)
+    with pytest.warns(sisl.SislDeprecation):
+        c2 = lattice.toCuboid(True)
+    assert np.allclose(c1._v, c2._v)
+    c2 = lattice.to["cuboid"](True)
     assert np.allclose(c1._v, c2._v)
 
 

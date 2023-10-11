@@ -7,6 +7,9 @@ we hit release version 1.0.0.
 
 ## [0.14.3] - YYYY-MM-DD
 
+### Added
+- added `Lattice.to` and `Lattice.new` to function the same
+  as `Geometry`, added Lattice.to["cuboid"]
 
 
 ## [0.14.2] - 2023-10-04
