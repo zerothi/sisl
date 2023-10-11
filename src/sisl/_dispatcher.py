@@ -285,7 +285,7 @@ class ObjectDispatcher(AbstractDispatcher):
 
     def __str__(self):
         obj = str(self._obj).replace("\n", "\n ")
-        return super().__str__().replace("{", f"{{\n {obj},\n ", 1)
+        return str(super()).replace("{", f"{{\n {obj},\n ", 1)
 
     def register(self, key, dispatch, default=False, overwrite=False, to_class=True):
         """ Register a dispatch class to this object and to the object class instance (if existing)
@@ -500,7 +500,7 @@ class ClassDispatcher(AbstractDispatcher):
                 inst = owner
             else:
                 inst = instance
-        _log.info(f"__get__ {self.__class__.__name__},instance={instance},inst={inst},owner={owner},cls={cls}", extra={"obj": self})
+        _log.info(f"__get__ {self.__class__.__name__},instance={instance!r},inst={inst!r},owner={owner!r},cls={cls!r}", extra={"obj": self})
         if cls is None:
             return self
         return cls(inst, self._dispatchs, default=self._default,
