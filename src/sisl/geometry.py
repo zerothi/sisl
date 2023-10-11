@@ -42,6 +42,7 @@ from . import _array as _a
 from . import _plot as plt
 from ._category import Category, GenericCategory
 from ._dispatcher import AbstractDispatch, ClassDispatcher, TypeDispatcher
+from ._dispatch_class import _ToNew
 from ._help import isndarray
 from ._indices import (
     indices_gt_le,
@@ -92,7 +93,12 @@ class AtomCategory(Category):
 
 
 @set_module("sisl")
-class Geometry(LatticeChild):
+class Geometry(LatticeChild, _ToNew,
+               new=ClassDispatcher("new",
+                                   instance_dispatcher=TypeDispatcher),
+               to=ClassDispatcher("to",
+                                   type_dispatcher=None)
+               ):
     """ Holds atomic information, coordinates, species, lattice vectors
 
     The `Geometry` class holds information regarding atomic coordinates,
@@ -186,31 +192,6 @@ class Geometry(LatticeChild):
             self._names = NamedIndex(names)
 
         self.__init_lattice(lattice)
-
-    # Define a dispatcher for converting and requesting
-    # new Geometries
-    #  Geometry.new("run.fdf") will invoke Geometry.read("run.fdf")
-    new = ClassDispatcher("new",
-                          # both the instance and the type will use the type dispatcher
-                          instance_dispatcher=TypeDispatcher,
-                          obj_getattr=lambda obj, key:
-                          (_ for _ in ()).throw(
-                              AttributeError((f"{obj}.new does not implement '{key}' "
-                                              f"dispatcher, are you using it incorrectly?"))
-                          ),
-    )
-
-    # Define a dispatcher for converting Geometries
-    #  Geometry().to.ase() will convert to an ase.Atoms object
-    to = ClassDispatcher("to",
-                         # Do not allow calling this from a class
-                         type_dispatcher=None,
-                         obj_getattr=lambda obj, key:
-                         (_ for _ in ()).throw(
-                             AttributeError((f"{obj}.to does not implement '{key}' "
-                                             f"dispatcher, are you using it incorrectly?"))
-                         )
-    )
 
     def __init_lattice(self, lattice):
         """ Initializes the supercell by *calculating* the size if not supplied

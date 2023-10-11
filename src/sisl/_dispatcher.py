@@ -234,6 +234,24 @@ class MethodDispatcher(AbstractDispatcher):
     __getattr__ = __getitem__
 
 
+
+def _parse_obj_getattr(func):
+    """Parse `func` for all methods"""
+    if func is None:
+        # return common handler
+        return getattr
+    elif isinstance(func, str):
+        # One can make getattr fail regardless of what to fetch from
+        # the object
+        if func == "error":
+            def func(obj, key):
+                raise AttributeError(f"{obj} does not implement the '{key}' dispatcher, "
+                                     "are you using it incorrectly?")
+            return func
+        raise NotImplementedError(f"Defaulting the obj_getattr argument only accepts [error], got {func}.")
+    return func
+
+
 class ObjectDispatcher(AbstractDispatcher):
     """ A dispatcher relying on object lookups
 
@@ -258,10 +276,7 @@ class ObjectDispatcher(AbstractDispatcher):
     def __init__(self, obj, dispatchs=None, default=None, cls_attr_name=None, obj_getattr=None, **attrs):
         super().__init__(dispatchs, default, **attrs)
         self._obj = obj
-        if obj_getattr is None:
-            def obj_getattr(obj, key):
-                return getattr(obj, key)
-        self._obj_getattr = obj_getattr
+        self._obj_getattr = _parse_obj_getattr(obj_getattr)
         self._cls_attr_name = cls_attr_name
         _log.info(f"__init__ {self.__class__.__name__}", extra={"obj": self})
 
@@ -456,11 +471,7 @@ class ClassDispatcher(AbstractDispatcher):
         p = namedtuple("get_class", ["instance", "type"])
         self._get = p(instance_dispatcher, type_dispatcher)
 
-        # Default the obj_getattr
-        if obj_getattr is None:
-            def obj_getattr(obj, key):
-                return getattr(obj, key)
-        self._obj_getattr = obj_getattr
+        self._obj_getattr = _parse_obj_getattr(obj_getattr)
         _log.info(f"__init__ {self.__class__.__name__}", extra={"obj": self})
 
     def copy(self):
@@ -518,10 +529,7 @@ class CachedClassDispatcher(ClassDispatcher):
         # obj_getattr is necessary for the ObjectDispatcher to create the correct
         # MethodDispatcher
         super().__init__(dispatchs, default, **attrs)
-        if obj_getattr is None:
-            def obj_getattr(obj, key):
-                return getattr(obj, key)
-        self._obj_getattr = obj_getattr
+        self._obj_getattr = _parse_obj_getattr(obj_getattr)
         # the name of the ClassDispatcher attribute in the class
         self._attr_name = name
 
