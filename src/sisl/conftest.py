@@ -222,7 +222,7 @@ def pytest_configure(config):
                  "category", "geom_category", "plot",
                  'slow', 'selector', 'overlap', 'mixing',
                  "typing", "only",
-                 'viz', 'plotly', 'blender']:
+                 'viz', "processors", "data", "plots", "plotters"]:
         config.addinivalue_line(
             "markers", f"{mark}: mark test to run only on named environment"
         )
