@@ -7,15 +7,21 @@ import numpy as np
 
 import sisl._array as _a
 from sisl._dispatcher import AbstractDispatch, ClassDispatcher
+from sisl._dispatch_class import _ToNew
 from sisl._internal import set_module
 from sisl.utils.mathematics import fnorm
+
 
 __all__ = ["Shape", "PureShape", "NullShape", "ShapeToDispatcher",
            "CompositeShape", "OrShape", "XOrShape", "AndShape", "SubShape"]
 
 
 @set_module("sisl.shape")
-class Shape:
+class Shape(_ToNew, new=None,
+            to=ClassDispatcher("to",
+                               type_dispatcher=None,
+                               obj_getattr="error"),
+            when_subclassing="copy"):
     """ Baseclass for all shapes. Logical operations are implemented on this class.
 
     **This class must be sub classed.**
@@ -80,18 +86,6 @@ class Shape:
     def scale(self, scale):
         """ Return a new Shape with a scaled size """
         raise NotImplementedError(f"{self.__class__.__name__}.scale has not been implemented")
-
-    # Define a dispatcher for converting Shapes
-    #  Shape().to.ellipsoid() will convert to an sisl.shape.Ellipsoid object
-    to = ClassDispatcher("to",
-                         # Do not allow class calls
-                         type_dispatcher=None,
-                         obj_getattr=lambda obj, key:
-                         (_ for _ in ()).throw(
-                             AttributeError((f"{obj}.to does not implement '{key}' "
-                                             f"dispatcher, are you using it incorrectly?"))
-                         )
-    )
 
     def toSphere(self):
         """ Create a sphere which is surely encompassing the *full* shape """
@@ -187,7 +181,7 @@ to_dispatch.register("Cuboid", ToCuboidDispatcher)
 
 
 @set_module("sisl.shape")
-class CompositeShape(Shape):
+class CompositeShape(Shape, when_subclassing='keep'):
     """ A composite shape consisting of two shapes, an abstract class
 
     This should take 2 shapes as arguments.
@@ -389,7 +383,7 @@ class PureShape(Shape):
 
 
 @set_module("sisl.shape")
-class NullShape(PureShape):
+class NullShape(PureShape, to="copy"):
     """ A unique shape which has no well-defined spatial volume or center
 
     This special shape is used when composite shapes turns out to have
@@ -403,7 +397,6 @@ class NullShape(PureShape):
     has any meaning.
     """
     __slots__ = ()
-    to = PureShape.to.copy()
 
     def __init__(self, *args, **kwargs):
         """ Initialize a null-shape """
