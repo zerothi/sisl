@@ -5,12 +5,17 @@ from abc import ABCMeta, abstractmethod
 from collections import ChainMap, defaultdict
 from collections.abc import Iterable
 from functools import lru_cache, singledispatchmethod, wraps
+import logging
 
 from ._internal import set_module
 
 __all__ = ["Category", "CompositeCategory", "NullCategory"]
 __all__ += ["AndCategory", "OrCategory", "XOrCategory"]
 __all__ += ["InstanceCache"]
+
+_log = logging.getLogger("sisl")
+_log.info(f"adding logger: {__name__}")
+_log = logging.getLogger(__name__)
 
 
 class InstanceCache:
@@ -344,6 +349,26 @@ class NotCategory(GenericCategory):
         return super().__eq__(other)
 
 
+def _composite_name(sep):
+    def name(self):
+        if not self._name is None:
+            return self._name
+
+        # Name is unset, we simply return the other parts
+        if isinstance(self.A, CompositeCategory):
+            nameA = f"({self.A.name})"
+        else:
+            nameA = self.A.name
+        if isinstance(self.B, CompositeCategory):
+            nameB = f"({self.B.name})"
+        else:
+            nameB = self.B.name
+
+        return f"{nameA} {sep} {nameB}"
+
+    return property(name)
+
+
 @set_module("sisl.category")
 class CompositeCategory(GenericCategory):
     """ A composite class consisting of two categories, an abstract class to always be inherited
@@ -366,6 +391,12 @@ class CompositeCategory(GenericCategory):
         self.A = A
         self.B = B
 
+    def __init_subclass__(cls, /,
+                          composite_name: str,
+                          **kwargs):
+        super().__init_subclass__(**kwargs)
+        cls.name = _composite_name(composite_name)
+
     def categorizeAB(self, *args, **kwargs):
         r""" Base method for queriyng whether an object is a certain category """
         catA = self.A.categorize(*args, **kwargs)
@@ -373,28 +404,10 @@ class CompositeCategory(GenericCategory):
         return catA, catB
 
 
-def _composite_name(sep):
-    def name(self):
-        if not self._name is None:
-            return self._name
-
-        # Name is unset, we simply return the other parts
-        if isinstance(self.A, CompositeCategory):
-            nameA = f"({self.A.name})"
-        else:
-            nameA = self.A.name
-        if isinstance(self.B, CompositeCategory):
-            nameB = f"({self.B.name})"
-        else:
-            nameB = self.B.name
-
-        return f"{nameA} {sep} {nameB}"
-
-    return property(name)
 
 
 @set_module("sisl.category")
-class OrCategory(CompositeCategory):
+class OrCategory(CompositeCategory, composite_name="|"):
     """ A  class consisting of two categories
 
     This should take 2 categories as arguments and a binary operator to define
@@ -422,11 +435,9 @@ class OrCategory(CompositeCategory):
             return [cmp(a, b) for a, b in zip(catA, catB)]
         return cmp(catA, catB)
 
-    name = _composite_name("|")
-
 
 @set_module("sisl.category")
-class AndCategory(CompositeCategory):
+class AndCategory(CompositeCategory, composite_name="&"):
     """ A  class consisting of two categories
 
     This should take 2 categories as arguments and a binary operator to define
@@ -456,11 +467,9 @@ class AndCategory(CompositeCategory):
             return [cmp(a, b) for a, b in zip(catA, catB)]
         return cmp(catA, catB)
 
-    name = _composite_name("&")
-
 
 @set_module("sisl.category")
-class XOrCategory(CompositeCategory):
+class XOrCategory(CompositeCategory, composite_name="⊕"):
     """ A  class consisting of two categories
 
     This should take 2 categories as arguments and a binary operator to define
@@ -491,5 +500,3 @@ class XOrCategory(CompositeCategory):
         if isinstance(catA, Iterable):
             return [cmp(a, b) for a, b in zip(catA, catB)]
         return cmp(catA, catB)
-
-    name = _composite_name("⊕")

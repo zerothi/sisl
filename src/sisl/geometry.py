@@ -4,6 +4,7 @@
 # To check for integers
 from __future__ import annotations
 
+import logging
 import warnings
 from collections import OrderedDict
 from functools import reduce, singledispatchmethod
@@ -70,6 +71,10 @@ from .utils import (
 from .utils.mathematics import fnorm
 
 __all__ = ['Geometry', "sgeom"]
+
+_log = logging.getLogger("sisl")
+_log.info(f"adding logger: {__name__}")
+_log = logging.getLogger(__name__)
 
 
 # It needs to be here otherwise we can't use it in these routines

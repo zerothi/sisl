@@ -7,6 +7,7 @@ This class is the basis of many different objects.
 """
 from __future__ import annotations
 
+import logging
 import math
 import warnings
 from numbers import Integral
@@ -26,6 +27,10 @@ from .shape.prism4 import Cuboid
 from .utils.mathematics import fnorm
 
 __all__ = ["Lattice", "SuperCell", "LatticeChild"]
+
+_log = logging.getLogger("sisl")
+_log.info(f"adding logger: {__name__}")
+_log = logging.getLogger(__name__)
 
 
 @set_module("sisl")

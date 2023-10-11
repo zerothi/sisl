@@ -42,8 +42,12 @@ Advanced classes
    Selector
 
 """
+import logging
 import datetime
 year = datetime.datetime.now().year
+
+# instantiate the logger, but we will not use it here...
+logging.getLogger(__name__)
 
 __author__ = "Nick Papior"
 __license__ = "MPL-2.0"
