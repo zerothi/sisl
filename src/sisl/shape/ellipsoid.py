@@ -9,10 +9,10 @@ import sisl._array as _a
 from sisl._indices import indices_in_sphere
 from sisl._internal import set_module
 from sisl._math_small import product3
-from sisl.messages import warn
+from sisl.messages import deprecation, warn
 from sisl.utils.mathematics import expand, fnorm, fnorm2, orthogonalize
 
-from .base import PureShape, ShapeToDispatcher
+from .base import PureShape, ShapeToDispatch
 
 __all__ = ["Ellipsoid", "Sphere"]
 
@@ -38,8 +38,6 @@ class Ellipsoid(PureShape):
     True
     """
     __slots__ = ('_v', '_iv')
-
-    to = PureShape.to.copy()
 
     def __init__(self, v, center=None):
         super().__init__(center)
@@ -116,11 +114,13 @@ class Ellipsoid(PureShape):
         """ Return an ellipsoid that encompass this shape (a copy) """
         return self.copy()
 
+    @deprecation("toSphere is deprecated, please use shape.to['sphere'](...) instead.", "0.15")
     def toSphere(self):
         """ Return a sphere with a radius equal to the largest radial vector """
         r = self.radius.max()
         return Sphere(r, self.center)
 
+    @deprecation("toCuboid is deprecated, please use shape.to['cuboid'](...) instead.", "0.15")
     def toCuboid(self):
         """ Return a cuboid with side lengths equal to the diameter of each ellipsoid vectors """
         from .prism4 import Cuboid
@@ -161,37 +161,34 @@ class Ellipsoid(PureShape):
 to_dispatch = Ellipsoid.to
 
 
-class EllipsoidToEllipsoid(ShapeToDispatcher):
+class EllipsoidToEllipsoid(ShapeToDispatch):
     def dispatch(self, *args, **kwargs):
-        return self._obj.copy()
+        return self._get_object().copy()
 
-to_dispatch.register("ellipsoid", EllipsoidToEllipsoid)
 to_dispatch.register("Ellipsoid", EllipsoidToEllipsoid)
 
 
-class EllipsoidToSphere(ShapeToDispatcher):
+class EllipsoidToSphere(ShapeToDispatch):
     def dispatch(self, *args, **kwargs):
-        shape = self._obj
+        shape = self._get_object()
         return Sphere(shape.radius.max(), shape.center)
 
-to_dispatch.register("sphere", EllipsoidToSphere)
 to_dispatch.register("Sphere", EllipsoidToSphere)
 
 
-class EllipsoidToCuboid(ShapeToDispatcher):
+class EllipsoidToCuboid(ShapeToDispatch):
     def dispatch(self, *args, **kwargs):
         from .prism4 import Cuboid
-        shape = self._obj
+        shape = self._get_object()
         return Cuboid(shape._v * 2, shape.center)
 
-to_dispatch.register("cuboid", EllipsoidToCuboid)
 to_dispatch.register("Cuboid", EllipsoidToCuboid)
 
 del to_dispatch
 
 
 @set_module("sisl.shape")
-class Sphere(Ellipsoid):
+class Sphere(Ellipsoid, dispatchs=[("to", "keep")]):
     """ 3D Sphere
 
     Parameters
@@ -244,10 +241,12 @@ class Sphere(Ellipsoid):
         """ Return the radius of the Sphere """
         return self._v[0, 0]
 
+    @deprecation("toSphere is deprecated, please use shape.to['sphere'](...) instead.", "0.15")
     def toSphere(self):
         """ Return a copy of it-self """
         return self.copy()
 
+    @deprecation("toEllipsoid is deprecated, please use shape.to['ellipsoid'](...) instead.", "0.15")
     def toEllipsoid(self):
         """ Convert this sphere into an ellipsoid """
         return Ellipsoid(self.radius, self.center)

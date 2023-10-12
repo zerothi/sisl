@@ -36,24 +36,24 @@ def test_create_fail():
 
 def test_tosphere():
     cube = Cube(1.)
-    assert cube.toSphere().radius == pytest.approx(.5 * 3 ** 0.5)
+    assert cube.to.Sphere().radius == pytest.approx(.5 * 3 ** 0.5)
     cube = Cube(3.)
-    assert cube.toSphere().radius == pytest.approx(1.5 * 3 ** 0.5)
+    assert cube.to.Sphere().radius == pytest.approx(1.5 * 3 ** 0.5)
     cube = Cuboid([1., 2., 3.])
-    assert cube.toSphere().radius == pytest.approx(1.5 * 3 ** 0.5)
+    assert cube.to.Sphere().radius == pytest.approx(1.5 * 3 ** 0.5)
     assert cube.to.Sphere().radius == pytest.approx(1.5 * 3 ** 0.5)
     assert isinstance(cube.to.Sphere(), Sphere)
 
 
 def test_toellipsoid():
     cube = Cube(1.)
-    assert cube.toEllipsoid().radius[0] == pytest.approx(.5 * 3 ** 0.5)
+    assert cube.to.Ellipsoid().radius[0] == pytest.approx(.5 * 3 ** 0.5)
     cube = Cube(3.)
-    assert cube.toEllipsoid().radius[0] == pytest.approx(1.5 * 3 ** 0.5)
+    assert cube.to.Ellipsoid().radius[0] == pytest.approx(1.5 * 3 ** 0.5)
     cube = Cuboid([1., 2., 3.])
-    assert cube.toEllipsoid().radius[0] == pytest.approx(.5 * 3 ** 0.5)
-    assert cube.toEllipsoid().radius[1] == pytest.approx(1 * 3 ** 0.5)
-    assert cube.toEllipsoid().radius[2] == pytest.approx(1.5 * 3 ** 0.5)
+    assert cube.to.Ellipsoid().radius[0] == pytest.approx(.5 * 3 ** 0.5)
+    assert cube.to.Ellipsoid().radius[1] == pytest.approx(1 * 3 ** 0.5)
+    assert cube.to.Ellipsoid().radius[2] == pytest.approx(1.5 * 3 ** 0.5)
 
 
 def test_create_cube():

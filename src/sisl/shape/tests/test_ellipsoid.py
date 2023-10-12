@@ -39,10 +39,8 @@ def test_create_ellipsoid():
 
 def test_tosphere():
     el = Ellipsoid([1., 1., 1.])
-    assert el.toSphere().radius == pytest.approx(1)
+    assert el.to.Sphere().radius == pytest.approx(1)
     el = Ellipsoid([1., 2., 3.])
-    assert el.toSphere().radius == pytest.approx(3)
-    assert isinstance(el.to.sphere(), Sphere)
     assert el.to.Sphere().radius == pytest.approx(3)
 
 
@@ -140,7 +138,7 @@ def test_sphere_and():
     inside[:] = True
     for i, d in enumerate(D):
         B = Sphere(1., center=v * d)
-        C = (A & B).toSphere()
+        C = (A & B).to.Sphere()
         if is_first and C.radius < B.radius:
             is_first = False
             inside[i:] = False
@@ -154,7 +152,7 @@ def test_sphere_and():
     inside[:] = True
     for i, d in enumerate(D):
         B = Sphere(1., center=v * d)
-        C = (A & B).toSphere()
+        C = (A & B).to.Sphere()
         str(A) + str(B) + str(C)
         if is_first and C.radius < A.radius:
             inside[i:] = False

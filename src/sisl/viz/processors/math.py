@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def normalize(data, vmin=0, vmax=1):
     """Normalize data to [vmin, vmax] range.
 

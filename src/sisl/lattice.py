@@ -11,16 +11,16 @@ import logging
 import math
 import warnings
 from numbers import Integral
-from typing import TYPE_CHECKING, Tuple, Union
 from pathlib import Path
+from typing import TYPE_CHECKING, Tuple, Union
 
 import numpy as np
 from numpy import dot, ndarray
 
 from . import _array as _a
 from . import _plot as plt
+from ._dispatch_class import _Dispatchs
 from ._dispatcher import AbstractDispatch, ClassDispatcher, TypeDispatcher
-from ._dispatch_class import _ToNew
 from ._internal import set_module
 from ._lattice import cell_invert, cell_reciprocal
 from ._math_small import cross3, dot3
@@ -37,11 +37,14 @@ _log = logging.getLogger(__name__)
 
 
 @set_module("sisl")
-class Lattice(_ToNew,
-              new=ClassDispatcher("new",
-                                  instance_dispatcher=TypeDispatcher),
-              to=ClassDispatcher("to",
-                                  type_dispatcher=None)
+class Lattice(_Dispatchs,
+              dispatchs=[
+                  ("new", ClassDispatcher("new",
+                                          instance_dispatcher=TypeDispatcher)),
+                  ("to", ClassDispatcher("to",
+                                         type_dispatcher=None))
+                ],
+              when_subclassing="copy",
               ):
     r""" A cell class to retain lattice vectors and a supercell structure
 
@@ -111,7 +114,7 @@ class Lattice(_ToNew,
         self._origin[:] = origin
 
     @deprecation("toCuboid is deprecated, please use lattice.to['cuboid'](...) instead.")
-    def toCuboid(self, orthogonal=False):
+    def toCuboid(self, *args, **kwargs):
         """ A cuboid with vectors as this unit-cell and center with respect to its origin
 
         Parameters
@@ -119,7 +122,7 @@ class Lattice(_ToNew,
         orthogonal : bool, optional
            if true the cuboid has orthogonal sides such that the entire cell is contained
         """
-        return self.to[Cuboid](orthogonal=orthogonal)
+        return self.to[Cuboid](*args, **kwargs)
 
     def parameters(self, rad=False) -> Tuple[float, float, float, float, float, float]:
         r""" Cell parameters of this cell in 3 lengths and 3 angles
@@ -1185,7 +1188,7 @@ new_dispatch = Lattice.new
 to_dispatch = Lattice.to
 
 # Define base-class for this
-class LatticeNewDispatcher(AbstractDispatch):
+class LatticeNewDispatch(AbstractDispatch):
     """ Base dispatcher from class passing arguments to Geometry class
 
     This forwards all `__call__` calls to `dispatch`
@@ -1194,72 +1197,81 @@ class LatticeNewDispatcher(AbstractDispatch):
     def __call__(self, *args, **kwargs):
         return self.dispatch(*args, **kwargs)
 
-class LatticeNewLatticeDispatcher(LatticeNewDispatcher):
-    def dispatch(self, lattice):
+class LatticeNewLatticeDispatch(LatticeNewDispatch):
+    def dispatch(self, lattice, copy=False):
+        # for sanitation purposes
+        if copy:
+            return lattice.copy()
         return lattice
-new_dispatch.register(Lattice, LatticeNewLatticeDispatcher)
+new_dispatch.register(Lattice, LatticeNewLatticeDispatch)
 
-class LatticeNewAseDispatcher(LatticeNewDispatcher):
-    def dispatch(self, aseg, **kwargs):
+class LatticeNewAseDispatch(LatticeNewDispatch):
+    def dispatch(self, aseg):
+        cls = self._get_class(allow_instance=True)
         cell = aseg.get_cell()
         nsc = [3 if pbc else 1 for pbc in aseg.pbc]
-        return Lattice(cell, nsc=nsc)
-new_dispatch.register("ase", LatticeNewAseDispatcher)
+        return cls(cell, nsc=nsc)
+new_dispatch.register("ase", LatticeNewAseDispatch)
 
 # currently we can't ensure the ase Atoms type
 # to get it by type(). That requires ase to be importable.
 try:
     from ase import Cell as ase_Cell
-    new_dispatch.register(ase_Cell, LatticeNewAseDispatcher)
+    new_dispatch.register(ase_Cell, LatticeNewAseDispatch)
     # ensure we don't pollute name-space
     del ase_Cell
 except Exception:
     pass
 
-class LatticeNewFileDispatcher(LatticeNewDispatcher):
+class LatticeNewFileDispatch(LatticeNewDispatch):
     def dispatch(self, *args, **kwargs):
         """ Defer the `Lattice.read` method by passing down arguments """
+        # can work either on class or instance
         return self._obj.read(*args, **kwargs)
-new_dispatch.register(str, LatticeNewFileDispatcher)
-new_dispatch.register(Path, LatticeNewFileDispatcher)
+new_dispatch.register(str, LatticeNewFileDispatch)
+new_dispatch.register(Path, LatticeNewFileDispatch)
 # see sisl/__init__.py for new_dispatch.register(BaseSile, ...)
 
 
-class LatticeToDispatcher(AbstractDispatch):
+class LatticeToDispatch(AbstractDispatch):
     """ Base dispatcher from class passing from Lattice class """
-    @staticmethod
-    def _ensure_object(obj):
-        if isinstance(obj, type):
-            raise TypeError(f"Dispatcher on {obj} must not be called on the class.")
 
-class LatticeToAseDispatcher(LatticeToDispatcher):
+class LatticeToAseDispatch(LatticeToDispatch):
     def dispatch(self, **kwargs):
         from ase import Cell as ase_Cell
-        lattice = self._obj
-        self._ensure_object(lattice)
+        lattice = self._get_object()
         return ase_Cell(lattice.cell.copy())
 
-to_dispatch.register("ase", LatticeToAseDispatcher)
+to_dispatch.register("ase", LatticeToAseDispatch)
 
-class LatticeToSileDispatcher(LatticeToDispatcher):
+class LatticeToSileDispatch(LatticeToDispatch):
     def dispatch(self, *args, **kwargs):
-        lattice = self._obj
-        self._ensure_object(lattice)
+        lattice = self._get_object()
         return lattice.write(*args, **kwargs)
-to_dispatch.register("str", LatticeToSileDispatcher)
-to_dispatch.register("path", LatticeToSileDispatcher)
+to_dispatch.register("str", LatticeToSileDispatch)
+to_dispatch.register("Path", LatticeToSileDispatch)
 # to do geom.to[Path](path)
-to_dispatch.register(str, LatticeToSileDispatcher)
-to_dispatch.register(Path, LatticeToSileDispatcher)
+to_dispatch.register(str, LatticeToSileDispatch)
+to_dispatch.register(Path, LatticeToSileDispatch)
 
-class LatticeToCuboidDispatcher(LatticeToDispatcher):
-    def dispatch(self, *args, orthogonal=False, **kwargs):
-        lattice = self._obj
-        self._ensure_object(lattice)
+class LatticeToCuboidDispatch(LatticeToDispatch):
+    def dispatch(self, center=None, origin=None, orthogonal=False):
+        lattice = self._get_object()
+
         cell = lattice.cell.copy()
-        offset = lattice.center() + self.origin
+
+        if center is None:
+            center = lattice.center()
+        center = _a.asarray(center)
+
+        if origin is None:
+            origin = lattice.origin
+        origin = _a.asarray(origin)
+
+        center_off = center + origin
+
         if not orthogonal:
-            return Cuboid(cell, offset)
+            return Cuboid(cell, center_off)
 
         def find_min_max(cmin, cmax, new):
             for i in range(3):
@@ -1271,10 +1283,10 @@ class LatticeToCuboidDispatcher(LatticeToDispatcher):
         find_min_max(cmin, cmax, cell[[0, 2], :].sum(0))
         find_min_max(cmin, cmax, cell[[1, 2], :].sum(0))
         find_min_max(cmin, cmax, cell.sum(0))
-        return Cuboid(cmax - cmin, offset)
+        return Cuboid(cmax - cmin, center_off)
 
-to_dispatch.register("cuboid", LatticeToCuboidDispatcher)
-to_dispatch.register(Cuboid, LatticeToCuboidDispatcher)
+to_dispatch.register("Cuboid", LatticeToCuboidDispatch)
+to_dispatch.register(Cuboid, LatticeToCuboidDispatch)
 
 
 # Remove references

@@ -47,10 +47,8 @@ def test_ellipticalcylinder_within():
 def test_tosphere():
     el = EllipticalCylinder([1., 1.], 1.)
     el.to.Sphere()
-    el.toSphere()
 
 
 def test_tocuboid():
     el = EllipticalCylinder([1., 1.], 1.)
     el.to.Cuboid()
-    el.toCuboid()

@@ -22,7 +22,6 @@ from sisl.viz.processors.grid import (
     transform_grid_cell,
 )
 
-
 pytestmark = [pytest.mark.viz, pytest.mark.processors]
 
 

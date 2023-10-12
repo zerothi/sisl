@@ -9,7 +9,12 @@ we hit release version 1.0.0.
 
 ### Added
 - added `Lattice.to` and `Lattice.new` to function the same
-  as `Geometry`, added Lattice.to["cuboid"]
+  as `Geometry`, added Lattice.to["Cuboid"]
+- added `Atom.to`, currently only `to.Sphere()`
+- enabled `Geometry.to|new.Sile(...)`
+- added logging in some modules, to be added in more stuff to allow easier
+  debugging.
+- marked all `toSphere|toEllipsoid|...` as deprecated
 
 
 ## [0.14.2] - 2023-10-04

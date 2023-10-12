@@ -41,8 +41,8 @@ if TYPE_CHECKING:
 from . import _array as _a
 from . import _plot as plt
 from ._category import Category, GenericCategory
+from ._dispatch_class import _Dispatchs
 from ._dispatcher import AbstractDispatch, ClassDispatcher, TypeDispatcher
-from ._dispatch_class import _ToNew
 from ._help import isndarray
 from ._indices import (
     indices_gt_le,
@@ -93,11 +93,16 @@ class AtomCategory(Category):
 
 
 @set_module("sisl")
-class Geometry(LatticeChild, _ToNew,
-               new=ClassDispatcher("new",
-                                   instance_dispatcher=TypeDispatcher),
-               to=ClassDispatcher("to",
-                                   type_dispatcher=None)
+class Geometry(LatticeChild, _Dispatchs,
+               dispatchs=[
+                   ("new", ClassDispatcher("new",
+                                           obj_getattr="error",
+                                           instance_dispatcher=TypeDispatcher)),
+                   ("to", ClassDispatcher("to",
+                                          obj_getattr="error",
+                                          type_dispatcher=None))
+                ],
+                when_subclassing="copy",
                ):
     """ Holds atomic information, coordinates, species, lattice vectors
 
@@ -973,7 +978,7 @@ class Geometry(LatticeChild, _ToNew,
             ir = [dS[0].radius * 0.5 ** 0.5 * 2] * 3
         elif isinstance(dS[0], Shape):
             # Convert to spheres (which probably should be cubes for performance)
-            dS = [s.toSphere() for s in dS]
+            dS = [s.to.Sphere() for s in dS]
             # Now do the same with spheres
             ir = [dS[0].radius * 0.5 ** 0.5 * 2] * 3
 
@@ -4486,7 +4491,7 @@ class Geometry(LatticeChild, _ToNew,
         full_geom = (self * tile).translate(big_origin - origin)
 
         # Now we have to figure out all atomic coordinates within
-        cuboid = lattice.toCuboid()
+        cuboid = lattice.to.Cuboid()
 
         # Make sure that full_geom doesn't return coordinates outside the unit cell
         # for non periodic directions
@@ -4982,7 +4987,7 @@ to_dispatch = Geometry.to
 
 
 # Define base-class for this
-class GeometryNewDispatcher(AbstractDispatch):
+class GeometryNewDispatch(AbstractDispatch):
     """ Base dispatcher from class passing arguments to Geometry class
 
     This forwards all `__call__` calls to `dispatch`
@@ -4993,39 +4998,43 @@ class GeometryNewDispatcher(AbstractDispatch):
 
 
 # Bypass regular Geometry to be returned as is
-class GeometryNewGeometryDispatcher(GeometryNewDispatcher):
-    def dispatch(self, geom):
+class GeometryNewGeometryDispatch(GeometryNewDispatch):
+    def dispatch(self, geometry, copy=False):
         """ Return geometry as-is (no copy), for sanitization purposes """
-        return geom
-new_dispatch.register(Geometry, GeometryNewGeometryDispatcher)
+        if copy:
+            return geometry.copy()
+        return geometry
+new_dispatch.register(Geometry, GeometryNewGeometryDispatch)
 
 
-class GeometryNewAseDispatcher(GeometryNewDispatcher):
+class GeometryNewAseDispatch(GeometryNewDispatch):
     def dispatch(self, aseg, **kwargs):
         """ Convert an ``ase`` object into a `Geometry` """
+        cls = self._get_class()
         Z = aseg.get_atomic_numbers()
         xyz = aseg.get_positions()
         cell = aseg.get_cell()
         nsc = [3 if pbc else 1 for pbc in aseg.pbc]
         lattice = Lattice(cell, nsc=nsc)
-        return self._obj(xyz, atoms=Z, lattice=lattice, **kwargs)
-new_dispatch.register("ase", GeometryNewAseDispatcher)
+        return cls(xyz, atoms=Z, lattice=lattice, **kwargs)
+new_dispatch.register("ase", GeometryNewAseDispatch)
 
 # currently we can't ensure the ase Atoms type
 # to get it by type(). That requires ase to be importable.
 try:
     from ase import Atoms as ase_Atoms
-    new_dispatch.register(ase_Atoms, GeometryNewAseDispatcher)
+    new_dispatch.register(ase_Atoms, GeometryNewAseDispatch)
     # ensure we don't pollute name-space
     del ase_Atoms
 except Exception:
     pass
 
 
-class GeometryNewpymatgenDispatcher(GeometryNewDispatcher):
+class GeometryNewpymatgenDispatch(GeometryNewDispatch):
     def dispatch(self, struct, **kwargs):
         """ Convert a ``pymatgen`` structure/molecule object into a `Geometry` """
         from pymatgen.core import Structure
+        cls = self._get_class(allow_instance=True)
 
         Z = []
         xyz = []
@@ -5042,59 +5051,54 @@ class GeometryNewpymatgenDispatcher(GeometryNewDispatcher):
             cell = xyz.max() - xyz.min(0) + 15.
             nsc = [1, 1, 1]
         lattice = Lattice(cell, nsc=nsc)
-        return self._obj(xyz, atoms=Z, lattice=lattice, **kwargs)
-new_dispatch.register("pymatgen", GeometryNewpymatgenDispatcher)
+        return cls(xyz, atoms=Z, lattice=lattice, **kwargs)
+new_dispatch.register("pymatgen", GeometryNewpymatgenDispatch)
 
 # currently we can't ensure the pymatgen classes
 # to get it by type(). That requires pymatgen to be importable.
 try:
     from pymatgen.core import Molecule as pymatgen_Molecule
     from pymatgen.core import Structure as pymatgen_Structure
-    new_dispatch.register(pymatgen_Molecule, GeometryNewpymatgenDispatcher)
-    new_dispatch.register(pymatgen_Structure, GeometryNewpymatgenDispatcher)
+    new_dispatch.register(pymatgen_Molecule, GeometryNewpymatgenDispatch)
+    new_dispatch.register(pymatgen_Structure, GeometryNewpymatgenDispatch)
     # ensure we don't pollute name-space
     del pymatgen_Molecule, pymatgen_Structure
 except Exception:
     pass
 
 
-class GeometryNewFileDispatcher(GeometryNewDispatcher):
+class GeometryNewFileDispatch(GeometryNewDispatch):
     def dispatch(self, *args, **kwargs):
         """ Defer the `Geometry.read` method by passing down arguments """
+        # can work either on class or instance
         return self._obj.read(*args, **kwargs)
-new_dispatch.register(str, GeometryNewFileDispatcher)
-new_dispatch.register(Path, GeometryNewFileDispatcher)
+new_dispatch.register(str, GeometryNewFileDispatch)
+new_dispatch.register(Path, GeometryNewFileDispatch)
 # see sisl/__init__.py for new_dispatch.register(BaseSile, GeometryNewFileDispatcher)
 
 
-class GeometryToDispatcher(AbstractDispatch):
+class GeometryToDispatch(AbstractDispatch):
     """ Base dispatcher from class passing from Geometry class """
-    @staticmethod
-    def _ensure_object(obj):
-        if isinstance(obj, type):
-            raise TypeError(f"Dispatcher on {obj} must not be called on the class.")
 
 
-class GeometryToAseDispatcher(GeometryToDispatcher):
+class GeometryToAseDispatch(GeometryToDispatch):
     def dispatch(self, **kwargs):
         from ase import Atoms as ase_Atoms
-        geom = self._obj
-        self._ensure_object(geom)
+        geom = self._get_object()
         return ase_Atoms(symbols=geom.atoms.Z, positions=geom.xyz.tolist(),
                          cell=geom.cell.tolist(), pbc=geom.nsc > 1, **kwargs)
 
-to_dispatch.register("ase", GeometryToAseDispatcher)
+to_dispatch.register("ase", GeometryToAseDispatch)
 
 
-class GeometryTopymatgenDispatcher(GeometryToDispatcher):
+class GeometryTopymatgenDispatch(GeometryToDispatch):
     def dispatch(self, **kwargs):
         from pymatgen.core import Lattice, Molecule, Structure
 
         from sisl.atom import PeriodicTable
 
         # ensure we have an object
-        geom = self._obj
-        self._ensure_object(geom)
+        geom = self._get_object()
 
         lattice = Lattice(geom.cell)
         # get atomic letters and coordinates
@@ -5107,26 +5111,24 @@ class GeometryTopymatgenDispatcher(GeometryToDispatcher):
             return Molecule(species, xyz, **kwargs)
         return Structure(lattice, species, xyz, coords_are_cartesian=True, **kwargs)
 
-to_dispatch.register("pymatgen", GeometryTopymatgenDispatcher)
+to_dispatch.register("pymatgen", GeometryTopymatgenDispatch)
 
 
-class GeometryToSileDispatcher(GeometryToDispatcher):
+class GeometryToSileDispatch(GeometryToDispatch):
     def dispatch(self, *args, **kwargs):
-        geom = self._obj
-        self._ensure_object(geom)
+        geom = self._get_object()
         return geom.write(*args, **kwargs)
-to_dispatch.register("str", GeometryToSileDispatcher)
-to_dispatch.register("path", GeometryToSileDispatcher)
+to_dispatch.register("str", GeometryToSileDispatch)
+to_dispatch.register("Path", GeometryToSileDispatch)
 # to do geom.to[Path](path)
-to_dispatch.register(str, GeometryToSileDispatcher)
-to_dispatch.register(Path, GeometryToSileDispatcher)
+to_dispatch.register(str, GeometryToSileDispatch)
+to_dispatch.register(Path, GeometryToSileDispatch)
 
 
-class GeometryToDataframeDispatcher(GeometryToDispatcher):
+class GeometryToDataframeDispatch(GeometryToDispatch):
     def dispatch(self, *args, **kwargs):
         import pandas as pd
-        geom = self._obj
-        self._ensure_object(geom)
+        geom = self._get_object()
 
         # Now create data-frame
         # Currently we will populate it with
@@ -5152,7 +5154,7 @@ class GeometryToDataframeDispatcher(GeometryToDispatcher):
         data["norbitals"] = atoms.orbitals
 
         return pd.DataFrame(data)
-to_dispatch.register("dataframe", GeometryToDataframeDispatcher)
+to_dispatch.register("dataframe", GeometryToDataframeDispatch)
 
 # Remove references
 del new_dispatch, to_dispatch

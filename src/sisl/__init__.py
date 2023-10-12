@@ -147,9 +147,13 @@ from .io.sile import (
 # Since __getitem__ always instantiate the class, we have to use the
 # contained lookup table.
 Geometry.new.register(BaseSile, Geometry.new._dispatchs[str])
+Geometry.new.register("Sile", Geometry.new._dispatchs[str])
 Geometry.to.register(BaseSile, Geometry.to._dispatchs[str])
+Geometry.to.register("Sile", Geometry.to._dispatchs[str])
 Lattice.new.register(BaseSile, Lattice.new._dispatchs[str])
+Lattice.new.register("Sile", Lattice.new._dispatchs[str])
 Lattice.to.register(BaseSile, Lattice.to._dispatchs[str])
+Lattice.to.register("Sile", Lattice.to._dispatchs[str])
 
 # Import the default geom structure
 # This enables:

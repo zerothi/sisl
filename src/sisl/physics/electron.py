@@ -1270,7 +1270,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
     # For extremely skewed lattices this will be way too much, hence we make
     # them square.
 
-    o = lattice.toCuboid(orthogonal=True)
+    o = lattice.to.Cuboid(orthogonal=True)
     lattice = Lattice(o._v + np.diag(2 * add_R), origin=o.origin - add_R)
 
     # Retrieve all atoms within the grid supercell

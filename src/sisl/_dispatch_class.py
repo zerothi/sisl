@@ -9,90 +9,111 @@ Sometimes these can be required to be inherited as well.
 
 The usage interface should look something like this:
 
-class A(_ToNew,
-        to=object used | str | None,
-        new=object used | str | None,
+class A(_Dispatchs,
+        dispatchs=[
+            "new", "hello"
+        ]
 )
 
-A.to.register ..
 A.new.register ..
+A.hello.register ..
 """
-from typing import Any, Optional
+import logging
 from collections import namedtuple
+from typing import Any, Optional, Sequence, Union
 
 from ._dispatcher import ClassDispatcher, TypeDispatcher
 
+_log = logging.getLogger("sisl")
+_log.info(f"adding logger: {__name__}")
+_log = logging.getLogger(__name__)
 
-class _ToNew:
+
+class _Dispatchs:
     """Subclassable for creating the new/to arguments"""
 
     def __init_subclass__(cls, /,
-                          new: Optional[Any] = "default",
-                          to: Optional[Any] = "default",
+                          dispatchs: Optional[Union[str, Sequence[Any]]]=None,
                           when_subclassing: Optional[str] = None,
                           **kwargs):
+        # complete the init_subclass
         super().__init_subclass__(**kwargs)
         
         # Get the allowed actions for subclassing
         prefix = "_tonew"
         allowed_subclassing = ("keep", "new", "copy")
 
-        def_new = ClassDispatcher("new")
-        def_to = ClassDispatcher("to")
-       
-        # check for the default handler of the parent class
-        # We find the first base class which has either of the 
-        first_base = None
-        for b in cls.__bases__:
-            if hasattr(b, "to") or hasattr(b, "new"):
-                # any one fits
-                first_base = b
-                break
+        def find_base(cls, attr):
+            for base in cls.__bases__:
+                if hasattr(base, attr):
+                    return base
+            return None
 
-        if when_subclassing is None and first_base is not None:
-            when_subclassing = getattr(first_base, f"{prefix}_when_subclassing")
-        else:
-            when_subclassing = "new"
+        if dispatchs is None:
+            dispatchs = []
+            for base in cls.__bases__:
+                if hasattr(base, f"{prefix}_dispatchs"):
+                    dispatchs.extend(getattr(base, f"{prefix}_dispatchs"))
+
+        if isinstance(dispatchs, str):
+            dispatchs = [dispatchs]
+
+        loop = []
+        for attr in dispatchs:
+
+            # argument could be:
+            #  dispatchs = [
+            #       ("new", "keep"),
+            #       "to"
+            #  ]
+            if isinstance(attr, (list, tuple)):
+                attr, obj = attr
+            else:
+                obj = None
+
+            if attr in cls.__dict__:
+                raise ValueError(f"The attribute {attr} already exists on {cls!r}")
+
+            base = find_base(cls, attr)
+            if base is None:
+                # this is likely the first instance of the class
+                # So one cannot do anything but specifying stuff
+                when_subcls = None
+                if obj is None:
+                    obj = ClassDispatcher(attr)
+            else:
+                when_subcls = getattr(base, f"{prefix}_when_subclassing")
+                if obj is None:
+                    obj = when_subcls
+
+            if isinstance(obj, str):
+                if obj == "new":
+                    obj = ClassDispatcher(attr)
+                elif obj == "keep":
+                    obj = None
+                elif obj == "copy":
+                    obj = getattr(base, attr).copy()
+            loop.append((attr, obj, when_subcls))
+
+
+        if when_subclassing is None:
+            # first non-None value
+            when_subclassing = "copy"
+            for _, _, when_subcls in loop:
+                if when_subcls is not None:
+                    when_subclassing = when_subcls
+        _log.debug(f"{cls!r} when_subclassing = {when_subclassing}")
 
         if when_subclassing not in allowed_subclassing:
-            raise ValueError(f"when_subclassing should be one of {allowed_subclassing}")
+            raise ValueError(f"when_subclassing should be one of {allowed_subclassing}, got {when_subclassing}")
 
-        for attr, arg, def_ in (("to", to, def_to),
-                                ("new", new, def_new)):
+        for attr, obj, _ in loop:
         
-            base = first_base
-            for b in cls.__bases__:
-                if hasattr(b, attr):
-                    base = b
-                    break
-            
-            if base is None and isinstance(arg, str):
-                # when there is no base and the class is not 
-                # specified. Then regardless a new object will be used.
-                arg = def_
-        
-            if isinstance(arg, str):
-                if arg == "default":
-                    arg = when_subclassing
-
-                # now we can parse the potential subclassing problem
-                if arg == "keep":
-                    # signal we do nothing...
-                    # this will tap into the higher class structures
-                    # registration.
-                    arg = None
-
-                elif arg == "new":
-                    # always create a new one
-                    arg = def_
-
-                elif arg == "copy":
-                    # TODO, this might fail if base does not have it...
-                    # But then again, it shouldn't be `copy`...
-                    # copy it!
-                    arg = getattr(base, attr).copy()
-
-            if arg is not None and not isinstance(arg, str):
-                setattr(cls, attr, arg)
+            if obj is None:
+                _log.debug(f"Doing nothing for {attr} on class {cls!r}")
+            else:
+                _log.debug(f"Inserting {attr}={obj!r} onto class {cls!r}")
+                setattr(cls, attr, obj)
 
         setattr(cls, f"{prefix}_when_subclassing", when_subclassing)
+        setattr(cls, f"{prefix}_dispatchs", [attr for attr, _, _ in loop])

@@ -11,7 +11,7 @@ from sisl._internal import set_module
 from sisl.messages import warn
 from sisl.utils.mathematics import expand, fnorm, fnorm2, orthogonalize
 
-from .base import PureShape, ShapeToDispatcher
+from .base import PureShape, ShapeToDispatch
 
 __all__ = ["EllipticalCylinder"]
 
@@ -48,8 +48,6 @@ class EllipticalCylinder(PureShape):
     False
     """
     __slots__ = ('_v', '_nh', '_iv', '_h')
-
-    to = PureShape.to.copy()
 
     def __init__(self, v, h: float, axes=(0, 1), center=None):
         super().__init__(center)
@@ -195,10 +193,10 @@ class EllipticalCylinder(PureShape):
 to_dispatch = EllipticalCylinder.to
 
 
-class EllipticalCylinderToSphere(ShapeToDispatcher):
+class EllipticalCylinderToSphere(ShapeToDispatch):
     def dispatch(self, *args, **kwargs):
         from .ellipsoid import Sphere
-        shape = self._obj
+        shape = self._get_object()
         # figure out the distance from the center to the edge (along longest radius)
         h = shape.height / 2
         r = shape.radius.max()
@@ -207,17 +205,15 @@ class EllipticalCylinderToSphere(ShapeToDispatcher):
         # Rescale each vector
         return Sphere(r, shape.center.copy())
 
-to_dispatch.register("sphere", EllipticalCylinderToSphere)
 to_dispatch.register("Sphere", EllipticalCylinderToSphere)
 
 
-class EllipticalCylinderToCuboid(ShapeToDispatcher):
+class EllipticalCylinderToCuboid(ShapeToDispatch):
     def dispatch(self, *args, **kwargs):
         from .prism4 import Cuboid
-        shape = self._obj
+        shape = self._get_object()
         return Cuboid([shape._v[0], shape._v[1], shape._nh], shape.center)
 
-to_dispatch.register("cuboid", EllipticalCylinderToCuboid)
 to_dispatch.register("Cuboid", EllipticalCylinderToCuboid)
 
 del to_dispatch

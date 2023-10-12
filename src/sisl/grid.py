@@ -761,8 +761,8 @@ class Grid(LatticeChild):
         """ Internal routine for shape-indices """
         # First grab the sphere, subsequent indices will be reduced
         # by the actual shape
-        cuboid = shape.toCuboid()
-        ellipsoid = shape.toEllipsoid()
+        cuboid = shape.to.Cuboid()
+        ellipsoid = shape.to.Ellipsoid()
         if ellipsoid.volume() > cuboid.volume():
             idx = self._index_shape_cuboid(cuboid)
         else:

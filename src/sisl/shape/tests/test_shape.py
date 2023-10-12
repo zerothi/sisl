@@ -31,9 +31,9 @@ def test_null():
     assert null.volume() == 0.
     assert len(null.within_index(np.random.rand(1000, 3))) == 0
 
-    assert null.toEllipsoid().volume() < 1e-64
-    assert null.toCuboid().volume() < 1e-64
-    assert null.toSphere().volume() < 1e-64
+    assert null.to.Ellipsoid().volume() < 1e-64
+    assert null.to.Cuboid().volume() < 1e-64
+    assert null.to.Sphere().volume() < 1e-64
 
 
 def test_binary_op_within():
@@ -80,24 +80,24 @@ def test_binary_op_toSphere():
 
     r = 0.5 * 3 ** .5
     new = e + c
-    assert new.toSphere().radius.max() == pytest.approx(r)
+    assert new.to.Sphere().radius.max() == pytest.approx(r)
 
     new = e - c
-    assert new.toSphere().radius.max() == pytest.approx(r)
+    assert new.to.Sphere().radius.max() == pytest.approx(r)
 
     # with the AND operator we can reduce to smallest enclosed sphere
     new = (e & c)
-    assert new.toSphere().radius.max() == pytest.approx(0.5)
+    assert new.to.Sphere().radius.max() == pytest.approx(0.5)
 
     # e ^ c == c ^ e
     new = (e ^ c)
-    assert new.toSphere().radius.max() == pytest.approx(r)
+    assert new.to.Sphere().radius.max() == pytest.approx(r)
 
     new = (c ^ e)
-    assert new.toSphere().radius.max() == pytest.approx(r)
+    assert new.to.Sphere().radius.max() == pytest.approx(r)
 
     new = (c ^ e)
-    assert new.scale(2).toSphere().radius.max() == pytest.approx(r * 2)
+    assert new.scale(2).to.Sphere().radius.max() == pytest.approx(r * 2)
 
 
 def test_toSphere_and():
@@ -105,21 +105,21 @@ def test_toSphere_and():
     right = Sphere(1., center=[0.6] * 3)
 
     new = left & right
-    s = new.toSphere()
+    s = new.to.Sphere()
     assert s.radius.max() < .9
 
     left = Sphere(2.)
     right = Sphere(1., center=[0.5] * 3)
 
     new = left & right
-    s = new.toSphere()
+    s = new.to.Sphere()
     assert s.radius.max() == pytest.approx(1.)
 
     left = Sphere(2., center=[10, 10, 10])
     right = Sphere(1., center=[10.5] * 3)
 
     new = left & right
-    s2 = new.toSphere()
+    s2 = new.to.Sphere()
     assert s2.radius.max() == pytest.approx(1.)
     # Assert it also works for displaced centers
     assert np.allclose(s.radius, s2.radius)
@@ -129,7 +129,7 @@ def test_toSphere_and():
     right = Sphere(1., center=[10.5] * 3)
 
     new = left & right
-    s = new.toSphere()
+    s = new.to.Sphere()
     assert s.radius.max() < 0.01
 
 
@@ -138,21 +138,21 @@ def test_toEllipsoid_and():
     right = Ellipsoid(1., center=[0.6] * 3)
 
     new = left & right
-    s = new.toEllipsoid()
+    s = new.to.Ellipsoid()
     assert s.radius.max() < .9
 
     left = Ellipsoid(2.)
     right = Ellipsoid(1., center=[0.5] * 3)
 
     new = left & right
-    s = new.toEllipsoid()
+    s = new.to.Ellipsoid()
     assert s.radius.max() == pytest.approx(1.)
 
     left = Ellipsoid(2., center=[10, 10, 10])
     right = Ellipsoid(1., center=[10.5] * 3)
 
     new = left & right
-    s2 = new.toEllipsoid()
+    s2 = new.to.Ellipsoid()
     assert s2.radius.max() == pytest.approx(1.)
     # Assert it also works for displaced centers
     assert np.allclose(s.radius, s2.radius)
@@ -162,7 +162,7 @@ def test_toEllipsoid_and():
     right = Ellipsoid(1., center=[10.5] * 3)
 
     new = left & right
-    s = new.toEllipsoid()
+    s = new.to.Ellipsoid()
     assert s.radius.max() < 0.01
 
 
@@ -171,21 +171,21 @@ def test_toCuboid_and():
     right = Cuboid(1., center=[0.6] * 3)
 
     new = left & right
-    s = new.toCuboid()
+    s = new.to.Cuboid()
     assert s.edge_length.max() < .9 * 2
 
     left = Cuboid(2.)
     right = Cuboid(1., center=[0.5] * 3)
 
     new = left & right
-    s = new.toCuboid()
+    s = new.to.Cuboid()
     assert s.edge_length.max() >= 1.5
 
     left = Cuboid(2., center=[10, 10, 10])
     right = Cuboid(1., center=[10.5] * 3)
 
     new = left & right
-    s2 = new.toCuboid()
+    s2 = new.to.Cuboid()
     assert s2.edge_length.max() > 1.5
     # Assert it also works for displaced centers
     assert np.allclose(s.edge_length, s2.edge_length)
@@ -195,5 +195,5 @@ def test_toCuboid_and():
     right = Cuboid(1., center=[10.5] * 3)
 
     new = left & right
-    s = new.toCuboid()
+    s = new.to.Cuboid()
     assert s.edge_length.max() < 0.01

@@ -144,7 +144,7 @@ class xsfSile(Sile):
         # the same file. However the below stuff is not correct.
         #self._write_once('#\n# Conventional lattice vectors:\n#\n')
         #self._write_key_index('CONVVEC')
-        #convcell = lattice.toCuboid(True)._v
+        #convcell = lattice.to.Cuboid(orthogonal=True)._v
         #for i in [0, 1, 2]:
         #    self._write(fmt_str.format(*convcell[i, :]))
 

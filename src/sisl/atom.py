@@ -12,10 +12,12 @@ import numpy as np
 from sisl._typing_ext.numpy import NDArray
 
 from . import _array as _a
+from ._dispatch_class import _Dispatchs
+from ._dispatcher import AbstractDispatch, ClassDispatcher
 from ._help import array_fill_repeat
 from ._indices import list_index_le
 from ._internal import set_module
-from .messages import info
+from .messages import deprecation, info
 from .orbital import Orbital
 from .shape import Sphere
 
@@ -936,7 +938,13 @@ class AtomMeta(type):
 #   class ...(..., metaclass=MetaClass)
 # This below construct handles both python2 and python3 cases
 @set_module("sisl")
-class Atom(metaclass=AtomMeta):
+class Atom(_Dispatchs,
+           dispatchs=[("to",
+                       ClassDispatcher("to",
+                                       type_dispatcher=None))],
+           when_subclassing="keep",
+           metaclass=AtomMeta,
+           ):
     """ Atomic information, mass, name number of orbitals and ranges
 
     Object to handle atomic mass, name, number of orbitals and
@@ -1275,6 +1283,7 @@ class Atom(metaclass=AtomMeta):
         # We don't know how to handle this, simply return...
         return vals
 
+    @deprecation("toSphere is deprecated, please use shape.to.Sphere(...) instead.", "0.15")
     def toSphere(self, center=None):
         """ Return a sphere with the maximum orbital radius equal
 
@@ -1283,7 +1292,7 @@ class Atom(metaclass=AtomMeta):
         ~sisl.shape.Sphere
              a sphere with radius equal to the maximum radius of the orbitals
         """
-        return Sphere(self.maxR(), center)
+        return self.to.Sphere(center=center)
 
     def equal(self, other, R=True, psi=False):
         """ True if `other` is the same as this atomic specie
@@ -1346,6 +1355,16 @@ class AtomGhost(AtomUnknown):
             # A very high default mass (unless specified)
             kwargs["mass"] = 1e40
         super().__init__(Z, *args, **kwargs)
+
+
+class AtomToDispatch(AbstractDispatch):
+    """ Base dispatcher from class passing from an Atom class """
+
+to_dispatch = Atom.to
+class ToSphereDispatch(AtomToDispatch):
+    def dispatch(self, *args, center=None, **kwargs):
+        return Sphere(self._get_object().maxR(), center)
+to_dispatch.register("Sphere", ToSphereDispatch)
 
 
 @set_module("sisl")

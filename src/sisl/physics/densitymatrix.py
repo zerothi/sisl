@@ -551,7 +551,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
         # supercell by add_R in each direction.
         # For extremely skewed lattices this will be way too much, hence we make
         # them square.
-        o = lattice.toCuboid(True)
+        o = lattice.to.Cuboid(orthogonal=True)
         lattice = Lattice(o._v + np.diag(2 * add_R), origin=o.origin - add_R)
 
         # Retrieve all atoms within the grid supercell
@@ -647,7 +647,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
                 continue
 
             # Retrieve indices of the grid for the atomic shape
-            idx = grid.index(ia_atom.toSphere(ia_xyz))
+            idx = grid.index(ia_atom.to.Sphere(center=ia_xyz))
 
             # Now we have the indices for the largest orbital on the atom
 

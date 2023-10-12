@@ -452,22 +452,30 @@ def test_tocuboid_simple():
     with pytest.warns(sisl.SislDeprecation):
         c1 = lattice.toCuboid()
     assert np.allclose(lattice.cell, c1._v)
-    c1 = lattice.to["cuboid"]()
+    c1 = lattice.to.Cuboid()
     assert np.allclose(lattice.cell, c1._v)
+
     with pytest.warns(sisl.SislDeprecation):
-        c2 = lattice.toCuboid(True)
+        c2 = lattice.toCuboid(orthogonal=True)
     assert np.allclose(c1._v, c2._v)
-    c2 = lattice.to["cuboid"](True)
+    c2 = lattice.to.Cuboid(orthogonal=True)
     assert np.allclose(c1._v, c2._v)
 
 
 def test_tocuboid_complex():
     lattice = Lattice([1, 1, 1, 60, 60, 60])
     s = str(lattice.cell)
-    c1 = lattice.toCuboid()
+    with pytest.warns(sisl.SislDeprecation):
+        c1 = lattice.toCuboid()
     assert np.allclose(lattice.cell, c1._v)
-    c2 = lattice.toCuboid(True)
-    assert not np.allclose(np.diagonal(c1._v), np.diagonal(c2._v))
+    c1 = lattice.to.Cuboid()
+    assert np.allclose(lattice.cell, c1._v)
+
+    c1 = lattice.to.Cuboid(orthogonal=True)
+    assert not np.allclose(np.diagonal(lattice.cell), np.diagonal(c1._v))
+    with pytest.warns(sisl.SislDeprecation):
+        c2 = lattice.toCuboid(orthogonal=True)
+    assert np.allclose(np.diagonal(c1._v), np.diagonal(c2._v))
 
 
 def test_lattice_indices():

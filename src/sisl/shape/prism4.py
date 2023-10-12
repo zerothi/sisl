@@ -8,9 +8,10 @@ from sisl._indices import indices_gt_le
 from sisl._internal import set_module
 from sisl._math_small import cross3, dot3
 from sisl.linalg import inv
+from sisl.messages import deprecation
 from sisl.utils.mathematics import expand, fnorm
 
-from .base import PureShape, ShapeToDispatcher
+from .base import PureShape, ShapeToDispatch
 
 __all__ = ['Cuboid', 'Cube']
 
@@ -40,10 +41,6 @@ class Cuboid(PureShape):
     True
     """
     __slots__ = ('_v', '_iv')
-
-    # Define a dispatcher for converting Shapes
-    #  Cuboid().to.ellipsoid() will convert to an sisl.shape.Ellipsoid object
-    to = PureShape.to.copy()
 
     def __init__(self, v, center=None, origin=None):
 
@@ -112,6 +109,7 @@ class Cuboid(PureShape):
             raise ValueError(self.__class__.__name__ + '.expand requires the length to be either (1,) or (3,)')
         return self.__class__([v0, v1, v2], self.center)
 
+    @deprecation("toEllipsoid is deprecated, please use shape.to['ellipsoid'](...) instead.", "0.15")
     def toEllipsoid(self):
         """ Return an ellipsoid that encompass this cuboid """
         from .ellipsoid import Ellipsoid
@@ -119,12 +117,14 @@ class Cuboid(PureShape):
         # Rescale each vector
         return Ellipsoid(self._v / 2 * 3 ** .5, self.center.copy())
 
+    @deprecation("toSphere is deprecated, please use shape.to['sphere'](...) instead.", "0.15")
     def toSphere(self):
         """ Return a sphere that encompass this cuboid """
         from .ellipsoid import Sphere
 
         return Sphere(self.edge_length.max() / 2 * 3 ** .5, self.center.copy())
 
+    @deprecation("toCuboid is deprecated, please use shape.to['cuboid'](...) instead.", "0.15")
     def toCuboid(self):
         """ Return a copy of itself """
         return self.copy()
@@ -158,7 +158,7 @@ class Cuboid(PureShape):
     @origin.setter
     def origin(self, origin):
         """ Re-setting the origin can sometimes be necessary """
-        super().__init__(origin + (self._v * 0.5).sum(0))
+        self.center = origin + (self._v * 0.5).sum(0)
 
     @property
     def edge_length(self):
@@ -168,42 +168,36 @@ class Cuboid(PureShape):
 
 to_dispatch = Cuboid.to
 
-
-class CuboidToEllipsoid(ShapeToDispatcher):
+class CuboidToEllipsoid(ShapeToDispatch):
     def dispatch(self, *args, **kwargs):
         from .ellipsoid import Ellipsoid
-        shape = self._obj
+        shape = self._get_object()
         # Rescale each vector
         return Ellipsoid(shape._v / 2 * 3 ** .5, shape.center.copy())
 
-to_dispatch.register("ellipsoid", CuboidToEllipsoid)
 to_dispatch.register("Ellipsoid", CuboidToEllipsoid)
 
-
-class CuboidToSphere(ShapeToDispatcher):
+class CuboidToSphere(ShapeToDispatch):
     def dispatch(self, *args, **kwargs):
         from .ellipsoid import Sphere
-        shape = self._obj
+        shape = self._get_object()
         # Rescale each vector
         return Sphere(shape.edge_length.max() / 2 * 3 ** .5, shape.center.copy())
 
-to_dispatch.register("sphere", CuboidToSphere)
 to_dispatch.register("Sphere", CuboidToSphere)
 
-
-class CuboidToCuboid(ShapeToDispatcher):
+class CuboidToCuboid(ShapeToDispatch):
     def dispatch(self, *args, **kwargs):
-        return self._obj.copy()
+        shape = self._get_object()
+        return shape.copy()
 
-to_dispatch.register("cuboid", CuboidToCuboid)
 to_dispatch.register("Cuboid", CuboidToCuboid)
-
 
 del to_dispatch
 
 
 @set_module("sisl.shape")
-class Cube(Cuboid):
+class Cube(Cuboid, dispatchs=[("to", "keep")]):
     """ 3D Cube with equal sides
 
     Equivalent to ``Cuboid([r, r, r])``.

@@ -1,11 +1,11 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+import logging
 from abc import ABCMeta, abstractmethod
 from collections import ChainMap, defaultdict
 from collections.abc import Iterable
 from functools import lru_cache, singledispatchmethod, wraps
-import logging
 
 from ._internal import set_module
 
