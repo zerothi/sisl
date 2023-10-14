@@ -5,6 +5,9 @@ from typing import Any, Callable, Dict, Sequence, Type
 from .node import Node
 
 
+class StopTraverse(Exception): 
+    """Exception that should be raised by callback functions to stop the traversal of a tree."""
+
 def traverse_tree_forward(roots: Sequence[Node],  func: Callable[[Node], Any]) -> None:
     """Traverse a tree of nodes in a forward fashion.
 
@@ -13,10 +16,14 @@ def traverse_tree_forward(roots: Sequence[Node],  func: Callable[[Node], Any]) -
     roots : Sequence[Node]
         The roots of the tree to traverse.
     func : Callable[[Node], Any]
-        The function to apply to each node in the tree.
+        The function to apply to each node in the tree. Note that you can raise
+        a StopTraverse exception to stop the traversal of the tree for any reason.
     """
     for root in roots:
-        func(root)
+        try:
+            func(root)
+        except StopTraverse:
+            continue
         traverse_tree_forward(root._output_links, func)
 
 def traverse_tree_backward(leaves: Sequence[Node],  func: Callable[[Node], Any]) -> None:
@@ -27,10 +34,14 @@ def traverse_tree_backward(leaves: Sequence[Node],  func: Callable[[Node], Any])
     leaves : Sequence[Node]
         The leaves of the tree to traverse.
     func : Callable[[Node], Any]
-        The function to apply to each node in the tree.
+        The function to apply to each node in the tree. Note that you can raise
+        a StopTraverse exception to stop the traversal of the tree for any reason.
     """
     for leaf in leaves:
-        func(leaf)
+        try:
+            func(leaf)
+        except StopTraverse:
+            continue
         leaf.map_inputs(
             leaf.inputs, 
             func=lambda node: traverse_tree_backward((node, ), func=func),
@@ -45,18 +56,32 @@ def visit_all_connected(nodes: Sequence[Node], func: Callable[[Node], Any], _see
     nodes : Sequence[Node]
         The nodes to traverse.
     func : Callable[[Node], Any]
-        The function to apply to each node in the tree.
+        The function to apply to each node in the tree. Note that you can raise
+        a StopTraverse exception to stop the traversal of the tree for any reason.
     """
     if _seen_nodes is None:
         _seen_nodes = []
 
     for node in nodes:
-        if node in _seen_nodes:
+        if id(node) in _seen_nodes:
             continue
 
         _seen_nodes.append(id(node))
-        traverse_tree_forward((node, ), func=lambda node: visit_all_connected((node, ), func=func, _seen_nodes=_seen_nodes))
-        traverse_tree_backward((node, ), func=lambda node: visit_all_connected((node, ), func=func, _seen_nodes=_seen_nodes))
+         
+        try:
+            func(node)
+        except StopTraverse:
+            continue
+        
+        def visit(visited_node):
+            if visited_node is node:
+                return
+            
+            visit_all_connected((visited_node, ), func=func, _seen_nodes=_seen_nodes)
+            raise StopTraverse
+        
+        traverse_tree_forward((node, ), func=visit )
+        traverse_tree_backward((node, ), func=visit)
 
 def nodify_module(module: ModuleType, node_class: Type[Node] = Node) -> ModuleType:
     """Returns a copy of a module where all functions are replaced with nodes.
