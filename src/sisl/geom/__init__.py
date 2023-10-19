@@ -51,3 +51,4 @@ from .nanoribbon import *
 from .nanotube import *
 from .special import *
 from .surfaces import *
+from .neighs import *
