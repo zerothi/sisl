@@ -1,19 +1,10 @@
 """File meant to be compiled with Cython so that operations are much faster."""
 from __future__ import annotations
 
-try:
-    import cython
+import cython
 
-    from cython.cimports.libc.math import sqrt as SQRT
-    # This little trick is because cython does not allow you
-    # to have an statement that sets an imported variable.
-    # If we directly import sqrt, then it fails because of the
-    # statement in the except clause (weird).
-    sqrt = SQRT
-    # This enables Cython enhanced compatibilities
-    import cython.cimports.numpy as cnp
-except ImportError:
-    sqrt = lambda x: x**0.5
+from cython.cimports.libc.math import sqrt
+import cython.cimports.numpy as cnp
 
 import numpy as np
 
