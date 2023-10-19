@@ -381,7 +381,6 @@ def get_all_unique_pairs(indices: cnp.int64_t[:, :], iscs: cnp.int64_t[:, :, :],
                 # Get the next atom in this bin. Sum 1 to get fortran index.
                 neigh_at = list_array[neigh_at]
 
-    print(np.asarray(neighs[:i_pair + 1]), i_pair)
     # Return the array of neighbours, but only the filled part
     return np.asarray(neighs[:i_pair + 1]), i_pair
 
