@@ -1,12 +1,25 @@
-cimport cython
-from libc.math cimport sqrt
+"""File meant to be compiled with Cython so that operations are much faster."""
+from __future__ import annotations
+
+try:
+    import cython
+
+    from cython.cimports.libc.math import sqrt as SQRT
+    # This little trick is because cython does not allow you
+    # to have an statement that sets an imported variable.
+    # If we directly import sqrt, then it fails because of the
+    # statement in the except clause (weird).
+    sqrt = SQRT
+    # This enables Cython enhanced compatibilities
+    import cython.cimports.numpy as cnp
+except ImportError:
+    sqrt = lambda x: x**0.5
 
 import numpy as np
-# This enables Cython enhanced compatibilities
-cimport numpy as np
+
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def build_table(np.int64_t nbins, np.int64_t[:] bin_indices):
+def build_table(nbins: cnp.int64_t, bin_indices: cnp.int64_t[:]):
     """Builds the table where the location of all atoms is encoded
     
     Additionally, it also builds an array with the number of atoms at
@@ -33,19 +46,14 @@ def build_table(np.int64_t nbins, np.int64_t[:] bin_indices):
     counts:
         For each bin, the number of atoms that it contains.
     """
-    cdef:
-        np.int64_t at, bin_index
-    
-        np.int64_t Nat = bin_indices.shape[0]
-    
-        # Initialize heads and counts arrays. We don't need to initialize the list array
-        # since we are going to modify all its positions.
-        np.int64_t[:] list_array = np.zeros(Nat, dtype=np.int64)
-        np.int64_t[:] counts = np.zeros(nbins, dtype=np.int64)
-        np.int64_t[:] heads = np.ones(nbins, dtype=np.int64) * -1  
+    n_atoms = bin_indices.shape[0]
+
+    list_array: cnp.int64_t[:] = np.zeros(n_atoms, dtype=np.int64)
+    counts: cnp.int64_t[:] = np.zeros(nbins, dtype=np.int64)
+    heads: cnp.int64_t[:] = np.full(nbins, -1, dtype=np.int64)
     
     # Loop through all atoms
-    for at in range(Nat):
+    for at in range(n_atoms):
         # Get the index of the bin where this atom is located.
         bin_index = bin_indices[at]
         
@@ -63,10 +71,10 @@ def build_table(np.int64_t nbins, np.int64_t[:] bin_indices):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def get_pairs(np.int64_t[:] at_indices, np.int64_t[:, :] indices, np.int64_t[:, :, :] iscs, 
-    np.int64_t[:] heads, np.int64_t[:] list_array, np.int64_t max_npairs,
-    bint self_interaction, np.float64_t[:, :] xyz, np.float64_t[:, :] cell, 
-    np.npy_bool[:] pbc, np.float64_t[:] thresholds, bint sphere_overlap):
+def get_pairs(at_indices: cnp.int64_t[:], indices: cnp.int64_t[:, :], iscs: cnp.int64_t[:, :, :], 
+    heads: cnp.int64_t[:], list_array: cnp.int64_t[:], max_npairs: cnp.int64_t,
+    self_interaction: cython.bint, xyz: cnp.float64_t[:, :], cell: cnp.float64_t[:, :], 
+    pbc: cnp.npy_bool[:], thresholds: cnp.float64_t[:], sphere_overlap: cython.bint):
     """Gets (possibly duplicated) pairs of neighbour atoms.
     
     Parameters
@@ -124,20 +132,15 @@ def get_pairs(np.int64_t[:] at_indices, np.int64_t[:, :] indices, np.int64_t[:, 
         for each 8 bin search. It can be used later to quickly
         split `neighs` on the multiple individual searches.
     """
-    cdef:
-        int N_ind = at_indices.shape[0]
+    N_ind = at_indices.shape[0]
 
-        int i_pair = 0
-        int search_index, at, j
-        bint not_unit_cell, should_not_check
-        np.int64_t neigh_at, bin_index
-        np.float64_t threshold, dist
+    i_pair: cython.int = 0
         
-        np.float64_t[:] ref_xyz = np.zeros(3, dtype=np.float64)
-        np.int64_t[:] neigh_isc = np.zeros(3, dtype=np.int64)
-    
-        np.int64_t[:,:] neighs = np.zeros((max_npairs, 5), dtype=np.int64)
-        np.int64_t[:] split_indices = np.zeros(N_ind, dtype=np.int64)
+    ref_xyz: cnp.float64_t[:]  = np.zeros(3, dtype=np.float64)
+    neigh_isc: cnp.int64_t[:] = np.zeros(3, dtype=np.int64)
+
+    neighs: cnp.int64_t[:,:] = np.zeros((max_npairs, 5), dtype=np.int64)
+    split_indices: cnp.int64_t[:] = np.zeros(N_ind, dtype=np.int64)
 
     for search_index in range(N_ind):
         at = at_indices[search_index]
@@ -147,7 +150,7 @@ def get_pairs(np.int64_t[:] at_indices, np.int64_t[:, :] indices, np.int64_t[:, 
             bin_index = indices[search_index, j]
 
             # Get the first atom index in this bin
-            neigh_at = heads[bin_index]
+            neigh_at: cnp.int64_t = heads[bin_index]
 
             # If there are no atoms in this bin, do not even bother
             # checking supercell indices.
@@ -158,7 +161,7 @@ def get_pairs(np.int64_t[:] at_indices, np.int64_t[:, :] indices, np.int64_t[:, 
             neigh_isc[:] = iscs[search_index, j, :]
             
             # And check if this bin corresponds to the unit cell
-            not_unit_cell = neigh_isc[0] != 0 or neigh_isc[1] != 0 or neigh_isc[2] != 0
+            not_unit_cell: cython.bint = neigh_isc[0] != 0 or neigh_isc[1] != 0 or neigh_isc[2] != 0
 
             ref_xyz[:] = xyz[at, :]
             if not_unit_cell:
@@ -188,13 +191,13 @@ def get_pairs(np.int64_t[:] at_indices, np.int64_t[:, :] indices, np.int64_t[:, 
                 
                 # Calculate the distance between the atom and the potential
                 # neighbor.
-                dist = 0.0
+                dist: float = 0.0
                 for i in range(3):
                     dist += (xyz[neigh_at, i] - ref_xyz[i])**2
                 dist = sqrt(dist)
 
                 # Get the threshold for this pair of atoms
-                threshold = thresholds[at]
+                threshold: float = thresholds[at]
                 if sphere_overlap:
                     # If the user wants to check for sphere overlaps, we have
                     # to sum the radius of the neighbor to the threshold
@@ -221,10 +224,10 @@ def get_pairs(np.int64_t[:] at_indices, np.int64_t[:, :] indices, np.int64_t[:, 
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def get_all_unique_pairs(np.int64_t[:, :] indices, np.int64_t[:, :, :] iscs, 
-    np.int64_t[:] heads, np.int64_t[:] list_array, np.int64_t max_npairs,
-    bint self_interaction, np.float64_t[:, :] xyz, np.float64_t[:, :] cell, 
-    np.npy_bool[:] pbc, np.float64_t[:] thresholds, bint sphere_overlap):
+def get_all_unique_pairs(indices: cnp.int64_t[:, :], iscs: cnp.int64_t[:, :, :], 
+    heads: cnp.int64_t[:], list_array: cnp.int64_t[:],  max_npairs: cnp.int64_t,
+    self_interaction: cython.bint, xyz: cnp.float64_t[:, :], cell: cnp.float64_t[:, :], 
+    pbc: cnp.npy_bool[:], thresholds: cnp.float64_t[:], sphere_overlap: cython.bint):
     """Gets all unique pairs of atoms that are neighbours.
     
     Parameters
@@ -282,27 +285,33 @@ def get_all_unique_pairs(np.int64_t[:, :] indices, np.int64_t[:, :, :] iscs,
         will be less than `max_npairs`. This should presumably
         be used to slice the `neighs` array once in python.
     """
-    cdef:
-        int N_ats = list_array.shape[0]
-
-        int i_pair = 0
-        int at, j
-        bint not_unit_cell, should_not_check
-        np.int64_t neigh_at, bin_index
-        np.float64_t threshold, dist
-        
-        np.float64_t[:] ref_xyz = np.zeros(3, dtype=np.float64)
-        np.int64_t[:] neigh_isc = np.zeros(3, dtype=np.int64)
     
-        np.int64_t[:,:] neighs = np.zeros((max_npairs, 5), dtype=np.int64)
+    N_ats = list_array.shape[0]
+
+    i_pair: cython.int = 0
+        
+    ref_xyz: cnp.float64_t[:] = np.zeros(3, dtype=np.float64)
+    neigh_isc: cnp.int64_t[:] = np.zeros(3, dtype=np.int64)
+
+    neighs: cnp.int64_t[:,:] = np.zeros((max_npairs, 5), dtype=np.int64)
 
     for at in range(N_ats):
+
+        if self_interaction:
+            # Add the self interaction
+            neighs[i_pair, 0] = at
+            neighs[i_pair, 1] = at
+            neighs[i_pair, 2:] = 0
+            
+            # Increment the pair index
+            i_pair = i_pair + 1
+
         for j in range(8):
             # Find the bin index.
             bin_index = indices[at, j]
 
             # Get the first atom index in this bin
-            neigh_at = heads[bin_index]
+            neigh_at: cnp.int64_t = heads[bin_index]
 
             # If there are no atoms in this bin, do not even bother
             # checking supercell indices.
@@ -313,7 +322,7 @@ def get_all_unique_pairs(np.int64_t[:, :] indices, np.int64_t[:, :, :] iscs,
             neigh_isc[:] = iscs[at, j, :]
             
             # And check if this bin corresponds to the unit cell
-            not_unit_cell = neigh_isc[0] != 0 or neigh_isc[1] != 0 or neigh_isc[2] != 0
+            not_unit_cell: cython.bint = neigh_isc[0] != 0 or neigh_isc[1] != 0 or neigh_isc[2] != 0
 
             ref_xyz[:] = xyz[at, :]
             if not_unit_cell:
@@ -346,13 +355,13 @@ def get_all_unique_pairs(np.int64_t[:, :] indices, np.int64_t[:, :, :] iscs,
 
                 # Calculate the distance between the atom and the potential
                 # neighbor.
-                dist = 0.0
+                dist: float = 0.0
                 for i in range(3):
                     dist += (xyz[neigh_at, i] - ref_xyz[i])**2
                 dist = sqrt(dist)
 
                 # Get the threshold for this pair of atoms
-                threshold = thresholds[at]
+                threshold: float = thresholds[at]
                 if sphere_overlap:
                     # If the user wants to check for sphere overlaps, we have
                     # to sum the radius of the neighbor to the threshold
@@ -371,25 +380,17 @@ def get_all_unique_pairs(np.int64_t[:, :] indices, np.int64_t[:, :, :] iscs,
 
                 # Get the next atom in this bin. Sum 1 to get fortran index.
                 neigh_at = list_array[neigh_at]
-            
-            if j == 1 and self_interaction:
-                # Add the self interaction
-                neighs[i_pair, 0] = at
-                neighs[i_pair, 1] = neigh_at
-                neighs[i_pair, 2:] = 0
-                
-                # Increment the pair index
-                i_pair = i_pair + 1
 
+    print(np.asarray(neighs[:i_pair + 1]), i_pair)
     # Return the array of neighbours, but only the filled part
     return np.asarray(neighs[:i_pair + 1]), i_pair
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def get_close(np.float64_t[:, :] search_xyz, np.int64_t[:, :] indices, np.int64_t[:, :, :] iscs, 
-    np.int64_t[:] heads, np.int64_t[:] list_array, np.int64_t max_npairs,
-    np.float64_t[:, :] xyz, np.float64_t[:, :] cell, 
-    np.npy_bool[:] pbc, np.float64_t[:] thresholds):
+def get_close(search_xyz: cnp.float64_t[:, :], indices: cnp.int64_t[:, :], iscs: cnp.int64_t[:, :, :], 
+    heads: cnp.int64_t[:], list_array: cnp.int64_t[:], max_npairs: cnp.int64_t,
+    xyz: cnp.float64_t[:, :], cell: cnp.float64_t[:, :], 
+    pbc: cnp.npy_bool[:], thresholds: cnp.float64_t[:]):
     """Gets the atoms that are close to given positions
     
     Parameters
@@ -447,20 +448,16 @@ def get_close(np.float64_t[:, :] search_xyz, np.int64_t[:, :] indices, np.int64_
         for each 8 bin search. It can be used later to quickly
         split `neighs` on the multiple individual searches.
     """
-    cdef:
-        int N_ind = search_xyz.shape[0]
-
-        int i_pair = 0
-        int search_index, j
-        bint not_unit_cell, should_not_check
-        np.int64_t neigh_at, bin_index
-        np.float64_t threshold, dist
-        
-        np.float64_t[:] ref_xyz = np.zeros(3, dtype=np.float64)
-        np.int64_t[:] neigh_isc = np.zeros(3, dtype=np.int64)
     
-        np.int64_t[:,:] neighs = np.zeros((max_npairs, 5), dtype=np.int64)
-        np.int64_t[:] split_indices = np.zeros(N_ind, dtype=np.int64)
+    N_ind = search_xyz.shape[0]
+
+    i_pair: cython.int = 0
+        
+    ref_xyz: cnp.float64_t[:] = np.zeros(3, dtype=np.float64)
+    neigh_isc: cnp.int64_t[:] = np.zeros(3, dtype=np.int64)
+
+    neighs: cnp.int64_t[:,:] = np.zeros((max_npairs, 5), dtype=np.int64)
+    split_indices: cnp.int64_t[:] = np.zeros(N_ind, dtype=np.int64)
 
     for search_index in range(N_ind):
         for j in range(8):
@@ -468,7 +465,7 @@ def get_close(np.float64_t[:, :] search_xyz, np.int64_t[:, :] indices, np.int64_
             bin_index = indices[search_index, j]
 
             # Get the first atom index in this bin
-            neigh_at = heads[bin_index]
+            neigh_at: cnp.int64_t = heads[bin_index]
 
             # If there are no atoms in this bin, do not even bother
             # checking supercell indices.
@@ -479,7 +476,7 @@ def get_close(np.float64_t[:, :] search_xyz, np.int64_t[:, :] indices, np.int64_
             neigh_isc[:] = iscs[search_index, j, :]
             
             # And check if this bin corresponds to the unit cell
-            not_unit_cell = neigh_isc[0] != 0 or neigh_isc[1] != 0 or neigh_isc[2] != 0
+            not_unit_cell: cython.bint = neigh_isc[0] != 0 or neigh_isc[1] != 0 or neigh_isc[2] != 0
 
             ref_xyz[:] = search_xyz[search_index, :]
             if not_unit_cell:
@@ -503,13 +500,13 @@ def get_close(np.float64_t[:, :] search_xyz, np.int64_t[:, :] indices, np.int64_
             while neigh_at >= 0:
                 # Calculate the distance between the atom and the potential
                 # neighbor.
-                dist = 0.0
+                dist: float = 0.0
                 for i in range(3):
                     dist += (xyz[neigh_at, i] - ref_xyz[i])**2
                 dist = sqrt(dist)
 
                 # Get the threshold for the potential neighbour
-                threshold = thresholds[neigh_at]
+                threshold: float = thresholds[neigh_at]
                 
                 if dist < threshold:
                     # Store the pair of neighbours.

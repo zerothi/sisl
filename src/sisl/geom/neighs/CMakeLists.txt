@@ -6,11 +6,9 @@ set_property(DIRECTORY
   ${CMAKE_CURRENT_SOURCE_DIR}/..
   )
 
-foreach(source 
-    cneighs
-    )
+foreach(source _neigh_operations)
   add_cython_library(
-    SOURCE ${source}.pyx
+    SOURCE ${source}.py
     LIBRARY ${source}
     OUTPUT ${source}_C
     )

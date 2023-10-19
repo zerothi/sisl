@@ -1,9 +1,12 @@
+from typing import Optional, Sequence, Tuple, Union
+
 import numpy as np
 from numbers import Real
 
+from sisl.typing import AtomsArgument
+from sisl import Geometry
 from sisl.utils.mathematics import fnorm
-from . import _fneighs
-from . import cneighs
+from . import _neigh_operations
 
 
 class NeighFinder:
@@ -38,15 +41,32 @@ class NeighFinder:
         If not provided, it will be `True` if `R` is an array and `False` if
         it is a single float.
     """
-    def __init__(self, geometry, R=None, sphere_overlap=None, fortran=True):
-        if fortran:
-            self._fneighs = _fneighs
-        else:
-            self._fneighs = cneighs
 
+    geometry: Geometry
+
+    nbins: Tuple[int, int, int]
+    total_nbins: int
+
+    _R: Union[float, np.ndarray]
+    _sphere_overlap: bool
+
+    # Data structure
+    _list: np.ndarray # (natoms, )
+    _heads: np.ndarray # (total_nbins, )
+    _counts: np.ndarray # (total_nbins, )
+
+    def __init__(self, 
+        geometry: Geometry, 
+        R: Union[float, np.ndarray, None] = None,
+        sphere_overlap: Optional[bool] = None
+    ):
         self.setup_finder(geometry, R=R, sphere_overlap=sphere_overlap)
         
-    def setup_finder(self, geometry=None, R=None, sphere_overlap=None):
+    def setup_finder(self, 
+        geometry: Optional[Geometry] = None, 
+        R: Union[float, np.ndarray, None] = None, 
+        sphere_overlap: Optional[bool] = None
+    ):
         """Prepares everything for neighbour finding.
         
         Parameters
@@ -84,7 +104,7 @@ class NeighFinder:
             R = np.array(R)
         # If R was not provided, build an array of Rs
         if R is None:
-            R = geometry.atoms.maxR(all=True)
+            R = self.geometry.atoms.maxR(all=True)
         
         # Set the radius
         self._R = R
@@ -111,8 +131,8 @@ class NeighFinder:
         bin_size += 0.01
         
         # Get the number of bins along each cell direction.
-        nbins_float = fnorm(geometry.cell, axis=-1) / bin_size
-        self.nbins = np.floor(nbins_float).astype(int)
+        nbins_float = fnorm(self.geometry.cell, axis=-1) / bin_size
+        self.nbins = tuple(np.floor(nbins_float).astype(int))
         self.total_nbins = np.prod(self.nbins)
 
         if self.total_nbins == 0:
@@ -145,7 +165,26 @@ class NeighFinder:
             Array containing the scalar bin index for each atom.
         """
         # Call the fortran routine that builds the table
-        self._list, self._heads, self._counts = self._fneighs.build_table(self.total_nbins, bin_indices)
+        self._list, self._heads, self._counts = _neigh_operations.build_table(self.total_nbins, bin_indices)
+
+    def assert_consistency(self):
+        """Asserts that the data structure (self._list, self._heads, self._counts) is consistent.
+        
+        It also stores that the shape is consistent with the stored geometry and the store total_nbins.
+        """
+        # Check shapes
+        assert self._list.shape == (self.geometry.na, )
+        assert self._counts.shape == self._heads.shape == (self.total_nbins, )
+
+        # Check values
+        for i_bin, bin_count in enumerate(self._counts):
+            count = 0
+            head = self._heads[i_bin]
+            while head != -1:
+                count += 1
+                head = self._list[head]
+            
+            assert count == bin_count, f"Bin {i_bin} has {bin_count} atoms but we found {count} atoms"
     
     def _get_search_atom_counts(self, scalar_bin_indices):
         """Computes the number of atoms that will be explored for each search
@@ -268,7 +307,12 @@ class NeighFinder:
         second, first = np.divmod(index, self.nbins[0])
         return np.array([first, second, third]).T
 
-    def find_neighbours(self, atoms=None, as_pairs=False, self_interaction=False, pbc=(True, True, True)):
+    def find_neighbours(self, 
+        atoms: AtomsArgument = None, 
+        as_pairs: bool = False, 
+        self_interaction: bool = False, 
+        pbc: Union[bool, Tuple[bool, bool, bool]] = (True, True, True)
+    ):
         """Find neighbours as specified in the finder.
         
         This routine only executes the action of finding neighbours,
@@ -306,7 +350,7 @@ class NeighFinder:
 
         # Cast R and pbc into arrays of appropiate shape and type.
         thresholds = np.full(self.geometry.na, self._R, dtype=np.float64)
-        pbc = np.full(3, pbc, dtype=np.bool)
+        pbc = np.full(3, pbc, dtype=bool)
         
         # Get search indices
         search_indices, isc = self._get_search_indices(self.geometry.fxyz[atoms], cartesian=False)
@@ -319,7 +363,7 @@ class NeighFinder:
             max_pairs -= search_indices.shape[0]
         
         # Find the neighbour pairs
-        neighbour_pairs, split_ind  = self._fneighs.get_pairs(
+        neighbour_pairs, split_ind  = _neigh_operations.get_pairs(
             atoms, search_indices, isc, self._heads, self._list, max_pairs, self_interaction,
             self.geometry.xyz, self.geometry.cell, pbc, thresholds, self._sphere_overlap
         )
@@ -331,7 +375,10 @@ class NeighFinder:
             # Split to get the neighbours of each atom
             return np.split(neighbour_pairs[:, 1:], split_ind, axis=0)[:-1]
 
-    def find_all_unique_pairs(self, self_interaction=False, pbc=(True, True, True)):
+    def find_all_unique_pairs(self, 
+        self_interaction: bool = False, 
+        pbc: Union[bool, Tuple[bool, bool, bool]] = (True, True, True)
+    ):
         """Find all unique neighbour pairs within the geometry.
 
         A pair of atoms is considered unique if atoms have the same index
@@ -372,7 +419,7 @@ class NeighFinder:
         
         # Cast R and pbc into arrays of appropiate shape and type.
         thresholds = np.full(self.geometry.na, self._R, dtype=np.float64)
-        pbc = np.full(3, pbc, dtype=np.bool)
+        pbc = np.full(3, pbc, dtype=bool)
 
         # Get search indices
         search_indices, isc = self._get_search_indices(self.geometry.fxyz, cartesian=False)
@@ -385,14 +432,18 @@ class NeighFinder:
             max_pairs -= search_indices.shape[0]
 
         # Find the candidate pairs
-        candidate_pairs, n_pairs = self._fneighs.get_all_unique_pairs(
+        candidate_pairs, n_pairs = _neigh_operations.get_all_unique_pairs(
             search_indices, isc, self._heads, self._list, max_pairs, self_interaction,
             self.geometry.xyz, self.geometry.cell, pbc, thresholds, self._sphere_overlap
         )
         
         return candidate_pairs[:n_pairs]
 
-    def find_close(self, xyz, as_pairs=False, pbc=(True, True, True)):
+    def find_close(self, 
+        xyz: Sequence, 
+        as_pairs: bool = False, 
+        pbc: Union[bool, Tuple[bool, bool, bool]] = (True, True, True)
+    ):
         """Find all atoms that are close to some coordinates in space.
         
         This routine only executes the action of finding neighbours,
@@ -423,7 +474,7 @@ class NeighFinder:
         """
         # Cast R and pbc into arrays of appropiate shape and type.
         thresholds = np.full(self.geometry.na, self._R, dtype=np.float64)
-        pbc = np.full(3, pbc, dtype=np.bool)
+        pbc = np.full(3, pbc, dtype=bool)
         
         xyz = np.atleast_2d(xyz)
         # Get search indices
@@ -435,7 +486,7 @@ class NeighFinder:
         max_pairs = at_counts.sum()
         
         # Find the neighbour pairs
-        neighbour_pairs, split_ind  = self._fneighs.get_close(
+        neighbour_pairs, split_ind  = _neigh_operations.get_close(
             xyz, search_indices, isc, self._heads, self._list, max_pairs,
             self.geometry.xyz, self.geometry.cell, pbc, thresholds
         )
@@ -446,154 +497,3 @@ class NeighFinder:
         else:
             # Split to get the neighbours of each position
             return np.split(neighbour_pairs[:, 1:], split_ind, axis=0)[:-1]
-        return
-
-    def find_neighbours_old(self, atoms=None, as_pairs=False, self_interaction=False):
-        """Find neighbours as specified in the finder.
-        
-        This routine only executes the action of finding neighbours,
-        the parameters of the search (`geometry`, `R`, `sphere_overlap`...)
-        are defined when the finder is initialized or by calling `setup_finder`.
-
-        Parameters
-        ----------
-        atoms: optional
-            the atoms for which neighbours are desired. Anything that can
-            be sanitized by `sisl.Geometry` is a valid value.
-
-            If not provided, neighbours for all atoms are searched.
-        as_pairs: bool, optional
-            If `True` pairs of atoms are returned. Otherwise a list containing
-            the neighbours for each atom is returned.
-        self_interaction: bool, optional
-            whether to consider an atom a neighbour of itself.
-        
-        Returns
-        ----------
-        np.ndarray or list:
-            If `as_pairs=True`:
-                A `np.ndarray` of shape (n_pairs, 2) is returned. Each pair `ij`
-                means that `j` is a neighbour of `i`.
-            If `as_pairs=False`:
-                A list containing a numpy array of shape (n_neighs) for each atom.
-        """
-        # Sanitize atoms
-        atoms = self.geometry._sanitize_atoms(atoms)
-        
-        # Get search indices
-        search_indices, isc = self._get_search_indices(self.geometry.fxyz[atoms], cartesian=False)
-        
-        # Get atom counts
-        at_counts = self._get_search_atom_counts(search_indices)
-
-        total_pairs = at_counts.sum()
-        if not self_interaction:
-            total_pairs -= search_indices.shape[0]
-        
-        # Find the candidate pairs
-        candidate_pairs, split_ind  = self._fneighs.get_pairs_old(atoms, search_indices, self._heads, self._list, total_pairs, self_interaction)
-        
-        if as_pairs:
-            # Just returned the filtered pairs
-            return self._filter_pairs(candidate_pairs)
-        else:
-            # Get the mask to filter
-            mask = self._filter_pairs(candidate_pairs, return_mask=True)
-            
-            # Split both the neighbours and mask and then filter each array
-            candidate_pairs[:, 0] = mask
-            return [at_pairs[:, 1][at_pairs[:,0].astype(bool)] for at_pairs in np.split(candidate_pairs, split_ind[:-1])]
-    
-    def find_all_unique_pairs_old(self, self_interaction=False):
-        """Find all unique neighbour pairs within the geometry.
-        
-        Note that this routine can not be called if `sphere_overlap` is
-        set to `False` and the radius is not a single float. In that case,
-        there is no way of defining "uniqueness" since pair `ij` can have
-        a different threshold radius than pair `ji`.
-
-        Parameters
-        ----------
-        atoms: optional
-            the atoms for which neighbours are desired. Anything that can
-            be sanitized by `sisl.Geometry` is a valid value.
-
-            If not provided, neighbours for all atoms are searched.
-        as_pairs: bool, optional
-            If `True` pairs of atoms are returned. Otherwise a list containing
-            the neighbours for each atom is returned.
-        self_interaction: bool, optional
-            whether to consider an atom a neighbour of itself.
-        
-        Returns
-        ----------
-        np.ndarray or list:
-            If `as_pairs=True`:
-                A `np.ndarray` of shape (n_pairs, 2) is returned. Each pair `ij`
-                means that `j` is a neighbour of `i`.
-            If `as_pairs=False`:
-                A list containing a numpy array of shape (n_neighs) for each atom.
-        """
-        if not self._sphere_overlap and not isinstance(self._R, Real):
-            raise ValueError("Unique atom pairs do not make sense if we are not looking for sphere overlaps."
-                " Please setup the finder again setting `sphere_overlap` to `True` if you wish so.")
-
-        # Get search indices
-        search_indices, isc = self._get_search_indices(self.geometry.fxyz, cartesian=False)
-        
-        # Get atom counts
-        at_counts = self._get_search_atom_counts(search_indices)
-
-        max_pairs = at_counts.sum()
-        if not self_interaction:
-            max_pairs -= search_indices.shape[0]
-        
-        # Find the candidate pairs
-        candidate_pairs, n_pairs = self._fneighs.get_all_unique_pairs_old(search_indices, self._heads, self._list, max_pairs, self_interaction)
-        candidate_pairs = candidate_pairs[:n_pairs]
-        
-        # Filter them and return them.
-        return self._filter_pairs(candidate_pairs)
-
-    def _filter_pairs(self, candidate_pairs, return_mask=False):
-        """Filters candidate neighbour pairs.
-        
-        It does so according to the parameters (`geometry`, `R`, `sphere_overlap`...)
-        with which the finder was setup.
-
-        Parameters
-        ----------
-        candidate_pairs: np.ndarray of shape (n_pairs, 2)
-            The candidate atom pairs.
-        return_mask: bool, optional
-            Whether to return the filtering mask.
-            If `True`, the filtering is not performed. This function will just
-            return the mask.
-
-        Returns
-        ----------
-        np.ndarray:
-            If `return_mask=True`:
-                The filtering mask, a boolean array of shape (n_pairs,).
-            If `return_mask=False`:
-                The filtered neighbour pairs. An integer array of shape (n_filtered, 2)
-        """
-        
-        if isinstance(self._R, Real):
-            thresh = self._R
-            if self._sphere_overlap:
-                thresh *= 2
-        else:
-            thresh = self._R[candidate_pairs[:, 0]] 
-            if self._sphere_overlap:
-                thresh += self._R[candidate_pairs[:, 1]]
-
-        dists = fnorm(
-            self.geometry.xyz[candidate_pairs[:, 0]] - self.geometry.xyz[candidate_pairs[:, 1]],
-        axis=-1)
-        
-        mask = dists < thresh
-        
-        if return_mask:
-            return mask
-        return candidate_pairs[mask]
