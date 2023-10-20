@@ -81,11 +81,11 @@ def test_neighfinder_setup(sphere_overlap, multiR, post_setup):
 
     # Check that R is properly set when its a scalar and an array.
     if multiR:
-        assert isinstance(finder._R, np.ndarray)
-        assert np.all(finder._R == R)
+        assert isinstance(finder.R, np.ndarray)
+        assert np.all(finder.R == R)
     else:
-        assert isinstance(finder._R, float)
-        assert finder._R == R
+        assert isinstance(finder.R, float)
+        assert finder.R == R
 
     # Assert that we have stored a copy of the geometry
     assert isinstance(finder.geometry, Geometry)
@@ -149,7 +149,7 @@ def test_neighbours_lists(neighfinder, self_interaction, pbc, expected_neighs):
 
 def test_all_unique_pairs(neighfinder, self_interaction, pbc, expected_neighs):
 
-    if isinstance(neighfinder._R, np.ndarray) and not neighfinder._sphere_overlap:
+    if isinstance(neighfinder.R, np.ndarray) and not neighfinder._sphere_overlap:
         with pytest.raises(ValueError):
             neighfinder.find_all_unique_pairs(self_interaction=self_interaction, pbc=pbc)
         return
@@ -172,21 +172,12 @@ def test_all_unique_pairs(neighfinder, self_interaction, pbc, expected_neighs):
                 unique_neighs.append(neigh_pair)
 
     assert neighs.shape == (len(unique_neighs), 5)
-    return
-
-    # Check that supercell indices are all 0
-    assert np.all(neighs[:, 2:] == 0)
-
-    # Check that the atom indices are correct
-    expected_neighs = [[0, 1]] if not self_interaction else [[0, 0], [0, 1], [1, 1]]
-
-    assert np.all(neighs[:, :2] == expected_neighs)
 
 def test_close(neighfinder, pbc):
     neighs = neighfinder.find_close([0.3, 0, 0], as_pairs=True, pbc=pbc)
 
     expected_neighs = [[0, 1, 0, 0, 0], [0, 0, 0, 0, 0]]
-    if pbc and isinstance(neighfinder._R, float):
+    if pbc and isinstance(neighfinder.R, float):
         expected_neighs.append([0, 2, -1, 0, 0])
 
     assert neighs.shape == (len(expected_neighs), 5)
@@ -229,8 +220,21 @@ def test_R_too_big(pbc):
 
     expected_neighs = [[0, 1, 0, 0, 0]]
     if pbc:
-        expected_neighs.append([1, 0,  1, 0, 0])
         expected_neighs.append([0, 1, -1, 0, 0])
+        expected_neighs.append([1, 0,  1, 0, 0])
+
+    assert neighs.shape == (len(expected_neighs), 5)
+    assert np.all(neighs == expected_neighs)
+
+    neighfinder = NeighFinder(geom, R=[0.6, 2.2])
+
+    neighs = neighfinder.find_close([[0.5, 0, 0]], as_pairs=True, pbc=pbc)
+
+    expected_neighs = [[0, 1, 0, 0, 0], [0, 0, 0, 0, 0]]
+    if pbc:
+        expected_neighs.insert(0, [0, 1, -1, 0, 0])
+
+    print(neighs, expected_neighs)
 
     assert neighs.shape == (len(expected_neighs), 5)
     assert np.all(neighs == expected_neighs)

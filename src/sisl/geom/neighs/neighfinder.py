@@ -1,5 +1,7 @@
 from typing import Optional, Sequence, Tuple, Union
 
+import itertools
+
 import numpy as np
 from numbers import Real
 
@@ -7,7 +9,6 @@ from sisl.typing import AtomsArgument
 from sisl import Geometry
 from sisl.utils.mathematics import fnorm
 from . import _neigh_operations
-
 
 class NeighFinder:
     """Efficient linear scaling finding of neighbours.
@@ -43,11 +44,15 @@ class NeighFinder:
     """
 
     geometry: Geometry
+    # Geometry actually used for binning. Can be the provided geometry
+    # or a tiled geometry if the search radius is too big (compared to the lattice size).
+    _bins_geometry: Geometry
 
     nbins: Tuple[int, int, int]
     total_nbins: int
 
-    _R: Union[float, np.ndarray]
+    R: Union[float, np.ndarray]
+    _aux_R: Union[float, np.ndarray] # If the geometry has been tiled, R is also tiled here
     _sphere_overlap: bool
 
     # Data structure
@@ -107,7 +112,8 @@ class NeighFinder:
             R = self.geometry.atoms.maxR(all=True)
         
         # Set the radius
-        self._R = R
+        self.R = R
+        self._aux_R = R
         
         # If sphere overlap was not provided, set it to False if R is a single float
         # and True otherwise.
@@ -117,7 +123,7 @@ class NeighFinder:
 
         # Determine the bin_size as the maximum DIAMETER to ensure that we ALWAYS
         # only need to look one bin away for neighbors.
-        bin_size = np.max(self._R) * 2
+        bin_size = np.max(self.R) * 2
         # Check that the bin size is positive.
         if bin_size <= 0:
             raise ValueError("All R values are 0 or less. Please provide some positive values")
@@ -129,28 +135,43 @@ class NeighFinder:
         # We add a small amount to bin_size to avoid ambiguities when
         # a position is exactly at the center of a bin.
         bin_size += 0.01
-        
-        # Get the number of bins along each cell direction.
-        nbins_float = fnorm(self.geometry.cell, axis=-1) / bin_size
-        self.nbins = tuple(np.floor(nbins_float).astype(int))
-        self.total_nbins = np.prod(self.nbins)
 
-        if self.total_nbins == 0:
+        lattice_sizes = fnorm(self.geometry.cell, axis=-1)
+        
+        if bin_size > np.min(lattice_sizes):
+            self._R_too_big = True
             # This means that nsc must be at least 5.
 
-            # We round 1/nbins (i.e. the amount of cells needed in each direction)
+            # We round the amount of cells needed in each direction
             # to the closest next odd number.
-            nsc = np.ceil(1/nbins_float) // 2 * 2 + 1
+            nsc = np.ceil(bin_size / lattice_sizes) // 2 * 2 + 1
             # And then set it as the number of supercells.
             self.geometry.set_nsc(nsc.astype(int))
-            raise ValueError(
-                "The diameter occupies more space than the whole unit cell,"
-                "which means that we need to look for neighbours more than one unit cell away."
-                f"This is not yet supported by {self.__class__.__name__}"
-            )
+            if isinstance(self._aux_R, np.ndarray):
+                self._aux_R = np.tile(self._aux_R, self.geometry.n_s)
+
+            all_xyz = []
+            for isc in self.geometry.sc_off:
+                ats_xyz = self.geometry.axyz(isc=isc)
+                all_xyz.append(ats_xyz)
+
+            self._bins_geometry = Geometry(np.concatenate(all_xyz), atoms=self.geometry.atoms)
+
+            # Recompute lattice sizes
+            lattice_sizes = fnorm(self._bins_geometry.cell, axis=-1)
+
+        else:
+            # Nothing to modify, we can use the geometry and bin it as it is.
+            self._R_too_big = False
+            self._bins_geometry = self.geometry
+        
+        # Get the number of bins along each cell direction.
+        nbins_float = lattice_sizes / bin_size
+        self.nbins = tuple(np.floor(nbins_float).astype(int))
+        self.total_nbins = np.prod(self.nbins)
         
         # Get the scalar bin indices of all atoms
-        scalar_bin_indices = self._get_bin_indices(self.geometry.fxyz)
+        scalar_bin_indices = self._get_bin_indices(self._bins_geometry.fxyz)
         
         # Build the tables that will allow us to look for neighbours in an efficient
         # and linear scaling manner.
@@ -173,7 +194,7 @@ class NeighFinder:
         It also stores that the shape is consistent with the stored geometry and the store total_nbins.
         """
         # Check shapes
-        assert self._list.shape == (self.geometry.na, )
+        assert self._list.shape == (self._bins_geometry.na, )
         assert self._counts.shape == self._heads.shape == (self.total_nbins, )
 
         # Check values
@@ -307,6 +328,40 @@ class NeighFinder:
         second, first = np.divmod(index, self.nbins[0])
         return np.array([first, second, third]).T
 
+    def _correct_pairs_R_too_big(self, 
+        neighbour_pairs: np.ndarray, # (n_pairs, 5)
+        split_ind: Union[int, np.ndarray], # (n_queried_atoms, )
+        pbc: np.ndarray # (3, )
+    ):
+        """Correction to atom and supercell indices when the binning has been done on a tiled geometry"""
+        is_sc_neigh = neighbour_pairs[:, 1] >= self.geometry.na
+
+        invalid = None
+        if not np.any(pbc):
+            invalid = is_sc_neigh
+        else:
+            pbc_neighs = neighbour_pairs.copy()
+
+            sc_neigh, uc_neigh = np.divmod(neighbour_pairs[:, 1][is_sc_neigh], self.geometry.na)
+            isc_neigh = self.geometry.sc_off[sc_neigh]
+
+            pbc_neighs[is_sc_neigh, 1] =  uc_neigh
+            pbc_neighs[is_sc_neigh, 2:] = isc_neigh
+
+            if not np.all(pbc):
+                invalid = pbc_neighs[:, 2:][:, ~ pbc].any(axis=1)
+            
+            neighbour_pairs = pbc_neighs
+
+        if invalid is not None:
+            neighbour_pairs = neighbour_pairs[~ invalid]
+            if isinstance(split_ind, int):
+                split_ind = split_ind - invalid.sum()
+            else:
+                split_ind = split_ind - np.cumsum(invalid)[split_ind - 1]
+
+        return neighbour_pairs, split_ind
+
     def find_neighbours(self, 
         atoms: AtomsArgument = None, 
         as_pairs: bool = False, 
@@ -349,7 +404,7 @@ class NeighFinder:
         atoms = self.geometry._sanitize_atoms(atoms)
 
         # Cast R and pbc into arrays of appropiate shape and type.
-        thresholds = np.full(self.geometry.na, self._R, dtype=np.float64)
+        thresholds = np.full(self._bins_geometry.na, self._aux_R, dtype=np.float64)
         pbc = np.full(3, pbc, dtype=bool)
         
         # Get search indices
@@ -363,10 +418,15 @@ class NeighFinder:
             max_pairs -= search_indices.shape[0]
         
         # Find the neighbour pairs
-        neighbour_pairs, split_ind  = _neigh_operations.get_pairs(
+        neighbour_pairs, split_ind = _neigh_operations.get_pairs(
             atoms, search_indices, isc, self._heads, self._list, max_pairs, self_interaction,
-            self.geometry.xyz, self.geometry.cell, pbc, thresholds, self._sphere_overlap
+            self._bins_geometry.xyz, self._bins_geometry.cell, pbc, thresholds, self._sphere_overlap
         )
+
+        # Correct neighbour indices for the case where R was too big and
+        # we needed to create an auxiliary supercell.
+        if self._R_too_big:
+            neighbour_pairs, split_ind = self._correct_pairs_R_too_big(neighbour_pairs, split_ind, pbc)
         
         if as_pairs:
             # Just return the neighbour pairs
@@ -413,12 +473,29 @@ class NeighFinder:
             Each pair `ij` means that `j` is a neighbour of `i`.
             The three extra columns are the supercell indices of atom `j`.
         """
-        if not self._sphere_overlap and not isinstance(self._R, Real):
+        if not self._sphere_overlap and not isinstance(self._aux_R, Real):
             raise ValueError("Unique atom pairs do not make sense if we are not looking for sphere overlaps."
                 " Please setup the finder again setting `sphere_overlap` to `True` if you wish so.")
         
+        # In the case where we tiled the geometry to do the binning, it is much better to 
+        # just find all neighbours and then drop duplicate connections. Otherwise it is a bit of a mess.
+        if self._R_too_big:
+            # Find all neighbours
+            all_neighbours = self.find_neighbours(as_pairs=True, self_interaction=self_interaction, pbc=pbc)
+
+            # Find out which of the pairs are uc connections
+            is_uc_neigh = ~ np.any(all_neighbours[:, 2:], axis=1)
+
+            # Create an array with unit cell connections where duplicates are removed
+            unique_uc = np.unique(np.sort(all_neighbours[is_uc_neigh][:, :2]), axis=0)
+            uc_neighbours = np.zeros((len(unique_uc), 5), dtype=int)
+            uc_neighbours[:, :2] = unique_uc
+
+            # Concatenate the uc connections with the rest of the connections.
+            return np.concatenate((uc_neighbours, all_neighbours[~is_uc_neigh]))
+
         # Cast R and pbc into arrays of appropiate shape and type.
-        thresholds = np.full(self.geometry.na, self._R, dtype=np.float64)
+        thresholds = np.full(self.geometry.na, self.R, dtype=np.float64)
         pbc = np.full(3, pbc, dtype=bool)
 
         # Get search indices
@@ -431,13 +508,13 @@ class NeighFinder:
         if not self_interaction:
             max_pairs -= search_indices.shape[0]
 
-        # Find the candidate pairs
-        candidate_pairs, n_pairs = _neigh_operations.get_all_unique_pairs(
+        # Find all unique neighbour pairs
+        neighbour_pairs, n_pairs = _neigh_operations.get_all_unique_pairs(
             search_indices, isc, self._heads, self._list, max_pairs, self_interaction,
             self.geometry.xyz, self.geometry.cell, pbc, thresholds, self._sphere_overlap
         )
-        
-        return candidate_pairs[:n_pairs]
+
+        return neighbour_pairs[:n_pairs]
 
     def find_close(self, 
         xyz: Sequence, 
@@ -473,12 +550,12 @@ class NeighFinder:
                 A list containing a numpy array of shape (n_neighs, 4) for each atom.
         """
         # Cast R and pbc into arrays of appropiate shape and type.
-        thresholds = np.full(self.geometry.na, self._R, dtype=np.float64)
+        thresholds = np.full(self._bins_geometry.na, self._aux_R, dtype=np.float64)
         pbc = np.full(3, pbc, dtype=bool)
         
         xyz = np.atleast_2d(xyz)
         # Get search indices
-        search_indices, isc = self._get_search_indices(xyz.dot(self.geometry.icell.T) % 1, cartesian=False)
+        search_indices, isc = self._get_search_indices(xyz.dot(self._bins_geometry.icell.T) % 1, cartesian=False)
         
         # Get atom counts
         at_counts = self._get_search_atom_counts(search_indices)
@@ -488,9 +565,14 @@ class NeighFinder:
         # Find the neighbour pairs
         neighbour_pairs, split_ind  = _neigh_operations.get_close(
             xyz, search_indices, isc, self._heads, self._list, max_pairs,
-            self.geometry.xyz, self.geometry.cell, pbc, thresholds
+            self._bins_geometry.xyz, self._bins_geometry.cell, pbc, thresholds
         )
-        
+
+        # Correct neighbour indices for the case where R was too big and
+        # we needed to create an auxiliary supercell.
+        if self._R_too_big:
+            neighbour_pairs, split_ind = self._correct_pairs_R_too_big(neighbour_pairs, split_ind, pbc)
+
         if as_pairs:
             # Just return the neighbour pairs
             return neighbour_pairs[:split_ind[-1]]
