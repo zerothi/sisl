@@ -9,7 +9,7 @@ from pytest import approx
 
 import sisl
 import sisl.linalg as lin
-from sisl import Lattice, LatticeChild, SuperCell
+from sisl import BoundaryCondition, Lattice, LatticeChild, SuperCell
 from sisl.geom import graphene
 
 pytestmark = [pytest.mark.supercell, pytest.mark.sc, pytest.mark.lattice]
@@ -487,3 +487,24 @@ def test_lattice_indices():
 def test_supercell_warn():
     with pytest.warns(sisl.SislDeprecation):
         lattice = SuperCell([1] * 3, nsc=[3, 5, 7])
+
+
+#####
+# boundary-condition tests
+#####
+
+@pytest.mark.parametrize("bc", list(BoundaryCondition))
+def test_lattice_bc_init(bc):
+    Lattice(1, boundary_condition=bc)
+    Lattice(1, boundary_condition=[bc, bc, bc])
+    Lattice(1, boundary_condition=[[bc, bc],
+                                   [bc, bc],
+                                   [bc, bc]])
+
+def test_lattice_bc_set():
+    lat = Lattice(1, boundary_condition=Lattice.BC.PERIODIC)
+    assert lat.pbc.all()
+    lat.boundary_condition = Lattice.BC.UNKNOWN
+    assert not lat.pbc.any()
+    assert (lat.boundary_condition == Lattice.BC.UNKNOWN).all()
+

@@ -1,6 +1,7 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+import logging
 from math import pi
 from numbers import Integral, Real
 
@@ -14,8 +15,8 @@ from . import _array as _a
 from ._help import dtype_complex_to_real, wrap_filterwarnings
 from ._internal import set_module
 from .geometry import Geometry
-from .lattice import LatticeChild
-from .messages import SislError, deprecate_argument
+from .lattice import BoundaryCondition, LatticeChild
+from .messages import SislError, deprecate_argument, deprecation
 from .shape import Shape
 from .utils import (
     cmd,
@@ -29,6 +30,10 @@ from .utils import (
 from .utils.mathematics import fnorm
 
 __all__ = ['Grid', 'sgrid']
+
+_log = logging.getLogger("sisl")
+_log.info(f"adding logger: {__name__}")
+_log = logging.getLogger(__name__)
 
 
 @set_module("sisl")
@@ -76,26 +81,29 @@ class Grid(LatticeChild):
     """
 
     #: Constant for defining a periodic boundary condition
-    PERIODIC = 1
+    PERIODIC = BoundaryCondition.PERIODIC
     #: Constant for defining a Neumann boundary condition
-    NEUMANN = 2
+    NEUMANN = BoundaryCondition.NEUMANN
     #: Constant for defining a Dirichlet boundary condition
-    DIRICHLET = 3
+    DIRICHLET = BoundaryCondition.DIRICHLET
     #: Constant for defining an open boundary condition
-    OPEN = 4
+    OPEN = BoundaryCondition.OPEN
 
     @deprecate_argument("sc", "lattice",
                         "argument sc has been deprecated in favor of lattice, please update your code.",
                         "0.15.0")
+    @deprecate_argument("bc", None,
+                        "argument bc has been deprecated (removed) in favor of the boundary conditions in Lattice, please update your code.",
+                        "0.15.0")
     def __init__(self, shape, bc=None, lattice=None, dtype=None, geometry=None):
-        if bc is None:
-            bc = [[self.PERIODIC] * 2] * 3
 
         self.set_lattice(None)
 
         # Create the atomic structure in the grid, if possible
         self.set_geometry(geometry)
         if lattice is not None:
+            if bc is None:
+                bc = [[self.PERIODIC] * 2] * 3
             self.set_lattice(lattice)
 
         if isinstance(shape, Real):
@@ -106,7 +114,20 @@ class Grid(LatticeChild):
         self.set_grid(shape, dtype=dtype)
 
         # Create the grid boundary conditions
-        self.set_bc(bc)
+        if bc is not None:
+            self.lattice.set_boundary_condition(bc)
+
+    @deprecation("Grid.set_bc is deprecated since boundary conditions are moved to Lattice (see github issue #626", "0.15.0")
+    def set_bc(self, bc):
+        self.lattice.set_boundary_condition(bc)
+
+    @deprecation("Grid.set_boundary is deprecated since boundary conditions are moved to Lattice (see github issue #626", "0.15.0")
+    def set_boundary(self, bc):
+        self.lattice.set_boundary_condition(bc)
+
+    @deprecation("Grid.set_boundary_condition is deprecated since boundary conditions are moved to Lattice (see github issue #626", "0.15.0")
+    def set_boundary_condition(self, bc):
+        self.lattice.set_boundary_condition(bc)
 
     def __getitem__(self, key):
         """ Grid value at `key` """
@@ -131,20 +152,31 @@ class Grid(LatticeChild):
                 return False
         return np.all(abs(reps - np.round(reps)) < 1e-5)
 
-    def set_geometry(self, geometry):
+    def set_geometry(self, geometry, also_lattice: bool=True):
         """ Sets the `Geometry` for the grid.
 
         Setting the `Geometry` for the grid is a possibility
         to attach atoms to the grid.
 
         It is not a necessary entity, so passing `None` is a viable option.
+
+        Parameters
+        ----------
+        geometry : Geometry or None
+            specify the new geometry in the `Grid`. If ``None`` will
+            remove the geometry (but not the lattice)
+        also_lattice : bool, optional
+            whether to also set the lattice for the grid according to the
+            lattice of the `geometry`, if ``False`` it will keep the lattice
+            as it was.
         """
         if geometry is None:
             # Fake geometry
             self.geometry = None
         else:
             self.geometry = geometry
-            self.set_lattice(geometry.lattice)
+            if also_lattice:
+                self.set_lattice(geometry.lattice)
 
     def fill(self, val):
         """ Fill the grid with this value
@@ -350,51 +382,7 @@ class Grid(LatticeChild):
             raise ValueError(f"{self.__class__.__name__}.set_grid requires shape to be of length 3")
         self.grid = np.zeros(shape, dtype=dtype)
 
-    def set_bc(self, boundary=None, a=None, b=None, c=None):
-        """ Set the boundary conditions on the grid
-
-        Parameters
-        ----------
-        boundary : (3, 2) or (3, ) or int, optional
-           boundary condition for all boundaries (or the same for all)
-        a : int or list of int, optional
-           boundary condition for the first unit-cell vector direction
-        b : int or list of int, optional
-           boundary condition for the second unit-cell vector direction
-        c : int or list of int, optional
-           boundary condition for the third unit-cell vector direction
-
-        Raises
-        ------
-        ValueError
-            if specifying periodic one one boundary, so must the opposite side.
-        """
-        if not boundary is None:
-            if isinstance(boundary, Integral):
-                self.bc = _a.fulli([3, 2], boundary)
-            else:
-                self.bc = _a.asarrayi(boundary)
-        if not a is None:
-            self.bc[0, :] = a
-        if not b is None:
-            self.bc[1, :] = b
-        if not c is None:
-            self.bc[2, :] = c
-
-        # shorthand for bc
-        bc = self.bc[:, :]
-        for i in range(3):
-            if (bc[i, 0] == self.PERIODIC and bc[i, 1] != self.PERIODIC) or \
-               (bc[i, 0] != self.PERIODIC and bc[i, 1] == self.PERIODIC):
-                raise ValueError(f"{self.__class__.__name__}.set_bc has a one non-periodic and "
-                                 "one periodic direction. If one direction is periodic, both instances "
-                                 "must have that BC.")
-
-    # Aliases
-    set_boundary = set_bc
-    set_boundary_condition = set_bc
-
-    def __sc_geometry_dict(self):
+    def _sc_geometry_dict(self):
         """ Internal routine for copying the Lattice and Geometry """
         d = dict()
         d['lattice'] = self.lattice.copy()
@@ -404,12 +392,12 @@ class Grid(LatticeChild):
 
     def copy(self, dtype=None):
         r""" Copy the object, possibly changing the data-type """
-        d = self.__sc_geometry_dict()
+        d = self._sc_geometry_dict()
         if dtype is None:
             d['dtype'] = self.dtype
         else:
             d['dtype'] = dtype
-        grid = self.__class__([1] * 3, bc=np.copy(self.bc), **d)
+        grid = self.__class__([1] * 3, **d)
         # This also ensures the shape is copied!
         grid.grid = self.grid.astype(dtype=d['dtype'])
         return grid
@@ -429,10 +417,10 @@ class Grid(LatticeChild):
         idx[b] = a
         idx[a] = b
         s = np.copy(self.shape)
-        d = self.__sc_geometry_dict()
+        d = self._sc_geometry_dict()
         d['lattice'] = d['lattice'].swapaxes(a, b)
         d['dtype'] = self.dtype
-        grid = self.__class__(s[idx], bc=self.bc[idx], **d)
+        grid = self.__class__(s[idx], **d)
         # We need to force the C-order or we loose the contiguity
         grid.grid = np.copy(np.swapaxes(self.grid, a, b), order='C')
         return grid
@@ -457,7 +445,7 @@ class Grid(LatticeChild):
         shape[axis] = n
         if n < 1:
             raise ValueError('You cannot retain no indices.')
-        grid = self.__class__(shape, bc=np.copy(self.bc), dtype=self.dtype, **self.__sc_geometry_dict())
+        grid = self.__class__(shape, dtype=self.dtype, **self._sc_geometry_dict())
         # Update cell shape (the cell is smaller now)
         grid.set_lattice(cell)
         if scale_geometry and not self.geometry is None:
@@ -913,14 +901,15 @@ class Grid(LatticeChild):
         """ Appends other `Grid` to this grid along axis """
         shape = list(self.shape)
         shape[axis] += other.shape[axis]
-        d = self.__sc_geometry_dict()
+        d = self._sc_geometry_dict()
         if 'geometry' in d:
             if not other.geometry is None:
                 d['geometry'] = d['geometry'].append(other.geometry, axis)
         else:
             d['geometry'] = other.geometry
+        d['lattice'] = self.lattice.append(other.lattice, axis)
         d['dtype'] = self.dtype
-        return self.__class__(shape, bc=np.copy(self.bc), **d)
+        return self.__class__(shape, **d)
 
     @staticmethod
     def read(sile, *args, **kwargs):
@@ -970,15 +959,7 @@ class Grid(LatticeChild):
 
     def __str__(self):
         """ String of object """
-        s = self.__class__.__name__ + '{{kind: {kind}, shape: [{shape[0]} {shape[1]} {shape[2]}],\n'.format(kind=self.dkind, shape=self.shape)
-        bc = {self.PERIODIC: 'periodic',
-              self.NEUMANN: 'neumann',
-              self.DIRICHLET: 'dirichlet',
-              self.OPEN: 'open'
-        }
-        s += ' bc: [{}, {},\n      {}, {},\n      {}, {}],\n '.format(bc[self.bc[0, 0]], bc[self.bc[0, 1]],
-                                                                      bc[self.bc[1, 0]], bc[self.bc[1, 1]],
-                                                                      bc[self.bc[2, 0]], bc[self.bc[2, 1]])
+        s = '{name}{{kind: {kind}, shape: [{shape[0]} {shape[1]} {shape[2]}],\n'.format(kind=self.dkind, shape=self.shape, name=self.__class__.__name__)
         if self._is_commensurate() and self.geometry is not None:
             l = np.round(self.lattice.length / self.geometry.lattice.length).astype(np.int32)
             s += f"commensurate: [{l[0]} {l[1]} {l[2]}]"
@@ -1280,13 +1261,14 @@ class Grid(LatticeChild):
             new_sl = sl[:]
 
             # LOWER BOUNDARY
-            bc = self.bc[i, 0]
+            bci = self.boundary_condition[i]
             new_sl[i] = slice(0, 1)
             idx1 = sl2idx(new_sl) # lower
 
-            if self.bc[i, 0] == self.PERIODIC or \
-               self.bc[i, 1] == self.PERIODIC:
-                if self.bc[i, 0] != self.bc[i, 1]:
+            bc = bci[0]
+            if bci[0] == self.PERIODIC or \
+               bci[1] == self.PERIODIC:
+                if bci[0] != bci[1]:
                     raise ValueError(f"{self.__class__.__name__}.pyamg_boundary_condition found a periodic and non-periodic direction in the same direction!")
                 new_sl[i] = slice(self.shape[i]-1, self.shape[i])
                 idx2 = sl2idx(new_sl) # upper
@@ -1304,7 +1286,7 @@ class Grid(LatticeChild):
                 Dirichlet(idx1)
 
             # UPPER BOUNDARY
-            bc = self.bc[i, 1]
+            bc = bci[1]
             new_sl[i] = slice(self.shape[i]-1, self.shape[i])
             idx1 = sl2idx(new_sl) # upper
 

@@ -16,6 +16,9 @@ we hit release version 1.0.0.
   debugging.
 - marked all `toSphere|toEllipsoid|...` as deprecated
 
+### Changed
+- `Lattice` now holds the boundary conditions (not `Grid`), see #626
+
 
 ## [0.14.2] - 2023-10-04
 

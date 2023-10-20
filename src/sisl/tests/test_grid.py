@@ -386,32 +386,12 @@ class TestGrid:
         with pytest.raises(ValueError):
             g.set_grid([2, 2, 2, 4])
 
-    def test_bc1(self, setup):
-        assert np.all(setup.g.bc == setup.g.PERIODIC)
-        setup.g.set_bc(a=setup.g.NEUMANN)
-        setup.g.set_bc(b=setup.g.NEUMANN, c=setup.g.NEUMANN)
-        assert np.all(setup.g.bc == setup.g.NEUMANN)
-        setup.g.set_bc(setup.g.PERIODIC)
-        assert np.all(setup.g.bc == setup.g.PERIODIC)
-
-    def test_bc2(self, setup):
-        g = setup.g.copy()
-        P = g.PERIODIC
-        D = g.DIRICHLET
-        N = g.NEUMANN
-        assert np.all(g.bc == P)
-        g.set_bc(N)
-        assert np.all(g.bc == setup.g.NEUMANN)
-        bc = [[P, P], [N, D], [D, N]]
-        g.set_bc(bc)
-        assert np.all(g.bc == bc)
-
     def test_argumentparser(self, setup):
         setup.g.ArgumentParser()
 
     def test_pyamg1(self, setup):
         g = setup.g.copy()
-        g.set_bc(g.PERIODIC) # periodic boundary conditions
+        g.lattice.set_boundary_condition(g.PERIODIC) # periodic boundary conditions
         n = np.prod(g.shape)
         A = csr_matrix((n, n))
         b = np.zeros(A.shape[0])
@@ -439,7 +419,7 @@ class TestGrid:
         bc = [[g.PERIODIC] * 2,
               [g.NEUMANN, g.DIRICHLET],
               [g.DIRICHLET, g.NEUMANN]]
-        g.set_bc(bc)
+        g.lattice.set_boundary_condition(bc)
         n = np.prod(g.shape)
         A = csr_matrix((n, n))
         b = np.zeros(A.shape[0])

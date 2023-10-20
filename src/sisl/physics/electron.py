@@ -68,6 +68,7 @@ from numpy import (
 from scipy.sparse import csr_matrix, hstack, identity, issparse
 
 import sisl._array as _a
+from sisl import BoundaryCondition as BC
 from sisl import Geometry, Grid, Lattice, constant, units
 from sisl._help import dtype_complex_to_real, dtype_real_to_complex
 from sisl._indices import indices_le
@@ -1253,8 +1254,8 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
     lattice = grid.lattice.copy()
 
     # Find the periodic directions
-    pbc = [bc == grid.PERIODIC or geometry.nsc[i] > 1
-           for i, bc in enumerate(grid.bc[:, 0])]
+    pbc = [bc == BC.PERIODIC or geometry.nsc[i] > 1
+           for i, bc in enumerate(grid.lattice.boundary_condition[:, 0])]
     if grid.geometry is None:
         # Create the actual geometry that encompass the grid
         ia, xyz, _ = geometry.within_inf(lattice, periodic=pbc)

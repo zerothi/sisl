@@ -10,9 +10,10 @@ from __future__ import annotations
 import logging
 import math
 import warnings
+from enum import IntEnum, auto
 from numbers import Integral
 from pathlib import Path
-from typing import TYPE_CHECKING, Tuple, Union
+from typing import TYPE_CHECKING, Optional, Sequence, Tuple, Union
 
 import numpy as np
 from numpy import dot, ndarray
@@ -24,16 +25,34 @@ from ._dispatcher import AbstractDispatch, ClassDispatcher, TypeDispatcher
 from ._internal import set_module
 from ._lattice import cell_invert, cell_reciprocal
 from ._math_small import cross3, dot3
-from .messages import deprecate, deprecate_argument, deprecation
+from .messages import SislError, deprecate, deprecate_argument, deprecation
 from .quaternion import Quaternion
 from .shape.prism4 import Cuboid
 from .utils.mathematics import fnorm
 
-__all__ = ["Lattice", "SuperCell", "LatticeChild"]
+__all__ = ["Lattice", "SuperCell", "LatticeChild", "BoundaryCondition"]
 
 _log = logging.getLogger("sisl")
 _log.info(f"adding logger: {__name__}")
 _log = logging.getLogger(__name__)
+
+
+class BoundaryCondition(IntEnum):
+    UNKNOWN = auto()
+    PERIODIC = auto()
+    DIRICHLET = auto()
+    NEUMANN = auto()
+    OPEN = auto()
+
+    @classmethod
+    def getitem(cls, key):
+        """Search for a specific integer entry by value, and not by name """
+        for bc in cls:
+            if bc == key:
+                return bc
+        raise KeyError(f"{cls.__name__}.getitem could not find key={key}")
+
+BoundaryConditionType = Union[int, Sequence[int]]
 
 
 @set_module("sisl")
@@ -64,12 +83,19 @@ class Lattice(_Dispatchs,
        number of supercells along each lattice vector
     origin : (3,) of float, optional
        the origin of the supercell.
+    boundary_condition : list of int (3, 2) or (3, ), optional
+        the boundary conditions for each of the cell's planes. Defaults to periodic boundary condition.
+        See `BoundaryCondition` for valid enumerations.
     """
 
     # We limit the scope of this Lattice object.
-    __slots__ = ('cell', '_origin', 'nsc', 'n_s', '_sc_off', '_isc_off')
+    __slots__ = ('cell', '_origin', 'nsc', 'n_s', '_sc_off', '_isc_off', '_bc')
 
-    def __init__(self, cell, nsc=None, origin=None):
+    #: Internal reference to `BoundaryCondition` for simpler short-hands
+    BC = BoundaryCondition
+
+    def __init__(self, cell, nsc=None, origin=None,
+                 boundary_condition: Sequence[BoundaryConditionType] =BoundaryCondition.PERIODIC):
 
         if nsc is None:
             nsc = [1, 1, 1]
@@ -88,6 +114,7 @@ class Lattice(_Dispatchs,
         self.nsc = _a.onesi(3)
         # Set the super-cell
         self.set_nsc(nsc=nsc)
+        self.set_boundary_condition(boundary_condition)
 
     @property
     def length(self) -> ndarray:
@@ -104,6 +131,22 @@ class Lattice(_Dispatchs,
         return (cross3(self.cell[ax0, :], self.cell[ax1, :]) ** 2).sum() ** 0.5
 
     @property
+    def boundary_condition(self) -> np.ndarray:
+        """Boundary conditions for each lattice vector (lower/upper) sides ``(3, 2)``"""
+        return self._bc
+
+    @boundary_condition.setter
+    def boundary_condition(self, boundary_condition):
+        self.set_boundary_condition(boundary_condition)
+
+    @property
+    def pbc(self) -> np.ndarray:
+        """Boolean array to specify whether the boundary conditions are periodic`"""
+        # set_boundary_condition does not allow to have PERIODIC and non-PERIODIC
+        # along the same lattice vector. So checking one should suffice
+        return self._bc[:, 0] == BoundaryCondition.PERIODIC
+
+    @property
     def origin(self) -> ndarray:
         """ Origin for the cell """
         return self._origin
@@ -113,7 +156,7 @@ class Lattice(_Dispatchs,
         """ Set origin for the cell """
         self._origin[:] = origin
 
-    @deprecation("toCuboid is deprecated, please use lattice.to['cuboid'](...) instead.")
+    @deprecation("toCuboid is deprecated, please use lattice.to['cuboid'](...) instead.", "0.15.0")
     def toCuboid(self, *args, **kwargs):
         """ A cuboid with vectors as this unit-cell and center with respect to its origin
 
@@ -124,7 +167,51 @@ class Lattice(_Dispatchs,
         """
         return self.to[Cuboid](*args, **kwargs)
 
-    def parameters(self, rad=False) -> Tuple[float, float, float, float, float, float]:
+    def set_boundary_condition(self,
+                               boundary: Optional[Sequence[BoundaryConditionType]] =None,
+                               a: Sequence[BoundaryConditionType] =None,
+                               b: Sequence[BoundaryConditionType] =None,
+                               c: Sequence[BoundaryConditionType] =None):
+        """ Set the boundary conditions on the grid
+
+        Parameters
+        ----------
+        boundary : (3, 2) or (3, ) or int, optional
+           boundary condition for all boundaries (or the same for all)
+        a : int or list of int, optional
+           boundary condition for the first unit-cell vector direction
+        b : int or list of int, optional
+           boundary condition for the second unit-cell vector direction
+        c : int or list of int, optional
+           boundary condition for the third unit-cell vector direction
+
+        Raises
+        ------
+        ValueError
+            if specifying periodic one one boundary, so must the opposite side.
+        """
+        if not boundary is None:
+            self._bc = _a.emptyi([3, 2])
+            if isinstance(boundary, Integral):
+                self._bc[:, :] = boundary
+            else:
+                for i, bc in enumerate(boundary):
+                    self._bc[i] = bc
+        if not a is None:
+            self._bc[0, :] = a
+        if not b is None:
+            self._bc[1, :] = b
+        if not c is None:
+            self._bc[2, :] = c
+
+        # shorthand for bc
+        for bc in self._bc == BoundaryCondition.PERIODIC:
+            if bc.any() and not bc.all():
+                raise ValueError(f"{self.__class__.__name__}.set_boundary_condition has a one non-periodic and "
+                                 "one periodic direction. If one direction is periodic, both instances "
+                                 "must have that BC.")
+
+    def parameters(self, rad: bool=False) -> Tuple[float, float, float, float, float, float]:
         r""" Cell parameters of this cell in 3 lengths and 3 angles
 
         Notes
@@ -304,12 +391,19 @@ class Lattice(_Dispatchs,
         origin : array_like
            the new origin
         """
+        d = dict()
+        d["nsc"] = self.nsc.copy()
+        d["boundary_condition"] = self.boundary_condition.copy()
         if origin is None:
-            origin = self.origin.copy()
-        if cell is None:
-            copy = self.__class__(np.copy(self.cell), nsc=np.copy(self.nsc), origin=origin)
+            d["origin"] = self.origin.copy()
         else:
-            copy = self.__class__(np.copy(cell), nsc=np.copy(self.nsc), origin=origin)
+            d["origin"] = origin
+        if cell is None:
+            d["cell"] = self.cell.copy()
+        else:
+            d["cell"] = np.array(cell)
+
+        copy = self.__class__(**d)
         # Ensure that the correct super-cell information gets carried through
         if not np.allclose(copy.sc_off, self.sc_off):
             copy.sc_off = self.sc_off
@@ -454,6 +548,7 @@ class Lattice(_Dispatchs,
         cell = self.cell
         nsc = self.nsc
         origin = self.origin
+        bc = self.boundary_condition
 
         if len(axes_a) != len(axes_b):
             raise ValueError(f"{self.__class__.__name__}.swapaxes expects axes_a and axes_b to have the same lengeth {len(axes_a)}, {len(axes_b)}.")
@@ -472,6 +567,7 @@ class Lattice(_Dispatchs,
                 # we are dealing with lattice vectors
                 cell = cell[idx]
                 nsc = nsc[idx]
+                bc = bc[idx]
 
             else:
                 aidx -= 3
@@ -481,8 +577,12 @@ class Lattice(_Dispatchs,
                 # we are dealing with cartesian coordinates
                 cell = cell[:, idx]
                 origin = origin[idx]
+                bc = bc[idx]
 
-        return self.__class__(cell.copy(), nsc=nsc.copy(), origin=origin.copy())
+        return self.__class__(cell.copy(),
+                              nsc=nsc.copy(),
+                              origin=origin.copy(),
+                              boundary_condition=bc)
 
     def plane(self, ax1, ax2, origin=True):
         """ Query point and plane-normal for the plane spanning `ax1` and `ax2`
@@ -889,7 +989,7 @@ class Lattice(_Dispatchs,
 
         For a `Lattice` object this is equivalent to `append`.
         """
-        return self.append(other, axis)
+        return other.append(self, axis)
 
     def translate(self, v):
         """ Appends additional space to the object """
@@ -1098,13 +1198,31 @@ class Lattice(_Dispatchs,
     def __str__(self):
         """ Returns a string representation of the object """
         # Create format for lattice vectors
+        def bcstr(bc):
+            left = BoundaryCondition.getitem(bc[0]).name.capitalize()
+            if bc[0] == bc[1]:
+                # single string
+                return left
+            right = BoundaryCondition.getitem(bc[1]).name.capitalize()
+            return f"[{left}, {right}]"
         s = ',\n '.join(['ABC'[i] + '=[{:.4f}, {:.4f}, {:.4f}]'.format(*self.cell[i]) for i in (0, 1, 2)])
         origin = "{:.4f}, {:.4f}, {:.4f}".format(*self.origin)
-        return f"{self.__class__.__name__}{{nsc: {self.nsc},\n origin={origin},\n {s}\n}}"
+        bc = ",\n     ".join(map(bcstr, self.boundary_condition))
+        return f"{self.__class__.__name__}{{nsc: {self.nsc},\n origin={origin},\n {s},\n bc=[{bc}]\n}}"
 
     def __repr__(self):
         a, b, c, alpha, beta, gamma = map(lambda r: round(r, 4), self.parameters())
-        return f"<{self.__module__}.{self.__class__.__name__} a={a}, b={b}, c={c}, α={alpha}, β={beta}, γ={gamma}, nsc={self.nsc}>"
+        BC = BoundaryCondition
+        bc = self.boundary_condition
+        def bcstr(bc):
+            left = BC.getitem(bc[0]).name[0]
+            if bc[0] == bc[1]:
+                # single string
+                return left
+            right = BC.getitem(bc[1]).name[0]
+            return f"[{left}, {right}]"
+        bc = ", ".join(map(bcstr, self.boundary_condition))
+        return f"<{self.__module__}.{self.__class__.__name__} a={a}, b={b}, c={c}, α={alpha}, β={beta}, γ={gamma}, bc=[{bc}], nsc={self.nsc}>"
 
     def __eq__(self, other):
         """ Equality check """
@@ -1398,4 +1516,19 @@ class LatticeChild:
     def sc_index(self, *args, **kwargs):
         """ Call local `Lattice` object `sc_index` function """
         return self.lattice.sc_index(*args, **kwargs)
+
+
+    @property
+    def boundary_condition(self) -> np.ndarray:
+        f"{Lattice.boundary_condition.__doc__}"
+        return self.lattice.boundary_condition
+
+    @boundary_condition.setter
+    def boundary_condition(self, boundary_condition: Sequence[BoundaryConditionType]):
+        raise SislError(f"Cannot use property to set boundary conditions of LatticeChild")
+
+    @property
+    def pbc(self) -> np.ndarray:
+        f"{Lattice.pbc.__doc__}"
+        return self.lattice.pbc
 
