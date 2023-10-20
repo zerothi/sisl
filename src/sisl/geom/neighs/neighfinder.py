@@ -1,7 +1,5 @@
 from typing import Optional, Sequence, Tuple, Union
 
-import itertools
-
 import numpy as np
 from numbers import Real
 
