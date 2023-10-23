@@ -10,15 +10,21 @@ def geometry_define_nsc(geometry, periodic=(True, True, True)):
     """Define the number of supercells for a geometry based on the periodicity """
     if np.all(geometry.maxR(True) > 0.):
         geometry.optimize_nsc()
-        if not periodic[0]:
-            geometry.set_nsc(a=1)
-        if not periodic[1]:
-            geometry.set_nsc(b=1)
-        if not periodic[2]:
-            geometry.set_nsc(c=1)
+        for i, d, per in zip(range(3), "abc", periodic):
+            if per:
+                geometry.lattice.set_boundary_condition(**{d: "Periodic"})
+            else:
+                geometry.set_nsc(**{d: 1})
     else:
         nsc = [3 if p else 1 for p in periodic]
         geometry.set_nsc(nsc)
+
+    for name, per in zip("abc", periodic):
+        if per:
+            per = "Periodic"
+        else:
+            per = "Unknown"
+        geometry.lattice.set_boundary_condition(**{name: per})
 
 
 def geometry2uc(geometry, dx=1e-8):

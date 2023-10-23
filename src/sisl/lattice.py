@@ -47,12 +47,33 @@ class BoundaryCondition(IntEnum):
     @classmethod
     def getitem(cls, key):
         """Search for a specific integer entry by value, and not by name """
-        for bc in cls:
-            if bc == key:
-                return bc
+        if isinstance(key, cls):
+            return key
+        if isinstance(key, bool):
+            if key:
+                return cls.PERIODIC
+            raise ValueError(f"{cls.__name__}.getitem does not allow False, which BC should this refer to?")
+        if isinstance(key, str):
+            key = key.upper()
+            if len(key) == 1:
+                key = {"U": "UNKNOWN",
+                       "P": "PERIODIC",
+                       "D": "DIRICHLET",
+                       "N": "NEUMANN",
+                       "O": "OPEN",
+                }[key]
+            for bc in cls:
+                if bc.name.startswith(key):
+                    return bc
+        else:
+            for bc in cls:
+                if bc == key:
+                    return bc
         raise KeyError(f"{cls.__name__}.getitem could not find key={key}")
 
-BoundaryConditionType = Union[int, Sequence[int]]
+BoundaryConditionType = Union[BoundaryCondition, int, str, bool]
+SeqBoundaryConditionType = Union[BoundaryConditionType,
+                                 Sequence[BoundaryConditionType]]
 
 
 @set_module("sisl")
@@ -95,7 +116,7 @@ class Lattice(_Dispatchs,
     BC = BoundaryCondition
 
     def __init__(self, cell, nsc=None, origin=None,
-                 boundary_condition: Sequence[BoundaryConditionType] =BoundaryCondition.PERIODIC):
+                 boundary_condition: SeqBoundaryConditionType =BoundaryCondition.PERIODIC):
 
         if nsc is None:
             nsc = [1, 1, 1]
@@ -168,10 +189,10 @@ class Lattice(_Dispatchs,
         return self.to[Cuboid](*args, **kwargs)
 
     def set_boundary_condition(self,
-                               boundary: Optional[Sequence[BoundaryConditionType]] =None,
-                               a: Sequence[BoundaryConditionType] =None,
-                               b: Sequence[BoundaryConditionType] =None,
-                               c: Sequence[BoundaryConditionType] =None):
+                               boundary: Optional[SeqBoundaryConditionType] =None,
+                               a: Optional[SeqBoundaryConditionType] =None,
+                               b: Optional[SeqBoundaryConditionType] =None,
+                               c: Opitonal[SeqBoundaryConditionType] =None):
         """ Set the boundary conditions on the grid
 
         Parameters
@@ -190,19 +211,38 @@ class Lattice(_Dispatchs,
         ValueError
             if specifying periodic one one boundary, so must the opposite side.
         """
+        getitem = BoundaryCondition.getitem
+        def conv(v):
+            if v is None:
+                return v
+            if isinstance(v, (np.ndarray, list, tuple)):
+                return list(map(getitem, v))
+            return getitem(v)
+
+        if not hasattr(self, "_bc"):
+            self._bc = _a.fulli([3, 2], getitem("Unknown"))
+
         if not boundary is None:
-            self._bc = _a.emptyi([3, 2])
-            if isinstance(boundary, Integral):
-                self._bc[:, :] = boundary
+            if isinstance(boundary, (Integral, str, bool)):
+                try:
+                    getitem(boundary)
+                    self._bc[:, :] = conv(boundary)
+                except KeyError:
+                    for d, bc in enumerate(boundary):
+                        bc = conv(bc)
+                        if bc is not None:
+                            self._bc[d] = conv(bc)
+
             else:
-                for i, bc in enumerate(boundary):
-                    self._bc[i] = bc
-        if not a is None:
-            self._bc[0, :] = a
-        if not b is None:
-            self._bc[1, :] = b
-        if not c is None:
-            self._bc[2, :] = c
+                for d, bc in enumerate(boundary):
+                    bc = conv(bc)
+                    if bc is not None:
+                        self._bc[d] = bc
+
+        for d, v in enumerate([a, b, c]):
+            v = conv(v)
+            if v is not None:
+                self._bc[d, :] = v
 
         # shorthand for bc
         for bc in self._bc == BoundaryCondition.PERIODIC:

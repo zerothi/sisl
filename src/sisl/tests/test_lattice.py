@@ -508,3 +508,34 @@ def test_lattice_bc_set():
     assert not lat.pbc.any()
     assert (lat.boundary_condition == Lattice.BC.UNKNOWN).all()
 
+    lat.boundary_condition = ['per', "unkn", [3, 4]]
+
+    for n in "abc":
+        lat.set_boundary_condition(**{n: "per"})
+        lat.set_boundary_condition(**{n: [3, Lattice.BC.UNKNOWN]})
+        lat.set_boundary_condition(**{n: [True, Lattice.BC.PERIODIC]})
+
+    bc = [
+            "per",
+            ["Dirichlet", Lattice.BC.NEUMANN],
+            ["un", "neu"]
+    ]
+    lat.set_boundary_condition(bc)
+    assert np.all(lat.boundary_condition[1] == [Lattice.BC.DIRICHLET, Lattice.BC.NEUMANN])
+    assert np.all(lat.boundary_condition[2] == [Lattice.BC.UNKNOWN, Lattice.BC.NEUMANN])
+    lat.set_boundary_condition(["per", None, ["dirichlet", "unkno"]])
+    assert np.all(lat.boundary_condition[1] == [Lattice.BC.DIRICHLET, Lattice.BC.NEUMANN])
+    assert np.all(lat.boundary_condition[2] == [Lattice.BC.DIRICHLET, Lattice.BC.UNKNOWN])
+    lat.set_boundary_condition("ppu")
+    assert np.all(lat.pbc == [True, True, False])
+
+
+def test_lattice_bc_fail():
+    lat = Lattice(1)
+    with pytest.raises(ValueError):
+        lat.boundary_condition = False
+    with pytest.raises(ValueError):
+        lat.set_boundary_condition(b=False)
+    with pytest.raises(KeyError):
+        lat.set_boundary_condition(b="eusoatuhesoau")
+
