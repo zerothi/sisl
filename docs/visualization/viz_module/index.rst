@@ -73,6 +73,7 @@ developer or you are building a framework (e.g. GUI) around `sisl.viz`, this is 
 .. nbgallery::
     :name: viz-plotly-diy-gallery
 
+    diy/Building a new plot.ipynb
     diy/Adding new backends.ipynb
 
 
