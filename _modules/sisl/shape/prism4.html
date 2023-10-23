@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.shape.prism4 &mdash; sisl 0.1-aa1de5c</title>
+  <title>sisl.shape.prism4 &mdash; sisl 0.1-9c9c61f</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=afed2ba8"></script>
+        <script src="../../../_static/documentation_options.js?v=ccf676f9"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-aa1de5c
+                0.1-9c9c61f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -115,9 +115,10 @@
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
 <span class="kn">from</span> <span class="nn">sisl._math_small</span> <span class="kn">import</span> <span class="n">cross3</span><span class="p">,</span> <span class="n">dot3</span>
 <span class="kn">from</span> <span class="nn">sisl.linalg</span> <span class="kn">import</span> <span class="n">inv</span>
+<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">deprecation</span>
 <span class="kn">from</span> <span class="nn">sisl.utils.mathematics</span> <span class="kn">import</span> <span class="n">expand</span><span class="p">,</span> <span class="n">fnorm</span>
 
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">PureShape</span><span class="p">,</span> <span class="n">ShapeToDispatcher</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">PureShape</span><span class="p">,</span> <span class="n">ShapeToDispatch</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Cuboid&#39;</span><span class="p">,</span> <span class="s1">&#39;Cube&#39;</span><span class="p">]</span>
 
@@ -147,10 +148,6 @@
 <span class="sd">    True</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_v&#39;</span><span class="p">,</span> <span class="s1">&#39;_iv&#39;</span><span class="p">)</span>
-
-    <span class="c1"># Define a dispatcher for converting Shapes</span>
-    <span class="c1">#  Cuboid().to.ellipsoid() will convert to an sisl.shape.Ellipsoid object</span>
-    <span class="n">to</span> <span class="o">=</span> <span class="n">PureShape</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Cuboid.__init__">
 <a class="viewcode-back" href="../../../api/generated/sisl.shape.Cuboid.html#sisl.shape.Cuboid.__init__">[docs]</a>
@@ -236,6 +233,7 @@
 
 <div class="viewcode-block" id="Cuboid.toEllipsoid">
 <a class="viewcode-back" href="../../../api/generated/sisl.shape.Cuboid.html#sisl.shape.Cuboid.toEllipsoid">[docs]</a>
+    <span class="nd">@deprecation</span><span class="p">(</span><span class="s2">&quot;toEllipsoid is deprecated, please use shape.to[&#39;ellipsoid&#39;](...) instead.&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">toEllipsoid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Return an ellipsoid that encompass this cuboid &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.ellipsoid</span> <span class="kn">import</span> <span class="n">Ellipsoid</span>
@@ -246,6 +244,7 @@
 
 <div class="viewcode-block" id="Cuboid.toSphere">
 <a class="viewcode-back" href="../../../api/generated/sisl.shape.Cuboid.html#sisl.shape.Cuboid.toSphere">[docs]</a>
+    <span class="nd">@deprecation</span><span class="p">(</span><span class="s2">&quot;toSphere is deprecated, please use shape.to[&#39;sphere&#39;](...) instead.&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">toSphere</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Return a sphere that encompass this cuboid &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.ellipsoid</span> <span class="kn">import</span> <span class="n">Sphere</span>
@@ -255,6 +254,7 @@
 
 <div class="viewcode-block" id="Cuboid.toCuboid">
 <a class="viewcode-back" href="../../../api/generated/sisl.shape.Cuboid.html#sisl.shape.Cuboid.toCuboid">[docs]</a>
+    <span class="nd">@deprecation</span><span class="p">(</span><span class="s2">&quot;toCuboid is deprecated, please use shape.to[&#39;cuboid&#39;](...) instead.&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">toCuboid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Return a copy of itself &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
@@ -292,7 +292,7 @@
     <span class="nd">@origin</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">origin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Re-setting the origin can sometimes be necessary &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">origin</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_v</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">origin</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_v</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">edge_length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -302,42 +302,36 @@
 
 <span class="n">to_dispatch</span> <span class="o">=</span> <span class="n">Cuboid</span><span class="o">.</span><span class="n">to</span>
 
-
-<span class="k">class</span> <span class="nc">CuboidToEllipsoid</span><span class="p">(</span><span class="n">ShapeToDispatcher</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">CuboidToEllipsoid</span><span class="p">(</span><span class="n">ShapeToDispatch</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">.ellipsoid</span> <span class="kn">import</span> <span class="n">Ellipsoid</span>
-        <span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_object</span><span class="p">()</span>
         <span class="c1"># Rescale each vector</span>
         <span class="k">return</span> <span class="n">Ellipsoid</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">_v</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">**</span> <span class="mf">.5</span><span class="p">,</span> <span class="n">shape</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
 
-<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;ellipsoid&quot;</span><span class="p">,</span> <span class="n">CuboidToEllipsoid</span><span class="p">)</span>
 <span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;Ellipsoid&quot;</span><span class="p">,</span> <span class="n">CuboidToEllipsoid</span><span class="p">)</span>
 
-
-<span class="k">class</span> <span class="nc">CuboidToSphere</span><span class="p">(</span><span class="n">ShapeToDispatcher</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">CuboidToSphere</span><span class="p">(</span><span class="n">ShapeToDispatch</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">.ellipsoid</span> <span class="kn">import</span> <span class="n">Sphere</span>
-        <span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_object</span><span class="p">()</span>
         <span class="c1"># Rescale each vector</span>
         <span class="k">return</span> <span class="n">Sphere</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">edge_length</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">**</span> <span class="mf">.5</span><span class="p">,</span> <span class="n">shape</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
 
-<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;sphere&quot;</span><span class="p">,</span> <span class="n">CuboidToSphere</span><span class="p">)</span>
 <span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;Sphere&quot;</span><span class="p">,</span> <span class="n">CuboidToSphere</span><span class="p">)</span>
 
-
-<span class="k">class</span> <span class="nc">CuboidToCuboid</span><span class="p">(</span><span class="n">ShapeToDispatcher</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">CuboidToCuboid</span><span class="p">(</span><span class="n">ShapeToDispatch</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_object</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">shape</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;cuboid&quot;</span><span class="p">,</span> <span class="n">CuboidToCuboid</span><span class="p">)</span>
 <span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;Cuboid&quot;</span><span class="p">,</span> <span class="n">CuboidToCuboid</span><span class="p">)</span>
-
 
 <span class="k">del</span> <span class="n">to_dispatch</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.shape&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">Cube</span><span class="p">(</span><span class="n">Cuboid</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Cube</span><span class="p">(</span><span class="n">Cuboid</span><span class="p">,</span> <span class="n">dispatchs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;keep&quot;</span><span class="p">)]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; 3D Cube with equal sides</span>
 
 <span class="sd">    Equivalent to ``Cuboid([r, r, r])``.</span>

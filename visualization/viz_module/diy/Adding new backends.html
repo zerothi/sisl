@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Adding new backends &mdash; sisl 0.1-aa1de5c</title>
+  <title>Adding new backends &mdash; sisl 0.1-9c9c61f</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
@@ -19,7 +19,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=afed2ba8"></script>
+        <script src="../../../_static/documentation_options.js?v=ccf676f9"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/tabs.js?v=3ee01567"></script>
@@ -30,7 +30,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="API documentation" href="../../../api/index.html" />
-    <link rel="prev" title="Intro to combining plots" href="../combining-plots/Intro%20to%20combining%20plots.html" /> 
+    <link rel="prev" title="Building a new plot" href="Building%20a%20new%20plot.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -45,7 +45,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-aa1de5c
+                0.1-9c9c61f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -85,6 +85,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../index.html#using-it-with-blender">Using it with blender</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../index.html#combining-plots">Combining plots</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../index.html#do-it-yourself">Do it yourself</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="Building%20a%20new%20plot.html">Building a new plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Building%20a%20new%20plot.html#The-tools">The tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Building%20a%20new%20plot.html#A-plot-function">A plot function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Building%20a%20new%20plot.html#From-function-to-Plot">From function to <code class="docutils literal notranslate"><span class="pre">Plot</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="Building%20a%20new%20plot.html#Additional-methods">Additional methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Building%20a%20new%20plot.html#Complex-plots">Complex plots</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Adding new backends</a></li>
 </ul>
 </li>
@@ -641,9 +647,9 @@ class Figure(builtins.object)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area rendered_html docutils container">
-<div>                            <div id="e8732bc2-a45c-4755-baaf-3af73f469161" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                require(["plotly"], function(Plotly) {                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("e8732bc2-a45c-4755-baaf-3af73f469161")) {                    Plotly.newPlot(                        "e8732bc2-a45c-4755-baaf-3af73f469161",                        [{"line":{"color":"black","width":1},"meta":{},"mode":"lines","name":"0","opacity":1,"x":[0.0,0.08194034046921736,0.16388068093843472,0.24582102140765208,0.32776136187686944,0.4097017023460868,0.49164204281530416,0.5735823832845216,0.6555227237537389,0.7374630642229563],"y":[-8.099999999999982,-8.072607638045818,-7.990709406687042,-7.855144860176285,-7.667323911336286,-7.429245365342247,-7.143528539874381,-6.813465152136345,-6.4431033563623386,-6.037383539249426],"type":"scatter"},{"line":{"color":"black","width":1},"meta":{},"mode":"lines","name":"1","opacity":1,"x":[0.0,0.08194034046921736,0.16388068093843472,0.24582102140765208,0.32776136187686944,0.4097017023460868,0.49164204281530416,0.5735823832845216,0.6555227237537389,0.7374630642229563],"y":[-2.699999999999994,-2.7808282798770527,-3.008082973902628,-3.3461469223041824,-3.7566133735920424,-4.207887035263717,-4.67653718043596,-5.145550759697494,-5.602358355124411,-6.037383539249426],"type":"scatter"},{"line":{"color":"black","width":1},"meta":{},"mode":"lines","name":"2","opacity":1,"x":[0.0,0.08194034046921736,0.16388068093843472,0.24582102140765208,0.32776136187686944,0.4097017023460868,0.49164204281530416,0.5735823832845216,0.6555227237537389,0.7374630642229563],"y":[2.7000000000000126,2.7808282798770705,3.0080829739026447,3.346146922304194,3.756613373592053,4.207887035263727,4.676537180435975,5.145550759697502,5.602358355124415,6.037383539249433],"type":"scatter"},{"line":{"color":"black","width":1},"meta":{},"mode":"lines","name":"3","opacity":1,"x":[0.0,0.08194034046921736,0.16388068093843472,0.24582102140765208,0.32776136187686944,0.4097017023460868,0.49164204281530416,0.5735823832845216,0.6555227237537389,0.7374630642229563],"y":[8.1,8.072607638045836,7.990709406687062,7.855144860176306,7.667323911336302,7.429245365342262,7.143528539874395,6.813465152136357,6.443103356362344,6.037383539249433],"type":"scatter"}],                        {"template":{"layout":{"hovermode":"closest","paper_bgcolor":"white","plot_bgcolor":"white","scene":{"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"zaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}},"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}}},"scene":{"xaxis":{"title":{"text":"k [1\u002fAng]"},"range":[0.0,0.7374630642229563],"showgrid":true,"tickvals":[0.0,0.7374630642229563],"ticktext":["Gamma","X"]},"yaxis":{"title":{"text":"E [eV]"},"range":[-8.099999999999982,8.1]}},"xaxis":{"title":{"text":"k [1\u002fAng]"},"range":[0.0,0.7374630642229563],"showgrid":true,"tickvals":[0.0,0.7374630642229563],"ticktext":["Gamma","X"]},"yaxis":{"title":{"text":"E [eV]"},"range":[-8.099999999999982,8.1]}},                        {"responsive": true}                    ).then(function(){
+<div>                            <div id="df1dadea-4f58-4511-95cc-cb0337179e9f" class="plotly-graph-div" style="height:525px; width:100%;"></div>            <script type="text/javascript">                require(["plotly"], function(Plotly) {                    window.PLOTLYENV=window.PLOTLYENV || {};                                    if (document.getElementById("df1dadea-4f58-4511-95cc-cb0337179e9f")) {                    Plotly.newPlot(                        "df1dadea-4f58-4511-95cc-cb0337179e9f",                        [{"line":{"color":"black","width":1},"meta":{},"mode":"lines","name":"0","opacity":1,"x":[0.0,0.08194034046921736,0.16388068093843472,0.24582102140765208,0.32776136187686944,0.4097017023460868,0.49164204281530416,0.5735823832845216,0.6555227237537389,0.7374630642229563],"y":[-8.099999999999982,-8.072607638045818,-7.990709406687042,-7.855144860176285,-7.667323911336286,-7.429245365342247,-7.143528539874381,-6.813465152136345,-6.4431033563623386,-6.037383539249426],"type":"scatter"},{"line":{"color":"black","width":1},"meta":{},"mode":"lines","name":"1","opacity":1,"x":[0.0,0.08194034046921736,0.16388068093843472,0.24582102140765208,0.32776136187686944,0.4097017023460868,0.49164204281530416,0.5735823832845216,0.6555227237537389,0.7374630642229563],"y":[-2.699999999999994,-2.7808282798770527,-3.008082973902628,-3.3461469223041824,-3.7566133735920424,-4.207887035263717,-4.67653718043596,-5.145550759697494,-5.602358355124411,-6.037383539249426],"type":"scatter"},{"line":{"color":"black","width":1},"meta":{},"mode":"lines","name":"2","opacity":1,"x":[0.0,0.08194034046921736,0.16388068093843472,0.24582102140765208,0.32776136187686944,0.4097017023460868,0.49164204281530416,0.5735823832845216,0.6555227237537389,0.7374630642229563],"y":[2.7000000000000126,2.7808282798770705,3.0080829739026447,3.346146922304194,3.756613373592053,4.207887035263727,4.676537180435975,5.145550759697502,5.602358355124415,6.037383539249433],"type":"scatter"},{"line":{"color":"black","width":1},"meta":{},"mode":"lines","name":"3","opacity":1,"x":[0.0,0.08194034046921736,0.16388068093843472,0.24582102140765208,0.32776136187686944,0.4097017023460868,0.49164204281530416,0.5735823832845216,0.6555227237537389,0.7374630642229563],"y":[8.1,8.072607638045836,7.990709406687062,7.855144860176306,7.667323911336302,7.429245365342262,7.143528539874395,6.813465152136357,6.443103356362344,6.037383539249433],"type":"scatter"}],                        {"template":{"layout":{"hovermode":"closest","paper_bgcolor":"white","plot_bgcolor":"white","scene":{"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"zaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}},"xaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1},"yaxis":{"color":"black","gridcolor":"#ccc","gridwidth":1,"linewidth":1,"mirror":true,"showgrid":false,"showline":true,"ticklen":5,"ticks":"outside","ticksuffix":" ","visible":true,"zeroline":false,"zerolinecolor":"#ccc","zerolinewidth":1}}},"scene":{"xaxis":{"title":{"text":"k [1\u002fAng]"},"range":[0.0,0.7374630642229563],"showgrid":true,"tickvals":[0.0,0.7374630642229563],"ticktext":["Gamma","X"]},"yaxis":{"title":{"text":"E [eV]"},"range":[-8.099999999999982,8.1]}},"xaxis":{"title":{"text":"k [1\u002fAng]"},"range":[0.0,0.7374630642229563],"showgrid":true,"tickvals":[0.0,0.7374630642229563],"ticktext":["Gamma","X"]},"yaxis":{"title":{"text":"E [eV]"},"range":[-8.099999999999982,8.1]}},                        {"responsive": true}                    ).then(function(){
 
-var gd = document.getElementById('e8732bc2-a45c-4755-baaf-3af73f469161');
+var gd = document.getElementById('df1dadea-4f58-4511-95cc-cb0337179e9f');
 var x = new MutationObserver(function (mutations, observer) {{
         var display = window.getComputedStyle(gd).display;
         if (!display || display === 'none') {{
@@ -723,7 +729,7 @@ LINE: 3
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../combining-plots/Intro%20to%20combining%20plots.html" class="btn btn-neutral float-left" title="Intro to combining plots" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Building%20a%20new%20plot.html" class="btn btn-neutral float-left" title="Building a new plot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../../../api/index.html" class="btn btn-neutral float-right" title="API documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

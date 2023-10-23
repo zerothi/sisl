@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.shape.base &mdash; sisl 0.1-aa1de5c</title>
+  <title>sisl.shape.base &mdash; sisl 0.1-9c9c61f</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=afed2ba8"></script>
+        <script src="../../../_static/documentation_options.js?v=ccf676f9"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-aa1de5c
+                0.1-9c9c61f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -113,16 +113,22 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
+<span class="kn">from</span> <span class="nn">sisl._dispatch_class</span> <span class="kn">import</span> <span class="n">_Dispatchs</span>
 <span class="kn">from</span> <span class="nn">sisl._dispatcher</span> <span class="kn">import</span> <span class="n">AbstractDispatch</span><span class="p">,</span> <span class="n">ClassDispatcher</span>
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">deprecation</span>
 <span class="kn">from</span> <span class="nn">sisl.utils.mathematics</span> <span class="kn">import</span> <span class="n">fnorm</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Shape&quot;</span><span class="p">,</span> <span class="s2">&quot;PureShape&quot;</span><span class="p">,</span> <span class="s2">&quot;NullShape&quot;</span><span class="p">,</span> <span class="s2">&quot;ShapeToDispatcher&quot;</span><span class="p">,</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Shape&quot;</span><span class="p">,</span> <span class="s2">&quot;PureShape&quot;</span><span class="p">,</span> <span class="s2">&quot;NullShape&quot;</span><span class="p">,</span> <span class="s2">&quot;ShapeToDispatch&quot;</span><span class="p">,</span>
            <span class="s2">&quot;CompositeShape&quot;</span><span class="p">,</span> <span class="s2">&quot;OrShape&quot;</span><span class="p">,</span> <span class="s2">&quot;XOrShape&quot;</span><span class="p">,</span> <span class="s2">&quot;AndShape&quot;</span><span class="p">,</span> <span class="s2">&quot;SubShape&quot;</span><span class="p">]</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.shape&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">Shape</span><span class="p">:</span>
+<span class="k">class</span> <span class="nc">Shape</span><span class="p">(</span><span class="n">_Dispatchs</span><span class="p">,</span>
+            <span class="n">dispatchs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="n">ClassDispatcher</span><span class="p">(</span><span class="s2">&quot;to&quot;</span><span class="p">,</span>
+                                              <span class="n">type_dispatcher</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                              <span class="n">obj_getattr</span><span class="o">=</span><span class="s2">&quot;error&quot;</span><span class="p">))],</span>
+            <span class="n">when_subclassing</span><span class="o">=</span><span class="s2">&quot;copy&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Baseclass for all shapes. Logical operations are implemented on this class.</span>
 
 <span class="sd">    **This class must be sub classed.**</span>
@@ -170,11 +176,10 @@
 
 <div class="viewcode-block" id="Shape.__init__">
 <a class="viewcode-back" href="../../../api/generated/sisl.shape.Shape.html#sisl.shape.Shape.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
         <span class="k">if</span> <span class="n">center</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_center</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">zerosd</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_center</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">center</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
+            <span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_center</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">(</span><span class="n">center</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
@@ -194,37 +199,28 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.scale has not been implemented&quot;</span><span class="p">)</span></div>
 
 
-    <span class="c1"># Define a dispatcher for converting Shapes</span>
-    <span class="c1">#  Shape().to.ellipsoid() will convert to an sisl.shape.Ellipsoid object</span>
-    <span class="n">to</span> <span class="o">=</span> <span class="n">ClassDispatcher</span><span class="p">(</span><span class="s2">&quot;to&quot;</span><span class="p">,</span>
-                         <span class="c1"># Do not allow class calls</span>
-                         <span class="n">type_dispatcher</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                         <span class="n">obj_getattr</span><span class="o">=</span><span class="k">lambda</span> <span class="n">obj</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span>
-                         <span class="p">(</span><span class="n">_</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="p">())</span><span class="o">.</span><span class="n">throw</span><span class="p">(</span>
-                             <span class="ne">AttributeError</span><span class="p">((</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">obj</span><span class="si">}</span><span class="s2">.to does not implement &#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
-                                             <span class="sa">f</span><span class="s2">&quot;dispatcher, are you using it incorrectly?&quot;</span><span class="p">))</span>
-                         <span class="p">)</span>
-    <span class="p">)</span>
-
 <div class="viewcode-block" id="Shape.toSphere">
 <a class="viewcode-back" href="../../../api/generated/sisl.shape.Shape.html#sisl.shape.Shape.toSphere">[docs]</a>
-    <span class="k">def</span> <span class="nf">toSphere</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@deprecation</span><span class="p">(</span><span class="s2">&quot;toSphere is deprecated, please use shape.to.Sphere(...) instead.&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">toSphere</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Create a sphere which is surely encompassing the *full* shape &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.toSphere has not been implemented&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Shape.toEllipsoid">
 <a class="viewcode-back" href="../../../api/generated/sisl.shape.Shape.html#sisl.shape.Shape.toEllipsoid">[docs]</a>
-    <span class="k">def</span> <span class="nf">toEllipsoid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@deprecation</span><span class="p">(</span><span class="s2">&quot;toEllipsoid is deprecated, please use shape.to.Ellipsoid(...) instead.&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">toEllipsoid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Create an ellipsoid which is surely encompassing the *full* shape &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">toSphere</span><span class="p">()</span><span class="o">.</span><span class="n">toEllipsoid</span><span class="p">()</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">Sphere</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">Ellipsoid</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Shape.toCuboid">
 <a class="viewcode-back" href="../../../api/generated/sisl.shape.Shape.html#sisl.shape.Shape.toCuboid">[docs]</a>
-    <span class="k">def</span> <span class="nf">toCuboid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@deprecation</span><span class="p">(</span><span class="s2">&quot;toCuboid is deprecated, please use shape.to.Cuboid(...) instead.&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">toCuboid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Create a cuboid which is surely encompassing the *full* shape &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">toEllipsoid</span><span class="p">()</span><span class="o">.</span><span class="n">toCuboid</span><span class="p">()</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">Ellipsoid</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">Cuboid</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Shape.within">
@@ -268,7 +264,8 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">within</span><span class="p">(</span><span class="n">other</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s2">&quot;{{&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39; c(</span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">)</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">{{</span><span class="s2">c(</span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">c</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">)</span><span class="se">}}</span><span class="s2">&quot;</span>
 
     <span class="c1"># Implement logical operators to enable composition of sets</span>
     <span class="k">def</span> <span class="fm">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
@@ -290,28 +287,21 @@
 <span class="n">to_dispatch</span> <span class="o">=</span> <span class="n">Shape</span><span class="o">.</span><span class="n">to</span>
 
 <span class="c1"># Add dispatcher systems</span>
-
-
-<span class="k">class</span> <span class="nc">ShapeToDispatcher</span><span class="p">(</span><span class="n">AbstractDispatch</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ShapeToDispatch</span><span class="p">(</span><span class="n">AbstractDispatch</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Base dispatcher from class passing from a Shape class &quot;&quot;&quot;</span>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_ensure_object</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Dispatcher on </span><span class="si">{</span><span class="n">obj</span><span class="si">}</span><span class="s2"> must not be called on the class.&quot;</span><span class="p">)</span>
 
-
-<span class="k">class</span> <span class="nc">ToEllipsoidDispatcher</span><span class="p">(</span><span class="n">ShapeToDispatcher</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ToEllipsoidDispatch</span><span class="p">(</span><span class="n">ShapeToDispatch</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">sphere</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">ellipsoid</span><span class="p">()</span>
-<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;ellipsoid&quot;</span><span class="p">,</span> <span class="n">ToEllipsoidDispatcher</span><span class="p">)</span>
-<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;Ellipsoid&quot;</span><span class="p">,</span> <span class="n">ToEllipsoidDispatcher</span><span class="p">)</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_object</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">shape</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">Sphere</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">Ellipsoid</span><span class="p">()</span>
+<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;Ellipsoid&quot;</span><span class="p">,</span> <span class="n">ToEllipsoidDispatch</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">ToCuboidDispatcher</span><span class="p">(</span><span class="n">ShapeToDispatcher</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ToCuboidDispatch</span><span class="p">(</span><span class="n">ShapeToDispatch</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">ellipsoid</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">cuboid</span><span class="p">()</span>
-<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;cuboid&quot;</span><span class="p">,</span> <span class="n">ToCuboidDispatcher</span><span class="p">)</span>
-<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;Cuboid&quot;</span><span class="p">,</span> <span class="n">ToCuboidDispatcher</span><span class="p">)</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_object</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">shape</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">Ellipsoid</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">Cuboid</span><span class="p">()</span>
+<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;Cuboid&quot;</span><span class="p">,</span> <span class="n">ToCuboidDispatch</span><span class="p">)</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.shape&quot;</span><span class="p">)</span>
@@ -333,6 +323,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">A</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">B</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
+    <span class="k">def</span> <span class="nf">__init_subclass__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span>
+                          <span class="n">composite_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                          <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init_subclass__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="fm">__str__</span> <span class="o">=</span> <span class="n">_composite_name</span><span class="p">(</span><span class="n">composite_name</span><span class="p">)</span>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">center</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Average center of composite shapes &quot;&quot;&quot;</span>
@@ -352,29 +349,49 @@
         <span class="c1">#      good enough.</span>
         <span class="k">return</span> <span class="o">-</span><span class="mf">1.</span>
 
-    <span class="k">def</span> <span class="nf">toSphere</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@deprecation</span><span class="p">(</span><span class="s2">&quot;toSphere is deprecated, please use shape.to.Sphere(...) instead.&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">toSphere</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Create a sphere which is surely encompassing the *full* shape &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.ellipsoid</span> <span class="kn">import</span> <span class="n">Sphere</span>
-
-        <span class="c1"># Retrieve spheres</span>
-        <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="o">.</span><span class="n">toSphere</span><span class="p">()</span>
-        <span class="n">Ar</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">radius</span>
-        <span class="n">Ac</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">center</span>
-        <span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">B</span><span class="o">.</span><span class="n">toSphere</span><span class="p">()</span>
-        <span class="n">Br</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">radius</span>
-        <span class="n">Bc</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">center</span>
-
-        <span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="n">Ac</span> <span class="o">+</span> <span class="n">Bc</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
-        <span class="n">A</span> <span class="o">=</span> <span class="n">Ar</span> <span class="o">+</span> <span class="n">fnorm</span><span class="p">(</span><span class="n">center</span> <span class="o">-</span> <span class="n">Ac</span><span class="p">)</span>
-        <span class="n">B</span> <span class="o">=</span> <span class="n">Br</span> <span class="o">+</span> <span class="n">fnorm</span><span class="p">(</span><span class="n">center</span> <span class="o">-</span> <span class="n">Bc</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">Sphere</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">),</span> <span class="n">center</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">Sphere</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scale</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">scale</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">B</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">scale</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">B</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">ToSphereDispatch</span><span class="p">(</span><span class="n">ShapeToDispatch</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Create a sphere which is surely encompassing the *full* shape &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.ellipsoid</span> <span class="kn">import</span> <span class="n">Sphere</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_object</span><span class="p">()</span>
+
+        <span class="c1"># Retrieve spheres</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">shape</span><span class="o">.</span><span class="n">A</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">Sphere</span><span class="p">()</span>
+        <span class="n">Ar</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">radius</span>
+        <span class="n">Ac</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">center</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="n">shape</span><span class="o">.</span><span class="n">B</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">Sphere</span><span class="p">()</span>
+        <span class="n">Br</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">radius</span>
+        <span class="n">Bc</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">center</span>
+
+        <span class="n">center_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">Ac</span> <span class="o">+</span> <span class="n">Bc</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
+        <span class="k">if</span> <span class="n">center</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">center</span> <span class="o">=</span> <span class="n">center_shape</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">Ar</span> <span class="o">+</span> <span class="n">fnorm</span><span class="p">(</span><span class="n">center_shape</span> <span class="o">-</span> <span class="n">Ac</span><span class="p">)</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="n">Br</span> <span class="o">+</span> <span class="n">fnorm</span><span class="p">(</span><span class="n">center_shape</span> <span class="o">-</span> <span class="n">Bc</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Sphere</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">),</span> <span class="n">center</span><span class="p">)</span>
+
+<span class="n">CompositeShape</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;Sphere&quot;</span><span class="p">,</span> <span class="n">ToSphereDispatch</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">ToEllipsoidDispatcher</span><span class="p">(</span><span class="n">ShapeToDispatch</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">.ellipsoid</span> <span class="kn">import</span> <span class="n">Ellipsoid</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_object</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">shape</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">Sphere</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="n">center</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">Ellipsoid</span><span class="p">()</span>
+
+<span class="n">CompositeShape</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;Ellipsoid&quot;</span><span class="p">,</span> <span class="n">ToEllipsoidDispatch</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_composite_name</span><span class="p">(</span><span class="n">sep</span><span class="p">):</span>
@@ -392,10 +409,8 @@
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.shape&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">OrShape</span><span class="p">(</span><span class="n">CompositeShape</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">OrShape</span><span class="p">(</span><span class="n">CompositeShape</span><span class="p">,</span> <span class="n">composite_name</span><span class="o">=</span><span class="s2">&quot;|&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Boolean ``A | B`` shape &quot;&quot;&quot;</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
-    <span class="fm">__str__</span> <span class="o">=</span> <span class="n">_composite_name</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">within_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="o">.</span><span class="n">within_index</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -404,10 +419,8 @@
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.shape&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">XOrShape</span><span class="p">(</span><span class="n">CompositeShape</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">XOrShape</span><span class="p">(</span><span class="n">CompositeShape</span><span class="p">,</span> <span class="n">composite_name</span><span class="o">=</span><span class="s2">&quot;^&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Boolean ``A ^ B`` shape &quot;&quot;&quot;</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
-    <span class="fm">__str__</span> <span class="o">=</span> <span class="n">_composite_name</span><span class="p">(</span><span class="s2">&quot;^&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">within_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="o">.</span><span class="n">within_index</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -416,10 +429,8 @@
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.shape&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">SubShape</span><span class="p">(</span><span class="n">CompositeShape</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">SubShape</span><span class="p">(</span><span class="n">CompositeShape</span><span class="p">,</span> <span class="n">composite_name</span><span class="o">=</span><span class="s2">&quot;-&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Boolean ``A - B`` shape &quot;&quot;&quot;</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
-    <span class="fm">__str__</span> <span class="o">=</span> <span class="n">_composite_name</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">within_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="o">.</span><span class="n">within_index</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -428,20 +439,30 @@
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.shape&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">AndShape</span><span class="p">(</span><span class="n">CompositeShape</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">AndShape</span><span class="p">(</span><span class="n">CompositeShape</span><span class="p">,</span> <span class="n">composite_name</span><span class="o">=</span><span class="s2">&quot;&amp;&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Boolean ``A &amp; B`` shape &quot;&quot;&quot;</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
-    <span class="fm">__str__</span> <span class="o">=</span> <span class="n">_composite_name</span><span class="p">(</span><span class="s2">&quot;&amp;&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">toSphere</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@deprecation</span><span class="p">(</span><span class="s2">&quot;toSphere is deprecated, please use shape.to.Sphere(...) instead.&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">toSphere</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Create a sphere which is surely encompassing the *full* shape &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">Sphere</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">within_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="o">.</span><span class="n">within_index</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">B</span><span class="o">.</span><span class="n">within_index</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">intersect1d</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">assume_unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">AndToSphereDispatch</span><span class="p">(</span><span class="n">ShapeToDispatch</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Create a sphere which is surely encompassing the *full* shape &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.ellipsoid</span> <span class="kn">import</span> <span class="n">Sphere</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span>
 
         <span class="c1"># Retrieve spheres</span>
-        <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="o">.</span><span class="n">toSphere</span><span class="p">()</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">shape</span><span class="o">.</span><span class="n">A</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">Sphere</span><span class="p">()</span>
         <span class="n">Ar</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">radius</span>
         <span class="n">Ac</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">center</span>
-        <span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">B</span><span class="o">.</span><span class="n">toSphere</span><span class="p">()</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="n">shape</span><span class="o">.</span><span class="n">B</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">Sphere</span><span class="p">()</span>
         <span class="n">Br</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">radius</span>
         <span class="n">Bc</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">center</span>
 
@@ -473,8 +494,9 @@
 
             <span class="c1"># Now we simply need to find the dx point along the vector Bc - Ac</span>
             <span class="c1"># Then we can easily calculate the point from A</span>
-            <span class="n">center</span> <span class="o">=</span> <span class="n">Bc</span> <span class="o">-</span> <span class="n">Ac</span>
-            <span class="n">center</span> <span class="o">=</span> <span class="n">Ac</span> <span class="o">+</span> <span class="n">center</span> <span class="o">/</span> <span class="n">fnorm</span><span class="p">(</span><span class="n">center</span><span class="p">)</span> <span class="o">*</span> <span class="n">dx</span>
+            <span class="k">if</span> <span class="n">center</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">center</span> <span class="o">=</span> <span class="n">Bc</span> <span class="o">-</span> <span class="n">Ac</span>
+                <span class="n">center</span> <span class="o">=</span> <span class="n">Ac</span> <span class="o">+</span> <span class="n">center</span> <span class="o">/</span> <span class="n">fnorm</span><span class="p">(</span><span class="n">center</span><span class="p">)</span> <span class="o">*</span> <span class="n">dx</span>
             <span class="n">A</span> <span class="o">=</span> <span class="n">i_r</span>
             <span class="n">B</span> <span class="o">=</span> <span class="n">i_r</span>
 
@@ -482,19 +504,13 @@
             <span class="c1"># In this case there is actually no overlap. So perhaps we should</span>
             <span class="c1"># create an infinitisemal sphere such that no point will ever be found</span>
             <span class="c1"># Or we should return a new Shape which *always* return False for indices etc.</span>
-            <span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="n">Ac</span> <span class="o">+</span> <span class="n">Bc</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
-            <span class="c1"># Currently we simply use a very small sphere and put it in the middle between</span>
-            <span class="c1"># the spheres</span>
-            <span class="c1"># This should at least speed up comparisons</span>
-            <span class="n">A</span> <span class="o">=</span> <span class="mf">0.001</span>
-            <span class="n">B</span> <span class="o">=</span> <span class="mf">0.001</span>
+            <span class="k">if</span> <span class="n">center</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="n">Ac</span> <span class="o">+</span> <span class="n">Bc</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
+            <span class="k">return</span> <span class="n">NullShape</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">Sphere</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="n">center</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">Sphere</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">),</span> <span class="n">center</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">within_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="o">.</span><span class="n">within_index</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">B</span><span class="o">.</span><span class="n">within_index</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">intersect1d</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">assume_unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">AndShape</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;Sphere&quot;</span><span class="p">,</span> <span class="n">AndToSphereDispatch</span><span class="p">)</span>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.shape&quot;</span><span class="p">)</span>
@@ -518,7 +534,7 @@
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.shape&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">NullShape</span><span class="p">(</span><span class="n">PureShape</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">NullShape</span><span class="p">(</span><span class="n">PureShape</span><span class="p">,</span> <span class="n">dispatchs</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;copy&quot;</span><span class="p">)]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; A unique shape which has no well-defined spatial volume or center</span>
 
 <span class="sd">    This special shape is used when composite shapes turns out to have</span>
@@ -532,7 +548,6 @@
 <span class="sd">    has any meaning.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
-    <span class="n">to</span> <span class="o">=</span> <span class="n">PureShape</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
 <div class="viewcode-block" id="NullShape.__init__">
 <a class="viewcode-back" href="../../../api/generated/sisl.shape.NullShape.html#sisl.shape.NullShape.__init__">[docs]</a>
@@ -551,26 +566,26 @@
 
 <div class="viewcode-block" id="NullShape.toEllipsoid">
 <a class="viewcode-back" href="../../../api/generated/sisl.shape.NullShape.html#sisl.shape.NullShape.toEllipsoid">[docs]</a>
-    <span class="k">def</span> <span class="nf">toEllipsoid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@deprecation</span><span class="p">(</span><span class="s2">&quot;toEllipsoid is deprecated, please use shape.to.Ellipsoid(...) instead.&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">toEllipsoid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Return an ellipsoid with radius of size 1e-64 &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.ellipsoid</span> <span class="kn">import</span> <span class="n">Ellipsoid</span>
-        <span class="k">return</span> <span class="n">Ellipsoid</span><span class="p">(</span><span class="mf">1.e-64</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">Ellipsoid</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="NullShape.toSphere">
 <a class="viewcode-back" href="../../../api/generated/sisl.shape.NullShape.html#sisl.shape.NullShape.toSphere">[docs]</a>
-    <span class="k">def</span> <span class="nf">toSphere</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@deprecation</span><span class="p">(</span><span class="s2">&quot;toSphere is deprecated, please use shape.to.Sphere(...) instead.&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">toSphere</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Return a sphere with radius of size 1e-64 &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.ellipsoid</span> <span class="kn">import</span> <span class="n">Sphere</span>
-        <span class="k">return</span> <span class="n">Sphere</span><span class="p">(</span><span class="mf">1.e-64</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">Sphere</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="NullShape.toCuboid">
 <a class="viewcode-back" href="../../../api/generated/sisl.shape.NullShape.html#sisl.shape.NullShape.toCuboid">[docs]</a>
-    <span class="k">def</span> <span class="nf">toCuboid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nd">@deprecation</span><span class="p">(</span><span class="s2">&quot;toCuboid is deprecated, please use shape.to.Cuboid(...) instead.&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">toCuboid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Return a cuboid with side-lengths 1e-64 &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.prism4</span> <span class="kn">import</span> <span class="n">Cuboid</span>
-        <span class="k">return</span> <span class="n">Cuboid</span><span class="p">(</span><span class="mf">1.e-64</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">Cuboid</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="NullShape.volume">
@@ -580,15 +595,34 @@
         <span class="k">return</span> <span class="mf">0.</span></div>
 
 
-
-<span class="k">class</span> <span class="nc">ToSphereDispatcher</span><span class="p">(</span><span class="n">ShapeToDispatcher</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">.ellipsoid</span> <span class="kn">import</span> <span class="n">Sphere</span>
-        <span class="k">return</span> <span class="n">Sphere</span><span class="p">(</span><span class="mf">1.e-64</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
-
 <span class="n">to_dispatch</span> <span class="o">=</span> <span class="n">NullShape</span><span class="o">.</span><span class="n">to</span>
-<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;sphere&quot;</span><span class="p">,</span> <span class="n">ToSphereDispatcher</span><span class="p">)</span>
-<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;Sphere&quot;</span><span class="p">,</span> <span class="n">ToSphereDispatcher</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">NullToSphere</span><span class="p">(</span><span class="n">ShapeToDispatch</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">.ellipsoid</span> <span class="kn">import</span> <span class="n">Sphere</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_object</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">center</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">center</span> <span class="o">=</span> <span class="n">shape</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">Sphere</span><span class="p">(</span><span class="mf">1.e-64</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="n">center</span><span class="p">)</span>
+<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;Sphere&quot;</span><span class="p">,</span> <span class="n">NullToSphere</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">NullToEllipsoid</span><span class="p">(</span><span class="n">ShapeToDispatch</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">.ellipsoid</span> <span class="kn">import</span> <span class="n">Ellipsoid</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_object</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">center</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">center</span> <span class="o">=</span> <span class="n">shape</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">Ellipsoid</span><span class="p">(</span><span class="mf">1.e-64</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="n">center</span><span class="p">)</span>
+<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;Ellipsoid&quot;</span><span class="p">,</span> <span class="n">NullToEllipsoid</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">NullToCuboid</span><span class="p">(</span><span class="n">ShapeToDispatch</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">.prism4</span> <span class="kn">import</span> <span class="n">Cuboid</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_object</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">center</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">origin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">center</span> <span class="o">=</span> <span class="n">shape</span><span class="o">.</span><span class="n">center</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">Cuboid</span><span class="p">(</span><span class="mf">1.e-64</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="n">center</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span>
+<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;Cuboid&quot;</span><span class="p">,</span> <span class="n">NullToCuboid</span><span class="p">)</span>
 
 <span class="k">del</span> <span class="n">to_dispatch</span>
 </pre></div>

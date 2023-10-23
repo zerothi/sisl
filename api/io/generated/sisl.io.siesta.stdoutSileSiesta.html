@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.stdoutSileSiesta &mdash; sisl 0.1-aa1de5c</title>
+  <title>sisl.io.siesta.stdoutSileSiesta &mdash; sisl 0.1-9c9c61f</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
@@ -18,7 +18,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=afed2ba8"></script>
+        <script src="../../../_static/documentation_options.js?v=ccf676f9"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/tabs.js?v=3ee01567"></script>
@@ -42,7 +42,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-aa1de5c
+                0.1-9c9c61f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -391,17 +391,17 @@ very welcome.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<em>{&quot;voronoi&quot;</em><em>, </em><em>&quot;hirshfeld&quot;}</em>) – the name of the charges that you want to read</p></li>
-<li><p><strong>iscf</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>Opt</em><em>, </em><em>optional</em>) – index (0-based) of the scf iteration you want the charges for.
+<li><p><strong>iscf</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><em>Opt</em><em>, </em><em>optional</em>) – index (0-based) of the scf iteration you want the charges for.
 If the enum specifier <em class="xref py py-obj">Opt.ANY</em> or <em class="xref py py-obj">Opt.ALL</em> are used, then
 the returned quantities depend on what is present.
 If <code class="docutils literal notranslate"><span class="pre">None/Opt.NONE</span></code> it will not return any SCF charges.
 If both <em class="xref py py-obj">imd</em> and <em class="xref py py-obj">iscf</em> are <code class="docutils literal notranslate"><span class="pre">None</span></code> then only the final charges will be returned.</p></li>
-<li><p><strong>imd</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>Opt</em><em>, </em><em>optional</em>) – index (0-based) of the md step you want the charges for.
+<li><p><strong>imd</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><em>Opt</em><em>, </em><em>optional</em>) – index (0-based) of the md step you want the charges for.
 If the enum specifier <em class="xref py py-obj">Opt.ANY</em> or <em class="xref py py-obj">Opt.ALL</em> are used, then
 the returned quantities depend on what is present.
 If <code class="docutils literal notranslate"><span class="pre">None/Opt.NONE</span></code> it will not return any MD charges.
 If both <em class="xref py py-obj">imd</em> and <em class="xref py py-obj">iscf</em> are <code class="docutils literal notranslate"><span class="pre">None</span></code> then only the final charges will be returned.</p></li>
-<li><p><strong>key_scf</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – the key lookup for the scf iterations (a “:” will automatically be appended)</p></li>
+<li><p><strong>key_scf</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – the key lookup for the scf iterations (a “:” will automatically be appended)</p></li>
 <li><p><strong>as_dataframe</strong> (<em>boolean</em><em>, </em><em>optional</em>) – whether charges should be returned as a pandas dataframe.</p></li>
 </ul>
 </dd>
@@ -435,11 +435,11 @@ of keywords, so:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>geometry</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – read geometry, args are passed to <a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_geometry" title="sisl.io.siesta.stdoutSileSiesta.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a></p></li>
-<li><p><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – read force, args are passed to <a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_force" title="sisl.io.siesta.stdoutSileSiesta.read_force"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_force</span></code></a></p></li>
-<li><p><strong>stress</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – read stress, args are passed to <a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_stress" title="sisl.io.siesta.stdoutSileSiesta.read_stress"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_stress</span></code></a></p></li>
-<li><p><strong>moment</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – read moment, args are passed to <a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_moment" title="sisl.io.siesta.stdoutSileSiesta.read_moment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_moment</span></code></a> (only for spin-orbit calculations)</p></li>
-<li><p><strong>energy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – read final energies, args are passed to <a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_energy" title="sisl.io.siesta.stdoutSileSiesta.read_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_energy</span></code></a></p></li>
+<li><p><strong>geometry</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – read geometry, args are passed to <a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_geometry" title="sisl.io.siesta.stdoutSileSiesta.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a></p></li>
+<li><p><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – read force, args are passed to <a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_force" title="sisl.io.siesta.stdoutSileSiesta.read_force"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_force</span></code></a></p></li>
+<li><p><strong>stress</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – read stress, args are passed to <a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_stress" title="sisl.io.siesta.stdoutSileSiesta.read_stress"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_stress</span></code></a></p></li>
+<li><p><strong>moment</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – read moment, args are passed to <a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_moment" title="sisl.io.siesta.stdoutSileSiesta.read_moment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_moment</span></code></a> (only for spin-orbit calculations)</p></li>
+<li><p><strong>energy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – read final energies, args are passed to <a class="reference internal" href="#sisl.io.siesta.stdoutSileSiesta.read_energy" title="sisl.io.siesta.stdoutSileSiesta.read_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_energy</span></code></a></p></li>
 </ul>
 </dd>
 </dl>
@@ -512,11 +512,11 @@ of keywords, so:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>last</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – only read the last force</p></li>
-<li><p><strong>all</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – return a list of all forces (like an MD)
+<li><p><strong>last</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – only read the last force</p></li>
+<li><p><strong>all</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – return a list of all forces (like an MD)
 If <em class="xref py py-obj">True</em> <em class="xref py py-obj">last</em> is ignored</p></li>
-<li><p><strong>total</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – return the total forces instead of the atomic forces.</p></li>
-<li><p><strong>max</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – <p>whether only the maximum atomic force should be returned for each step.</p>
+<li><p><strong>total</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – return the total forces instead of the atomic forces.</p></li>
+<li><p><strong>max</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – <p>whether only the maximum atomic force should be returned for each step.</p>
 <p>Setting it to <em class="xref py py-obj">True</em> is equivalent to <em class="xref py py-obj">max(outSile.read_force())</em> in case atomic forces
 are written in the output file (<em class="xref py py-obj">WriteForces .true.</em> in the fdf file)</p>
 <p>Note that this is not the same as doing <em class="xref py py-obj">max(outSile.read_force(total=True))</em> since
@@ -556,8 +556,8 @@ will therefore be just a float, not an array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>last</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – only read the last geometry</p></li>
-<li><p><strong>all</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – return a list of all geometries (like an MD)
+<li><p><strong>last</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – only read the last geometry</p></li>
+<li><p><strong>all</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – return a list of all geometries (like an MD)
 If <em class="xref py py-obj">True</em> <em class="xref py py-obj">last</em> is ignored</p></li>
 </ul>
 </dd>
@@ -566,7 +566,7 @@ If <em class="xref py py-obj">True</em> <em class="xref py py-obj">last</em> is 
 a list of geometries corresponding to the MD-runs.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a> or <a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry">Geometry</a> or None</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a> or <a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry">Geometry</a> or None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -579,11 +579,11 @@ a list of geometries corresponding to the MD-runs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>orbitals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – return a table with orbitally resolved
+<li><p><strong>orbitals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – return a table with orbitally resolved
 moments.</p></li>
 <li><p><strong>quantity</strong> (<em>{'S'</em><em>, </em><em>'L'}</em><em>, </em><em>optional</em>) – return the spin-moments or the L moments</p></li>
-<li><p><strong>last</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – only read the last force</p></li>
-<li><p><strong>all</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – return a list of all forces (like an MD)
+<li><p><strong>last</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – only read the last force</p></li>
+<li><p><strong>all</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – return a list of all forces (like an MD)
 If <em class="xref py py-obj">True</em> <em class="xref py py-obj">last</em> is ignored</p></li>
 </ul>
 </dd>
@@ -598,15 +598,15 @@ If <em class="xref py py-obj">True</em> <em class="xref py py-obj">last</em> is 
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>key</strong> (<em>{'scf'</em><em>, </em><em>'ts-scf'}</em>) – parse SCF information from Siesta SCF or TranSiesta SCF</p></li>
-<li><p><strong>iscf</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – which SCF cycle should be stored. If <code class="docutils literal notranslate"><span class="pre">-1</span></code> only the final SCF step is stored,
+<li><p><strong>iscf</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – which SCF cycle should be stored. If <code class="docutils literal notranslate"><span class="pre">-1</span></code> only the final SCF step is stored,
 for None <em>all</em> SCF cycles are returned. When <em class="xref py py-obj">iscf</em> values queried are not found they
 will be truncated to the nearest SCF step.</p></li>
-<li><p><strong>imd</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>None</em><em>, </em><em>optional</em>) – whether only a particular MD step is queried, if None, all MD steps are
+<li><p><strong>imd</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><em>None</em><em>, </em><em>optional</em>) – whether only a particular MD step is queried, if None, all MD steps are
 parsed and returned. A negative number wraps for the last MD steps.</p></li>
 <li><p><strong>as_dataframe</strong> (<em>boolean</em><em>, </em><em>optional</em>) – whether the information should be returned as a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.1.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>. The advantage of this
 format is that everything is indexed and therefore you know what each value means.You can also
 perform operations very easily on a dataframe.</p></li>
-<li><p><strong>ret_header</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether to also return the headers that define each value in the returned array,
+<li><p><strong>ret_header</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether to also return the headers that define each value in the returned array,
 will have no effect if <em class="xref py py-obj">as_dataframe</em> is true.</p></li>
 </ul>
 </dd>
@@ -621,8 +621,8 @@ will have no effect if <em class="xref py py-obj">as_dataframe</em> is true.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>key</strong> (<em>{'static'</em><em>, </em><em>'total'}</em>) – which stress to read from the output.</p></li>
-<li><p><strong>last</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – only read the last stress</p></li>
-<li><p><strong>all</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – return a list of all stresses (like an MD)
+<li><p><strong>last</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – only read the last stress</p></li>
+<li><p><strong>all</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – return a list of all stresses (like an MD)
 If <em class="xref py py-obj">True</em> <em class="xref py py-obj">last</em> is ignored</p></li>
 </ul>
 </dd>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>berry_curvature &mdash; sisl 0.1-aa1de5c</title>
+  <title>berry_curvature &mdash; sisl 0.1-9c9c61f</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
@@ -18,7 +18,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=afed2ba8"></script>
+        <script src="../../_static/documentation_options.js?v=ccf676f9"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/tabs.js?v=3ee01567"></script>
@@ -44,7 +44,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-aa1de5c
+                0.1-9c9c61f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -163,12 +163,12 @@
 states the vectors <em>may</em> be rotated upon return.</p></li>
 <li><p><strong>energy</strong> (<em>array_like</em><em>, </em><em>optional</em>) – energies of the states. In case of degenerate
 states the eigenvalues of the states will be averaged in the degenerate sub-space.</p></li>
-<li><p><strong>dHk</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><em>array_like</em>) – Hamiltonian derivative with respect to <span class="math notranslate nohighlight">\(\mathbf k\)</span>. This needs to be a tuple or
+<li><p><strong>dHk</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em> of </em><em>array_like</em>) – Hamiltonian derivative with respect to <span class="math notranslate nohighlight">\(\mathbf k\)</span>. This needs to be a tuple or
 list of the Hamiltonian derivative along the 3 Cartesian directions.</p></li>
-<li><p><strong>dSk</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><em>array_like</em><em>, </em><em>optional</em>) – <span class="math notranslate nohighlight">\(\delta \mathbf S_k\)</span> matrix required for non-orthogonal basis.
+<li><p><strong>dSk</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em> of </em><em>array_like</em><em>, </em><em>optional</em>) – <span class="math notranslate nohighlight">\(\delta \mathbf S_k\)</span> matrix required for non-orthogonal basis.
 Same derivative as <em class="xref py py-obj">dHk</em>.
 NOTE: Using non-orthogonal basis sets are not tested.</p></li>
-<li><p><strong>degenerate</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><em>array_like</em><em>, </em><em>optional</em>) – a list containing the indices of degenerate states. In that case a prior diagonalization
+<li><p><strong>degenerate</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em> of </em><em>array_like</em><em>, </em><em>optional</em>) – a list containing the indices of degenerate states. In that case a prior diagonalization
 is required to decouple them.</p></li>
 <li><p><strong>degenerate_dir</strong> (<em>(</em><em>3</em><em>,</em><em>)</em><em>, </em><em>optional</em>) – along which direction degenerate states are decoupled.</p></li>
 </ul>

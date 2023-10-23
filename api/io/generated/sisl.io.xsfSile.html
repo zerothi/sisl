@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.xsfSile &mdash; sisl 0.1-aa1de5c</title>
+  <title>sisl.io.xsfSile &mdash; sisl 0.1-9c9c61f</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
@@ -18,7 +18,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=afed2ba8"></script>
+        <script src="../../../_static/documentation_options.js?v=ccf676f9"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/tabs.js?v=3ee01567"></script>
@@ -42,7 +42,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-aa1de5c
+                0.1-9c9c61f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -162,7 +162,7 @@ overwrite itself repeatedly.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>steps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – number of steps the xsf file contains. Defaults to 1</p>
+<dd class="field-odd"><p><strong>steps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – number of steps the xsf file contains. Defaults to 1</p>
 </dd>
 </dl>
 <p class="rubric">Methods</p>
@@ -271,7 +271,7 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>geometry</strong> (<a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a>) – the geometry to be written</p></li>
-<li><p><strong>fmt</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – used format for the precision of the data</p></li>
+<li><p><strong>fmt</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – used format for the precision of the data</p></li>
 <li><p><strong>data</strong> (<em>(</em><em>geometry.na</em><em>, </em><em>3</em><em>)</em><em>, </em><em>optional</em>) – auxiliary data associated with the geometry to be saved
 along side. Internally in XCrySDen this data is named <em>Forces</em></p></li>
 </ul>
@@ -297,8 +297,8 @@ Each argument gets the field name <code class="docutils literal notranslate"><sp
 with the integer 0, and <em>?</em> is <code class="docutils literal notranslate"><span class="pre">real_</span></code>/<code class="docutils literal notranslate"><span class="pre">imag_</span></code> for complex
 valued grids.</p></li>
 <li><p><strong>geometry</strong> (<a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a><em>, </em><em>optional</em>) – the geometry stored in the file, defaults to <code class="docutils literal notranslate"><span class="pre">args[0].geometry</span></code></p></li>
-<li><p><strong>fmt</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – floating point format for data (.5e)</p></li>
-<li><p><strong>buffersize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – size of the buffer while writing the data, (6144)</p></li>
+<li><p><strong>fmt</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – floating point format for data (.5e)</p></li>
+<li><p><strong>buffersize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – size of the buffer while writing the data, (6144)</p></li>
 </ul>
 </dd>
 </dl>
@@ -312,7 +312,7 @@ valued grids.</p></li>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>lattice</strong> (<a class="reference internal" href="../../generated/sisl.Lattice.html#sisl.Lattice" title="sisl.Lattice"><em>Lattice</em></a>) – the supercell to be written</p></li>
-<li><p><strong>fmt</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – used format for the precision of the data</p></li>
+<li><p><strong>fmt</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – used format for the precision of the data</p></li>
 </ul>
 </dd>
 </dl>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.shape.NullShape &mdash; sisl 0.1-aa1de5c</title>
+  <title>sisl.shape.NullShape &mdash; sisl 0.1-9c9c61f</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
@@ -18,7 +18,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=afed2ba8"></script>
+        <script src="../../_static/documentation_options.js?v=ccf676f9"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/tabs.js?v=3ee01567"></script>
@@ -42,7 +42,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-aa1de5c
+                0.1-9c9c61f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -158,13 +158,13 @@ has any meaning.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.shape.NullShape.scale" title="sisl.shape.NullShape.scale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale</span></code></a>(scale)</p></td>
 <td><p>Return a new Shape with a scaled size</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.shape.NullShape.toCuboid" title="sisl.shape.NullShape.toCuboid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toCuboid</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.shape.NullShape.toCuboid" title="sisl.shape.NullShape.toCuboid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toCuboid</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Return a cuboid with side-lengths 1e-64</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.shape.NullShape.toEllipsoid" title="sisl.shape.NullShape.toEllipsoid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toEllipsoid</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.shape.NullShape.toEllipsoid" title="sisl.shape.NullShape.toEllipsoid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toEllipsoid</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Return an ellipsoid with radius of size 1e-64</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.shape.NullShape.toSphere" title="sisl.shape.NullShape.toSphere"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toSphere</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.shape.NullShape.toSphere" title="sisl.shape.NullShape.toSphere"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toSphere</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Return a sphere with radius of size 1e-64</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.shape.NullShape.volume" title="sisl.shape.NullShape.volume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">volume</span></code></a>(*args, **kwargs)</p></td>
@@ -220,8 +220,8 @@ method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – name of the attribute in the class</p></li>
-<li><p><strong>dispatchs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – dictionary of dispatch methods</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – name of the attribute in the class</p></li>
+<li><p><strong>dispatchs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – dictionary of dispatch methods</p></li>
 <li><p><strong>obj_getattr</strong> (<em>callable</em><em>, </em><em>optional</em>) – method with 2 arguments, an <code class="docutils literal notranslate"><span class="pre">obj</span></code> and the <code class="docutils literal notranslate"><span class="pre">attr</span></code> which may be used
 to control how the attribute is called.</p></li>
 <li><p><strong>instance_dispatcher</strong> (<em>AbstractDispatcher</em><em>, </em><em>optional</em>) – control how instance dispatchers are handled through <em class="xref py py-obj">__get__</em> method.
@@ -241,19 +241,19 @@ This controls the dispatcher used if called from a class.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.shape.NullShape.toCuboid">
-<span class="sig-name descname"><span class="pre">toCuboid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/shape/base.html#NullShape.toCuboid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.shape.NullShape.toCuboid" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">toCuboid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/shape/base.html#NullShape.toCuboid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.shape.NullShape.toCuboid" title="Link to this definition"></a></dt>
 <dd><p>Return a cuboid with side-lengths 1e-64</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.shape.NullShape.toEllipsoid">
-<span class="sig-name descname"><span class="pre">toEllipsoid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/shape/base.html#NullShape.toEllipsoid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.shape.NullShape.toEllipsoid" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">toEllipsoid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/shape/base.html#NullShape.toEllipsoid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.shape.NullShape.toEllipsoid" title="Link to this definition"></a></dt>
 <dd><p>Return an ellipsoid with radius of size 1e-64</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.shape.NullShape.toSphere">
-<span class="sig-name descname"><span class="pre">toSphere</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/shape/base.html#NullShape.toSphere"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.shape.NullShape.toSphere" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">toSphere</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/shape/base.html#NullShape.toSphere"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.shape.NullShape.toSphere" title="Link to this definition"></a></dt>
 <dd><p>Return a sphere with radius of size 1e-64</p>
 </dd></dl>
 

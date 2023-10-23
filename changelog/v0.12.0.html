@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>0.12.0 &mdash; sisl 0.1-aa1de5c</title>
+  <title>0.12.0 &mdash; sisl 0.1-9c9c61f</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/tabs.css" type="text/css" />
@@ -18,7 +18,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=afed2ba8"></script>
+        <script src="../_static/documentation_options.js?v=ccf676f9"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../_static/tabs.js?v=3ee01567"></script>
@@ -42,7 +42,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-aa1de5c
+                0.1-9c9c61f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -55,6 +55,8 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Release notes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="v0.14.2.html">Contributors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="v0.14.2.html#pull-requests-merged">Pull requests merged</a></li>
 <li class="toctree-l2"><a class="reference internal" href="v0.14.0.html">0.14.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="v0.13.0.html">0.13.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="v0.12.2.html">0.12.2</a></li>
@@ -196,7 +198,7 @@ names contributed a patch for the first time.</p>
 <li><p><em class="xref py py-obj">sc</em> argument to <em class="xref py py-obj">xyzSile.read_geometry</em> for user defined cells</p></li>
 <li><p>tiling a State object, #354 and #355</p></li>
 <li><p>replacing atoms in SparseOrbital geometries #139</p></li>
-<li><p>direction now accepts <a class="reference external" href="https://docs.python.org/3/library/abc.html#module-abc" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">abc</span></code></a> and <em class="xref py py-obj">xyz</em> keywords to retrieve vectors depending on direction input.</p></li>
+<li><p>direction now accepts <a class="reference external" href="https://docs.python.org/3/library/abc.html#module-abc" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">abc</span></code></a> and <em class="xref py py-obj">xyz</em> keywords to retrieve vectors depending on direction input.</p></li>
 <li><p>replacing atoms in SparseOrbital geometries #139</p></li>
 <li><p>reading from STRUCT_* files (Siesta input/output) #308</p></li>
 <li><p>reading the SuperCell block from fdf</p></li>
@@ -234,7 +236,7 @@ This may require sufficiently small dk for accurateness.</p></li>
 <ul class="simple">
 <li><p>order of arguments for <em class="xref py py-obj">nanoribbon</em> it was not consistent with the others</p></li>
 <li><p>removed cell argument in <em class="xref py py-obj">Geometry.sub</em></p></li>
-<li><p>removed <em class="xref py py-obj">Sile.exist</em>, refer to <em class="xref py py-obj">Sile.file</em> which always will be a <a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pathlib.Path</span></code></a> instance</p></li>
+<li><p>removed <em class="xref py py-obj">Sile.exist</em>, refer to <em class="xref py py-obj">Sile.file</em> which always will be a <a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.12)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pathlib.Path</span></code></a> instance</p></li>
 <li><p><em class="xref py py-obj">berry_phase</em> now uses the gauge=R convention, the code became much simpler</p></li>
 <li><p><em class="xref py py-obj">BrillouinZone.parametrize</em> function changed interface to allow more dimensions</p></li>
 <li><p><em class="xref py py-obj">EigenStateElectron.inner</em> does not use the overlap matrix by default, norm2 is for

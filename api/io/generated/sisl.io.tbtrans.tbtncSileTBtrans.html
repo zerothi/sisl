@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.tbtrans.tbtncSileTBtrans &mdash; sisl 0.1-aa1de5c</title>
+  <title>sisl.io.tbtrans.tbtncSileTBtrans &mdash; sisl 0.1-9c9c61f</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
@@ -18,7 +18,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=afed2ba8"></script>
+        <script src="../../../_static/documentation_options.js?v=ccf676f9"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/tabs.js?v=3ee01567"></script>
@@ -44,7 +44,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-aa1de5c
+                0.1-9c9c61f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -471,17 +471,17 @@ arguments.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – electrode originating spectral function</p></li>
-<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – optionally only return the DOS of atoms at a given energy point</p></li>
-<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned DOS is k-averaged, or an explicit (unweighed) k-point
+<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – electrode originating spectral function</p></li>
+<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – optionally only return the DOS of atoms at a given energy point</p></li>
+<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned DOS is k-averaged, or an explicit (unweighed) k-point
 is returned</p></li>
-<li><p><strong>atoms</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – only return for a given set of atoms (default to all).
+<li><p><strong>atoms</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – only return for a given set of atoms (default to all).
 <em>NOT</em> allowed with <cite>orbitals</cite> keyword. If <cite>True</cite> it will use all atoms in the device.
 False is equivalent to None.</p></li>
-<li><p><strong>orbitals</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – only return for a given set of orbitals (default to all)
+<li><p><strong>orbitals</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – only return for a given set of orbitals (default to all)
 <em>NOT</em> allowed with <cite>atoms</cite> keyword. If <cite>True</cite> it will use all orbitals in the device.
 False is equivalent to None.</p></li>
-<li><p><strong>sum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the returned quantities are summed or returned <em>as is</em>, i.e. resolved per atom/orbital.</p></li>
+<li><p><strong>sum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the returned quantities are summed or returned <em>as is</em>, i.e. resolved per atom/orbital.</p></li>
 <li><p><strong>norm</strong> (<em>{'none'</em><em>, </em><em>'atom'</em><em>, </em><em>'orbital'</em><em>, </em><em>'all'}</em>) – how the normalization of the summed DOS is performed (see <cite>norm</cite> routine).</p></li>
 </ul>
 </dd>
@@ -515,16 +515,16 @@ averages over the density matrices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the electrode of originating electrons</p></li>
-<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the energy or the energy index of density matrix. If an integer
+<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the electrode of originating electrons</p></li>
+<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the energy or the energy index of density matrix. If an integer
 is passed it is the index, otherwise the index corresponding to
 <code class="docutils literal notranslate"><span class="pre">Eindex(E)</span></code> is used.</p></li>
-<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned density matrix is k-averaged, or an explicit (unweighed) k-point
+<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned density matrix is k-averaged, or an explicit (unweighed) k-point
 is returned</p></li>
 <li><p><strong>isc</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the returned density matrix from unit-cell (<code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">None,</span> <span class="pre">None]</span></code>) to
 the given supercell, the default is all density matrix elements for the supercell.
 To only get unit cell orbital currents, pass <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></code>.</p></li>
-<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain density matrix elements for a subset of orbitals, all
+<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain density matrix elements for a subset of orbitals, all
 other are set to 0.</p></li>
 <li><p><strong>geometry</strong> (<a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a><em>, </em><em>optional</em>) – geometry that will be associated with the density matrix. By default the
 geometry contained in this file will be used. However, then the
@@ -561,11 +561,11 @@ in real-space.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – electrode where the bulk DOS is returned</p></li>
-<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – optionally only return the DOS of atoms at a given energy point</p></li>
-<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned DOS is k-averaged, or an explicit (unweighed) k-point
+<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – electrode where the bulk DOS is returned</p></li>
+<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – optionally only return the DOS of atoms at a given energy point</p></li>
+<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned DOS is k-averaged, or an explicit (unweighed) k-point
 is returned</p></li>
-<li><p><strong>sum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the returned quantities are summed or returned <em>as is</em>, i.e. resolved per atom/orbital.</p></li>
+<li><p><strong>sum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the returned quantities are summed or returned <em>as is</em>, i.e. resolved per atom/orbital.</p></li>
 <li><p><strong>norm</strong> (<em>{'none'</em><em>, </em><em>'atom'</em><em>, </em><em>'orbital'</em><em>, </em><em>'all'}</em>) – whether the returned quantities are summed or normed by total number of orbitals.
 Currently one cannot extract DOS per atom/orbital.</p></li>
 </ul>
@@ -597,16 +597,16 @@ arguments.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – optionally only return the DOS of atoms at a given energy point</p></li>
-<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned DOS is k-averaged, or an explicit (unweighed) k-point
+<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – optionally only return the DOS of atoms at a given energy point</p></li>
+<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned DOS is k-averaged, or an explicit (unweighed) k-point
 is returned</p></li>
-<li><p><strong>atoms</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – only return for a given set of atoms (default to all).
+<li><p><strong>atoms</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – only return for a given set of atoms (default to all).
 <em>NOT</em> allowed with <cite>orbitals</cite> keyword. If <cite>True</cite> it will use all atoms in the device.
 False is equivalent to None.</p></li>
-<li><p><strong>orbitals</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – only return for a given set of orbitals (default to all)
+<li><p><strong>orbitals</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – only return for a given set of orbitals (default to all)
 <em>NOT</em> allowed with <cite>atoms</cite> keyword. If <cite>True</cite> it will use all orbitals in the device.
 False is equivalent to None.</p></li>
-<li><p><strong>sum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the returned quantities are summed or returned <em>as is</em>, i.e. resolved per atom/orbital.</p></li>
+<li><p><strong>sum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the returned quantities are summed or returned <em>as is</em>, i.e. resolved per atom/orbital.</p></li>
 <li><p><strong>norm</strong> (<em>{'none'</em><em>, </em><em>'atom'</em><em>, </em><em>'orbital'</em><em>, </em><em>'all'}</em>) – how the normalization of the summed DOS is performed (see <cite>norm</cite> routine)</p></li>
 </ul>
 </dd>
@@ -637,7 +637,7 @@ False is equivalent to None.</p></li>
 <dd><p>Return the closest energy index corresponding to the energy <code class="docutils literal notranslate"><span class="pre">E</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – if <cite>int</cite>, return it-self, else return the energy index which is
+<dd class="field-odd"><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – if <cite>int</cite>, return it-self, else return the energy index which is
 closests to the energy.
 For a <cite>str</cite> it will be parsed to a float and treated as such.</p>
 </dd>
@@ -660,7 +660,7 @@ For a <cite>str</cite> it will be parsed to a float and treated as such.</p>
 <p>Will warn if an atom requested is not in the device list of atoms.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>atoms</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – atomic indices (0-based)</p>
+<dd class="field-odd"><p><strong>atoms</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – atomic indices (0-based)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -684,8 +684,8 @@ For a <cite>str</cite> it will be parsed to a float and treated as such.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – electrode to retrieve indices for</p></li>
-<li><p><strong>bulk</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the returned indices are <em>only</em> in the pristine electrode,
+<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – electrode to retrieve indices for</p></li>
+<li><p><strong>bulk</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the returned indices are <em>only</em> in the pristine electrode,
 or the down-folding region (electrode + downfolding region, not in device)</p></li>
 </ul>
 </dd>
@@ -698,7 +698,7 @@ or the down-folding region (electrode + downfolding region, not in device)</p></
 <dd><p>Electrode atomic indices for the full geometry (sorted)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – electrode to retrieve indices for</p>
+<dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – electrode to retrieve indices for</p>
 </dd>
 </dl>
 </dd></dl>
@@ -710,18 +710,18 @@ or the down-folding region (electrode + downfolding region, not in device)</p></
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the energy or the energy index of COHP. If an integer
+<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the energy or the energy index of COHP. If an integer
 is passed it is the index, otherwise the index corresponding to
 <code class="docutils literal notranslate"><span class="pre">Eindex(E)</span></code> is used.</p></li>
-<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the electrode of the spectral function</p></li>
-<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned COHP is k-averaged, or an explicit (unweighed) k-point
+<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – the electrode of the spectral function</p></li>
+<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned COHP is k-averaged, or an explicit (unweighed) k-point
 is returned</p></li>
 <li><p><strong>isc</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the returned COHP from unit-cell (<code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">None,</span> <span class="pre">None]</span></code>) to
 the given supercell, the default is all COHP for the supercell.
 To only get unit cell orbital currents, pass <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></code>.</p></li>
-<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain COHP matrix elements for a subset of orbitals, all
+<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain COHP matrix elements for a subset of orbitals, all
 other are set to 0.</p></li>
-<li><p><strong>uc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the returned COHP are only in the unit-cell.
+<li><p><strong>uc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the returned COHP are only in the unit-cell.
 If <code class="docutils literal notranslate"><span class="pre">True</span></code> this will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na)</span></code>,
 else, it will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na</span> <span class="pre">*</span> <span class="pre">self.n_s)</span></code>.
 One may figure out the connections via <cite>~sisl.geometry.Geometry.sc_index</cite>.</p></li>
@@ -763,18 +763,18 @@ One may figure out the connections via <cite>~sisl.geometry.Geometry.sc_index</c
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the energy or the energy index of COOP. If an integer
+<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the energy or the energy index of COOP. If an integer
 is passed it is the index, otherwise the index corresponding to
 <code class="docutils literal notranslate"><span class="pre">Eindex(E)</span></code> is used.</p></li>
-<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the electrode of the spectral function</p></li>
-<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned COOP is k-averaged, or an explicit (unweighed) k-point
+<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – the electrode of the spectral function</p></li>
+<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned COOP is k-averaged, or an explicit (unweighed) k-point
 is returned</p></li>
 <li><p><strong>isc</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the returned COOP from unit-cell (<code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">None,</span> <span class="pre">None]</span></code>) to
 the given supercell, the default is all COOP for the supercell.
 To only get unit cell orbital currents, pass <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></code>.</p></li>
-<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain COOP matrix elements for a subset of orbitals, all
+<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain COOP matrix elements for a subset of orbitals, all
 other are set to 0.</p></li>
-<li><p><strong>uc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the returned COOP are only in the unit-cell.
+<li><p><strong>uc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the returned COOP are only in the unit-cell.
 If <code class="docutils literal notranslate"><span class="pre">True</span></code> this will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na)</span></code>,
 else, it will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na</span> <span class="pre">*</span> <span class="pre">self.n_s)</span></code>.
 One may figure out the connections via <cite>~sisl.geometry.Geometry.sc_index</cite>.</p></li>
@@ -815,17 +815,17 @@ One may figure out the connections via <cite>~sisl.geometry.Geometry.sc_index</c
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the energy or the energy index of COHP. If an integer
+<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the energy or the energy index of COHP. If an integer
 is passed it is the index, otherwise the index corresponding to
 <code class="docutils literal notranslate"><span class="pre">Eindex(E)</span></code> is used.</p></li>
-<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned COHP is k-averaged, or an explicit (unweighed) k-point
+<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned COHP is k-averaged, or an explicit (unweighed) k-point
 is returned</p></li>
 <li><p><strong>isc</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the returned COHP from unit-cell (<code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">None,</span> <span class="pre">None]</span></code>) to
 the given supercell, the default is all COHP for the supercell.
 To only get unit cell orbital currents, pass <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></code>.</p></li>
-<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain COHP matrix elements for a subset of orbitals, all
+<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain COHP matrix elements for a subset of orbitals, all
 other are set to 0.</p></li>
-<li><p><strong>uc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the returned COHP are only in the unit-cell.
+<li><p><strong>uc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the returned COHP are only in the unit-cell.
 If <code class="docutils literal notranslate"><span class="pre">True</span></code> this will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na)</span></code>,
 else, it will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na</span> <span class="pre">*</span> <span class="pre">self.n_s)</span></code>.
 One may figure out the connections via <cite>~sisl.geometry.Geometry.sc_index</cite>.</p></li>
@@ -866,17 +866,17 @@ One may figure out the connections via <cite>~sisl.geometry.Geometry.sc_index</c
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the energy or the energy index of COOP. If an integer
+<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the energy or the energy index of COOP. If an integer
 is passed it is the index, otherwise the index corresponding to
 <code class="docutils literal notranslate"><span class="pre">Eindex(E)</span></code> is used.</p></li>
-<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned COOP is k-averaged, or an explicit (unweighed) k-point
+<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned COOP is k-averaged, or an explicit (unweighed) k-point
 is returned</p></li>
 <li><p><strong>isc</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the returned COOP from unit-cell (<code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">None,</span> <span class="pre">None]</span></code>) to
 the given supercell, the default is all COOP for the supercell.
 To only get unit cell orbital currents, pass <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></code>.</p></li>
-<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain COOP matrix elements for a subset of orbitals, all
+<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain COOP matrix elements for a subset of orbitals, all
 other are set to 0.</p></li>
-<li><p><strong>uc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the returned COOP are only in the unit-cell.
+<li><p><strong>uc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the returned COOP are only in the unit-cell.
 If <code class="docutils literal notranslate"><span class="pre">True</span></code> this will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na)</span></code>,
 else, it will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na</span> <span class="pre">*</span> <span class="pre">self.n_s)</span></code>.
 One may figure out the connections via <cite>~sisl.geometry.Geometry.sc_index</cite>.</p></li>
@@ -932,16 +932,16 @@ it will have a larger activity current.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the originating electrode</p></li>
-<li><p><strong>elec_other</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – this electrode determines the <em>other</em> chemical potential. As such the orbital currents
+<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – the originating electrode</p></li>
+<li><p><strong>elec_other</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – this electrode determines the <em>other</em> chemical potential. As such the orbital currents
 does not reflect the current going from <cite>elec</cite> <em>to</em> <cite>elec_other</cite>!</p></li>
-<li><p><strong>activity</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code> to return the activity current, see explanation above</p></li>
-<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned orbital current is k-averaged, or an explicit (unweighed) k-point
+<li><p><strong>activity</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code> to return the activity current, see explanation above</p></li>
+<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned orbital current is k-averaged, or an explicit (unweighed) k-point
 is returned</p></li>
 <li><p><strong>isc</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the returned bond currents from the unit-cell (<code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">None,</span> <span class="pre">None]</span></code>) to
 the given supercell, the default is all orbital currents for the supercell.
 To only get unit cell orbital currents, pass <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></code>.</p></li>
-<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain orbital currents for a subset of orbitals.</p></li>
+<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain orbital currents for a subset of orbitals.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1004,18 +1004,18 @@ it will have a larger activity.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the energy or the energy index of the transmission. If an integer
+<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the energy or the energy index of the transmission. If an integer
 is passed it is the index, otherwise the index corresponding to
 <code class="docutils literal notranslate"><span class="pre">Eindex(E)</span></code> is used. Be careful about passing <code class="docutils literal notranslate"><span class="pre">0</span></code> as that will be interpreted
 as an index.</p></li>
-<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the originating electrode</p></li>
-<li><p><strong>activity</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code> to return the activity, see explanation above</p></li>
-<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned atomic transmissions are k-averaged, or an explicit (unweighed) k-point
+<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – the originating electrode</p></li>
+<li><p><strong>activity</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code> to return the activity, see explanation above</p></li>
+<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned atomic transmissions are k-averaged, or an explicit (unweighed) k-point
 is returned</p></li>
 <li><p><strong>isc</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the returned transmissions from the unit-cell (<code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">None,</span> <span class="pre">None]</span></code>) to
 the given supercell, the default is all orbital transmissions are used for the supercell.
 To only get unit cell orbital currents, pass <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></code>.</p></li>
-<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain orbital currents for a subset of orbitals.</p></li>
+<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain orbital currents for a subset of orbitals.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1060,7 +1060,7 @@ To only get unit cell orbital currents, pass <code class="docutils literal notra
 <dd><p>Bloch-expansion coefficients for an electrode</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – bloch expansions of electrode</p>
+<dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – bloch expansions of electrode</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1076,10 +1076,10 @@ To only get unit cell orbital currents, pass <code class="docutils literal notra
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the electrode of originating electrons</p></li>
-<li><p><strong>elec_other</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – this electrode determines the <em>other</em> chemical potential. As such the orbital currents
+<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the electrode of originating electrons</p></li>
+<li><p><strong>elec_other</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – this electrode determines the <em>other</em> chemical potential. As such the orbital currents
 does not reflect the current going from <cite>elec</cite> <em>to</em> <cite>elec_other</cite>!</p></li>
-<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned bond current is k-averaged, or an explicit (unweighed) k-point
+<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned bond current is k-averaged, or an explicit (unweighed) k-point
 is returned</p></li>
 <li><p><strong>isc</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the returned bond currents from the unit-cell (<code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">None,</span> <span class="pre">None]</span></code>) (default) to
 the given supercell. If <code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">None,</span> <span class="pre">None]</span></code> is passed all
@@ -1087,9 +1087,9 @@ bond currents are returned.</p></li>
 <li><p><strong>what</strong> (<em>{&quot;all&quot;/&quot;both&quot;/&quot;+-&quot;/&quot;inout&quot;</em><em>, </em><em>&quot;+&quot;/&quot;out&quot;</em><em>, </em><em>&quot;-&quot;/&quot;in&quot;}</em>) – If +/out is supplied only the positive currents are used (going out)
 for -/in, only the negative currents are used (going in),
 else return both. Please see discussion in <cite>orbital_current</cite>.</p></li>
-<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain currents for a subset of orbitals before calculating bond current
+<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain currents for a subset of orbitals before calculating bond current
 Passed directly to <cite>orbital_current</cite>.</p></li>
-<li><p><strong>uc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the returned currents are only in the unit-cell (supercell currents
+<li><p><strong>uc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the returned currents are only in the unit-cell (supercell currents
 will be folded to their unit-cell equivalents).
 If <cite>True</cite> this will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na)</span></code>,
 else, it will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na</span> <span class="pre">*</span> <span class="pre">self.n_s)</span></code>.
@@ -1145,21 +1145,21 @@ no bias window.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the energy or the energy index of the transmission. If an integer
+<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the energy or the energy index of the transmission. If an integer
 is passed it is the index, otherwise the index corresponding to
 <code class="docutils literal notranslate"><span class="pre">Eindex(E)</span></code> is used. Be careful about passing <code class="docutils literal notranslate"><span class="pre">0</span></code> as that will be interpreted
 as an index.</p></li>
-<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the electrode of originating electrons</p></li>
-<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned bond transmissions is k-averaged, or an explicit (unweighed) k-point
+<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – the electrode of originating electrons</p></li>
+<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned bond transmissions is k-averaged, or an explicit (unweighed) k-point
 is returned</p></li>
 <li><p><strong>isc</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the returned transmissions from the unit-cell (<code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">None,</span> <span class="pre">None]</span></code>) (default) to
 the given supercell. If <code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">None,</span> <span class="pre">None]</span></code> is passed all transmissions are returned.</p></li>
 <li><p><strong>what</strong> (<em>{&quot;all&quot;/&quot;both&quot;/&quot;+-&quot;/&quot;inout&quot;</em><em>, </em><em>&quot;+&quot;/&quot;out&quot;</em><em>, </em><em>&quot;-&quot;/&quot;in&quot;}</em>) – If +/out is supplied only the positive transmissions are used (going out)
 for -/in, only the negative transmissions are used (going in),
 else return both. Please see discussion in <cite>orbital_transmission</cite>.</p></li>
-<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain transmissions for a subset of orbitals before calculating bond transmissions
+<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain transmissions for a subset of orbitals before calculating bond transmissions
 Passed directly to <cite>orbital_transmission</cite>.</p></li>
-<li><p><strong>uc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the returned transmissions are only in the unit-cell (supercell bonds will be folded to their unit-cell equivalents).
+<li><p><strong>uc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the returned transmissions are only in the unit-cell (supercell bonds will be folded to their unit-cell equivalents).
 If <cite>True</cite> this will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na)</span></code>,
 else, it will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na</span> <span class="pre">*</span> <span class="pre">self.n_s)</span></code>.
 One may figure out the connections via <cite>~sisl.geometry.Geometry.sc_index</cite>.</p></li>
@@ -1204,7 +1204,7 @@ One may figure out the connections via <cite>~sisl.geometry.Geometry.sc_index</c
 <dd><p>Block-sizes for the BTD method in the device/electrode region</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the BTD block sizes for the device (if none), otherwise the downfolding
+<dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – the BTD block sizes for the device (if none), otherwise the downfolding
 BTD block sizes for the electrode</p>
 </dd>
 </dl>
@@ -1238,14 +1238,14 @@ BTD block sizes for the electrode</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>elec_from</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the originating electrode</p></li>
-<li><p><strong>elec_to</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the absorbing electrode (different from <cite>elec_from</cite>)</p></li>
-<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned current is k-averaged, or an explicit (unweighed) k-point
+<li><p><strong>elec_from</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – the originating electrode</p></li>
+<li><p><strong>elec_to</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – the absorbing electrode (different from <cite>elec_from</cite>)</p></li>
+<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned current is k-averaged, or an explicit (unweighed) k-point
 is returned</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -1273,18 +1273,18 @@ this routine.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>elec_from</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the originating electrode</p></li>
-<li><p><strong>mu_from</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – the chemical potential of the electrode (in eV)</p></li>
-<li><p><strong>kt_from</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – the electronic temperature of the electrode (in eV)</p></li>
-<li><p><strong>elec_to</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the absorbing electrode (different from <cite>elec_from</cite>)</p></li>
-<li><p><strong>mu_to</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – the chemical potential of the electrode (in eV)</p></li>
-<li><p><strong>kt_to</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – the electronic temperature of the electrode (in eV)</p></li>
-<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned current is k-averaged, or an explicit (unweighed) k-point
+<li><p><strong>elec_from</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the originating electrode</p></li>
+<li><p><strong>mu_from</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – the chemical potential of the electrode (in eV)</p></li>
+<li><p><strong>kt_from</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – the electronic temperature of the electrode (in eV)</p></li>
+<li><p><strong>elec_to</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the absorbing electrode (different from <cite>elec_from</cite>)</p></li>
+<li><p><strong>mu_to</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – the chemical potential of the electrode (in eV)</p></li>
+<li><p><strong>kt_to</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – the electronic temperature of the electrode (in eV)</p></li>
+<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned current is k-averaged, or an explicit (unweighed) k-point
 is returned</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -1311,15 +1311,15 @@ averages over the density matrices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the energy or the energy index of density matrix. If an integer
+<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the energy or the energy index of density matrix. If an integer
 is passed it is the index, otherwise the index corresponding to
 <code class="docutils literal notranslate"><span class="pre">Eindex(E)</span></code> is used.</p></li>
-<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned density matrix is k-averaged, or an explicit (unweighed) k-point
+<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned density matrix is k-averaged, or an explicit (unweighed) k-point
 is returned</p></li>
 <li><p><strong>isc</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the returned density matrix from unit-cell (<code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">None,</span> <span class="pre">None]</span></code>) to
 the given supercell, the default is all density matrix elements for the supercell.
 To only get unit cell orbital currents, pass <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></code>.</p></li>
-<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain density matrix elements for a subset of orbitals, all
+<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain density matrix elements for a subset of orbitals, all
 other are set to 0.</p></li>
 <li><p><strong>geometry</strong> (<a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a><em>, </em><em>optional</em>) – geometry that will be associated with the density matrix. By default the
 geometry contained in this file will be used. However, then the
@@ -1364,7 +1364,7 @@ in real-space.</p></li>
 <dd><p>Electron bath temperature [Kelvin]</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – electrode to extract the temperature from</p>
+<dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – electrode to extract the temperature from</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -1382,7 +1382,7 @@ in real-space.</p></li>
 <dd><p>The imaginary part used when calculating the self-energies in eV (or for the device</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – electrode to extract the eta value from. If not specified (or None) the device
+<dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – electrode to extract the eta value from. If not specified (or None) the device
 region eta will be returned.</p>
 </dd>
 </dl>
@@ -1413,11 +1413,11 @@ The current implementation uses the full transmission as the divisor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>elec_from</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the originating electrode</p></li>
-<li><p><strong>elec_to</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the absorbing electrode (different from <cite>elec_from</cite>)</p></li>
-<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned Fano factor is k-averaged, or an explicit (unweighed) k-point
+<li><p><strong>elec_from</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – the originating electrode</p></li>
+<li><p><strong>elec_to</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – the absorbing electrode (different from <cite>elec_from</cite>)</p></li>
+<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned Fano factor is k-averaged, or an explicit (unweighed) k-point
 is returned. In any case the divisor will always be the k-averaged transmission.</p></li>
-<li><p><strong>zero_T</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – any transmission eigen value lower than this value will be treated as exactly 0.</p></li>
+<li><p><strong>zero_T</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – any transmission eigen value lower than this value will be treated as exactly 0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1459,7 +1459,7 @@ is returned. In any case the divisor will always be the k-averaged transmission.
 <dd><p>Information about the calculated quantities available for extracting in this file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the electrode to request information from</p>
+<dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the electrode to request information from</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1517,7 +1517,7 @@ sub-groups this iterator will return.</p></li>
 <dd><p>Electron bath temperature [eV]</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – electrode to extract the temperature from</p>
+<dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – electrode to extract the temperature from</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -1535,7 +1535,7 @@ sub-groups this iterator will return.</p></li>
 <dd><p>Return the index of the k-point that is closests to the queried k-point (in reduced coordinates)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>k</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the queried k-point in reduced coordinates <span class="math notranslate nohighlight">\(]-0.5;0.5]\)</span>. If <code class="docutils literal notranslate"><span class="pre">int</span></code>
+<dd class="field-odd"><p><strong>k</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the queried k-point in reduced coordinates <span class="math notranslate nohighlight">\(]-0.5;0.5]\)</span>. If <code class="docutils literal notranslate"><span class="pre">int</span></code>
 return it-self.</p>
 </dd>
 </dl>
@@ -1571,7 +1571,7 @@ return it-self.</p>
 <dd><p>Number of blocks in the BTD partioning</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – if None the number of blocks in the device region BTD matrix. Else
+<dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – if None the number of blocks in the device region BTD matrix. Else
 the number of BTD blocks in the electrode down-folding.</p>
 </dd>
 </dl>
@@ -1613,7 +1613,7 @@ the number of BTD blocks in the electrode down-folding.</p>
 <dd><p>Number of atoms in the downfolding region (without device downfolded region)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Number of downfolding atoms for electrode <cite>elec</cite></p>
+<dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Number of downfolding atoms for electrode <cite>elec</cite></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1660,7 +1660,7 @@ the number of BTD blocks in the electrode down-folding.</p>
 <dd><p>Number of orbitals in the downfolding region (plus device downfolded region)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Number of downfolding orbitals for electrode <cite>elec</cite></p>
+<dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Number of downfolding orbitals for electrode <cite>elec</cite></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1671,7 +1671,7 @@ the number of BTD blocks in the electrode down-folding.</p>
 <dd><p>Number of orbitals in the downfolded region of the electrode in the device</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Specify the electrode to query number of downfolded orbitals</p>
+<dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Specify the electrode to query number of downfolded orbitals</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1698,9 +1698,9 @@ the number of BTD blocks in the electrode down-folding.</p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>elec_from</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the originating electrode</p></li>
-<li><p><strong>elec_to</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the absorbing electrode (different from <cite>elec_from</cite>)</p></li>
-<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned noise-power is k-averaged, or an explicit (unweighed) k-point
+<li><p><strong>elec_from</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – the originating electrode</p></li>
+<li><p><strong>elec_to</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – the absorbing electrode (different from <cite>elec_from</cite>)</p></li>
+<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned noise-power is k-averaged, or an explicit (unweighed) k-point
 is returned</p></li>
 </ul>
 </dd>
@@ -1743,15 +1743,15 @@ is equivalent to the ‘atom’ option.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>atoms</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – only return for a given set of atoms (default to all).
+<li><p><strong>atoms</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – only return for a given set of atoms (default to all).
 <em>NOT</em> allowed with <cite>orbitals</cite> keyword</p></li>
-<li><p><strong>orbitals</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – only return for a given set of orbitals (default to all)
+<li><p><strong>orbitals</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – only return for a given set of orbitals (default to all)
 <em>NOT</em> allowed with <cite>atoms</cite> keyword</p></li>
 <li><p><strong>norm</strong> (<em>{'none'</em><em>, </em><em>'atom'</em><em>, </em><em>'orbital'</em><em>, </em><em>'all'}</em>) – how the normalization of the summed DOS is performed (see <cite>norm</cite> routine)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1764,8 +1764,8 @@ is equivalent to the ‘atom’ option.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>orbitals</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – orbital indices (0-based)</p></li>
-<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>None</em><em>, </em><em>optional</em>) – electrode to return pivoting indices of (if None it is the
+<li><p><strong>orbitals</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – orbital indices (0-based)</p></li>
+<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><em>None</em><em>, </em><em>optional</em>) – electrode to return pivoting indices of (if None it is the
 device pivoting indices).</p></li>
 </ul>
 </dd>
@@ -1799,16 +1799,16 @@ underlying geometry.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the energy or the energy index of COHP. If an integer
+<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the energy or the energy index of COHP. If an integer
 is passed it is the index, otherwise the index corresponding to
 <code class="docutils literal notranslate"><span class="pre">Eindex(E)</span></code> is used.</p></li>
-<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the electrode of the spectral function</p></li>
-<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned COHP is k-averaged, or an explicit (unweighed) k-point
+<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – the electrode of the spectral function</p></li>
+<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned COHP is k-averaged, or an explicit (unweighed) k-point
 is returned</p></li>
 <li><p><strong>isc</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the returned COHP from unit-cell (<code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">None,</span> <span class="pre">None]</span></code>) to
 the given supercell, the default is all COHP for the supercell.
 To only get unit cell orbital currents, pass <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></code>.</p></li>
-<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain COHP matrix elements for a subset of orbitals, all
+<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain COHP matrix elements for a subset of orbitals, all
 other are set to 0.</p></li>
 </ul>
 </dd>
@@ -1860,16 +1860,16 @@ underlying geometry.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the energy or the energy index of COOP. If an integer
+<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the energy or the energy index of COOP. If an integer
 is passed it is the index, otherwise the index corresponding to
 <code class="docutils literal notranslate"><span class="pre">Eindex(E)</span></code> is used.</p></li>
-<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the electrode of the spectral function</p></li>
-<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned COOP is k-averaged, or an explicit (unweighed) k-point
+<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – the electrode of the spectral function</p></li>
+<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned COOP is k-averaged, or an explicit (unweighed) k-point
 is returned</p></li>
 <li><p><strong>isc</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the returned COOP from unit-cell (<code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">None,</span> <span class="pre">None]</span></code>) to
 the given supercell, the default is all COOP for the supercell.
 To only get unit cell orbital currents, pass <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></code>.</p></li>
-<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain COOP matrix elements for a subset of orbitals, all
+<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain COOP matrix elements for a subset of orbitals, all
 other are set to 0.</p></li>
 </ul>
 </dd>
@@ -1920,15 +1920,15 @@ underlying geometry.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the energy or the energy index of COHP. If an integer
+<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the energy or the energy index of COHP. If an integer
 is passed it is the index, otherwise the index corresponding to
 <code class="docutils literal notranslate"><span class="pre">Eindex(E)</span></code> is used.</p></li>
-<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned COHP is k-averaged, or an explicit (unweighed) k-point
+<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned COHP is k-averaged, or an explicit (unweighed) k-point
 is returned</p></li>
 <li><p><strong>isc</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the returned COHP from unit-cell (<code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">None,</span> <span class="pre">None]</span></code>) to
 the given supercell, the default is all COHP for the supercell.
 To only get unit cell orbital currents, pass <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></code>.</p></li>
-<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain COHP matrix elements for a subset of orbitals, all
+<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain COHP matrix elements for a subset of orbitals, all
 other are set to 0.</p></li>
 </ul>
 </dd>
@@ -1986,15 +1986,15 @@ underlying geometry.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the energy or the energy index of COOP. If an integer
+<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the energy or the energy index of COOP. If an integer
 is passed it is the index, otherwise the index corresponding to
 <code class="docutils literal notranslate"><span class="pre">Eindex(E)</span></code> is used.</p></li>
-<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned COOP is k-averaged, or an explicit (unweighed) k-point
+<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned COOP is k-averaged, or an explicit (unweighed) k-point
 is returned</p></li>
 <li><p><strong>isc</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the returned COOP from unit-cell (<code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">None,</span> <span class="pre">None]</span></code>) to
 the given supercell, the default is all COOP for the supercell.
 To only get unit cell orbital currents, pass <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></code>.</p></li>
-<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain COOP matrix elements for a subset of orbitals, all
+<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain COOP matrix elements for a subset of orbitals, all
 other are set to 0.</p></li>
 </ul>
 </dd>
@@ -2043,10 +2043,10 @@ represents how the current is flowing at an applied bias from a given electrode.
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the originating electrode</p></li>
-<li><p><strong>elec_other</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – this electrode determines the <em>other</em> chemical potential. As such the orbital currents
+<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – the originating electrode</p></li>
+<li><p><strong>elec_other</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – this electrode determines the <em>other</em> chemical potential. As such the orbital currents
 does not reflect the current going from <cite>elec</cite> <em>to</em> <cite>elec_other</cite>!</p></li>
-<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned orbital current is k-averaged, or an explicit (unweighed) k-point
+<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned orbital current is k-averaged, or an explicit (unweighed) k-point
 is returned</p></li>
 <li><p><strong>isc</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the returned bond currents from the unit-cell (<code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">None,</span> <span class="pre">None]</span></code>) to
 the given supercell, the default is all orbital currents for the supercell.
@@ -2054,7 +2054,7 @@ To only get unit cell orbital currents, pass <code class="docutils literal notra
 <li><p><strong>what</strong> (<em>{&quot;all&quot;/&quot;both&quot;/&quot;+-&quot;/&quot;inout&quot;</em><em>, </em><em>&quot;+&quot;/&quot;out&quot;</em><em>, </em><em>&quot;-&quot;/&quot;in&quot;}</em>) – which orbital currents to return, all, positive (outgoing) or negative (incoming).
 Default to <code class="docutils literal notranslate"><span class="pre">&quot;all&quot;</span></code> because it can then be used in the subsequent default
 arguments for <cite>sparse_orbital_to_atom</cite> and <cite>sparse_orbital_to_scalar</cite>.</p></li>
-<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain orbital currents for a subset of orbitals.</p></li>
+<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain orbital currents for a subset of orbitals.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -2115,18 +2115,18 @@ Brillouin zone without any symmetry operations, see Section 5.4 in <span id="id1
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the energy or the energy index of the orbital transmission. If an integer
+<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the energy or the energy index of the orbital transmission. If an integer
 is passed it is the index, otherwise the index corresponding to
 <code class="docutils literal notranslate"><span class="pre">Eindex(E)</span></code> is used. Be careful about passing <code class="docutils literal notranslate"><span class="pre">0</span></code> as that will be interpreted
 as an index.</p></li>
-<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the electrode of originating electrons</p></li>
-<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned orbital transmission is k-averaged, or an explicit (unweighed) k-point
+<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – the electrode of originating electrons</p></li>
+<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned orbital transmission is k-averaged, or an explicit (unweighed) k-point
 is returned</p></li>
 <li><p><strong>isc</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the returned transmissions from the unit-cell (<code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">None,</span> <span class="pre">None]</span></code>) to
 the given supercell, the default is all transmissions for the supercell.
 To only get unit cell transmissions, pass <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></code>.</p></li>
 <li><p><strong>what</strong> (<em>{&quot;all&quot;/&quot;both&quot;/&quot;+-&quot;/&quot;inout&quot;</em><em>, </em><em>&quot;+&quot;/&quot;out&quot;</em><em>, </em><em>&quot;-&quot;/&quot;in&quot;}</em>) – which transmissions to return, all, positive (outgoing) or negative (incoming).</p></li>
-<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain transmissions for a subset of orbitals (including their supercell equivalents)</p></li>
+<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain transmissions for a subset of orbitals (including their supercell equivalents)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -2179,11 +2179,11 @@ that type in the entire structure.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the corresponding electrode to return the pivoting indices from</p></li>
-<li><p><strong>in_device</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> the pivoting table will be translated to the device region orbitals.
+<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the corresponding electrode to return the pivoting indices from</p></li>
+<li><p><strong>in_device</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> the pivoting table will be translated to the device region orbitals.
 If <cite>sort</cite> is also true, this would correspond to the orbitals directly translated
 to the geometry <code class="docutils literal notranslate"><span class="pre">self.geometry.sub(self.a_dev)</span></code>.</p></li>
-<li><p><strong>sort</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether the returned indices are sorted. Mostly useful if you want to handle
+<li><p><strong>sort</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether the returned indices are sorted. Mostly useful if you want to handle
 the device in a non-pivoted order.</p></li>
 </ul>
 </dd>
@@ -2219,7 +2219,7 @@ the device in a non-pivoted order.</p></li>
 <dd><p>Pivoting orbitals for the downfolding region of a given electrode</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the corresponding electrode to get the pivoting indices for</p>
+<dd class="field-odd"><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the corresponding electrode to get the pivoting indices for</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2250,11 +2250,11 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>geometry</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – return the geometry</p></li>
-<li><p><strong>vector_transmission</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – return the bond transmissions as vectors</p></li>
-<li><p><strong>vector_current</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – return the bond currents as vectors</p></li>
-<li><p><strong>atom_transmission</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – return the atomic transmission flowing through an atom (the <em>activity</em> current)</p></li>
-<li><p><strong>atom_current</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – return the atomic current flowing through an atom (the <em>activity</em> current)</p></li>
+<li><p><strong>geometry</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – return the geometry</p></li>
+<li><p><strong>vector_transmission</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – return the bond transmissions as vectors</p></li>
+<li><p><strong>vector_current</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – return the bond currents as vectors</p></li>
+<li><p><strong>atom_transmission</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – return the atomic transmission flowing through an atom (the <em>activity</em> current)</p></li>
+<li><p><strong>atom_current</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – return the atomic current flowing through an atom (the <em>activity</em> current)</p></li>
 </ul>
 </dd>
 </dl>
@@ -2288,10 +2288,10 @@ is very large compared to the transmission to the other electrodes one should pr
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the backscattered electrode</p></li>
-<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned reflection is k-averaged, or an explicit (unweighed) k-point
+<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – the backscattered electrode</p></li>
+<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned reflection is k-averaged, or an explicit (unweighed) k-point
 is returned</p></li>
-<li><p><strong>from_single</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the reflection is calculated using the Green function and a
+<li><p><strong>from_single</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the reflection is calculated using the Green function and a
 single scattering matrix Eq. (2) above (true), otherwise Eq. (1) will be used (false).</p></li>
 </ul>
 </dd>
@@ -2329,10 +2329,10 @@ If <cite>classical</cite> is True the shot-noise calculated is:</p>
 </dd>
 <dt class="field-even">Parameters<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>elec_from</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the originating electrode</p></li>
-<li><p><strong>elec_to</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the absorbing electrode (different from <cite>elec_from</cite>)</p></li>
-<li><p><strong>classical</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – which shot-noise to calculate, default to non-classical</p></li>
-<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned shot-noise is k-averaged, or an explicit (unweighed) k-point
+<li><p><strong>elec_from</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – the originating electrode</p></li>
+<li><p><strong>elec_to</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – the absorbing electrode (different from <cite>elec_from</cite>)</p></li>
+<li><p><strong>classical</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – which shot-noise to calculate, default to non-classical</p></li>
+<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned shot-noise is k-averaged, or an explicit (unweighed) k-point
 is returned</p></li>
 </ul>
 </dd>
@@ -2381,11 +2381,11 @@ be a generic routine usable for other parts of <cite>sisl</cite>.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>Dij</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.11.3)"><em>scipy.sparse.csr_matrix</em></a>) – the input sparse matrix in orbital format</p></li>
-<li><p><strong>uc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the returned data are only in the unit-cell.
+<li><p><strong>uc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the returned data are only in the unit-cell.
 If <code class="docutils literal notranslate"><span class="pre">True</span></code> this will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na)</span></code>,
 else, it will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na</span> <span class="pre">*</span> <span class="pre">self.n_s)</span></code>.
 One may figure out the connections via <cite>~sisl.geometry.Geometry.sc_index</cite>.</p></li>
-<li><p><strong>sum_dup</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – duplicates will be summed if this is true, in this case, no duplicates are
+<li><p><strong>sum_dup</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – duplicates will be summed if this is true, in this case, no duplicates are
 present in the returned sparse matrix. If false, duplicates may exist for
 multi-orbital systems.</p></li>
 </ul>
@@ -2417,7 +2417,7 @@ A_\alpha^{|o|} &amp;=\frac{1}{2} \sum_\beta \sum_{\nu\in \alpha}\sum_{\mu\in \be
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>Dij</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.11.3)"><em>scipy.sparse.csr_matrix</em></a>) – the orbital sparse matrix.</p></li>
-<li><p><strong>activity</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code> to return the atomic activity, see explanation above</p></li>
+<li><p><strong>activity</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code> to return the atomic activity, see explanation above</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -2446,11 +2446,11 @@ be a generic routine usable for other parts of <cite>sisl</cite>.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>Dij</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.11.3)"><em>scipy.sparse.csr_matrix</em></a>) – the input sparse matrix</p></li>
-<li><p><strong>uc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the returned data are only in the unit-cell.
+<li><p><strong>uc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the returned data are only in the unit-cell.
 If <code class="docutils literal notranslate"><span class="pre">True</span></code> this will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na)</span></code>,
 else, it will return a sparse matrix of <code class="docutils literal notranslate"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(self.na,</span> <span class="pre">self.na</span> <span class="pre">*</span> <span class="pre">self.n_s)</span></code>.
 One may figure out the connections via <cite>~sisl.geometry.Geometry.sc_index</cite>.</p></li>
-<li><p><strong>sum_dup</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – duplicates will be summed if this is true, in this case, no duplicates are
+<li><p><strong>sum_dup</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – duplicates will be summed if this is true, in this case, no duplicates are
 present in the returned sparse matrix. If false, duplicates may exist for
 multi-orbital systems.</p></li>
 </ul>
@@ -2474,9 +2474,9 @@ from the <cite>Sile</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>elec_from</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the originating electrode</p></li>
-<li><p><strong>elec_to</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the absorbing electrode (different from <cite>elec_from</cite>)</p></li>
-<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned transmission is k-averaged, or an explicit (unweighed) k-point
+<li><p><strong>elec_from</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – the originating electrode</p></li>
+<li><p><strong>elec_to</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – the absorbing electrode (different from <cite>elec_from</cite>)</p></li>
+<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned transmission is k-averaged, or an explicit (unweighed) k-point
 is returned</p></li>
 </ul>
 </dd>
@@ -2506,8 +2506,8 @@ electrode <cite>elec</cite> tiled 3 times.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the bulk electrode</p></li>
-<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned transmission are k-averaged, or an explicit (unweighed) k-point
+<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – the bulk electrode</p></li>
+<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned transmission are k-averaged, or an explicit (unweighed) k-point
 is returned</p></li>
 </ul>
 </dd>
@@ -2535,9 +2535,9 @@ is returned</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>elec_from</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the originating electrode</p></li>
-<li><p><strong>elec_to</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the absorbing electrode (different from <cite>elec_from</cite>)</p></li>
-<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned transmission eigenvalues are k-averaged, or an explicit (unweighed) k-point
+<li><p><strong>elec_from</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – the originating electrode</p></li>
+<li><p><strong>elec_to</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – the absorbing electrode (different from <cite>elec_from</cite>)</p></li>
+<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned transmission eigenvalues are k-averaged, or an explicit (unweighed) k-point
 is returned</p></li>
 </ul>
 </dd>
@@ -2568,10 +2568,10 @@ is returned</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the electrode of originating electrons</p></li>
-<li><p><strong>elec_other</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – this electrode determines the <em>other</em> chemical potential. As such the vector currents
+<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the electrode of originating electrons</p></li>
+<li><p><strong>elec_other</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – this electrode determines the <em>other</em> chemical potential. As such the vector currents
 does not reflect the current going from <cite>elec</cite> <em>to</em> <cite>elec_other</cite>!</p></li>
-<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned vector current is k-averaged, or an explicit (unweighed) k-point
+<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned vector current is k-averaged, or an explicit (unweighed) k-point
 is returned</p></li>
 <li><p><strong>isc</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the returned currents from the unit-cell (<code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">None,</span> <span class="pre">None]</span></code>) to
 the given supercell, the default is all currents for the supercell.
@@ -2581,7 +2581,7 @@ The <em>incoming</em> currents may be retrieved by <code class="docutils literal
 average incoming and outgoing direction can be obtained with <code class="docutils literal notranslate"><span class="pre">&quot;both&quot;</span></code>.
 In the last case the vector currents are divided by 2 to ensure the length
 of the vector is compatible with the other options given a pristine system.</p></li>
-<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain currents for a subset of orbitals before calculating currents
+<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain currents for a subset of orbitals before calculating currents
 Passed directly to <cite>orbital_current</cite>.</p></li>
 </ul>
 </dd>
@@ -2632,12 +2632,12 @@ no bias window.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the energy or the energy index of the transmission. If an integer
+<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the energy or the energy index of the transmission. If an integer
 is passed it is the index, otherwise the index corresponding to
 <code class="docutils literal notranslate"><span class="pre">Eindex(E)</span></code> is used. Be careful about passing <code class="docutils literal notranslate"><span class="pre">0</span></code> as that will be interpreted
 as an index.</p></li>
-<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – the electrode of originating electrons</p></li>
-<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned vector transmission is k-averaged, or an explicit (unweighed) k-point
+<li><p><strong>elec</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – the electrode of originating electrons</p></li>
+<li><p><strong>kavg</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – whether the returned vector transmission is k-averaged, or an explicit (unweighed) k-point
 is returned</p></li>
 <li><p><strong>isc</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the returned vectors from the unit-cell (<code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">None,</span> <span class="pre">None]</span></code>) to
 the given supercell, the default is all vectors for the supercell.
@@ -2647,7 +2647,7 @@ The <em>incoming</em> vectors may be retrieved by <code class="docutils literal 
 average incoming and outgoing direction can be obtained with <code class="docutils literal notranslate"><span class="pre">&quot;both&quot;</span></code>.
 In the last case the vector transmissions are divided by 2 to ensure the length
 of the vector is compatible with the other options; given a pristine system.</p></li>
-<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain transmissions for a subset of orbitals before calculating bond transmissions
+<li><p><strong>orbitals</strong> (<em>array-like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – only retain transmissions for a subset of orbitals before calculating bond transmissions
 Passed directly to <cite>orbital_transmission</cite>.</p></li>
 </ul>
 </dd>
@@ -2711,7 +2711,7 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 will not take notice of any older files.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – output filename</p>
+<dd class="field-odd"><p><strong>file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – output filename</p>
 </dd>
 </dl>
 </dd></dl>

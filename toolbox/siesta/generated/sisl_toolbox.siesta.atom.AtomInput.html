@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl_toolbox.siesta.atom.AtomInput &mdash; sisl 0.1-aa1de5c</title>
+  <title>sisl_toolbox.siesta.atom.AtomInput &mdash; sisl 0.1-9c9c61f</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
@@ -18,7 +18,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=afed2ba8"></script>
+        <script src="../../../_static/documentation_options.js?v=ccf676f9"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/tabs.js?v=3ee01567"></script>
@@ -42,7 +42,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-aa1de5c
+                0.1-9c9c61f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -126,7 +126,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="sisl_toolbox.siesta.atom.AtomInput">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl_toolbox.siesta.atom.</span></span><span class="sig-name descname"><span class="pre">AtomInput</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">define</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('NEW_CC',</span> <span class="pre">'FREE_FORMAT_RC_INPUT',</span> <span class="pre">'NO_PS_CUTOFFS')</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">opts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl_toolbox/siesta/atom/_atom.html#AtomInput"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl_toolbox.siesta.atom.AtomInput" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Input for the <code class="docutils literal notranslate"><span class="pre">atom</span></code> program see <a class="reference internal" href="#atomlicense" id="id1"><span>[AtomLicense]</span></a></p>
 <p>This class enables the construction of the <code class="docutils literal notranslate"><span class="pre">INP</span></code> file to be fed to <code class="docutils literal notranslate"><span class="pre">atom</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example input for ATOM</span>
@@ -217,7 +217,7 @@
 <dd><p>Return atom object respecting the input</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>inp</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – create <a class="reference internal" href="#sisl_toolbox.siesta.atom.AtomInput" title="sisl_toolbox.siesta.atom.AtomInput"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomInput</span></code></a> from the content of <em class="xref py py-obj">inp</em></p>
+<dd class="field-odd"><p><strong>inp</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – create <a class="reference internal" href="#sisl_toolbox.siesta.atom.AtomInput" title="sisl_toolbox.siesta.atom.AtomInput"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomInput</span></code></a> from the content of <em class="xref py py-obj">inp</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -240,10 +240,10 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><em>pathlib.Path</em></a><em>, </em><em>optional</em>) – from which directory should files be read</p></li>
-<li><p><strong>plot</strong> (<em>list-like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – which data to plot</p></li>
+<li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.12)"><em>pathlib.Path</em></a><em>, </em><em>optional</em>) – from which directory should files be read</p></li>
+<li><p><strong>plot</strong> (<em>list-like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – which data to plot</p></li>
 <li><p><strong>l</strong> (<em>list-like</em><em>, </em><em>optional</em>) – which l-shells to plot (for those that have l-shell decompositions)</p></li>
-<li><p><strong>show</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – call <em class="xref py py-obj">matplotlib.pyplot.show()</em> at the end</p></li>
+<li><p><strong>show</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – call <em class="xref py py-obj">matplotlib.pyplot.show()</em> at the end</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>

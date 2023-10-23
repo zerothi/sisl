@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.Lattice &mdash; sisl 0.1-aa1de5c</title>
+  <title>sisl.Lattice &mdash; sisl 0.1-9c9c61f</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
@@ -18,7 +18,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=afed2ba8"></script>
+        <script src="../../_static/documentation_options.js?v=ccf676f9"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/tabs.js?v=3ee01567"></script>
@@ -44,7 +44,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-aa1de5c
+                0.1-9c9c61f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -146,7 +146,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="sisl.Lattice">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.</span></span><span class="sig-name descname"><span class="pre">Lattice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Lattice" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_Dispatchs</span></code></p>
 <p>A cell class to retain lattice vectors and a supercell structure</p>
 <p>The supercell structure is comprising the <em>primary</em> unit-cell and neighbouring
 unit-cells. The number of supercells is given by the attribute <cite>nsc</cite> which
@@ -159,8 +159,8 @@ primary unit-cell and one <em>after</em>.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cell</strong> (<em>array_like</em>) – the lattice parameters of the unit cell (the actual cell
 is returned from <cite>tocell</cite>.</p></li>
-<li><p><strong>nsc</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – number of supercells along each latticevector</p></li>
-<li><p><strong>origin</strong> (<em>(</em><em>3</em><em>,</em><em>) of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – the origin of the supercell.</p></li>
+<li><p><strong>nsc</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – number of supercells along each lattice vector</p></li>
+<li><p><strong>origin</strong> (<em>(</em><em>3</em><em>,</em><em>) of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – the origin of the supercell.</p></li>
 </ul>
 </dd>
 </dl>
@@ -245,7 +245,7 @@ is returned from <cite>tocell</cite>.</p></li>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Lattice.tile" title="sisl.Lattice.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a>(reps, axis)</p></td>
 <td><p>Extend the unit-cell <cite>reps</cite> times along the <cite>axis</cite> lattice vector</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Lattice.toCuboid" title="sisl.Lattice.toCuboid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toCuboid</span></code></a>([orthogonal])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Lattice.toCuboid" title="sisl.Lattice.toCuboid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toCuboid</span></code></a>(*args, **kwargs)</p></td>
 <td><p>A cuboid with vectors as this unit-cell and center with respect to its origin</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Lattice.tocell" title="sisl.Lattice.tocell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tocell</span></code></a>(*args)</p></td>
@@ -281,14 +281,20 @@ is returned from <cite>tocell</cite>.</p></li>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Lattice.length" title="sisl.Lattice.length"><code class="xref py py-obj docutils literal notranslate"><span class="pre">length</span></code></a></p></td>
 <td><p>Length of each lattice vector</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Lattice.origin" title="sisl.Lattice.origin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">origin</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Lattice.new" title="sisl.Lattice.new"><code class="xref py py-obj docutils literal notranslate"><span class="pre">new</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Lattice.origin" title="sisl.Lattice.origin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">origin</span></code></a></p></td>
 <td><p>Origin for the cell</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Lattice.rcell" title="sisl.Lattice.rcell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rcell</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Lattice.rcell" title="sisl.Lattice.rcell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rcell</span></code></a></p></td>
 <td><p>Returns the reciprocal cell for the <cite>Lattice</cite> with <code class="docutils literal notranslate"><span class="pre">2*np.pi</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Lattice.sc_off" title="sisl.Lattice.sc_off"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sc_off</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Lattice.sc_off" title="sisl.Lattice.sc_off"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sc_off</span></code></a></p></td>
 <td><p>Integer supercell offsets</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Lattice.to" title="sisl.Lattice.to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code></a></p></td>
+<td><p>A dispatcher for classes, using <cite>__get__</cite> it converts into <cite>ObjectDispatcher</cite> upon invocation from an object, or a <cite>TypeDispatcher</cite> when invoked from a class</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Lattice.volume" title="sisl.Lattice.volume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">volume</span></code></a></p></td>
 <td><p>Volume of cell</p></td>
@@ -318,9 +324,9 @@ is returned from <cite>tocell</cite>.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>vacuum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – amount of vacuum added, in Ang</p></li>
-<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the lattice vector to add vacuum along</p></li>
-<li><p><strong>orthogonal_to_plane</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the lattice vector should be elongated so that it is <cite>vacuum</cite> longer
+<li><p><strong>vacuum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – amount of vacuum added, in Ang</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the lattice vector to add vacuum along</p></li>
+<li><p><strong>orthogonal_to_plane</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the lattice vector should be elongated so that it is <cite>vacuum</cite> longer
 when projected onto the normal vector of the other two axis.</p></li>
 </ul>
 </dd>
@@ -334,9 +340,9 @@ when projected onto the normal vector of the other two axis.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the first cell vector</p></li>
-<li><p><strong>j</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the second cell vector</p></li>
-<li><p><strong>rad</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the returned value is in radians</p></li>
+<li><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the first cell vector</p></li>
+<li><p><strong>j</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the second cell vector</p></li>
+<li><p><strong>rad</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the returned value is in radians</p></li>
 </ul>
 </dd>
 </dl>
@@ -366,9 +372,9 @@ when projected onto the normal vector of the other two axis.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><em>array_like</em>) – length for cell vectors, if an array it corresponds to the individual
+<li><p><strong>length</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> or </em><em>array_like</em>) – length for cell vectors, if an array it corresponds to the individual
 vectors and it must have length equal to <cite>axes</cite></p></li>
-<li><p><strong>axes</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>array_like</em><em>, </em><em>optional</em>) – which axes the <cite>length</cite> variable refers too.</p></li>
+<li><p><strong>axes</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><em>array_like</em><em>, </em><em>optional</em>) – which axes the <cite>length</cite> variable refers too.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -406,7 +412,7 @@ vectors and it must have length equal to <cite>axes</cite></p></li>
 <dd><p>Check whether two lattices are equivalent</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>tol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – tolerance value for the cell vectors and origin</p>
+<dd class="field-odd"><p><strong>tol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – tolerance value for the cell vectors and origin</p>
 </dd>
 </dl>
 </dd></dl>
@@ -429,7 +435,7 @@ of the coordinates.</p>
 <li><p><strong>xyz</strong> (array_like <code class="docutils literal notranslate"><span class="pre">shape(*,</span> <span class="pre">3)</span></code>) – the coordinates that we will wish to encompass and analyze.</p></li>
 <li><p><strong>axis</strong> (<em>None</em><em> or </em><em>array_like</em>) – if <code class="docutils literal notranslate"><span class="pre">None</span></code> equivalent to <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">2]</span></code>, else only the cell-vectors
 along the provided axis will be used</p></li>
-<li><p><strong>tol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – tolerance (in Angstrom) of the positions. I.e. we neglect coordinates
+<li><p><strong>tol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – tolerance (in Angstrom) of the positions. I.e. we neglect coordinates
 which are not within the radius of this magnitude</p></li>
 </ul>
 </dd>
@@ -450,7 +456,7 @@ and not as returned by an inverse LAPACK algorithm.</p>
 <dd><p>Checks if cell vectors a,b,c are multiples of the cartesian axis vectors (x, y, z)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>tol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – the threshold above which an off diagonal term will be considered non-zero.</p>
+<dd class="field-odd"><p><strong>tol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – the threshold above which an off diagonal term will be considered non-zero.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -461,7 +467,7 @@ and not as returned by an inverse LAPACK algorithm.</p>
 <dd><p>Returns true if the cell vectors are orthogonal.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>tol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – the threshold above which the scalar product of two cell vectors will be considered non-zero.</p>
+<dd class="field-odd"><p><strong>tol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – the threshold above which the scalar product of two cell vectors will be considered non-zero.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -490,6 +496,11 @@ and not as returned by an inverse LAPACK algorithm.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.Lattice.new">
+<span class="sig-name descname"><span class="pre">new</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;TypeDispatcher{obj=&lt;class</span> <span class="pre">'sisl.Lattice'&gt;}&gt;</span></em><a class="headerlink" href="#sisl.Lattice.new" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="sisl.Lattice.nsc">
 <span class="sig-name descname"><span class="pre">nsc</span></span><a class="headerlink" href="#sisl.Lattice.nsc" title="Link to this definition"></a></dt>
 <dd></dd></dl>
@@ -514,7 +525,7 @@ and not as returned by an inverse LAPACK algorithm.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>other</strong> (<a class="reference internal" href="#sisl.Lattice" title="sisl.Lattice"><em>Lattice</em></a>) – the other object to check whether the axis are parallel</p></li>
-<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>array_like</em>) – only check the specified axis (default to all)</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><em>array_like</em>) – only check the specified axis (default to all)</p></li>
 </ul>
 </dd>
 </dl>
@@ -530,10 +541,10 @@ recreate the same cell. Only in the case where the first lattice vector <em>only
 has a Cartesian <span class="math notranslate nohighlight">\(x\)</span> component will this be the case</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>rad</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the angles are returned in radians (otherwise in degree)</p>
+<dd class="field-odd"><p><strong>rad</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the angles are returned in radians (otherwise in degree)</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]</p>
 </dd>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><ul class="simple">
@@ -556,9 +567,9 @@ has a Cartesian <span class="math notranslate nohighlight">\(x\)</span> componen
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ax1</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the first axis vector</p></li>
-<li><p><strong>ax2</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the second axis vector</p></li>
-<li><p><strong>origin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the plane intersects the origin or the opposite corner of the
+<li><p><strong>ax1</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the first axis vector</p></li>
+<li><p><strong>ax2</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the second axis vector</p></li>
+<li><p><strong>origin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the plane intersects the origin or the opposite corner of the
 unit-cell.</p></li>
 </ul>
 </dd>
@@ -622,7 +633,7 @@ and not as returned by an inverse LAPACK algorithm.</p>
 <dd><p>Reads the supercell from the <cite>Sile</cite> using <code class="docutils literal notranslate"><span class="pre">Sile.read_lattice</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>sile</strong> (<a class="reference internal" href="../io/generated/sisl.io.Sile.html#sisl.io.Sile" title="sisl.io.Sile"><em>Sile</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><em>pathlib.Path</em></a>) – a <cite>Sile</cite> object which will be used to read the supercell
+<dd class="field-odd"><p><strong>sile</strong> (<a class="reference internal" href="../io/generated/sisl.io.Sile.html#sisl.io.Sile" title="sisl.io.Sile"><em>Sile</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.12)"><em>pathlib.Path</em></a>) – a <cite>Sile</cite> object which will be used to read the supercell
 if it is a string it will create a new sile using <cite>sisl.io.get_sile</cite>.</p>
 </dd>
 </dl>
@@ -637,8 +648,8 @@ if it is a string it will create a new sile using <cite>sisl.io.get_sile</cite>.
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – number of times the unit-cell is repeated along the specified lattice vector</p></li>
-<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the lattice vector along which the repetition is performed</p></li>
+<li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – number of times the unit-cell is repeated along the specified lattice vector</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the lattice vector along which the repetition is performed</p></li>
 </ul>
 </dd>
 </dl>
@@ -653,11 +664,11 @@ individually with <code class="docutils literal notranslate"><span class="pre">o
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>angle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – the angle of which the geometry should be rotated</p></li>
-<li><p><strong>v</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the vector around the rotation is going to happen
+<li><p><strong>angle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – the angle of which the geometry should be rotated</p></li>
+<li><p><strong>v</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the vector around the rotation is going to happen
 <code class="docutils literal notranslate"><span class="pre">v</span> <span class="pre">=</span> <span class="pre">[1,0,0]</span></code> will rotate in the <code class="docutils literal notranslate"><span class="pre">yz</span></code> plane</p></li>
 <li><p><strong>what</strong> (combination of <code class="docutils literal notranslate"><span class="pre">&quot;abc&quot;</span></code>, str, optional) – only rotate the designated cell vectors.</p></li>
-<li><p><strong>rad</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether the angle is in radians (True) or in degrees (False)</p></li>
+<li><p><strong>rad</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether the angle is in radians (True) or in degrees (False)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -673,7 +684,7 @@ individually with <code class="docutils literal notranslate"><span class="pre">o
 <p>Returns the index for the supercell in the global offset.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>sc_off</strong> (<em>(</em><em>3</em><em>,</em><em>) or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><em>(</em><em>3</em><em>,</em><em>)</em>) – super cell specification. For each axis having value <code class="docutils literal notranslate"><span class="pre">None</span></code> all supercells
+<dd class="field-odd"><p><strong>sc_off</strong> (<em>(</em><em>3</em><em>,</em><em>) or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em> of </em><em>(</em><em>3</em><em>,</em><em>)</em>) – super cell specification. For each axis having value <code class="docutils literal notranslate"><span class="pre">None</span></code> all supercells
 along that axis is returned.</p>
 </dd>
 </dl>
@@ -693,7 +704,7 @@ along that axis is returned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><em>(</em><em>3</em><em>,</em><em>)</em>) – the scale factor for the new lattice vectors.</p></li>
+<li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> or </em><em>(</em><em>3</em><em>,</em><em>)</em>) – the scale factor for the new lattice vectors.</p></li>
 <li><p><strong>what</strong> (<em>{&quot;abc&quot;</em><em>, </em><em>&quot;xyz&quot;}</em>) – If three different scale factors are provided, whether each scaling factor
 is to be applied on the corresponding lattice vector (“abc”) or on the
 corresponding cartesian coordinate (“xyz”).</p></li>
@@ -709,7 +720,7 @@ corresponding cartesian coordinate (“xyz”).</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>nsc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – number of supercells in each direction</p></li>
+<li><p><strong>nsc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – number of supercells in each direction</p></li>
 <li><p><strong>a</strong> (<em>integer</em><em>, </em><em>optional</em>) – number of supercells in the first unit-cell vector direction</p></li>
 <li><p><strong>b</strong> (<em>integer</em><em>, </em><em>optional</em>) – number of supercells in the second unit-cell vector direction</p></li>
 <li><p><strong>c</strong> (<em>integer</em><em>, </em><em>optional</em>) – number of supercells in the third unit-cell vector direction</p></li>
@@ -728,13 +739,13 @@ coordinate orders.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>axes_a</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the old axis indices (or labels if <cite>str</cite>)
+<li><p><strong>axes_a</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the old axis indices (or labels if <cite>str</cite>)
 A string will translate each character as a specific
 axis index.
 Lattice vectors are denoted by <code class="docutils literal notranslate"><span class="pre">abc</span></code> while the
 Cartesian coordinates are denote by <code class="docutils literal notranslate"><span class="pre">xyz</span></code>.
 If <cite>str</cite>, then <cite>what</cite> is not used.</p></li>
-<li><p><strong>axes_b</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – the new axis indices, same as <cite>axes_a</cite></p></li>
+<li><p><strong>axes_b</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – the new axis indices, same as <cite>axes_a</cite></p></li>
 <li><p><strong>what</strong> (<em>{&quot;abc&quot;</em><em>, </em><em>&quot;xyz&quot;</em><em>, </em><em>&quot;abc+xyz&quot;}</em>) – which elements to swap, lattice vectors (<code class="docutils literal notranslate"><span class="pre">abc</span></code>), or
 Cartesian coordinates (<code class="docutils literal notranslate"><span class="pre">xyz</span></code>), or both.
 This argument is only used if the axes arguments are
@@ -774,20 +785,51 @@ ints.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – number of times the unit-cell is repeated along the specified lattice vector</p></li>
-<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the lattice vector along which the repetition is performed</p></li>
+<li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – number of times the unit-cell is repeated along the specified lattice vector</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the lattice vector along which the repetition is performed</p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.Lattice.to">
+<span class="sig-name descname"><span class="pre">to</span></span><a class="headerlink" href="#sisl.Lattice.to" title="Link to this definition"></a></dt>
+<dd><p>A dispatcher for classes, using <cite>__get__</cite> it converts into <cite>ObjectDispatcher</cite> upon invocation from an object, or a <cite>TypeDispatcher</cite> when invoked from a class</p>
+<p>This is a class-placeholder allowing a dispatcher to be a class attribute and converted into an
+<cite>ObjectDispatcher</cite> when invoked from an object.</p>
+<p>If it is called on the class, it will return a <cite>TypeDispatcher</cite>.</p>
+<p>This class should be an attribute of a class. It heavily relies on the <cite>__get__</cite> special
+method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – name of the attribute in the class</p></li>
+<li><p><strong>dispatchs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em>, </em><em>optional</em>) – dictionary of dispatch methods</p></li>
+<li><p><strong>obj_getattr</strong> (<em>callable</em><em>, </em><em>optional</em>) – method with 2 arguments, an <code class="docutils literal notranslate"><span class="pre">obj</span></code> and the <code class="docutils literal notranslate"><span class="pre">attr</span></code> which may be used
+to control how the attribute is called.</p></li>
+<li><p><strong>instance_dispatcher</strong> (<em>AbstractDispatcher</em><em>, </em><em>optional</em>) – control how instance dispatchers are handled through <cite>__get__</cite> method.
+This controls the dispatcher used if called from an instance.</p></li>
+<li><p><strong>type_dispatcher</strong> (<em>AbstractDispatcher</em><em>, </em><em>optional</em>) – control how class dispatchers are handled through <cite>__get__</cite> method.
+This controls the dispatcher used if called from a class.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">A</span><span class="p">:</span>
+<span class="gp">... </span>  <span class="n">new</span> <span class="o">=</span> <span class="n">ClassDispatcher</span><span class="p">(</span><span class="s2">&quot;new&quot;</span><span class="p">,</span> <span class="n">obj_getattr</span><span class="o">=</span><span class="k">lambda</span> <span class="n">obj</span><span class="p">,</span> <span class="n">attr</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">sub</span><span class="p">,</span> <span class="n">attr</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>The above defers any attributes to the contained <cite>A.sub</cite> attribute.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Lattice.toCuboid">
-<span class="sig-name descname"><span class="pre">toCuboid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orthogonal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/lattice.html#Lattice.toCuboid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Lattice.toCuboid" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">toCuboid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/lattice.html#Lattice.toCuboid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Lattice.toCuboid" title="Link to this definition"></a></dt>
 <dd><p>A cuboid with vectors as this unit-cell and center with respect to its origin</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>orthogonal</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – if true the cuboid has orthogonal sides such that the entire cell is contained</p>
+<dd class="field-odd"><p><strong>orthogonal</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – if true the cuboid has orthogonal sides such that the entire cell is contained</p>
 </dd>
 </dl>
 </dd></dl>
@@ -811,7 +853,7 @@ in degrees).</p>
 </dl>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>*args</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – May be either, 1, 3, 6 or 9 elements.
+<dd class="field-odd"><p><strong>*args</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – May be either, 1, 3, 6 or 9 elements.
 Note that the arguments will be put into an array and flattened
 before checking the number of arguments.</p>
 </dd>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.geometry &mdash; sisl 0.1-aa1de5c</title>
+  <title>sisl.geometry &mdash; sisl 0.1-9c9c61f</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=afed2ba8"></script>
+        <script src="../../_static/documentation_options.js?v=ccf676f9"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-aa1de5c
+                0.1-9c9c61f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -111,6 +111,7 @@
 <span class="c1"># To check for integers</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span><span class="p">,</span> <span class="n">singledispatchmethod</span>
@@ -147,6 +148,7 @@
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_array</span> <span class="k">as</span> <span class="n">_a</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_plot</span> <span class="k">as</span> <span class="n">plt</span>
 <span class="kn">from</span> <span class="nn">._category</span> <span class="kn">import</span> <span class="n">Category</span><span class="p">,</span> <span class="n">GenericCategory</span>
+<span class="kn">from</span> <span class="nn">._dispatch_class</span> <span class="kn">import</span> <span class="n">_Dispatchs</span>
 <span class="kn">from</span> <span class="nn">._dispatcher</span> <span class="kn">import</span> <span class="n">AbstractDispatch</span><span class="p">,</span> <span class="n">ClassDispatcher</span><span class="p">,</span> <span class="n">TypeDispatcher</span>
 <span class="kn">from</span> <span class="nn">._help</span> <span class="kn">import</span> <span class="n">isndarray</span>
 <span class="kn">from</span> <span class="nn">._indices</span> <span class="kn">import</span> <span class="p">(</span>
@@ -178,6 +180,10 @@
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Geometry&#39;</span><span class="p">,</span> <span class="s2">&quot;sgeom&quot;</span><span class="p">]</span>
 
+<span class="n">_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;sisl&quot;</span><span class="p">)</span>
+<span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;adding logger: </span><span class="si">{</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
 
 <span class="c1"># It needs to be here otherwise we can&#39;t use it in these routines</span>
 <span class="c1"># Note how we are overwriting the module</span>
@@ -194,7 +200,17 @@
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">Geometry</span><span class="p">(</span><span class="n">LatticeChild</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Geometry</span><span class="p">(</span><span class="n">LatticeChild</span><span class="p">,</span> <span class="n">_Dispatchs</span><span class="p">,</span>
+               <span class="n">dispatchs</span><span class="o">=</span><span class="p">[</span>
+                   <span class="p">(</span><span class="s2">&quot;new&quot;</span><span class="p">,</span> <span class="n">ClassDispatcher</span><span class="p">(</span><span class="s2">&quot;new&quot;</span><span class="p">,</span>
+                                           <span class="n">obj_getattr</span><span class="o">=</span><span class="s2">&quot;error&quot;</span><span class="p">,</span>
+                                           <span class="n">instance_dispatcher</span><span class="o">=</span><span class="n">TypeDispatcher</span><span class="p">)),</span>
+                   <span class="p">(</span><span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="n">ClassDispatcher</span><span class="p">(</span><span class="s2">&quot;to&quot;</span><span class="p">,</span>
+                                          <span class="n">obj_getattr</span><span class="o">=</span><span class="s2">&quot;error&quot;</span><span class="p">,</span>
+                                          <span class="n">type_dispatcher</span><span class="o">=</span><span class="kc">None</span><span class="p">))</span>
+                <span class="p">],</span>
+                <span class="n">when_subclassing</span><span class="o">=</span><span class="s2">&quot;copy&quot;</span><span class="p">,</span>
+               <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Holds atomic information, coordinates, species, lattice vectors</span>
 
 <span class="sd">    The `Geometry` class holds information regarding atomic coordinates,</span>
@@ -291,31 +307,6 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">__init_lattice</span><span class="p">(</span><span class="n">lattice</span><span class="p">)</span></div>
 
-
-    <span class="c1"># Define a dispatcher for converting and requesting</span>
-    <span class="c1"># new Geometries</span>
-    <span class="c1">#  Geometry.new(&quot;run.fdf&quot;) will invoke Geometry.read(&quot;run.fdf&quot;)</span>
-    <span class="n">new</span> <span class="o">=</span> <span class="n">ClassDispatcher</span><span class="p">(</span><span class="s2">&quot;new&quot;</span><span class="p">,</span>
-                          <span class="c1"># both the instance and the type will use the type dispatcher</span>
-                          <span class="n">instance_dispatcher</span><span class="o">=</span><span class="n">TypeDispatcher</span><span class="p">,</span>
-                          <span class="n">obj_getattr</span><span class="o">=</span><span class="k">lambda</span> <span class="n">obj</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span>
-                          <span class="p">(</span><span class="n">_</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="p">())</span><span class="o">.</span><span class="n">throw</span><span class="p">(</span>
-                              <span class="ne">AttributeError</span><span class="p">((</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">obj</span><span class="si">}</span><span class="s2">.new does not implement &#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
-                                              <span class="sa">f</span><span class="s2">&quot;dispatcher, are you using it incorrectly?&quot;</span><span class="p">))</span>
-                          <span class="p">),</span>
-    <span class="p">)</span>
-
-    <span class="c1"># Define a dispatcher for converting Geometries</span>
-    <span class="c1">#  Geometry().to.ase() will convert to an ase.Atoms object</span>
-    <span class="n">to</span> <span class="o">=</span> <span class="n">ClassDispatcher</span><span class="p">(</span><span class="s2">&quot;to&quot;</span><span class="p">,</span>
-                         <span class="c1"># Do not allow calling this from a class</span>
-                         <span class="n">type_dispatcher</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                         <span class="n">obj_getattr</span><span class="o">=</span><span class="k">lambda</span> <span class="n">obj</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span>
-                         <span class="p">(</span><span class="n">_</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="p">())</span><span class="o">.</span><span class="n">throw</span><span class="p">(</span>
-                             <span class="ne">AttributeError</span><span class="p">((</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">obj</span><span class="si">}</span><span class="s2">.to does not implement &#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
-                                             <span class="sa">f</span><span class="s2">&quot;dispatcher, are you using it incorrectly?&quot;</span><span class="p">))</span>
-                         <span class="p">)</span>
-    <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__init_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lattice</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Initializes the supercell by *calculating* the size if not supplied</span>
@@ -1144,7 +1135,7 @@
             <span class="n">ir</span> <span class="o">=</span> <span class="p">[</span><span class="n">dS</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">radius</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dS</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Shape</span><span class="p">):</span>
             <span class="c1"># Convert to spheres (which probably should be cubes for performance)</span>
-            <span class="n">dS</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">toSphere</span><span class="p">()</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">dS</span><span class="p">]</span>
+            <span class="n">dS</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">Sphere</span><span class="p">()</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">dS</span><span class="p">]</span>
             <span class="c1"># Now do the same with spheres</span>
             <span class="n">ir</span> <span class="o">=</span> <span class="p">[</span><span class="n">dS</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">radius</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span>
 
@@ -4816,7 +4807,7 @@
         <span class="n">full_geom</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span> <span class="o">*</span> <span class="n">tile</span><span class="p">)</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">big_origin</span> <span class="o">-</span> <span class="n">origin</span><span class="p">)</span>
 
         <span class="c1"># Now we have to figure out all atomic coordinates within</span>
-        <span class="n">cuboid</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">toCuboid</span><span class="p">()</span>
+        <span class="n">cuboid</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">Cuboid</span><span class="p">()</span>
 
         <span class="c1"># Make sure that full_geom doesn&#39;t return coordinates outside the unit cell</span>
         <span class="c1"># for non periodic directions</span>
@@ -5316,7 +5307,7 @@
 
 
 <span class="c1"># Define base-class for this</span>
-<span class="k">class</span> <span class="nc">GeometryNewDispatcher</span><span class="p">(</span><span class="n">AbstractDispatch</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">GeometryNewDispatch</span><span class="p">(</span><span class="n">AbstractDispatch</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Base dispatcher from class passing arguments to Geometry class</span>
 
 <span class="sd">    This forwards all `__call__` calls to `dispatch`</span>
@@ -5327,39 +5318,43 @@
 
 
 <span class="c1"># Bypass regular Geometry to be returned as is</span>
-<span class="k">class</span> <span class="nc">GeometryNewGeometryDispatcher</span><span class="p">(</span><span class="n">GeometryNewDispatcher</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geom</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">GeometryNewGeometryDispatch</span><span class="p">(</span><span class="n">GeometryNewDispatch</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Return geometry as-is (no copy), for sanitization purposes &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">geom</span>
-<span class="n">new_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">Geometry</span><span class="p">,</span> <span class="n">GeometryNewGeometryDispatcher</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">copy</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">geometry</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">geometry</span>
+<span class="n">new_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">Geometry</span><span class="p">,</span> <span class="n">GeometryNewGeometryDispatch</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">GeometryNewAseDispatcher</span><span class="p">(</span><span class="n">GeometryNewDispatcher</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">GeometryNewAseDispatch</span><span class="p">(</span><span class="n">GeometryNewDispatch</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aseg</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Convert an ``ase`` object into a `Geometry` &quot;&quot;&quot;</span>
+        <span class="bp">cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_class</span><span class="p">()</span>
         <span class="n">Z</span> <span class="o">=</span> <span class="n">aseg</span><span class="o">.</span><span class="n">get_atomic_numbers</span><span class="p">()</span>
         <span class="n">xyz</span> <span class="o">=</span> <span class="n">aseg</span><span class="o">.</span><span class="n">get_positions</span><span class="p">()</span>
         <span class="n">cell</span> <span class="o">=</span> <span class="n">aseg</span><span class="o">.</span><span class="n">get_cell</span><span class="p">()</span>
         <span class="n">nsc</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span> <span class="k">if</span> <span class="n">pbc</span> <span class="k">else</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">pbc</span> <span class="ow">in</span> <span class="n">aseg</span><span class="o">.</span><span class="n">pbc</span><span class="p">]</span>
         <span class="n">lattice</span> <span class="o">=</span> <span class="n">Lattice</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="n">nsc</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="n">Z</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="n">lattice</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">new_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;ase&quot;</span><span class="p">,</span> <span class="n">GeometryNewAseDispatcher</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="n">Z</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="n">lattice</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="n">new_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;ase&quot;</span><span class="p">,</span> <span class="n">GeometryNewAseDispatch</span><span class="p">)</span>
 
 <span class="c1"># currently we can&#39;t ensure the ase Atoms type</span>
 <span class="c1"># to get it by type(). That requires ase to be importable.</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">ase</span> <span class="kn">import</span> <span class="n">Atoms</span> <span class="k">as</span> <span class="n">ase_Atoms</span>
-    <span class="n">new_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">ase_Atoms</span><span class="p">,</span> <span class="n">GeometryNewAseDispatcher</span><span class="p">)</span>
+    <span class="n">new_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">ase_Atoms</span><span class="p">,</span> <span class="n">GeometryNewAseDispatch</span><span class="p">)</span>
     <span class="c1"># ensure we don&#39;t pollute name-space</span>
     <span class="k">del</span> <span class="n">ase_Atoms</span>
 <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
     <span class="k">pass</span>
 
 
-<span class="k">class</span> <span class="nc">GeometryNewpymatgenDispatcher</span><span class="p">(</span><span class="n">GeometryNewDispatcher</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">GeometryNewpymatgenDispatch</span><span class="p">(</span><span class="n">GeometryNewDispatch</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">struct</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Convert a ``pymatgen`` structure/molecule object into a `Geometry` &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">pymatgen.core</span> <span class="kn">import</span> <span class="n">Structure</span>
+        <span class="bp">cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_class</span><span class="p">(</span><span class="n">allow_instance</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="n">Z</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">xyz</span> <span class="o">=</span> <span class="p">[]</span>
@@ -5376,59 +5371,54 @@
             <span class="n">cell</span> <span class="o">=</span> <span class="n">xyz</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">xyz</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mf">15.</span>
             <span class="n">nsc</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
         <span class="n">lattice</span> <span class="o">=</span> <span class="n">Lattice</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="n">nsc</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="n">Z</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="n">lattice</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">new_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;pymatgen&quot;</span><span class="p">,</span> <span class="n">GeometryNewpymatgenDispatcher</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="n">Z</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="n">lattice</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="n">new_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;pymatgen&quot;</span><span class="p">,</span> <span class="n">GeometryNewpymatgenDispatch</span><span class="p">)</span>
 
 <span class="c1"># currently we can&#39;t ensure the pymatgen classes</span>
 <span class="c1"># to get it by type(). That requires pymatgen to be importable.</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">pymatgen.core</span> <span class="kn">import</span> <span class="n">Molecule</span> <span class="k">as</span> <span class="n">pymatgen_Molecule</span>
     <span class="kn">from</span> <span class="nn">pymatgen.core</span> <span class="kn">import</span> <span class="n">Structure</span> <span class="k">as</span> <span class="n">pymatgen_Structure</span>
-    <span class="n">new_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">pymatgen_Molecule</span><span class="p">,</span> <span class="n">GeometryNewpymatgenDispatcher</span><span class="p">)</span>
-    <span class="n">new_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">pymatgen_Structure</span><span class="p">,</span> <span class="n">GeometryNewpymatgenDispatcher</span><span class="p">)</span>
+    <span class="n">new_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">pymatgen_Molecule</span><span class="p">,</span> <span class="n">GeometryNewpymatgenDispatch</span><span class="p">)</span>
+    <span class="n">new_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">pymatgen_Structure</span><span class="p">,</span> <span class="n">GeometryNewpymatgenDispatch</span><span class="p">)</span>
     <span class="c1"># ensure we don&#39;t pollute name-space</span>
     <span class="k">del</span> <span class="n">pymatgen_Molecule</span><span class="p">,</span> <span class="n">pymatgen_Structure</span>
 <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
     <span class="k">pass</span>
 
 
-<span class="k">class</span> <span class="nc">GeometryNewFileDispatcher</span><span class="p">(</span><span class="n">GeometryNewDispatcher</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">GeometryNewFileDispatch</span><span class="p">(</span><span class="n">GeometryNewDispatch</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Defer the `Geometry.read` method by passing down arguments &quot;&quot;&quot;</span>
+        <span class="c1"># can work either on class or instance</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">new_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">GeometryNewFileDispatcher</span><span class="p">)</span>
-<span class="n">new_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">Path</span><span class="p">,</span> <span class="n">GeometryNewFileDispatcher</span><span class="p">)</span>
+<span class="n">new_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">GeometryNewFileDispatch</span><span class="p">)</span>
+<span class="n">new_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">Path</span><span class="p">,</span> <span class="n">GeometryNewFileDispatch</span><span class="p">)</span>
 <span class="c1"># see sisl/__init__.py for new_dispatch.register(BaseSile, GeometryNewFileDispatcher)</span>
 
 
-<span class="k">class</span> <span class="nc">GeometryToDispatcher</span><span class="p">(</span><span class="n">AbstractDispatch</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">GeometryToDispatch</span><span class="p">(</span><span class="n">AbstractDispatch</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Base dispatcher from class passing from Geometry class &quot;&quot;&quot;</span>
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_ensure_object</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Dispatcher on </span><span class="si">{</span><span class="n">obj</span><span class="si">}</span><span class="s2"> must not be called on the class.&quot;</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">GeometryToAseDispatcher</span><span class="p">(</span><span class="n">GeometryToDispatcher</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">GeometryToAseDispatch</span><span class="p">(</span><span class="n">GeometryToDispatch</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">ase</span> <span class="kn">import</span> <span class="n">Atoms</span> <span class="k">as</span> <span class="n">ase_Atoms</span>
-        <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ensure_object</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+        <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_object</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">ase_Atoms</span><span class="p">(</span><span class="n">symbols</span><span class="o">=</span><span class="n">geom</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">Z</span><span class="p">,</span> <span class="n">positions</span><span class="o">=</span><span class="n">geom</span><span class="o">.</span><span class="n">xyz</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
                          <span class="n">cell</span><span class="o">=</span><span class="n">geom</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">pbc</span><span class="o">=</span><span class="n">geom</span><span class="o">.</span><span class="n">nsc</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;ase&quot;</span><span class="p">,</span> <span class="n">GeometryToAseDispatcher</span><span class="p">)</span>
+<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;ase&quot;</span><span class="p">,</span> <span class="n">GeometryToAseDispatch</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">GeometryTopymatgenDispatcher</span><span class="p">(</span><span class="n">GeometryToDispatcher</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">GeometryTopymatgenDispatch</span><span class="p">(</span><span class="n">GeometryToDispatch</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">pymatgen.core</span> <span class="kn">import</span> <span class="n">Lattice</span><span class="p">,</span> <span class="n">Molecule</span><span class="p">,</span> <span class="n">Structure</span>
 
         <span class="kn">from</span> <span class="nn">sisl.atom</span> <span class="kn">import</span> <span class="n">PeriodicTable</span>
 
         <span class="c1"># ensure we have an object</span>
-        <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ensure_object</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+        <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_object</span><span class="p">()</span>
 
         <span class="n">lattice</span> <span class="o">=</span> <span class="n">Lattice</span><span class="p">(</span><span class="n">geom</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
         <span class="c1"># get atomic letters and coordinates</span>
@@ -5441,26 +5431,24 @@
             <span class="k">return</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">species</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Structure</span><span class="p">(</span><span class="n">lattice</span><span class="p">,</span> <span class="n">species</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">coords_are_cartesian</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;pymatgen&quot;</span><span class="p">,</span> <span class="n">GeometryTopymatgenDispatcher</span><span class="p">)</span>
+<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;pymatgen&quot;</span><span class="p">,</span> <span class="n">GeometryTopymatgenDispatch</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">GeometryToSileDispatcher</span><span class="p">(</span><span class="n">GeometryToDispatcher</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">GeometryToSileDispatch</span><span class="p">(</span><span class="n">GeometryToDispatch</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ensure_object</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+        <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_object</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">geom</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="n">GeometryToSileDispatcher</span><span class="p">)</span>
-<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;path&quot;</span><span class="p">,</span> <span class="n">GeometryToSileDispatcher</span><span class="p">)</span>
+<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;str&quot;</span><span class="p">,</span> <span class="n">GeometryToSileDispatch</span><span class="p">)</span>
+<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;Path&quot;</span><span class="p">,</span> <span class="n">GeometryToSileDispatch</span><span class="p">)</span>
 <span class="c1"># to do geom.to[Path](path)</span>
-<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">GeometryToSileDispatcher</span><span class="p">)</span>
-<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">Path</span><span class="p">,</span> <span class="n">GeometryToSileDispatcher</span><span class="p">)</span>
+<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">GeometryToSileDispatch</span><span class="p">)</span>
+<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">Path</span><span class="p">,</span> <span class="n">GeometryToSileDispatch</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">GeometryToDataframeDispatcher</span><span class="p">(</span><span class="n">GeometryToDispatcher</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">GeometryToDataframeDispatch</span><span class="p">(</span><span class="n">GeometryToDispatch</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-        <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ensure_object</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+        <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_object</span><span class="p">()</span>
 
         <span class="c1"># Now create data-frame</span>
         <span class="c1"># Currently we will populate it with</span>
@@ -5486,7 +5474,7 @@
         <span class="n">data</span><span class="p">[</span><span class="s2">&quot;norbitals&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">orbitals</span>
 
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;dataframe&quot;</span><span class="p">,</span> <span class="n">GeometryToDataframeDispatcher</span><span class="p">)</span>
+<span class="n">to_dispatch</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s2">&quot;dataframe&quot;</span><span class="p">,</span> <span class="n">GeometryToDataframeDispatch</span><span class="p">)</span>
 
 <span class="c1"># Remove references</span>
 <span class="k">del</span> <span class="n">new_dispatch</span><span class="p">,</span> <span class="n">to_dispatch</span>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.Bloch &mdash; sisl 0.1-aa1de5c</title>
+  <title>sisl.physics.Bloch &mdash; sisl 0.1-9c9c61f</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
@@ -18,7 +18,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=afed2ba8"></script>
+        <script src="../../_static/documentation_options.js?v=ccf676f9"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/tabs.js?v=3ee01567"></script>
@@ -44,7 +44,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-aa1de5c
+                0.1-9c9c61f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -142,7 +142,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="sisl.physics.Bloch">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.physics.</span></span><span class="sig-name descname"><span class="pre">Bloch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">bloch</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.Bloch" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Bloch’s theorem object containing unfolding factors and unfolding algorithms</p>
 <p>This class is a wrapper for expanding <em>any</em> matrix from a smaller matrix cell into
 a larger, using Bloch’s theorem.
@@ -169,7 +169,7 @@ The general idea may be summarized in the following equation:</p>
 \mathbf M_{k_j}^1.\end{split}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>bloch</strong> (<em>(</em><em>3</em><em>,</em><em>) </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – Bloch repetitions along each direction</p>
+<dd class="field-odd"><p><strong>bloch</strong> (<em>(</em><em>3</em><em>,</em><em>) </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – Bloch repetitions along each direction</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -212,9 +212,9 @@ methods.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>func</strong> (<em>callable</em>) – method called which returns a matrix.</p></li>
-<li><p><strong>k</strong> (<em>(</em><em>3</em><em>, </em><em>) of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – k-point to be unfolded</p></li>
-<li><p><strong>*args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – arguments passed directly to <em class="xref py py-obj">func</em></p></li>
-<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – keyword arguments passed directly to <em class="xref py py-obj">func</em></p></li>
+<li><p><strong>k</strong> (<em>(</em><em>3</em><em>, </em><em>) of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – k-point to be unfolded</p></li>
+<li><p><strong>*args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – arguments passed directly to <em class="xref py py-obj">func</em></p></li>
+<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – keyword arguments passed directly to <em class="xref py py-obj">func</em></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -246,7 +246,7 @@ methods.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>M</strong> (<em>(</em><em>:</em><em>, </em><em>:</em><em>, </em><em>:</em><em>)</em>) – an <code class="docutils literal notranslate"><span class="pre">*</span></code>-N-M matrix used for unfolding</p></li>
-<li><p><strong>k_unfold</strong> (<em>(</em><em>:</em><em>, </em><em>3</em><em>) of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – unfolding k-points as returned by <a class="reference internal" href="#sisl.physics.Bloch.unfold_points" title="sisl.physics.Bloch.unfold_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Bloch.unfold_points</span></code></a></p></li>
+<li><p><strong>k_unfold</strong> (<em>(</em><em>:</em><em>, </em><em>3</em><em>) of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – unfolding k-points as returned by <a class="reference internal" href="#sisl.physics.Bloch.unfold_points" title="sisl.physics.Bloch.unfold_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Bloch.unfold_points</span></code></a></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -267,7 +267,7 @@ The return list of <em class="xref py py-obj">k</em> points are the k-points req
 folded geometry.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>k</strong> (<em>(</em><em>3</em><em>,</em><em>) of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – k-point evaluation corresponding to the unfolded unit-cell</p>
+<dd class="field-odd"><p><strong>k</strong> (<em>(</em><em>3</em><em>,</em><em>) of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – k-point evaluation corresponding to the unfolded unit-cell</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a list of <code class="docutils literal notranslate"><span class="pre">np.prod(self.bloch)</span></code> k-points used for the unfolding</p>

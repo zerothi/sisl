@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.electron.StateCElectron &mdash; sisl 0.1-aa1de5c</title>
+  <title>sisl.physics.electron.StateCElectron &mdash; sisl 0.1-9c9c61f</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
@@ -18,7 +18,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=afed2ba8"></script>
+        <script src="../../_static/documentation_options.js?v=ccf676f9"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/tabs.js?v=3ee01567"></script>
@@ -44,7 +44,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-aa1de5c
+                0.1-9c9c61f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -269,7 +269,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – the returned format of the overlap matrix. This only takes effect for
+<li><p><strong>format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – the returned format of the overlap matrix. This only takes effect for
 non-orthogonal parents.</p></li>
 <li><p><strong>spin</strong> (<a class="reference internal" href="sisl.physics.Spin.html#sisl.physics.Spin" title="sisl.physics.Spin"><em>Spin</em></a><em>, </em><em>optional</em>) – for non-colinear spin configurations the <em>fake</em> overlap matrix returned
 will have halve the size of the input matrix. If you want the <em>full</em> overlap
@@ -299,8 +299,8 @@ The new states (from <em class="xref py py-obj">self</em>) returned is then orde
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>other</strong> (<a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State"><em>State</em></a>) – the other state to align against</p></li>
-<li><p><strong>ret_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – also return indices for the swapped indices</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – swap states in-place</p></li>
+<li><p><strong>ret_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – also return indices for the swapped indices</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – swap states in-place</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -332,8 +332,8 @@ Only if <em class="xref py py-obj">inplace</em> is False and <em class="xref py 
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>other</strong> (<a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State"><em>State</em></a>) – the other state to align onto this state</p></li>
-<li><p><strong>ret_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – return which indices got swapped</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – rotate the states in-place</p></li>
+<li><p><strong>ret_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – return which indices got swapped</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – rotate the states in-place</p></li>
 </ul>
 </dd>
 </dl>
@@ -410,13 +410,13 @@ to the energies of the states.</p>
 <dd><p>Find degenerate coefficients with a specified precision</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>eps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – the precision above which coefficients are not considered degenerate</p>
+<dd class="field-odd"><p><strong>eps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – the precision above which coefficients are not considered degenerate</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a list of indices</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a> of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a> of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -449,12 +449,12 @@ in complex numbers to enable the correct decoupling.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>order</strong> (<em>{1</em><em>, </em><em>2}</em>) – an integer specifying which order of the derivative is being calculated.</p></li>
-<li><p><strong>degenerate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> of </em><em>array_like</em><em>, </em><em>optional</em>) – If a float is passed it is regarded as the degeneracy tolerance used to calculate the degeneracy
+<li><p><strong>degenerate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em> of </em><em>array_like</em><em>, </em><em>optional</em>) – If a float is passed it is regarded as the degeneracy tolerance used to calculate the degeneracy
 levels. Defaults to 1e-5 eV.
 If a list, it contains the indices of degenerate states. In that case a prior diagonalization
 is required to decouple them. See <em class="xref py py-obj">degenerate_dir</em> for the sum of directions.</p></li>
 <li><p><strong>degenerate_dir</strong> (<em>(</em><em>3</em><em>,</em><em>)</em><em>, </em><em>optional</em>) – a direction used for degenerate decoupling. The decoupling based on the velocity along this direction</p></li>
-<li><p><strong>matrix</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the full matrix or only the diagonal components are returned</p></li>
+<li><p><strong>matrix</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the full matrix or only the diagonal components are returned</p></li>
 </ul>
 </dd>
 </dl>
@@ -537,7 +537,7 @@ degeneracy decoupling.</p>
 product with itself. The object itself will always be the bra <span class="math notranslate nohighlight">\(\langle\psi_i|\)</span></p></li>
 <li><p><strong>matrix</strong> (<em>array_like</em><em>, </em><em>optional</em>) – whether a matrix is sandwiched between the bra and ket, defaults to the identity matrix.
 1D arrays will be treated as a diagonal matrix.</p></li>
-<li><p><strong>diag</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – only return the diagonal matrix <span class="math notranslate nohighlight">\(\mathbf A_{ii}\)</span>.</p></li>
+<li><p><strong>diag</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – only return the diagonal matrix <span class="math notranslate nohighlight">\(\mathbf A_{ii}\)</span>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -545,7 +545,7 @@ product with itself. The object itself will always be the bra <span class="math 
 <p>This does <em>not</em> take into account a possible overlap matrix when non-orthogonal basis sets are used.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – if the number of state coefficients are different for the bra and ket</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – if the number of state coefficients are different for the bra and ket</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a matrix with the sum of inner state products</p>
@@ -582,7 +582,7 @@ states:</p>
 <p>since the denominator is <span class="math notranslate nohighlight">\(1^{q} = 1\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>q</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – order parameter for the IPR</p>
+<dd class="field-odd"><p><strong>q</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – order parameter for the IPR</p>
 </dd>
 </dl>
 </dd></dl>
@@ -593,7 +593,7 @@ states:</p>
 <dd><p>An iterator looping over the states in this system</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>asarray</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – if true the yielded values are the state vectors, i.e. a numpy array.
+<dd class="field-odd"><p><strong>asarray</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – if true the yielded values are the state vectors, i.e. a numpy array.
 Otherwise an equivalent object is yielded.</p>
 </dd>
 <dt class="field-even">Yields<span class="colon">:</span></dt>
@@ -627,7 +627,7 @@ Otherwise an equivalent object is yielded.</p>
 <span class="math notranslate nohighlight">\(\mathbf S \equiv \mathbf I\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>sum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – for true only a single number per state will be returned, otherwise the norm
+<dd class="field-odd"><p><strong>sum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – for true only a single number per state will be returned, otherwise the norm
 per basis element will be returned.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -700,7 +700,7 @@ product with itself. The object itself will always be the bra <span class="math 
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>method</strong> (<em>{'max'</em><em>, </em><em>'all'}</em>) – for max, the phase for the element which has the largest absolute magnitude is returned,
 for all, all phases are calculated</p></li>
-<li><p><strong>ret_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – return indices for the elements used when <code class="docutils literal notranslate"><span class="pre">method=='max'</span></code></p></li>
+<li><p><strong>ret_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – return indices for the elements used when <code class="docutils literal notranslate"><span class="pre">method=='max'</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -713,8 +713,8 @@ for all, all phases are calculated</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>idx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>array_like</em>) – indices that are removed in the returned object</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the values will be removed inplace</p></li>
+<li><p><strong>idx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><em>array_like</em>) – indices that are removed in the returned object</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the values will be removed inplace</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -738,8 +738,8 @@ and <span class="math notranslate nohighlight">\(\phi\)</span> is the angle to a
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>phi</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – angle to align the state at (in radians), 0 is the positive real axis</p></li>
-<li><p><strong>individual</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the rotation is per state, or a single maximum component is chosen.</p></li>
+<li><p><strong>phi</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – angle to align the state at (in radians), 0 is the positive real axis</p></li>
+<li><p><strong>individual</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the rotation is per state, or a single maximum component is chosen.</p></li>
 </ul>
 </dd>
 </dl>
@@ -757,7 +757,7 @@ and <span class="math notranslate nohighlight">\(\phi\)</span> is the angle to a
 <dd><p>Sort and return a new <code class="xref py py-obj docutils literal notranslate"><span class="pre">StateC</span></code> by sorting the coefficients (default to ascending)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>ascending</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – sort the contained elements ascending, else they will be sorted descending</p>
+<dd class="field-odd"><p><strong>ascending</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – sort the contained elements ascending, else they will be sorted descending</p>
 </dd>
 </dl>
 </dd></dl>
@@ -771,7 +771,7 @@ and returns the spin moment for the states.</p>
 <p>See <a class="reference internal" href="sisl.physics.electron.spin_moment.html#sisl.physics.electron.spin_moment" title="sisl.physics.electron.spin_moment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spin_moment</span></code></a> for details.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>project</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the moments are orbitally resolved or not</p>
+<dd class="field-odd"><p><strong>project</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the moments are orbitally resolved or not</p>
 </dd>
 </dl>
 </dd></dl>
@@ -788,8 +788,8 @@ and returns the spin moment for the states.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>idx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em> or </em><em>array_like</em>) – indices that are retained in the returned object</p></li>
-<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the values will be retained inplace</p></li>
+<li><p><strong>idx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><em>array_like</em>) – indices that are retained in the returned object</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the values will be retained inplace</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -815,11 +815,11 @@ by said amount, i.e. <span class="math notranslate nohighlight">\(i\to i+\mathrm
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – number of repetitions along a specific lattice vector</p></li>
-<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – lattice vector to tile along</p></li>
-<li><p><strong>normalize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the states are normalized upon return, may be useful for
+<li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – number of repetitions along a specific lattice vector</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – lattice vector to tile along</p></li>
+<li><p><strong>normalize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the states are normalized upon return, may be useful for
 eigenstates</p></li>
-<li><p><strong>offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – the offset for the phase factors</p></li>
+<li><p><strong>offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – the offset for the phase factors</p></li>
 </ul>
 </dd>
 </dl>

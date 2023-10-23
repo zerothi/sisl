@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.physics.electron &mdash; sisl 0.1-aa1de5c</title>
+  <title>sisl.physics.electron &mdash; sisl 0.1-9c9c61f</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=afed2ba8"></script>
+        <script src="../../../_static/documentation_options.js?v=ccf676f9"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-aa1de5c
+                0.1-9c9c61f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -1403,7 +1403,7 @@
     <span class="c1"># For extremely skewed lattices this will be way too much, hence we make</span>
     <span class="c1"># them square.</span>
 
-    <span class="n">o</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">toCuboid</span><span class="p">(</span><span class="n">orthogonal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">o</span> <span class="o">=</span> <span class="n">lattice</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">Cuboid</span><span class="p">(</span><span class="n">orthogonal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">lattice</span> <span class="o">=</span> <span class="n">Lattice</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">_v</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">add_R</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="n">o</span><span class="o">.</span><span class="n">origin</span> <span class="o">-</span> <span class="n">add_R</span><span class="p">)</span>
 
     <span class="c1"># Retrieve all atoms within the grid supercell</span>

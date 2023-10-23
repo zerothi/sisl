@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.tbtrans.deltancSileTBtrans &mdash; sisl 0.1-aa1de5c</title>
+  <title>sisl.io.tbtrans.deltancSileTBtrans &mdash; sisl 0.1-9c9c61f</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
@@ -18,7 +18,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=afed2ba8"></script>
+        <script src="../../../_static/documentation_options.js?v=ccf676f9"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/tabs.js?v=3ee01567"></script>
@@ -44,7 +44,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-aa1de5c
+                0.1-9c9c61f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -261,7 +261,7 @@ to make the <span class="math notranslate nohighlight">\(\delta\)</span> depende
 <dd><p>Query whether the file has level <em class="xref py py-obj">ilvl</em> content</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>ilvl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – the level to be queried, one of 1, 2, 3 or 4</p>
+<dd class="field-odd"><p><strong>ilvl</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – the level to be queried, one of 1, 2, 3 or 4</p>
 </dd>
 </dl>
 </dd></dl>
@@ -320,8 +320,8 @@ all <em class="xref py py-obj">deltas</em> are the same class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>Path</em>) – the output name of the merged file</p></li>
-<li><p><strong>*deltas</strong> (<a class="reference internal" href="#sisl.io.tbtrans.deltancSileTBtrans" title="sisl.io.tbtrans.deltancSileTBtrans"><em>deltancSileTBtrans</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>Path</em>) – all the delta files that should be merged</p></li>
+<li><p><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>Path</em>) – the output name of the merged file</p></li>
+<li><p><strong>*deltas</strong> (<a class="reference internal" href="#sisl.io.tbtrans.deltancSileTBtrans" title="sisl.io.tbtrans.deltancSileTBtrans"><em>deltancSileTBtrans</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>Path</em>) – all the delta files that should be merged</p></li>
 <li><p><strong>**kwargs</strong> – arguments passed directly to the init of <code class="docutils literal notranslate"><span class="pre">cls(fname,</span> <span class="pre">**kwargs)</span></code></p></li>
 </ul>
 </dd>
@@ -393,7 +393,7 @@ and call it with the remaining <code class="docutils literal notranslate"><span 
 <li><p><strong>delta</strong> (<a class="reference internal" href="../../generated/sisl.physics.SparseOrbitalBZSpin.html#sisl.physics.SparseOrbitalBZSpin" title="sisl.physics.SparseOrbitalBZSpin"><em>SparseOrbitalBZSpin</em></a>) – the model to be saved in the NC file</p></li>
 <li><p><strong>k</strong> (<em>array_like</em><em>, </em><em>optional</em>) – a specific k-point <span class="math notranslate nohighlight">\(\delta\)</span> term. I.e. only save the <span class="math notranslate nohighlight">\(\delta\)</span> term for
 the given k-point. May be combined with <em class="xref py py-obj">E</em> for a specific k and energy point.</p></li>
-<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – an energy dependent <span class="math notranslate nohighlight">\(\delta\)</span> term. I.e. only save the <span class="math notranslate nohighlight">\(\delta\)</span> term for
+<li><p><strong>E</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – an energy dependent <span class="math notranslate nohighlight">\(\delta\)</span> term. I.e. only save the <span class="math notranslate nohighlight">\(\delta\)</span> term for
 the given energy. May be combined with <em class="xref py py-obj">k</em> for a specific k and energy point.</p></li>
 </ul>
 </dd>
