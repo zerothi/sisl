@@ -13,7 +13,7 @@ import warnings
 from enum import IntEnum, auto
 from numbers import Integral
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional, Sequence, Tuple, Union
+from typing import Optional, Sequence, Tuple, Union
 
 import numpy as np
 from numpy import dot, ndarray
@@ -25,7 +25,7 @@ from ._dispatcher import AbstractDispatch, ClassDispatcher, TypeDispatcher
 from ._internal import set_module
 from ._lattice import cell_invert, cell_reciprocal
 from ._math_small import cross3, dot3
-from .messages import SislError, deprecate, deprecate_argument, deprecation
+from .messages import SislError, deprecate, deprecate_argument, deprecation, info
 from .quaternion import Quaternion
 from .shape.prism4 import Cuboid
 from .utils.mathematics import fnorm
@@ -104,7 +104,7 @@ class Lattice(_Dispatchs,
        number of supercells along each lattice vector
     origin : (3,) of float, optional
        the origin of the supercell.
-    boundary_condition : list of int (3, 2) or (3, ), optional
+    boundary_condition : int/str or list of int/str (3, 2) or (3, ), optional
         the boundary conditions for each of the cell's planes. Defaults to periodic boundary condition.
         See `BoundaryCondition` for valid enumerations.
     """
@@ -221,6 +221,7 @@ class Lattice(_Dispatchs,
 
         if not hasattr(self, "_bc"):
             self._bc = _a.fulli([3, 2], getitem("Unknown"))
+        old = self._bc.copy()
 
         if not boundary is None:
             if isinstance(boundary, (Integral, str, bool)):
@@ -245,11 +246,15 @@ class Lattice(_Dispatchs,
                 self._bc[d, :] = v
 
         # shorthand for bc
-        for bc in self._bc == BoundaryCondition.PERIODIC:
+        for nsc, bc, changed in zip(self.nsc, self._bc == BoundaryCondition.PERIODIC, self._bc != old):
             if bc.any() and not bc.all():
                 raise ValueError(f"{self.__class__.__name__}.set_boundary_condition has a one non-periodic and "
                                  "one periodic direction. If one direction is periodic, both instances "
                                  "must have that BC.")
+            if changed.any() and (~bc).all() and nsc > 1:
+                info(f"{self.__class__.__name__}.set_boundary_condition is having image connections (nsc={nsc}>1) "
+                     "while having a non-periodic boundary condition.")
+
 
     def parameters(self, rad: bool=False) -> Tuple[float, float, float, float, float, float]:
         r""" Cell parameters of this cell in 3 lengths and 3 angles
