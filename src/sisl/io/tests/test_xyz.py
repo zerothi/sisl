@@ -64,7 +64,8 @@ C   2.00000  0.00000000  0.00000000
     assert np.allclose(g.xyz[:, 0], [0, 1, 2])
     assert np.allclose(g.xyz[:, 1], 0.)
     assert np.allclose(g.xyz[:, 2], 0.)
-    assert np.allclose(g.nsc, [1, 1, 3])
+    assert np.allclose(g.nsc, [1, 1, 1])
+    assert np.allclose(g.pbc, [False, False, True])
 
 
 def test_xyz_arbitrary(sisl_tmp):

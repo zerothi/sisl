@@ -11,6 +11,7 @@ from scipy.sparse import hstack as ss_hstack
 from scipy.sparse import tril, triu
 
 import sisl._array as _a
+from sisl import BoundaryCondition as BC
 from sisl import Geometry, Lattice
 from sisl._indices import indices_fabs_le, indices_le
 from sisl._internal import set_module
@@ -537,7 +538,8 @@ class _densitymatrix(SparseOrbitalBZSpin):
         # 1. Ensure the grid has a geometry associated with it
         lattice = grid.lattice.copy()
         # Find the periodic directions
-        pbc = [bc == grid.PERIODIC or geometry.nsc[i] > 1 for i, bc in enumerate(grid.bc[:, 0])]
+        pbc = [bc == BC.PERIODIC or geometry.nsc[i] > 1
+               for i, bc in enumerate(grid.lattice.boundary_condition[:, 0])]
         if grid.geometry is None:
             # Create the actual geometry that encompass the grid
             ia, xyz, _ = geometry.within_inf(lattice, periodic=pbc)

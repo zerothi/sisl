@@ -213,11 +213,13 @@ def solve_poisson(geometry, shape, radius="empirical",
         # Change boundaries to always use dirichlet
         # This ensures that once we set the boundaries we don't
         # get any side-effects
-        periodic = grid.bc[:, 0] == grid.PERIODIC
-        bc = np.repeat(np.array([grid.DIRICHLET], np.int32), 6).reshape(3, 2)
+        BC = si.BoundaryCondition
+        periodic = [bc == BC.PERIODIC or geometry.nsc[i] > 1
+                    for i, bc in enumerate(grid.lattice.boundary_condition[:, 0])]
+        bc = np.repeat(np.array([BC.DIRICHLET], np.int32), 6).reshape(3, 2)
         for i in (0, 1, 2):
             if periodic[i]:
-                bc[i, :] = grid.PERIODIC
+                bc[i, :] = BC.PERIODIC
         grid.set_bc(bc)
         A, b = grid.topyamg()
 

@@ -9,7 +9,7 @@ from pytest import approx
 
 import sisl
 import sisl.linalg as lin
-from sisl import Lattice, LatticeChild, SuperCell
+from sisl import BoundaryCondition, Lattice, LatticeChild, SuperCell
 from sisl.geom import graphene
 
 pytestmark = [pytest.mark.supercell, pytest.mark.sc, pytest.mark.lattice]
@@ -487,3 +487,63 @@ def test_lattice_indices():
 def test_supercell_warn():
     with pytest.warns(sisl.SislDeprecation):
         lattice = SuperCell([1] * 3, nsc=[3, 5, 7])
+
+
+#####
+# boundary-condition tests
+#####
+
+@pytest.mark.parametrize("bc", list(BoundaryCondition))
+def test_lattice_bc_init(bc):
+    Lattice(1, boundary_condition=bc)
+    Lattice(1, boundary_condition=[bc, bc, bc])
+    Lattice(1, boundary_condition=[[bc, bc],
+                                   [bc, bc],
+                                   [bc, bc]])
+
+def test_lattice_bc_set():
+    lat = Lattice(1, boundary_condition=Lattice.BC.PERIODIC)
+    assert lat.pbc.all()
+    lat.boundary_condition = Lattice.BC.UNKNOWN
+    assert not lat.pbc.any()
+    assert (lat.boundary_condition == Lattice.BC.UNKNOWN).all()
+
+    lat.boundary_condition = ['per', "unkn", [3, 4]]
+
+    for n in "abc":
+        lat.set_boundary_condition(**{n: "per"})
+        lat.set_boundary_condition(**{n: [3, Lattice.BC.UNKNOWN]})
+        lat.set_boundary_condition(**{n: [True, Lattice.BC.PERIODIC]})
+
+    bc = [
+            "per",
+            ["Dirichlet", Lattice.BC.NEUMANN],
+            ["un", "neu"]
+    ]
+    lat.set_boundary_condition(bc)
+    assert np.all(lat.boundary_condition[1] == [Lattice.BC.DIRICHLET, Lattice.BC.NEUMANN])
+    assert np.all(lat.boundary_condition[2] == [Lattice.BC.UNKNOWN, Lattice.BC.NEUMANN])
+    lat.set_boundary_condition(["per", None, ["dirichlet", "unkno"]])
+    assert np.all(lat.boundary_condition[1] == [Lattice.BC.DIRICHLET, Lattice.BC.NEUMANN])
+    assert np.all(lat.boundary_condition[2] == [Lattice.BC.DIRICHLET, Lattice.BC.UNKNOWN])
+    lat.set_boundary_condition("ppu")
+    assert np.all(lat.pbc == [True, True, False])
+
+
+def test_lattice_bc_fail():
+    lat = Lattice(1)
+    with pytest.raises(ValueError):
+        lat.boundary_condition = False
+    with pytest.raises(ValueError):
+        lat.set_boundary_condition(b=False)
+    with pytest.raises(KeyError):
+        lat.set_boundary_condition(b="eusoatuhesoau")
+
+
+def test_lattice_info():
+    lat = Lattice(1, nsc=[3, 3, 3])
+    with pytest.warns(sisl.SislInfo) as record:
+        lat.set_boundary_condition(b=Lattice.BC.DIRICHLET)
+        lat.set_boundary_condition(c=Lattice.BC.PERIODIC)
+        assert len(record) == 1
+
