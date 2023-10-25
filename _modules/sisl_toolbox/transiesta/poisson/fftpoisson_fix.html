@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl_toolbox.transiesta.poisson.fftpoisson_fix &mdash; sisl 0.1-9c9c61f</title>
+  <title>sisl_toolbox.transiesta.poisson.fftpoisson_fix &mdash; sisl 0.1-fb8a39f</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=ccf676f9"></script>
+        <script src="../../../../_static/documentation_options.js?v=909d8e72"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-9c9c61f
+                0.1-fb8a39f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -322,11 +322,13 @@
         <span class="c1"># Change boundaries to always use dirichlet</span>
         <span class="c1"># This ensures that once we set the boundaries we don&#39;t</span>
         <span class="c1"># get any side-effects</span>
-        <span class="n">periodic</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">bc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">grid</span><span class="o">.</span><span class="n">PERIODIC</span>
-        <span class="n">bc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">grid</span><span class="o">.</span><span class="n">DIRICHLET</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span> <span class="mi">6</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">BC</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">BoundaryCondition</span>
+        <span class="n">periodic</span> <span class="o">=</span> <span class="p">[</span><span class="n">bc</span> <span class="o">==</span> <span class="n">BC</span><span class="o">.</span><span class="n">PERIODIC</span> <span class="ow">or</span> <span class="n">geometry</span><span class="o">.</span><span class="n">nsc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span>
+                    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">bc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">boundary_condition</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])]</span>
+        <span class="n">bc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">BC</span><span class="o">.</span><span class="n">DIRICHLET</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span> <span class="mi">6</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">periodic</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
-                <span class="n">bc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">PERIODIC</span>
+                <span class="n">bc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">BC</span><span class="o">.</span><span class="n">PERIODIC</span>
         <span class="n">grid</span><span class="o">.</span><span class="n">set_bc</span><span class="p">(</span><span class="n">bc</span><span class="p">)</span>
         <span class="n">A</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">topyamg</span><span class="p">()</span>
 

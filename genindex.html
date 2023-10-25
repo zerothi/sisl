@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; sisl 0.1-9c9c61f</title>
+  <title>Index &mdash; sisl 0.1-fb8a39f</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=ccf676f9"></script>
+        <script src="_static/documentation_options.js?v=909d8e72"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-9c9c61f
+                0.1-fb8a39f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -188,6 +188,8 @@
         <li><a href="api/generated/sisl.AtomicOrbital.html#sisl.AtomicOrbital.__init__">(sisl.AtomicOrbital method)</a>
 </li>
         <li><a href="api/generated/sisl.Atoms.html#sisl.Atoms.__init__">(sisl.Atoms method)</a>
+</li>
+        <li><a href="api/generated/sisl.BoundaryCondition.html#sisl.BoundaryCondition.__init__">(sisl.BoundaryCondition method)</a>
 </li>
         <li><a href="api/generated/sisl.constant.PhysicalConstant.html#sisl.constant.PhysicalConstant.__init__">(sisl.constant.PhysicalConstant method)</a>
 </li>
@@ -852,8 +854,12 @@
         <li><a href="api/io/generated/sisl.io.SileWarning.html#sisl.io.SileWarning.args">(sisl.io.SileWarning attribute)</a>
 </li>
       </ul></li>
-      <li><a href="api/generated/sisl.constant.PhysicalConstant.html#sisl.constant.PhysicalConstant.as_integer_ratio">as_integer_ratio() (sisl.constant.PhysicalConstant method)</a>
+      <li><a href="api/generated/sisl.BoundaryCondition.html#sisl.BoundaryCondition.as_integer_ratio">as_integer_ratio() (sisl.BoundaryCondition method)</a>
+
+      <ul>
+        <li><a href="api/generated/sisl.constant.PhysicalConstant.html#sisl.constant.PhysicalConstant.as_integer_ratio">(sisl.constant.PhysicalConstant method)</a>
 </li>
+      </ul></li>
       <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.as_primary">as_primary() (sisl.Geometry method)</a>
 </li>
       <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.asc2uc">asc2uc() (sisl.Geometry method)</a>
@@ -1196,6 +1202,8 @@
 </li>
       <li><a href="api/basic.html#index-0">basic</a>
 </li>
+      <li><a href="api/generated/sisl.Lattice.html#sisl.Lattice.BC">BC (sisl.Lattice attribute)</a>
+</li>
       <li><a href="api/generated/sisl.geom.bcc.html#sisl.geom.bcc">bcc() (in module sisl.geom)</a>
 </li>
       <li><a href="api/generated/sisl.geom.bcc_slab.html#sisl.geom.bcc_slab">bcc_slab() (in module sisl.geom)</a>
@@ -1225,6 +1233,10 @@
       <li><a href="api/generated/sisl.physics.electron.berry_phase.html#sisl.physics.electron.berry_phase">berry_phase() (in module sisl.physics.electron)</a>
 </li>
       <li><a href="api/generated/sisl.geom.bilayer.html#sisl.geom.bilayer">bilayer() (in module sisl.geom)</a>
+</li>
+      <li><a href="api/generated/sisl.BoundaryCondition.html#sisl.BoundaryCondition.bit_count">bit_count() (sisl.BoundaryCondition method)</a>
+</li>
+      <li><a href="api/generated/sisl.BoundaryCondition.html#sisl.BoundaryCondition.bit_length">bit_length() (sisl.BoundaryCondition method)</a>
 </li>
       <li><a href="api/generated/sisl.physics.Bloch.html#sisl.physics.Bloch">Bloch (class in sisl.physics)</a>
 </li>
@@ -1279,6 +1291,16 @@
 </li>
       </ul></li>
       <li><a href="api/generated/sisl.physics.bose_einstein.html#sisl.physics.bose_einstein">bose_einstein() (in module sisl.physics)</a>
+</li>
+      <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.boundary_condition">boundary_condition (sisl.Geometry property)</a>
+
+      <ul>
+        <li><a href="api/generated/sisl.Grid.html#sisl.Grid.boundary_condition">(sisl.Grid property)</a>
+</li>
+        <li><a href="api/generated/sisl.Lattice.html#sisl.Lattice.boundary_condition">(sisl.Lattice property)</a>
+</li>
+      </ul></li>
+      <li><a href="api/generated/sisl.BoundaryCondition.html#sisl.BoundaryCondition">BoundaryCondition (class in sisl)</a>
 </li>
       <li><a href="api/generated/sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone">BrillouinZone (class in sisl.physics)</a>
 </li>
@@ -1654,8 +1676,12 @@
 </li>
       <li><a href="api/generated/sisl.Quaternion.html#sisl.Quaternion.conj">conj() (sisl.Quaternion method)</a>
 </li>
-      <li><a href="api/generated/sisl.constant.PhysicalConstant.html#sisl.constant.PhysicalConstant.conjugate">conjugate() (sisl.constant.PhysicalConstant method)</a>
+      <li><a href="api/generated/sisl.BoundaryCondition.html#sisl.BoundaryCondition.conjugate">conjugate() (sisl.BoundaryCondition method)</a>
+
+      <ul>
+        <li><a href="api/generated/sisl.constant.PhysicalConstant.html#sisl.constant.PhysicalConstant.conjugate">(sisl.constant.PhysicalConstant method)</a>
 </li>
+      </ul></li>
       <li><a href="api/generated/sisl.physics.DensityMatrix.html#sisl.physics.DensityMatrix.construct">construct() (sisl.physics.DensityMatrix method)</a>
 
       <ul>
@@ -1982,6 +2008,8 @@
       </ul></li>
       <li><a href="api/io/generated/sisl.io.tbtrans.deltancSileTBtrans.html#sisl.io.tbtrans.deltancSileTBtrans">deltancSileTBtrans (class in sisl.io.tbtrans)</a>
 </li>
+      <li><a href="api/generated/sisl.BoundaryCondition.html#sisl.BoundaryCondition.denominator">denominator (sisl.BoundaryCondition attribute)</a>
+</li>
       <li><a href="api/generated/sisl.physics.DensityMatrix.html#sisl.physics.DensityMatrix.density">density() (sisl.physics.DensityMatrix method)</a>
 
       <ul>
@@ -2232,8 +2260,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/generated/sisl.utils.direction.html#sisl.utils.direction">direction() (in module sisl.utils)</a>
 </li>
-      <li><a href="api/generated/sisl.Grid.html#sisl.Grid.DIRICHLET">DIRICHLET (sisl.Grid attribute)</a>
+      <li><a href="api/generated/sisl.BoundaryCondition.html#sisl.BoundaryCondition.DIRICHLET">DIRICHLET (sisl.BoundaryCondition attribute)</a>
+
+      <ul>
+        <li><a href="api/generated/sisl.Grid.html#sisl.Grid.DIRICHLET">(sisl.Grid attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/io/generated/sisl.io.siesta.tsgfSileSiesta.html#sisl.io.siesta.tsgfSileSiesta.disk_usage">disk_usage() (sisl.io.siesta.tsgfSileSiesta method)</a>
 
       <ul>
@@ -3142,6 +3174,8 @@
 </li>
       <li><a href="api/generated/sisl.Atoms.html#sisl.Atoms.formula">formula() (sisl.Atoms method)</a>
 </li>
+      <li><a href="api/generated/sisl.BoundaryCondition.html#sisl.BoundaryCondition.from_bytes">from_bytes() (sisl.BoundaryCondition method)</a>
+</li>
       <li><a href="toolbox/btd/generated/sisl_toolbox.btd.DeviceGreen.html#sisl_toolbox.btd.DeviceGreen.from_fdf">from_fdf() (sisl_toolbox.btd.DeviceGreen class method)</a>
 </li>
       <li><a href="api/viz/generated/sisl.viz.BandsPlot.html#sisl.viz.BandsPlot.from_func">from_func() (sisl.viz.BandsPlot class method)</a>
@@ -3394,6 +3428,8 @@
         <li><a href="api/viz/generated/sisl.viz.WavefunctionPlot.html#sisl.viz.WavefunctionPlot.get_tree">(sisl.viz.WavefunctionPlot method)</a>
 </li>
       </ul></li>
+      <li><a href="api/generated/sisl.BoundaryCondition.html#sisl.BoundaryCondition.getitem">getitem() (sisl.BoundaryCondition class method)</a>
+</li>
       <li><a href="api/io/generated/sisl.io.gulp.gotSileGULP.html#sisl.io.gulp.gotSileGULP">gotSileGULP (class in sisl.io.gulp)</a>
 </li>
       <li><a href="api/generated/sisl.geom.graphene.html#sisl.geom.graphene">graphene() (in module sisl.geom)</a>
@@ -3526,8 +3562,12 @@
         <li><a href="api/generated/sisl.Lattice.html#sisl.Lattice.icell">(sisl.Lattice property)</a>
 </li>
       </ul></li>
-      <li><a href="api/generated/sisl.constant.PhysicalConstant.html#sisl.constant.PhysicalConstant.imag">imag (sisl.constant.PhysicalConstant attribute)</a>
+      <li><a href="api/generated/sisl.BoundaryCondition.html#sisl.BoundaryCondition.imag">imag (sisl.BoundaryCondition attribute)</a>
+
+      <ul>
+        <li><a href="api/generated/sisl.constant.PhysicalConstant.html#sisl.constant.PhysicalConstant.imag">(sisl.constant.PhysicalConstant attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/generated/sisl.physics.BandStructure.html#sisl.physics.BandStructure.in_primitive">in_primitive() (sisl.physics.BandStructure static method)</a>
 
       <ul>
@@ -4533,8 +4573,12 @@
         <li><a href="api/viz/generated/sisl.viz.WavefunctionPlot.html#sisl.viz.WavefunctionPlot.network">(sisl.viz.WavefunctionPlot attribute)</a>
 </li>
       </ul></li>
-      <li><a href="api/generated/sisl.Grid.html#sisl.Grid.NEUMANN">NEUMANN (sisl.Grid attribute)</a>
+      <li><a href="api/generated/sisl.BoundaryCondition.html#sisl.BoundaryCondition.NEUMANN">NEUMANN (sisl.BoundaryCondition attribute)</a>
+
+      <ul>
+        <li><a href="api/generated/sisl.Grid.html#sisl.Grid.NEUMANN">(sisl.Grid attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.new">new (sisl.Geometry attribute)</a>
 
       <ul>
@@ -4869,6 +4913,8 @@
 </li>
       <li><a href="api/generated/sisl.shape.NullShape.html#sisl.shape.NullShape">NullShape (class in sisl.shape)</a>
 </li>
+      <li><a href="api/generated/sisl.BoundaryCondition.html#sisl.BoundaryCondition.numerator">numerator (sisl.BoundaryCondition attribute)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -4935,8 +4981,12 @@
 </li>
       <li><a href="api/io/generated/sisl.io.siesta.onlysSileSiesta.html#sisl.io.siesta.onlysSileSiesta">onlysSileSiesta (class in sisl.io.siesta)</a>
 </li>
-      <li><a href="api/generated/sisl.Grid.html#sisl.Grid.OPEN">OPEN (sisl.Grid attribute)</a>
+      <li><a href="api/generated/sisl.BoundaryCondition.html#sisl.BoundaryCondition.OPEN">OPEN (sisl.BoundaryCondition attribute)</a>
+
+      <ul>
+        <li><a href="api/generated/sisl.Grid.html#sisl.Grid.OPEN">(sisl.Grid attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/generated/sisl.oplist.oplist.html#sisl.oplist.oplist">oplist (class in sisl.oplist)</a>
 </li>
       <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.optimize_nsc">optimize_nsc() (sisl.Geometry method)</a>
@@ -5183,6 +5233,14 @@
         <li><a href="api/generated/sisl.physics.StateC.html#sisl.physics.StateC.parent">(sisl.physics.StateC attribute)</a>
 </li>
       </ul></li>
+      <li><a href="api/generated/sisl.Geometry.html#sisl.Geometry.pbc">pbc (sisl.Geometry property)</a>
+
+      <ul>
+        <li><a href="api/generated/sisl.Grid.html#sisl.Grid.pbc">(sisl.Grid property)</a>
+</li>
+        <li><a href="api/generated/sisl.Lattice.html#sisl.Lattice.pbc">(sisl.Lattice property)</a>
+</li>
+      </ul></li>
       <li><a href="api/io/generated/sisl.io.pdbSile.html#sisl.io.pdbSile">pdbSile (class in sisl.io)</a>
 </li>
       <li><a href="api/generated/sisl.physics.electron.PDOS.html#sisl.physics.electron.PDOS">PDOS() (in module sisl.physics.electron)</a>
@@ -5199,8 +5257,12 @@
 </li>
       <li><a href="api/io/generated/sisl.io.siesta.pdosSileSiesta.html#sisl.io.siesta.pdosSileSiesta">pdosSileSiesta (class in sisl.io.siesta)</a>
 </li>
-      <li><a href="api/generated/sisl.Grid.html#sisl.Grid.PERIODIC">PERIODIC (sisl.Grid attribute)</a>
+      <li><a href="api/generated/sisl.BoundaryCondition.html#sisl.BoundaryCondition.PERIODIC">PERIODIC (sisl.BoundaryCondition attribute)</a>
+
+      <ul>
+        <li><a href="api/generated/sisl.Grid.html#sisl.Grid.PERIODIC">(sisl.Grid attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/generated/sisl.PeriodicTable.html#sisl.PeriodicTable">PeriodicTable (class in sisl)</a>
 </li>
       <li><a href="toolbox/siesta/generated/sisl_toolbox.siesta.atom.AtomInput.html#sisl_toolbox.siesta.atom.AtomInput.pg">pg() (sisl_toolbox.siesta.atom.AtomInput method)</a>
@@ -6161,8 +6223,12 @@
         <li><a href="api/io/generated/sisl.io.siesta.xvSileSiesta.html#sisl.io.siesta.xvSileSiesta.read_velocity">(sisl.io.siesta.xvSileSiesta method)</a>
 </li>
       </ul></li>
-      <li><a href="api/generated/sisl.constant.PhysicalConstant.html#sisl.constant.PhysicalConstant.real">real (sisl.constant.PhysicalConstant attribute)</a>
+      <li><a href="api/generated/sisl.BoundaryCondition.html#sisl.BoundaryCondition.real">real (sisl.BoundaryCondition attribute)</a>
+
+      <ul>
+        <li><a href="api/generated/sisl.constant.PhysicalConstant.html#sisl.constant.PhysicalConstant.real">(sisl.constant.PhysicalConstant attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/generated/sisl.physics.RealSpaceSE.html#sisl.physics.RealSpaceSE.real_space_coupling">real_space_coupling() (sisl.physics.RealSpaceSE method)</a>
 
       <ul>
@@ -6634,7 +6700,11 @@
       <li><a href="api/generated/sisl.Grid.html#sisl.Grid.set_boundary">set_boundary() (sisl.Grid method)</a>
 </li>
       <li><a href="api/generated/sisl.Grid.html#sisl.Grid.set_boundary_condition">set_boundary_condition() (sisl.Grid method)</a>
+
+      <ul>
+        <li><a href="api/generated/sisl.Lattice.html#sisl.Lattice.set_boundary_condition">(sisl.Lattice method)</a>
 </li>
+      </ul></li>
       <li><a href="api/io/generated/sisl.io.gulp.gotSileGULP.html#sisl.io.gulp.gotSileGULP.set_dyn_key">set_dyn_key() (sisl.io.gulp.gotSileGULP method)</a>
 </li>
       <li><a href="api/io/generated/sisl.io.gulp.gotSileGULP.html#sisl.io.gulp.gotSileGULP.set_dynamical_matrix_key">set_dynamical_matrix_key() (sisl.io.gulp.gotSileGULP method)</a>
@@ -7005,6 +7075,8 @@
         <li><a href="api/io/wannier90.html#module-sisl.io.wannier90">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     sisl.mixing
 
@@ -7012,8 +7084,6 @@
         <li><a href="api/mixing.html#module-sisl.mixing">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     sisl.nodes
 
@@ -7641,6 +7711,8 @@
       </ul></li>
       <li><a href="api/viz/generated/sisl.viz.Figure.html#sisl.viz.Figure.to">to() (sisl.viz.Figure method)</a>
 </li>
+      <li><a href="api/generated/sisl.BoundaryCondition.html#sisl.BoundaryCondition.to_bytes">to_bytes() (sisl.BoundaryCondition method)</a>
+</li>
       <li><a href="api/generated/sisl.SphericalOrbital.html#sisl.SphericalOrbital.toAtomicOrbital">toAtomicOrbital() (sisl.SphericalOrbital method)</a>
 </li>
       <li><a href="api/generated/sisl.physics.BandStructure.html#sisl.physics.BandStructure.tocartesian">tocartesian() (sisl.physics.BandStructure method)</a>
@@ -7960,6 +8032,8 @@
       <li><a href="api/generated/sisl.unit.unit_group.html#sisl.unit.unit_group">unit_group() (in module sisl.unit)</a>
 </li>
       <li><a href="api/generated/sisl.unit.units.html#sisl.unit.units">units (in module sisl.unit)</a>
+</li>
+      <li><a href="api/generated/sisl.BoundaryCondition.html#sisl.BoundaryCondition.UNKNOWN">UNKNOWN (sisl.BoundaryCondition attribute)</a>
 </li>
       <li><a href="api/generated/sisl.physics.Spin.html#sisl.physics.Spin.UNPOLARIZED">UNPOLARIZED (sisl.physics.Spin attribute)</a>
 </li>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Basic classes &mdash; sisl 0.1-9c9c61f</title>
+  <title>Basic classes &mdash; sisl 0.1-fb8a39f</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/tabs.css" type="text/css" />
@@ -18,7 +18,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=ccf676f9"></script>
+        <script src="../_static/documentation_options.js?v=909d8e72"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../_static/tabs.js?v=3ee01567"></script>
@@ -44,7 +44,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-9c9c61f
+                0.1-fb8a39f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -96,6 +96,7 @@
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.Atoms.html">sisl.Atoms</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.Geometry.html">sisl.Geometry</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.Lattice.html">sisl.Lattice</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.BoundaryCondition.html">sisl.BoundaryCondition</a></li>
 <li class="toctree-l4"><a class="reference internal" href="generated/sisl.Grid.html">sisl.Grid</a></li>
 </ul>
 </li>
@@ -188,10 +189,13 @@ unit cells and grid functions.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code></a>(xyz[, atoms, lattice, names])</p></td>
 <td><p>Holds atomic information, coordinates, species, lattice vectors</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.Lattice.html#sisl.Lattice" title="sisl.Lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice</span></code></a>(cell[, nsc, origin])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.Lattice.html#sisl.Lattice" title="sisl.Lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Lattice</span></code></a>(cell[, nsc, origin, boundary_condition])</p></td>
 <td><p>A cell class to retain lattice vectors and a supercell structure</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.Grid.html#sisl.Grid" title="sisl.Grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Grid</span></code></a>(shape[, bc, lattice, dtype, geometry])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.BoundaryCondition.html#sisl.BoundaryCondition" title="sisl.BoundaryCondition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BoundaryCondition</span></code></a>(value[, names, module, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.Grid.html#sisl.Grid" title="sisl.Grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Grid</span></code></a>(shape[, bc, lattice, dtype, geometry])</p></td>
 <td><p>Real-space grid information with associated geometry.</p></td>
 </tr>
 </tbody>

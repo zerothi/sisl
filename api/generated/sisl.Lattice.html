@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.Lattice &mdash; sisl 0.1-9c9c61f</title>
+  <title>sisl.Lattice &mdash; sisl 0.1-fb8a39f</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
@@ -18,7 +18,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=ccf676f9"></script>
+        <script src="../../_static/documentation_options.js?v=909d8e72"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/tabs.js?v=3ee01567"></script>
@@ -28,7 +28,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="sisl.Grid" href="sisl.Grid.html" />
+    <link rel="next" title="sisl.BoundaryCondition" href="sisl.BoundaryCondition.html" />
     <link rel="prev" title="sisl.Geometry" href="sisl.Geometry.html" /> 
 </head>
 
@@ -44,7 +44,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-9c9c61f
+                0.1-fb8a39f
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -96,6 +96,7 @@
 <li class="toctree-l4"><a class="reference internal" href="sisl.Atoms.html">sisl.Atoms</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.Geometry.html">sisl.Geometry</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">sisl.Lattice</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.BoundaryCondition.html">sisl.BoundaryCondition</a></li>
 <li class="toctree-l4"><a class="reference internal" href="sisl.Grid.html">sisl.Grid</a></li>
 </ul>
 </li>
@@ -145,7 +146,7 @@
 <h1>sisl.Lattice<a class="headerlink" href="#sisl-lattice" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="sisl.Lattice">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.</span></span><span class="sig-name descname"><span class="pre">Lattice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Lattice" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.</span></span><span class="sig-name descname"><span class="pre">Lattice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary_condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">BoundaryCondition.PERIODIC</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Lattice" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_Dispatchs</span></code></p>
 <p>A cell class to retain lattice vectors and a supercell structure</p>
 <p>The supercell structure is comprising the <em>primary</em> unit-cell and neighbouring
@@ -161,6 +162,8 @@ primary unit-cell and one <em>after</em>.</p>
 is returned from <cite>tocell</cite>.</p></li>
 <li><p><strong>nsc</strong> (<em>array_like</em><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a>) – number of supercells along each lattice vector</p></li>
 <li><p><strong>origin</strong> (<em>(</em><em>3</em><em>,</em><em>) of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – the origin of the supercell.</p></li>
+<li><p><strong>boundary_condition</strong> (<em>int/str</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em> of </em><em>int/str</em><em> (</em><em>3</em><em>, </em><em>2</em><em>) or </em><em>(</em><em>3</em><em>, </em><em>)</em><em>, </em><em>optional</em>) – the boundary conditions for each of the cell’s planes. Defaults to periodic boundary condition.
+See <cite>BoundaryCondition</cite> for valid enumerations.</p></li>
 </ul>
 </dd>
 </dl>
@@ -236,41 +239,47 @@ is returned from <cite>tocell</cite>.</p></li>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Lattice.scale" title="sisl.Lattice.scale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale</span></code></a>(scale[, what])</p></td>
 <td><p>Scale lattice vectors</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Lattice.set_nsc" title="sisl.Lattice.set_nsc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_nsc</span></code></a>([nsc, a, b, c])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Lattice.set_boundary_condition" title="sisl.Lattice.set_boundary_condition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_boundary_condition</span></code></a>([boundary, a, b, c])</p></td>
+<td><p>Set the boundary conditions on the grid</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Lattice.set_nsc" title="sisl.Lattice.set_nsc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_nsc</span></code></a>([nsc, a, b, c])</p></td>
 <td><p>Sets the number of supercells in the 3 different cell directions</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Lattice.swapaxes" title="sisl.Lattice.swapaxes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">swapaxes</span></code></a>(axes_a, axes_b[, what])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Lattice.swapaxes" title="sisl.Lattice.swapaxes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">swapaxes</span></code></a>(axes_a, axes_b[, what])</p></td>
 <td><p>Swaps axes <cite>axes_a</cite> and <cite>axes_b</cite></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Lattice.tile" title="sisl.Lattice.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a>(reps, axis)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Lattice.tile" title="sisl.Lattice.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a>(reps, axis)</p></td>
 <td><p>Extend the unit-cell <cite>reps</cite> times along the <cite>axis</cite> lattice vector</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Lattice.toCuboid" title="sisl.Lattice.toCuboid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toCuboid</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Lattice.toCuboid" title="sisl.Lattice.toCuboid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toCuboid</span></code></a>(*args, **kwargs)</p></td>
 <td><p>A cuboid with vectors as this unit-cell and center with respect to its origin</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Lattice.tocell" title="sisl.Lattice.tocell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tocell</span></code></a>(*args)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Lattice.tocell" title="sisl.Lattice.tocell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tocell</span></code></a>(*args)</p></td>
 <td><p>Returns a 3x3 unit-cell dependent on the input</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Lattice.translate" title="sisl.Lattice.translate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate</span></code></a>(v)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Lattice.translate" title="sisl.Lattice.translate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate</span></code></a>(v)</p></td>
 <td><p>Appends additional space to the object</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Lattice.unrepeat" title="sisl.Lattice.unrepeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unrepeat</span></code></a>(reps, axis)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Lattice.unrepeat" title="sisl.Lattice.unrepeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unrepeat</span></code></a>(reps, axis)</p></td>
 <td><p>Reverses a <cite>Lattice.tile</cite> and returns the segmented version</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Lattice.untile" title="sisl.Lattice.untile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">untile</span></code></a>(reps, axis)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Lattice.untile" title="sisl.Lattice.untile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">untile</span></code></a>(reps, axis)</p></td>
 <td><p>Reverses a <cite>Lattice.tile</cite> and returns the segmented version</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Lattice.vertices" title="sisl.Lattice.vertices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vertices</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Lattice.vertices" title="sisl.Lattice.vertices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vertices</span></code></a>()</p></td>
 <td><p>Vertices of the cell</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Lattice.cell" title="sisl.Lattice.cell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cell</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Lattice.cell" title="sisl.Lattice.cell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cell</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Lattice.nsc" title="sisl.Lattice.nsc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nsc</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Lattice.nsc" title="sisl.Lattice.nsc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nsc</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Lattice.n_s" title="sisl.Lattice.n_s"><code class="xref py py-obj docutils literal notranslate"><span class="pre">n_s</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Lattice.n_s" title="sisl.Lattice.n_s"><code class="xref py py-obj docutils literal notranslate"><span class="pre">n_s</span></code></a></p></td>
 <td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Lattice.boundary_condition" title="sisl.Lattice.boundary_condition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">boundary_condition</span></code></a></p></td>
+<td><p>Boundary conditions for each lattice vector (lower/upper) sides <code class="docutils literal notranslate"><span class="pre">(3,</span> <span class="pre">2)</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Lattice.icell" title="sisl.Lattice.icell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">icell</span></code></a></p></td>
 <td><p>Returns the reciprocal (inverse) cell for the <cite>Lattice</cite>.</p></td>
@@ -287,23 +296,32 @@ is returned from <cite>tocell</cite>.</p></li>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Lattice.origin" title="sisl.Lattice.origin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">origin</span></code></a></p></td>
 <td><p>Origin for the cell</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Lattice.rcell" title="sisl.Lattice.rcell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rcell</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Lattice.pbc" title="sisl.Lattice.pbc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pbc</span></code></a></p></td>
+<td><p>Boolean array to specify whether the boundary conditions are periodic`</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Lattice.rcell" title="sisl.Lattice.rcell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rcell</span></code></a></p></td>
 <td><p>Returns the reciprocal cell for the <cite>Lattice</cite> with <code class="docutils literal notranslate"><span class="pre">2*np.pi</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Lattice.sc_off" title="sisl.Lattice.sc_off"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sc_off</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Lattice.sc_off" title="sisl.Lattice.sc_off"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sc_off</span></code></a></p></td>
 <td><p>Integer supercell offsets</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Lattice.to" title="sisl.Lattice.to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Lattice.to" title="sisl.Lattice.to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code></a></p></td>
 <td><p>A dispatcher for classes, using <cite>__get__</cite> it converts into <cite>ObjectDispatcher</cite> upon invocation from an object, or a <cite>TypeDispatcher</cite> when invoked from a class</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Lattice.volume" title="sisl.Lattice.volume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">volume</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Lattice.volume" title="sisl.Lattice.volume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">volume</span></code></a></p></td>
 <td><p>Volume of cell</p></td>
 </tr>
 </tbody>
 </table>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.Lattice.BC">
+<span class="sig-name descname"><span class="pre">BC</span></span><a class="headerlink" href="#sisl.Lattice.BC" title="Link to this definition"></a></dt>
+<dd><p>alias of <a class="reference internal" href="sisl.BoundaryCondition.html#sisl.BoundaryCondition" title="sisl.lattice.BoundaryCondition"><code class="xref py py-class docutils literal notranslate"><span class="pre">BoundaryCondition</span></code></a></p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Lattice.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/lattice.html#Lattice.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Lattice.__init__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary_condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">BoundaryCondition.PERIODIC</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/lattice.html#Lattice.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Lattice.__init__" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -358,6 +376,12 @@ when projected onto the normal vector of the other two axis.</p></li>
 <dt class="sig sig-object py" id="sisl.Lattice.area">
 <span class="sig-name descname"><span class="pre">area</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/lattice.html#Lattice.area"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Lattice.area" title="Link to this definition"></a></dt>
 <dd><p>Calculate the area spanned by the two axis <cite>ax0</cite> and <cite>ax1</cite></p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.Lattice.boundary_condition">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">boundary_condition</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Lattice.boundary_condition" title="Link to this definition"></a></dt>
+<dd><p>Boundary conditions for each lattice vector (lower/upper) sides <code class="docutils literal notranslate"><span class="pre">(3,</span> <span class="pre">2)</span></code></p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -560,6 +584,12 @@ has a Cartesian <span class="math notranslate nohighlight">\(x\)</span> componen
 </dl>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.Lattice.pbc">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pbc</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a></em><a class="headerlink" href="#sisl.Lattice.pbc" title="Link to this definition"></a></dt>
+<dd><p>Boolean array to specify whether the boundary conditions are periodic`</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Lattice.plane">
 <span class="sig-name descname"><span class="pre">plane</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/lattice.html#Lattice.plane"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Lattice.plane" title="Link to this definition"></a></dt>
@@ -709,6 +739,25 @@ along that axis is returned.</p>
 is to be applied on the corresponding lattice vector (“abc”) or on the
 corresponding cartesian coordinate (“xyz”).</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Lattice.set_boundary_condition">
+<span class="sig-name descname"><span class="pre">set_boundary_condition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boundary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/lattice.html#Lattice.set_boundary_condition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Lattice.set_boundary_condition" title="Link to this definition"></a></dt>
+<dd><p>Set the boundary conditions on the grid</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>boundary</strong> (<em>(</em><em>3</em><em>, </em><em>2</em><em>) or </em><em>(</em><em>3</em><em>, </em><em>) or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – boundary condition for all boundaries (or the same for all)</p></li>
+<li><p><strong>a</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – boundary condition for the first unit-cell vector direction</p></li>
+<li><p><strong>b</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – boundary condition for the second unit-cell vector direction</p></li>
+<li><p><strong>c</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – boundary condition for the third unit-cell vector direction</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – if specifying periodic one one boundary, so must the opposite side.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -934,7 +983,7 @@ correspond to each cell axis (off, on), and the last one contains the xyz coordi
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="sisl.Geometry.html" class="btn btn-neutral float-left" title="sisl.Geometry" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="sisl.Grid.html" class="btn btn-neutral float-right" title="sisl.Grid" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="sisl.BoundaryCondition.html" class="btn btn-neutral float-right" title="sisl.BoundaryCondition" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
