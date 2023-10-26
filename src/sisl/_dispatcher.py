@@ -8,6 +8,7 @@ This method allows classes to dispatch methods through other classes.
 Here is a small snippet showing how to utilize this module.
 
 """
+from functools import update_wrapper
 import logging
 from abc import ABCMeta, abstractmethod
 from collections import ChainMap, namedtuple
@@ -223,11 +224,11 @@ class ErrorDispatcher(AbstractDispatcher):
 
 
 class MethodDispatcher(AbstractDispatcher):
-    __slots__ = ("_method", "_obj")
+    __slots__ = ("_obj",)
 
     def __init__(self, method, dispatchs=None, default=None, obj=None, **attrs):
         super().__init__(dispatchs, default, **attrs)
-        self._method = method
+        update_wrapper(self, method)
 
         # In python3 a method *always* have the __self__ key
         # In case the method is bound on a class.
@@ -236,34 +237,30 @@ class MethodDispatcher(AbstractDispatcher):
         else:
             self._obj = obj
 
-        # This will probably fail for PYTHONOPTIMIZE=2
-        self.__call__.__func__.__doc__ = method.__doc__
-        # Storing the name is required for help on functions
-        self.__name__ = method.__name__
         _log.info(f"__init__ {self.__class__.__name__}", extra={"obj": self})
 
     def copy(self):
         """ Create a copy of this object (making a new child for the dispatch lookup) """
         _log.debug(f"copy {self.__class__.__name__}", extra={"obj": self})
-        return self.__class__(self._method, self._dispatchs.new_child(), self._default,
+        return self.__class__(self.__wrapped__, self._dispatchs.new_child(), self._default,
                               self._obj, **self._attrs)
 
     def renew(self, **attrs):
         """ Create a new class with updated attributes """
         _log.debug(f"renew {self.__class__.__name__}", extra={"obj": self})
-        return self.__class__(self._method, self._dispatchs, self._default,
+        return self.__class__(self.__wrapped__, self._dispatchs, self._default,
                               self._obj, **{**self._attrs, **attrs})
 
     def __call__(self, *args, **kwargs):
         _log.debug(f"call {self.__class__.__name__}{args}", extra={"obj": self})
         if self._default is None:
-            return self._method(*args, **kwargs)
-        return self._dispatchs[self._default](self._obj, **self._attrs).dispatch(self._method)(*args, **kwargs)
+            return self.__wrapped__(*args, **kwargs)
+        return self._dispatchs[self._default](self._obj, **self._attrs).dispatch(self.__wrapped__)(*args, **kwargs)
 
     def __getitem__(self, key):
         r""" Get method using dispatch according to `key` """
         _log.debug(f"__getitem__ {self.__class__.__name__},key={key}", extra={"obj": self})
-        return self._dispatchs[key](self._obj, **self._attrs).dispatch(self._method)
+        return self._dispatchs[key](self._obj, **self._attrs).dispatch(self.__wrapped__)
 
     __getattr__ = __getitem__
 

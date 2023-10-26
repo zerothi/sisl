@@ -29,7 +29,8 @@ class SileSlicer:
         # this makes it work like a function bound to an instance (func.__self__
         # works for instances)
         self.__self__ = obj
-        self.__func__ = func
+        # this is already sliced, sub-slicing shouldn't work (at least for now)
+        update_wrapper(self, func)
         self.key = key
         if skip_func is None:
             self.skip_func = func
@@ -39,14 +40,12 @@ class SileSlicer:
             def postprocess(ret):
                 return ret
         self.postprocess = postprocess
-        # this is already sliced, sub-slicing shouldn't work (at least for now)
-        update_wrapper(self, func)
 
     def __call__(self, *args, **kwargs):
         """ Defer call to the function """
         # Now handle the arguments
         obj = self.__self__
-        func = self.__func__
+        func = self.__wrapped__
         key = self.key
         skip_func = self.skip_func
 
@@ -134,23 +133,25 @@ class SileBound:
                  default_slice: Optional[Any]=None,
                  **kwargs):
         self.__self__ = obj
-        self.__func__ = func
+        # first update to the wrapped function
+        update_wrapper(self, func)
         self.slicer = slicer
         self.default_slice = default_slice
         self.kwargs = kwargs
         self._update_doc()
 
-    def _update_doc(self):
-        # first update to the wrapped function
-        update_wrapper(self, self.__func__)
+    def __str__(self):
+        # trying to bypass the documentationt
+        return self.__doc__
 
+    def _update_doc(self):
         # Override name to display slice handling in help
         default_slice = self.default_slice
         if self.default_slice is None:
             default_slice = 0
 
-        self.__name__ = f"{self.__name__}[...|{default_slice!r}]"
-        name = self.__func__.__name__
+        name = self.__wrapped__.__name__
+        self.__name__ = f"{name}[...|{default_slice!r}]"
         try:
             doc = self.__doc__
         except AttributeError:
@@ -201,14 +202,14 @@ class SileBound:
 
     def __call__(self, *args, **kwargs):
         if self.default_slice is None:
-            return self.__func__(self.__self__, *args, **kwargs)
+            return self.__wrapped__(self.__self__, *args, **kwargs)
         return self[self.default_slice](*args, **kwargs)
 
     def __getitem__(self, key):
         """Extract sub items of multiple function calls as an indexed list """
         return self.slicer(
                 obj=self.__self__,
-                func=self.__func__,
+                func=self.__wrapped__,
                 key=key,
                 **self.kwargs
         )
@@ -235,13 +236,12 @@ class SileBinder:
 
     # this is the decorator call
     def __call__(self, func):
-        self.__func__ = func
         # update doc str etc.
         update_wrapper(self, func)
         return self
 
     def __get__(self, obj, objtype=None):
-        func = self.__func__
+        func = self.__wrapped__
 
         if obj is None:
             # ensure that we can get documentation
