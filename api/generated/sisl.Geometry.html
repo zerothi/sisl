@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.Geometry &mdash; sisl 0.1-fb8a39f</title>
+  <title>sisl.Geometry &mdash; sisl 0.1-9eb4e2e</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
@@ -18,7 +18,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=909d8e72"></script>
+        <script src="../../_static/documentation_options.js?v=dd5165fe"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/tabs.js?v=3ee01567"></script>
@@ -44,7 +44,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-fb8a39f
+                0.1-9eb4e2e
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -2171,9 +2171,15 @@ points along the Cartesian vector <code class="docutils literal notranslate"><sp
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em> or </em><em>array-like</em><em> of </em><em>floats with shape</em><em> (</em><em>3</em><em>,</em><em>)</em>) – the scale factor for the new geometry (lattice vectors, coordinates
 and the atomic radii are scaled).</p></li>
-<li><p><strong>what</strong> (<em>{&quot;abc&quot;</em><em>, </em><em>&quot;xyz&quot;}</em>) – If three different scale factors are provided, whether each scaling factor
-is to be applied on the corresponding lattice vector (“abc”) or on the
-corresponding cartesian coordinate (“xyz”).</p></li>
+<li><p><strong>what</strong> (<em>{&quot;abc&quot;</em><em>, </em><em>&quot;xyz&quot;}</em>) – <dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">abc</span></code></dt><dd><p>Is applied on the corresponding lattice vector and the fractional coordinates.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">xyz</span></code></dt><dd><p>Is applied only to the atomic coordinates.</p>
+</dd>
+</dl>
+<p>If three different scale factors are provided, each will correspond to the
+Cartesian direction/lattice vector.</p>
+</p></li>
 <li><p><strong>scale_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – whether atoms (basis) should be scaled as well.</p></li>
 </ul>
 </dd>

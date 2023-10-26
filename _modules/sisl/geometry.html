@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.geometry &mdash; sisl 0.1-fb8a39f</title>
+  <title>sisl.geometry &mdash; sisl 0.1-9eb4e2e</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=909d8e72"></script>
+        <script src="../../_static/documentation_options.js?v=dd5165fe"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-fb8a39f
+                0.1-9eb4e2e
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -3407,9 +3407,12 @@
 <span class="sd">           the scale factor for the new geometry (lattice vectors, coordinates</span>
 <span class="sd">           and the atomic radii are scaled).</span>
 <span class="sd">        what: {&quot;abc&quot;, &quot;xyz&quot;}</span>
-<span class="sd">           If three different scale factors are provided, whether each scaling factor</span>
-<span class="sd">           is to be applied on the corresponding lattice vector (&quot;abc&quot;) or on the</span>
-<span class="sd">           corresponding cartesian coordinate (&quot;xyz&quot;).</span>
+<span class="sd">           ``abc``</span>
+<span class="sd">             Is applied on the corresponding lattice vector and the fractional coordinates.</span>
+<span class="sd">           ``xyz``</span>
+<span class="sd">             Is applied only to the atomic coordinates.</span>
+<span class="sd">           If three different scale factors are provided, each will correspond to the</span>
+<span class="sd">           Cartesian direction/lattice vector.</span>
 <span class="sd">        scale_atoms : bool, optional</span>
 <span class="sd">           whether atoms (basis) should be scaled as well.</span>
 <span class="sd">        &quot;&quot;&quot;</span>

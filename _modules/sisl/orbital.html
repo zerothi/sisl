@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.orbital &mdash; sisl 0.1-fb8a39f</title>
+  <title>sisl.orbital &mdash; sisl 0.1-9eb4e2e</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=909d8e72"></script>
+        <script src="../../_static/documentation_options.js?v=dd5165fe"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-fb8a39f
+                0.1-9eb4e2e
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -221,11 +221,13 @@
 <span class="sd">        In case of a dict the values will be passed to the `radial_minimize_range`</span>
 <span class="sd">        method.</span>
 <span class="sd">        Currently allowed arguments are:</span>
-<span class="sd">          - ``contains``: R will be selected such that the integrated function ``func``</span>
+
+<span class="sd">        - ``contains``: R will be selected such that the integrated function ``func``</span>
 <span class="sd">            will contain this percentage of the full integral (determined at ``maxR``</span>
-<span class="sd">          - ``maxR``: maximum R to search in, default to 100 Ang</span>
-<span class="sd">          - ``func``: the function that will be integrated and checked for ``contains``</span>
-<span class="sd">          See examples for details.</span>
+<span class="sd">        - ``maxR``: maximum R to search in, default to 100 Ang</span>
+<span class="sd">        - ``func``: the function that will be integrated and checked for ``contains``</span>
+
+<span class="sd">        See examples for details.</span>
 <span class="sd">        If None the default will be ``{&#39;contains&#39;: 0.9999}``.</span>
 <span class="sd">        If a negative number is passed, it will be converted to ``{&#39;contains&#39;:-R}``</span>
 <span class="sd">        A dictionary will only make sense if the class has the ``_radial`` function</span>
