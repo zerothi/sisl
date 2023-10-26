@@ -2,7 +2,6 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
-from functools import partial
 
 from sisl._internal import set_module
 from sisl.messages import deprecation
@@ -16,7 +15,7 @@ from .sile import SileORCA
 __all__ = ["outputSileORCA", "stdoutSileORCA"]
 
 
-_A = partial(SileORCA._Attr, updatable=False)
+_A = SileORCA.InfoAttr
 
 
 @set_module("sisl.io.orca")
@@ -269,7 +268,6 @@ class stdoutSileORCA(SileORCA):
         if self.info._vdw_:
             self.step_to("DFT DISPERSION CORRECTION")
             v = self.step_to("Dispersion correction", allow_reread=False)[1].split()
-            print("vdW", v, self.info._vdw_)
             E["vdw"] = float(v[-1]) * Ha2eV
 
         return E

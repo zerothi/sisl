@@ -2,15 +2,15 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import gzip
+import re
 from functools import reduce, wraps
 from io import TextIOBase
 from itertools import product
 from operator import and_, contains
 from os.path import basename, splitext
 from pathlib import Path
-from typing import Any, Callable, Optional, Union
 from textwrap import dedent, indent
-import re
+from typing import Any, Callable, Optional, Union
 
 from sisl._environ import get_environ_variable
 from sisl._internal import set_module
@@ -766,7 +766,7 @@ class Info:
             # add the properties
             for prop in instance._info_attributes_:
                 if isinstance(prop, dict):
-                    prop = _Attr(**prop)
+                    prop = InfoAttr(**prop)
                 else:
                     prop = prop.copy()
                 self.add_property(prop)
@@ -813,9 +813,7 @@ class Info:
 
             return prop.value
 
-
-
-    class _Attr:
+    class InfoAttr:
         """ Holder for parsing lines and extracting information from text files
 
         This consists of:
@@ -851,7 +849,7 @@ class Info:
                      regex: Union[str, re.Pattern],
                      parser,
                      doc: str="",
-                     updatable: bool=True,
+                     updatable: bool=False,
                      default: Optional[Any]=None,
                      found: bool=False,
             ):
