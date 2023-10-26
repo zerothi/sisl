@@ -478,6 +478,9 @@ def get_sile_rules(attrs=None, cls=None):
 class BaseSile:
     """ Base class for all sisl files """
 
+    def __init__(self, *args, **kwargs):
+        """ Just to pass away the args and kwargs """
+
     @property
     def file(self):
         """ File of the current `Sile` """
@@ -751,6 +754,7 @@ class Sile(BaseSile):
         cls._buffer_cls = buffer_cls
 
     def __init__(self, filename, mode='r', *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self._file = Path(filename)
         self._mode = mode
 
