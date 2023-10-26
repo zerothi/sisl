@@ -192,7 +192,7 @@ class Lattice(_Dispatchs,
                                boundary: Optional[SeqBoundaryConditionType] =None,
                                a: Optional[SeqBoundaryConditionType] =None,
                                b: Optional[SeqBoundaryConditionType] =None,
-                               c: Opitonal[SeqBoundaryConditionType] =None):
+                               c: Optional[SeqBoundaryConditionType] =None):
         """ Set the boundary conditions on the grid
 
         Parameters

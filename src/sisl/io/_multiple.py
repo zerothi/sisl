@@ -26,9 +26,9 @@ class SileSlicer:
                  *,
                  skip_func: Optional[Func]=None,
                  postprocess: Optional[Callable[..., Any]]=None):
-        # this makes it work like a function bound to an instance (func.__self__
+        # this makes it work like a function bound to an instance (func._obj
         # works for instances)
-        self.__self__ = obj
+        self._obj = obj
         # this is already sliced, sub-slicing shouldn't work (at least for now)
         update_wrapper(self, func)
         self.key = key
@@ -44,7 +44,7 @@ class SileSlicer:
     def __call__(self, *args, **kwargs):
         """ Defer call to the function """
         # Now handle the arguments
-        obj = self.__self__
+        obj = self._obj
         func = self.__wrapped__
         key = self.key
         skip_func = self.skip_func
@@ -132,7 +132,7 @@ class SileBound:
                  slicer: Type[SileSlicer]=SileSlicer,
                  default_slice: Optional[Any]=None,
                  **kwargs):
-        self.__self__ = obj
+        self._obj = obj
         # first update to the wrapped function
         update_wrapper(self, func)
         self.slicer = slicer
@@ -153,7 +153,7 @@ class SileBound:
         name = self.__wrapped__.__name__
         self.__name__ = f"{name}[...|{default_slice!r}]"
         try:
-            doc = self.__doc__
+            doc = dedent(self.__doc__)
         except AttributeError:
             doc = ""
 
@@ -202,13 +202,13 @@ class SileBound:
 
     def __call__(self, *args, **kwargs):
         if self.default_slice is None:
-            return self.__wrapped__(self.__self__, *args, **kwargs)
+            return self.__wrapped__(self._obj, *args, **kwargs)
         return self[self.default_slice](*args, **kwargs)
 
     def __getitem__(self, key):
         """Extract sub items of multiple function calls as an indexed list """
         return self.slicer(
-                obj=self.__self__,
+                obj=self._obj,
                 func=self.__wrapped__,
                 key=key,
                 **self.kwargs

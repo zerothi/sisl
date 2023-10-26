@@ -114,11 +114,13 @@ class Orbital:
         In case of a dict the values will be passed to the `radial_minimize_range`
         method.
         Currently allowed arguments are:
-          - ``contains``: R will be selected such that the integrated function ``func``
+
+        - ``contains``: R will be selected such that the integrated function ``func``
             will contain this percentage of the full integral (determined at ``maxR``
-          - ``maxR``: maximum R to search in, default to 100 Ang
-          - ``func``: the function that will be integrated and checked for ``contains``
-          See examples for details.
+        - ``maxR``: maximum R to search in, default to 100 Ang
+        - ``func``: the function that will be integrated and checked for ``contains``
+
+        See examples for details.
         If None the default will be ``{'contains': 0.9999}``.
         If a negative number is passed, it will be converted to ``{'contains':-R}``
         A dictionary will only make sense if the class has the ``_radial`` function
