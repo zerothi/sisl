@@ -3154,9 +3154,12 @@ class Geometry(LatticeChild, _Dispatchs,
            the scale factor for the new geometry (lattice vectors, coordinates
            and the atomic radii are scaled).
         what: {"abc", "xyz"}
-           If three different scale factors are provided, whether each scaling factor
-           is to be applied on the corresponding lattice vector ("abc") or on the
-           corresponding cartesian coordinate ("xyz").
+           abc:
+              Is applied on the corresponding lattice vector and the fractional coordinates.
+           xyz:
+              Is applied only to the atomic coordinates.
+           If three different scale factors are provided, each will correspond to the
+           Cartesian direction/lattice vector.
         scale_atoms : bool, optional
            whether atoms (basis) should be scaled as well.
         """
