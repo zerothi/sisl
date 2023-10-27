@@ -78,9 +78,9 @@ napoleon_numpy_docstring = True
 napoleon_use_param = True
 
 
-# There currently is a bug with mathjax >= 3, so we resort to 2.7.7
-mathjax_path = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"
-#mathjax_path = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"
+# The default is MathJax 3.
+# In case we want to revert to 2.7.7, then use the below link:
+#mathjax_path = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
