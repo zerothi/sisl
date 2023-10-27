@@ -146,6 +146,8 @@ autodoc_default_options = {
 exclude_patterns = ['build', '**/setupegg.py', '**/setup.rst', '**/tests', '**.ipynb_checkpoints']
 exclude_patterns.append("**/GUI with Python Demo.ipynb")
 exclude_patterns.append("**/Building a plot class.ipynb")
+for _venv in pathlib.Path(".").glob("*venv*"):
+    exclude_patterns.append(str(_venv.name))
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
