@@ -1749,7 +1749,7 @@ class Geometry(LatticeChild, _Dispatchs,
             R = self.maxR() + 0.001
         if R < 0:
             R = 0.00001
-            warn(self.__class__.__name__ +
+            warn(f"{self.__class__.__name__}"
                  ".optimize_nsc could not determine the radius from the "
                  "internal atoms (defaulting to zero radius).")
 
