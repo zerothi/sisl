@@ -617,7 +617,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
 
     __iter__ = iter_nnz
 
-    def create_construct(self, R, param):
+    def create_construct(self, R, params):
         """ Create a simple function for passing to the `construct` function.
 
         This is simply to leviate the creation of simplistic
@@ -627,7 +627,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
 
         >>> def func(self, ia, atoms, atoms_xyz=None):
         ...     idx = self.geometry.close(ia, R=R, atoms=atoms, atoms_xyz=atoms_xyz)
-        ...     for ix, p in zip(idx, param):
+        ...     for ix, p in zip(idx, params):
         ...         self[ia, ix] = p
 
         Notes
@@ -640,24 +640,26 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         ----------
         R : array_like
            radii parameters for different shells.
-           Must have same length as `param` or one less.
+           Must have same length as `params` or one less.
            If one less it will be extended with ``R[0]/100``
-        param : array_like
+        params : array_like
            coupling constants corresponding to the `R`
-           ranges. ``param[0,:]`` are the elements
+           ranges. ``params[0, :]`` are the elements
            for the all atoms within ``R[0]`` of each atom.
 
         See Also
         --------
         construct : routine to create the sparse matrix from a generic function (as returned from `create_construct`)
         """
-        if len(R) != len(param):
+        if len(R) != len(params):
             raise ValueError(f"{self.__class__.__name__}.create_construct got different lengths of `R` and `param`")
 
         def func(self, ia, atoms, atoms_xyz=None):
             idx = self.geometry.close(ia, R=R, atoms=atoms, atoms_xyz=atoms_xyz)
-            for ix, p in zip(idx, param):
+            for ix, p in zip(idx, params):
                 self[ia, ix] = p
+        func.R = R
+        func.params = params
 
         return func
 
@@ -705,7 +707,6 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         tile : tiling *after* construct is much faster for very large systems
         repeat : repeating *after* construct is much faster for very large systems
         """
-
         if not callable(func):
             if not isinstance(func, (tuple, list)):
                 raise ValueError('Passed `func` which is not a function, nor tuple/list of `R, param`')
@@ -718,17 +719,29 @@ class _SparseGeometry(NDArrayOperatorsMixin):
             # Convert to a proper function
             func = self.create_construct(func[0], func[1])
 
-        iR = self.geometry.iR(na_iR)
+        try:
+            # if the function was created through `create_construct`, then
+            # we have access to the radii used.
+            R = func.R
+            try:
+                if len(R) > 0:
+                    R = R[-1]
+            except:
+                pass
+        except AttributeError:
+            R = None
+
+        iR = self.geometry.iR(na_iR, R=R)
 
         # Create eta-object
-        eta = progressbar(self.na, f"{self.__class__.__name__ }.construct", 'atom', eta)
+        eta = progressbar(self.na, f"{self.__class__.__name__ }.construct", "atom", eta)
 
         # Do the loop
-        for ias, idxs in self.geometry.iter_block(iR=iR, method=method):
+        for ias, idxs in self.geometry.iter_block(iR=iR, method=method, R=R):
 
             # Get all the indexed atoms...
             # This speeds up the searching for coordinates...
-            idxs_xyz = self.geometry[idxs, :]
+            idxs_xyz = self.geometry[idxs]
 
             # Loop the atoms inside
             for ia in ias:

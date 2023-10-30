@@ -892,7 +892,7 @@ class Geometry(LatticeChild, _Dispatchs,
 
         # default block iterator
         if R is None:
-            R = self.maxR() * 1.01
+            R = self.maxR() + 0.001
         if R < 0:
             raise ValueError(f"{self.__class__.__name__}.iR unable to determine a number of atoms within a sphere with negative radius, is maxR() defined?")
 
@@ -924,7 +924,7 @@ class Geometry(LatticeChild, _Dispatchs,
             raise SislError(f'{self.__class__.__name__}.iter_block_rand too small iR!')
 
         if R is None:
-            R = self.maxR() + 0.01
+            R = self.maxR() + 0.001
         # The boundaries (ensure complete overlap)
         R = np.array([iR - 0.5, iR + 0.501]) * R
 
@@ -997,7 +997,7 @@ class Geometry(LatticeChild, _Dispatchs,
         if iR < 2:
             raise SislError(f'{self.__class__.__name__}.iter_block_shape too small iR!')
 
-        R = self.maxR() + 0.01
+        R = self.maxR() + 0.001
         if shape is None:
             # we default to the Cube shapes
             dS = (Cube((iR - 0.5) * R),
@@ -1124,7 +1124,7 @@ class Geometry(LatticeChild, _Dispatchs,
         iR :
             the number of `R` ranges taken into account when doing the iterator
         R :
-            enables overwriting the local R quantity. Defaults to ``self.maxR() + 0.01``
+            enables overwriting the local R quantity. Defaults to ``self.maxR() + 0.001``
         atoms :
             enables only effectively looping a subset of the full geometry
         method : {'rand', 'sphere', 'cube'}
@@ -1150,7 +1150,7 @@ class Geometry(LatticeChild, _Dispatchs,
             yield from self.iter_block_rand(iR, R, atoms)
         elif method in ("sphere", "cube"):
             if R is None:
-                R = self.maxR() + 0.01
+                R = self.maxR() + 0.001
 
             # Create shapes
             if method == 'sphere':
@@ -1746,7 +1746,7 @@ class Geometry(LatticeChild, _Dispatchs,
             axis = _a.asarrayi(axis).ravel()
 
         if R is None:
-            R = self.maxR()
+            R = self.maxR() + 0.001
         if R < 0:
             R = 0.00001
             warn(self.__class__.__name__ +
@@ -2927,7 +2927,7 @@ class Geometry(LatticeChild, _Dispatchs,
         """
         new = self.copy()
         new.set_lattice(self.lattice.add_vacuum(vacuum, axis))
-        if vacuum > self.maxR():
+        if vacuum > self.maxR() + 0.001:
             # only overwrite along axis
             nsc = [None for _ in range(3)]
             nsc[axis] = 1
@@ -3528,13 +3528,19 @@ class Geometry(LatticeChild, _Dispatchs,
         rij
             distance of the indexed atoms to the center coordinate (only for true `ret_rij`)
         """
+        maxR = self.maxR() + 0.001
         if R is None:
-            R = np.array([self.maxR() + 0.01], np.float64)
+            R = np.array([maxR], np.float64)
         elif not isndarray(R):
             R = _a.asarrayd(R).ravel()
 
         # Maximum distance queried
         max_R = R[-1]
+        if atoms is not None and max_R > maxR:
+            warn(f"{self.__class__.__name__}.close_sc has been passed an 'atoms' argument "
+                 "together with an R value larger than the orbital ranges. "
+                 "If used together with 'sparse-matrix.construct' this can result in wrong couplings.",
+                 register=True)
 
         # Convert to actual array
         if atoms is not None:
@@ -3898,7 +3904,7 @@ class Geometry(LatticeChild, _Dispatchs,
             integer lattice offsets for the couplings (related to `rij` without atomic coordinates)
         """
         if R is None:
-            R = self.maxR() + 0.01
+            R = self.maxR() + 0.001
         R = _a.asarrayd(R).ravel()
         nR = R.size
 
@@ -4407,7 +4413,7 @@ class Geometry(LatticeChild, _Dispatchs,
         rij = SparseAtom(self, nnzpr=20, dtype=dtype)
 
         # Get R
-        R = (0.1, self.maxR() + 0.01)
+        R = (0.1, self.maxR() + 0.001)
         iR = self.iR(na_iR)
 
         # Do the loop
