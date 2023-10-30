@@ -195,9 +195,9 @@ class Geometry(LatticeChild, _Dispatchs,
         else:
             self._names = NamedIndex(names)
 
-        self.__init_lattice(lattice)
+        self._init_lattice(lattice)
 
-    def __init_lattice(self, lattice):
+    def _init_lattice(self, lattice):
         """ Initializes the supercell by *calculating* the size if not supplied
 
         If the supercell has not been passed we estimate the unit cell size
@@ -892,7 +892,7 @@ class Geometry(LatticeChild, _Dispatchs,
 
         # default block iterator
         if R is None:
-            R = self.maxR()
+            R = self.maxR() * 1.01
         if R < 0:
             raise ValueError(f"{self.__class__.__name__}.iR unable to determine a number of atoms within a sphere with negative radius, is maxR() defined?")
 
@@ -910,13 +910,12 @@ class Geometry(LatticeChild, _Dispatchs,
         # We implement yields as we can then do nested iterators
         # create a boolean array
         na = len(self)
-        not_passed = np.empty(na, dtype='b')
         if atoms is not None:
+            not_passed = np.zeros(na, dtype=bool)
             # Reverse the values
-            not_passed[:] = False
             not_passed[atoms] = True
         else:
-            not_passed[:] = True
+            not_passed = np.ones(na, dtype=bool)
 
         # Figure out how many we need to loop on
         not_passed_N = np.sum(not_passed)
@@ -925,11 +924,9 @@ class Geometry(LatticeChild, _Dispatchs,
             raise SislError(f'{self.__class__.__name__}.iter_block_rand too small iR!')
 
         if R is None:
-            R = self.maxR()
+            R = self.maxR() + 0.01
         # The boundaries (ensure complete overlap)
-        R = np.array([iR - 0.975, iR + .025]) * R
-
-        append = np.append
+        R = np.array([iR - 0.5, iR + 0.501]) * R
 
         # loop until all passed are true
         while not_passed_N > 0:
@@ -942,6 +939,7 @@ class Geometry(LatticeChild, _Dispatchs,
             # atoms at any single time.
             # Shuffling will cut down needed iterations.
             np.random.shuffle(all_true)
+            # take one element, after shufling, we can take the first
             idx = all_true[0]
             del all_true
 
@@ -950,15 +948,20 @@ class Geometry(LatticeChild, _Dispatchs,
 
             # get all elements within two radii
             all_idx = self.close(idx, R=R)
-            # Get unit-cell atoms
-            all_idx[0] = self.sc2uc(all_idx[0], unique=True)
-            # First extend the search-space (before reducing)
-            all_idx[1] = self.sc2uc(append(all_idx[1], all_idx[0]), unique=True)
+
+            # Get unit-cell atoms, we are drawing a circle, and this
+            # circle only encompasses those already in the unit-cell.
+            all_idx[1] = np.union1d(self.sc2uc(all_idx[0], unique=True),
+                                    self.sc2uc(all_idx[1], unique=True))
+            # If we translated stuff into the unit-cell, we could end up in situations
+            # where the supercell atom is in the circle, but not the UC-equivalent
+            # of that one.
+            all_idx[0] = all_idx[0][all_idx[0] < na]
 
             # Only select those who have not been runned yet
             all_idx[0] = all_idx[0][not_passed[all_idx[0]].nonzero()[0]]
             if len(all_idx[0]) == 0:
-                raise SislError('Internal error, please report to the developers')
+                continue
 
             # Tell the next loop to skip those passed
             not_passed[all_idx[0]] = False
@@ -994,18 +997,18 @@ class Geometry(LatticeChild, _Dispatchs,
         if iR < 2:
             raise SislError(f'{self.__class__.__name__}.iter_block_shape too small iR!')
 
-        R = self.maxR()
+        R = self.maxR() + 0.01
         if shape is None:
             # we default to the Cube shapes
-            dS = (Cube(R * (iR - 1.975)),
-                  Cube(R * (iR + 0.025)))
+            dS = (Cube((iR - 0.5) * R),
+                  Cube((iR + 1.501) * R))
         else:
             if isinstance(shape, Shape):
                 dS = (shape,)
             else:
                 dS = tuple(shape)
             if len(dS) == 1:
-                dS += (dS[0].expand(R + 0.01), )
+                dS += (dS[0].expand(R), )
         if len(dS) != 2:
             raise ValueError(f'{self.__class__.__name__}.iter_block_shape, number of Shapes *must* be one or two')
 
@@ -1054,7 +1057,6 @@ class Geometry(LatticeChild, _Dispatchs,
 
         # Shorthand function
         where = np.where
-        append = np.append
 
         # Now we loop in each direction
         for x, y, z in product(range(ixyz[0]), range(ixyz[1]), range(ixyz[2])):
@@ -1070,10 +1072,14 @@ class Geometry(LatticeChild, _Dispatchs,
             # get all elements within two radii
             all_idx = self.within(dS)
 
-            # Get unit-cell atoms
-            all_idx[0] = self.sc2uc(all_idx[0], unique=True)
-            # First extend the search-space (before reducing)
-            all_idx[1] = self.sc2uc(append(all_idx[1], all_idx[0]), unique=True)
+            # Get unit-cell atoms, we are drawing a circle, and this
+            # circle only encompasses those already in the unit-cell.
+            all_idx[1] = np.union1d(self.sc2uc(all_idx[0], unique=True),
+                                    self.sc2uc(all_idx[1], unique=True))
+            # If we translated stuff into the unit-cell, we could end up in situations
+            # where the supercell atom is in the circle, but not the UC-equivalent
+            # of that one.
+            all_idx[0] = all_idx[0][all_idx[0] < na]
 
             # Only select those who have not been runned yet
             all_idx[0] = all_idx[0][not_passed[all_idx[0]].nonzero()[0]]
@@ -1118,7 +1124,7 @@ class Geometry(LatticeChild, _Dispatchs,
         iR :
             the number of `R` ranges taken into account when doing the iterator
         R :
-            enables overwriting the local R quantity. Defaults to ``self.maxR()``
+            enables overwriting the local R quantity. Defaults to ``self.maxR() + 0.01``
         atoms :
             enables only effectively looping a subset of the full geometry
         method : {'rand', 'sphere', 'cube'}
@@ -1140,21 +1146,24 @@ class Geometry(LatticeChild, _Dispatchs,
             raise SislError(f'{self.__class__.__name__}.iter_block too small iR!')
 
         method = method.lower()
-        if method == 'rand' or method == 'random':
+        if method in ("rand", "random"):
             yield from self.iter_block_rand(iR, R, atoms)
-        else:
+        elif method in ("sphere", "cube"):
             if R is None:
-                R = self.maxR()
+                R = self.maxR() + 0.01
 
             # Create shapes
             if method == 'sphere':
-                dS = (Sphere(R * (iR - 0.975)),
-                      Sphere(R * (iR + 0.025)))
+                dS = (Sphere((iR - 0.5) * R),
+                      Sphere((iR + 0.501) * R))
             elif method == 'cube':
-                dS = (Cube(R * (2 * iR - 0.975)),
-                      Cube(R * (2 * iR + 0.025)))
+                dS = (Cube((2 * iR - 0.5) * R),
+                      # we need an extra R here since it needs to extend on both sides
+                      Cube((2 * iR + 1.501) * R))
 
             yield from self.iter_block_shape(dS)
+        else:
+            raise ValueError(f"{self.__class__.__name__}.iter_block got unexpected 'method' argument: {method}")
 
     def copy(self) -> Geometry:
         """Create a new object with the same content (a copy)."""
@@ -3243,7 +3252,7 @@ class Geometry(LatticeChild, _Dispatchs,
             # get offsets from atomic indices (note that this will be per atom)
             isc = self.a2isc(atoms)
             offset = self.lattice.offset(isc)
-            return self.xyz[self.sc2uc(atoms), :] + offset
+            return self.xyz[self.sc2uc(atoms)] + offset
 
         # Neither of atoms, or isc are `None`, we add the offset to all coordinates
         return self.axyz(atoms) + self.lattice.offset(isc)
@@ -3500,7 +3509,7 @@ class Geometry(LatticeChild, _Dispatchs,
             If a single float it will return ``x <= R``.
         atoms :
             List of atoms that will be considered. This can
-            be used to only take out a certain atoms.
+            be used to only take out a certain atom.
         atoms_xyz : array_like of float, optional
             The atomic coordinates of the equivalent `atoms` variable (`atoms` must also be passed)
         ret_xyz :
@@ -3520,7 +3529,7 @@ class Geometry(LatticeChild, _Dispatchs,
             distance of the indexed atoms to the center coordinate (only for true `ret_rij`)
         """
         if R is None:
-            R = np.array([self.maxR()], np.float64)
+            R = np.array([self.maxR() + 0.01], np.float64)
         elif not isndarray(R):
             R = _a.asarrayd(R).ravel()
 
@@ -3535,25 +3544,25 @@ class Geometry(LatticeChild, _Dispatchs,
             atoms_xyz = None
 
         if isinstance(xyz_ia, Integral):
-            off = self.xyz[xyz_ia, :]
+            off = self.xyz[xyz_ia]
         elif not isndarray(xyz_ia):
             off = _a.asarrayd(xyz_ia)
         elif xyz_ia.ndim == 0:
-            off = self.xyz[xyz_ia, :]
+            off = self.xyz[xyz_ia]
         else:
             off = xyz_ia
 
         # Calculate the complete offset
-        foff = self.lattice.offset(isc)[:] - off[:]
+        foff = self.lattice.offset(isc) - off
 
-        # Get atomic coordinate in principal cell
+        # Get distances between `xyz_ia` and `atoms`
         if atoms_xyz is None:
-            dxa = self.axyz(atoms) + foff.reshape(1, 3)
+            dxa = self.axyz(atoms) + foff
         else:
             # For extremely large systems re-using the
             # atoms_xyz is faster than indexing
             # a very large array
-            dxa = atoms_xyz + foff.reshape(1, 3)
+            dxa = atoms_xyz + foff
 
         # Immediately downscale by easy checking
         # This will reduce the computation of the vector-norm
@@ -3564,20 +3573,20 @@ class Geometry(LatticeChild, _Dispatchs,
         # method..
         if atoms is None:
             atoms, d = indices_in_sphere_with_dist(dxa, max_R)
-            dxa = dxa[atoms, :].reshape(-1, 3)
+            dxa = dxa[atoms].reshape(-1, 3)
         else:
             ix, d = indices_in_sphere_with_dist(dxa, max_R)
             atoms = atoms[ix]
-            dxa = dxa[ix, :].reshape(-1, 3)
+            dxa = dxa[ix].reshape(-1, 3)
             del ix
 
         if len(atoms) == 0:
             # Create default return
-            ret = [[_a.emptyi([0])] * len(R)]
+            ret = [[_a.emptyi([0]) for _ in R]]
             if ret_xyz:
-                ret.append([_a.emptyd([0, 3])] * len(R))
+                ret.append([_a.emptyd([0, 3]) for _ in R])
             if ret_rij:
-                ret.append([_a.emptyd([0])] * len(R))
+                ret.append([_a.emptyd([0]) for _ in R])
 
             # Quick return if there are
             # no entries...
@@ -3592,7 +3601,7 @@ class Geometry(LatticeChild, _Dispatchs,
             return ret[0]
 
         if ret_xyz:
-            xa = dxa[:, :] + off[None, :]
+            xa = dxa + off
         del dxa  # just because this array could be very big...
 
         # Check whether we only have one range to check.
@@ -3889,13 +3898,13 @@ class Geometry(LatticeChild, _Dispatchs,
             integer lattice offsets for the couplings (related to `rij` without atomic coordinates)
         """
         if R is None:
-            R = self.maxR()
+            R = self.maxR() + 0.01
         R = _a.asarrayd(R).ravel()
         nR = R.size
 
         # Convert index coordinate to point
         if isinstance(xyz_ia, Integral):
-            xyz_ia = self.xyz[xyz_ia, :]
+            xyz_ia = self.xyz[xyz_ia]
         elif not isndarray(xyz_ia):
             xyz_ia = _a.asarrayd(xyz_ia)
 
@@ -3924,7 +3933,7 @@ class Geometry(LatticeChild, _Dispatchs,
         for s in range(self.n_s):
 
             na = self.na * s
-            isc = self.lattice.sc_off[s, :]
+            isc = self.lattice.sc_off[s]
             sret = self.close_sc(xyz_ia, isc, R=R,
                                  atoms=atoms, atoms_xyz=atoms_xyz,
                                  ret_xyz=ret_xyz, ret_rij=ret_rij)
@@ -4398,7 +4407,7 @@ class Geometry(LatticeChild, _Dispatchs,
         rij = SparseAtom(self, nnzpr=20, dtype=dtype)
 
         # Get R
-        R = (0.1, self.maxR())
+        R = (0.1, self.maxR() + 0.01)
         iR = self.iR(na_iR)
 
         # Do the loop
@@ -4495,9 +4504,9 @@ class Geometry(LatticeChild, _Dispatchs,
                 off = self.lattice.offset(sc)
 
                 for ii, jj, kk in product([0, 1], [0, 1], [0, 1]):
-                    o = self.cell[0, :] * ii + \
-                        self.cell[1, :] * jj + \
-                        self.cell[2, :] * kk
+                    o = self.cell[0] * ii + \
+                        self.cell[1] * jj + \
+                        self.cell[2] * kk
                     maxR = max(maxR, fnorm(off + o))
 
             if R > maxR:

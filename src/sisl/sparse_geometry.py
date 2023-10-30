@@ -721,7 +721,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         iR = self.geometry.iR(na_iR)
 
         # Create eta-object
-        eta = progressbar(self.na, self.__class__.__name__ + '.construct', 'atom', eta)
+        eta = progressbar(self.na, f"{self.__class__.__name__ }.construct", 'atom', eta)
 
         # Do the loop
         for ias, idxs in self.geometry.iter_block(iR=iR, method=method):
