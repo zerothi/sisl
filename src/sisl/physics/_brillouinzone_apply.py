@@ -83,7 +83,7 @@ def _pool_procs(pool):
 @set_module("sisl.physics")
 class BrillouinZoneApply(AbstractDispatch):
     # this dispatch function will do stuff on the BrillouinZone object
-    __slots__ = ()
+    pass
 
 
 @set_module("sisl.physics")
@@ -447,7 +447,7 @@ del apply_dispatch
 @set_module("sisl.physics")
 class MonkhorstPackApply(BrillouinZoneApply):
     # this dispatch function will do stuff on the BrillouinZone object
-    __slots__ = ()
+    pass
 
 
 @set_module("sisl.physics")

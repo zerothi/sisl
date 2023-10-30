@@ -35,7 +35,6 @@ def _dict_to_str(name, d, parser=None):
 
 class AbstractDispatch(metaclass=ABCMeta):
     r""" Dispatcher class used for dispatching function calls """
-    __slots__ = ("_obj", "_attrs")
 
     def __init__(self, obj, **attrs):
         self._obj = obj
@@ -120,7 +119,6 @@ class AbstractDispatcher(metaclass=ABCMeta):
     This is an abstract class holding the dispatch classes (`AbstractDispatch`)
     and the attributes that are associated with the dispatchers.
     """
-    __slots__ = ("_dispatchs", "_default", "__name__", "_attrs")
 
     def __init__(self, dispatchs=None, default=None, **attrs):
         if dispatchs is None:
@@ -217,14 +215,12 @@ class ErrorDispatcher(AbstractDispatcher):
     to ensure that a certain dispatch attribute will never be called on an instance.
     It won't work on type_dispatcher due to not being able to call `register`.
     """
-    __slots__ = ()
 
     def __init__(self, obj, *args, **kwargs): # pylint: disable=W0231
         raise ValueError(f"Dispatcher on {obj} must not be called in this way, see documentation.")
 
 
 class MethodDispatcher(AbstractDispatcher):
-    __slots__ = ("_obj",)
 
     def __init__(self, method, dispatchs=None, default=None, obj=None, **attrs):
         super().__init__(dispatchs, default, **attrs)
@@ -302,7 +298,6 @@ class ObjectDispatcher(AbstractDispatcher):
     hello world
     hello world
     """
-    __slots__ = ("_obj", "_obj_getattr", "_cls_attr_name")
 
     def __init__(self, obj, dispatchs=None, default=None, cls_attr_name=None, obj_getattr=None, **attrs):
         super().__init__(dispatchs, default, **attrs)
@@ -414,7 +409,6 @@ class TypeDispatcher(ObjectDispatcher):
     >>> a("hello world")
     hello world
     """
-    __slots__ = ()
 
     def register(self, key, dispatch, default=False, overwrite=True, to_class=True):
         """ Register a dispatch class to this object and to the object class instance (if existing)
@@ -498,7 +492,6 @@ class ClassDispatcher(AbstractDispatcher):
 
     The above defers any attributes to the contained `A.sub` attribute.
     """
-    __slots__ = ("_obj_getattr", "_attr_name", "_get")
 
     def __init__(self, attr_name, dispatchs=None, default=None,
                  obj_getattr=None,
@@ -565,7 +558,6 @@ class ClassDispatcher(AbstractDispatcher):
 '''
 For use when doing cached dispatchers
 class CachedClassDispatcher(ClassDispatcher):
-    __slots__ = ("_obj_getattr", "_attr_name")
 
     def __init__(self, name, dispatchs=None, default=None, obj_getattr=None, **attrs):
         # obj_getattr is necessary for the ObjectDispatcher to create the correct
