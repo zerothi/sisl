@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.Grid &mdash; sisl 0.1-9eb4e2e</title>
+  <title>sisl.Grid &mdash; sisl 0.1-a6344c4</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
@@ -18,13 +18,13 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=dd5165fe"></script>
+        <script src="../../_static/documentation_options.js?v=9e037ce7"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/tabs.js?v=3ee01567"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-        <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -44,7 +44,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-9eb4e2e
+                0.1-a6344c4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -272,16 +272,16 @@ this <code class="docutils literal notranslate"><span class="pre">geometry</span
 <td><p>Create the internal grid of certain size.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.set_lattice" title="sisl.Grid.set_lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_lattice</span></code></a>(lattice)</p></td>
-<td><p>Overwrites the local supercell</p></td>
+<td><p>Overwrites the local lattice.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.set_nsc" title="sisl.Grid.set_nsc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_nsc</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Set the number of super-cells in the <cite>Lattice</cite> object</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.set_sc" title="sisl.Grid.set_sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_sc</span></code></a>(lattice)</p></td>
-<td><p>Overwrites the local supercell</p></td>
+<td><p>Overwrites the local lattice.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.set_supercell" title="sisl.Grid.set_supercell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_supercell</span></code></a>(lattice)</p></td>
-<td><p>Overwrites the local supercell</p></td>
+<td><p>Overwrites the local lattice.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.smooth" title="sisl.Grid.smooth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">smooth</span></code></a>([r, method, mode])</p></td>
 <td><p>Make a smoother grid by applying a filter.</p></td>
@@ -362,7 +362,7 @@ this <code class="docutils literal notranslate"><span class="pre">geometry</span
 <td><p>Returns the inherent <cite>Lattice</cite> objects <cite>rcell</cite></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.sc" title="sisl.Grid.sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sc</span></code></a></p></td>
-<td><p>Returns the lattice object (deprecated method)</p></td>
+<td><p>[deprecated] Return the lattice object associated with the <cite>Lattice</cite>.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.sc_off" title="sisl.Grid.sc_off"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sc_off</span></code></a></p></td>
 <td><p>Returns the inherent <cite>Lattice</cite> objects <cite>sc_off</cite></p></td>
@@ -908,7 +908,7 @@ for <code class="docutils literal notranslate"><span class="pre">above=False</sp
 <dl class="py property">
 <dt class="sig sig-object py" id="sisl.Grid.sc">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sc</span></span><a class="headerlink" href="#sisl.Grid.sc" title="Link to this definition"></a></dt>
-<dd><p>Returns the lattice object (deprecated method)</p>
+<dd><p>[deprecated] Return the lattice object associated with the <cite>Lattice</cite>.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -967,7 +967,7 @@ as it was.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Grid.set_lattice">
 <span class="sig-name descname"><span class="pre">set_lattice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lattice</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Grid.set_lattice" title="Link to this definition"></a></dt>
-<dd><p>Overwrites the local supercell</p>
+<dd><p>Overwrites the local lattice.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -987,13 +987,13 @@ as it was.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Grid.set_sc">
 <span class="sig-name descname"><span class="pre">set_sc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lattice</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Grid.set_sc" title="Link to this definition"></a></dt>
-<dd><p>Overwrites the local supercell</p>
+<dd><p>Overwrites the local lattice.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.Grid.set_supercell">
 <span class="sig-name descname"><span class="pre">set_supercell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lattice</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Grid.set_supercell" title="Link to this definition"></a></dt>
-<dd><p>Overwrites the local supercell</p>
+<dd><p>Overwrites the local lattice.</p>
 </dd></dl>
 
 <dl class="py property">

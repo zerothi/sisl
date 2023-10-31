@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.orca.stdout &mdash; sisl 0.1-9eb4e2e</title>
+  <title>sisl.io.orca.stdout &mdash; sisl 0.1-a6344c4</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=dd5165fe"></script>
+        <script src="../../../../_static/documentation_options.js?v=9e037ce7"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-9eb4e2e
+                0.1-a6344c4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -122,83 +122,42 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;outputSileORCA&quot;</span><span class="p">,</span> <span class="s2">&quot;stdoutSileORCA&quot;</span><span class="p">]</span>
 
 
+<span class="n">_A</span> <span class="o">=</span> <span class="n">SileORCA</span><span class="o">.</span><span class="n">InfoAttr</span>
+
+
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.orca&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">stdoutSileORCA</span><span class="p">(</span><span class="n">SileORCA</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Output file from ORCA &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Ensure the class has essential tags &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_completed</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_na</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_no</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_vdw</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="k">def</span> <span class="nf">readline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">line</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">readline</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_completed</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;ORCA TERMINATED NORMALLY&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_completed</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_completed</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">line</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_completed</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_na</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;Number of atoms&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_na</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_no</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;Number of basis functions&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_no</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vdw</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;DFT DISPERSION CORRECTION&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_vdw</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">return</span> <span class="n">line</span>
-
-    <span class="n">readline</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">SileORCA</span><span class="o">.</span><span class="n">readline</span><span class="o">.</span><span class="vm">__doc__</span>
+    <span class="n">_info_attributes_</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">_A</span><span class="p">(</span><span class="s2">&quot;na&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;.*Number of atoms&quot;</span><span class="p">,</span>
+           <span class="k">lambda</span> <span class="n">attr</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">])),</span>
+        <span class="n">_A</span><span class="p">(</span><span class="s2">&quot;no&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;.*Number of basis functions&quot;</span><span class="p">,</span>
+           <span class="k">lambda</span> <span class="n">attr</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">])),</span>
+        <span class="n">_A</span><span class="p">(</span><span class="s2">&quot;vdw_correction&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;.*DFT DISPERSION CORRECTION&quot;</span><span class="p">,</span>
+           <span class="k">lambda</span> <span class="n">attr</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+        <span class="n">_A</span><span class="p">(</span><span class="s2">&quot;completed&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;.*ORCA TERMINATED NORMALLY&quot;</span><span class="p">,</span>
+           <span class="k">lambda</span> <span class="n">attr</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+    <span class="p">]</span>
 
 <div class="viewcode-block" id="stdoutSileORCA.completed">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.orca.stdoutSileORCA.html#sisl.io.orca.stdoutSileORCA.completed">[docs]</a>
     <span class="k">def</span> <span class="nf">completed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; True if the full file has been read and &quot;ORCA TERMINATED NORMALLY&quot; was found. &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_completed</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">with</span> <span class="bp">self</span><span class="p">:</span>
-                <span class="n">completed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;ORCA TERMINATED NORMALLY&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">completed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_completed</span>
-        <span class="k">if</span> <span class="n">completed</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_completed</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">return</span> <span class="n">completed</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">completed</span></div>
 
 
     <span class="nd">@property</span>
+    <span class="nd">@deprecation</span><span class="p">(</span><span class="s2">&quot;stdoutSileORCA.na is deprecated in favor of stdoutSileORCA.info.na&quot;</span><span class="p">,</span> <span class="s2">&quot;0.16.0&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">na</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Number of atoms &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_na</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">with</span> <span class="bp">self</span><span class="p">:</span>
-                <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;Number of atoms&quot;</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_na</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_na</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">na</span>
 
     <span class="nd">@property</span>
+    <span class="nd">@deprecation</span><span class="p">(</span><span class="s2">&quot;stdoutSileORCA.no is deprecated in favor of stdoutSileORCA.info.no&quot;</span><span class="p">,</span> <span class="s2">&quot;0.16.0&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">no</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Number of orbitals (basis functions) &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_no</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">with</span> <span class="bp">self</span><span class="p">:</span>
-                <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;Number of basis functions&quot;</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_no</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_no</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_vdw_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Whether VDW dispersions are included &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vdw</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">old_line</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;fh&quot;</span><span class="p">):</span>
-                <span class="n">old_line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
-            <span class="k">with</span> <span class="bp">self</span><span class="p">:</span>
-                <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;DFT DISPERSION CORRECTION&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_vdw</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">old_line</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">old_line</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vdw</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">no</span>
 
 <div class="viewcode-block" id="stdoutSileORCA.read_electrons">
 <a class="viewcode-back" href="../../../../api/io/generated/sisl.io.orca.stdoutSileORCA.html#sisl.io.orca.stdoutSileORCA.read_electrons">[docs]</a>
@@ -276,8 +235,8 @@
                     <span class="n">spin_block</span> <span class="o">=</span> <span class="kc">False</span>
 
                 <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span> <span class="c1"># skip ---</span>
-                <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">na</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">ia</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">na</span><span class="p">):</span>
+                <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">na</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">ia</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">na</span><span class="p">):</span>
                     <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
                     <span class="n">v</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
                     <span class="k">if</span> <span class="n">spin_block</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">spin</span><span class="p">:</span>
@@ -333,7 +292,7 @@
                 <span class="k">if</span> <span class="n">orbitals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">D</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">Da</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">na</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+                    <span class="n">Da</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">na</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
                     <span class="k">for</span> <span class="p">(</span><span class="n">ia</span><span class="p">,</span> <span class="n">orb</span><span class="p">),</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">D</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                         <span class="k">if</span> <span class="n">orb</span> <span class="o">==</span> <span class="n">orbitals</span><span class="p">:</span>
                             <span class="n">Da</span><span class="p">[</span><span class="n">ia</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span>
@@ -359,9 +318,9 @@
                 <span class="k">if</span> <span class="s2">&quot;MULLIKEN&quot;</span> <span class="ow">in</span> <span class="n">step_to</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span> <span class="c1"># skip line &quot;The uncorrected...&quot;</span>
 
-                <span class="n">Do</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">no</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="c1"># orbital-resolved</span>
-                <span class="n">Da</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">na</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="c1"># atom-resolved</span>
-                <span class="k">for</span> <span class="n">io</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">no</span><span class="p">):</span>
+                <span class="n">Do</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">no</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="c1"># orbital-resolved</span>
+                <span class="n">Da</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">na</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="c1"># atom-resolved</span>
+                <span class="k">for</span> <span class="n">io</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">no</span><span class="p">):</span>
                     <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="c1"># io, ia+element, orb, chg, (spin)</span>
 
                     <span class="c1"># split atom number and element from v[1]</span>
@@ -424,7 +383,7 @@
                 <span class="n">E</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span> <span class="o">*</span> <span class="n">Ha2eV</span>
             <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vdw_</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">vdw_correction</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;DFT DISPERSION CORRECTION&quot;</span><span class="p">)</span>
             <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;Dispersion correction&quot;</span><span class="p">,</span> <span class="n">allow_reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
             <span class="n">E</span><span class="p">[</span><span class="s2">&quot;vdw&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">Ha2eV</span>
@@ -450,10 +409,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span> <span class="c1"># skip ---</span>
         <span class="k">if</span> <span class="s2">&quot;SPIN UP ORBITALS&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">():</span>
             <span class="n">spin</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">no</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+            <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">no</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">spin</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">no</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+            <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">no</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span> <span class="c1"># Skip &quot;NO OCC&quot; header line</span>
 
@@ -477,7 +436,7 @@
 
 
 
-<span class="n">outputSileORCA</span> <span class="o">=</span> <span class="n">deprecation</span><span class="p">(</span><span class="s2">&quot;outputSileORCA has been deprecated in favor of outSileOrca.&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">)(</span><span class="n">stdoutSileORCA</span><span class="p">)</span>
+<span class="n">outputSileORCA</span> <span class="o">=</span> <span class="n">deprecation</span><span class="p">(</span><span class="s2">&quot;outputSileORCA has been deprecated in favor of stdoutSileOrca.&quot;</span><span class="p">,</span> <span class="s2">&quot;0.15&quot;</span><span class="p">)(</span><span class="n">stdoutSileORCA</span><span class="p">)</span>
 
 <span class="n">add_sile</span><span class="p">(</span><span class="s2">&quot;output&quot;</span><span class="p">,</span> <span class="n">stdoutSileORCA</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">add_sile</span><span class="p">(</span><span class="s2">&quot;orca.out&quot;</span><span class="p">,</span> <span class="n">stdoutSileORCA</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>

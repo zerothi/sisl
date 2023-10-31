@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.vasp.carSileVASP &mdash; sisl 0.1-9eb4e2e</title>
+  <title>sisl.io.vasp.carSileVASP &mdash; sisl 0.1-a6344c4</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/tabs.css" type="text/css" />
@@ -18,7 +18,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=dd5165fe"></script>
+        <script src="../../../_static/documentation_options.js?v=9e037ce7"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/tabs.js?v=3ee01567"></script>
@@ -42,7 +42,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-9eb4e2e
+                0.1-a6344c4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -188,6 +188,95 @@
 </tr>
 </tbody>
 </table>
+<dl class="py class">
+<dt class="sig sig-object py" id="sisl.io.vasp.carSileVASP.InfoAttr">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">InfoAttr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updatable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">found</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.vasp.carSileVASP.InfoAttr" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Holder for parsing lines and extracting information from text files</p>
+<p>This consists of:</p>
+<dl>
+<dt>attr:</dt><dd><p>the name of the attribute
+This will be the <em class="xref py py-obj">sile.info.</em> access point.</p>
+</dd>
+<dt>regex:</dt><dd><p>the regular expression used to match a line.
+If a <em class="xref py py-obj">str</em>, it will be compiled <em>as is</em> to a regex pattern.
+<em class="xref py py-obj">regex.match(line)</em> will be used to check if the value should be updated.</p>
+</dd>
+<dt>parser:</dt><dd><p>if <em class="xref py py-obj">regex.match(line)</em> returns a match that is true, then this parser will
+be executed.
+The parser <em>must</em> be a function accepting two arguments:</p>
+<blockquote>
+<div><p>def parser(attr, match)</p>
+</div></blockquote>
+<p>where <a class="reference internal" href="#sisl.io.vasp.carSileVASP.InfoAttr.attr" title="sisl.io.vasp.carSileVASP.InfoAttr.attr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">attr</span></code></a> is this object, and <em class="xref py py-obj">match</em> is the match done on the line.
+(Note that <em class="xref py py-obj">match.string</em> will return the full line used to match against).</p>
+</dd>
+<dt>updatable:</dt><dd><p>control whether a new match on the line will update using <a class="reference internal" href="#sisl.io.vasp.carSileVASP.InfoAttr.parser" title="sisl.io.vasp.carSileVASP.InfoAttr.parser"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parser</span></code></a>.
+If false, only the first match will update the value</p>
+</dd>
+<dt>default:</dt><dd><p>the default value of the attribute</p>
+</dd>
+<dt>found:</dt><dd><p>whether the value has been found in the file.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.vasp.carSileVASP.InfoAttr.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updatable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">found</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.vasp.carSileVASP.InfoAttr.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.io.vasp.carSileVASP.InfoAttr.attr">
+<span class="sig-name descname"><span class="pre">attr</span></span><a class="headerlink" href="#sisl.io.vasp.carSileVASP.InfoAttr.attr" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.vasp.carSileVASP.InfoAttr.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.vasp.carSileVASP.InfoAttr.copy" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.io.vasp.carSileVASP.InfoAttr.doc">
+<span class="sig-name descname"><span class="pre">doc</span></span><a class="headerlink" href="#sisl.io.vasp.carSileVASP.InfoAttr.doc" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.vasp.carSileVASP.InfoAttr.documentation">
+<span class="sig-name descname"><span class="pre">documentation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.vasp.carSileVASP.InfoAttr.documentation" title="Link to this definition"></a></dt>
+<dd><p>Returns a documentation string for this object</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.io.vasp.carSileVASP.InfoAttr.found">
+<span class="sig-name descname"><span class="pre">found</span></span><a class="headerlink" href="#sisl.io.vasp.carSileVASP.InfoAttr.found" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.io.vasp.carSileVASP.InfoAttr.parser">
+<span class="sig-name descname"><span class="pre">parser</span></span><a class="headerlink" href="#sisl.io.vasp.carSileVASP.InfoAttr.parser" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.vasp.carSileVASP.InfoAttr.process">
+<span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.vasp.carSileVASP.InfoAttr.process" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.io.vasp.carSileVASP.InfoAttr.regex">
+<span class="sig-name descname"><span class="pre">regex</span></span><a class="headerlink" href="#sisl.io.vasp.carSileVASP.InfoAttr.regex" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.io.vasp.carSileVASP.InfoAttr.updatable">
+<span class="sig-name descname"><span class="pre">updatable</span></span><a class="headerlink" href="#sisl.io.vasp.carSileVASP.InfoAttr.updatable" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.io.vasp.carSileVASP.InfoAttr.value">
+<span class="sig-name descname"><span class="pre">value</span></span><a class="headerlink" href="#sisl.io.vasp.carSileVASP.InfoAttr.value" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.io.vasp.carSileVASP.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.vasp.carSileVASP.__init__" title="Link to this definition"></a></dt>
