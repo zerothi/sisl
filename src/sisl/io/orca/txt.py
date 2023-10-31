@@ -7,6 +7,7 @@ from sisl._internal import set_module
 from sisl.geometry import Geometry
 from sisl.unit import units
 from sisl.utils import PropertyDict
+from sisl.messages import deprecation
 
 from .._multiple import SileBinder
 from ..sile import add_sile, sile_fh_open
@@ -14,50 +15,33 @@ from .sile import SileORCA
 
 __all__ = ['txtSileORCA']
 
+_A = SileORCA.InfoAttr
+
 
 @set_module("sisl.io.orca")
 class txtSileORCA(SileORCA):
     """ Output from the ORCA property.txt file """
 
-    def _setup(self, *args, **kwargs):
-        """ Ensure the class has essential tags """
-        super()._setup(*args, **kwargs)
-        self._na = None
-        self._no = None
-
-    def readline(self, *args, **kwargs):
-        line = super().readline(*args, **kwargs)
-        if self._na is None and "Number of atoms:"[1:] in line:
-            v = line.split()
-            self._na = int(v[-1])
-        elif self._no is None and "Number of basis functions:"[1:] in line:
-            v = line.split()
-            self._no = int(v[-1])
-        return line
+    _info_attributes_ = [
+        _A("na", r".*Number of atoms:",
+           lambda attr, match: int(match.string.split()[-1])),
+        _A("no", r".*Number of basis functions:",
+           lambda attr, match: int(match.string.split()[-1])),
+        _A("vdw_correction", r".*\$ VdW_Correction",
+           lambda attr, match: True, default=False),
+    ]
 
     @property
-    @sile_fh_open()
+    @deprecation("txtSileORCA.na is deprecated in favor of txtSileORCA.info.na", "0.16.0")
     def na(self):
         """ Number of atoms """
-        if self._na is None:
-            f = self.step_to("Number of atoms"[1:])
-            if f[0]:
-                self._na = int(f[1].split()[-1])
-            else:
-                return None
-        return self._na
+        return self.info.na
 
     @property
-    @sile_fh_open()
+    @deprecation("txtSileORCA.no is deprecated in favor of txtSileORCA.info.no", "0.16.0")
     def no(self):
         """ Number of orbitals (basis functions) """
-        if self._no is None:
-            f = self.step_to("Number of basis functions"[1:])
-            if f[0]:
-                self._no = int(f[1].split()[-1])
-            else:
-                return None
-        return self._no
+        return self.info.no
 
     @SileBinder(postprocess=np.array)
     @sile_fh_open()
@@ -116,7 +100,7 @@ class txtSileORCA(SileORCA):
             line = self.readline()
 
         line = self.readline()
-        if "$ VdW_Correction" in line:
+        if self.info.vdw_correction:
             v = self.step_to("Van der Waals Correction:")[1].split()
             E["vdw"] = float(v[-1]) * Ha2eV
 

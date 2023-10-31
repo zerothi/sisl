@@ -17,8 +17,8 @@ _dir = osp.join('sisl', 'io', 'orca')
 def test_tags(sisl_files):
     f = sisl_files(_dir, 'molecule_property.txt')
     out = txtSileORCA(f)
-    assert out.na == 2
-    assert out.no == None
+    assert out.info.na == 2
+    assert out.info.no == None
 
 def test_read_electrons(sisl_files):
     f = sisl_files(_dir, 'molecule_property.txt')
