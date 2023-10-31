@@ -1,10 +1,11 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from pathlib import Path
 from typing import Union
 
 import sisl._typing_ext.numpy as npt
-from sisl import Atom, Atoms, Geometry, Lattice, Shape
+from sisl import Atom, Atoms, BaseSile, Geometry, Lattice, Shape
 from sisl._category import GenericCategory
 from sisl.geom.category import AtomCategory
 
@@ -20,15 +21,38 @@ AtomsArgument = Union[
 
 OrbitalsArgument = Union[
     npt.ArrayLike,
-    str, int, dict
+    str, int, dict,
+    AtomCategory,
+    Shape,
 ]
 
 AtomLike = Union[
     Atom,
-    Atoms
+    Atoms,
+]
+
+SileLike = Union[
+    BaseSile,
+    str,
+    Path,
+]
+
+GeometryLike = Union[
+    SileLike,
+    Geometry,
+]
+
+LatticeLike = Union[
+    SileLike,
+    Lattice,
 ]
 
 CellOrGeometry = Union[
     Lattice,
-    Geometry
+    Geometry,
+]
+
+CellOrGeometryLike = Union[
+    LatticeLike,
+    Geometry,
 ]

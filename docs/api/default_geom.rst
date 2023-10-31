@@ -75,6 +75,7 @@ Helpers
 .. autosummary::
    :toctree: generated/
 
+   AtomCategory
    composite_geometry
    CompositeGeometrySection
 

@@ -158,6 +158,7 @@ class Lattice(_Dispatchs,
 
     @boundary_condition.setter
     def boundary_condition(self, boundary_condition):
+        """Boundary conditions for each lattice vector (lower/upper) sides ``(3, 2)``"""
         self.set_boundary_condition(boundary_condition)
 
     @property
@@ -1472,7 +1473,7 @@ class LatticeChild:
 
     @property
     def sc(self):
-        """ Returns the lattice object (deprecated method) """
+        """[deprecated] Return the lattice object associated with the `Lattice`."""
         deprecate(f"{self.__class__.__name__}.sc is deprecated; please use 'lattice' instead", "0.15")
         return self.lattice
 
@@ -1488,7 +1489,7 @@ class LatticeChild:
         self.lattice.set_nsc(*args, **kwargs)
 
     def set_lattice(self, lattice):
-        """ Overwrites the local supercell """
+        """Overwrites the local lattice."""
         if lattice is None:
             # Default supercell is a simple
             # 1x1x1 unit-cell
@@ -1506,7 +1507,7 @@ class LatticeChild:
 
     @property
     def length(self):
-        """ Returns the inherent `Lattice` objects `length` """
+        """Returns the inherent `Lattice` objects `length`"""
         return self.lattice.length
 
     @property
@@ -1565,15 +1566,16 @@ class LatticeChild:
 
     @property
     def boundary_condition(self) -> np.ndarray:
-        f"{Lattice.boundary_condition.__doc__}"
+        f"""{Lattice.boundary_condition.__doc__}"""
         return self.lattice.boundary_condition
 
     @boundary_condition.setter
     def boundary_condition(self, boundary_condition: Sequence[BoundaryConditionType]):
+        f"""{Lattice.boundary_condition.__doc__}"""
         raise SislError(f"Cannot use property to set boundary conditions of LatticeChild")
 
     @property
     def pbc(self) -> np.ndarray:
-        f"{Lattice.pbc.__doc__}"
+        f"""{Lattice.pbc.__doc__}"""
         return self.lattice.pbc
 

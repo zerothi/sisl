@@ -8,10 +8,10 @@ This method allows classes to dispatch methods through other classes.
 Here is a small snippet showing how to utilize this module.
 
 """
-from functools import update_wrapper
 import logging
 from abc import ABCMeta, abstractmethod
 from collections import ChainMap, namedtuple
+from functools import update_wrapper
 
 __all__ = [
     "AbstractDispatch", "ObjectDispatcher", "MethodDispatcher",
