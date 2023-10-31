@@ -22,6 +22,9 @@ we hit release version 1.0.0.
   The _info_attributes_ contains a list of attributes that can be
   discovered while reading ascii files see #509
 
+### Fixed
+- fixed cases where `Geometry.close` would not catch all neighbours, #633
+
 ### Changed
 - `Lattice` now holds the boundary conditions (not `Grid`), see #626
 - Some siles exposed certain properties containing basic information
