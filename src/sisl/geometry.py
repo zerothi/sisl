@@ -561,6 +561,46 @@ class Geometry(LatticeChild, _Dispatchs,
             return geom, supercell
         return geom
 
+    def as_supercell(self) -> Geometry:
+        """Create a new geometry equivalent to ``self * self.nsc``, where the indices are ordered as the supercells
+
+        Returns
+        -------
+        Geometry
+            the supercell expanded and reordered Geometry
+        """
+        # Get total number of atoms
+        na = len(self)
+        # create the big supercell geometry in the simplest (linear) way
+        sc = self * self.nsc
+
+        # remove nsc, this supercell should hold all information
+        sc.set_nsc([1, 1, 1])
+
+        # get off-set for first atom
+        # this is used to correct the indices created after having shifted
+        # everything
+        f0 = self.fxyz[0]
+
+        # translate the supercell such that the 0, 0, 0 (primary cell)
+        # is located at the origin.
+        sc = sc.translate(-(self.nsc // 2) @ self.cell)
+
+        # Calculate the translation table such that the ordering in `sc` can
+        # be made to look like the `self` supercell indices
+        isc_sc = np.rint(sc.xyz[::na] @ self.icell.T - f0).astype(np.int32)
+        isc_self = self.a2isc(np.arange(self.n_s) * na)
+        def new_sub(isc):
+            return (abs(isc_sc - isc).sum(1) == 0).nonzero()[0][0]
+
+        # Create the translation table for the indices
+        translate = np.array([new_sub(isc) for isc in isc_self])
+        # make sure all atoms are present
+        translate = np.repeat(translate * na, na).reshape(-1, na) + np.arange(na)
+
+        # re-arrange the atoms and return
+        return sc.sub(translate.ravel())
+
     def reorder(self) -> None:
         """ Reorders atoms according to first occurence in the geometry
 
