@@ -22,6 +22,7 @@ __all__ = ["stdoutSileSiesta", "outSileSiesta"]
 
 
 Bohr2Ang = unit_convert('Bohr', 'Ang')
+_A = SileSiesta.InfoAttr
 
 
 def _ensure_atoms(atoms):
@@ -39,30 +40,16 @@ class stdoutSileSiesta(SileSiesta):
 
     This enables reading the output quantities from the Siesta output.
     """
+    
+    _info_attributes_ = [
+        _A("completed", r".*Job completed",
+           lambda attr, match: lambda : True, default=lambda : False),
+    ]
 
-    def _setup(self, *args, **kwargs):
-        """ Ensure the class has a _completed tag """
-        super()._setup(*args, **kwargs)
-        self._completed = None
-
-    def readline(self, *args, **kwargs):
-        line = super().readline(*args, **kwargs)
-        if 'Job completed' in line:
-            self._completed = True
-        return line
-
-    readline.__doc__ = SileSiesta.readline.__doc__
-
-    @sile_fh_open()
+    @deprecation("stdoutSileSiesta.completed is deprecated in favor of stdoutSileSiesta.info.completed", "0.16.0")
     def completed(self):
         """ True if the full file has been read and "Job completed" was found. """
-        if self._completed is None:
-            completed = self.step_to("Job completed")[0]
-        else:
-            completed = self._completed
-        if completed:
-            self._completed = True
-        return completed
+        return self.info.completed()
 
     @lru_cache(1)
     @sile_fh_open(True)
@@ -439,10 +426,9 @@ class stdoutSileSiesta(SileSiesta):
 
             return _a.arrayd(S)
 
-        # list of all stresses
-        Ss = []
-
         if all or last:
+            # list of all stresses
+            Ss = []
             while True:
                 S = next_stress()
                 if S is None:
