@@ -14,27 +14,29 @@ from .sile import SileVASP
 __all__ = ["stdoutSileVASP", "outSileVASP"]
 
 
+_A = SileVASP.InfoAttr
+
+
 @set_module("sisl.io.vasp")
 class stdoutSileVASP(SileVASP):
     """ Output file from VASP """
 
-    def _setup(self, *args, **kwargs):
-        """ Ensure the class has a _completed tag """
-        super()._setup(*args, **kwargs)
-        self._completed = None
+    _info_attributes_ = [
+        _A("completed", r".*General timing and accounting",
+           lambda attr, match: lambda : True, default=lambda : False),
+        _A("accuracy_reached", r".*reached required accuracy",
+           lambda attr, match: lambda : True, default=lambda : False),
+    ]
 
-    def readline(self, *args, **kwargs):
-        line = super().readline(*args, **kwargs)
-        if "General timing and accounting" in line:
-            self._completed = True
-        return line
-
-    @sile_fh_open()
+    @deprecation("stdoutSileVASP.completed is deprecated in favor of stdoutSileVASP.info.completed", "0.16.0")
     def completed(self):
         """ True if the line "General timing and accounting" was found. """
-        if self._completed is not True:
-            self._completed = self.step_to("General timing and accounting")[0]
-        return self._completed
+        return self.info.completed()
+
+    @deprecation("stdoutSileVASP.accuracy_reached is deprecated in favor of stdoutSileVASP.info.accuracy_reached", "0.16.0")
+    def accuracy_reached(self):
+        """ True if the line "reached required accuracy" was found. """
+        return self.info.accuracy_reached()
 
     @sile_fh_open()
     def cpu_time(self, flag="General timing and accounting"):
@@ -46,16 +48,10 @@ class stdoutSileVASP(SileVASP):
 
         found = self.step_to(flag, allow_reread=False)[0]
         if found:
-            self._completed = True
             for _ in range(nskip):
                 line = self.readline()
             return float(line.split()[iplace])
         raise KeyError(f"{self.__class__.__name__}.cpu_time could not find flag '{flag}' in file")
-
-    @sile_fh_open()
-    def accuracy_reached(self):
-        """ True if the line "reached required accuracy" was found. """
-        return self.step_to("reached required accuracy")[0]
 
     @SileBinder()
     @sile_fh_open()

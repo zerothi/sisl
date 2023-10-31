@@ -15,80 +15,39 @@ from .sile import SileORCA
 __all__ = ["outputSileORCA", "stdoutSileORCA"]
 
 
+_A = SileORCA.InfoAttr
+
+
 @set_module("sisl.io.orca")
 class stdoutSileORCA(SileORCA):
     """ Output file from ORCA """
 
-    def _setup(self, *args, **kwargs):
-        """ Ensure the class has essential tags """
-        super()._setup(*args, **kwargs)
-        self._completed = None
-        self._na = None
-        self._no = None
-        self._vdw = None
-
-    def readline(self, *args, **kwargs):
-        line = super().readline(*args, **kwargs)
-        if self._completed is None and "ORCA TERMINATED NORMALLY" in line:
-            self._completed = True
-        elif self._completed is None and line == '':
-            self._completed = False
-        elif self._na is None and "Number of atoms" in line:
-            v = line.split()
-            self._na = int(v[-1])
-        elif self._no is None and "Number of basis functions" in line:
-            v = line.split()
-            self._no = int(v[-1])
-        elif self._vdw is None and "DFT DISPERSION CORRECTION" in line:
-            self._vdw = True
-        return line
-
-    readline.__doc__ = SileORCA.readline.__doc__
+    _info_attributes_ = [
+        _A("na", r".*Number of atoms",
+           lambda attr, match: int(match.string.split()[-1])),
+        _A("no", r".*Number of basis functions",
+           lambda attr, match: int(match.string.split()[-1])),
+        _A("vdw_correction", r".*DFT DISPERSION CORRECTION",
+           lambda attr, match: True, default=False),
+        _A("completed", r".*ORCA TERMINATED NORMALLY",
+           lambda attr, match: True, default=False),
+    ]
 
     def completed(self):
         """ True if the full file has been read and "ORCA TERMINATED NORMALLY" was found. """
-        if self._completed is None:
-            with self:
-                completed = self.step_to("ORCA TERMINATED NORMALLY")[0]
-        else:
-            completed = self._completed
-        if completed:
-            self._completed = True
-        return completed
+        return self.info.completed
 
     @property
+    @deprecation("stdoutSileORCA.na is deprecated in favor of stdoutSileORCA.info.na", "0.16.0")
     def na(self):
         """ Number of atoms """
-        if self._na is None:
-            with self:
-                f = self.step_to("Number of atoms")
-                if f[0]:
-                    self._na = int(f[1].split()[-1])
-        return self._na
+        return self.info.na
 
     @property
+    @deprecation("stdoutSileORCA.no is deprecated in favor of stdoutSileORCA.info.no", "0.16.0")
     def no(self):
         """ Number of orbitals (basis functions) """
-        if self._no is None:
-            with self:
-                f = self.step_to("Number of basis functions")
-                if f[0]:
-                    self._no = int(f[1].split()[-1])
-        return self._no
-
-    @property
-    def _vdw_(self):
-        """ Whether VDW dispersions are included """
-        if self._vdw is None:
-            old_line = None
-            if hasattr(self, "fh"):
-                old_line = self.fh.tell()
-            with self:
-                f = self.step_to("DFT DISPERSION CORRECTION")
-                self._vdw = f[0]
-            if old_line is not None:
-                self.fh.seek(old_line)
-        return self._vdw
+        return self.info.no
 
     @SileBinder(postprocess=np.array)
     @sile_fh_open()
@@ -161,8 +120,8 @@ class stdoutSileORCA(SileORCA):
                     spin_block = False
 
                 self.readline() # skip ---
-                A = np.empty(self.na, np.float64)
-                for ia in range(self.na):
+                A = np.empty(self.info.na, np.float64)
+                for ia in range(self.info.na):
                     line = self.readline()
                     v = line.split()
                     if spin_block and not spin:
@@ -218,7 +177,7 @@ class stdoutSileORCA(SileORCA):
                 if orbitals is None:
                     return D
                 else:
-                    Da = np.zeros(self.na, np.float64)
+                    Da = np.zeros(self.info.na, np.float64)
                     for (ia, orb), d in D.items():
                         if orb == orbitals:
                             Da[ia] = d
@@ -244,9 +203,9 @@ class stdoutSileORCA(SileORCA):
                 if "MULLIKEN" in step_to:
                     self.readline() # skip line "The uncorrected..."
 
-                Do = np.empty(self.no, np.float64) # orbital-resolved
-                Da = np.zeros(self.na, np.float64) # atom-resolved
-                for io in range(self.no):
+                Do = np.empty(self.info.no, np.float64) # orbital-resolved
+                Da = np.zeros(self.info.na, np.float64) # atom-resolved
+                for io in range(self.info.no):
                     v = self.readline().split() # io, ia+element, orb, chg, (spin)
 
                     # split atom number and element from v[1]
@@ -306,7 +265,7 @@ class stdoutSileORCA(SileORCA):
                 E["embedding"] = float(v[-2]) * Ha2eV
             line = self.readline()
 
-        if self._vdw_:
+        if self.info.vdw_correction:
             self.step_to("DFT DISPERSION CORRECTION")
             v = self.step_to("Dispersion correction", allow_reread=False)[1].split()
             E["vdw"] = float(v[-1]) * Ha2eV
@@ -329,10 +288,10 @@ class stdoutSileORCA(SileORCA):
         self.readline() # skip ---
         if "SPIN UP ORBITALS" in self.readline():
             spin = True
-            E = np.empty([self.no, 2], np.float64)
+            E = np.empty([self.info.no, 2], np.float64)
         else:
             spin = False
-            E = np.empty([self.no, 1], np.float64)
+            E = np.empty([self.info.no, 1], np.float64)
 
         self.readline() # Skip "NO OCC" header line
 
@@ -355,7 +314,7 @@ class stdoutSileORCA(SileORCA):
         return E
 
 
-outputSileORCA = deprecation("outputSileORCA has been deprecated in favor of outSileOrca.", "0.15")(stdoutSileORCA)
+outputSileORCA = deprecation("outputSileORCA has been deprecated in favor of stdoutSileOrca.", "0.15")(stdoutSileORCA)
 
 add_sile("output", stdoutSileORCA, gzip=True, case=False)
 add_sile("orca.out", stdoutSileORCA, gzip=True, case=False)

@@ -17,9 +17,17 @@ we hit release version 1.0.0.
 - added logging in some modules, to be added in more stuff to allow easier
   debugging.
 - marked all `toSphere|toEllipsoid|...` as deprecated
+- a simple extensionable method to add `Sile.info.<attr>` by exposing
+  attributes through an object on each class.
+  The _info_attributes_ contains a list of attributes that can be
+  discovered while reading ascii files see #509
 
 ### Changed
 - `Lattice` now holds the boundary conditions (not `Grid`), see #626
+- Some siles exposed certain properties containing basic information
+  about the content, say number of atoms/orbitals etc.
+  These will be moved to `sile.info.<attr>` instead to reduce
+  the number of methods exposed on each sile.
 
 
 ## [0.14.2] - 2023-10-04
