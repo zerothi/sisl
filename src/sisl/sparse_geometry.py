@@ -726,7 +726,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
             try:
                 if len(R) > 0:
                     R = R[-1]
-            except:
+            except TypeError:
                 pass
         except AttributeError:
             R = None
