@@ -1738,6 +1738,20 @@ def test_translate2uc_axes():
     assert np.allclose(gr_once.xyz, gr_individual.xyz)
 
 
+def test_as_supercell_graphene():
+    gr = sisl_geom.graphene()
+    grsc = gr.as_supercell()
+    assert np.allclose(grsc.xyz[:len(gr)], gr.xyz)
+    assert np.allclose(grsc.axyz(np.arange(gr.na_s)), gr.axyz(np.arange(gr.na_s)))
+
+
+def test_as_supercell_fcc():
+    g = sisl_geom.fcc(2 ** 0.5, Atom(1, R=1.0001))
+    gsc = g.as_supercell()
+    assert np.allclose(gsc.xyz[:len(g)], g.xyz)
+    assert np.allclose(gsc.axyz(np.arange(g.na_s)), g.axyz(np.arange(g.na_s)))
+
+
 def test_sc_warn():
     with pytest.warns(SislDeprecation):
         lattice = sisl_geom.graphene().sc
