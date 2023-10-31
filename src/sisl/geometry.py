@@ -455,7 +455,7 @@ class Geometry(LatticeChild, _Dispatchs,
             return np.add.outer(self.firsto[atom], orbs).ravel()
         return np.concatenate(tuple(conv(atom, orbs) for atom, orbs in orbitals.items()))
 
-    def as_primary(self, na_primary: int, axes=(0, 1, 2), ret_super: bool=False):
+    def as_primary(self, na_primary: int, axes=(0, 1, 2), ret_super: bool=False) -> Union[Geometry, Tuple[Geometry, Lattice]]:
         """Reduce the geometry to the primary unit-cell comprising `na_primary` atoms
 
         This will basically try and find the tiling/repetitions required for the geometry to only have
@@ -871,16 +871,16 @@ class Geometry(LatticeChild, _Dispatchs,
                     for io in range(io1, io2):
                         yield ia, io
 
-    def iR(self, na=1000, iR=20, R=None):
+    def iR(self, na: int=1000, iR: int=20, R: Optional[float]=None) -> int:
         """Return an integer number of maximum radii (``self.maxR()``) which holds approximately `na` atoms
 
         Parameters
         ----------
-        na : int, optional
+        na :
            number of atoms within the radius
-        iR : int, optional
+        iR :
            initial `iR` value, which the sphere is estitametd from
-        R : float, optional
+        R :
            the value used for atomic range (defaults to ``self.maxR()``)
 
         Returns
@@ -904,7 +904,7 @@ class Geometry(LatticeChild, _Dispatchs,
 
         return max(2, iR)
 
-    def iter_block_rand(self, iR=20, R=None, atoms: Optional[AtomsArgument]=None):
+    def iter_block_rand(self, iR=20, R=None, atoms: Optional[AtomsArgument]=None) -> Iterator[tuple[ndarray, ndarray]]:
         """Perform the *random* block-iteration by randomly selecting the next center of block """
 
         # We implement yields as we can then do nested iterators
@@ -975,7 +975,7 @@ class Geometry(LatticeChild, _Dispatchs,
             print(np.sum(not_passed), len(self))
             raise SislError(f'{self.__class__.__name__}.iter_block_rand error on iterations. Not all atoms have been visited.')
 
-    def iter_block_shape(self, shape=None, iR=20, atoms: Optional[AtomsArgument]=None):
+    def iter_block_shape(self, shape=None, iR=20, atoms: Optional[AtomsArgument]=None) -> Iterator[tuple[ndarray, ndarray]]:
         """Perform the *grid* block-iteration by looping a grid """
 
         # We implement yields as we can then do nested iterators
@@ -1716,7 +1716,8 @@ class Geometry(LatticeChild, _Dispatchs,
             return self.sub(atoms_flat), atoms.tolist()
         return self.sub(atoms_flat)
 
-    def optimize_nsc(self, axis=None, R=None) -> ndarray:
+    def optimize_nsc(self, axis=None,
+                     R: Optional[float]=None) -> ndarray:
         """ Optimize the number of supercell connections based on ``self.maxR()``
 
         After this routine the number of supercells may not necessarily be the same.
@@ -1727,7 +1728,7 @@ class Geometry(LatticeChild, _Dispatchs,
         ----------
         axis : int or array_like, optional
            only optimize the specified axis (default to all)
-        R : float, optional
+        R :
            the maximum connection radius for each atom
         """
         if axis is None:
@@ -1785,7 +1786,7 @@ class Geometry(LatticeChild, _Dispatchs,
 
         return nsc
 
-    def sub(self, atoms) -> Geometry:
+    def sub(self, atoms: AtomsArgument) -> Geometry:
         """ Create a new `Geometry` with a subset of this `Geometry`
 
         Indices passed *MUST* be unique.
@@ -1805,7 +1806,8 @@ class Geometry(LatticeChild, _Dispatchs,
         atoms = self.sc2uc(atoms)
         return self.__class__(self.xyz[atoms, :], atoms=self.atoms.sub(atoms), lattice=self.lattice.copy())
 
-    def sub_orbital(self, atoms, orbitals) -> Geometry:
+    def sub_orbital(self, atoms: AtomsArgument,
+                    orbitals: OrbitalsArgument) -> Geometry:
         r""" Retain only a subset of the orbitals on `atoms` according to `orbitals`
 
         This allows one to retain only a given subset of geometry.
@@ -1924,7 +1926,7 @@ class Geometry(LatticeChild, _Dispatchs,
 
         return geom
 
-    def remove(self, atoms) -> Geometry:
+    def remove(self, atoms: AtomsArgument) -> Geometry:
         """ Remove atoms from the geometry.
 
         Indices passed *MUST* be unique.
@@ -1946,7 +1948,8 @@ class Geometry(LatticeChild, _Dispatchs,
         atoms = np.delete(_a.arangei(self.na), atoms)
         return self.sub(atoms)
 
-    def remove_orbital(self, atoms, orbitals) -> Geometry:
+    def remove_orbital(self, atoms: AtomsArgument,
+                       orbitals: OrbitalsArgument) -> Geometry:
         """ Remove a subset of orbitals on `atoms` according to `orbitals`
 
         For more detailed examples, please see the equivalent (but opposite) method
@@ -1994,7 +1997,7 @@ class Geometry(LatticeChild, _Dispatchs,
         # now call sub_orbital
         return self.sub_orbital(atoms, orbitals)
 
-    def unrepeat(self, reps, axis, *args, **kwargs) -> Geometry:
+    def unrepeat(self, reps: int, axis: int, *args, **kwargs) -> Geometry:
         """ Unrepeats the geometry similarly as `untile`
 
         Please see `untile` for argument details, the algorithm and arguments are the same however,
@@ -2003,7 +2006,10 @@ class Geometry(LatticeChild, _Dispatchs,
         atoms = np.arange(self.na).reshape(-1, reps).T.ravel()
         return self.sub(atoms).untile(reps, axis, *args, **kwargs)
 
-    def untile(self, reps, axis, segment=0, rtol=1e-4, atol=1e-4) -> Geometry:
+    def untile(self, reps: int, axis: int,
+               segment: int=0,
+               rtol: float=1e-4,
+               atol: float=1e-4) -> Geometry:
         """ A subset of atoms from the geometry by cutting the geometry into `reps` parts along the direction `axis`.
 
         This will effectively change the unit-cell in the `axis` as-well
@@ -2021,16 +2027,18 @@ class Geometry(LatticeChild, _Dispatchs,
 
         Parameters
         ----------
-        reps : int
+        reps :
             number of times the structure will be cut (untiled)
-        axis : int
+        axis :
             the axis that will be cut
-        segment : int, optional
+        segment :
             returns the i'th segment of the untiled structure
             Currently the atomic coordinates are not translated,
             this may change in the future.
-        rtol : (tolerance for checking tiling, see `numpy.allclose`)
-        atol : (tolerance for checking tiling, see `numpy.allclose`)
+        rtol :
+            directly passed to `numpy.allclose`
+        atol :
+            directly passed to `numpy.allclose`
 
         Examples
         --------
@@ -2062,7 +2070,7 @@ class Geometry(LatticeChild, _Dispatchs,
                  "The tolerance between the coordinates can be altered using rtol, atol")
         return new
 
-    def tile(self, reps, axis) -> Geometry:
+    def tile(self, reps: int, axis: int) -> Geometry:
         """ Tile the geometry to create a bigger one
 
         The atomic indices are retained for the base structure.
@@ -2072,9 +2080,9 @@ class Geometry(LatticeChild, _Dispatchs,
 
         Parameters
         ----------
-        reps : int
+        reps :
            number of tiles (repetitions)
-        axis : int
+        axis :
            direction of tiling, 0, 1, 2 according to the cell-direction
 
         Examples
@@ -2122,7 +2130,7 @@ class Geometry(LatticeChild, _Dispatchs,
         # will also expand via tiling)
         return self.__class__(xyz, atoms=self.atoms.tile(reps), lattice=lattice)
 
-    def repeat(self, reps, axis) -> Geometry:
+    def repeat(self, reps: int, axis: int) -> Geometry:
         """ Create a repeated geometry
 
         The atomic indices are *NOT* retained from the base structure.
@@ -2144,9 +2152,9 @@ class Geometry(LatticeChild, _Dispatchs,
 
         Parameters
         ----------
-        reps : int
+        reps :
            number of repetitions
-        axis : int
+        axis :
            direction of repetition, 0, 1, 2 according to the cell-direction
 
         Examples
@@ -2279,7 +2287,11 @@ class Geometry(LatticeChild, _Dispatchs,
         """ Default to repeating the atomic structure """
         return self.__mul__(m, 'repeat')
 
-    def angle(self, atoms, dir=(1., 0, 0), ref=None, rad=False):
+    def angle(self,
+              atoms: AtomsArgument,
+              dir=(1., 0, 0),
+              ref=None,
+              rad: bool=False) -> Union[float, ndarray]:
         r""" The angle between atom `atoms` and the direction `dir`, with possibility of a reference coordinate `ref`
 
         The calculated angle can be written as this
@@ -2293,7 +2305,7 @@ class Geometry(LatticeChild, _Dispatchs,
 
         Parameters
         ----------
-        atoms : int or array_like
+        atoms :
            indices/boolean of all atoms where angles should be calculated on
         dir : str, int or array_like, optional
            the direction from which the angle is calculated from, default to ``x``.
@@ -2301,7 +2313,7 @@ class Geometry(LatticeChild, _Dispatchs,
         ref : int or array_like, optional
            the reference point from which the vectors are drawn, default to origin
            An integer species an atomic index.
-        rad : bool, optional
+        rad :
            whether the returned value is in radians
         """
         xi = self.axyz(atoms)
@@ -2330,7 +2342,9 @@ class Geometry(LatticeChild, _Dispatchs,
     @deprecate_argument("only", "what",
                         "argument only has been deprecated in favor of what, please update your code.",
                         "0.14.0")
-    def rotate(self, angle, v, origin=None,
+    def rotate(self, angle,
+               v,
+               origin=None,
                atoms: Optional[AtomsArgument]=None,
                rad: bool=False,
                what: Optional[str]=None) -> Geometry:
@@ -2453,7 +2467,9 @@ class Geometry(LatticeChild, _Dispatchs,
         a = acos(np.sum(lm * lv))
         return self.rotate(a, cp, rad=True)
 
-    def translate(self, v, atoms: Optional[AtomsArgument]=None, cell=False) -> Geometry:
+    def translate(self, v,
+                  atoms: Optional[AtomsArgument]=None,
+                  cell: bool=False) -> Geometry:
         """ Translates the geometry by `v`
 
         One can translate a subset of the atoms by supplying `atoms`.
@@ -2481,7 +2497,9 @@ class Geometry(LatticeChild, _Dispatchs,
         return g
     move = translate
 
-    def translate2uc(self, atoms: Optional[AtomsArgument]=None, axes=None) -> Geometry:
+    def translate2uc(self,
+                     atoms: Optional[AtomsArgument]=None,
+                     axes=None) -> Geometry:
         """Translates atoms in the geometry into the unit cell
 
         One can translate a subset of the atoms or axes by appropriate arguments.
@@ -2531,7 +2549,9 @@ class Geometry(LatticeChild, _Dispatchs,
             g.xyz[idx] = fxyz[idx] @ self.cell
         return g
 
-    def swap(self, atoms_a, atoms_b) -> Geometry:
+    def swap(self,
+             atoms_a: AtomsArgument,
+             atoms_b: AtomsArgument) -> Geometry:
         """ Swap a set of atoms in the geometry and return a new one
 
         This can be used to reorder elements of a geometry.
@@ -2550,8 +2570,10 @@ class Geometry(LatticeChild, _Dispatchs,
         xyz[atoms_b, :] = self.xyz[atoms_a, :]
         return self.__class__(xyz, atoms=self.atoms.swap(atoms_a, atoms_b), lattice=self.lattice.copy())
 
-    def swapaxes(self, axes_a: Union[int, str],
-                 axes_b: Union[int, str], what: str="abc") -> Geometry:
+    def swapaxes(self,
+                 axes_a: Union[int, str],
+                 axes_b: Union[int, str],
+                 what: str="abc") -> Geometry:
         """ Swap the axes components by either lattice vectors (only cell), or Cartesian coordinates
 
         See `Lattice.swapaxes` for details.
@@ -2623,7 +2645,8 @@ class Geometry(LatticeChild, _Dispatchs,
 
         return self.__class__(self.xyz[:, idx].copy(), atoms=self.atoms.copy(), lattice=lattice)
 
-    def center(self, atoms: Optional[AtomsArgument]=None,
+    def center(self,
+               atoms: Optional[AtomsArgument]=None,
                what: str="xyz") -> ndarray:
         """ Returns the center of the geometry
 
@@ -2677,7 +2700,8 @@ class Geometry(LatticeChild, _Dispatchs,
 
         raise ValueError(f"{self.__class__.__name__}.center could not understand option 'what' got {what}")
 
-    def append(self, other: CellOrGeometryLike,
+    def append(self,
+               other: CellOrGeometryLike,
                axis: int,
                offset="none") -> Geometry:
         """ Appends two structures along `axis`
@@ -2756,8 +2780,10 @@ class Geometry(LatticeChild, _Dispatchs,
 
         return self.__class__(xyz, atoms=atoms, lattice=lattice, names=names)
 
-    def prepend(self, other: CellOrGeometryLike,
-                axis: int, offset="none") -> Geometry:
+    def prepend(self,
+                other: CellOrGeometryLike,
+                axis: int,
+                offset="none") -> Geometry:
         """ Prepend two structures along `axis`
 
         This will automatically add the ``self.cell[axis,:]`` to all atomic
@@ -2834,7 +2860,8 @@ class Geometry(LatticeChild, _Dispatchs,
 
         return self.__class__(xyz, atoms=atoms, lattice=lattice, names=names)
 
-    def add(self, other: CellOrGeometryLike,
+    def add(self,
+            other: CellOrGeometryLike,
             offset=(0, 0, 0)) -> Geometry:
         """ Merge two geometries (or a Geometry and Lattice) by adding the two atoms together
 
@@ -2869,7 +2896,9 @@ class Geometry(LatticeChild, _Dispatchs,
             names = self._names.merge(other._names, offset=len(self))
         return self.__class__(xyz, atoms=atoms, lattice=lattice, names=names)
 
-    def add_vacuum(self, vacuum: float, axis: int):
+    def add_vacuum(self,
+                   vacuum: float,
+                   axis: int) -> Geometry:
         """ Add vacuum along the `axis` lattice vector
 
         When the vacuum is bigger than the maximum orbital ranges the
@@ -2896,7 +2925,8 @@ class Geometry(LatticeChild, _Dispatchs,
             new.lattice.set_nsc(nsc)
         return new
 
-    def insert(self, atom: int,
+    def insert(self,
+               atom: int,
                other: GeometryLike) -> Geometry:
         """ Inserts other atoms right before index
 
@@ -2985,7 +3015,8 @@ class Geometry(LatticeChild, _Dispatchs,
             return b.add(self)
         return self + b
 
-    def attach(self, atom: int,
+    def attach(self,
+               atom: int,
                other: GeometryLike,
                other_atom: int,
                dist='calc',
@@ -3055,7 +3086,8 @@ class Geometry(LatticeChild, _Dispatchs,
         # so we will do nothing...
         return self.add(o)
 
-    def replace(self, atoms: AtomsArgument,
+    def replace(self,
+                atoms: AtomsArgument,
                 other: GeometryLike,
                 offset=None) -> Geometry:
         """ Create a new geometry from `self` and replace `atoms` with `other`
@@ -3216,7 +3248,8 @@ class Geometry(LatticeChild, _Dispatchs,
         # Neither of atoms, or isc are `None`, we add the offset to all coordinates
         return self.axyz(atoms) + self.lattice.offset(isc)
 
-    def scale(self, scale,
+    def scale(self,
+              scale,
               what:str ="abc",
               scale_atoms: bool=True) -> Geometry:
         """ Scale coordinates and unit-cell to get a new geometry with proper scaling
@@ -3271,7 +3304,9 @@ class Geometry(LatticeChild, _Dispatchs,
 
         return self.__class__(xyz, atoms=atoms, lattice=lattice)
 
-    def within_sc(self, shapes, isc=None,
+    def within_sc(self,
+                  shapes,
+                  isc=None,
                   atoms: Optional[AtomsArgument]=None,
                   atoms_xyz=None,
                   ret_xyz: bool=False,
@@ -3431,7 +3466,10 @@ class Geometry(LatticeChild, _Dispatchs,
             return ret
         return ret[0]
 
-    def close_sc(self, xyz_ia, isc=(0, 0, 0), R=None,
+    def close_sc(self,
+                 xyz_ia,
+                 isc=(0, 0, 0),
+                 R=None,
                  atoms: Optional[AtomsArgument]=None,
                  atoms_xyz=None,
                  ret_xyz=False,
@@ -3615,8 +3653,11 @@ class Geometry(LatticeChild, _Dispatchs,
             return ret
         return ret[0]
 
-    def bond_correct(self, ia: int, atoms: AtomsArgument, method='calc'):
-        """ Corrects the bond between `ia` and the `atoms`.
+    def bond_correct(self,
+                     ia: int,
+                     atoms: AtomsArgument,
+                     method='calc') -> None:
+        """Corrects the bond between `ia` and the `atoms`.
 
         Corrects the bond-length between atom `ia` and `atoms` in such
         a way that the atomic radius is preserved.
@@ -3674,7 +3715,8 @@ class Geometry(LatticeChild, _Dispatchs,
             raise NotImplementedError(
                 'Changing bond-length dependent on several lacks implementation.')
 
-    def within(self, shapes,
+    def within(self,
+               shapes,
                atoms: Optional[AtomsArgument]=None,
                atoms_xyz=None,
                ret_xyz: bool=False,
@@ -3787,7 +3829,9 @@ class Geometry(LatticeChild, _Dispatchs,
             return ret[0]
         return ret
 
-    def close(self, xyz_ia, R=None,
+    def close(self,
+              xyz_ia,
+              R=None,
               atoms: Optional[AtomsArgument]=None,
               atoms_xyz=None,
               ret_xyz: bool=False,
@@ -4048,7 +4092,9 @@ class Geometry(LatticeChild, _Dispatchs,
         orb2 = orb2 % no + sc_index(-isc1) * no
         return orb2, orb1
 
-    def a2o(self, atoms: AtomsArgument, all: bool=False) -> ndarray:
+    def a2o(self,
+            atoms: AtomsArgument,
+            all: bool=False) -> ndarray:
         """
         Returns an orbital index of the first orbital of said atom.
         This is particularly handy if you want to create
@@ -4079,7 +4125,9 @@ class Geometry(LatticeChild, _Dispatchs,
 
         return _a.array_arange(ob, oe)
 
-    def o2a(self, orbitals: OrbitalsArgument, unique: bool=False) -> ndarray:
+    def o2a(self,
+            orbitals: OrbitalsArgument,
+            unique: bool=False) -> ndarray:
         """ Atomic index corresponding to the orbital indicies.
 
         Note that this will preserve the super-cell offsets.
@@ -4102,7 +4150,9 @@ class Geometry(LatticeChild, _Dispatchs,
             return np.unique(a + isc * self.na)
         return a + isc * self.na
 
-    def uc2sc(self, atoms: AtomsArgument, unique: bool=False) -> ndarray:
+    def uc2sc(self,
+              atoms: AtomsArgument,
+              unique: bool=False) -> ndarray:
         """ Returns atom from unit-cell indices to supercell indices, possibly removing dublicates
 
         Parameters
@@ -4119,7 +4169,9 @@ class Geometry(LatticeChild, _Dispatchs,
         return atoms
     auc2sc = uc2sc
 
-    def sc2uc(self, atoms: AtomsArgument, unique: bool=False) -> ndarray:
+    def sc2uc(self,
+              atoms: AtomsArgument,
+              unique: bool=False) -> ndarray:
         """ Returns atoms from supercell indices to unit-cell indices, possibly removing dublicates
 
         Parameters
@@ -4135,7 +4187,9 @@ class Geometry(LatticeChild, _Dispatchs,
         return atoms
     asc2uc = sc2uc
 
-    def osc2uc(self, orbitals: OrbitalsArgument, unique: bool=False) -> ndarray:
+    def osc2uc(self,
+               orbitals: OrbitalsArgument,
+               unique: bool=False) -> ndarray:
         """ Orbitals from supercell indices to unit-cell indices, possibly removing dublicates
 
         Parameters
@@ -4150,7 +4204,9 @@ class Geometry(LatticeChild, _Dispatchs,
             return np.unique(orbitals)
         return orbitals
 
-    def ouc2sc(self, orbitals: OrbitalsArgument, unique: bool=False) -> ndarray:
+    def ouc2sc(self,
+               orbitals: OrbitalsArgument,
+               unique: bool=False) -> ndarray:
         """ Orbitals from unit-cell indices to supercell indices, possibly removing dublicates
 
         Parameters
@@ -4216,8 +4272,12 @@ class Geometry(LatticeChild, _Dispatchs,
         """
         return self.lattice.offset(self.o2isc(orbitals))
 
-    def __plot__(self, axis=None, lattice: bool=True, axes=False,
-                 atom_indices: bool=False, *args, **kwargs):
+    def __plot__(self,
+                 axis=None,
+                 lattice: bool=True,
+                 axes=False,
+                 atom_indices: bool=False,
+                 *args, **kwargs):
         """ Plot the geometry in a specified ``matplotlib.Axes`` object.
 
         Parameters
@@ -4280,7 +4340,8 @@ class Geometry(LatticeChild, _Dispatchs,
 
         return axes
 
-    def equal(self, other: GeometryLike,
+    def equal(self,
+              other: GeometryLike,
               R: bool=True,
               tol: float=1e-4) -> bool:
         """ Whether two geometries are the same (optional not check of the orbital radius)
@@ -4356,10 +4417,11 @@ class Geometry(LatticeChild, _Dispatchs,
 
         return rij
 
-    def distance(self, atoms: Optional[AtomsArgument]=None,
+    def distance(self,
+                 atoms: Optional[AtomsArgument]=None,
                  R: Optional[float]=None,
                  tol: float=0.1,
-                 method: str='average'):
+                 method: str='average') -> Union[float, ndarray]:
         """ Calculate the distances for all atoms in shells of radius `tol` within `max_R`
 
         Parameters
@@ -4508,7 +4570,11 @@ class Geometry(LatticeChild, _Dispatchs,
 
         return d
 
-    def within_inf(self, lattice, periodic=None, tol: float=1e-5, origin=None):
+    def within_inf(self,
+                   lattice: Lattice,
+                   periodic=None,
+                   tol: float=1e-5,
+                   origin=None) -> tuple[ndarray, ndarray, ndarray]:
         """ Find all atoms within a provided supercell
 
         Note this function is rather different from `close` and `within`.
@@ -4628,7 +4694,7 @@ class Geometry(LatticeChild, _Dispatchs,
         # infinite supercell indices
         return self.sc2uc(idx), xyz, isc
 
-    def apply(self, data, func, mapper, axis: int=0, segments="atoms"):
+    def apply(self, data, func, mapper, axis: int=0, segments="atoms") -> ndarray:
         r"""Apply a function `func` to the data along axis `axis` using the method specified
 
         This can be useful for applying conversions from orbital data to atomic data through
