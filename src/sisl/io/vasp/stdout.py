@@ -24,12 +24,19 @@ class stdoutSileVASP(SileVASP):
     _info_attributes_ = [
         _A("completed", r".*General timing and accounting",
            lambda attr, match: lambda : True, default=lambda : False),
+        _A("accuracy_reached", r".*reached required accuracy",
+           lambda attr, match: lambda : True, default=lambda : False),
     ]
 
     @deprecation("stdoutSileVASP.completed is deprecated in favor of stdoutSileVASP.info.completed", "0.16.0")
     def completed(self):
         """ True if the line "General timing and accounting" was found. """
         return self.info.completed()
+
+    @deprecation("stdoutSileVASP.accuracy_reached is deprecated in favor of stdoutSileVASP.info.accuracy_reached", "0.16.0")
+    def accuracy_reached(self):
+        """ True if the line "reached required accuracy" was found. """
+        return self.info.accuracy_reached()
 
     @sile_fh_open()
     def cpu_time(self, flag="General timing and accounting"):
@@ -41,16 +48,10 @@ class stdoutSileVASP(SileVASP):
 
         found = self.step_to(flag, allow_reread=False)[0]
         if found:
-            self._completed = True
             for _ in range(nskip):
                 line = self.readline()
             return float(line.split()[iplace])
         raise KeyError(f"{self.__class__.__name__}.cpu_time could not find flag '{flag}' in file")
-
-    @sile_fh_open()
-    def accuracy_reached(self):
-        """ True if the line "reached required accuracy" was found. """
-        return self.step_to("reached required accuracy")[0]
 
     @SileBinder()
     @sile_fh_open()
