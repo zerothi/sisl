@@ -734,7 +734,7 @@ class Info:
     class _Info:
         """ The actual .info object that will attached to the instance.
 
-        As of know this is problematic to document.
+        As of now this is problematic to document.
         We should figure out a way to do that.
         """
 

@@ -27,7 +27,7 @@ class stdoutSileORCA(SileORCA):
            lambda attr, match: int(match.string.split()[-1])),
         _A("no", r".*Number of basis functions",
            lambda attr, match: int(match.string.split()[-1])),
-        _A("_vdw_", r".*DFT DISPERSION CORRECTION",
+        _A("vdw_correction", r".*DFT DISPERSION CORRECTION",
            lambda attr, match: True, default=False),
         _A("completed", r".*ORCA TERMINATED NORMALLY",
            lambda attr, match: True, default=False),
@@ -120,8 +120,8 @@ class stdoutSileORCA(SileORCA):
                     spin_block = False
 
                 self.readline() # skip ---
-                A = np.empty(self.na, np.float64)
-                for ia in range(self.na):
+                A = np.empty(self.info.na, np.float64)
+                for ia in range(self.info.na):
                     line = self.readline()
                     v = line.split()
                     if spin_block and not spin:
@@ -177,7 +177,7 @@ class stdoutSileORCA(SileORCA):
                 if orbitals is None:
                     return D
                 else:
-                    Da = np.zeros(self.na, np.float64)
+                    Da = np.zeros(self.info.na, np.float64)
                     for (ia, orb), d in D.items():
                         if orb == orbitals:
                             Da[ia] = d
@@ -203,9 +203,9 @@ class stdoutSileORCA(SileORCA):
                 if "MULLIKEN" in step_to:
                     self.readline() # skip line "The uncorrected..."
 
-                Do = np.empty(self.no, np.float64) # orbital-resolved
-                Da = np.zeros(self.na, np.float64) # atom-resolved
-                for io in range(self.no):
+                Do = np.empty(self.info.no, np.float64) # orbital-resolved
+                Da = np.zeros(self.info.na, np.float64) # atom-resolved
+                for io in range(self.info.no):
                     v = self.readline().split() # io, ia+element, orb, chg, (spin)
 
                     # split atom number and element from v[1]
@@ -265,7 +265,7 @@ class stdoutSileORCA(SileORCA):
                 E["embedding"] = float(v[-2]) * Ha2eV
             line = self.readline()
 
-        if self.info._vdw_:
+        if self.info.vdw_correction:
             self.step_to("DFT DISPERSION CORRECTION")
             v = self.step_to("Dispersion correction", allow_reread=False)[1].split()
             E["vdw"] = float(v[-1]) * Ha2eV
@@ -288,10 +288,10 @@ class stdoutSileORCA(SileORCA):
         self.readline() # skip ---
         if "SPIN UP ORBITALS" in self.readline():
             spin = True
-            E = np.empty([self.no, 2], np.float64)
+            E = np.empty([self.info.no, 2], np.float64)
         else:
             spin = False
-            E = np.empty([self.no, 1], np.float64)
+            E = np.empty([self.info.no, 1], np.float64)
 
         self.readline() # Skip "NO OCC" header line
 
