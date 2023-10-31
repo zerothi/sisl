@@ -1097,9 +1097,9 @@ class Geometry(LatticeChild, _Dispatchs,
             yield all_idx[0], all_idx[1]
 
         if np.any(not_passed):
-            print(not_passed.nonzero()[0])
-            print(np.sum(not_passed), len(self))
-            raise SislError(f'{self.__class__.__name__}.iter_block_shape error on iterations. Not all atoms have been visited.')
+            not_passed = not_passed.nonzero()[0]
+            raise SislError(f"{self.__class__.__name__}.iter_block_shape error on iterations. Not all atoms have been visited "
+                            f"{not_passed}")
 
     def iter_block(self, iR: int=20, R: float=None,
                    atoms: Optional[AtomsArgument]=None,
