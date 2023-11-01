@@ -9,7 +9,11 @@ SISL_NODES_CONTEXT = dict(
     # On initialization, should the node compute? If None, defaults to `lazy`.
     lazy_init=None,
     # The level of logs stored in the node.
-    log_level="INFO"
+    log_level="INFO",
+    # Whether to raise a custom error exception (e.g. NodeCalcError) By default 
+    # it is turned off because it can obscure the real problem by not showing it
+    # in the last traceback frame.
+    raise_custom_errors=False,
 )
 
 # Temporal contexts stack. It should not be used directly by users, the aim of this

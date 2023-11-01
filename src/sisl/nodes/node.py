@@ -90,6 +90,8 @@ class Node(NDArrayOperatorsMixin):
     # Whether the node has errored during the last execution
     # with the current inputs.
     _errored: bool
+    # The error that was raised during the last execution
+    _error: Optional[NodeError] = None
 
     # Logs of the node's execution.
     _logger: logging.Logger
@@ -133,6 +135,7 @@ class Node(NDArrayOperatorsMixin):
 
         self._outdated = True
         self._errored = False
+        self._error = None
 
         self._logger = logging.getLogger(
             str(id(self))
@@ -370,12 +373,18 @@ class Node(NDArrayOperatorsMixin):
                 self.logs += logs.stream.getvalue()
                 logs.close()
                 self._errored = True
-                raise NodeCalcError(self, e, evaluated_inputs)
+                self._error = NodeCalcError(self, e, evaluated_inputs)
+                
+                if self.context['raise_custom_errors']:
+                    raise self._error
+                else:
+                    raise e
             
             self._nupdates += 1
             self._prev_evaluated_inputs = evaluated_inputs
             self._outdated = False
             self._errored = False
+            self._error = None
         else:
             self._logger.info(f"No need to evaluate")
 
