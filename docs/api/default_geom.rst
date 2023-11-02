@@ -67,6 +67,8 @@ Surfaces (slabs)
    honeycomb
    bilayer
    graphene
+   honeycomb_flake
+   graphene_flake
 
 
 Helpers

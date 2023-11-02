@@ -51,6 +51,26 @@ def test_flat():
     a = graphene(orthogonal=True)
     assert is_right_handed(a)
 
+def test_flat_flakes():
+    g = graphene_flake(shells=0, bond=1.42)
+    assert g.na == 6
+    # All atoms are close to the center
+    assert len(g.close(g.center(), 1.44)) == g.na
+    # All atoms have two neighbours
+    assert len(g.axyz(AtomNeighbours(min=2, max=2, R=1.44))) == g.na
+
+    g = graphene_flake(shells=1, bond=1.42)
+    assert g.na == 24
+    assert len(g.close(g.center(), 4)) == g.na
+    assert len(g.axyz(AtomNeighbours(min=2, max=2, R=1.44))) == 12
+    assert len(g.axyz(AtomNeighbours(min=3, max=3, R=1.44))) == 12
+
+    bn = honeycomb_flake(shells=1, atoms=['B', 'N'], bond=1.42)
+    assert bn.na == 24
+    assert np.allclose(bn.xyz, g.xyz)
+    # Check that atoms are alternated.
+    assert len(bn.axyz(AtomZ(5) & AtomNeighbours(min=1, R=1.44, neighbour=AtomZ(5)))) == 0
+
 def test_nanotube():
     a = nanotube(1.42)
     assert is_right_handed(a)
