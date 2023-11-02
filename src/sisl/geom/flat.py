@@ -74,6 +74,7 @@ def graphene(bond=1.42, atoms=None, orthogonal=False):
         atoms = Atom(Z=6, R=bond * 1.01)
     return honeycomb(bond, atoms, orthogonal)
 
+@set_module("sisl.geom")
 def honeycomb_flake(shells: int, bond: float, atoms, vacuum: float = 20.) -> Geometry:
     """Hexagonal flake of a honeycomb lattice, with zig-zag edges.
 
@@ -159,6 +160,7 @@ def honeycomb_flake(shells: int, bond: float, atoms, vacuum: float = 20.) -> Geo
 
     return geom
 
+@set_module("sisl.geom")
 def graphene_flake(shells: int, bond: float = 1.42, atoms=None, vacuum: float = 20.) -> Geometry:
     """Hexagonal flake of graphene, with zig-zag edges.
 
