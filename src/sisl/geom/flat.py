@@ -156,7 +156,7 @@ def honeycomb_flake(shells: int, bond: float, atoms, vacuum: float = 20.) -> Geo
     geom = geom.translate(geom.center(what="cell"))
 
     # Set boundary conditions
-    geom.lattice.set_boundary_condition(a="Unknown", b="Unknown", c="Unknown")
+    geometry_define_nsc(geom, [False, False, False])
 
     return geom
 
