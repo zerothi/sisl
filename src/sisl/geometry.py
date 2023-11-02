@@ -1821,11 +1821,13 @@ class Geometry(LatticeChild, _Dispatchs,
             while prev_isc == isc[i]:
                 # Try next supercell connection
                 isc[i] += 1
-                for ia in self:
-                    idx = self.close_sc(ia, isc=isc, R=R)
-                    if len(idx) > 0:
-                        prev_isc = isc[i]
-                        break
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    for ia in self:
+                        idx = self.close_sc(ia, isc=isc, R=R)
+                        if len(idx) > 0:
+                            prev_isc = isc[i]
+                            break
 
             # Save the reached supercell connection
             nsc[i] = prev_isc * 2 + 1
@@ -3588,7 +3590,7 @@ class Geometry(LatticeChild, _Dispatchs,
 
         # Maximum distance queried
         max_R = R[-1]
-        if atoms is not None and max_R > maxR:
+        if atoms is not None and max_R > maxR + 0.1:
             warn(f"{self.__class__.__name__}.close_sc has been passed an 'atoms' argument "
                  "together with an R value larger than the orbital ranges. "
                  "If used together with 'sparse-matrix.construct' this can result in wrong couplings.",
