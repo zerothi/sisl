@@ -9,6 +9,12 @@ We love your input! We want to make contributing to this project as easy and tra
 ## We Develop with GitHub
 We use GitHub to host code, to track issues and feature requests, as well as accept pull requests.
 
+Our repository uses a filter on Jupyter notebooks. So if you are planning on changing notebook content,
+you should add this change to your `.git/config`, or in your global `.gitconfig` file:
+
+    [filter "strip-notebook-output"]
+        clean = "jupyter nbconvert --ClearOutputPreprocessor.enabled=True --to=notebook --stdin --stdout --log-level=ERROR"
+
 ## First-time contributors
 Add a comment on the issue and wait for the issue to be assigned before you start working on it. This helps to avoid multiple people working on similar issues.
 
