@@ -1,6 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from typing import Tuple
+
 import numpy as np
 
 from sisl import Atom, Geometry, Lattice
@@ -14,7 +16,7 @@ __all__ = ['nanotube']
 @set_module("sisl.geom")
 def nanotube(bond: float,
              atoms=None,
-             chirality: tuple[int, int]=(1, 1)):
+             chirality: Tuple[int, int]=(1, 1)):
     """ Nanotube with user-defined chirality.
 
     This routine is implemented as in `ASE`_ with some cosmetic changes.

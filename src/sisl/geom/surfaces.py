@@ -4,7 +4,7 @@
 from collections import namedtuple
 from itertools import groupby
 from numbers import Integral
-from typing import Sequence, Union
+from typing import Sequence, Tuple, Union
 
 import numpy as np
 
@@ -277,7 +277,7 @@ def _slab_with_vacuum(func, *args, **kwargs):
 @set_module("sisl.geom")
 def fcc_slab(alat: float,
              atoms,
-             miller: Union[int, str, tuple[int, int, int]],
+             miller: Union[int, str, Tuple[int, int, int]],
              layers=None,
              vacuum: Union[float, Sequence[float]]=20.,
              *,
@@ -471,7 +471,7 @@ def fcc_slab(alat: float,
 @set_module("sisl.geom")
 def bcc_slab(alat: float,
              atoms,
-             miller: Union[int, str, tuple[int, int, int]],
+             miller: Union[int, str, Tuple[int, int, int]],
              layers=None,
              vacuum: Union[float, Sequence[float]]=20.,
              *,
@@ -625,7 +625,7 @@ def bcc_slab(alat: float,
 @set_module("sisl.geom")
 def rocksalt_slab(alat: float,
                   atoms,
-                  miller: Union[int, str, tuple[int, int, int]],
+                  miller: Union[int, str, Tuple[int, int, int]],
                   layers=None,
                   vacuum: Union[float, Sequence[float]]=20.,
                   *,

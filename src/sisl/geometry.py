@@ -12,7 +12,7 @@ from itertools import product
 from math import acos
 from numbers import Integral, Real
 from pathlib import Path
-from typing import TYPE_CHECKING, Iterator, List, Optional, Union
+from typing import TYPE_CHECKING, Iterator, List, Optional, Tuple, Union
 
 import numpy as np
 from numpy import (
@@ -933,7 +933,7 @@ class Geometry(LatticeChild, _Dispatchs,
     def iter_block_rand(self,
                         iR: int=20,
                         R: Optional[float]=None,
-                        atoms: Optional[AtomsArgument]=None) -> Iterator[tuple[ndarray, ndarray]]:
+                        atoms: Optional[AtomsArgument]=None) -> Iterator[Tuple[ndarray, ndarray]]:
         """Perform the *random* block-iteration by randomly selecting the next center of block """
 
         # We implement yields as we can then do nested iterators
@@ -1010,7 +1010,7 @@ class Geometry(LatticeChild, _Dispatchs,
     def iter_block_shape(self,
                          shape=None,
                          iR: int=20,
-                         atoms: Optional[AtomsArgument]=None) -> Iterator[tuple[ndarray, ndarray]]:
+                         atoms: Optional[AtomsArgument]=None) -> Iterator[Tuple[ndarray, ndarray]]:
         """Perform the *grid* block-iteration by looping a grid """
 
         # We implement yields as we can then do nested iterators
@@ -1137,7 +1137,7 @@ class Geometry(LatticeChild, _Dispatchs,
                    iR: int=20,
                    R: Optional[float]=None,
                    atoms: Optional[AtomsArgument]=None,
-                   method: str='rand') -> Iterator[tuple[ndarray, ndarray]]:
+                   method: str='rand') -> Iterator[Tuple[ndarray, ndarray]]:
         """Iterator for performance critical loops
 
         NOTE: This requires that `R` has been set correctly as the maximum interaction range.
@@ -1209,7 +1209,7 @@ class Geometry(LatticeChild, _Dispatchs,
                 other: GeometryLikeType,
                 eps: float=0.1,
                 offset=(0., 0., 0.),
-                offset_other=(0., 0., 0.)) -> tuple[ndarray, ndarray]:
+                offset_other=(0., 0., 0.)) -> Tuple[ndarray, ndarray]:
         """ Calculate the overlapping indices between two geometries
 
         Find equivalent atoms (in the primary unit-cell only) in two geometries.
@@ -1264,7 +1264,7 @@ class Geometry(LatticeChild, _Dispatchs,
             other_extend(idx)
         return _a.arrayi(idx_self), _a.arrayi(idx_other)
 
-    def sort(self, **kwargs) -> Union[Geometry, tuple[Geometry, List]]:
+    def sort(self, **kwargs) -> Union[Geometry, Tuple[Geometry, List]]:
         r""" Sort atoms in a nested fashion according to various criteria
 
         There are many ways to sort a `Geometry`.
@@ -4031,7 +4031,7 @@ class Geometry(LatticeChild, _Dispatchs,
 
     def a2transpose(self,
                     atoms1: AtomsArgument,
-                    atoms2: Optional[AtomsArgument]=None) -> tuple[ndarray, ndarray]:
+                    atoms2: Optional[AtomsArgument]=None) -> Tuple[ndarray, ndarray]:
         """Transposes connections from `atoms1` to `atoms2` such that supercell connections are transposed
 
         When handling supercell indices it is useful to get the *transposed* connection. I.e. if you have
@@ -4095,7 +4095,7 @@ class Geometry(LatticeChild, _Dispatchs,
 
     def o2transpose(self,
                     orb1: OrbitalsArgument,
-                    orb2: Optional[OrbitalsArgument]=None) -> tuple[ndarray, ndarray]:
+                    orb2: Optional[OrbitalsArgument]=None) -> Tuple[ndarray, ndarray]:
         """ Transposes connections from `orb1` to `orb2` such that supercell connections are transposed
 
         When handling supercell indices it is useful to get the *transposed* connection. I.e. if you have
@@ -4639,7 +4639,7 @@ class Geometry(LatticeChild, _Dispatchs,
                    lattice: Lattice,
                    periodic=None,
                    tol: float=1e-5,
-                   origin=None) -> tuple[ndarray, ndarray, ndarray]:
+                   origin=None) -> Tuple[ndarray, ndarray, ndarray]:
         """ Find all atoms within a provided supercell
 
         Note this function is rather different from `close` and `within`.
