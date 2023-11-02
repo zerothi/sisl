@@ -8,6 +8,8 @@ we hit release version 1.0.0.
 ## [0.14.3] - YYYY-MM-DD
 
 ### Added
+- Creation of honeycomb flakes (`sisl.geom.honeycomb_flake`,
+`sisl.geom.graphene_flake`). #636
 - added `Geometry.as_supercell` to create the supercell structure,
   thanks to @pfebrer for the suggestion
 - added `Lattice.to` and `Lattice.new` to function the same
