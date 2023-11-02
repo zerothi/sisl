@@ -87,7 +87,7 @@ Added
 * `sisl.mixing`:
   * `AndersonMixer` enables the popular and very simple linear-like mixer
   * `StepMixer` allows switching between different mixers, for instance this
-     enabled restart capabilities among other things.
+    enabled restart capabilities among other things.
   * Enabled composite mixers (simple math with mixers)
 * `BrillouinZone.merge` allows simple merging of several objects, #537
 

@@ -64,6 +64,7 @@ to the right place!
     :name: viz-plotly-combining-plots-gallery
 
     combining-plots/Intro to combining plots.ipynb
+
 Do it yourself
 ^^^^^^^^^^^^^^
 

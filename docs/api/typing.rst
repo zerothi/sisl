@@ -3,9 +3,9 @@
 Typing
 ======
 
-.. module:: sisl
+.. module:: sisl.typing
 
-sisl will use :ref:`typing <https://docs.python.org/3/library/typing.html>`
+sisl will use `typing <https://docs.python.org/3/library/typing.html>`__
 to enable static analyzers and to aid users when reading documentation.
 
 The typing types is shown below:
@@ -16,7 +16,7 @@ The typing types is shown below:
    AtomsArgument
    OrbitalsArgument
    SileLike
-   AtomLike
+   AtomsLike
    LatticeLike
    GeometryLike
    LatticeOrGeometry
