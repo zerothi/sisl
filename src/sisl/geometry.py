@@ -12,7 +12,7 @@ from itertools import product
 from math import acos
 from numbers import Integral, Real
 from pathlib import Path
-from typing import TYPE_CHECKING, Iterator, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Iterator, List, Optional, Sequence, Tuple, Union
 
 import numpy as np
 from numpy import (
@@ -1762,7 +1762,7 @@ class Geometry(LatticeChild, _Dispatchs,
         return self.sub(atoms_flat)
 
     def optimize_nsc(self,
-                     axis=None,
+                     axes: Optional[Union[int, Sequence[int]]]=None,
                      R: Optional[float]=None) -> ndarray:
         """ Optimize the number of supercell connections based on ``self.maxR()``
 
@@ -1772,15 +1772,17 @@ class Geometry(LatticeChild, _Dispatchs,
 
         Parameters
         ----------
-        axis : int or array_like, optional
-           only optimize the specified axis (default to all)
+        axes :
+           only optimize the specified axes (default to all)
         R :
            the maximum connection radius for each atom
         """
-        if axis is None:
-            axis = [0, 1, 2]
+        if axes is None:
+            axes = [0, 1, 2]
         else:
-            axis = _a.asarrayi(axis).ravel()
+            axes = _a.asarrayi(axes).ravel()
+        if len(axes) == 0:
+            return self.nsc
 
         if R is None:
             R = self.maxR() + 0.001
@@ -1802,12 +1804,12 @@ class Geometry(LatticeChild, _Dispatchs,
         # I don't think we need anything other than this.
         # However, until I am sure that this wouldn't change, regardless of the
         # cell. I will keep it.
-        Rimcell = R * fnorm(imcell)[axis]
-        nsc[axis] = (floor(Rimcell) + ceil(Rimcell % 0.5 - 0.5)).astype(np.int32)
+        Rimcell = R * fnorm(imcell)[axes]
+        nsc[axes] = (floor(Rimcell) + ceil(Rimcell % 0.5 - 0.5)).astype(np.int32)
         # Since for 1 it is not sure that it is a connection or not, we limit the search by
         # removing it.
-        nsc[axis] = np.where(nsc[axis] > 1, nsc[axis], 0)
-        for i in axis:
+        nsc[axes] = np.where(nsc[axes] > 1, nsc[axes], 0)
+        for i in axes:
             # Initialize the isc for this direction
             # (note we do not take non-orthogonal directions
             #  into account)

@@ -9,11 +9,12 @@ __all__ = ["geometry_define_nsc", "geometry2uc"]
 def geometry_define_nsc(geometry, periodic=(True, True, True)):
     """Define the number of supercells for a geometry based on the periodicity """
     if np.all(geometry.maxR(True) > 0.):
-        geometry.optimize_nsc()
+        # strip away optimizing nsc for the non-periodic directions
+        axes = [i for i, p in enumerate(periodic) if p]
+
+        geometry.optimize_nsc(axes)
         for d, per in zip("abc", periodic):
-            if per:
-                geometry.lattice.set_boundary_condition(**{d: "Periodic"})
-            else:
+            if not per:
                 geometry.set_nsc(**{d: 1})
     else:
         nsc = [3 if p else 1 for p in periodic]
