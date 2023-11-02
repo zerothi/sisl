@@ -3,6 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from math import acos, pi
 from numbers import Integral
+from typing import Optional
 
 import numpy as np
 
@@ -15,8 +16,14 @@ __all__ = ['bilayer']
 
 
 @set_module("sisl.geom")
-def bilayer(bond=1.42, bottom_atoms=None, top_atoms=None, stacking='AB',
-            twist=(0, 0), separation=3.35, ret_angle=False, layer='both'):
+def bilayer(bond: float=1.42,
+            bottom_atoms: Optional=None,
+            top_atoms: Optional=None,
+            stacking: str='AB',
+            twist=(0, 0),
+            separation: float=3.35,
+            ret_angle: bool=False,
+            layer: str='both'):
     r""" Commensurate unit cell of a hexagonal bilayer structure, possibly with a twist angle.
 
     This routine follows the prescription of twisted bilayer graphene found in :cite:`Trambly2010`.

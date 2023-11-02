@@ -19,16 +19,19 @@ __all__ = [
 
 
 @set_module("sisl.geom")
-def nanoribbon(width, bond, atoms, kind='armchair'):
+def nanoribbon(width: int,
+               bond: float,
+               atoms,
+               kind: str='armchair'):
     r""" Construction of a nanoribbon unit cell of type armchair or zigzag.
 
     The geometry is oriented along the :math:`x` axis.
 
     Parameters
     ----------
-    width : int
+    width :
        number of atoms in the transverse direction
-    bond : float
+    bond :
        bond length between atoms in the honeycomb lattice
     atoms : Atom
        atom (or atoms) in the honeycomb lattice
@@ -91,14 +94,17 @@ def nanoribbon(width, bond, atoms, kind='armchair'):
 
 
 @set_module("sisl.geom")
-def graphene_nanoribbon(width, bond=1.42, atoms=None, kind='armchair'):
+def graphene_nanoribbon(width: int,
+                        bond: float=1.42,
+                        atoms=None,
+                        kind: str='armchair'):
     r""" Construction of a graphene nanoribbon
 
     Parameters
     ----------
-    width : int
+    width :
        number of atoms in the transverse direction
-    bond : float, optional
+    bond :
        C-C bond length
     atoms : Atom, optional
        atom (or atoms) in the honeycomb lattice. Defaults to ``Atom(6)``
@@ -119,14 +125,16 @@ def graphene_nanoribbon(width, bond=1.42, atoms=None, kind='armchair'):
 
 
 @set_module("sisl.geom")
-def agnr(width, bond=1.42, atoms=None):
+def agnr(width: int,
+         bond: float=1.42,
+         atoms=None):
     r""" Construction of an armchair graphene nanoribbon
 
     Parameters
     ----------
-    width : int
+    width :
        number of atoms in the transverse direction
-    bond : float, optional
+    bond :
        C-C bond length
     atoms : Atom, optional
        atom (or atoms) in the honeycomb lattice. Defaults to ``Atom(6)``
@@ -143,14 +151,16 @@ def agnr(width, bond=1.42, atoms=None):
 
 
 @set_module("sisl.geom")
-def zgnr(width, bond=1.42, atoms=None):
+def zgnr(width: int,
+         bond: float=1.42,
+         atoms=None):
     r""" Construction of a zigzag graphene nanoribbon
 
     Parameters
     ----------
-    width : int
+    width :
        number of atoms in the transverse direction
-    bond : float, optional
+    bond :
        C-C bond length
     atoms : Atom, optional
        atom (or atoms) in the honeycomb lattice. Defaults to ``Atom(6)``
@@ -580,7 +590,9 @@ class _heteroribbon_section(CompositeGeometrySection):
     
 
 @set_module("sisl.geom")
-def heteroribbon(sections, section_cls=_heteroribbon_section, **kwargs):
+def heteroribbon(sections,
+                 section_cls=_heteroribbon_section,
+                 **kwargs):
     """Build a nanoribbon consisting of several nanoribbons of different widths.
 
     This function uses `composite_geometry`, but defaulting to the usage
@@ -623,7 +635,11 @@ heteroribbon.section = _heteroribbon_section
 
 
 @set_module("sisl.geom")
-def graphene_heteroribbon(sections, section_cls=_heteroribbon_section, bond=1.42, atoms=None, **kwargs):
+def graphene_heteroribbon(sections,
+                          section_cls=_heteroribbon_section,
+                          bond: float=1.42,
+                          atoms=None,
+                          **kwargs):
     """Build a graphene nanoribbon consisting of several nanoribbons of different widths
 
     Please see `heteroribbon` for arguments, the only difference is that the `bond` and `atoms`

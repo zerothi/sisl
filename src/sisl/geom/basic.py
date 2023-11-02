@@ -23,12 +23,13 @@ _t60 = 3 ** .5
 
 
 @set_module("sisl.geom")
-def sc(alat, atom):
+def sc(alat: float,
+       atom):
     """ Simple cubic lattice with 1 atom
 
     Parameters
     ----------
-    alat : float
+    alat :
         lattice parameter
     atom : Atom
         the atom in the SC lattice
@@ -42,16 +43,18 @@ def sc(alat, atom):
 
 
 @set_module("sisl.geom")
-def bcc(alat, atoms, orthogonal=False):
+def bcc(alat: float,
+        atoms,
+        orthogonal: bool=False):
     """ Body centered cubic lattice with 1 (non-orthogonal) or 2 atoms (orthogonal)
 
     Parameters
     ----------
-    alat : float
+    alat :
         lattice parameter
     atoms : Atom
         the atom(s) in the BCC lattice
-    orthogonal : bool, optional
+    orthogonal :
         whether the lattice is orthogonal (2 atoms)
     """
     if orthogonal:
@@ -70,16 +73,18 @@ def bcc(alat, atoms, orthogonal=False):
 
 
 @set_module("sisl.geom")
-def fcc(alat, atoms, orthogonal=False):
+def fcc(alat: float,
+        atoms,
+        orthogonal: bool=False):
     """ Face centered cubic lattice with 1 (non-orthogonal) or 4 atoms (orthogonal)
 
     Parameters
     ----------
-    alat : float
+    alat :
         lattice parameter
     atoms : Atom
         the atom(s) in the FCC lattice
-    orthogonal : bool, optional
+    orthogonal :
         whether the lattice is orthogonal (4 atoms)
     """
     if orthogonal:
@@ -99,18 +104,21 @@ def fcc(alat, atoms, orthogonal=False):
 
 
 @set_module("sisl.geom")
-def hcp(a, atoms, coa=1.63333, orthogonal=False):
+def hcp(a: float,
+        atoms,
+        coa: float=49/30,
+        orthogonal: bool=False):
     """ Hexagonal closed packed lattice with 2 (non-orthogonal) or 4 atoms (orthogonal)
 
     Parameters
     ----------
-    a : float
+    a :
         lattice parameter for 1st and 2nd lattice vectors
     atoms : Atom
         the atom(s) in the HCP lattice
-    coa : float, optional
+    coa :
         c over a parameter where c is the 3rd lattice vector length
-    orthogonal : bool, optional
+    orthogonal :
         whether the lattice is orthogonal (4 atoms)
     """
     # height of hcp structure
@@ -142,18 +150,20 @@ def hcp(a, atoms, coa=1.63333, orthogonal=False):
 
 
 @set_module("sisl.geom")
-def rocksalt(alat, atoms, orthogonal=False):
+def rocksalt(alat: float,
+             atoms,
+             orthogonal: bool=False):
     """ Two-element rocksalt lattice with 2 (non-orthogonal) or 8 atoms (orthogonal)
 
     This is equivalent to the NaCl crystal structure (halite).
 
     Parameters
     ----------
-    alat : float
+    alat :
         lattice parameter
-    atoms : list
+    atoms : Atom
         a list of two atoms that the crystal consists of
-    orthogonal : bool, optional
+    orthogonal: 
         whether the lattice is orthogonal or not
     """
     if isinstance(atoms, str):

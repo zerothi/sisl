@@ -5,22 +5,40 @@
 # This contains typing things specific to sisl
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Union
 
 from sisl import Atom, Atoms, Geometry, Lattice
 
 #from typing import TYPE_CHECKING, final
 
+AtomsLike = Union[
+    Atom,
+    Atoms,
+]
 
+SileLike = Union[
+    "BaseSile",
+    str,
+    Path,
+]
 
-# A Lattice or a Geometry
-CellOrGeometry = Union[
+GeometryLike = Union[
+    SileLike,
+    Geometry,
+]
+
+LatticeLike = Union[
+    SileLike,
+    Lattice,
+]
+
+LatticeOrGeometry = Union[
     Lattice,
     Geometry,
 ]
 
-# A basic atom or an Atom
-AtomLike = Union[
-    Atom,
-    Atoms,
+LatticeOrGeometryLike = Union[
+    LatticeLike,
+    Geometry,
 ]

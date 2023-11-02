@@ -5,9 +5,9 @@ import numpy as np
 
 from sisl._internal import set_module
 from sisl.geometry import Geometry
+from sisl.messages import deprecation
 from sisl.unit import units
 from sisl.utils import PropertyDict
-from sisl.messages import deprecation
 
 from .._multiple import SileBinder
 from ..sile import add_sile, sile_fh_open

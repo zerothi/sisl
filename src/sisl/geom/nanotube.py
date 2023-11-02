@@ -12,7 +12,9 @@ __all__ = ['nanotube']
 
 
 @set_module("sisl.geom")
-def nanotube(bond, atoms=None, chirality=(1, 1)):
+def nanotube(bond: float,
+             atoms=None,
+             chirality: tuple[int, int]=(1, 1)):
     """ Nanotube with user-defined chirality.
 
     This routine is implemented as in `ASE`_ with some cosmetic changes.

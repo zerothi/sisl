@@ -39,4 +39,4 @@ All methods and submodules are listed  :ref:`here <genindex>` and
    :caption: Advanced usage
 
    nodes
-
+   typing

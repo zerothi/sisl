@@ -274,5 +274,3 @@ def progressbar(total, desc, unit, eta, **kwargs):
                 pass
         bar = Fake()
     return bar
-
-tqdm_eta = deprecation("Use sisl.messages.progress_bar instead", "0.13")(progressbar)

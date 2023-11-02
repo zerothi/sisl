@@ -12,7 +12,8 @@ __all__ = ['diamond']
 
 
 @set_module("sisl.geom")
-def diamond(alat=3.57, atoms=None):
+def diamond(alat: float=3.57,
+            atoms=None):
     """ Diamond lattice with 2 atoms in the unitcell
 
     Parameters

@@ -12,18 +12,20 @@ __all__ = ['honeycomb', 'graphene']
 
 
 @set_module("sisl.geom")
-def honeycomb(bond, atoms, orthogonal=False):
+def honeycomb(bond: float,
+              atoms,
+              orthogonal: bool=False):
     """ Honeycomb lattice with 2 or 4 atoms per unit-cell, latter orthogonal cell
 
     This enables creating BN lattices with ease, or graphene lattices.
 
     Parameters
     ----------
-    bond : float
+    bond :
         bond length between atoms (*not* lattice constant)
     atoms : Atom
         the atom (or atoms) that the honeycomb lattice consists of
-    orthogonal : bool, optional
+    orthogonal :
         if True returns an orthogonal lattice
 
     See Also
@@ -52,17 +54,20 @@ def honeycomb(bond, atoms, orthogonal=False):
     return g
 
 
-def graphene(bond=1.42, atoms=None, orthogonal=False):
+@set_module("sisl.geom")
+def graphene(bond: float=1.42,
+             atoms=None,
+             orthogonal: bool=False):
     """ Graphene lattice with 2 or 4 atoms per unit-cell, latter orthogonal cell
 
     Parameters
     ----------
-    bond : float
+    bond :
         bond length between atoms (*not* lattice constant)
     atoms : Atom, optional
         the atom (or atoms) that the honeycomb lattice consists of.
         Default to Carbon atom.
-    orthogonal : bool, optional
+    orthogonal :
         if True returns an orthogonal lattice
 
     See Also

@@ -9,6 +9,7 @@ import numpy as np
 import sisl._typing_ext.numpy as npt
 from sisl import Atom, Atoms, BaseSile, Geometry, Lattice, Shape
 from sisl._category import GenericCategory
+from sisl._typing import *
 from sisl.geom.category import AtomCategory
 
 # An atoms like argument that may be parsed by Geometry._sanitize_atoms
@@ -26,35 +27,4 @@ OrbitalsArgument = Union[
     str, int, dict,
     AtomCategory,
     Shape,
-]
-
-AtomLike = Union[
-    Atom,
-    Atoms,
-]
-
-SileLike = Union[
-    BaseSile,
-    str,
-    Path,
-]
-
-GeometryLike = Union[
-    SileLike,
-    Geometry,
-]
-
-LatticeLike = Union[
-    SileLike,
-    Lattice,
-]
-
-CellOrGeometry = Union[
-    Lattice,
-    Geometry,
-]
-
-CellOrGeometryLike = Union[
-    LatticeLike,
-    Geometry,
 ]

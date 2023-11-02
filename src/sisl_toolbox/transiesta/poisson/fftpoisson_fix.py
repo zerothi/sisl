@@ -59,6 +59,8 @@ import sisl as si
 __all__ = ['pyamg_solve', 'solve_poisson', 'fftpoisson_fix_cli', 'fftpoisson_fix_run']
 
 
+_BC = si.BoundaryCondition
+
 # Base-script name
 _script = Path(sys.argv[0]).name
 
@@ -111,16 +113,16 @@ def solve_poisson(geometry, shape, radius="empirical",
         raise ValueError(f"{_script}: Missing electrode arguments for specifying the bias.")
 
     if boundary is None:
-        bc = [[si.Grid.PERIODIC, si.Grid.PERIODIC] for _ in range(3)]
+        bc = [[_BC.PERIODIC, _BC.PERIODIC] for _ in range(3)]
     else:
         bc = []
         def bc2bc(s):
-            return {'periodic': 'PERIODIC', 'p': 'PERIODIC', si.Grid.PERIODIC: 'PERIODIC',
-                    'dirichlet': 'DIRICHLET', 'd': 'DIRICHLET', si.Grid.DIRICHLET: 'DIRICHLET',
-                    'neumann': 'NEUMANN', 'n': 'NEUMANN', si.Grid.NEUMANN: 'NEUMANN',
+            return {'periodic': 'PERIODIC', 'p': 'PERIODIC', _BC.PERIODIC: 'PERIODIC',
+                    'dirichlet': 'DIRICHLET', 'd': 'DIRICHLET', _BC.DIRICHLET: 'DIRICHLET',
+                    'neumann': 'NEUMANN', 'n': 'NEUMANN', _BC.NEUMANN: 'NEUMANN',
             }.get(s.lower(), s.upper())
         for bottom, top in boundary:
-            bc.append([getattr(si.Grid, bc2bc(bottom)), getattr(si.Grid, bc2bc(top))])
+            bc.append([getattr(_BC, bc2bc(bottom)), getattr(_BC, bc2bc(top))])
         if len(bc) != 3:
             raise ValueError(f"{_script}: Requires a 3x2 list input for the boundary conditions.")
 
@@ -155,7 +157,8 @@ def solve_poisson(geometry, shape, radius="empirical",
         return AA | BB
 
     # Create grid
-    grid = si.Grid(shape, geometry=geometry, bc=bc, dtype=dtype)
+    geometry.set_boundary_condition(bc)
+    grid = si.Grid(shape, geometry=geometry, dtype=dtype)
     class _fake:
         @property
         def shape(self):

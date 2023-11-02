@@ -36,7 +36,7 @@ from numpy import (
 from sisl._typing_ext.numpy import ArrayLike, NDArray
 
 if TYPE_CHECKING:
-    from sisl.typing import AtomsArgument, OrbitalsArgument, SileType
+    from sisl.typing import AtomsArgument, OrbitalsArgument, SileType, LatticeOrGeometryLike
 
 from . import _array as _a
 from . import _plot as plt
@@ -177,7 +177,11 @@ class Geometry(LatticeChild, _Dispatchs,
     @deprecate_argument("sc", "lattice",
                         "argument sc has been deprecated in favor of lattice, please update your code.",
                         "0.15.0")
-    def __init__(self, xyz: ArrayLike, atoms=None, lattice=None, names=None):
+    def __init__(self,
+                 xyz: ArrayLike,
+                 atoms=None,
+                 lattice=None,
+                 names=None):
 
         # Create the geometry coordinate, be aware that we do not copy!
         self.xyz = _a.asarrayd(xyz).reshape(-1, 3)
@@ -455,7 +459,10 @@ class Geometry(LatticeChild, _Dispatchs,
             return np.add.outer(self.firsto[atom], orbs).ravel()
         return np.concatenate(tuple(conv(atom, orbs) for atom, orbs in orbitals.items()))
 
-    def as_primary(self, na_primary: int, axes=(0, 1, 2), ret_super: bool=False) -> Union[Geometry, Tuple[Geometry, Lattice]]:
+    def as_primary(self,
+                   na_primary: int,
+                   axes=(0, 1, 2),
+                   ret_super: bool=False) -> Union[Geometry, Tuple[Geometry, Lattice]]:
         """Reduce the geometry to the primary unit-cell comprising `na_primary` atoms
 
         This will basically try and find the tiling/repetitions required for the geometry to only have
@@ -632,7 +639,9 @@ class Geometry(LatticeChild, _Dispatchs,
         """
         self._atoms = self.atoms.reduce(in_place=True)
 
-    def rij(self, ia: AtomsArgument, ja: AtomsArgument) -> ndarray:
+    def rij(self,
+            ia: AtomsArgument,
+            ja: AtomsArgument) -> ndarray:
         r"""Distance between atom `ia` and `ja`, atoms can be in super-cell indices
 
         Returns the distance between two atoms:
@@ -654,7 +663,9 @@ class Geometry(LatticeChild, _Dispatchs,
 
         return fnorm(R)
 
-    def Rij(self, ia: AtomsArgument, ja: AtomsArgument) -> ndarray:
+    def Rij(self,
+            ia: AtomsArgument,
+            ja: AtomsArgument) -> ndarray:
         r"""Vector between atom `ia` and `ja`, atoms can be in super-cell indices
 
         Returns the vector between two atoms:
@@ -679,7 +690,9 @@ class Geometry(LatticeChild, _Dispatchs,
 
         return xj - xi[None, :]
 
-    def orij(self, orbitals1: OrbitalsArgument, orbitals2: OrbitalsArgument) -> ndarray:
+    def orij(self,
+             orbitals1: OrbitalsArgument,
+             orbitals2: OrbitalsArgument) -> ndarray:
         r"""Distance between orbital `orbitals1` and `orbitals2`, orbitals can be in super-cell indices
 
         Returns the distance between two orbitals:
@@ -696,7 +709,9 @@ class Geometry(LatticeChild, _Dispatchs,
         """
         return self.rij(self.o2a(orbitals1), self.o2a(orbitals2))
 
-    def oRij(self, orbitals1: OrbitalsArgument, orbitals2: OrbitalsArgument) -> ndarray:
+    def oRij(self,
+             orbitals1: OrbitalsArgument,
+             orbitals2: OrbitalsArgument) -> ndarray:
         r"""Vector between orbital `orbitals1` and `orbitals2`, orbitals can be in super-cell indices
 
         Returns the vector between two orbitals:
@@ -714,7 +729,9 @@ class Geometry(LatticeChild, _Dispatchs,
         return self.Rij(self.o2a(orbitals1), self.o2a(orbitals2))
 
     @staticmethod
-    def read(sile: SileType, *args, **kwargs) -> Geometry:
+    def read(sile: SileType,
+             *args,
+             **kwargs) -> Geometry:
         """ Reads geometry from the `Sile` using `Sile.read_geometry`
 
         Parameters
@@ -736,7 +753,10 @@ class Geometry(LatticeChild, _Dispatchs,
             with get_sile(sile, mode='r') as fh:
                 return fh.read_geometry(*args, **kwargs)
 
-    def write(self, sile: SileType, *args, **kwargs) -> None:
+    def write(self,
+              sile: SileType,
+              *args,
+              **kwargs) -> None:
         """ Writes geometry to the `Sile` using `sile.write_geometry`
 
         Parameters
@@ -795,7 +815,8 @@ class Geometry(LatticeChild, _Dispatchs,
 
     __iter__ = iter
 
-    def iter_species(self, atoms: Optional[AtomsArgument]=None) -> Iterator[int, Atom, int]:
+    def iter_species(self,
+                     atoms: Optional[AtomsArgument]=None) -> Iterator[int, Atom, int]:
         """Iterator over all atoms (or a subset) and species as a tuple in this geometry
 
         >>> for ia, a, idx_specie in self.iter_species():
@@ -823,7 +844,9 @@ class Geometry(LatticeChild, _Dispatchs,
             for ia in self._sanitize_atoms(atoms).ravel():
                 yield ia, self.atoms[ia], self.atoms.specie[ia]
 
-    def iter_orbitals(self, atoms: Optional[AtomsArgument]=None, local: bool=True) -> Iterator[int, int]:
+    def iter_orbitals(self,
+                      atoms: Optional[AtomsArgument]=None,
+                      local: bool=True) -> Iterator[int, int]:
         r"""Returns an iterator over all atoms and their associated orbitals
 
         >>> for ia, io in self.iter_orbitals():
@@ -871,7 +894,10 @@ class Geometry(LatticeChild, _Dispatchs,
                     for io in range(io1, io2):
                         yield ia, io
 
-    def iR(self, na: int=1000, iR: int=20, R: Optional[float]=None) -> int:
+    def iR(self,
+           na: int=1000,
+           iR: int=20,
+           R: Optional[float]=None) -> int:
         """Return an integer number of maximum radii (``self.maxR()``) which holds approximately `na` atoms
 
         Parameters
@@ -904,7 +930,10 @@ class Geometry(LatticeChild, _Dispatchs,
 
         return max(2, iR)
 
-    def iter_block_rand(self, iR=20, R=None, atoms: Optional[AtomsArgument]=None) -> Iterator[tuple[ndarray, ndarray]]:
+    def iter_block_rand(self,
+                        iR: int=20,
+                        R: Optional[float]=None,
+                        atoms: Optional[AtomsArgument]=None) -> Iterator[tuple[ndarray, ndarray]]:
         """Perform the *random* block-iteration by randomly selecting the next center of block """
 
         # We implement yields as we can then do nested iterators
@@ -978,7 +1007,10 @@ class Geometry(LatticeChild, _Dispatchs,
             print(np.sum(not_passed), len(self))
             raise SislError(f'{self.__class__.__name__}.iter_block_rand error on iterations. Not all atoms have been visited.')
 
-    def iter_block_shape(self, shape=None, iR=20, atoms: Optional[AtomsArgument]=None) -> Iterator[tuple[ndarray, ndarray]]:
+    def iter_block_shape(self,
+                         shape=None,
+                         iR: int=20,
+                         atoms: Optional[AtomsArgument]=None) -> Iterator[tuple[ndarray, ndarray]]:
         """Perform the *grid* block-iteration by looping a grid """
 
         # We implement yields as we can then do nested iterators
@@ -1101,7 +1133,9 @@ class Geometry(LatticeChild, _Dispatchs,
             raise SislError(f"{self.__class__.__name__}.iter_block_shape error on iterations. Not all atoms have been visited "
                             f"{not_passed}")
 
-    def iter_block(self, iR: int=20, R: float=None,
+    def iter_block(self,
+                   iR: int=20,
+                   R: Optional[float]=None,
                    atoms: Optional[AtomsArgument]=None,
                    method: str='rand') -> Iterator[tuple[ndarray, ndarray]]:
         """Iterator for performance critical loops
@@ -1171,9 +1205,11 @@ class Geometry(LatticeChild, _Dispatchs,
         g._names = self.names.copy()
         return g
 
-    def overlap(self, other: GeometryLikeType,
+    def overlap(self,
+                other: GeometryLikeType,
                 eps: float=0.1,
-                offset=(0., 0., 0.), offset_other=(0., 0., 0.)) -> tuple[ndarray, ndarray]:
+                offset=(0., 0., 0.),
+                offset_other=(0., 0., 0.)) -> tuple[ndarray, ndarray]:
         """ Calculate the overlapping indices between two geometries
 
         Find equivalent atoms (in the primary unit-cell only) in two geometries.
@@ -1725,7 +1761,8 @@ class Geometry(LatticeChild, _Dispatchs,
             return self.sub(atoms_flat), atoms.tolist()
         return self.sub(atoms_flat)
 
-    def optimize_nsc(self, axis=None,
+    def optimize_nsc(self,
+                     axis=None,
                      R: Optional[float]=None) -> ndarray:
         """ Optimize the number of supercell connections based on ``self.maxR()``
 
@@ -1957,7 +1994,8 @@ class Geometry(LatticeChild, _Dispatchs,
         atoms = np.delete(_a.arangei(self.na), atoms)
         return self.sub(atoms)
 
-    def remove_orbital(self, atoms: AtomsArgument,
+    def remove_orbital(self,
+                       atoms: AtomsArgument,
                        orbitals: OrbitalsArgument) -> Geometry:
         """ Remove a subset of orbitals on `atoms` according to `orbitals`
 
@@ -2006,7 +2044,11 @@ class Geometry(LatticeChild, _Dispatchs,
         # now call sub_orbital
         return self.sub_orbital(atoms, orbitals)
 
-    def unrepeat(self, reps: int, axis: int, *args, **kwargs) -> Geometry:
+    def unrepeat(self,
+                 reps: int,
+                 axis: int,
+                 *args,
+                 **kwargs) -> Geometry:
         """ Unrepeats the geometry similarly as `untile`
 
         Please see `untile` for argument details, the algorithm and arguments are the same however,
@@ -2015,7 +2057,9 @@ class Geometry(LatticeChild, _Dispatchs,
         atoms = np.arange(self.na).reshape(-1, reps).T.ravel()
         return self.sub(atoms).untile(reps, axis, *args, **kwargs)
 
-    def untile(self, reps: int, axis: int,
+    def untile(self,
+               reps: int,
+               axis: int,
                segment: int=0,
                rtol: float=1e-4,
                atol: float=1e-4) -> Geometry:
@@ -2079,7 +2123,9 @@ class Geometry(LatticeChild, _Dispatchs,
                  "The tolerance between the coordinates can be altered using rtol, atol")
         return new
 
-    def tile(self, reps: int, axis: int) -> Geometry:
+    def tile(self,
+             reps: int,
+             axis: int) -> Geometry:
         """ Tile the geometry to create a bigger one
 
         The atomic indices are retained for the base structure.
@@ -2139,7 +2185,9 @@ class Geometry(LatticeChild, _Dispatchs,
         # will also expand via tiling)
         return self.__class__(xyz, atoms=self.atoms.tile(reps), lattice=lattice)
 
-    def repeat(self, reps: int, axis: int) -> Geometry:
+    def repeat(self,
+               reps: int,
+               axis: int) -> Geometry:
         """ Create a repeated geometry
 
         The atomic indices are *NOT* retained from the base structure.
@@ -2351,7 +2399,8 @@ class Geometry(LatticeChild, _Dispatchs,
     @deprecate_argument("only", "what",
                         "argument only has been deprecated in favor of what, please update your code.",
                         "0.14.0")
-    def rotate(self, angle,
+    def rotate(self,
+               angle: float,
                v,
                origin=None,
                atoms: Optional[AtomsArgument]=None,
@@ -2476,7 +2525,8 @@ class Geometry(LatticeChild, _Dispatchs,
         a = acos(np.sum(lm * lv))
         return self.rotate(a, cp, rad=True)
 
-    def translate(self, v,
+    def translate(self,
+                  v,
                   atoms: Optional[AtomsArgument]=None,
                   cell: bool=False) -> Geometry:
         """ Translates the geometry by `v`
@@ -2710,7 +2760,7 @@ class Geometry(LatticeChild, _Dispatchs,
         raise ValueError(f"{self.__class__.__name__}.center could not understand option 'what' got {what}")
 
     def append(self,
-               other: CellOrGeometryLike,
+               other: LatticeOrGeometryLike,
                axis: int,
                offset="none") -> Geometry:
         """ Appends two structures along `axis`
@@ -2790,7 +2840,7 @@ class Geometry(LatticeChild, _Dispatchs,
         return self.__class__(xyz, atoms=atoms, lattice=lattice, names=names)
 
     def prepend(self,
-                other: CellOrGeometryLike,
+                other: LatticeOrGeometryLike,
                 axis: int,
                 offset="none") -> Geometry:
         """ Prepend two structures along `axis`
@@ -2870,7 +2920,7 @@ class Geometry(LatticeChild, _Dispatchs,
         return self.__class__(xyz, atoms=atoms, lattice=lattice, names=names)
 
     def add(self,
-            other: CellOrGeometryLike,
+            other: LatticeOrGeometryLike,
             offset=(0, 0, 0)) -> Geometry:
         """ Merge two geometries (or a Geometry and Lattice) by adding the two atoms together
 
