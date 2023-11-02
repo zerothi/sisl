@@ -7,73 +7,21 @@ This is a wrapper with sub-commands the toolboxes that are
 accessible.
 """
 
+import typer
+from ._typer_wrappers import annotate_typer
 
-class SToolBoxCLI:
-    """ Run the CLI `stoolbox` """
+from sisl_toolbox.siesta.atom._atom import atom_plot
+from sisl_toolbox.transiesta.poisson.fftpoisson_fix import fftpoisson_fix
 
-    def __init__(self):
-        self._cmds = []
+app = typer.Typer(
+    name="Sisl toolbox", 
+    help="Specific toolboxes to aid sisl users",
+    rich_markup_mode="markdown",
+    add_completion=False
+)
 
-    def register(self, setup):
-        """ Register a setup callback function which creates the subparser
+app.command()(annotate_typer(atom_plot))
+app.command("ts-fft")(annotate_typer(fftpoisson_fix))
 
-        The ``setup(..)`` command must accept a sub-parser from `argparse` as its
-        first argument.
+stoolbox_cli = app
 
-        The only requirements to create a sub-command is to fullfill these requirements:
-
-        1. Create a new parser using ``subp.add_parser``.
-        2. Ensure a runner is attached to the subparser through ``.set_defaults(runner=<callable>)``
-
-        A minimal example would be:
-
-        >>> def setup(subp):
-        ...    p = subp.add_parser("test-sub")
-        ...    def test_sub_method(args):
-        ...        print(args)
-        ...    p.set_defaults(runner=test_sub_method)
-        """
-        self._cmds.append(setup)
-
-    def __call__(self, argv=None):
-        import argparse
-        import sys
-        from pathlib import Path
-
-        # Create command-line
-        cmd = Path(sys.argv[0])
-        p = argparse.ArgumentParser(f"{cmd.name}",
-                                    description="Specific toolboxes to aid sisl users")
-
-        info = {
-            "title": "Toolboxes",
-            "metavar": "TOOL",
-        }
-
-        # Check which Python version we have
-        version = sys.version_info
-        if version.major >= 3 and version.minor >= 7:
-            info["required"] = True
-
-        # Create the sub-parser
-        subp = p.add_subparsers(**info)
-
-        for cmd in self._cmds:
-            cmd(subp)
-
-        args = p.parse_args(argv)
-        args.runner(args)
-
-
-# Populate the commands
-
-# First create the class to hold and dynamically create the commands
-stoolbox_cli = SToolBoxCLI()
-
-from sisl_toolbox.transiesta.poisson.fftpoisson_fix import fftpoisson_fix_cli
-
-stoolbox_cli.register(fftpoisson_fix_cli)
-
-from sisl_toolbox.siesta.atom._atom import atom_plot_cli
-
-stoolbox_cli.register(atom_plot_cli)
