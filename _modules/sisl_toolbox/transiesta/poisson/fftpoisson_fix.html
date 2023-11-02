@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl_toolbox.transiesta.poisson.fftpoisson_fix &mdash; sisl 0.1-a6344c4</title>
+  <title>sisl_toolbox.transiesta.poisson.fftpoisson_fix &mdash; sisl 0.1-f3633fb</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/tabs.css" type="text/css" />
@@ -17,7 +17,7 @@
   
         <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=9e037ce7"></script>
+        <script src="../../../../_static/documentation_options.js?v=efe6ea0e"></script>
         <script src="../../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../../_static/tabs.js?v=3ee01567"></script>
@@ -39,7 +39,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-a6344c4
+                0.1-f3633fb
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -166,6 +166,8 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;pyamg_solve&#39;</span><span class="p">,</span> <span class="s1">&#39;solve_poisson&#39;</span><span class="p">,</span> <span class="s1">&#39;fftpoisson_fix_cli&#39;</span><span class="p">,</span> <span class="s1">&#39;fftpoisson_fix_run&#39;</span><span class="p">]</span>
 
 
+<span class="n">_BC</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">BoundaryCondition</span>
+
 <span class="c1"># Base-script name</span>
 <span class="n">_script</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">name</span>
 
@@ -220,16 +222,16 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_script</span><span class="si">}</span><span class="s2">: Missing electrode arguments for specifying the bias.&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">boundary</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">bc</span> <span class="o">=</span> <span class="p">[[</span><span class="n">si</span><span class="o">.</span><span class="n">Grid</span><span class="o">.</span><span class="n">PERIODIC</span><span class="p">,</span> <span class="n">si</span><span class="o">.</span><span class="n">Grid</span><span class="o">.</span><span class="n">PERIODIC</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+        <span class="n">bc</span> <span class="o">=</span> <span class="p">[[</span><span class="n">_BC</span><span class="o">.</span><span class="n">PERIODIC</span><span class="p">,</span> <span class="n">_BC</span><span class="o">.</span><span class="n">PERIODIC</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">bc</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">def</span> <span class="nf">bc2bc</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
-            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;periodic&#39;</span><span class="p">:</span> <span class="s1">&#39;PERIODIC&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">:</span> <span class="s1">&#39;PERIODIC&#39;</span><span class="p">,</span> <span class="n">si</span><span class="o">.</span><span class="n">Grid</span><span class="o">.</span><span class="n">PERIODIC</span><span class="p">:</span> <span class="s1">&#39;PERIODIC&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;dirichlet&#39;</span><span class="p">:</span> <span class="s1">&#39;DIRICHLET&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="s1">&#39;DIRICHLET&#39;</span><span class="p">,</span> <span class="n">si</span><span class="o">.</span><span class="n">Grid</span><span class="o">.</span><span class="n">DIRICHLET</span><span class="p">:</span> <span class="s1">&#39;DIRICHLET&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;neumann&#39;</span><span class="p">:</span> <span class="s1">&#39;NEUMANN&#39;</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">:</span> <span class="s1">&#39;NEUMANN&#39;</span><span class="p">,</span> <span class="n">si</span><span class="o">.</span><span class="n">Grid</span><span class="o">.</span><span class="n">NEUMANN</span><span class="p">:</span> <span class="s1">&#39;NEUMANN&#39;</span><span class="p">,</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;periodic&#39;</span><span class="p">:</span> <span class="s1">&#39;PERIODIC&#39;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">:</span> <span class="s1">&#39;PERIODIC&#39;</span><span class="p">,</span> <span class="n">_BC</span><span class="o">.</span><span class="n">PERIODIC</span><span class="p">:</span> <span class="s1">&#39;PERIODIC&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;dirichlet&#39;</span><span class="p">:</span> <span class="s1">&#39;DIRICHLET&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="s1">&#39;DIRICHLET&#39;</span><span class="p">,</span> <span class="n">_BC</span><span class="o">.</span><span class="n">DIRICHLET</span><span class="p">:</span> <span class="s1">&#39;DIRICHLET&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;neumann&#39;</span><span class="p">:</span> <span class="s1">&#39;NEUMANN&#39;</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">:</span> <span class="s1">&#39;NEUMANN&#39;</span><span class="p">,</span> <span class="n">_BC</span><span class="o">.</span><span class="n">NEUMANN</span><span class="p">:</span> <span class="s1">&#39;NEUMANN&#39;</span><span class="p">,</span>
             <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">s</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
         <span class="k">for</span> <span class="n">bottom</span><span class="p">,</span> <span class="n">top</span> <span class="ow">in</span> <span class="n">boundary</span><span class="p">:</span>
-            <span class="n">bc</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">getattr</span><span class="p">(</span><span class="n">si</span><span class="o">.</span><span class="n">Grid</span><span class="p">,</span> <span class="n">bc2bc</span><span class="p">(</span><span class="n">bottom</span><span class="p">)),</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">si</span><span class="o">.</span><span class="n">Grid</span><span class="p">,</span> <span class="n">bc2bc</span><span class="p">(</span><span class="n">top</span><span class="p">))])</span>
+            <span class="n">bc</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">getattr</span><span class="p">(</span><span class="n">_BC</span><span class="p">,</span> <span class="n">bc2bc</span><span class="p">(</span><span class="n">bottom</span><span class="p">)),</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">_BC</span><span class="p">,</span> <span class="n">bc2bc</span><span class="p">(</span><span class="n">top</span><span class="p">))])</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bc</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_script</span><span class="si">}</span><span class="s2">: Requires a 3x2 list input for the boundary conditions.&quot;</span><span class="p">)</span>
 
@@ -264,7 +266,8 @@
         <span class="k">return</span> <span class="n">AA</span> <span class="o">|</span> <span class="n">BB</span>
 
     <span class="c1"># Create grid</span>
-    <span class="n">grid</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">Grid</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">,</span> <span class="n">bc</span><span class="o">=</span><span class="n">bc</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">geometry</span><span class="o">.</span><span class="n">set_boundary_condition</span><span class="p">(</span><span class="n">bc</span><span class="p">)</span>
+    <span class="n">grid</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">Grid</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
     <span class="k">class</span> <span class="nc">_fake</span><span class="p">:</span>
         <span class="nd">@property</span>
         <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

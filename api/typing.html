@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>stoolbox &mdash; sisl 0.1-f3633fb</title>
+  <title>Typing &mdash; sisl 0.1-f3633fb</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/tabs.css" type="text/css" />
@@ -26,8 +26,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Nodes and workflows" href="../nodes/nodes_intro.html" />
-    <link rel="prev" title="sgrid" href="sgrid.html" /> 
+    <link rel="prev" title="Nodes" href="nodes.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -62,20 +61,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../environment.html">Environment variables</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="scripts.html">Command line scripts</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="sdata.html"><em class="xref py py-obj">sdata</em></a></li>
-<li class="toctree-l2"><a class="reference internal" href="sgeom.html"><em class="xref py py-obj">sgeom</em></a></li>
-<li class="toctree-l2"><a class="reference internal" href="sgrid.html"><em class="xref py py-obj">sgrid</em></a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#"><em class="xref py py-obj">stoolbox</em></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#have-an-idea">Have an idea?</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/scripts.html">Command line scripts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../nodes/nodes_intro.html">Nodes and workflows</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
@@ -88,8 +78,20 @@
 <li class="toctree-l1"><a class="reference internal" href="../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API documentation</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="basic.html">Basic classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="default_geom.html">Common geometries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="physics.html">Physical objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mixing.html">Mixing self-consistent quantities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="viz/index.html">Visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unit_constant.html">Units and constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="io/index.html">Input/Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nodes.html">Nodes</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Typing</a></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -106,10 +108,10 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="scripts.html">Command line scripts</a></li>
-      <li class="breadcrumb-item active"><em class="xref py py-obj">stoolbox</em></li>
+          <li class="breadcrumb-item"><a href="index.html">API documentation</a></li>
+      <li class="breadcrumb-item active">Typing</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/scripts/stoolbox.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/api/typing.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -117,31 +119,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="stoolbox">
-<span id="script-stoolbox"></span><h1><em class="xref py py-obj">stoolbox</em><a class="headerlink" href="#stoolbox" title="Link to this heading"></a></h1>
-<p>sisl exposes user contributed tool-box command line interfaces through a common
-interface.</p>
-<p>The <a class="reference internal" href="../api/typing.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> toolbox is a separate package (shipped together with sisl) which contains
-tools that are thought to be good tools for sisl users but are too specialized in
-terms of usability to enter the sisl API.</p>
-<p>We encourage users to contribute toolboxes to increase visibility and usability.</p>
-<p>For a short description of the possible toolboxes do:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>stoolbox<span class="w"> </span>--help
-</pre></div>
-</div>
-<p>For available toolboxes, please see <a class="reference internal" href="../toolbox/index.html#toc-toolbox"><span class="std std-ref">Toolboxes</span></a>.</p>
-<section id="have-an-idea">
-<h2>Have an idea?<a class="headerlink" href="#have-an-idea" title="Link to this heading"></a></h2>
-<p>If you want to contribute or have an idea for a toolbox, feel free to open an issue <a class="reference external" href="https://github.com/zerothi/sisl/issues">here</a>.</p>
-</section>
+  <section id="typing">
+<span id="id1"></span><h1>Typing<a class="headerlink" href="#typing" title="Link to this heading"></a></h1>
+<p id="module-sisl">sisl will use <span class="xref std std-ref">typing</span>
+to enable static analyzers and to aid users when reading documentation.</p>
+<p>The typing types is shown below:</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+</tbody>
+</table>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="sgrid.html" class="btn btn-neutral float-left" title="sgrid" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../nodes/nodes_intro.html" class="btn btn-neutral float-right" title="Nodes and workflows" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="nodes.html" class="btn btn-neutral float-left" title="Nodes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

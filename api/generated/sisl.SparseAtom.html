@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.SparseAtom &mdash; sisl 0.1-a6344c4</title>
+  <title>sisl.SparseAtom &mdash; sisl 0.1-f3633fb</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
@@ -18,7 +18,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=9e037ce7"></script>
+        <script src="../../_static/documentation_options.js?v=efe6ea0e"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/tabs.js?v=3ee01567"></script>
@@ -42,7 +42,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-a6344c4
+                0.1-f3633fb
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -101,6 +101,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../nodes.html">Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing</a></li>
 </ul>
 </li>
 </ul>
@@ -150,7 +151,7 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseAtom.copy" title="sisl.SparseAtom.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>([dtype])</p></td>
 <td><p>A copy of this object</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseAtom.create_construct" title="sisl.SparseAtom.create_construct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_construct</span></code></a>(R, param)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseAtom.create_construct" title="sisl.SparseAtom.create_construct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_construct</span></code></a>(R, params)</p></td>
 <td><p>Create a simple function for passing to the <a class="reference internal" href="#sisl.SparseAtom.construct" title="sisl.SparseAtom.construct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">construct</span></code></a> function.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseAtom.edges" title="sisl.SparseAtom.edges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edges</span></code></a>(atoms[, exclude])</p></td>
@@ -330,14 +331,14 @@ If not specified, it will use <code class="docutils literal notranslate"><span c
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sisl.SparseAtom.create_construct">
-<span class="sig-name descname"><span class="pre">create_construct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SparseAtom.create_construct" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">create_construct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SparseAtom.create_construct" title="Link to this definition"></a></dt>
 <dd><p>Create a simple function for passing to the <a class="reference internal" href="#sisl.SparseAtom.construct" title="sisl.SparseAtom.construct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">construct</span></code></a> function.</p>
 <p>This is simply to leviate the creation of simplistic
 functions needed for setting up the sparse elements.</p>
 <p>Basically this returns a function:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ia</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">atoms_xyz</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">ia</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="n">R</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="n">atoms</span><span class="p">,</span> <span class="n">atoms_xyz</span><span class="o">=</span><span class="n">atoms_xyz</span><span class="p">)</span>
-<span class="gp">... </span>    <span class="k">for</span> <span class="n">ix</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">param</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">for</span> <span class="n">ix</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
 <span class="gp">... </span>        <span class="bp">self</span><span class="p">[</span><span class="n">ia</span><span class="p">,</span> <span class="n">ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span>
 </pre></div>
 </div>
@@ -349,10 +350,10 @@ you have to implement the function your-self.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>R</strong> (<em>array_like</em>) – radii parameters for different shells.
-Must have same length as <em class="xref py py-obj">param</em> or one less.
+Must have same length as <em class="xref py py-obj">params</em> or one less.
 If one less it will be extended with <code class="docutils literal notranslate"><span class="pre">R[0]/100</span></code></p></li>
-<li><p><strong>param</strong> (<em>array_like</em>) – coupling constants corresponding to the <em class="xref py py-obj">R</em>
-ranges. <code class="docutils literal notranslate"><span class="pre">param[0,:]</span></code> are the elements
+<li><p><strong>params</strong> (<em>array_like</em>) – coupling constants corresponding to the <em class="xref py py-obj">R</em>
+ranges. <code class="docutils literal notranslate"><span class="pre">params[0,</span> <span class="pre">:]</span></code> are the elements
 for the all atoms within <code class="docutils literal notranslate"><span class="pre">R[0]</span></code> of each atom.</p></li>
 </ul>
 </dd>

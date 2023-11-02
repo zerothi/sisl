@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Input/Output &mdash; sisl 0.1-a6344c4</title>
+  <title>Input/Output &mdash; sisl 0.1-f3633fb</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
@@ -18,7 +18,7 @@
   
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../_static/documentation_options.js?v=9e037ce7"></script>
+        <script src="../../_static/documentation_options.js?v=efe6ea0e"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../_static/tabs.js?v=3ee01567"></script>
@@ -42,7 +42,7 @@
             sisl
           </a>
               <div class="version">
-                0.1-a6344c4
+                0.1-f3633fb
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -106,6 +106,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../nodes.html">Nodes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../typing.html">Typing</a></li>
 </ul>
 </li>
 </ul>
@@ -138,9 +139,9 @@
   <section id="module-sisl.io">
 <span id="input-output"></span><span id="io"></span><h1>Input/Output<a class="headerlink" href="#module-sisl.io" title="Link to this heading"></a></h1>
 <p>Available files for reading/writing</p>
-<p><a class="reference internal" href="../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> handles a large variety of input/output files from a large selection
+<p><a class="reference internal" href="../typing.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> handles a large variety of input/output files from a large selection
 of DFT software and other post-processing tools.</p>
-<p>In <a class="reference internal" href="../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> all files are conventionally named <em>siles</em>
+<p>In <a class="reference internal" href="../typing.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> all files are conventionally named <em>siles</em>
 to distinguish them from files from other packages.</p>
 <p>All files are generally accessed through the <a class="reference internal" href="generated/sisl.io.get_sile.html#sisl.io.get_sile" title="sisl.io.get_sile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sile</span></code></a> method
 which exposes all siles through their extension recognition.</p>
@@ -164,7 +165,7 @@ For instance output files exists in several of the code bases.</p>
 </li>
 <li><p>Search all indexed (through <a class="reference internal" href="generated/sisl.io.add_sile.html#sisl.io.add_sile" title="sisl.io.add_sile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_sile</span></code></a>) siles which obey the specification (all if no specifier)
 and collect all that matches the longest extension found.</p></li>
-<li><p>If there is only 1 match, then return that class. If there are multiple <a class="reference internal" href="../index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> will try all <code class="docutils literal notranslate"><span class="pre">read_*</span></code>
+<li><p>If there is only 1 match, then return that class. If there are multiple <a class="reference internal" href="../typing.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> will try all <code class="docutils literal notranslate"><span class="pre">read_*</span></code>
 methods and if all fail, then the sile will be removed from the eligible list.</p></li>
 </ol>
 <div class="toctree-wrapper compound">
