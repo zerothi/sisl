@@ -47,7 +47,11 @@ Known problems:
 - It may not always converge which requires some fine-tuning of the tolerances,
   secondly it may converge too fast so the solution is not really good.
 """
+from typing import Tuple, List, Optional, Dict
+from typing_extensions import Annotated
+
 import argparse as argp
+from enum import Enum
 import os
 import sys
 from pathlib import Path
@@ -56,7 +60,9 @@ import numpy as np
 
 import sisl as si
 
-__all__ = ['pyamg_solve', 'solve_poisson', 'fftpoisson_fix_cli', 'fftpoisson_fix_run']
+from sisl_toolbox.cli._cli_arguments import CLIOption
+
+__all__ = ['pyamg_solve', 'solve_poisson', 'fftpoisson_fix']
 
 
 # Base-script name
@@ -278,122 +284,162 @@ def solve_poisson(geometry, shape, radius="empirical",
 
     return grid
 
+class DtypeOption(Enum):
+    """Data types"""
+    d = "d"
+    f = "f"
+    f64 = "f64"
+    f32 = "f32"
 
-def fftpoisson_fix_cli(subp=None):
-    is_sub = not subp is None
+class AccelMethod(Enum):
+    """Acceleration methods for pyamg"""
+    cg = "cg"
+    gmres = "gmres"
+    fgmres = "fgmres"
+    cr = "cr"
+    cgnr = "cgnr"
+    cgne = "cgne"
+    bicgstab = "bicgstab"
+    steepest_descent = "steepest_descent"
+    minimal_residual = "minimal_residual"
 
-    title = "FFT Poisson corrections for TranSiesta calculations for arbitrary number of electrodes."
-    if is_sub:
-        global _script
-        _script = f"{_script} ts-fft"
-        p = subp.add_parser("ts-fft", description=title, help=title)
-    else:
-        p = argp.ArgumentParser(title)
+def fftpoisson_fix(
+    shape: Annotated[Tuple[int, int, int], CLIOption("-S", "--shape")],
+    geometry: Path = Path("siesta.TBT.nc"),
+    boundary_condition_a: Annotated[Tuple[str, str], CLIOption("-bc-a", "--boundary-condition-a")] = ("p", "p"),
+    boundary_condition_b: Annotated[Tuple[str, str], CLIOption("-bc-b", "--boundary-condition-b")] = ("p", "p"),
+    boundary_condition_c: Annotated[Tuple[str, str], CLIOption("-bc-c", "--boundary-condition-c")] = ("p", "p"),
+    elec_V: Annotated[Dict[str, float], CLIOption("-V", "--elec-V", )] = {},
+    pyamg_shape: Annotated[Tuple[int, int, int], CLIOption("-ps", "--pyamg-shape")] = (-1, -1, -1),
+    device: Annotated[Optional[float], CLIOption("-D", "--device")] = None,
+    radius: Annotated[float, CLIOption("-R", "--radius")] = 3.,
+    dtype: Annotated[DtypeOption, CLIOption("-d", "--dtype")] = DtypeOption.d,
+    tolerance: Annotated[float, CLIOption("-T", "--tolerance")] = 1e-7,
+    accel: Annotated[AccelMethod, CLIOption("-A", "--acceleration")] = AccelMethod.cg,
+    out: Annotated[List[str], CLIOption("-o", "--out", metavar="PATH")] = [],
+    box: bool = False,
+    boundary_fft: bool = True,
+    plot: Optional[int] = None,
+    plot_boundary: bool = False,
+):
+    """FFT Poisson corrections for TranSiesta calculations for arbitrary number of electrodes.
+    
+    Parameters
+    ----------
+    geometry:
+        siesta.TBT.nc file which contains the geometry and electrode information, 
+        currently we cannot read that from fdf-files.
+    shape:
+        Grid shape, this *has* to be conforming to the TranSiesta calculation, 
+        read from output: 'InitMesh: MESH = A x B x C'
+    boundary_condition_a:
+        Boundary condition along the first lattice vector [periodic/p, neumann/n, dirichlet/d].
+        Specify separate BC at the start and end of the lattice vector, respectively.
+    boundary_condition_b:
+        Boundary condition along the second lattice vector [periodic/p, neumann/n, dirichlet/d]. 
+        Specify separate BC at the start and end of the lattice vector, respectively.
+    boundary_condition_c:
+        Boundary condition along the third lattice vector [periodic/p, neumann/n, dirichlet/d].
+        Specify separate BC at the start and end of the lattice vector, respectively.
+    elec_V:
+        Specify chemical potential on electrode.
+    pyamg_shape:
+        Grid used to solve the Poisson equation, if shape is different 
+        the Grid will be interpolated (order=2) after.
+        (-1, -1, -1) means use the same as shape.
+    device:
+        Fix the value of all device atoms to a value. 
+        In some cases this turns out to yield a better box boundary. 
+        The default is to *not* fix the potential on the device atoms.
+    radius:
+        Radius of atoms when figuring out the electrode sizes, 
+        this corresponds to the extend of each electrode where boundary conditions are fixed. 
+        Should be tuned according to the atomic species [3 Ang]
+    dtype:
+        Precision of data (d/f64==double, f/f32==single)
+    tolerance:
+        Precision required for the pyamg solver. 
+        NOTE when using single precision arrays this should probably be on the order of 1e-5
+    accel:
+        Acceleration method for pyamg. 
+        May be useful if it fails to converge
+    out:
+        Output file to store the resulting Poisson solution. 
+        It *has* to have TSV.nc file ending to make the file conforming with TranSiesta.
+    box:
+        Only store the initial box solution (i.e. do not run PyAMG)
+    boundary_fft:
+        Once the electrode boundary conditions are solved we perform a second solution with boundaries fixed. 
+        Using this flag disables this second solution.
+    plot:
+        Plot grid by averaging over the axis given as argument
+    plot_boundary:
+        Plot all 6 edges of the box with their fixed values (just before 2nd pyamg solve step)
+    
+    """
 
-    tuning = p.add_argument_group("tuning", "Tuning fine details of the Poisson calculation.")
+    print(dict(
+        geometry=geometry,
+        shape=shape,
+        boundary_condition_a=boundary_condition_a,
+        boundary_condition_b=boundary_condition_b,
+        boundary_condition_c=boundary_condition_c,
+        elec_V=elec_V,
+        pyamg_shape=pyamg_shape,
+        device=device,
+        radius=radius,
+        dtype=dtype,
+        tolerance=tolerance,
+        accel=accel,
+        out=out,
+        box=box,
+        boundary_fft=boundary_fft,
+        plot=plot,
+        plot_boundary=plot_boundary,
+    ))
 
-    p.add_argument("--geometry", "-G", default="siesta.TBT.nc", metavar="FILE",
-                   help="siesta.TBT.nc file which contains the geometry and electrode information, currently we cannot read that from fdf-files.")
-
-    p.add_argument("--shape", "-s", nargs=3, type=int, required=True, metavar=("A", "B", "C"),
-                   help="Grid shape, this *has* to be conforming to the TranSiesta calculation, read from output: 'InitMesh: MESH = A x B x C'")
-
-    n = {"a": "first", "b": "second", "c": "third"}
-    for d in "abc":
-        p.add_argument(f"--boundary-condition-{d}", f"-bc-{d}", nargs=2, type=str, default=["p", "p"],
-                       metavar=("BOTTOM", "TOP"),
-                       help=("Boundary condition along the {} lattice vector [periodic/p, neumann/n, dirichlet/d]. "
-                             "Specify separate BC at the start and end of the lattice vector, respectively.".format(n[d])))
-
-    p.add_argument("--elec-V", "-V", action="append", nargs=2, metavar=("NAME", "V"), default=[],
-                   help="Specify chemical potential on electrode")
-
-    p.add_argument("--pyamg-shape", "-ps", nargs=3, type=int, metavar=("A", "B", "C"), default=None,
-                   help="Grid used to solve the Poisson equation, if shape is different the Grid will be interpolated (order=2) after.")
-
-    p.add_argument("--device", "-D", type=float, default=None, metavar="VAL",
-                   help="Fix the value of all device atoms to a value. In some cases this turns out to yield a better box boundary. The default is to *not* fix the potential on the device atoms.")
-
-    tuning.add_argument("--radius", "-R", type=float, default=3., metavar="R",
-                        help=("Radius of atoms when figuring out the electrode sizes, this corresponds to the extend of "
-                              "each electrode where boundary conditions are fixed. Should be tuned according to the atomic species [3 Ang]"))
-
-    tuning.add_argument("--dtype", "-d", choices=["d", "f64", "f", "f32"], default="d",
-                        help="Precision of data (d/f64==double, f/f32==single)")
-
-    tuning.add_argument("--tolerance", "-T", type=float, default=1e-7, metavar="EPS",
-                        help="Precision required for the pyamg solver. NOTE when using single precision arrays this should probably be on the order of 1e-5")
-
-    tuning.add_argument("--acceleration", "-A", dest="accel", default="cg", metavar="METHOD",
-                   help="""Acceleration method for pyamg. May be useful if it fails to converge
-
-Try one of: cg, gmres, fgmres, cr, cgnr, cgne, bicgstab, steepest_descent, minimal_residual""")
-
-    test = p.add_argument_group("testing", "Options used for testing output. None of these options should be used for production runs!")
-    test.add_argument("--box", dest="box", action="store_true", default=False,
-                   help="Only store the initial box solution (i.e. do not run PyAMG)")
-
-    test.add_argument("--no-boundary-fft", action="store_false", dest="boundary_fft", default=True,
-                   help="Once the electrode boundary conditions are solved we perform a second solution with boundaries fixed. Using this flag disables this second solution.")
-
-    if _DEBUG:
-        test.add_argument("--plot", dest="plot", default=None, type=int,
-                          help="Plot grid by averaging over the axis given as argument")
-
-        test.add_argument("--plot-boundary", dest="plot_boundary", action="store_true",
-                          help="Plot all 6 edges of the box with their fixed values (just before 2nd pyamg solve step)")
-
-    p.add_argument("--out", "-o", action="append", default=None,
-                   help="Output file to store the resulting Poisson solution. It *has* to have TSV.nc file ending to make the file conforming with TranSiesta.")
-
-    if is_sub:
-        p.set_defaults(runner=fftpoisson_fix_run)
-    else:
-        fftpoisson_fix_run(p.parse_args())
-
-
-def fftpoisson_fix_run(args):
-    if args.out is None:
+    return
+    if len(out) == 0:
         print(f">\n>\n>{_script}: No out-files has been specified, work will be carried out but not saved!\n>\n>\n")
 
     # Read in geometry
-    geometry = si.get_sile(args.geometry).read_geometry()
+    geometry = si.get_sile(geometry).read_geometry()
 
     # Figure out the electrodes
     elecs_V = {}
-    if len(args.elec_V) == 0:
+    if len(elec_V) == 0:
         print(geometry.names)
         raise ValueError(f"{_script}: Please specify all electrode potentials using --elec-V")
 
-    for name, V in args.elec_V:
-        elecs_V[name] = float(V)
+    for name, V in elec_V.items():
+        elecs_V[name] = V
 
-    if args.dtype.lower() in ("f", "f32"):
+    if dtype.value.lower() in ("f", "f32"):
         dtype = np.float32
-    elif args.dtype.lower() in ("d", "f64"):
+    elif dtype.value.lower() in ("d", "f64"):
         dtype = np.float64
 
     # Now we can solve Poisson
-    if args.pyamg_shape is None:
-        shape = args.shape
+    if pyamg_shape[0] == -1:
+        shape = shape
     else:
-        shape = args.pyamg_shape
+        shape = pyamg_shape
 
     # Create the boundary conditions
     boundary = []
-    boundary.append(args.boundary_condition_a)
-    boundary.append(args.boundary_condition_b)
-    boundary.append(args.boundary_condition_c)
+    boundary.append(boundary_condition_a)
+    boundary.append(boundary_condition_b)
+    boundary.append(boundary_condition_c)
 
-    V = solve_poisson(geometry, shape, radius=args.radius, boundary=boundary,
-                      dtype=dtype, tolerance=args.tolerance, box=args.box,
-                      accel=args.accel, boundary_fft=args.boundary_fft,
-                      device_val=args.device, plot_boundary=args.plot_boundary,
+    V = solve_poisson(geometry, shape, radius=radius, boundary=boundary,
+                      dtype=dtype, tolerance=tolerance, box=box,
+                      accel=accel.value, boundary_fft=boundary_fft,
+                      device_val=device, plot_boundary=plot_boundary,
                       **elecs_V)
 
     if _DEBUG:
-        if not args.plot is None:
-            dat = V.average(args.plot)
+        if not plot is None:
+            dat = V.average(plot)
             import matplotlib.pyplot as plt
             axs = [
                 np.linspace(0, V.lattice.length[ax], shape, endpoint=False) for ax, shape in enumerate(V.shape)
@@ -401,29 +447,24 @@ def fftpoisson_fix_run(args):
             idx = list(range(3))
 
             # Now plot data
-            del axs[args.plot]
-            del idx[args.plot]
+            del axs[plot]
+            del idx[plot]
 
             X, Y = np.meshgrid(*axs)
             plt.contourf(X, Y, np.squeeze(dat.grid).T)
             plt.colorbar()
-            plt.title(f"Averaged over {'ABC'[args.plot]} axis")
+            plt.title(f"Averaged over {'ABC'[plot]} axis")
             plt.xlabel(f"Distance along {'ABC'[idx[0]]} [Ang]")
             plt.ylabel(f"Distance along {'ABC'[idx[1]]} [Ang]")
             plt.show()
 
-    if np.any(np.array(args.shape) != np.array(V.shape)):
+    if np.any(np.array(shape) != np.array(V.shape)):
         print("\nInterpolating the solution...")
-        V = V.interp(args.shape, 2)
+        V = V.interp(shape, 2)
         print("Done interpolating!")
 
     print("")
     # Write solution to the output
-    if not args.out is None:
-        for out in args.out:
-            print(f"Writing to file: {out}...")
-            V.write(out)
-
-
-if __name__ == "__main__":
-    fftpoisson_fix_cli()
+    for out_file in out:
+        print(f"Writing to file: {out_file}...")
+        V.write(out_file)

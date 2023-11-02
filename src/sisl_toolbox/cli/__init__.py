@@ -10,28 +10,18 @@ accessible.
 import typer
 from ._typer_wrappers import annotate_typer
 
+from sisl_toolbox.siesta.atom._atom import atom_plot
+from sisl_toolbox.transiesta.poisson.fftpoisson_fix import fftpoisson_fix
+
 app = typer.Typer(
     name="Sisl toolbox", 
     help="Specific toolboxes to aid sisl users",
-    rich_markup_mode="markdown"
+    rich_markup_mode="markdown",
+    add_completion=False
 )
 
-from sisl_toolbox.siesta.atom._atom import atom_plot
-
 app.command()(annotate_typer(atom_plot))
+app.command("ts-fft")(annotate_typer(fftpoisson_fix))
 
 stoolbox_cli = app
 
-
-# Populate the commands
-
-# First create the class to hold and dynamically create the commands
-# stoolbox_cli = SToolBoxCLI()
-
-# from sisl_toolbox.transiesta.poisson.fftpoisson_fix import fftpoisson_fix_cli
-
-# stoolbox_cli.register(fftpoisson_fix_cli)
-
-# from sisl_toolbox.siesta.atom._atom import atom_plot_cli
-
-# stoolbox_cli.register(atom_plot_cli)

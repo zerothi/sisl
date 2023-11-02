@@ -752,8 +752,7 @@ class AtomPlotOption(Enum):
 
 def atom_plot(
     plot: Annotated[Optional[List[AtomPlotOption]], CLIArgument()] = None, 
-    input: str = "INP", 
-    #plot: Optional[List[str]] = None, 
+    input: Path = Path("INP"), 
     l: str = 'spdf', 
     save: Annotated[Optional[str], CLIOption("-S", "--save")] = None, 
     show: bool = False
@@ -762,15 +761,15 @@ def atom_plot(
 
     Parameters
     ----------
-    plot : list[str], optional
+    plot:
         Determine what to plot. If None is given, it plots everything.
-    input : str
+    input:
         Input file name.
-    l : str, optional
+    l: 
         Which l shells to plot.
-    save : str, optional
+    save: 
         Save output plots to file.
-    show : bool, optional
+    show: 
         Force showing the plot.
     """
     import matplotlib.pyplot as plt
